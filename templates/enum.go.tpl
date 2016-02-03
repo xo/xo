@@ -40,3 +40,4 @@ func (c *{{ .Type }}) UnmarshalText(text []byte) error {
 
 	return nil
 }
+

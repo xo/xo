@@ -179,15 +179,103 @@ func openDB(dsn string) (*sql.DB, error) {
 
 var (
 	// tracking of types encountered
-	enumTypeMap = map[string]bool{}
+	knownTypeMap = map[string]bool{}
 
 	// template func map
 	tplFuncMap = template.FuncMap{
 		"inc": func(i int) int {
 			return i + 1
 		},
+		"fields": func(fields []*models.Column, pkField string) string {
+			str := ""
+			i := 0
+			for _, col := range fields {
+				if col.Field == pkField {
+					continue
+				}
+
+				if i != 0 {
+					str = str + ", "
+				}
+				str = str + col.ColumnName
+				i++
+			}
+
+			return str
+		},
+		"values": func(fields []*models.Column, pkField string) string {
+			str := ""
+			i := 1
+			for _, col := range fields {
+				if col.Field == pkField {
+					continue
+				}
+
+				if i != 1 {
+					str = str + ", "
+				}
+				str = str + "$" + strconv.Itoa(i)
+				i++
+			}
+
+			return str
+		},
+		"cols": func(fields []*models.Column, pkField string, prefix string) string {
+			str := ""
+			i := 0
+			for _, col := range fields {
+				if col.Field == pkField {
+					continue
+				}
+
+				if i != 0 {
+					str = str + ", "
+				}
+				str = str + prefix + "." + col.Field
+				i++
+			}
+
+			return str
+		},
+		"count": func(fields []*models.Column, pkField string) int {
+			i := 1
+			for _, col := range fields {
+				if col.Field == pkField {
+					continue
+				}
+
+				i++
+			}
+			return i
+		},
 		"retype": func(typ string) string {
-			if _, ok := enumTypeMap[typ]; !ok {
+			if strings.Contains(typ, ".") {
+				return typ
+			}
+
+			prefix := ""
+			for strings.HasPrefix(typ, "[]") {
+				typ = typ[2:]
+				prefix = prefix + "[]"
+			}
+
+			if _, ok := knownTypeMap[typ]; !ok {
+				pkg := args.CustomTypePackage
+				if pkg != "" {
+					pkg = pkg + "."
+				}
+
+				return prefix + pkg + typ
+			}
+
+			return prefix + typ
+		},
+		"reniltype": func(typ string) string {
+			if strings.Contains(typ, ".") {
+				return typ
+			}
+
+			if strings.HasSuffix(typ, "{}") {
 				pkg := args.CustomTypePackage
 				if pkg != "" {
 					pkg = pkg + "."
@@ -195,6 +283,7 @@ var (
 
 				return pkg + typ
 			}
+
 			return typ
 		},
 	}
@@ -204,9 +293,19 @@ var (
 )
 
 func init() {
+	// load template assets
 	for _, n := range templates.AssetNames() {
 		buf := templates.MustAsset(n)
 		tpls[n] = template.Must(template.New(n).Funcs(tplFuncMap).Parse(string(buf)))
+	}
+
+	for _, typ := range []string{
+		"bool", "string", "byte", "rune",
+		"int", "int16", "int32", "int64",
+		"uint", "uint8", "uint16", "uint32", "uint64",
+		"float32", "float64",
+	} {
+		knownTypeMap[typ] = true
 	}
 }
 
@@ -219,11 +318,12 @@ type EnumTemplate struct {
 
 // TableTemplate is a template item for a table.
 type TableTemplate struct {
-	Type        string
-	TableSchema string
-	TableName   string
-	Fields      []*models.Column
-	//Indexes     []*models.Indexes
+	Type            string
+	TableSchema     string
+	TableName       string
+	PrimaryKey      string
+	PrimaryKeyField string
+	Fields          []*models.Column
 }
 
 var (
@@ -366,13 +466,7 @@ func parseType(dt string, nullable bool) (int, string, string) {
 			typ = snaker.SnakeToCamel(dt[len(args.Schema)+1:])
 			nilType = typ + "(0)"
 		} else {
-			// custom or unknown type
-			pkg := args.CustomTypePackage
-			if pkg != "" {
-				pkg = pkg + "."
-			}
-
-			typ = pkg + snaker.SnakeToCamel(dt)
+			typ = snaker.SnakeToCamel(dt)
 			nilType = typ + "{}"
 		}
 	}
@@ -416,7 +510,7 @@ func loadEnums(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*EnumTe
 		// set enum info
 		e.Type = snaker.SnakeToCamel(typ)
 		e.EnumType = snaker.SnakeToCamel(strings.ToLower(e.Value))
-		enumTypeMap[e.EnumType] = true
+		knownTypeMap[e.EnumType] = true
 
 		// set value in enum map if not present
 		if _, ok := enumMap[typ]; !ok {
@@ -459,16 +553,19 @@ func loadProcs(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*models
 	for _, p := range procs {
 		p.Schema = args.Schema
 
+		// fix the name if it starts with underscore
 		name := p.Name
 		if name[0:1] == "_" {
 			name = name[1:]
 		}
 
+		// convert name and types to go values
 		p.FuncName = snaker.SnakeToCamel(name)
 		_, p.GoNilReturnType, p.GoReturnType = parseType(p.ReturnType, false)
 		p.GoParameterTypes = make([]string, 0)
 
 		if len(p.ParameterTypes) > 0 {
+			// determine the go equivalent parameter types
 			for _, typ := range strings.Split(p.ParameterTypes, ",") {
 				_, _, pt := parseType(strings.TrimSpace(typ), false)
 				p.GoParameterTypes = append(p.GoParameterTypes, pt)
@@ -521,6 +618,12 @@ func loadTables(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*Table
 			}
 		}
 
+		// set primary key
+		if c.IsPrimaryKey {
+			tableMap[typ].PrimaryKey = c.ColumnName
+			tableMap[typ].PrimaryKeyField = c.Field
+		}
+
 		// create field map if not already made
 		if _, ok := fieldMap[typ]; !ok {
 			fieldMap[typ] = make(map[string]bool)
@@ -553,6 +656,13 @@ func loadDefs(db *sql.DB) (map[string]*bytes.Buffer, error) {
 	var err error
 
 	typeMap := make(map[string]*bytes.Buffer)
+
+	// add base db type
+	buf := getBuf(typeMap, strings.ToLower(args.Schema+"_db"))
+	err = tpls["db.go.tpl"].Execute(buf, args)
+	if err != nil {
+		return nil, err
+	}
 
 	// load enums
 	_, err = loadEnums(db, typeMap)
