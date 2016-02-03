@@ -27,7 +27,7 @@ func (t *{{ .Type }}) Insert(db DB) error {
 
 	// if already exist, bail
 	if t._exists {
-		return errors.New("insert {{ .Type }} failed: already exists")
+		return errors.New("insert failed: already exists")
 	}
 
 	// sql query
@@ -54,12 +54,12 @@ func (t *{{ .Type }}) Update(db DB) error {
 
 	// if doesn't exist, bail
 	if !t._exists {
-		return errors.New("update {{ .Type }} failed: does not exist")
+		return errors.New("update failed: does not exist")
 	}
 
 	// if deleted, bail
 	if t._deleted {
-		return errors.New("update {{ .Type }} failed: marked for deletion")
+		return errors.New("update failed: marked for deletion")
 	}
 
 	// sql query

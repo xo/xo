@@ -132,10 +132,20 @@ func processArgs() error {
 			// file exists (will truncate later)
 			args.Path = path.Dir(args.Out)
 			args.Filename = path.Base(args.Out)
+
+			// error if split was set, but destination is not a directory
+			if args.Split {
+				return errors.New("supplied path is not directory")
+			}
 		} else if _, ok := err.(*os.PathError); ok {
 			// path error (ie, file doesn't exist yet)
 			args.Path = path.Dir(args.Out)
 			args.Filename = path.Base(args.Out)
+
+			// error if split was set, but destination is not a directory
+			if args.Split {
+				return errors.New("must supply directory when using split")
+			}
 		} else {
 			return err
 		}
