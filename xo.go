@@ -504,19 +504,18 @@ func loadEnums(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*EnumTe
 	// process enums
 	enumMap := make(map[string]*EnumTemplate)
 	for _, e := range enums {
-		// grab type
-		typ := e.Type
-
 		// set enum info
-		e.Type = snaker.SnakeToCamel(typ)
+		typeNative := e.Type
+		e.Type = inflector.Singularize(snaker.SnakeToCamel(typeNative))
 		e.EnumType = snaker.SnakeToCamel(strings.ToLower(e.Value))
 		knownTypeMap[e.EnumType] = true
 
 		// set value in enum map if not present
+		typ := strings.ToLower(e.Type)
 		if _, ok := enumMap[typ]; !ok {
 			enumMap[typ] = &EnumTemplate{
 				Type:       e.Type,
-				TypeNative: typ,
+				TypeNative: typeNative,
 				Values:     make([]*models.Enum, 0),
 			}
 		}
@@ -527,7 +526,7 @@ func loadEnums(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*EnumTe
 
 	// generate enum templates
 	for typ, em := range enumMap {
-		buf := getBuf(typeMap, strings.ToLower(snaker.SnakeToCamel(typ)))
+		buf := getBuf(typeMap, typ)
 		err = tpls["enum.go.tpl"].Execute(buf, em)
 		if err != nil {
 			return nil, err
@@ -602,7 +601,8 @@ func loadTables(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*Table
 	fieldMap := make(map[string]map[string]bool)
 	tableMap := make(map[string]*TableTemplate)
 	for _, c := range cols {
-		typ := c.TableName
+		tableType := inflector.Singularize(snaker.SnakeToCamel(c.TableName))
+		typ := strings.ToLower(tableType)
 
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
@@ -611,7 +611,7 @@ func loadTables(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*Table
 		// set value in table map if not present
 		if _, ok := tableMap[typ]; !ok {
 			tableMap[typ] = &TableTemplate{
-				Type:        inflector.Singularize(snaker.SnakeToCamel(typ)),
+				Type:        tableType,
 				TableSchema: args.Schema,
 				TableName:   c.TableName,
 				Fields:      make([]*models.Column, 0),
@@ -641,7 +641,7 @@ func loadTables(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*Table
 
 	// generate table templates
 	for typ, t := range tableMap {
-		buf := getBuf(typeMap, strings.ToLower(snaker.SnakeToCamel(typ)))
+		buf := getBuf(typeMap, typ)
 		err = tpls["model.go.tpl"].Execute(buf, t)
 		if err != nil {
 			return nil, err
@@ -658,7 +658,7 @@ func loadDefs(db *sql.DB) (map[string]*bytes.Buffer, error) {
 	typeMap := make(map[string]*bytes.Buffer)
 
 	// add base db type
-	buf := getBuf(typeMap, strings.ToLower(args.Schema+"_db"))
+	buf := getBuf(typeMap, "xo_db")
 	err = tpls["db.go.tpl"].Execute(buf, args)
 	if err != nil {
 		return nil, err
