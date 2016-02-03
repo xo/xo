@@ -572,7 +572,7 @@ func loadProcs(db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*models
 			}
 		}
 
-		procMap[strings.ToLower(args.Schema+"_sp_"+p.FuncName)] = p
+		procMap[strings.ToLower("sp_"+p.FuncName)] = p
 	}
 
 	// generate proc templates
