@@ -37,10 +37,9 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 		`CASE WHEN i.oid <> 0 THEN true ELSE false END, ` + // is index
 		`CASE WHEN p.contype = 'u' THEN true WHEN p.contype = 'p' THEN true ELSE false END, ` + // is unique
 		`CASE WHEN f.atthasdef = 't' THEN true ELSE false END, ` + // has default
-		//`substring(pg_get_expr(d.adbin, d.adrelid) FOR 128), ` + // default value
-		`'', ` +
-		//`i.relname, CASE WHEN p.contype = 'f' THEN p.conname ELSE '' END ` + // index and foreign index names
-		`'', '' ` +
+		`substring(COALESCE(pg_get_expr(d.adbin, d.adrelid), '') FOR 128), ` + // default value
+		`COALESCE(i.relname, ''), ` + // index name
+		`CASE WHEN p.contype = 'f' THEN p.conname ELSE '' END ` + // foreign index name
 		`FROM pg_class c ` +
 		`JOIN pg_attribute f ON c.oid = f.attrelid ` +
 		`JOIN pg_type t ON f.atttypid = t.oid ` +
@@ -48,9 +47,9 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 		`LEFT JOIN pg_namespace n ON n.oid = c.relnamespace ` +
 		`LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) ` +
 		`LEFT JOIN pg_class g ON p.confrelid = g.oid ` +
-		`LEFT JOIN pg_index ix ON f.attnum = ANY(ix.indkey) and c.oid = f.attrelid and c.oid = ix.indrelid ` +
+		`LEFT JOIN pg_index ix ON f.attnum = ANY(ix.indkey) AND c.oid = f.attrelid AND c.oid = ix.indrelid ` +
 		`LEFT JOIN pg_class i ON ix.indexrelid = i.oid ` +
-		`WHERE c.relkind = 'r'::char AND f.attnum > 0 AND n.nspname = $1 ` +
+		`WHERE c.relkind = 'r' AND f.attnum > 0 AND n.nspname = $1 ` +
 		`ORDER BY c.relname, f.attnum`
 
 	// run query

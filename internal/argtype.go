@@ -41,3 +41,6 @@ type ArgType struct {
 	// Filename is the output filename, as derived from Out.
 	Filename string `arg:"-"`
 }
+
+// CustomTypePackage is a hack.
+var CustomTypePackage = ""

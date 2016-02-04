@@ -135,6 +135,9 @@ func processArgs() error {
 		args.Filename = args.Package + args.Suffix
 	}
 
+	// FIXME: hack to do something quickly
+	internal.CustomTypePackage = args.CustomTypePackage
+
 	return nil
 }
 

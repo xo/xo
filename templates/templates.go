@@ -6,6 +6,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/knq/xo/internal"
 	"github.com/knq/xo/models"
 )
 
@@ -139,7 +140,7 @@ var tplFuncMap = template.FuncMap{
 		}
 
 		if _, ok := KnownTypeMap[typ]; !ok {
-			pkg := "" //args.CustomTypePackage
+			pkg := internal.CustomTypePackage
 			if pkg != "" {
 				pkg = pkg + "."
 			}
@@ -158,7 +159,7 @@ var tplFuncMap = template.FuncMap{
 		}
 
 		if strings.HasSuffix(typ, "{}") {
-			pkg := "" //args.CustomTypePackage
+			pkg := internal.CustomTypePackage
 			if pkg != "" {
 				pkg = pkg + "."
 			}
