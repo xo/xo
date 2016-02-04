@@ -32,13 +32,13 @@ func (t *{{ .Type }}) Insert(db DB) error {
 
 	// sql query
 	const sqlstr = `INSERT INTO {{ .TableSchema }}.{{ .TableName }} (` +
-		`{{ fields .Fields .PrimaryKeyField }}` +
+		`{{ colnames .Fields .PrimaryKeyField }}` +
 		`) VALUES (` +
-		`{{ values .Fields .PrimaryKeyField }}` +
+		`{{ colvals .Fields .PrimaryKeyField }}` +
 		`) RETURNING {{ .PrimaryKey }}`
 
 	// run query
-	err = db.QueryRow(sqlstr, {{ cols .Fields .PrimaryKeyField "t" }}).Scan(&t.{{ .PrimaryKeyField }})
+	err = db.QueryRow(sqlstr, {{ fieldnames .Fields .PrimaryKeyField "t" }}).Scan(&t.{{ .PrimaryKeyField }})
 	if err != nil {
 		return err
 	}
@@ -64,13 +64,13 @@ func (t *{{ .Type }}) Update(db DB) error {
 
 	// sql query
 	const sqlstr = `UPDATE {{ .TableSchema }}.{{ .TableName }} SET (` +
-		`{{ fields .Fields .PrimaryKeyField }}` +
+		`{{ colnames .Fields .PrimaryKeyField }}` +
 		`) = ( ` +
-		`{{ values .Fields .PrimaryKeyField }}` +
-		`) WHERE {{ .PrimaryKey }} = ${{ count .Fields .PrimaryKeyField }}`
+		`{{ colvals .Fields .PrimaryKeyField }}` +
+		`) WHERE {{ .PrimaryKey }} = ${{ colcount .Fields .PrimaryKeyField }}`
 
 	// run query
-	_, err = db.Exec(sqlstr, {{ cols .Fields .PrimaryKeyField "t" }}, t.{{ .PrimaryKeyField }})
+	_, err = db.Exec(sqlstr, {{ fieldnames .Fields .PrimaryKeyField "t" }}, t.{{ .PrimaryKeyField }})
 	return err
 }
 
