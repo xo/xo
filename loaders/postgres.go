@@ -178,6 +178,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 		if c.IsPrimaryKey {
 			tableMap[typ].PrimaryKey = c.ColumnName
 			tableMap[typ].PrimaryKeyField = c.Field
+			tableMap[typ].PrimaryKeyType = c.GoType
 		}
 
 		// create field map if not already made

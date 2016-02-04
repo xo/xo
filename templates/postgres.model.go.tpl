@@ -1,4 +1,4 @@
-// {{ .Type }} represents a row from {{ if .TableSchema }}{{ .TableSchema }}.{{ end }}{{ .TableName }}.
+// {{ .Type }} represents a row from {{ .TableSchema }}.{{ .TableName }}.
 type {{ .Type }} struct {
 {{- range .Fields }}
 	{{ .Field }} {{ retype .GoType }}{{ if .Tag }} `{{ .Tag }}`{{ end }} // {{ .ColumnName }}
@@ -21,8 +21,38 @@ func (t *{{ .Type }}) Deleted() bool {
 	return t._deleted
 }
 
+// Get{{ .Type }}ByPkey retrieves a single row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
+func Get{{ .Type }}ByPkey(db XODB, pk {{ .PrimaryKeyType }}) (*{{ .Type }}, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`{{ colnames .Fields "" }} ` +
+		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
+		`WHERE = $1`
+
+	// run query
+	ret := {{ .Type }}{}
+	err = db.QueryRow(sqlstr, pk).Scan({{ fieldnames .Fields "" "&ret" }})
+	if err != nil {
+		return nil, err
+	}
+
+	// set existence
+	ret._exists = true
+
+	return &ret, nil
+}
+
+// Get{{ .Type }}By{{ .PrimaryKeyField }} retrieves a single row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
+//
+// Alias for Get{{ .Type }}ByPkey.
+func Get{{ .Type }}By{{ .PrimaryKeyField }}(db XODB, pk {{ .PrimaryKeyType }}) (*{{ .Type }}, error) {
+	return Get{{ .Type }}ByPkey(db, pk)
+}
+
 // Insert inserts the {{ .Type }} to the database.
-func (t *{{ .Type }}) Insert(db DB) error {
+func (t *{{ .Type }}) Insert(db XODB) error {
 	var err error
 
 	// if already exist, bail
@@ -43,13 +73,14 @@ func (t *{{ .Type }}) Insert(db DB) error {
 		return err
 	}
 
+	// set existence
 	t._exists = true
 
 	return nil
 }
 
 // Update updates the {{ .Type }} in the database.
-func (t *{{ .Type }}) Update(db DB) error {
+func (t *{{ .Type }}) Update(db XODB) error {
 	var err error
 
 	// if doesn't exist, bail
@@ -75,7 +106,7 @@ func (t *{{ .Type }}) Update(db DB) error {
 }
 
 // Save saves the {{ .Type }} to the database.
-func (t *{{ .Type }}) Save(db DB) error {
+func (t *{{ .Type }}) Save(db XODB) error {
 	if t.Exists() {
 		return t.Update(db)
 	}
@@ -86,12 +117,12 @@ func (t *{{ .Type }}) Save(db DB) error {
 // Upsert performs an upsert for {{ .Type }}.
 //
 // NOTE: PostgreSQL 9.5+ only
-func (t *{{ .Type }}) Upsert(db DB) error {
+func (t *{{ .Type }}) Upsert(db XODB) error {
 	return nil
 }
 
 // Delete deletes the {{ .Type }} from the database.
-func (t *{{ .Type }}) Delete(db DB) error {
+func (t *{{ .Type }}) Delete(db XODB) error {
 	var err error
 
 	// if doesn't exist, bail
@@ -113,6 +144,7 @@ func (t *{{ .Type }}) Delete(db DB) error {
 		return err
 	}
 
+	// set deleted
 	t._deleted = true
 
 	return nil

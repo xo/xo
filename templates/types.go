@@ -16,5 +16,6 @@ type TableTemplate struct {
 	TableName       string
 	PrimaryKey      string
 	PrimaryKeyField string
+	PrimaryKeyType  string
 	Fields          []*models.Column
 }

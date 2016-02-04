@@ -1,5 +1,5 @@
 // {{ .FuncName }} calls the stored procedure '{{ .Schema }}.{{ .Name }}({{ .ParameterTypes }}) {{ .ReturnType }}' on db.
-func {{ .FuncName }}(db DB{{ range $i, $t := .GoParameterTypes }}, v{{ $i }} {{ retype $t }}{{ end }}) ({{ retype .GoReturnType }}, error) {
+func {{ .FuncName }}(db XODB{{ range $i, $t := .GoParameterTypes }}, v{{ $i }} {{ retype $t }}{{ end }}) ({{ retype .GoReturnType }}, error) {
 	var err error
 
 	// sql query
