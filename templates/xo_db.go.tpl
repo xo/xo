@@ -1,4 +1,4 @@
-// DB is the common interface for database operations that can be used with
+// XODB is the common interface for database operations that can be used with
 // types from {{ .Schema }}.
 //
 // This should work with database/sql.DB and database/sql.Tx.
