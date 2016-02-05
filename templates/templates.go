@@ -32,6 +32,50 @@ var KnownTypeMap = map[string]bool{
 	"float64": true,
 }
 
+// retype checks the type against the known types, adding the custom type
+// package (if any).
+func retype(typ string) string {
+	if strings.Contains(typ, ".") {
+		return typ
+	}
+
+	prefix := ""
+	for strings.HasPrefix(typ, "[]") {
+		typ = typ[2:]
+		prefix = prefix + "[]"
+	}
+
+	if _, ok := KnownTypeMap[typ]; !ok {
+		pkg := internal.CustomTypePackage
+		if pkg != "" {
+			pkg = pkg + "."
+		}
+
+		return prefix + pkg + typ
+	}
+
+	return prefix + typ
+}
+
+// reniltype checks the nil type against the known types (similar to
+// retype), adding the custom type package (if applicable).
+func reniltype(typ string) string {
+	if strings.Contains(typ, ".") {
+		return typ
+	}
+
+	if strings.HasSuffix(typ, "{}") {
+		pkg := internal.CustomTypePackage
+		if pkg != "" {
+			pkg = pkg + "."
+		}
+
+		return pkg + typ
+	}
+
+	return typ
+}
+
 // tplFuncMap is the func map provided to each template asset.
 var tplFuncMap = template.FuncMap{
 	// inc increements i by 1.
@@ -126,49 +170,26 @@ var tplFuncMap = template.FuncMap{
 		return i
 	},
 
+	// goparamlist converts a list of fields into the named go parameters.
+	"goparamlist": func(columns []*models.Column, addType bool) string {
+		str := ""
+		for _, col := range columns {
+			str = str + ", " + strings.ToLower(col.Field[:1]) + col.Field[1:]
+			if addType {
+				str = str + " " + retype(col.GoType)
+			}
+		}
+
+		return str
+	},
+
 	// retype checks the type against the known types, adding the custom type
 	// package (if any).
-	"retype": func(typ string) string {
-		if strings.Contains(typ, ".") {
-			return typ
-		}
+	"retype": retype,
 
-		prefix := ""
-		for strings.HasPrefix(typ, "[]") {
-			typ = typ[2:]
-			prefix = prefix + "[]"
-		}
-
-		if _, ok := KnownTypeMap[typ]; !ok {
-			pkg := internal.CustomTypePackage
-			if pkg != "" {
-				pkg = pkg + "."
-			}
-
-			return prefix + pkg + typ
-		}
-
-		return prefix + typ
-	},
-
-	// reniltype, similar to retype checks the nil type against the known
-	// types, adding the custom type package (if applicable).
-	"reniltype": func(typ string) string {
-		if strings.Contains(typ, ".") {
-			return typ
-		}
-
-		if strings.HasSuffix(typ, "{}") {
-			pkg := internal.CustomTypePackage
-			if pkg != "" {
-				pkg = pkg + "."
-			}
-
-			return pkg + typ
-		}
-
-		return typ
-	},
+	// reniltype checks the nil type against the known types (similar to
+	// retype), adding the custom type package (if applicable).
+	"reniltype": reniltype,
 }
 
 // init loads the template assets from the stashed binary data.

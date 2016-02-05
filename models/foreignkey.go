@@ -44,8 +44,6 @@ func ForeignKeysBySchema(db *sql.DB, schema string) ([]*ForeignKey, error) {
 			&fk.Name, &fk.TableName, &fk.ColumnName,
 			&fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName,
 		)
-
-		// check err
 		if err != nil {
 			return nil, err
 		}

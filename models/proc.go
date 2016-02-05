@@ -40,8 +40,6 @@ func ProcsBySchema(db *sql.DB, schema string) ([]*Proc, error) {
 		err = q.Scan(
 			&p.Name, &p.ParameterTypes, &p.ReturnType,
 		)
-
-		// check err
 		if err != nil {
 			return nil, err
 		}

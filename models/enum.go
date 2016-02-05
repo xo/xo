@@ -36,8 +36,6 @@ func EnumsBySchema(db *sql.DB, schema string) ([]*Enum, error) {
 		err = q.Scan(
 			&e.Type, &e.Value, &e.ConstValue,
 		)
-
-		// check err
 		if err != nil {
 			return nil, err
 		}

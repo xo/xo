@@ -19,3 +19,16 @@ type TableTemplate struct {
 	PrimaryKeyType  string
 	Fields          []*models.Column
 }
+
+// IdxTemplate is a template item for a index into a table.
+type IdxTemplate struct {
+	Type        string
+	Name        string
+	TableSchema string
+	TableName   string
+	IndexName   string
+	IsUnique    bool
+	Plural      string
+	Fields      []*models.Column
+	Table       *TableTemplate
+}

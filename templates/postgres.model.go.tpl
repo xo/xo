@@ -21,36 +21,6 @@ func (t *{{ .Type }}) Deleted() bool {
 	return t._deleted
 }
 
-// Get{{ .Type }}ByPkey retrieves a single row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
-func Get{{ .Type }}ByPkey(db XODB, pk {{ .PrimaryKeyType }}) (*{{ .Type }}, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`{{ colnames .Fields "" }} ` +
-		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
-		`WHERE = $1`
-
-	// run query
-	ret := {{ .Type }}{}
-	err = db.QueryRow(sqlstr, pk).Scan({{ fieldnames .Fields "" "&ret" }})
-	if err != nil {
-		return nil, err
-	}
-
-	// set existence
-	ret._exists = true
-
-	return &ret, nil
-}
-
-// Get{{ .Type }}By{{ .PrimaryKeyField }} retrieves a single row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
-//
-// Alias for Get{{ .Type }}ByPkey.
-func Get{{ .Type }}By{{ .PrimaryKeyField }}(db XODB, pk {{ .PrimaryKeyType }}) (*{{ .Type }}, error) {
-	return Get{{ .Type }}ByPkey(db, pk)
-}
-
 // Insert inserts the {{ .Type }} to the database.
 func (t *{{ .Type }}) Insert(db XODB) error {
 	var err error

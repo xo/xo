@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -29,6 +30,12 @@ func PgLoadTypes(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	if err != nil {
 		return err
 	}
+
+	// load idx
+	_, err = PgLoadIdx(args, db, typeMap, tableMap)
+
+	//
+	//_, err = PgLoadForeignIdx(args, db, typeMap)
 
 	// load procs
 	_, err = PgLoadProcs(args, db, typeMap)
@@ -154,7 +161,6 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	}
 
 	// process columns
-	fieldMap := make(map[string]map[string]bool)
 	tableMap := make(map[string]*templates.TableTemplate)
 	for _, c := range cols {
 		tableType := inflector.Singularize(snaker.SnakeToCamel(c.TableName))
@@ -181,19 +187,8 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 			tableMap[typ].PrimaryKeyType = c.GoType
 		}
 
-		// create field map if not already made
-		if _, ok := fieldMap[typ]; !ok {
-			fieldMap[typ] = make(map[string]bool)
-		}
-
-		// check fieldmap
-		if _, ok := fieldMap[typ][c.ColumnName]; !ok {
-			// append col to template fields
-			tableMap[typ].Fields = append(tableMap[typ].Fields, c)
-		}
-
-		// set field map
-		fieldMap[typ][c.ColumnName] = true
+		// append col to template fields
+		tableMap[typ].Fields = append(tableMap[typ].Fields, c)
 	}
 
 	// generate table templates
@@ -206,6 +201,77 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	}
 
 	return tableMap, nil
+}
+
+// PgLoadIdx loads indexes from the database.
+func PgLoadIdx(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer, tableMap map[string]*templates.TableTemplate) (map[string]*templates.IdxTemplate, error) {
+	var err error
+
+	// load idx's
+	idxMap := make(map[string]*templates.IdxTemplate)
+	for _, t := range tableMap {
+		// find relevant columns
+		fields := make([]*models.Column, 0)
+		for _, f := range t.Fields {
+			if f.IsIndex && !f.IsForeignKey {
+				if _, ok := idxMap[f.IndexName]; !ok {
+					i := &templates.IdxTemplate{
+						Type:        t.Type,
+						Name:        snaker.SnakeToCamel(f.IndexName),
+						TableSchema: t.TableSchema,
+						TableName:   f.TableName,
+						IndexName:   f.IndexName,
+						IsUnique:    f.IsUnique,
+						Fields:      fields,
+						Table:       t,
+					}
+
+					// non unique lookup
+					if !f.IsUnique {
+						idxName := i.IndexName
+
+						// chop off tablename_
+						if strings.HasPrefix(idxName, f.TableName+"_") {
+							idxName = idxName[len(f.TableName)+1:]
+						}
+
+						// chop off _idx or _index
+						switch {
+						case strings.HasSuffix(idxName, "_idx"):
+							idxName = idxName[:len(idxName)-len("_idx")]
+						case strings.HasSuffix(idxName, "_index"):
+							idxName = idxName[:len(idxName)-len("_index")]
+						}
+
+						i.Name = snaker.SnakeToCamel(idxName)
+						i.Plural = inflector.Pluralize(t.Type)
+					}
+
+					idxMap[f.IndexName] = i
+				}
+
+				idxMap[f.IndexName].Fields = append(idxMap[f.IndexName].Fields, f)
+			}
+		}
+	}
+
+	// idx keys
+	idxKeys := []string{}
+	for k := range idxMap {
+		idxKeys = append(idxKeys, k)
+	}
+	sort.Strings(idxKeys)
+
+	// generate templates
+	for _, k := range idxKeys {
+		buf := GetBuf(typeMap, strings.ToLower(idxMap[k].Type))
+		err = templates.Tpls["postgres.idx.go.tpl"].Execute(buf, idxMap[k])
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return idxMap, nil
 }
 
 // pgLenRE is a regular expression that matches precision (length) definitions in

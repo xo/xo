@@ -4,18 +4,22 @@ import "database/sql"
 
 // A Column is a single information_schema.columns row.
 type Column struct {
-	TableName        string
-	ColumnName       string
-	DataType         string
-	FieldOrdinal     uint16
-	IsNullable       bool
-	IsPrimaryKey     bool
-	IsIndex          bool
-	IsUnique         bool
-	HasDefault       bool
-	DefaultValue     string
+	TableName    string
+	ColumnName   string
+	DataType     string
+	FieldOrdinal uint16
+	IsNullable   bool
+
+	IsIndex      bool
+	IsUnique     bool
+	IsPrimaryKey bool
+	IsForeignKey bool
+
 	IndexName        string
 	ForeignIndexName string
+
+	HasDefault   bool
+	DefaultValue string
 
 	// extras
 	Field     string
@@ -31,26 +35,29 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT c.relname, f.attname, format_type(f.atttypid, f.atttypmod), ` + // table name, column name, data type
-		`f.attnum, NOT f.attnotnull, ` + // field ordinal, is nullable
-		`CASE WHEN p.contype = 'p' THEN true ELSE false END, ` + // is primary key
-		`CASE WHEN i.oid <> 0 THEN true ELSE false END, ` + // is index
-		`CASE WHEN p.contype = 'u' THEN true WHEN p.contype = 'p' THEN true ELSE false END, ` + // is unique
-		`CASE WHEN f.atthasdef = 't' THEN true ELSE false END, ` + // has default
-		`substring(COALESCE(pg_get_expr(d.adbin, d.adrelid), '') FOR 128), ` + // default value
+	const sqlstr = `SELECT c.relname, ` + // table name
+		`a.attname, ` + // column name
+		`format_type(a.atttypid, a.atttypmod), ` + // data type
+		`a.attnum, ` + // field ordinal
+		`NOT a.attnotnull, ` + // is nullable
+		`COALESCE(i.oid <> 0, false), ` + // is index
+		`COALESCE(ct.contype = 'u' OR ct.contype = 'p', false), ` + // is unique
+		`COALESCE(ct.contype = 'p', false), ` + // is primary key
+		`COALESCE(cf.contype = 'f', false), ` + // is foreign key
 		`COALESCE(i.relname, ''), ` + // index name
-		`CASE WHEN p.contype = 'f' THEN p.conname ELSE '' END ` + // foreign index name
-		`FROM pg_class c ` +
-		`JOIN pg_attribute f ON c.oid = f.attrelid ` +
-		`JOIN pg_type t ON f.atttypid = t.oid ` +
-		`LEFT JOIN pg_attrdef d ON d.adrelid = c.oid AND d.adnum = f.attnum ` +
-		`LEFT JOIN pg_namespace n ON n.oid = c.relnamespace ` +
-		`LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) ` +
-		`LEFT JOIN pg_class g ON p.confrelid = g.oid ` +
-		`LEFT JOIN pg_index ix ON f.attnum = ANY(ix.indkey) AND c.oid = f.attrelid AND c.oid = ix.indrelid ` +
-		`LEFT JOIN pg_class i ON ix.indexrelid = i.oid ` +
-		`WHERE c.relkind = 'r' AND f.attnum > 0 AND n.nspname = $1 ` +
-		`ORDER BY c.relname, f.attnum`
+		`COALESCE(cf.conname, ''), ` + // foreign index name
+		`a.atthasdef, ` + // has default
+		`COALESCE(pg_get_expr(ad.adbin, ad.adrelid), '') ` + // default value
+		`FROM pg_attribute a ` +
+		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
+		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
+		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype IN('p', 'u') ` +
+		`LEFT JOIN pg_constraint cf ON cf.conrelid = c.oid AND a.attnum = ANY(cf.conkey) AND cf.contype IN('f') ` +
+		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
+		`LEFT JOIN pg_index ix ON a.attnum = ANY(ix.indkey) AND c.oid = a.attrelid AND c.oid = ix.indrelid ` +
+		`LEFT JOIN pg_class i ON i.oid = ix.indexrelid ` +
+		`WHERE c.relkind = 'r' AND a.attnum > 0 AND n.nspname = $1 ` +
+		`ORDER BY c.relname, a.attnum `
 
 	// run query
 	q, err := db.Query(sqlstr, tableSchema)
@@ -66,13 +73,11 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 
 		// scan
 		err = q.Scan(
-			&c.TableName, &c.ColumnName, &c.DataType,
-			&c.FieldOrdinal, &c.IsNullable, &c.IsPrimaryKey,
-			&c.IsIndex, &c.IsUnique, &c.HasDefault,
-			&c.DefaultValue, &c.IndexName, &c.ForeignIndexName,
+			&c.TableName, &c.ColumnName, &c.DataType, &c.FieldOrdinal, &c.IsNullable,
+			&c.IsIndex, &c.IsUnique, &c.IsPrimaryKey, &c.IsForeignKey,
+			&c.IndexName, &c.ForeignIndexName,
+			&c.HasDefault, &c.DefaultValue,
 		)
-
-		// check err
 		if err != nil {
 			return nil, err
 		}

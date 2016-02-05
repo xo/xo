@@ -1,0 +1,64 @@
+{{ if .IsUnique }}
+// {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }} retrieves a row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
+func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }}(db XODB{{ goparamlist .Fields true }}) (*{{ .Type }}, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`{{ colnames .Table.Fields "" }} ` +
+		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
+		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
+
+	// run query
+	ret := {{ .Type }}{}
+	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Table.Fields "" "&ret" }})
+	if err != nil {
+		return nil, err
+	}
+
+	// set existence
+	ret._exists = true
+
+	return &ret, nil
+}
+{{ else }}
+// {{ .Plural }}By{{ .Name }} retrieves rows from {{ .TableSchema }}.{{ .TableName }}, each as a {{ .Type }}.
+//
+// Looks up using {{ .IndexName }}.
+func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .Type }}, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`{{ colnames .Table.Fields "" }} ` +
+		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
+		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
+
+	// run query
+	q, err := db.Query(sqlstr{{ goparamlist .Fields false }})
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*{{ .Type }}{}
+	for q.Next() {
+		t := {{ .Type }}{
+			_exists: true,
+		}
+
+		// scan
+		err = q.Scan({{ fieldnames .Table.Fields "" "&t" }})
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &t)
+	}
+
+	return res, nil
+}
+
+{{ end }}
+
