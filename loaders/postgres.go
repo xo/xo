@@ -64,7 +64,7 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	}
 
 	// process enums
-	enumMap := make(map[string]*templates.EnumTemplate)
+	enumMap := map[string]*templates.EnumTemplate{}
 	for _, e := range enums {
 		// calc go type and add to known types
 		goType := inflector.Singularize(snaker.SnakeToCamel(e.EnumType))
@@ -80,7 +80,7 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 			enumMap[typ] = &templates.EnumTemplate{
 				Type:     goType,
 				EnumType: e.EnumType,
-				Values:   make([]*models.Enum, 0),
+				Values:   []*models.Enum{},
 			}
 		}
 
@@ -112,7 +112,7 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	}
 
 	// process procs
-	procMap := make(map[string]*templates.ProcTemplate)
+	procMap := map[string]*templates.ProcTemplate{}
 	for _, p := range procs {
 		// fix the name if it starts with underscore
 		name := p.Name
@@ -172,11 +172,11 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	}
 
 	// process columns
-	fieldMap := make(map[string]map[string]bool)
-	tableMap := make(map[string]*templates.TableTemplate)
+	fieldMap := map[string]map[string]bool{}
+	tableMap := map[string]*templates.TableTemplate{}
 	for _, c := range cols {
 		if _, ok := fieldMap[c.TableName]; !ok {
-			fieldMap[c.TableName] = make(map[string]bool)
+			fieldMap[c.TableName] = map[string]bool{}
 		}
 
 		// set col info
@@ -189,7 +189,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 				Type:        inflector.Singularize(snaker.SnakeToCamel(c.TableName)),
 				TableSchema: args.Schema,
 				TableName:   c.TableName,
-				Fields:      make([]*models.Column, 0),
+				Fields:      []*models.Column{},
 			}
 		}
 
@@ -231,7 +231,7 @@ func PgLoadForeignKeys(args *internal.ArgType, db *sql.DB, typeMap map[string]*b
 	}
 
 	// process foreign keys
-	fkMap := make(map[string]*templates.FkTemplate)
+	fkMap := map[string]*templates.FkTemplate{}
 	for _, t := range tableMap {
 		for _, f := range t.Fields {
 			if f.IsForeignKey {
@@ -279,10 +279,10 @@ func PgLoadIdx(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buf
 	var err error
 
 	// load idx's
-	idxMap := make(map[string]*templates.IdxTemplate)
+	idxMap := map[string]*templates.IdxTemplate{}
 	for _, t := range tableMap {
 		// find relevant columns
-		fields := make([]*models.Column, 0)
+		fields := []*models.Column{}
 		for _, f := range t.Fields {
 			if f.IsIndex && !f.IsForeignKey {
 				if _, ok := idxMap[f.IndexName]; !ok {

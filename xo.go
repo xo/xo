@@ -56,7 +56,7 @@ func main() {
 	defer db.Close()
 
 	// create initial type map
-	typeMap := make(map[string]*bytes.Buffer)
+	typeMap := map[string]*bytes.Buffer{}
 	err = templates.Tpls["xo_db.go.tpl"].Execute(loaders.GetBuf(typeMap, "xo_db"), args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
@@ -173,9 +173,9 @@ func writeTypes(out map[string]*bytes.Buffer) error {
 	var err error
 
 	// get and sort keys
-	keys := make([]string, len(out))
 	i := 0
-	for k, _ := range out {
+	keys := make([]string, len(out))
+	for k := range out {
 		keys[i] = k
 		i++
 	}
