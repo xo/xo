@@ -4,12 +4,13 @@ import "database/sql"
 
 // Enum represents an Enum.
 type Enum struct {
-	Type       string
-	Value      string
+	EnumType   string
+	EnumValue  string
 	ConstValue uint16
 
 	// extras
-	EnumType string
+	Type  string
+	Value string
 }
 
 // EnumsBySchema returns enums from the database for the specified schema.
@@ -34,7 +35,7 @@ func EnumsBySchema(db *sql.DB, schema string) ([]*Enum, error) {
 
 		// scan
 		err = q.Scan(
-			&e.Type, &e.Value, &e.ConstValue,
+			&e.EnumType, &e.EnumValue, &e.ConstValue,
 		)
 		if err != nil {
 			return nil, err

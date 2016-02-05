@@ -7,13 +7,6 @@ type Proc struct {
 	Name           string
 	ParameterTypes string
 	ReturnType     string
-
-	// extra
-	Schema           string
-	FuncName         string
-	GoParameterTypes []string
-	GoReturnType     string
-	GoNilReturnType  string
 }
 
 // ProcsBySchema returns enums from the database for the specified schema.

@@ -4,29 +4,26 @@ import "database/sql"
 
 // A Column is a single information_schema.columns row.
 type Column struct {
-	TableName    string
-	ColumnName   string
-	DataType     string
-	FieldOrdinal uint16
-	IsNullable   bool
-
-	IsIndex      bool
-	IsUnique     bool
-	IsPrimaryKey bool
-	IsForeignKey bool
-
+	ColumnName       string
+	TableName        string
+	DataType         string
+	FieldOrdinal     uint16
+	IsNullable       bool
+	IsIndex          bool
+	IsUnique         bool
+	IsPrimaryKey     bool
+	IsForeignKey     bool
 	IndexName        string
 	ForeignIndexName string
-
-	HasDefault   bool
-	DefaultValue string
+	HasDefault       bool
+	DefaultValue     string
 
 	// extras
-	Field     string
-	GoType    string
-	GoNilType string
-	Tag       string
-	Len       int
+	Field   string
+	Type    string
+	NilType string
+	Tag     string
+	Len     int
 }
 
 // ColumnsByTableSchema retrieves all the Column entries having the specified
@@ -35,8 +32,8 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT c.relname, ` + // table name
-		`a.attname, ` + // column name
+	const sqlstr = `SELECT a.attname, ` + // column name
+		`c.relname, ` + // table name
 		`format_type(a.atttypid, a.atttypmod), ` + // data type
 		`a.attnum, ` + // field ordinal
 		`NOT a.attnotnull, ` + // is nullable
@@ -73,7 +70,7 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 
 		// scan
 		err = q.Scan(
-			&c.TableName, &c.ColumnName, &c.DataType, &c.FieldOrdinal, &c.IsNullable,
+			&c.ColumnName, &c.TableName, &c.DataType, &c.FieldOrdinal, &c.IsNullable,
 			&c.IsIndex, &c.IsUnique, &c.IsPrimaryKey, &c.IsForeignKey,
 			&c.IndexName, &c.ForeignIndexName,
 			&c.HasDefault, &c.DefaultValue,

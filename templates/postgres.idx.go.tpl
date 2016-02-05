@@ -1,5 +1,7 @@
 {{ if .IsUnique }}
 // {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }} retrieves a row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
+//
+// Looks up using index {{ .IndexName }}.
 func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }}(db XODB{{ goparamlist .Fields true }}) (*{{ .Type }}, error) {
 	var err error
 
@@ -10,21 +12,22 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
 
 	// run query
-	ret := {{ .Type }}{}
+	ret := {{ .Type }}{
+	{{- if .Table.PrimaryKeyField }}
+		_exists: true,
+	{{ end -}}
+	}
 	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Table.Fields "" "&ret" }})
 	if err != nil {
 		return nil, err
 	}
-
-	// set existence
-	ret._exists = true
 
 	return &ret, nil
 }
 {{ else }}
 // {{ .Plural }}By{{ .Name }} retrieves rows from {{ .TableSchema }}.{{ .TableName }}, each as a {{ .Type }}.
 //
-// Looks up using {{ .IndexName }}.
+// Looks up using index {{ .IndexName }}.
 func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .Type }}, error) {
 	var err error
 
@@ -45,7 +48,9 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 	res := []*{{ .Type }}{}
 	for q.Next() {
 		t := {{ .Type }}{
+		{{- if .Table.PrimaryKeyField }}
 			_exists: true,
+		{{ end -}}
 		}
 
 		// scan

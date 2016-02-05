@@ -4,9 +4,9 @@ import "github.com/knq/xo/models"
 
 // EnumTemplate is a template item for a enum.
 type EnumTemplate struct {
-	Type       string
-	TypeNative string
-	Values     []*models.Enum
+	Type     string
+	EnumType string
+	Values   []*models.Enum
 }
 
 // TableTemplate is a template item for a table.
@@ -18,6 +18,19 @@ type TableTemplate struct {
 	PrimaryKeyField string
 	PrimaryKeyType  string
 	Fields          []*models.Column
+}
+
+// ProcTemplate is a template item for a stored procedure.
+type ProcTemplate struct {
+	Name               string
+	ReturnType         string
+	NilReturnType      string
+	TableSchema        string
+	ProcName           string
+	ProcParameterNames string
+	ProcParameterTypes string
+	ProcReturnType     string
+	Parameters         []*models.Column
 }
 
 // IdxTemplate is a template item for a index into a table.

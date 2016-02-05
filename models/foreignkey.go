@@ -4,12 +4,15 @@ import "database/sql"
 
 // ForeignKey represents a ForeignKey.
 type ForeignKey struct {
-	Name          string
-	TableName     string
-	ColumnName    string
-	RefIndexName  string
-	RefTableName  string
-	RefColumnName string
+	ForeignKeyName string
+	TableName      string
+	ColumnName     string
+	RefIndexName   string
+	RefTableName   string
+	RefColumnName  string
+
+	// extras
+	Name string
 }
 
 // ForeignKeysBySchema returns the foreign keys from the database for the
@@ -41,7 +44,7 @@ func ForeignKeysBySchema(db *sql.DB, schema string) ([]*ForeignKey, error) {
 
 		// scan
 		err = q.Scan(
-			&fk.Name, &fk.TableName, &fk.ColumnName,
+			&fk.ForeignKeyName, &fk.TableName, &fk.ColumnName,
 			&fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName,
 		)
 		if err != nil {

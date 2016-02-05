@@ -173,10 +173,15 @@ var tplFuncMap = template.FuncMap{
 	// goparamlist converts a list of fields into the named go parameters.
 	"goparamlist": func(columns []*models.Column, addType bool) string {
 		str := ""
-		for _, col := range columns {
-			str = str + ", " + strings.ToLower(col.Field[:1]) + col.Field[1:]
+		for i, col := range columns {
+			s := "v" + strconv.Itoa(i)
+			if len(col.Field) > 0 {
+				s = strings.ToLower(col.Field[:1]) + col.Field[1:]
+			}
+
+			str = str + ", " + s
 			if addType {
-				str = str + " " + retype(col.GoType)
+				str = str + " " + retype(col.Type)
 			}
 		}
 

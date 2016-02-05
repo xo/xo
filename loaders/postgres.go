@@ -65,21 +65,21 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	// process enums
 	enumMap := make(map[string]*templates.EnumTemplate)
 	for _, e := range enums {
-		// set enum info
-		typeNative := e.Type
-		e.Type = inflector.Singularize(snaker.SnakeToCamel(typeNative))
-		e.EnumType = snaker.SnakeToCamel(strings.ToLower(e.Value))
+		// calc go type and add to known types
+		goType := inflector.Singularize(snaker.SnakeToCamel(e.EnumType))
+		templates.KnownTypeMap[goType] = true
 
-		// add type to known types
-		templates.KnownTypeMap[e.EnumType] = true
+		// copy values back into model
+		e.Value = snaker.SnakeToCamel(strings.ToLower(e.EnumValue))
+		e.Type = goType
 
 		// set value in enum map if not present
-		typ := strings.ToLower(e.Type)
+		typ := strings.ToLower(goType)
 		if _, ok := enumMap[typ]; !ok {
 			enumMap[typ] = &templates.EnumTemplate{
-				Type:       e.Type,
-				TypeNative: typeNative,
-				Values:     make([]*models.Enum, 0),
+				Type:     goType,
+				EnumType: e.EnumType,
+				Values:   make([]*models.Enum, 0),
 			}
 		}
 
@@ -101,7 +101,7 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 
 // PgLoadProcs reads the procs from the database, writing the values to the
 // typeMap and returning the created ProcTemplates.
-func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*models.Proc, error) {
+func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer) (map[string]*templates.ProcTemplate, error) {
 	var err error
 
 	// load procs
@@ -111,30 +111,40 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	}
 
 	// process procs
-	procMap := make(map[string]*models.Proc)
+	procMap := make(map[string]*templates.ProcTemplate)
 	for _, p := range procs {
-		p.Schema = args.Schema
-
 		// fix the name if it starts with underscore
 		name := p.Name
 		if name[0:1] == "_" {
 			name = name[1:]
 		}
 
-		// convert name and types to go values
-		p.FuncName = snaker.SnakeToCamel(name)
-		_, p.GoNilReturnType, p.GoReturnType = PgParseType(args, p.ReturnType, false)
-		p.GoParameterTypes = make([]string, 0)
+		// create template
+		procTpl := templates.ProcTemplate{
+			Name:               snaker.SnakeToCamel(name),
+			TableSchema:        args.Schema,
+			ProcName:           p.Name,
+			ProcParameterTypes: p.ParameterTypes,
+			ProcReturnType:     p.ReturnType,
+			Parameters:         []*models.Column{},
+		}
 
+		// parse return type into template
+		_, procTpl.NilReturnType, procTpl.ReturnType = PgParseType(args, p.ReturnType, false)
+
+		// split parameter types
 		if len(p.ParameterTypes) > 0 {
-			// determine the go equivalent parameter types
-			for _, typ := range strings.Split(p.ParameterTypes, ",") {
-				_, _, pt := PgParseType(args, strings.TrimSpace(typ), false)
-				p.GoParameterTypes = append(p.GoParameterTypes, pt)
+			for i, paramType := range strings.Split(p.ParameterTypes, ", ") {
+				// determine the go equivalent parameter types and add to parameters
+				_, _, pt := PgParseType(args, paramType, false)
+				procTpl.Parameters = append(procTpl.Parameters, &models.Column{
+					Field: "v" + strconv.Itoa(i),
+					Type:  pt,
+				})
 			}
 		}
 
-		procMap[strings.ToLower("sp_"+p.FuncName)] = p
+		procMap[strings.ToLower("sp_"+p.Name)] = &procTpl
 	}
 
 	// generate proc templates
@@ -168,7 +178,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
-		c.Len, c.GoNilType, c.GoType = PgParseType(args, c.DataType, c.IsNullable)
+		c.Len, c.NilType, c.Type = PgParseType(args, c.DataType, c.IsNullable)
 
 		// set value in table map if not present
 		if _, ok := tableMap[typ]; !ok {
@@ -184,7 +194,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 		if c.IsPrimaryKey {
 			tableMap[typ].PrimaryKey = c.ColumnName
 			tableMap[typ].PrimaryKeyField = c.Field
-			tableMap[typ].PrimaryKeyType = c.GoType
+			tableMap[typ].PrimaryKeyType = c.Type
 		}
 
 		// append col to template fields

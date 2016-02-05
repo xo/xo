@@ -1,7 +1,7 @@
 // {{ .Type }} represents a row from {{ .TableSchema }}.{{ .TableName }}.
 type {{ .Type }} struct {
 {{- range .Fields }}
-	{{ .Field }} {{ retype .GoType }}{{ if .Tag }} `{{ .Tag }}`{{ end }} // {{ .ColumnName }}
+	{{ .Field }} {{ retype .Type }}{{ if .Tag }} `{{ .Tag }}`{{ end }} // {{ .ColumnName }}
 {{- end }}
 {{- if .PrimaryKeyField }}
 
