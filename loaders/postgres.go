@@ -171,8 +171,13 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	}
 
 	// process columns
+	fieldMap := make(map[string]map[string]bool)
 	tableMap := make(map[string]*templates.TableTemplate)
 	for _, c := range cols {
+		if _, ok := fieldMap[c.TableName]; !ok {
+			fieldMap[c.TableName] = make(map[string]bool)
+		}
+
 		tableType := inflector.Singularize(snaker.SnakeToCamel(c.TableName))
 		typ := strings.ToLower(tableType)
 
@@ -198,7 +203,11 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 		}
 
 		// append col to template fields
-		tableMap[typ].Fields = append(tableMap[typ].Fields, c)
+		if _, ok := fieldMap[c.TableName][c.ColumnName]; !ok {
+			tableMap[typ].Fields = append(tableMap[typ].Fields, c)
+		}
+
+		fieldMap[c.TableName][c.ColumnName] = true
 	}
 
 	// generate table templates
