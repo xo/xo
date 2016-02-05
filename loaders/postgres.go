@@ -31,22 +31,23 @@ func PgLoadTypes(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 		return err
 	}
 
+	// load foreign relationships
+	_, err = PgLoadForeignKeys(args, db, typeMap, tableMap)
+	if err != nil {
+		return err
+	}
+
 	// load idx
 	_, err = PgLoadIdx(args, db, typeMap, tableMap)
-
-	//
-	//_, err = PgLoadForeignIdx(args, db, typeMap)
+	if err != nil {
+		return err
+	}
 
 	// load procs
 	_, err = PgLoadProcs(args, db, typeMap)
 	if err != nil {
 		return err
 	}
-
-	tableMap = tableMap
-
-	// loop over tables
-	//_, err = loadIndexes(db, typeMap, tableMap)
 
 	return nil
 }
@@ -88,9 +89,9 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	}
 
 	// generate enum templates
-	for typ, em := range enumMap {
-		buf := GetBuf(typeMap, typ)
-		err = templates.Tpls["postgres.enum.go.tpl"].Execute(buf, em)
+	for _, e := range enumMap {
+		buf := GetBuf(typeMap, strings.ToLower(e.Type))
+		err = templates.Tpls["postgres.enum.go.tpl"].Execute(buf, e)
 		if err != nil {
 			return nil, err
 		}
@@ -144,13 +145,13 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 			}
 		}
 
-		procMap[strings.ToLower("sp_"+p.Name)] = &procTpl
+		procMap[p.Name] = &procTpl
 	}
 
 	// generate proc templates
-	for typ, pm := range procMap {
-		buf := GetBuf(typeMap, typ)
-		err = templates.Tpls["postgres.proc.go.tpl"].Execute(buf, pm)
+	for _, p := range procMap {
+		buf := GetBuf(typeMap, strings.ToLower("sp_"+p.Name))
+		err = templates.Tpls["postgres.proc.go.tpl"].Execute(buf, p)
 		if err != nil {
 			return nil, err
 		}
@@ -178,17 +179,14 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 			fieldMap[c.TableName] = make(map[string]bool)
 		}
 
-		tableType := inflector.Singularize(snaker.SnakeToCamel(c.TableName))
-		typ := strings.ToLower(tableType)
-
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
 		c.Len, c.NilType, c.Type = PgParseType(args, c.DataType, c.IsNullable)
 
 		// set value in table map if not present
-		if _, ok := tableMap[typ]; !ok {
-			tableMap[typ] = &templates.TableTemplate{
-				Type:        tableType,
+		if _, ok := tableMap[c.TableName]; !ok {
+			tableMap[c.TableName] = &templates.TableTemplate{
+				Type:        inflector.Singularize(snaker.SnakeToCamel(c.TableName)),
 				TableSchema: args.Schema,
 				TableName:   c.TableName,
 				Fields:      make([]*models.Column, 0),
@@ -197,22 +195,22 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 
 		// set primary key
 		if c.IsPrimaryKey {
-			tableMap[typ].PrimaryKey = c.ColumnName
-			tableMap[typ].PrimaryKeyField = c.Field
-			tableMap[typ].PrimaryKeyType = c.Type
+			tableMap[c.TableName].PrimaryKey = c.ColumnName
+			tableMap[c.TableName].PrimaryKeyField = c.Field
+			tableMap[c.TableName].PrimaryKeyType = c.Type
 		}
 
 		// append col to template fields
 		if _, ok := fieldMap[c.TableName][c.ColumnName]; !ok {
-			tableMap[typ].Fields = append(tableMap[typ].Fields, c)
+			tableMap[c.TableName].Fields = append(tableMap[c.TableName].Fields, c)
 		}
 
 		fieldMap[c.TableName][c.ColumnName] = true
 	}
 
 	// generate table templates
-	for typ, t := range tableMap {
-		buf := GetBuf(typeMap, typ)
+	for _, t := range tableMap {
+		buf := GetBuf(typeMap, strings.ToLower(t.Type))
 		err = templates.Tpls["postgres.model.go.tpl"].Execute(buf, t)
 		if err != nil {
 			return nil, err
@@ -220,6 +218,60 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	}
 
 	return tableMap, nil
+}
+
+// PgLoadForeignKeys loads foreign key relationships from the database.
+func PgLoadForeignKeys(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer, tableMap map[string]*templates.TableTemplate) (map[string]*templates.FkTemplate, error) {
+	var err error
+
+	// load foreign keys
+	fkeys, err := models.ForeignKeysBySchema(db, args.Schema)
+	if err != nil {
+		return nil, err
+	}
+
+	// process foreign keys
+	fkMap := make(map[string]*templates.FkTemplate)
+	for _, t := range tableMap {
+		for _, f := range t.Fields {
+			if f.IsForeignKey {
+				var fk *models.ForeignKey
+				// find foreign key
+				for _, v := range fkeys {
+					if f.ForeignIndexName == v.ForeignKeyName {
+						fk = v
+						break
+					}
+				}
+
+				fkMap[fk.ForeignKeyName] = &templates.FkTemplate{
+					Type:       t.Type,
+					ColumnName: fk.ColumnName,
+					Field:      f.Field,
+					RefType:    tableMap[fk.RefTableName].Type,
+				}
+
+				// find field
+				for _, f := range tableMap[fk.RefTableName].Fields {
+					if f.ColumnName == fk.RefColumnName {
+						fkMap[fk.ForeignKeyName].RefField = f.Field
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// generate templates
+	for _, fk := range fkMap {
+		buf := GetBuf(typeMap, strings.ToLower(fk.Type))
+		err = templates.Tpls["postgres.fkey.go.tpl"].Execute(buf, fk)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return fkMap, nil
 }
 
 // PgLoadIdx loads indexes from the database.

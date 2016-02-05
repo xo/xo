@@ -33,6 +33,15 @@ type ProcTemplate struct {
 	Parameters         []*models.Column
 }
 
+// FkTemplate is a template item for a foreign relationship on a table.
+type FkTemplate struct {
+	Type       string
+	ColumnName string
+	Field      string
+	RefType    string
+	RefField   string
+}
+
 // IdxTemplate is a template item for a index into a table.
 type IdxTemplate struct {
 	Type        string
