@@ -1,5 +1,7 @@
 /xo
 /cmd/xo/xo
 /t
+/p
+/pg_test.sh
 notes.txt
 xo.xo.go
