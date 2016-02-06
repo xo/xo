@@ -70,8 +70,17 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 		goType := inflector.Singularize(snaker.SnakeToCamel(e.EnumType))
 		templates.KnownTypeMap[goType] = true
 
+		// calculate val, chopping off redundant type name if applicable
+		val := snaker.SnakeToCamel(strings.ToLower(e.EnumValue))
+		if strings.HasSuffix(strings.ToLower(val), strings.ToLower(goType)) {
+			v := val[:len(val)-len(goType)]
+			if len(v) > 0 {
+				val = v
+			}
+		}
+
 		// copy values back into model
-		e.Value = snaker.SnakeToCamel(strings.ToLower(e.EnumValue))
+		e.Value = val
 		e.Type = goType
 
 		// set value in enum map if not present

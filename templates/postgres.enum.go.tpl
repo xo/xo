@@ -9,31 +9,32 @@ const (
 )
 
 // String returns the string value of the {{ .Type }}.
-func (t {{ .Type }}) String() string {
-	var s string
+func ({{ shortname .Type }} {{ .Type }}) String() string {
+	var enumVal string
 
-	switch t {
+	switch {{ shortname .Type }} {
 {{- range .Values }}
 	case {{ .Value }}{{ .Type }}:
-		s = "{{ .EnumValue }}"
+		enumVal = "{{ .EnumValue }}"
 {{ end -}}
 	}
 
-	return s
+	return enumVal
 }
 
 // MarshalText marshals {{ .Type }} into text.
-func (t {{ .Type }}) MarshalText() ([]byte, error) {
-	return []byte(t.String()), nil
+func ({{ shortname .Type }} {{ .Type }}) MarshalText() ([]byte, error) {
+	return []byte({{ shortname .Type }}.String()), nil
 }
 
 // UnmarshalText unmarshals {{ .Type }} from text.
-func (t *{{ .Type }}) UnmarshalText(text []byte) error {
+func ({{ shortname .Type }} *{{ .Type }}) UnmarshalText(text []byte) error {
 	switch string(text)	{
 {{- range .Values }}
 	case "{{ .EnumValue }}":
-		*t = {{ .Value }}{{ .Type }}
-{{ end -}}
+		*{{ shortname .Type }} = {{ .Value }}{{ .Type }}
+{{ end }}
+
 	default:
 		return errors.New("invalid {{ .Type }}")
 	}

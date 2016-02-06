@@ -2,6 +2,7 @@
 /cmd/xo/xo
 /t
 /p
+/m
 /pg_test.sh
 notes.txt
 xo.xo.go

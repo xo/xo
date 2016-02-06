@@ -8,6 +8,7 @@ import (
 
 	"github.com/knq/xo/internal"
 	"github.com/knq/xo/models"
+	"github.com/serenize/snaker"
 )
 
 // Tpls is the collection of template assets.
@@ -30,6 +31,26 @@ var KnownTypeMap = map[string]bool{
 	"uint64":  true,
 	"float32": true,
 	"float64": true,
+}
+
+// ShortNameTypeMap is the collection of Go style short names for types, mainly
+// used for use with declaring a func receiver on a type.
+var ShortNameTypeMap = map[string]string{
+	"bool":    "b",
+	"string":  "s",
+	"byte":    "b",
+	"rune":    "r",
+	"int":     "i",
+	"int16":   "i",
+	"int32":   "i",
+	"int64":   "i",
+	"uint":    "u",
+	"uint8":   "u",
+	"uint16":  "u",
+	"uint32":  "u",
+	"uint64":  "u",
+	"float32": "f",
+	"float64": "f",
 }
 
 // retype checks the type against the known types, adding the custom type
@@ -74,6 +95,31 @@ func reniltype(typ string) string {
 	}
 
 	return typ
+}
+
+// shortname checks the passed type against the ShortNameTypeMap and returns
+// the value for it. If the type is not found, then the value is calculated and
+// stored in the ShortNameTypeMap for use in the future.
+func shortname(typ string) string {
+	var v string
+	var ok bool
+
+	// check short name map
+	if v, ok = ShortNameTypeMap[typ]; !ok {
+		// calc the short name
+		u := []string{}
+		for _, s := range strings.Split(strings.ToLower(snaker.CamelToSnake(typ)), "_") {
+			if len(s) > 0 && s != "id" {
+				u = append(u, s[:1])
+			}
+		}
+		v = strings.Join(u, "")
+
+		// store back in short name map
+		ShortNameTypeMap[typ] = v
+	}
+
+	return v
 }
 
 // tplFuncMap is the func map provided to each template asset.
@@ -195,6 +241,9 @@ var tplFuncMap = template.FuncMap{
 	// reniltype checks the nil type against the known types (similar to
 	// retype), adding the custom type package (if applicable).
 	"reniltype": reniltype,
+
+	// shortname gets the type's short name, useful for Go receiver func's.
+	"shortname": shortname,
 }
 
 // init loads the template assets from the stashed binary data.

@@ -12,21 +12,21 @@ type {{ .Type }} struct {
 
 {{ if .PrimaryKeyField }}
 // Exists determines if the {{ .Type }} exists in the database.
-func (t *{{ .Type }}) Exists() bool {
-	return t._exists
+func ({{ shortname .Type }} *{{ .Type }}) Exists() bool {
+	return {{ shortname .Type }}._exists
 }
 
 // Deleted provides information if the {{ .Type }} has been deleted from the database.
-func (t *{{ .Type }}) Deleted() bool {
-	return t._deleted
+func ({{ shortname .Type }} *{{ .Type }}) Deleted() bool {
+	return {{ shortname .Type }}._deleted
 }
 
 // Insert inserts the {{ .Type }} to the database.
-func (t *{{ .Type }}) Insert(db XODB) error {
+func ({{ shortname .Type }} *{{ .Type }}) Insert(db XODB) error {
 	var err error
 
 	// if already exist, bail
-	if t._exists {
+	if {{ shortname .Type }}._exists {
 		return errors.New("insert failed: already exists")
 	}
 
@@ -38,28 +38,28 @@ func (t *{{ .Type }}) Insert(db XODB) error {
 		`) RETURNING {{ .PrimaryKey }}`
 
 	// run query
-	err = db.QueryRow(sqlstr, {{ fieldnames .Fields .PrimaryKeyField "t" }}).Scan(&t.{{ .PrimaryKeyField }})
+	err = db.QueryRow(sqlstr, {{ fieldnames .Fields .PrimaryKeyField (shortname .Type ) }}).Scan(&{{ shortname .Type }}.{{ .PrimaryKeyField }})
 	if err != nil {
 		return err
 	}
 
 	// set existence
-	t._exists = true
+	{{ shortname .Type }}._exists = true
 
 	return nil
 }
 
 // Update updates the {{ .Type }} in the database.
-func (t *{{ .Type }}) Update(db XODB) error {
+func ({{ shortname .Type }} *{{ .Type }}) Update(db XODB) error {
 	var err error
 
 	// if doesn't exist, bail
-	if !t._exists {
+	if !{{ shortname .Type }}._exists {
 		return errors.New("update failed: does not exist")
 	}
 
 	// if deleted, bail
-	if t._deleted {
+	if {{ shortname .Type }}._deleted {
 		return errors.New("update failed: marked for deletion")
 	}
 
@@ -71,37 +71,37 @@ func (t *{{ .Type }}) Update(db XODB) error {
 		`) WHERE {{ .PrimaryKey }} = ${{ colcount .Fields .PrimaryKeyField }}`
 
 	// run query
-	_, err = db.Exec(sqlstr, {{ fieldnames .Fields .PrimaryKeyField "t" }}, t.{{ .PrimaryKeyField }})
+	_, err = db.Exec(sqlstr, {{ fieldnames .Fields .PrimaryKeyField (shortname .Type) }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	return err
 }
 
 // Save saves the {{ .Type }} to the database.
-func (t *{{ .Type }}) Save(db XODB) error {
-	if t.Exists() {
-		return t.Update(db)
+func ({{ shortname .Type }} *{{ .Type }}) Save(db XODB) error {
+	if {{ shortname .Type }}.Exists() {
+		return {{ shortname .Type }}.Update(db)
 	}
 
-	return t.Insert(db)
+	return {{ shortname .Type }}.Insert(db)
 }
 
 // Upsert performs an upsert for {{ .Type }}.
 //
 // NOTE: PostgreSQL 9.5+ only
-func (t *{{ .Type }}) Upsert(db XODB) error {
+func ({{ shortname .Type }} *{{ .Type }}) Upsert(db XODB) error {
 	return nil
 }
 
 // Delete deletes the {{ .Type }} from the database.
-func (t *{{ .Type }}) Delete(db XODB) error {
+func ({{ shortname .Type }} *{{ .Type }}) Delete(db XODB) error {
 	var err error
 
 	// if doesn't exist, bail
-	if !t._exists {
+	if !{{ shortname .Type }}._exists {
 		return nil
 	}
 
 	// if deleted, bail
-	if t._deleted {
+	if {{ shortname .Type }}._deleted {
 		return nil
 	}
 
@@ -109,15 +109,15 @@ func (t *{{ .Type }}) Delete(db XODB) error {
 	const sqlstr = `DELETE FROM {{ .TableSchema }}.{{ .TableName }} WHERE {{ .PrimaryKey }} = $1`
 
 	// run query
-	_, err = db.Exec(sqlstr, t.{{ .PrimaryKeyField }})
+	_, err = db.Exec(sqlstr, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	if err != nil {
 		return err
 	}
 
 	// set deleted
-	t._deleted = true
+	{{ shortname .Type }}._deleted = true
 
 	return nil
 }
-{{ end -}}
+{{- end }}
 
