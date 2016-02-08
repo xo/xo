@@ -68,6 +68,53 @@ database metadata to query the types and relationships within the database, and
 then generates representative Go types and funcs for well-defined database
 relationships.
 
+## Command Line Options ##
+
+The following are xo's arguments and options:
+
+```sh
+$ xo -h
+usage: xo [--schema SCHEMA] [--out OUT] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--enable-query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--comment COMMENT] [--func-comment FUNC-COMMENT] [--only-one] [--query-trim] [--query-strip] [--query-delimiter QUERY-DELIMITER] DSN
+
+positional arguments:
+  dsn                    data source name
+
+options:
+  --schema SCHEMA, -s SCHEMA
+                         schema name to generate Go types for [default: public]
+  --out OUT, -o OUT      output path or file name
+  --suffix SUFFIX, -f SUFFIX
+                         output file suffix [default: .xo.go]
+  --single-file          toggle single file output
+  --package PACKAGE, -p PACKAGE
+                         package name used in generated Go code
+  --custom-type-package CUSTOM-TYPE-PACKAGE, -C CUSTOM-TYPE-PACKAGE
+                         Go package name to use for custom or unknown types
+  --int32-type INT32-TYPE, -i INT32-TYPE
+                         Go type to assign to integers [default: int]
+  --uint32-type UINT32-TYPE, -u UINT32-TYPE
+                         Go type to assign to unsigned integers [default: uint]
+  --enable-query-mode, -N
+                         enable query mode
+  --query QUERY, -Q QUERY
+                         query to generate Go type and func from
+  --query-type QUERY-TYPE, -T QUERY-TYPE
+                         query's generated Go type
+  --query-func QUERY-FUNC, -F QUERY-FUNC
+                         comment for query's generated Go func
+  --comment COMMENT      comment for query's generated Go type
+  --func-comment FUNC-COMMENT
+                         comment for query's generated Go func
+  --only-one, -1         toggle query's generated Go func to return only one result
+  --query-trim, -M       toggle trimming of query whitespace in generated Go code
+  --query-strip, -B      toggle stripping '::type AS name' from query in generated Go code
+  --query-delimiter QUERY-DELIMITER, -D QUERY-DELIMITER
+                         delimiter for query's embedded Go parameters [default: %%]
+  --help, -h             display this help and exit
+```
+
+## Example ##
+
 For example, given the following schema:
 ```PLpgSQL
 CREATE TABLE authors (
