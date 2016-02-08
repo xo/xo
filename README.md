@@ -38,7 +38,7 @@ xo pgsql://user:pass@host/dbname -o models
 # generate code for a custom query
 cat << ENDSQL | xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/
 SELECT
-  a.name::varchar AS name
+  a.name::varchar AS name,
   b.type::integer AS my_type
 FROM authors a
   INNER JOIN authortypes b ON a.id = b.author_id
