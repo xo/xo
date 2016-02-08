@@ -17,42 +17,40 @@ packages for standard database abstractions/relationships.
 Currently, xo only supports PostgreSQL, however there are plans to add
 support for other database types, notably MySQL, Oracle, and SQLite.
 
-## Design, Origin, and History ##
+xo can generate types for tables and custom SQL queries. Additionally, xo will
+generate idiomatic Go const's for enum's, as well as func's for stored
+procedures.
 
-xo was originally developed while migrating a "large" application written in
-PHP to Go. The schema in use in the original app, while well designed, had
-become inconsistent over multiple iterations/generations, mainly due to
-different naming styles adopted by various developers and database admins over
-the preceding years.
+# Quickstart #
 
-This made for a relatively large headache in terms of unraveling old PHP code
-as the code and API had drifted from the underlying names / fields as the
-application code had also evolved through multiple rounds of different
-development leads. Additionally, the code made use of multiple ORM-likes (most
-notably Doctrine) and a custom, in-house semi-ORM-like code generator,
-conceptually similar to this project.
+The following is a quick working example of how to use xo:
 
-As such, after a round of standardizing names, dropping accumulated cruft, and
-adding a small number of relationship changes to the schema, the PHP code was
-first fixed to match the schema changes. After that was determined to be a
-success, the next target was a rewrite the backend services in Go.
+```sh
+# install xo
+go get -u github.com/knq/xo
 
-In order to keep a similar and consistent work-flow for the developers, a code
-generator similar to what was previously used with PHP was written for Go.
-Additionally, at this time, but tangential to the story here, the API
-definitions were ported from JSON to Protobuf to make use of the code
-generation there.
+# make an output directory
+mkdir models
 
-xo is some of the fruits of those development efforts, and it is hoped that
-others will be able to use and expand xo to support other databases (SQL or
-otherwise).
+# generate code for schema
+xo pgsql://user:pass@host/dbname -o models
 
-Part of xo's goal is to avoid writing an ORM, or an ORM-like in Go, and to use
-type-safe, fast, and idiomatic Go code. Additionally, the xo developers are of
-the opinion that relational databases should have proper, well-designed
-relationships and all the related definitions should reside within the database
-schema itself. Call it a "self-documenting" schema. xo is an end to that
-pursuit.
+# generate code for a custom query
+cat << ENDSQL | xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/
+SELECT
+  a.name::varchar AS name
+  b.type::integer AS my_type
+FROM authors a
+  INNER JOIN authortypes b ON a.id = b.author_id
+WHERE
+  a.id = %%authorID int%%
+LIMIT %%limit int%%
+ENDSQL
+;
+
+# build generated code
+go build ./models
+```
 
 # Installation #
 
@@ -113,7 +111,7 @@ options:
   --help, -h             display this help and exit
 ```
 
-## Example ##
+# Example #
 
 For example, given the following schema:
 ```PLpgSQL
@@ -236,4 +234,39 @@ type XODB interface {
 }
 ```
 
+# Design, Origin, and History #
 
+xo was originally developed while migrating a "large" application written in
+PHP to Go. The schema in use in the original app, while well designed, had
+become inconsistent over multiple iterations/generations, mainly due to
+different naming styles adopted by various developers and database admins over
+the preceding years.
+
+This made for a relatively large headache in terms of unraveling old PHP code
+as the code and API had drifted from the underlying names / fields as the
+application code had also evolved through multiple rounds of different
+development leads. Additionally, the code made use of multiple ORM-likes (most
+notably Doctrine) and a custom, in-house semi-ORM-like code generator,
+conceptually similar to this project.
+
+As such, after a round of standardizing names, dropping accumulated cruft, and
+adding a small number of relationship changes to the schema, the PHP code was
+first fixed to match the schema changes. After that was determined to be a
+success, the next target was a rewrite the backend services in Go.
+
+In order to keep a similar and consistent work-flow for the developers, a code
+generator similar to what was previously used with PHP was written for Go.
+Additionally, at this time, but tangential to the story here, the API
+definitions were ported from JSON to Protobuf to make use of the code
+generation there.
+
+xo is some of the fruits of those development efforts, and it is hoped that
+others will be able to use and expand xo to support other databases (SQL or
+otherwise).
+
+Part of xo's goal is to avoid writing an ORM, or an ORM-like in Go, and to use
+type-safe, fast, and idiomatic Go code. Additionally, the xo developers are of
+the opinion that relational databases should have proper, well-designed
+relationships and all the related definitions should reside within the database
+schema itself. Call it a "self-documenting" schema. xo is an end to that
+pursuit.
