@@ -90,7 +90,7 @@ CREATE INDEX books_title_idx ON books(title, year);
 ```
 
 xo will generate the following (note: this is an abbreviated copy of actual
-output. Please see the [example](example) folder for more a full example):
+output. Please see the [example](example) directory for the complete example):
 ```go
 // Author represents a row from public.authors.
 type Author struct {
@@ -188,3 +188,5 @@ type XODB interface {
     QueryRow(string, ...interface{}) *sql.Row
 }
 ```
+
+
