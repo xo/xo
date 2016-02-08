@@ -267,5 +267,10 @@ Part of xo's goal is to avoid writing an ORM, or an ORM-like in Go, and to use
 type-safe, fast, and idiomatic Go code. Additionally, the xo developers are of
 the opinion that relational databases should have proper, well-designed
 relationships and all the related definitions should reside within the database
-schema itself. Call it a "self-documenting" schema. xo is an end to that
+schema itself -- call it "self-documenting" schema. xo is an end to that
 pursuit.
+
+# Similar Projects #
+The following projects work with similar concepts as xo:
+* [ModelQ](https://github.com/mijia/modelq)
+* [sqlgen](https://github.com/drone/sqlgen)
