@@ -1,15 +1,23 @@
 #!/bin/bash
 
+DEST=$1
+
+if [ -z "$DEST" ]; then
+  DEST=x
+fi
+
 set -ex
 
-rm -rf x
-mkdir -p x
+if [ ! "$DEST" = "models" ]; then
+  go generate
+  go build
+fi
 
-go generate
-go build
+rm -rf $DEST
+mkdir -p $DEST
 
 # enum query
-cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Enum --comment='Enum represents a PostgreSQL enum value.' -o x
+cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Enum --comment='Enum represents a PostgreSQL enum value.' -o $DEST
 SELECT
   t.typname::varchar AS enum_type,
   e.enumlabel::varchar AS enum_value,
@@ -24,7 +32,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # column query
-cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Column --comment='Column represents PostgreSQL class (ie, table, view, etc) attributes.' -o x
+cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Column --comment='Column represents PostgreSQL class (ie, table, view, etc) attributes.' -o $DEST
 SELECT
   a.attname::varchar AS column_name,
   c.relname::varchar AS table_name,
@@ -58,7 +66,7 @@ ORDER BY c.relname, a.attnum
 ENDSQL
 
 # proc query
-cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Proc --comment='Proc represents a PostgreSQL stored procedure.' -o x
+cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T Proc --comment='Proc represents a PostgreSQL stored procedure.' -o $DEST
 SELECT
   p.proname::varchar AS proc_name,
   oidvectortypes(p.proargtypes)::varchar AS parameter_types,
@@ -70,7 +78,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # foreign key query
-cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T ForeignKey --comment='ForeignKey represents a PostgreSQL foreign key.' -o x
+cat << ENDSQL | ./xo pgsql://xodb:xodb@localhost/xodb -N -M -B -T ForeignKey --comment='ForeignKey represents a PostgreSQL foreign key.' -o $DEST
 SELECT
   r.conname::varchar AS foreign_key_name,
   a.relname::varchar AS table_name,

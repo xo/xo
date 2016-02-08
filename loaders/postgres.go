@@ -363,7 +363,7 @@ var pgLenRE = regexp.MustCompile(`\([0-9]+\)$`)
 
 // PgParseType parse a postgres type into a Go type based on the column
 // definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func PgParseType(args *internal.ArgType, dt string, nullable bool) (int32, string, string) {
 	precision := 0
 	nilType := "nil"
 	asSlice := false
@@ -509,7 +509,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		nilType = "nil"
 	}
 
-	return precision, nilType, typ
+	return int32(precision), nilType, typ
 }
 
 // parseQuery takes the query in args and looks for strings in the form of
