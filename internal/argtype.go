@@ -42,7 +42,7 @@ type ArgType struct {
 	//ExcTypes []string `arg:"--exclude,-x,help:exclude types"`
 
 	// QueryMode toggles whether or not to parse a query from stdin.
-	QueryMode bool `arg:"--enable-query-mode,-N,help:enable query mode"`
+	QueryMode bool `arg:"--query-mode,-N,help:enable query mode"`
 
 	// Query is the passed query. If not specified, then os.Stdin will be used.
 	// cli args take precedence over stdin.
@@ -52,22 +52,22 @@ type ArgType struct {
 	QueryType string `arg:"--query-type,-T,help:query's generated Go type"`
 
 	// QueryFunc is the name to assign to the generated query func.
-	QueryFunc string `arg:"--query-func,-F,help:comment for query's generated Go func"`
-
-	// TypeComment is the type comment for a query.
-	QueryTypeComment string `arg:"--comment,help:comment for query's generated Go type"`
-
-	// FuncComment is the func comment to provide the named query.
-	QueryFuncComment string `arg:"--func-comment,help:comment for query's generated Go func"`
+	QueryFunc string `arg:"--query-func,-F,help:query's generated Go func name"`
 
 	// QueryOnlyOne toggles the generated query code to expect only one result.
-	QueryOnlyOne bool `arg:"--only-one,-1,help:toggle query's generated Go func to return only one result"`
+	QueryOnlyOne bool `arg:"--query-only-one,-1,help:toggle query's generated Go func to return only one result"`
 
 	// QueryTrim enables triming whitespace on the supplied query.
 	QueryTrim bool `arg:"--query-trim,-M,help:toggle trimming of query whitespace in generated Go code"`
 
 	// QueryStrip enables stripping the '::<type> AS <name>' from queries.
 	QueryStrip bool `arg:"--query-strip,-B,help:toggle stripping '::type AS name' from query in generated Go code"`
+
+	// TypeComment is the type comment for a query.
+	QueryTypeComment string `arg:"--query-type-comment,help:comment for query's generated Go type"`
+
+	// FuncComment is the func comment to provide the named query.
+	QueryFuncComment string `arg:"--query-func-comment,help:comment for query's generated Go func"`
 
 	// QueryParamDelimiter is the delimiter for parameterized values for a query.
 	QueryParamDelimiter string `arg:"--query-delimiter,-D,help:delimiter for query's embedded Go parameters"`
