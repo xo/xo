@@ -274,3 +274,4 @@ pursuit.
 The following projects work with similar concepts as xo:
 * [ModelQ](https://github.com/mijia/modelq)
 * [sqlgen](https://github.com/drone/sqlgen)
+* [squirrel](https://github.com/Masterminds/squirrel)
