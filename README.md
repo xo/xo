@@ -74,7 +74,7 @@ The following are xo's arguments and options:
 
 ```sh
 $ xo -h
-usage: xo [--schema SCHEMA] [--out OUT] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--enable-query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--comment COMMENT] [--func-comment FUNC-COMMENT] [--only-one] [--query-trim] [--query-strip] [--query-delimiter QUERY-DELIMITER] DSN
+usage: xo [--schema SCHEMA] [--out OUT] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] DSN
 
 positional arguments:
   dsn                    data source name
@@ -94,20 +94,20 @@ options:
                          Go type to assign to integers [default: int]
   --uint32-type UINT32-TYPE, -u UINT32-TYPE
                          Go type to assign to unsigned integers [default: uint]
-  --enable-query-mode, -N
-                         enable query mode
+  --query-mode, -N       enable query mode
   --query QUERY, -Q QUERY
                          query to generate Go type and func from
   --query-type QUERY-TYPE, -T QUERY-TYPE
                          query's generated Go type
   --query-func QUERY-FUNC, -F QUERY-FUNC
-                         comment for query's generated Go func
-  --comment COMMENT      comment for query's generated Go type
-  --func-comment FUNC-COMMENT
-                         comment for query's generated Go func
-  --only-one, -1         toggle query's generated Go func to return only one result
+                         query's generated Go func name
+  --query-only-one, -1   toggle query's generated Go func to return only one result
   --query-trim, -M       toggle trimming of query whitespace in generated Go code
   --query-strip, -B      toggle stripping '::type AS name' from query in generated Go code
+  --query-type-comment QUERY-TYPE-COMMENT
+                         comment for query's generated Go type
+  --query-func-comment QUERY-FUNC-COMMENT
+                         comment for query's generated Go func
   --query-delimiter QUERY-DELIMITER, -D QUERY-DELIMITER
                          delimiter for query's embedded Go parameters [default: %%]
   --help, -h             display this help and exit
