@@ -8,7 +8,7 @@ fi
 
 set -ex
 
-if [ ! "$DEST" = "models" ]; then
+if [[ "$DEST" != "models" ]]; then
   go generate
   go build
 fi
