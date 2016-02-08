@@ -272,6 +272,11 @@ pursuit.
 
 # Similar Projects #
 The following projects work with similar concepts as xo:
+
+## Generators ##
 * [ModelQ](https://github.com/mijia/modelq)
 * [sqlgen](https://github.com/drone/sqlgen)
 * [squirrel](https://github.com/Masterminds/squirrel)
+
+## ORM-likes ##
+* [sqlc](https://github.com/relops/sqlc)
