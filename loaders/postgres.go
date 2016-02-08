@@ -178,7 +178,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	var err error
 
 	// load columns
-	cols, err := models.ColumnsByRelkindSchema(db, "t", args.Schema)
+	cols, err := models.ColumnsByRelkindSchema(db, "r", args.Schema)
 	if err != nil {
 		return nil, err
 	}
