@@ -6,6 +6,7 @@ import "github.com/knq/xo/models"
 type EnumTemplate struct {
 	Type     string
 	EnumType string
+	Comment  string
 	Values   []*models.Enum
 }
 
@@ -17,6 +18,7 @@ type TableTemplate struct {
 	PrimaryKey      string
 	PrimaryKeyField string
 	PrimaryKeyType  string
+	Comment         string
 	Fields          []*models.Column
 }
 
@@ -30,6 +32,7 @@ type ProcTemplate struct {
 	ProcParameterNames string
 	ProcParameterTypes string
 	ProcReturnType     string
+	Comment            string
 	Parameters         []*models.Column
 }
 
@@ -51,6 +54,19 @@ type IdxTemplate struct {
 	IndexName   string
 	IsUnique    bool
 	Plural      string
+	Comment     string
 	Fields      []*models.Column
 	Table       *TableTemplate
+}
+
+// FuncTemplate is a template item for a custom query.
+type FuncTemplate struct {
+	Name          string
+	Type          string
+	Query         []string
+	QueryComments []string
+	Parameters    [][]string
+	OnlyOne       bool
+	Comment       string
+	Table         *TableTemplate
 }

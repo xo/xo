@@ -47,23 +47,22 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 	// load results
 	res := []*{{ .Type }}{}
 	for q.Next() {
-		t := {{ .Type }}{
+		{{ shortname .Type }} := {{ .Type }}{
 		{{- if .Table.PrimaryKeyField }}
 			_exists: true,
 		{{ end -}}
 		}
 
 		// scan
-		err = q.Scan({{ fieldnames .Table.Fields "" "&t" }})
+		err = q.Scan({{ fieldnames .Table.Fields "" (print "&" (shortname .Type)) }})
 		if err != nil {
 			return nil, err
 		}
 
-		res = append(res, &t)
+		res = append(res, &{{ shortname .Type }})
 	}
 
 	return res, nil
 }
-
 {{ end }}
 

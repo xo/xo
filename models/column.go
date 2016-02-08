@@ -24,11 +24,12 @@ type Column struct {
 	NilType string
 	Tag     string
 	Len     int
+	Comment string
 }
 
-// ColumnsByTableSchema retrieves all the Column entries having the specified
+// ColumnsByRelkindSchema retrieves all the Column entries having the specified
 // tableSchema.
-func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
+func ColumnsByRelkindSchema(db *sql.DB, relkind string, schema string) ([]*Column, error) {
 	var err error
 
 	// sql query
@@ -53,11 +54,11 @@ func ColumnsByTableSchema(db *sql.DB, tableSchema string) ([]*Column, error) {
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
 		`LEFT JOIN pg_index ix ON a.attnum = ANY(ix.indkey) AND c.oid = a.attrelid AND c.oid = ix.indrelid ` +
 		`LEFT JOIN pg_class i ON i.oid = ix.indexrelid ` +
-		`WHERE c.relkind = 'r' AND a.attnum > 0 AND n.nspname = $1 ` +
+		`WHERE c.relkind = $1 AND a.attnum > 0 AND n.nspname = $2 ` +
 		`ORDER BY c.relname, a.attnum `
 
 	// run query
-	q, err := db.Query(sqlstr, tableSchema)
+	q, err := db.Query(sqlstr, relkind, schema)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,8 @@
+{{- if .Comment -}}
+// {{ .Comment }}
+{{- else -}}
 // {{ .Type }} represents a row from {{ .TableSchema }}.{{ .TableName }}.
+{{- end }}
 type {{ .Type }} struct {
 {{- range .Fields }}
 	{{ .Field }} {{ retype .Type }}{{ if .Tag }} `{{ .Tag }}`{{ end }} // {{ .ColumnName }}

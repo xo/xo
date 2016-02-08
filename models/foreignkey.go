@@ -10,6 +10,7 @@ type ForeignKey struct {
 	RefIndexName   string
 	RefTableName   string
 	RefColumnName  string
+	Comment        string
 }
 
 // ForeignKeysBySchema returns the foreign keys from the database for the

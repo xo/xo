@@ -7,11 +7,13 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
 	"path"
 	"sort"
+	"strings"
 
 	// database drivers
 	"github.com/alexflint/go-arg"
@@ -24,14 +26,17 @@ import (
 
 // args is the default command line arguments.
 var args = internal.ArgType{
-	Schema: "public",
-	Suffix: ".xo.go",
-	Magic:  true,
+	Schema:              "public",
+	Suffix:              ".xo.go",
+	QueryParamDelimiter: "%%",
 }
 
 // schemaLoaders are the various schema loaders.
-var schemaLoaders = map[string]loaders.Loader{
-	"postgres": loaders.PgLoadTypes,
+var schemaLoaders = map[string]loaders.Driver{
+	"postgres": loaders.Loader{
+		QueryFunc:      loaders.PgParseQuery,
+		LoadSchemaFunc: loaders.PgLoadSchemaTypes,
+	},
 }
 
 func main() {
@@ -64,7 +69,12 @@ func main() {
 	}
 
 	// load defs into type map
-	err = schemaLoaders[scheme](&args, db, typeMap)
+	if args.QueryMode {
+		err = schemaLoaders[scheme].ParseQuery(&args, db, typeMap)
+	} else {
+		err = schemaLoaders[scheme].LoadSchemaTypes(&args, db, typeMap)
+	}
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -102,8 +112,8 @@ func processArgs() error {
 			args.Path = path.Dir(args.Out)
 			args.Filename = path.Base(args.Out)
 
-			// error if split was set, but destination is not a directory
-			if args.Split {
+			// error if not split was set, but destination is not a directory
+			if !args.SingleFile {
 				return errors.New("supplied path is not directory")
 			}
 		} else if _, ok := err.(*os.PathError); ok {
@@ -112,7 +122,7 @@ func processArgs() error {
 			args.Filename = path.Base(args.Out)
 
 			// error if split was set, but dest doesn't exist
-			if args.Split {
+			if !args.SingleFile {
 				return errors.New("must supply a directory that exists when using split")
 			}
 		} else {
@@ -137,6 +147,29 @@ func processArgs() error {
 
 	// FIXME: hack to do something quickly
 	internal.CustomTypePackage = args.CustomTypePackage
+
+	// if query mode toggled, but no query, read Stdin.
+	if args.QueryMode && args.Query == "" {
+		buf, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return err
+		}
+		args.Query = string(buf)
+
+		if args.QueryTrim {
+			args.Query = strings.TrimSpace(args.Query)
+		}
+	}
+
+	// query mode parsing
+	if args.Query != "" {
+		args.QueryMode = true
+	}
+
+	// check that query type was specified
+	if args.QueryMode && args.QueryType == "" {
+		return errors.New("query type must be supplied when in query parsing mode")
+	}
 
 	return nil
 }
@@ -185,11 +218,11 @@ func writeTypes(out map[string]*bytes.Buffer) error {
 	var f *os.File
 	goimportsParams := []string{"-w"}
 	for _, k := range keys {
-		// open file for writing
-		if args.Split || f == nil {
+		// open file for writing and add header
+		if !args.SingleFile || f == nil {
 			// determine filename
 			var filename = k + args.Suffix
-			if !args.Split {
+			if args.SingleFile {
 				filename = args.Filename
 			}
 			filename = path.Join(args.Path, filename)
@@ -217,7 +250,7 @@ func writeTypes(out map[string]*bytes.Buffer) error {
 		}
 
 		// close file
-		if args.Split {
+		if !args.SingleFile {
 			err = f.Close()
 			if err != nil {
 				return err
@@ -226,7 +259,7 @@ func writeTypes(out map[string]*bytes.Buffer) error {
 	}
 
 	// close the last file
-	if !args.Split {
+	if args.SingleFile {
 		f.Close()
 	}
 

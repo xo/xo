@@ -4,7 +4,7 @@ import "database/sql"
 
 // Proc represents an Proc.
 type Proc struct {
-	Name           string
+	ProcName       string
 	ParameterTypes string
 	ReturnType     string
 }
@@ -31,7 +31,7 @@ func ProcsBySchema(db *sql.DB, schema string) ([]*Proc, error) {
 
 		// scan
 		err = q.Scan(
-			&p.Name, &p.ParameterTypes, &p.ReturnType,
+			&p.ProcName, &p.ParameterTypes, &p.ReturnType,
 		)
 		if err != nil {
 			return nil, err

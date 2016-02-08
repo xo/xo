@@ -3,10 +3,13 @@ package loaders
 import (
 	"bytes"
 	"database/sql"
+	"fmt"
+	"math/rand"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gedex/inflector"
 	"github.com/knq/xo/internal"
@@ -15,8 +18,8 @@ import (
 	"github.com/serenize/snaker"
 )
 
-// PgLoadTypes loads the postgres type definitions from a database.
-func PgLoadTypes(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer) error {
+// PgLoadSchemaTypes loads the postgres type definitions from a database.
+func PgLoadSchemaTypes(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer) error {
 	var err error
 
 	// load enums
@@ -124,7 +127,7 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 	procMap := map[string]*templates.ProcTemplate{}
 	for _, p := range procs {
 		// fix the name if it starts with underscore
-		name := p.Name
+		name := p.ProcName
 		if name[0:1] == "_" {
 			name = name[1:]
 		}
@@ -133,7 +136,7 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 		procTpl := templates.ProcTemplate{
 			Name:               snaker.SnakeToCamel(name),
 			TableSchema:        args.Schema,
-			ProcName:           p.Name,
+			ProcName:           p.ProcName,
 			ProcParameterTypes: p.ParameterTypes,
 			ProcReturnType:     p.ReturnType,
 			Parameters:         []*models.Column{},
@@ -154,7 +157,7 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.B
 			}
 		}
 
-		procMap[p.Name] = &procTpl
+		procMap[p.ProcName] = &procTpl
 	}
 
 	// generate proc templates
@@ -175,7 +178,7 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.
 	var err error
 
 	// load columns
-	cols, err := models.ColumnsByTableSchema(db, args.Schema)
+	cols, err := models.ColumnsByRelkindSchema(db, "t", args.Schema)
 	if err != nil {
 		return nil, err
 	}
@@ -507,4 +510,211 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	}
 
 	return precision, nilType, typ
+}
+
+// parseQuery takes the query in args and looks for strings in the form of
+// "%%<name> <type>%%", replacing them with the supplied mask. mask can contain
+// "%d" to indicate current position. The modified query is returned, and the
+// extracted text.
+func parseQuery(args *internal.ArgType, query string, mask string) (string, [][]string) {
+	// create the regexp for the delimiter
+	placeholderRE := regexp.MustCompile(
+		args.QueryParamDelimiter + `[^` + args.QueryParamDelimiter[:1] + `]+` + args.QueryParamDelimiter,
+	)
+
+	// grab matches from query string
+	matches := placeholderRE.FindAllStringIndex(query, -1)
+
+	// no matches, so return query unmodified
+	/*if matches == nil || len(matches) == 0 {
+		return query, [][]string{}
+	}*/
+
+	// return vals and placeholders
+	str := ""
+	params := [][]string{}
+	i := 1
+	last := 0
+
+	// loop over matches, extracting each placeholder and splitting to name/type
+	for _, m := range matches {
+		// generate place holder value
+		pstr := mask
+		if strings.Contains(mask, "%d") {
+			pstr = fmt.Sprintf(mask, i)
+		}
+
+		// build string
+		str = str + args.Query[last:m[0]] + pstr
+		params = append(params, strings.SplitN(
+			query[m[0]+len(args.QueryParamDelimiter):m[1]-len(args.QueryParamDelimiter)],
+			" ",
+			2,
+		))
+		last = m[1]
+		i++
+	}
+
+	// add part of query remains
+	str = str + args.Query[last:]
+
+	return str, params
+}
+
+// letters for genRandomID
+var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
+
+// genRandomID generates a 8 character random string.
+func genRandomID() string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	b := make([]rune, 8)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+// queryStripRE is the regexp to match the '::type AS name' portion in a query,
+// which is a quirk/requirement of generating queries as is done in this
+// package.
+var queryStripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
+
+// PgParseQuery parses the query and generates a type for it.
+func PgParseQuery(args *internal.ArgType, db *sql.DB, typeMap map[string]*bytes.Buffer) error {
+	var err error
+
+	// parse supplied query
+	queryStr, params := parseQuery(args, args.Query, "$%d")
+	inspectStr, _ := parseQuery(args, args.Query, "NULL")
+
+	// strip out
+	if args.QueryStrip {
+		queryStr = queryStripRE.ReplaceAllString(queryStr, "")
+	}
+
+	// split up query and inspect based on lines
+	query := strings.Split(queryStr, "\n")
+	inspect := strings.Split(inspectStr, "\n")
+
+	// build query comments with stripped values
+	// FIXME: this is off by one, because of golang template syntax limitations
+	queryComments := make([]string, len(query)+1)
+	if args.QueryStrip {
+		for i, l := range inspect {
+			pos := queryStripRE.FindStringIndex(l)
+			if pos != nil {
+				queryComments[i+1] = l[pos[0]:pos[1]]
+			} else {
+				queryComments[i+1] = ""
+			}
+		}
+	}
+
+	// trim whitespace if applicable
+	if args.QueryTrim {
+		for n, l := range query {
+			query[n] = strings.TrimSpace(l)
+			if n < len(query)-1 {
+				query[n] = query[n] + " "
+			}
+		}
+
+		for n, l := range inspect {
+			inspect[n] = strings.TrimSpace(l)
+			if n < len(inspect)-1 {
+				inspect[n] = inspect[n] + " "
+			}
+		}
+	}
+
+	// create temporary view xoid
+	xoid := "_xo_" + genRandomID()
+	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	_, err = db.Exec(viewq)
+	if err != nil {
+		return err
+	}
+
+	// determine schema name temporary view was created on
+	// sql query
+	var nspq = `SELECT n.nspname ` +
+		`FROM pg_class c ` +
+		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
+		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`
+
+	// run schema query
+	var schema string
+	err = db.QueryRow(nspq, xoid).Scan(&schema)
+	if err != nil {
+		return err
+	}
+
+	// load column information ("v" == view)
+	cols, err := models.ColumnsByRelkindSchema(db, "v", schema)
+	if err != nil {
+		return err
+	}
+
+	// create template for query type
+	typeTpl := &templates.TableTemplate{
+		Type:        args.QueryType,
+		TableSchema: args.Schema,
+		Fields:      []*models.Column{},
+		Comment:     args.QueryTypeComment,
+	}
+
+	// process columns
+	for _, c := range cols {
+		c.Field = snaker.SnakeToCamel(c.ColumnName)
+		c.Len, c.NilType, c.Type = PgParseType(args, c.DataType, false)
+		typeTpl.Fields = append(typeTpl.Fields, c)
+	}
+
+	// generate query type template
+	buf := GetBuf(typeMap, strings.ToLower(args.QueryType))
+	err = templates.Tpls["postgres.model.go.tpl"].Execute(buf, typeTpl)
+	if err != nil {
+		return err
+	}
+
+	// build func name
+	funcName := args.QueryFunc
+	if funcName == "" {
+		// no func name specified, so generate based on type
+		if args.QueryOnlyOne {
+			funcName = args.QueryType
+		} else {
+			funcName = inflector.Pluralize(args.QueryType)
+		}
+
+		// affix any params
+		if len(params) == 0 {
+			funcName = "Get" + funcName
+		} else {
+			funcName = funcName + "By"
+			for _, p := range params {
+				funcName = funcName + strings.ToUpper(p[0][:1]) + p[0][1:]
+			}
+		}
+	}
+
+	// create func template
+	funcTpl := &templates.FuncTemplate{
+		Name:          funcName,
+		Type:          args.QueryType,
+		Query:         query,
+		QueryComments: queryComments,
+		Parameters:    params,
+		OnlyOne:       args.QueryOnlyOne,
+		Comment:       args.QueryFuncComment,
+		Table:         typeTpl,
+	}
+
+	// generate template
+	err = templates.Tpls["postgres.func.go.tpl"].Execute(buf, funcTpl)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

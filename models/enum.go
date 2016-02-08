@@ -9,8 +9,9 @@ type Enum struct {
 	ConstValue uint16
 
 	// extras
-	Type  string
-	Value string
+	Type    string
+	Value   string
+	Comment string
 }
 
 // EnumsBySchema returns enums from the database for the specified schema.
