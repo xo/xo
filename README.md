@@ -46,7 +46,6 @@ WHERE
   a.id = %%authorID int%%
 LIMIT %%limit int%%
 ENDSQL
-;
 
 # build generated code
 go build ./models
@@ -70,7 +69,7 @@ relationships.
 
 The following are xo's arguments and options:
 
-```sh
+```
 $ xo -h
 usage: xo [--schema SCHEMA] [--out OUT] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] DSN
 
