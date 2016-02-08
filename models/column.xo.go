@@ -8,7 +8,7 @@ type Column struct {
 	ColumnName       string // column_name
 	TableName        string // table_name
 	DataType         string // data_type
-	FieldOrdinal     int32  // field_ordinal
+	FieldOrdinal     int    // field_ordinal
 	IsNullable       bool   // is_nullable
 	IsIndex          bool   // is_index
 	IsUnique         bool   // is_unique
@@ -22,7 +22,7 @@ type Column struct {
 	Type             string // type
 	NilType          string // nil_type
 	Tag              string // tag
-	Len              int32  // len
+	Len              int    // len
 	Comment          string // comment
 }
 

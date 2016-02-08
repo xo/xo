@@ -29,6 +29,8 @@ import (
 var args = internal.ArgType{
 	Schema:              "public",
 	Suffix:              ".xo.go",
+	Int32Type:           "int",
+	Uint32Type:          "uint",
 	QueryParamDelimiter: "%%",
 }
 
@@ -169,7 +171,7 @@ func processArgs() error {
 
 	// check that query type was specified
 	if args.QueryMode && args.QueryType == "" {
-		return errors.New("query type must be supplied when in query parsing mode")
+		return errors.New("query type must be supplied for query parsing mode")
 	}
 
 	return nil

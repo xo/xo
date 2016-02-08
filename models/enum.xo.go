@@ -7,7 +7,7 @@ package models
 type Enum struct {
 	EnumType   string // enum_type
 	EnumValue  string // enum_value
-	ConstValue int32  // const_value
+	ConstValue int    // const_value
 	Type       string // type
 	Value      string // value
 	Comment    string // comment

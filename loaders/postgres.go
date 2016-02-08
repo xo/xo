@@ -363,7 +363,7 @@ var pgLenRE = regexp.MustCompile(`\([0-9]+\)$`)
 
 // PgParseType parse a postgres type into a Go type based on the column
 // definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int32, string, string) {
+func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilType := "nil"
 	asSlice := false
@@ -413,7 +413,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int32, strin
 		}
 	case "integer":
 		nilType = "0"
-		typ = "int32"
+		typ = args.Int32Type
 		if nullable {
 			nilType = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
@@ -435,7 +435,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int32, strin
 		}
 	case "serial":
 		nilType = "0"
-		typ = "uint32"
+		typ = args.Uint32Type
 		if nullable {
 			nilType = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
@@ -509,7 +509,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int32, strin
 		nilType = "nil"
 	}
 
-	return int32(precision), nilType, typ
+	return precision, nilType, typ
 }
 
 // parseQuery takes the query in args and looks for strings in the form of
