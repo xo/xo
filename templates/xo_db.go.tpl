@@ -8,6 +8,16 @@ type XODB interface {
 	QueryRow(string, ...interface{}) *sql.Row
 }
 
+// ScannerValuer is a type that implements both the sql.Scanner and
+// driver.Valuer interfaces.
+type ScannerValuer {
+    sql.Scanner
+    driver.Valuer
+}
+
+// Slice is a slice of ScannerValuers.
+type Slice []ScannerValuer
+
 type QueryOpt interface {
 
 }
