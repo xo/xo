@@ -5,9 +5,12 @@ package {{ .Package }}
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"encoding/csv"
 	"errors"
-    "regexp"
-    "strings"
+	"fmt"
+	"regexp"
+	"strings"
 	"time"
 )
 

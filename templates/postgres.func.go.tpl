@@ -5,10 +5,10 @@
 // {{ .Name }} runs a custom query, returning results as {{ .Type }}.
 {{- end }}
 func {{ .Name }} (db XODB{{ range $i, $p := .Parameters }}, {{ index $p 0 }} {{ index $p 1 }}{{ end }}) ({{ if not .OnlyOne }}[]{{ end }}*{{ .Type }}, error) {
-    var err error
+	var err error
 
-    // sql query
-    const sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $QueryComments $i) }} // {{ index $QueryComments $i }}{{ end }}{{ if $i }}
+	// sql query
+	const sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $QueryComments $i) }} // {{ index $QueryComments $i }}{{ end }}{{ if $i }}
 	{{end -}}`{{ $l }}`{{ end }}
 
 	// run query
