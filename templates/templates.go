@@ -31,6 +31,7 @@ var KnownTypeMap = map[string]bool{
 	"uint64":      true,
 	"float32":     true,
 	"float64":     true,
+	"Slice":       true,
 	"StringSlice": true,
 }
 
@@ -52,6 +53,7 @@ var ShortNameTypeMap = map[string]string{
 	"uint64":      "u",
 	"float32":     "f",
 	"float64":     "f",
+	"Slice":       "s",
 	"StringSlice": "ss",
 }
 
@@ -88,6 +90,10 @@ func reniltype(typ string) string {
 	}
 
 	if strings.HasSuffix(typ, "{}") {
+		if _, ok := KnownTypeMap[typ[:len(typ)-2]]; ok {
+			return typ
+		}
+
 		pkg := internal.CustomTypePackage
 		if pkg != "" {
 			pkg = pkg + "."
