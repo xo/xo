@@ -6,6 +6,8 @@ package {{ .Package }}
 import (
 	"database/sql"
 	"errors"
+    "regexp"
+    "strings"
 	"time"
 )
 

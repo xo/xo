@@ -16,9 +16,7 @@ psql -U postgres -c 'create database booktest owner booktest;'
 psql -U booktest << 'ENDSQL'
 CREATE TABLE authors (
   author_id SERIAL PRIMARY KEY,
-  isbn text NOT NULL DEFAULT '' UNIQUE,
-  name text NOT NULL DEFAULT '',
-  subject text NOT NULL DEFAULT ''
+  name text NOT NULL DEFAULT ''
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
@@ -31,10 +29,12 @@ CREATE TYPE book_type AS ENUM (
 CREATE TABLE books (
     book_id SERIAL PRIMARY KEY,
     author_id integer NOT NULL REFERENCES authors(author_id),
-    title text NOT NULL DEFAULT '',
+    isbn text NOT NULL DEFAULT '' UNIQUE,
     booktype book_type NOT NULL DEFAULT 'FICTION',
+    title text NOT NULL DEFAULT '',
     year integer NOT NULL DEFAULT 2000,
-    available timestamp with time zone NOT NULL DEFAULT 'NOW()'
+    available timestamp with time zone NOT NULL DEFAULT 'NOW()',
+    tags varchar[] NOT NULL DEFAULT '{}'
 );
 
 CREATE INDEX books_title_idx ON books(title, year);
@@ -48,6 +48,18 @@ $$ LANGUAGE plpgsql;
 ENDSQL
 
 $XOBIN pgsql://booktest:booktest@localhost/booktest -o $SRC/models
+
+cat << ENDSQL | $XOBIN pgsql://booktest:booktest@localhost/booktest -N -M -B -T AuthorBookResult --query-type-comment='BookTag is the result of a search.' -o $SRC/models
+SELECT
+  a.author_id::integer AS author_id,
+  a.name::text AS author_name,
+  b.book_id::integer AS book_id,
+  b.isbn::text AS book_isbn,
+  b.title::text AS book_title
+FROM books b
+JOIN authors a ON a.author_id = b.author_id
+WHERE b.tags && %%tags StringSlice%%::varchar[]
+ENDSQL
 
 pushd $SRC &> /dev/null
 go build

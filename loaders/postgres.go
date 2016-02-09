@@ -511,6 +511,11 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		}
 	}
 
+	// special case for []slice
+	if typ == "string" && asSlice {
+		return precision, "StringSlice{}", "StringSlice"
+	}
+
 	// correct type if slice
 	if asSlice {
 		typ = "[]" + typ

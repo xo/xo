@@ -8,9 +8,7 @@ import "errors"
 // Author represents a row from public.authors.
 type Author struct {
 	AuthorID int    // author_id
-	Isbn     string // isbn
 	Name     string // name
-	Subject  string // subject
 
 	// xo fields
 	_exists, _deleted bool
@@ -37,13 +35,13 @@ func (a *Author) Insert(db XODB) error {
 
 	// sql query
 	const sqlstr = `INSERT INTO public.authors (` +
-		`isbn, name, subject` +
+		`name` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1` +
 		`) RETURNING author_id`
 
 	// run query
-	err = db.QueryRow(sqlstr, a.Isbn, a.Name, a.Subject).Scan(&a.AuthorID)
+	err = db.QueryRow(sqlstr, a.Name).Scan(&a.AuthorID)
 	if err != nil {
 		return err
 	}
@@ -70,13 +68,13 @@ func (a *Author) Update(db XODB) error {
 
 	// sql query
 	const sqlstr = `UPDATE public.authors SET (` +
-		`isbn, name, subject` +
+		`name` +
 		`) = ( ` +
-		`$1, $2, $3` +
-		`) WHERE author_id = $4`
+		`$1` +
+		`) WHERE author_id = $2`
 
 	// run query
-	_, err = db.Exec(sqlstr, a.Isbn, a.Name, a.Subject, a.AuthorID)
+	_, err = db.Exec(sqlstr, a.Name, a.AuthorID)
 	return err
 }
 
@@ -125,30 +123,6 @@ func (a *Author) Delete(db XODB) error {
 	return nil
 }
 
-// AuthorByIsbn retrieves a row from public.authors as a Author.
-//
-// Looks up using index authors_isbn_key.
-func AuthorByIsbn(db XODB, isbn string) (*Author, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`author_id, isbn, name, subject ` +
-		`FROM public.authors ` +
-		`WHERE isbn = $1`
-
-	// run query
-	ret := Author{
-		_exists: true,
-	}
-	err = db.QueryRow(sqlstr, isbn).Scan(&ret.AuthorID, &ret.Isbn, &ret.Name, &ret.Subject)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ret, nil
-}
-
 // AuthorsByName retrieves rows from public.authors, each as a Author.
 //
 // Looks up using index authors_name_idx.
@@ -157,7 +131,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`author_id, isbn, name, subject ` +
+		`author_id, name ` +
 		`FROM public.authors ` +
 		`WHERE name = $1`
 
@@ -176,7 +150,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 		}
 
 		// scan
-		err = q.Scan(&a.AuthorID, &a.Isbn, &a.Name, &a.Subject)
+		err = q.Scan(&a.AuthorID, &a.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -195,7 +169,7 @@ func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`author_id, isbn, name, subject ` +
+		`author_id, name ` +
 		`FROM public.authors ` +
 		`WHERE author_id = $1`
 
@@ -203,7 +177,7 @@ func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 	ret := Author{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, authorID).Scan(&ret.AuthorID, &ret.Isbn, &ret.Name, &ret.Subject)
+	err = db.QueryRow(sqlstr, authorID).Scan(&ret.AuthorID, &ret.Name)
 	if err != nil {
 		return nil, err
 	}
