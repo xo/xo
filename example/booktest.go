@@ -14,6 +14,7 @@ import (
 func main() {
 	var err error
 
+	// open database
 	db, err := sql.Open("postgres", "postgres://booktest:booktest@localhost/booktest")
 	if err != nil {
 		log.Fatal(err)
