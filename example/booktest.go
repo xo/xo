@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 
@@ -36,11 +37,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	now := time.Now()
 	b := models.Book{
-		AuthorID: a.AuthorID,
-		Title:    "my book title",
-		Booktype: models.FictionBookType,
-		Year:     2016,
+		AuthorID:  a.AuthorID,
+		Title:     "my book title",
+		Booktype:  models.FictionBookType,
+		Year:      2016,
+		Available: &now,
 	}
 	err = b.Save(db)
 	if err != nil {
@@ -57,7 +61,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, book := range books {
-		fmt.Printf("Book %d (%s): %s\n", book.BookID, book.Booktype, book.Title)
+		fmt.Printf("Book %d (%s): %s available: %s\n", book.BookID, book.Booktype, book.Title, book.Available.Format(time.RFC822Z))
 		author, err := book.Author(db)
 		if err != nil {
 			log.Fatal(err)

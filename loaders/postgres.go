@@ -469,10 +469,18 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	case "timestamp with time zone":
 		typ = "*time.Time"
+		if nullable {
+			nilType = "pq.NullTime{}"
+			typ = "pq.NullTime"
+		}
 
 	case "time with time zone", "time without time zone", "timestamp without time zone":
 		nilType = "0"
 		typ = "int64"
+		if nullable {
+			nilType = "sql.NullInt64{}"
+			typ = "sql.NullInt64"
+		}
 
 	case "interval":
 		typ = "*time.Duration"

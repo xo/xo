@@ -33,7 +33,8 @@ CREATE TABLE books (
     author_id integer NOT NULL REFERENCES authors(author_id),
     title text NOT NULL DEFAULT '',
     booktype book_type NOT NULL DEFAULT 'FICTION',
-    year integer NOT NULL DEFAULT 2000
+    year integer NOT NULL DEFAULT 2000,
+    available timestamp with time zone NOT NULL DEFAULT 'NOW()'
 );
 
 CREATE INDEX books_title_idx ON books(title, year);
