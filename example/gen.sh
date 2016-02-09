@@ -46,7 +46,7 @@ $$ LANGUAGE plpgsql;
 
 ENDSQL
 
-$XOBIN pgsql://booktest:booktest@localhost/booktest --single-file -o $SRC/
+$XOBIN pgsql://booktest:booktest@localhost/booktest -o $SRC/models
 
 pushd $SRC &> /dev/null
 go build

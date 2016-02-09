@@ -42,3 +42,18 @@ func ({{ shortname .Type }} *{{ .Type }}) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// Value satisfies the sql/driver.Valuer interface for {{ .Type }}.
+func ({{ shortname .Type }} {{ .Type }}) Value() (driver.Value, error) {
+    return {{ shortname .Type }}.String(), nil
+}
+
+// Scan satisfies the database/sql.Scanner interface for {{ .Type }}.
+func ({{ shortname .Type }} *{{ .Type }}) Scan(src interface{}) error {
+    buf, ok := src.([]byte)
+    if !ok {
+       return errors.New("invalid {{ .Type }}")
+    }
+
+    return {{ shortname .Type }}.UnmarshalText(buf)
+}
+

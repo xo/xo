@@ -134,7 +134,10 @@ $$ LANGUAGE plpgsql;
 ```
 
 xo will generate the following (note: this is an abbreviated copy of actual
-output -- please see the [example](example) directory for the full example):
+output -- please see the [example](example) directory for how the generated
+types and funcs are used (generated via [example/gen.sh](example/gen.sh)), and
+see the [example/models](example/models) directory for the full generated
+code):
 ```go
 // Author represents a row from public.authors.
 type Author struct {
