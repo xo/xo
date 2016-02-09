@@ -216,10 +216,11 @@ func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 
 // Book represents a row from public.books.
 type Book struct {
-	BookID   int    // book_id
-	AuthorID int    // author_id
-	Title    string // title
-	Year     int    // year
+	BookID   int      // book_id
+	AuthorID int      // author_id
+	Title    string   // title
+	Booktype BookType // booktype
+	Year     int      // year
 
 	// xo fields
 	_exists, _deleted bool
@@ -246,13 +247,13 @@ func (b *Book) Insert(db XODB) error {
 
 	// sql query
 	const sqlstr = `INSERT INTO public.books (` +
-		`author_id, title, year` +
+		`author_id, title, booktype, year` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`) RETURNING book_id`
 
 	// run query
-	err = db.QueryRow(sqlstr, b.AuthorID, b.Title, b.Year).Scan(&b.BookID)
+	err = db.QueryRow(sqlstr, b.AuthorID, b.Title, b.Booktype, b.Year).Scan(&b.BookID)
 	if err != nil {
 		return err
 	}
@@ -279,13 +280,13 @@ func (b *Book) Update(db XODB) error {
 
 	// sql query
 	const sqlstr = `UPDATE public.books SET (` +
-		`author_id, title, year` +
+		`author_id, title, booktype, year` +
 		`) = ( ` +
-		`$1, $2, $3` +
-		`) WHERE book_id = $4`
+		`$1, $2, $3, $4` +
+		`) WHERE book_id = $5`
 
 	// run query
-	_, err = db.Exec(sqlstr, b.AuthorID, b.Title, b.Year, b.BookID)
+	_, err = db.Exec(sqlstr, b.AuthorID, b.Title, b.Booktype, b.Year, b.BookID)
 	return err
 }
 
@@ -347,7 +348,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, title, year ` +
+		`book_id, author_id, title, booktype, year ` +
 		`FROM public.books ` +
 		`WHERE book_id = $1`
 
@@ -355,7 +356,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	ret := Book{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, bookID).Scan(&ret.BookID, &ret.AuthorID, &ret.Title, &ret.Year)
+	err = db.QueryRow(sqlstr, bookID).Scan(&ret.BookID, &ret.AuthorID, &ret.Title, &ret.Booktype, &ret.Year)
 	if err != nil {
 		return nil, err
 	}
@@ -371,7 +372,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, title, year ` +
+		`book_id, author_id, title, booktype, year ` +
 		`FROM public.books ` +
 		`WHERE title = $1 AND year = $2`
 
@@ -390,7 +391,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 		}
 
 		// scan
-		err = q.Scan(&b.BookID, &b.AuthorID, &b.Title, &b.Year)
+		err = q.Scan(&b.BookID, &b.AuthorID, &b.Title, &b.Booktype, &b.Year)
 		if err != nil {
 			return nil, err
 		}
@@ -399,6 +400,70 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 	}
 
 	return res, nil
+}
+
+// BookType is the 'book_type' enum type.
+type BookType uint16
+
+const (
+	// FictionBookType is the book_type for 'FICTION'.
+	FictionBookType = BookType(1)
+
+	// NonfictionBookType is the book_type for 'NONFICTION'.
+	NonfictionBookType = BookType(2)
+)
+
+// String returns the string value of the BookType.
+func (bt BookType) String() string {
+	var enumVal string
+
+	switch bt {
+	case FictionBookType:
+		enumVal = "FICTION"
+
+	case NonfictionBookType:
+		enumVal = "NONFICTION"
+	}
+
+	return enumVal
+}
+
+// MarshalText marshals BookType into text.
+func (bt BookType) MarshalText() ([]byte, error) {
+	return []byte(bt.String()), nil
+}
+
+// UnmarshalText unmarshals BookType from text.
+func (bt *BookType) UnmarshalText(text []byte) error {
+	switch string(text) {
+	case "FICTION":
+		*bt = FictionBookType
+
+	case "NONFICTION":
+		*bt = NonfictionBookType
+
+	default:
+		return errors.New("invalid BookType")
+	}
+
+	return nil
+}
+
+// SayHello calls the stored procedure 'public.say_hello(text) text' on db.
+func SayHello(db XODB, v0 string) (string, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT public.say_hello($1)`
+
+	// run query
+	var ret string
+	err = db.QueryRow(sqlstr, v0).Scan(&ret)
+	if err != nil {
+		return "", err
+	}
+
+	return ret, nil
 }
 
 // XODB is the common interface for database operations that can be used with
