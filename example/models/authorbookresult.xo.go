@@ -5,11 +5,12 @@ package models
 
 // BookTag is the result of a search.
 type AuthorBookResult struct {
-	AuthorID   int    // author_id
-	AuthorName string // author_name
-	BookID     int    // book_id
-	BookIsbn   string // book_isbn
-	BookTitle  string // book_title
+	AuthorID   int         // author_id
+	AuthorName string      // author_name
+	BookID     int         // book_id
+	BookIsbn   string      // book_isbn
+	BookTitle  string      // book_title
+	BookTags   StringSlice // book_tags
 }
 
 // AuthorBookResultsByTags runs a custom query, returning results as AuthorBookResult.
@@ -22,7 +23,8 @@ func AuthorBookResultsByTags(db XODB, tags StringSlice) ([]*AuthorBookResult, er
 		`a.name, ` + // ::text AS author_name
 		`b.book_id, ` + // ::integer AS book_id
 		`b.isbn, ` + // ::text AS book_isbn
-		`b.title ` + // ::text AS book_title
+		`b.title, ` + // ::text AS book_title
+		`b.tags::text[] AS book_tags ` +
 		`FROM books b ` +
 		`JOIN authors a ON a.author_id = b.author_id ` +
 		`WHERE b.tags && $1::varchar[]`
@@ -40,7 +42,7 @@ func AuthorBookResultsByTags(db XODB, tags StringSlice) ([]*AuthorBookResult, er
 		abr := AuthorBookResult{}
 
 		// scan
-		err = q.Scan(&abr.AuthorID, &abr.AuthorName, &abr.BookID, &abr.BookIsbn, &abr.BookTitle)
+		err = q.Scan(&abr.AuthorID, &abr.AuthorName, &abr.BookID, &abr.BookIsbn, &abr.BookTitle, &abr.BookTags)
 		if err != nil {
 			return nil, err
 		}

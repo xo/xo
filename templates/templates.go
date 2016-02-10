@@ -165,6 +165,34 @@ var tplFuncMap = template.FuncMap{
 		return str
 	},
 
+	// colprefixnames creates a list of the column names found in columns with
+	// the supplied prefix, excluding any FieldName in ignoreFields.
+	//
+	// Used to present a comma separated list of column names, with a prefix,
+	// ie in a sql select, or update. (ie, t.field_1, t.field_2, t.field_3, ...)
+	"colprefixnames": func(columns []*models.Column, prefix string, ignoreFields ...string) string {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
+		str := ""
+		i := 0
+		for _, col := range columns {
+			if ignore[col.Field] {
+				continue
+			}
+
+			if i != 0 {
+				str = str + ", "
+			}
+			str = str + prefix + "." + col.ColumnName
+			i++
+		}
+
+		return str
+	},
+
 	// colvals creates a list of value place holders for the columns found in
 	// columns, excluding any FieldName in ignoreFields.
 	//

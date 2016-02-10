@@ -92,6 +92,35 @@ func ({{ shortname .Type }} *{{ .Type }}) Save(db XODB) error {
 //
 // NOTE: PostgreSQL 9.5+ only
 func ({{ shortname .Type }} *{{ .Type }}) Upsert(db XODB) error {
+	var err error
+
+	// if already exist, bail
+	if {{ shortname .Type }}._exists {
+		return errors.New("insert failed: already exists")
+	}
+
+	// sql query
+	const sqlstr = `INSERT INTO {{ .TableSchema }}.{{ .TableName }} (` +
+		`{{ colnames .Fields }}` +
+		`) VALUES (` +
+		`{{ colvals .Fields }}` +
+		`) ON CONFLICT ({{ .PrimaryKey }}) DO UPDATE SET (` +
+		`{{ colnames .Fields }}` +
+		`) = (` +
+		`{{ colprefixnames .Fields "EXCLUDED" }}` +
+		`)`
+
+    fmt.Printf(">>> sqlstr: \n%s\n", sqlstr)
+
+	// run query
+	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) }})
+	if err != nil {
+		return err
+	}
+
+	// set existence
+	{{ shortname .Type }}._exists = true
+
 	return nil
 }
 

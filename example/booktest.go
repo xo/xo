@@ -103,6 +103,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// upsert,changing ISBN and title
+	b4 := models.Book{
+		BookID:    b3.BookID,
+		AuthorID:  a.AuthorID,
+		Isbn:      "NEW ISBN",
+		Booktype:  b3.Booktype,
+		Title:     "never ever gonna finish, a quatrain",
+		Year:      b3.Year,
+		Available: b3.Available,
+		Tags:      models.StringSlice{"someother"},
+	}
+	err = b4.Upsert(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// retrieve first book
 	books0, err := models.BooksByTitle(db, "my book title", 2016)
 	if err != nil {
@@ -120,12 +136,16 @@ func main() {
 
 	// find a book with either "cool" or "other" tag
 	fmt.Printf("---------\nTag search results:\n")
-	res, err := models.AuthorBookResultsByTags(db, models.StringSlice{"cool", "other"})
+	res, err := models.AuthorBookResultsByTags(db, models.StringSlice{"cool", "other", "someother"})
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d '%s', Author: '%s'\n", ab.BookID, ab.BookTitle, ab.AuthorName)
+		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s'\nTags: ", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn)
+		for _, s := range ab.BookTags {
+			fmt.Printf("'%s' ", s)
+		}
+		fmt.Println()
 	}
 
 	// call say_hello(varchar)

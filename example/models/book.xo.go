@@ -5,6 +5,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -100,6 +101,35 @@ func (b *Book) Save(db XODB) error {
 //
 // NOTE: PostgreSQL 9.5+ only
 func (b *Book) Upsert(db XODB) error {
+	var err error
+
+	// if already exist, bail
+	if b._exists {
+		return errors.New("insert failed: already exists")
+	}
+
+	// sql query
+	const sqlstr = `INSERT INTO public.books (` +
+		`book_id, author_id, isbn, booktype, title, year, available, tags` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8` +
+		`) ON CONFLICT (book_id) DO UPDATE SET (` +
+		`book_id, author_id, isbn, booktype, title, year, available, tags` +
+		`) = (` +
+		`EXCLUDED.book_id, EXCLUDED.author_id, EXCLUDED.isbn, EXCLUDED.booktype, EXCLUDED.title, EXCLUDED.year, EXCLUDED.available, EXCLUDED.tags` +
+		`)`
+
+	fmt.Printf(">>> sqlstr: \n%s\n", sqlstr)
+
+	// run query
+	_, err = db.Exec(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)
+	if err != nil {
+		return err
+	}
+
+	// set existence
+	b._exists = true
+
 	return nil
 }
 
@@ -150,15 +180,15 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 		`WHERE isbn = $1`
 
 	// run query
-	ret := Book{
+	b := Book{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, isbn).Scan(&ret.BookID, &ret.AuthorID, &ret.Isbn, &ret.Booktype, &ret.Title, &ret.Year, &ret.Available, &ret.Tags)
+	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ret, nil
+	return &b, nil
 }
 
 // BookByBookID retrieves a row from public.books as a Book.
@@ -174,15 +204,15 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 		`WHERE book_id = $1`
 
 	// run query
-	ret := Book{
+	b := Book{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, bookID).Scan(&ret.BookID, &ret.AuthorID, &ret.Isbn, &ret.Booktype, &ret.Title, &ret.Year, &ret.Available, &ret.Tags)
+	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ret, nil
+	return &b, nil
 }
 
 // BooksByTitle retrieves rows from public.books, each as a Book.
