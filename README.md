@@ -322,3 +322,38 @@ The following projects work with similar concepts as xo:
 
 ## Go ORM-likes ##
 * [sqlc](https://github.com/relops/sqlc)
+
+
+# TODO #
+* Finish many-to-many and link table support
+* Add example for many-to-many relationships and link tables
+* Finish porting Cond, OrCond, OrderBy, Limit, GroupBy, Having
+* Add examples for Cond's
+* Add option for using a user-supplied template directory path
+* Add support for JSON types (json, jsonb on PostgreSQL)
+* Finish example and code for generated *Slice types
+* Add proper parameterization around generated code blocks (important for
+  "extras" like Cond's)
+* Finish support for --{incl, excl}[ude] types
+* Add ability to 'append' to existing files rather than overwriting (ie, during
+  a custom query generation and reusing the existing type)
+* Binary packaging for Linux, OSX, Windows [amd64 only]
+* Unit tests / code coverage / continuous builds for binary package releases 
+* Add support for supplying a file (ie, *.sql) for query generation
+* Add support for full text types (tsvector, tsquery on PostgreSQL)
+* Finish support for Oracle [this may need to be a separate package, or enabled
+  only through a specific build tag, as yet TBD]
+* Finish COMMENT support for PostgreSQL
+* Add support for MySQL
+* Add support for SQLite
+* Add support for GIN index queries (PostgreSQL)
+* Add introspection for CASCADE relationships and generate DeleteCascade()'s
+  (disabled by default)
+* Publish template set for *at least* one other language/framework
+  [Doctrine/jOOQ/ActiveRecord/...?]
+* Add more links to other SQL code generation libs
+* Fix templates for < Go1.6 [is this even necessary?]
+* Add support for handling multiple custom queries at the same time [is this
+  even necessary?]
+* Add ability to read *.sql files with 'markup' to parse multiple queries (a la
+  migration scripts) [is this even necessary?]
