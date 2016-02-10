@@ -7,22 +7,22 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`{{ colnames .Table.Fields "" }} ` +
+		`{{ colnames .Table.Fields }} ` +
 		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
 		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
 
 	// run query
-	ret := {{ .Type }}{
+	{{ shortname .Type }} := {{ .Type }}{
 	{{- if .Table.PrimaryKeyField }}
 		_exists: true,
 	{{ end -}}
 	}
-	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Table.Fields "" "&ret" }})
+	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 	if err != nil {
 		return nil, err
 	}
 
-	return &ret, nil
+	return &{{ shortname .Type }}, nil
 }
 {{ else }}
 // {{ .Plural }}By{{ .Name }} retrieves rows from {{ .TableSchema }}.{{ .TableName }}, each as a {{ .Type }}.
@@ -33,7 +33,7 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`{{ colnames .Table.Fields "" }} ` +
+		`{{ colnames .Table.Fields }} ` +
 		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
 		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
 
@@ -54,7 +54,7 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 		}
 
 		// scan
-		err = q.Scan({{ fieldnames .Table.Fields "" (print "&" (shortname .Type)) }})
+		err = q.Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 		if err != nil {
 			return nil, err
 		}

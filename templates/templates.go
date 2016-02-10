@@ -138,15 +138,20 @@ var tplFuncMap = template.FuncMap{
 	},
 
 	// colnames creates a list of the column names found in columns, excluding
-	// the column with FieldName pkField.
+	// any FieldName in ignoreFields.
 	//
 	// Used to present a comma separated list of column names, ie in a sql
 	// select, or update. (ie, field_1, field_2, field_3, ...)
-	"colnames": func(columns []*models.Column, pkField string) string {
+	"colnames": func(columns []*models.Column, ignoreFields ...string) string {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
 		str := ""
 		i := 0
 		for _, col := range columns {
-			if col.Field == pkField {
+			if ignore[col.Field] {
 				continue
 			}
 
@@ -161,15 +166,20 @@ var tplFuncMap = template.FuncMap{
 	},
 
 	// colvals creates a list of value place holders for the columns found in
-	// columns, excluding the column with FieldName pkField.
+	// columns, excluding any FieldName in ignoreFields.
 	//
 	// Used to present a comma separated list of column names, ie in a sql
 	// select, or update. (ie, $1, $2, $3 ...)
-	"colvals": func(columns []*models.Column, pkField string) string {
+	"colvals": func(columns []*models.Column, ignoreFields ...string) string {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
 		str := ""
 		i := 1
 		for _, col := range columns {
-			if col.Field == pkField {
+			if ignore[col.Field] {
 				continue
 			}
 
@@ -184,16 +194,21 @@ var tplFuncMap = template.FuncMap{
 	},
 
 	// fieldnames creates a list of field names from the field names of the
-	// provided columns, excluding the column with field name pkField, and
-	// using the prefix provided.
+	// provided columns, adding the prefix provided, and excluding any field
+	// name in ignoreFields.
 	//
 	// Used to present a comma separated list of field names, ie in a Go
 	// statement (ie, t.Field1, t.Field2, t.Field3 ...)
-	"fieldnames": func(columns []*models.Column, pkField string, prefix string) string {
+	"fieldnames": func(columns []*models.Column, prefix string, ignoreFields ...string) string {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
 		str := ""
 		i := 0
 		for _, col := range columns {
-			if col.Field == pkField {
+			if ignore[col.Field] {
 				continue
 			}
 
@@ -207,15 +222,20 @@ var tplFuncMap = template.FuncMap{
 		return str
 	},
 
-	// count returns the 1-based count of columns, excluding any column with
-	// field name pkField.
+	// count returns the 1-based count of columns, excluding any field name in
+	// ignoreFields.
 	//
 	// Used to get the count of columns, and useful for specifying the last sql
 	// parameter.
-	"colcount": func(columns []*models.Column, pkField string) int {
+	"colcount": func(columns []*models.Column, ignoreFields ...string) int {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
 		i := 1
 		for _, col := range columns {
-			if col.Field == pkField {
+			if ignore[col.Field] {
 				continue
 			}
 
@@ -224,10 +244,21 @@ var tplFuncMap = template.FuncMap{
 		return i
 	},
 
-	// goparamlist converts a list of fields into the named go parameters.
-	"goparamlist": func(columns []*models.Column, addType bool) string {
+	// goparamlist converts a list of fields into their named Go parameters,
+	// skipping any field names in ignoreFields.
+	"goparamlist": func(columns []*models.Column, addType bool, ignoreFields ...string) string {
+		ignore := map[string]bool{}
+		for _, n := range ignoreFields {
+			ignore[n] = true
+		}
+
 		str := ""
-		for i, col := range columns {
+		i := 0
+		for _, col := range columns {
+			if ignore[col.Field] {
+				continue
+			}
+
 			s := "v" + strconv.Itoa(i)
 			if len(col.Field) > 0 {
 				s = strings.ToLower(col.Field[:1]) + col.Field[1:]
@@ -237,6 +268,8 @@ var tplFuncMap = template.FuncMap{
 			if addType {
 				str = str + " " + retype(col.Type)
 			}
+
+			i++
 		}
 
 		return str

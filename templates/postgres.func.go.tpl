@@ -13,13 +13,13 @@ func {{ .Name }} (db XODB{{ range $i, $p := .Parameters }}, {{ index $p 0 }} {{ 
 
 	// run query
 {{- if .OnlyOne }}
-	var ret {{ .Type }}
-	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ index . 0 }}{{ end }}).Scan({{ fieldnames .Table.Fields "" "&ret" }})
+	var {{ shortname .Type }} {{ .Type }}
+	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ index . 0 }}{{ end }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 	if err != nil {
 		return nil, err
 	}
 
-	return &ret, nil
+	return &{{ shortname .Type }}, nil
 {{- else }}
 	q, err := db.Query(sqlstr{{ range .Parameters }}, {{ index . 0 }}{{ end }})
 	if err != nil {
@@ -33,7 +33,7 @@ func {{ .Name }} (db XODB{{ range $i, $p := .Parameters }}, {{ index $p 0 }} {{ 
 		{{ shortname .Type}} := {{ .Type }}{}
 
 		// scan
-		err = q.Scan({{ fieldnames .Table.Fields "" (print "&" (shortname .Type)) }})
+		err = q.Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 		if err != nil {
 			return nil, err
 		}

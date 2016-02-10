@@ -3,7 +3,7 @@ func {{ .Name }}(db XODB{{ goparamlist .Parameters true }}) ({{ retype .ReturnTy
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT {{ .TableSchema }}.{{ .ProcName }}({{ colvals .Parameters "" }})`
+	const sqlstr = `SELECT {{ .TableSchema }}.{{ .ProcName }}({{ colvals .Parameters }})`
 
 	// run query
 	var ret {{ retype .ReturnType }}

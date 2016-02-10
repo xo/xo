@@ -42,7 +42,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Insert(db XODB) error {
 		`) RETURNING {{ .PrimaryKey }}`
 
 	// run query
-	err = db.QueryRow(sqlstr, {{ fieldnames .Fields .PrimaryKeyField (shortname .Type ) }}).Scan(&{{ shortname .Type }}.{{ .PrimaryKeyField }})
+	err = db.QueryRow(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }}).Scan(&{{ shortname .Type }}.{{ .PrimaryKeyField }})
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Update(db XODB) error {
 		`) WHERE {{ .PrimaryKey }} = ${{ colcount .Fields .PrimaryKeyField }}`
 
 	// run query
-	_, err = db.Exec(sqlstr, {{ fieldnames .Fields .PrimaryKeyField (shortname .Type) }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})
+	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	return err
 }
 
