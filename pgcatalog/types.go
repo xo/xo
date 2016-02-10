@@ -39,6 +39,7 @@ type Oid struct{}
 type Oidvector struct{}
 type Opaque struct{}
 type Path struct{}
+type PgDdlCommand struct{}
 type PgLsn struct{}
 type PgNodeTree struct{}
 type Point struct{}
@@ -48,16 +49,19 @@ type Refcursor struct{}
 type Regclass struct{}
 type Regconfig struct{}
 type Regdictionary struct{}
+type Regnamespace struct{}
 type Regoperator struct{}
 type Regoper struct{}
 type Regprocedure struct{}
 type Regproc struct{}
+type Regrole struct{}
 type Regtype struct{}
 type Reltime struct{}
 type Smgr struct{}
 type Tid struct{}
 type Tinterval struct{}
 type Trigger struct{}
+type TsmHandler struct{}
 type Tsquery struct{}
 type Tsrange struct{}
 type Tstzrange struct{}
