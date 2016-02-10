@@ -110,8 +110,6 @@ func ({{ shortname .Type }} *{{ .Type }}) Upsert(db XODB) error {
 		`{{ colprefixnames .Fields "EXCLUDED" }}` +
 		`)`
 
-    fmt.Printf(">>> sqlstr: \n%s\n", sqlstr)
-
 	// run query
 	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) }})
 	if err != nil {

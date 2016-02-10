@@ -5,7 +5,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -118,8 +117,6 @@ func (b *Book) Upsert(db XODB) error {
 		`) = (` +
 		`EXCLUDED.book_id, EXCLUDED.author_id, EXCLUDED.isbn, EXCLUDED.booktype, EXCLUDED.title, EXCLUDED.year, EXCLUDED.available, EXCLUDED.tags` +
 		`)`
-
-	fmt.Printf(">>> sqlstr: \n%s\n", sqlstr)
 
 	// run query
 	_, err = db.Exec(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)

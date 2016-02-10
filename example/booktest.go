@@ -103,7 +103,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// upsert,changing ISBN and title
+	// upsert, changing ISBN and title
 	b4 := models.Book{
 		BookID:    b3.BookID,
 		AuthorID:  a.AuthorID,
