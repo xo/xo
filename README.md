@@ -337,7 +337,7 @@ The following projects work with similar concepts as xo:
 * Finish support for --{incl, excl}[ude] types
 * Add ability to 'append' to existing files rather than overwriting (ie, during
   a custom query generation and reusing the existing type)
-* Binary packaging for Linux, OSX, Windows [amd64 only]
+* Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
 * Unit tests / code coverage / continuous builds for binary package releases 
 * Add support for supplying a file (ie, *.sql) for query generation
 * Add support for full text types (tsvector, tsquery on PostgreSQL)
