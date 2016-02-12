@@ -319,10 +319,13 @@ The following projects work with similar concepts as xo:
 * [ModelQ](https://github.com/mijia/modelq)
 * [sqlgen](https://github.com/drone/sqlgen)
 * [squirrel](https://github.com/Masterminds/squirrel)
+* [scaneo](https://github.com/variadico/scaneo)
+* [acorn](https://github.com/willowtreeapps/acorn) and
+  [rootx](https://github.com/willowtreeapps/rootx) \[[read overview
+  here](http://willowtreeapps.com/blog/go-generate-your-database-code/)\]
 
 ## Go ORM-likes ##
 * [sqlc](https://github.com/relops/sqlc)
-
 
 # TODO #
 * Finish many-to-many and link table support
