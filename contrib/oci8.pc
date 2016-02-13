@@ -1,0 +1,16 @@
+# pkg-config file for Ubuntu/Debian when using alien to install
+# oracle-instantclient-{basic,devel,sqlplus}-*.rpm
+prefix=/usr
+
+version=12.1
+build=client64
+
+libdir=${prefix}/lib/oracle/${version}/${build}/lib
+includedir=${prefix}/include/oracle/${version}/${build}
+
+Name: OCI
+Description: Oracle database engine
+Version: ${version}
+Libs: -L${libdir} -lclntsh
+Libs.private:
+Cflags: -I${includedir}

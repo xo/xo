@@ -6,8 +6,8 @@ reduce the overhead/redundancy of writing (from scratch) Go types and funcs for
 common database tasks.
 
 Currently, xo can generate types for tables, enums, stored procedures, and
-custom SQL queries for PostgreSQL databases. Work is also being done to add
-support for MySQL, Oracle, and SQLite, which will be released when they become
+custom SQL queries for PostgreSQL and MySQL databases. Work is also being done
+to add support for Oracle and SQLite, which will be released when they become
 feature-complete.
 
 Additionally, support for other database abstractions (ie, views, many-to-many
@@ -21,9 +21,47 @@ and funcs for well-defined database relationships using raw queries.
 
 # Installation #
 
-Install in the usual way for Go:
+Install goimports dependency (if not already installed):
+```sh
+go get -u golang.org/x/tools/cmd/goimports
+```
+
+Then, install in the usual way:
 ```sh
 go get -u github.com/knq/xo
+```
+
+## Oracle Support ##
+
+Oracle support is disabled by default as the Go driver for it relies on the
+Oracle client libs that may not be installed on your system. If you would like
+to build a version of xo with Oracle support, please first [install mattn's
+Oracle driver](https://github.com/mattn/go-oci8#installation).
+
+On Ubuntu/Debian, you may download the instantclient RPMs [available from
+here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
+You should then be able to do the following:
+
+```sh
+# install alien, if not already installed
+sudo aptitude install alien
+
+# install the instantclient RPMs
+alien -i oracle-instantclient-12.1-basic-*.rpm
+alien -i oracle-instantclient-12.1-devel-*.rpm
+alien -i oracle-instantclient-12.1-sqlplus-*.rpm
+
+# get xo, if not done already
+go get -u github.com/knq/xo
+
+# copy oci8.pc from xo contrib to pkg-config directory
+sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+
+# install mattn's oci8 driver
+go get -u github.com/mattn/go-oci8
+
+# install xo with oracle support enabled
+go install -tags oracle github.com/knq/xo
 ```
 
 # Quickstart #
@@ -134,10 +172,11 @@ $$ LANGUAGE plpgsql;
 ```
 
 xo will generate the following (note: this is an abbreviated copy of actual
-output -- please see the [example](example) directory for how the generated
-types and funcs are used (generated via [example/gen.sh](example/gen.sh)), and
-see the [example/models](example/models) directory for the full generated
-code):
+output -- please see the [examples](examples) directory for how the generated
+types and funcs are used (generated via
+[examples/postgres/gen.sh](examples/postgres/gen.sh)), and see the
+[example/postgres/models](example/postgres/models) directory for the full
+generated code):
 ```go
 // Author represents a row from public.authors.
 type Author struct {
@@ -328,27 +367,25 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
+* Finish support for --{incl, excl}[ude] types
+* Finish support for ignoring fields (ie, fields managed by database such as
+  'modified' timestamps)
+* Add support for SQLite
+* Finish support for Oracle
 * Finish many-to-many and link table support
-* Add example for many-to-many relationships and link tables
 * Finish porting Cond, OrCond, OrderBy, Limit, GroupBy, Having
 * Add examples for Cond's
-* Add option for using a user-supplied template directory path
-* Add support for JSON types (json, jsonb on PostgreSQL)
 * Finish example and code for generated *Slice types
 * Add proper parameterization around generated code blocks (important for
   "extras" like Cond's)
-* Finish support for --{incl, excl}[ude] types
-* Add ability to 'append' to existing files rather than overwriting (ie, during
-  a custom query generation and reusing the existing type)
+* Column mapping option on custom queries
+* Add example for many-to-many relationships and link tables
 * Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
 * Unit tests / code coverage / continuous builds for binary package releases 
 * Add support for supplying a file (ie, *.sql) for query generation
 * Add support for full text types (tsvector, tsquery on PostgreSQL)
-* Finish support for Oracle [this may need to be a separate package, or enabled
-  only through a specific build tag, as yet TBD]
-* Finish COMMENT support for PostgreSQL
-* Add support for MySQL
-* Add support for SQLite
+* Finish COMMENT support for PostgreSQL/MySQL and update templates accordingly.
+* Add support for JSON types (json, jsonb on PostgreSQL, json on MySQL)
 * Add support for GIN index queries (PostgreSQL)
 * Add introspection for CASCADE relationships and generate DeleteCascade()'s
   (disabled by default)

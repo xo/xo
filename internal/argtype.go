@@ -1,5 +1,13 @@
 package internal
 
+import (
+	"io/ioutil"
+	"path"
+	"text/template"
+
+	"github.com/knq/xo/templates"
+)
+
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
 	// Verbose enables verbose output.
@@ -15,6 +23,9 @@ type ArgType struct {
 	// path. If Out is a directory, then the output file will be
 	// Out/<$CWD>.xo.go
 	Out string `arg:"-o,help:output path or file name"`
+
+	// Append toggles to append to the existing types.
+	Append bool `arg:"-a,help:append to existing files"`
 
 	// Suffix is the output suffix for filenames.
 	Suffix string `arg:"-f,help:output file suffix"`
@@ -36,10 +47,10 @@ type ArgType struct {
 	Uint32Type string `arg:"--uint32-type,-u,help:Go type to assign to unsigned integers"`
 
 	// IncTypes are the types to include.
-	//IncTypes []string `arg:"--include,-t,help:include types"`
+	InclTypes []string `arg:"--include,help:include type(s)"`
 
 	// ExcTypes are the types to exclude.
-	//ExcTypes []string `arg:"--exclude,-x,help:exclude types"`
+	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
 
 	// QueryMode toggles whether or not to parse a query from stdin.
 	QueryMode bool `arg:"--query-mode,-N,help:enable query mode"`
@@ -72,6 +83,10 @@ type ArgType struct {
 	// QueryParamDelimiter is the delimiter for parameterized values for a query.
 	QueryParamDelimiter string `arg:"--query-delimiter,-D,help:delimiter for query's embedded Go parameters"`
 
+	// TemplatePath is the path to use the user supplied templates instead of
+	// the built in versions.
+	TemplatePath string `arg:"--template-path,help:user supplied template path"`
+
 	// NoExtra when toggled will not generate certain extras.
 	//NoExtra bool `arg:"--no-extra,-Z,help:"disable extra code generation"`
 
@@ -80,7 +95,43 @@ type ArgType struct {
 
 	// Filename is the output filename, as derived from Out.
 	Filename string `arg:"-"`
+
+	// Loader is the schema loader
+	Loader Loader `arg:"-"`
+
+	// templateSet is the set of templates to use for generating data.
+	templateSet *TemplateSet `arg:"-"`
+
+	// Generated is the generated templates after a run.
+	Generated []TBuf `arg:"-"`
+
+	// KnownTypeMap is the collection of known Go types.
+	KnownTypeMap map[string]bool `arg:"-"`
+
+	// ShortNameTypeMap is the collection of Go style short names for types, mainly
+	// used for use with declaring a func receiver on a type.
+	ShortNameTypeMap map[string]string `arg:"-"`
 }
 
-// CustomTypePackage is a hack.
-var CustomTypePackage = ""
+// UserTemplateLoader loads templates from the specified name
+func (a *ArgType) TemplateLoader(name string) ([]byte, error) {
+	// no template path specified
+	if a.TemplatePath == "" {
+		return templates.Asset(name)
+	}
+
+	return ioutil.ReadFile(path.Join(a.TemplatePath, name))
+}
+
+// TemplateSet retrieves the created template set.
+func (a *ArgType) TemplateSet() *TemplateSet {
+	if a.templateSet == nil {
+		a.templateSet = &TemplateSet{
+			funcs: a.NewTemplateFuncs(),
+			l:     a.TemplateLoader,
+			tpls:  map[string]*template.Template{},
+		}
+	}
+
+	return a.templateSet
+}

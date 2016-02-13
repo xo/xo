@@ -1,0 +1,1 @@
+postgres.enum.go.tpl

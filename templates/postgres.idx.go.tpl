@@ -9,7 +9,7 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 	const sqlstr = `SELECT ` +
 		`{{ colnames .Table.Fields }} ` +
 		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
-		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
+		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query
 	{{ shortname .Type }} := {{ .Type }}{
@@ -35,7 +35,7 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 	const sqlstr = `SELECT ` +
 		`{{ colnames .Table.Fields }} ` +
 		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
-		`WHERE {{ range $i, $f := .Fields }}{{ if $i }} AND {{ end }}{{ $f.ColumnName }} = ${{ inc $i }}{{ end }}`
+		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query
 	q, err := db.Query(sqlstr{{ goparamlist .Fields false }})

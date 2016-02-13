@@ -16,8 +16,8 @@ set -ex
 rm -rf $DEST
 mkdir -p $DEST
 
-# enum query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Enum --query-type-comment='Enum represents a PostgreSQL enum value.' -o $DEST
+# postgresql enum query
+cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Enum -F PgEnumsBySchema --query-type-comment='Enum represents a enum value.' -o $DEST
 SELECT
   t.typname::varchar AS enum_type,
   e.enumlabel::varchar AS enum_value,
@@ -31,8 +31,8 @@ FROM pg_type t
 WHERE n.nspname = %%schema string%%
 ENDSQL
 
-# column query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Column --query-type-comment='Column represents PostgreSQL class (ie, table, view, etc) attributes.' -o $DEST
+# postgresql column query
+cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Column -F PgColumnsByRelkindSchema --query-type-comment='Column represents class (ie, table, view, etc) attributes.' -o $DEST
 SELECT
   a.attname::varchar AS column_name,
   c.relname::varchar AS table_name,
@@ -65,8 +65,8 @@ WHERE c.relkind = %%relkind string%% AND a.attnum > 0 AND n.nspname = %%schema s
 ORDER BY c.relname, a.attnum
 ENDSQL
 
-# proc query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Proc --query-type-comment='Proc represents a PostgreSQL stored procedure.' -o $DEST
+# postgresql proc query
+cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Proc -F PgProcsBySchema --query-type-comment='Proc represents a stored procedure.' -o $DEST
 SELECT
   p.proname::varchar AS proc_name,
   oidvectortypes(p.proargtypes)::varchar AS parameter_types,
@@ -75,10 +75,11 @@ SELECT
 FROM pg_proc p
   INNER JOIN pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = %%schema string%%
+ORDER BY p.proname
 ENDSQL
 
-# foreign key query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T ForeignKey --query-type-comment='ForeignKey represents a PostgreSQL foreign key.' -o $DEST
+# postgresql foreign key query
+cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T ForeignKey -F PgForeignKeysBySchema --query-type-comment='ForeignKey represents a foreign key.' -o $DEST
 SELECT
   r.conname::varchar AS foreign_key_name,
   a.relname::varchar AS table_name,
@@ -95,4 +96,81 @@ FROM pg_constraint r
   JOIN ONLY pg_attribute d ON d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid
   JOIN ONLY pg_namespace n ON n.oid = r.connamespace
 WHERE r.contype = 'f' AND n.nspname = %%schema string%%
+ORDER BY r.conname, a.relname, b.attname
 ENDSQL
+
+# mysql enum query
+cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -N -M -B -T MyEnum -o $DEST
+SELECT
+  table_name AS table_name,
+  column_name AS enum_type,
+  SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values
+FROM information_schema.columns
+WHERE data_type = 'enum' AND table_schema = %%schema string%%
+ORDER BY table_name, column_name
+ENDSQL
+
+# mysql column query
+cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T Column -F MyColumnsByRelkindSchema -o $DEST
+SELECT
+  c.column_name,
+  c.table_name,
+  IF(c.data_type = 'enum', c.column_name, c.column_type) AS data_type,
+  c.ordinal_position AS field_ordinal,
+  IF(c.is_nullable, true, false) AS is_nullable,
+  IF(c.column_key <> '', true, false) AS is_index,
+  IF(c.column_key IN('PRI', 'UNI'), true, false) AS is_unique,
+  IF(c.column_key = 'PRI', true, false) AS is_primary_key,
+  COALESCE((SELECT s.index_name
+    FROM information_schema.statistics s
+    WHERE s.table_schema = c.table_schema AND s.table_name = c.table_name AND s.column_name = c.column_name), '') AS index_name,
+  COALESCE((SELECT x.constraint_name
+    FROM information_schema.key_column_usage x
+    WHERE x.table_name = c.table_name AND x.column_name = c.column_name AND NOT x.referenced_table_name IS NULL), '') AS foreign_index_name,
+  COALESCE(IF(c.column_default IS NULL, true, false), false) AS has_default,
+  COALESCE(c.column_default, '') AS default_value,
+  COALESCE(c.column_comment, '') AS comment
+FROM information_schema.columns c
+LEFT JOIN information_schema.tables t ON t.table_schema = c.table_schema AND t.table_name = c.table_name
+WHERE t.table_type = %%relkind string%% AND c.table_schema = %%schema string%%
+ORDER BY c.table_name, c.ordinal_position
+ENDSQL
+
+# mysql proc query
+cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T Proc -F MyProcsBySchema -o $DEST
+SELECT
+  r.routine_name AS proc_name,
+  (SELECT GROUP_CONCAT(l.dtd_identifier SEPARATOR ', ')
+    FROM information_schema.parameters l
+    WHERE l.specific_schema = r.routine_schema AND l.specific_name = r.routine_name AND l.ordinal_position > 0
+    ORDER BY l.ordinal_position) AS parameter_types,
+  p.dtd_identifier AS return_type
+FROM information_schema.routines r
+INNER JOIN information_schema.parameters p ON
+  p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0
+WHERE r.routine_schema = %%schema string%%
+ORDER BY r.specific_name
+ENDSQL
+
+# mysql foreign key query
+cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T ForeignKey -F MyForeignKeysBySchema -o $DEST
+SELECT
+  constraint_name AS foreign_key_name,
+  table_name AS table_name,
+  column_name AS column_name,
+  '' AS ref_index_name,
+  referenced_table_name AS ref_table_name,
+  referenced_column_name AS ref_column_name
+FROM information_schema.key_column_usage
+WHERE referenced_table_name IS NOT NULL AND table_schema = %%schema string%%
+ORDER BY table_name, constraint_name
+ENDSQL
+
+exit
+
+# sqlite column query
+cat << ENDSQL | $XOBIN sqlite:/xodb.sqlite3 -a -N -M -B -T Column -F SqColumnsBySchemaTable -Z 'FieldOrdinal,ColumnName,DataType,IsNullable,DefaultValue,IsPrimary' -o $DEST
+PRAGMA %%schema string,interpolate%%.table_info(%%table string,interpolate%%)
+ENDSQL
+
+#cat << ENDSQL | $XOBIN sqlite:/xodb.sqlite3 -a -N -M -B -T

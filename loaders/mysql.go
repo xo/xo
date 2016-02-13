@@ -2,12 +2,14 @@ package loaders
 
 import (
 	"database/sql"
-	"regexp"
+	"fmt"
+	"net/url"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
@@ -17,43 +19,90 @@ import (
 )
 
 func init() {
-	internal.SchemaLoaders["postgres"] = internal.TypeLoader{
-		Schemes:        []string{"postgres", "postgresql", "pgsql", "pg"},
-		QueryFunc:      PgParseQuery,
-		LoadSchemaFunc: PgLoadSchemaTypes,
+	internal.SchemaLoaders["mysql"] = internal.TypeLoader{
+		Schemes:        []string{"mysql", "my", "mariadb", "aurora"},
+		ProcessDSN:     MyProcessDSN,
+		QueryFunc:      MyParseQuery,
+		LoadSchemaFunc: MyLoadSchemaTypes,
+		ParamN:         func(i int) string { return "?" },
 	}
 }
 
-// PgLoadSchemaTypes loads the postgres type definitions from a database.
-func PgLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
+// MyProcessDSN processes a mysql DSN.
+func MyProcessDSN(u *url.URL, protocol string) string {
+	// build host or domain socket
+	host := u.Host
+	dbname := u.Path[1:]
+	if protocol == "unix" {
+		host = path.Join(u.Host, path.Dir(u.Path))
+		dbname = path.Base(u.Path)
+	} else if !strings.Contains(host, ":") {
+		// append default port
+		host = host + ":3306"
+	}
+
+	// build user/pass
+	userinfo := ""
+	if un := u.User.Username(); len(un) > 0 {
+		userinfo = un
+		if up, ok := u.User.Password(); ok {
+			userinfo = userinfo + ":" + up
+		}
+	}
+
+	// build params
+	params := u.Query().Encode()
+	if len(params) > 0 {
+		params = "?" + params
+	}
+
+	// format
+	return fmt.Sprintf(
+		"%s@%s(%s)/%s%s",
+		userinfo,
+		protocol,
+		host,
+		dbname,
+		params,
+	)
+}
+
+// MyLoadSchemaTypes loads the sqlite type definitions from a database.
+func MyLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
+	// load schema
+	err = db.QueryRow(`SELECT SCHEMA()`).Scan(&args.Schema)
+	if err != nil {
+		return err
+	}
+
 	// load enums
-	_, err = PgLoadEnums(args, db)
+	_, err = MyLoadEnums(args, db)
 	if err != nil {
 		return err
 	}
 
 	// load tables
-	tableMap, err := PgLoadTables(args, db)
+	tableMap, err := MyLoadTables(args, db)
 	if err != nil {
 		return err
 	}
 
 	// load foreign relationships
-	_, err = PgLoadForeignKeys(args, db, tableMap)
+	_, err = MyLoadForeignKeys(args, db, tableMap)
 	if err != nil {
 		return err
 	}
 
 	// load idx
-	_, err = PgLoadIndexes(args, db, tableMap)
+	_, err = MyLoadIndexes(args, db, tableMap)
 	if err != nil {
 		return err
 	}
 
 	// load procs
-	_, err = PgLoadProcs(args, db)
+	_, err = MyLoadProcs(args, db)
 	if err != nil {
 		return err
 	}
@@ -61,13 +110,13 @@ func PgLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 	return nil
 }
 
-// PgLoadEnums reads the enums from the database, writing the values to the
+// MyLoadEnums reads the enums from the database, writing the values to the
 // args.TypeMap and returning the created EnumTemplates.
-func PgLoadEnums(args *internal.ArgType, db *sql.DB) (map[string]*internal.EnumTemplate, error) {
+func MyLoadEnums(args *internal.ArgType, db *sql.DB) (map[string]*internal.EnumTemplate, error) {
 	var err error
 
 	// load enums
-	enums, err := models.PgEnumsBySchema(db, args.Schema)
+	enums, err := models.MyEnumsBySchema(db, args.Schema)
 	if err != nil {
 		return nil, err
 	}
@@ -76,34 +125,38 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB) (map[string]*internal.EnumT
 	enumMap := map[string]*internal.EnumTemplate{}
 	for _, e := range enums {
 		// calc go type and add to known types
-		goType := inflector.Singularize(snaker.SnakeToCamel(e.EnumType))
-		args.KnownTypeMap[goType] = true
+		typ := inflector.Singularize(snaker.SnakeToCamel(e.EnumType))
+		args.KnownTypeMap[typ] = true
 
-		// calculate val, chopping off redundant type name if applicable
-		val := snaker.SnakeToCamel(strings.ToLower(e.EnumValue))
-		if strings.HasSuffix(strings.ToLower(val), strings.ToLower(goType)) {
-			v := val[:len(val)-len(goType)]
-			if len(v) > 0 {
-				val = v
-			}
+		// create enum template
+		enumTpl := &internal.EnumTemplate{
+			Type:     typ,
+			EnumType: e.EnumType,
+			Values:   []*models.Enum{},
 		}
 
-		// copy values back into model
-		e.Value = val
-		e.Type = goType
-
-		// set value in enum map if not present
-		typ := strings.ToLower(goType)
-		if _, ok := enumMap[typ]; !ok {
-			enumMap[typ] = &internal.EnumTemplate{
-				Type:     goType,
-				EnumType: e.EnumType,
-				Values:   []*models.Enum{},
+		// loop over values
+		for i, eVal := range strings.Split(e.EnumValues[1:len(e.EnumValues)-1], "','") {
+			// calculate val, chopping off redundant type name if applicable
+			val := snaker.SnakeToCamel(strings.ToLower(eVal))
+			if strings.HasSuffix(strings.ToLower(val), strings.ToLower(typ)) {
+				v := val[:len(val)-len(typ)]
+				if len(v) > 0 {
+					val = v
+				}
 			}
+
+			// append enum to template vals
+			enumTpl.Values = append(enumTpl.Values, &models.Enum{
+				EnumType:   e.EnumType,
+				EnumValue:  eVal,
+				Type:       typ,
+				Value:      val,
+				ConstValue: i + 1,
+			})
 		}
 
-		// append enum to template vals
-		enumMap[typ].Values = append(enumMap[typ].Values, e)
+		enumMap[typ] = enumTpl
 	}
 
 	// generate enum templates
@@ -117,13 +170,13 @@ func PgLoadEnums(args *internal.ArgType, db *sql.DB) (map[string]*internal.EnumT
 	return enumMap, nil
 }
 
-// PgLoadProcs reads the procs from the database, writing the values to the
+// MyLoadProcs reads the procs from the database, writing the values to the
 // args.TypeMap and returning the created ProcTemplates.
-func PgLoadProcs(args *internal.ArgType, db *sql.DB) (map[string]*internal.ProcTemplate, error) {
+func MyLoadProcs(args *internal.ArgType, db *sql.DB) (map[string]*internal.ProcTemplate, error) {
 	var err error
 
 	// load procs
-	procs, err := models.PgProcsBySchema(db, args.Schema)
+	procs, err := models.MyProcsBySchema(db, args.Schema)
 	if err != nil {
 		return nil, err
 	}
@@ -148,13 +201,13 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB) (map[string]*internal.ProcT
 		}
 
 		// parse return type into template
-		_, procTpl.NilReturnType, procTpl.ReturnType = PgParseType(args, p.ReturnType, false)
+		_, procTpl.NilReturnType, procTpl.ReturnType = MyParseType(args, p.ReturnType, false)
 
 		// split parameter types
 		if len(p.ParameterTypes) > 0 {
 			for i, paramType := range strings.Split(p.ParameterTypes, ", ") {
 				// determine the go equivalent parameter types and add to parameters
-				_, _, pt := PgParseType(args, paramType, false)
+				_, _, pt := MyParseType(args, paramType, false)
 				procTpl.Parameters = append(procTpl.Parameters, &models.Column{
 					Field: "v" + strconv.Itoa(i),
 					Type:  pt,
@@ -176,13 +229,13 @@ func PgLoadProcs(args *internal.ArgType, db *sql.DB) (map[string]*internal.ProcT
 	return procMap, nil
 }
 
-// PgLoadTables loads the table definitions from the database, writing the
+// MyLoadTables loads the table definitions from the database, writing the
 // resulting templates to args.TypeMap and returning the created TableTemplates.
-func PgLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.TableTemplate, error) {
+func MyLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.TableTemplate, error) {
 	var err error
 
 	// load columns
-	cols, err := models.PgColumnsByRelkindSchema(db, "r", args.Schema)
+	cols, err := models.MyColumnsByRelkindSchema(db, "BASE TABLE", args.Schema)
 	if err != nil {
 		return nil, err
 	}
@@ -195,9 +248,20 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.Tabl
 			fieldMap[c.TableName] = map[string]bool{}
 		}
 
+		// fix issues with mysql data
+		if c.IsPrimaryKey { // mysql will return 'PRIMARY' for a primary key index name
+			c.IndexName = c.ColumnName
+		}
+		if c.IndexName != "" {
+			c.IsIndex = true
+		}
+		if c.ForeignIndexName != "" {
+			c.IsForeignKey = true
+		}
+
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
-		c.Len, c.NilType, c.Type = PgParseType(args, c.DataType, c.IsNullable)
+		c.Len, c.NilType, c.Type = MyParseType(args, c.DataType, c.IsNullable)
 
 		// set value in table map if not present
 		if _, ok := tableMap[c.TableName]; !ok {
@@ -235,12 +299,12 @@ func PgLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.Tabl
 	return tableMap, nil
 }
 
-// PgLoadForeignKeys loads foreign key relationships from the database.
-func PgLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.ForeignKeyTemplate, error) {
+// MyLoadForeignKeys loads foreign key relationships from the database.
+func MyLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.ForeignKeyTemplate, error) {
 	var err error
 
 	// load foreign keys
-	fkeys, err := models.PgForeignKeysBySchema(db, args.Schema)
+	fkeys, err := models.MyForeignKeysBySchema(db, args.Schema)
 	if err != nil {
 		return nil, err
 	}
@@ -290,8 +354,8 @@ func PgLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*
 	return fkMap, nil
 }
 
-// PgLoadIndexes loads indexes from the database.
-func PgLoadIndexes(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.IndexTemplate, error) {
+// MyLoadIndexes loads indexes from the database.
+func MyLoadIndexes(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.IndexTemplate, error) {
 	var err error
 
 	// load idx's
@@ -360,205 +424,26 @@ func PgLoadIndexes(args *internal.ArgType, db *sql.DB, tableMap map[string]*inte
 	return idxMap, nil
 }
 
-// PgParseType parse a postgres type into a Go type based on the column
-// definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
-	precision := 0
-	nilType := "nil"
-	asSlice := false
-
-	// handle SETOF
-	if strings.HasPrefix(dt, "SETOF ") {
-		_, _, t := PgParseType(args, dt[len("SETOF "):], false)
-		return 0, "nil", "[]" + t
-	}
-
-	// determine if it's a slice
-	if strings.HasSuffix(dt, "[]") {
-		dt = dt[:len(dt)-2]
-		asSlice = true
-	}
-
-	// extract length
-	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
-		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
-		dt = dt[:loc[0]]
-	}
-
-	var typ string
-	switch dt {
-	case "boolean":
-		nilType = "false"
-		typ = "bool"
-		if nullable {
-			nilType = "sql.NullBool{}"
-			typ = "sql.NullBool"
-		}
-
-	case "character", "character varying", "text":
-		nilType = `""`
-		typ = "string"
-		if nullable {
-			nilType = "sql.NullString{}"
-			typ = "sql.NullString"
-		}
-
-	case "smallint":
-		nilType = "0"
-		typ = "int16"
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-	case "integer":
-		nilType = "0"
-		typ = args.Int32Type
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-	case "bigint":
-		nilType = "0"
-		typ = "int64"
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-
-	case "smallserial":
-		nilType = "0"
-		typ = "uint16"
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-	case "serial":
-		nilType = "0"
-		typ = args.Uint32Type
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-	case "bigserial":
-		nilType = "0"
-		typ = "uint64"
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-
-	case "real":
-		nilType = "0.0"
-		typ = "float32"
-		if nullable {
-			nilType = "sql.NullFloat64{}"
-			typ = "sql.NullFloat64"
-		}
-	case "double precision":
-		nilType = "0.0"
-		typ = "float64"
-		if nullable {
-			nilType = "sql.NullFloat64{}"
-			typ = "sql.NullFloat64"
-		}
-
-	case "bytea":
-		asSlice = true
-		typ = "byte"
-
-	case "timestamp with time zone":
-		typ = "*time.Time"
-		if nullable {
-			nilType = "pq.NullTime{}"
-			typ = "pq.NullTime"
-		}
-
-	case "time with time zone", "time without time zone", "timestamp without time zone":
-		nilType = "0"
-		typ = "int64"
-		if nullable {
-			nilType = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
-		}
-
-	case "interval":
-		typ = "*time.Duration"
-
-	case `"char"`, "bit":
-		// FIXME: this needs to actually be tested ...
-		// i think this should be 'rune' but I don't think database/sql
-		// supports 'rune' as a type?
-		//
-		// this is mainly here because postgres's pg_catalog.* meta tables have
-		// this as a type.
-		//typ = "rune"
-		nilType = `uint8(0)`
-		typ = "uint8"
-
-	case `"any"`, "bit varying":
-		asSlice = true
-		typ = "byte"
-
-	default:
-		if strings.HasPrefix(dt, args.Schema+".") {
-			// in the same schema, so chop off
-			typ = snaker.SnakeToCamel(dt[len(args.Schema)+1:])
-			nilType = typ + "(0)"
-		} else {
-			typ = snaker.SnakeToCamel(dt)
-			nilType = typ + "{}"
-		}
-	}
-
-	// special case for []slice
-	if typ == "string" && asSlice {
-		return precision, "StringSlice{}", "StringSlice"
-	}
-
-	// correct type if slice
-	if asSlice {
-		typ = "[]" + typ
-		nilType = "nil"
-	}
-
-	return precision, nilType, typ
-}
-
-// pgQueryStripRE is the regexp to match the '::type AS name' portion in a query,
-// which is a quirk/requirement of generating queries as is done in this
-// package.
-var pgQueryStripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
-
-// PgParseQuery parses the query and generates a type for it.
-func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
+// MyParseQuery parses the query and generates a type for it.
+func MyParseQuery(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
-	// parse supplied query
-	queryStr, params := args.ParseQuery("$%d")
-	inspectStr, _ := args.ParseQuery("NULL")
-
-	// strip out
-	if args.QueryStrip {
-		queryStr = pgQueryStripRE.ReplaceAllString(queryStr, "")
+	// schema query
+	err = db.QueryRow(`SELECT SCHEMA()`).Scan(&args.Schema)
+	if err != nil {
+		return err
 	}
+
+	// parse supplied query
+	queryStr, params := args.ParseQuery("?")
+	inspectStr, _ := args.ParseQuery("NULL")
 
 	// split up query and inspect based on lines
 	query := strings.Split(queryStr, "\n")
 	inspect := strings.Split(inspectStr, "\n")
 
-	// build query comments with stripped values
-	// FIXME: this is off by one, because of golang template syntax limitations
+	// query comment placeholder
 	queryComments := make([]string, len(query)+1)
-	if args.QueryStrip {
-		for i, l := range inspect {
-			pos := pgQueryStripRE.FindStringIndex(l)
-			if pos != nil {
-				queryComments[i+1] = l[pos[0]:pos[1]]
-			} else {
-				queryComments[i+1] = ""
-			}
-		}
-	}
 
 	// trim whitespace if applicable
 	if args.QueryTrim {
@@ -579,28 +464,21 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 
 	// create temporary view xoid
 	xoid := "_xo_" + internal.GenRandomID()
-	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
 	_, err = db.Exec(viewq)
 	if err != nil {
 		return err
 	}
 
-	// determine schema name temporary view was created on
-	// sql query
-	var nspq = `SELECT n.nspname ` +
-		`FROM pg_class c ` +
-		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
-		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`
-
-	// run schema query
-	var schema string
-	err = db.QueryRow(nspq, xoid).Scan(&schema)
+	// load column information
+	cols, err := models.MyColumnsByRelkindSchema(db, "VIEW", args.Schema)
 	if err != nil {
 		return err
 	}
 
-	// load column information ("v" == view)
-	cols, err := models.PgColumnsByRelkindSchema(db, "v", schema)
+	// drop inspect view
+	dropq := `DROP VIEW ` + xoid
+	_, err = db.Exec(dropq)
 	if err != nil {
 		return err
 	}
@@ -620,7 +498,7 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 		}
 
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
-		c.Len, c.NilType, c.Type = PgParseType(args, c.DataType, false)
+		c.Len, c.NilType, c.Type = MyParseType(args, c.DataType, false)
 		typeTpl.Fields = append(typeTpl.Fields, c)
 	}
 
@@ -652,7 +530,7 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 	}
 
 	// create func template
-	queryTpl := &internal.QueryTemplate{
+	funcTpl := &internal.QueryTemplate{
 		Name:          funcName,
 		Type:          args.QueryType,
 		Query:         query,
@@ -664,10 +542,127 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 	}
 
 	// generate template
-	err = args.ExecuteTemplate(internal.Query, args.QueryType, queryTpl)
+	err = args.ExecuteTemplate(internal.Query, args.QueryType, funcTpl)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// MyParseType parse a postgres type into a Go type based on the column
+// definition.
+func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+	precision := 0
+	nilType := "nil"
+	asSlice := false
+	unsigned := false
+
+	// extract unsigned
+	if strings.HasSuffix(dt, " unsigned") {
+		unsigned = true
+		dt = dt[:len(dt)-len(" unsigned")]
+	}
+
+	// extract length
+	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
+		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
+		dt = dt[:loc[0]]
+	}
+
+	var typ string
+	switch dt {
+	case "bool", "boolean":
+		nilType = "false"
+		typ = "bool"
+		if nullable {
+			nilType = "sql.NullBool{}"
+			typ = "sql.NullBool"
+		}
+
+	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
+		nilType = `""`
+		typ = "string"
+		if nullable {
+			nilType = "sql.NullString{}"
+			typ = "sql.NullString"
+		}
+
+	case "tinyint", "smallint", "mediumint":
+		nilType = "0"
+		typ = "int16"
+		if nullable {
+			nilType = "sql.NullInt64{}"
+			typ = "sql.NullInt64"
+		}
+	case "int", "integer":
+		nilType = "0"
+		typ = args.Int32Type
+		if nullable {
+			nilType = "sql.NullInt64{}"
+			typ = "sql.NullInt64"
+		}
+	case "bigint":
+		nilType = "0"
+		typ = "int64"
+		if nullable {
+			nilType = "sql.NullInt64{}"
+			typ = "sql.NullInt64"
+		}
+
+	case "decimal", "float":
+		nilType = "0.0"
+		typ = "float32"
+		if nullable {
+			nilType = "sql.NullFloat64{}"
+			typ = "sql.NullFloat64"
+		}
+	case "double":
+		nilType = "0.0"
+		typ = "float64"
+		if nullable {
+			nilType = "sql.NullFloat64{}"
+			typ = "sql.NullFloat64"
+		}
+
+	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
+		asSlice = true
+		typ = "byte"
+
+	case "timestamp", "datetime":
+		typ = "*time.Time"
+		if nullable {
+			nilType = "pq.NullTime{}"
+			typ = "pq.NullTime"
+		}
+
+	default:
+		if strings.HasPrefix(dt, args.Schema+".") {
+			// in the same schema, so chop off
+			typ = snaker.SnakeToCamel(dt[len(args.Schema)+1:])
+			nilType = typ + "(0)"
+		} else {
+			typ = snaker.SnakeToCamel(dt)
+			nilType = typ + "{}"
+		}
+	}
+
+	// special case for []slice
+	if typ == "string" && asSlice {
+		return precision, "StringSlice{}", "StringSlice"
+	}
+
+	// correct type if slice
+	if asSlice {
+		typ = "[]" + typ
+		nilType = "nil"
+	}
+
+	// add 'u' as prefix to type if its unsigned
+	// FIXME: this needs to be tested properly...
+	if unsigned && internal.IntRE.MatchString(typ) {
+		typ = "u" + typ
+	}
+
+	return precision, nilType, typ
 }

@@ -4,7 +4,7 @@
 {{- else -}}
 // {{ .Name }} runs a custom query, returning results as {{ .Type }}.
 {{- end }}
-func {{ .Name }} (db XODB{{ range $i, $p := .Parameters }}, {{ index $p 0 }} {{ index $p 1 }}{{ end }}) ({{ if not .OnlyOne }}[]{{ end }}*{{ .Type }}, error) {
+func {{ .Name }} (db XODB{{ range .Parameters }}, {{ .Name }} {{ .Type }}{{ end }}) ({{ if not .OnlyOne }}[]{{ end }}*{{ .Type }}, error) {
 	var err error
 
 	// sql query
@@ -14,14 +14,14 @@ func {{ .Name }} (db XODB{{ range $i, $p := .Parameters }}, {{ index $p 0 }} {{ 
 	// run query
 {{- if .OnlyOne }}
 	var {{ shortname .Type }} {{ .Type }}
-	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ index . 0 }}{{ end }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
+	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 	if err != nil {
 		return nil, err
 	}
 
 	return &{{ shortname .Type }}, nil
 {{- else }}
-	q, err := db.Query(sqlstr{{ range .Parameters }}, {{ index . 0 }}{{ end }})
+	q, err := db.Query(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }})
 	if err != nil {
 		return nil, err
 	}

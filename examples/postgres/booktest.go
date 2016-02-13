@@ -8,7 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/knq/xo/example/models"
+	"github.com/knq/xo/examples/postgres/models"
 )
 
 func main() {
