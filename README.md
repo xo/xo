@@ -72,10 +72,10 @@ The following is a quick working example of how to use xo:
 # make an output directory
 mkdir models
 
-# generate code for schema
+# generate code for a postgres schema
 xo pgsql://user:pass@host/dbname -o models
 
-# generate code for a custom query
+# generate code for a custom postgres query
 cat << ENDSQL | xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/
 SELECT
   a.name::varchar AS name,
