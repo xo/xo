@@ -97,7 +97,7 @@ The following are xo's arguments and options:
 
 ```
 $ xo -h
-usage: xo [--schema SCHEMA] [--out OUT] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] DSN
+usage: xo [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--template-path TEMPLATE-PATH] DSN
 
 positional arguments:
   dsn                    data source name
@@ -106,6 +106,7 @@ options:
   --schema SCHEMA, -s SCHEMA
                          schema name to generate Go types for [default: public]
   --out OUT, -o OUT      output path or file name
+  --append, -a           append to existing files
   --suffix SUFFIX, -f SUFFIX
                          output file suffix [default: .xo.go]
   --single-file          toggle single file output
@@ -117,6 +118,8 @@ options:
                          Go type to assign to integers [default: int]
   --uint32-type UINT32-TYPE, -u UINT32-TYPE
                          Go type to assign to unsigned integers [default: uint]
+  --include INCLUDE      include type(s)
+  --exclude EXCLUDE      exclude type(s)
   --query-mode, -N       enable query mode
   --query QUERY, -Q QUERY
                          query to generate Go type and func from
@@ -133,6 +136,8 @@ options:
                          comment for query's generated Go func
   --query-delimiter QUERY-DELIMITER, -D QUERY-DELIMITER
                          delimiter for query's embedded Go parameters [default: %%]
+  --template-path TEMPLATE-PATH
+                         user supplied template path
   --help, -h             display this help and exit
 ```
 
