@@ -149,11 +149,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s'\nTags: ", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn)
-		for _, s := range ab.BookTags {
-			fmt.Printf("'%s' ", s)
-		}
-		fmt.Println()
+		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
 
 	// call say_hello(varchar)

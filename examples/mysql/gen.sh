@@ -7,7 +7,12 @@ if [ -e $SRC/../../xo ]; then
   XOBIN=$SRC/../../xo
 fi
 
-set -ex
+DEST=$SRC/models
+
+set -x
+
+mkdir -p $DEST
+rm -f $DEST/*.go
 
 mysql -u booktest -pbooktest booktest << 'ENDSQL'
 SET FOREIGN_KEY_CHECKS=0;
@@ -18,26 +23,26 @@ SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE authors (
   author_id integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name varchar(255) NOT NULL DEFAULT ''
+  name text NOT NULL DEFAULT ''
 ) ENGINE=InnoDB;
 
-CREATE INDEX authors_name_idx ON authors(name);
+CREATE INDEX authors_name_idx ON authors(name(255));
 
 CREATE TABLE books (
   book_id integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
   author_id integer NOT NULL,
   isbn varchar(255) NOT NULL DEFAULT '' UNIQUE,
-  booktype ENUM('FICTION', 'NONFICTION') NOT NULL DEFAULT 'FICTION',
-  title varchar(255) DEFAULT '',
+  book_type ENUM('FICTION', 'NONFICTION') NOT NULL DEFAULT 'FICTION',
+  title text DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
   available timestamp NOT NULL DEFAULT NOW(),
-  tags varchar(255) NOT NULL DEFAULT '',
+  tags text NOT NULL DEFAULT '',
   CONSTRAINT FOREIGN KEY (author_id) REFERENCES authors(author_id)
 ) ENGINE=InnoDB;
 
-CREATE INDEX books_title_idx ON books(title, year);
+CREATE INDEX books_title_idx ON books(title(255), year);
 
-CREATE FUNCTION say_hello(s varchar(255)) RETURNS varchar(255)
+CREATE FUNCTION say_hello(s text) RETURNS text
   DETERMINISTIC
   RETURN CONCAT('hello ', s);
 ENDSQL
@@ -58,5 +63,10 @@ WHERE b.tags LIKE CONCAT('%', %%tag string%%, '%')
 ENDSQL
 
 pushd $SRC &> /dev/null
+
 go build
+./mysql
+
 popd &> /dev/null
+
+mysql -u booktest -pbooktest booktest <<< 'select * from books;'

@@ -8,64 +8,64 @@ import (
 	"errors"
 )
 
-// Booktype is the 'booktype' enum type.
-type Booktype uint16
+// BookType is the 'book_type' enum type.
+type BookType uint16
 
 const (
-	// FictionBooktype is the booktype for 'FICTION'.
-	FictionBooktype = Booktype(1)
+	// FictionBookType is the book_type for 'FICTION'.
+	FictionBookType = BookType(1)
 
-	// NonfictionBooktype is the booktype for 'NONFICTION'.
-	NonfictionBooktype = Booktype(2)
+	// NonfictionBookType is the book_type for 'NONFICTION'.
+	NonfictionBookType = BookType(2)
 )
 
-// String returns the string value of the Booktype.
-func (b Booktype) String() string {
+// String returns the string value of the BookType.
+func (bt BookType) String() string {
 	var enumVal string
 
-	switch b {
-	case FictionBooktype:
+	switch bt {
+	case FictionBookType:
 		enumVal = "FICTION"
 
-	case NonfictionBooktype:
+	case NonfictionBookType:
 		enumVal = "NONFICTION"
 	}
 
 	return enumVal
 }
 
-// MarshalText marshals Booktype into text.
-func (b Booktype) MarshalText() ([]byte, error) {
-	return []byte(b.String()), nil
+// MarshalText marshals BookType into text.
+func (bt BookType) MarshalText() ([]byte, error) {
+	return []byte(bt.String()), nil
 }
 
-// UnmarshalText unmarshals Booktype from text.
-func (b *Booktype) UnmarshalText(text []byte) error {
+// UnmarshalText unmarshals BookType from text.
+func (bt *BookType) UnmarshalText(text []byte) error {
 	switch string(text) {
 	case "FICTION":
-		*b = FictionBooktype
+		*bt = FictionBookType
 
 	case "NONFICTION":
-		*b = NonfictionBooktype
+		*bt = NonfictionBookType
 
 	default:
-		return errors.New("invalid Booktype")
+		return errors.New("invalid BookType")
 	}
 
 	return nil
 }
 
-// Value satisfies the sql/driver.Valuer interface for Booktype.
-func (b Booktype) Value() (driver.Value, error) {
-	return b.String(), nil
+// Value satisfies the sql/driver.Valuer interface for BookType.
+func (bt BookType) Value() (driver.Value, error) {
+	return bt.String(), nil
 }
 
-// Scan satisfies the database/sql.Scanner interface for Booktype.
-func (b *Booktype) Scan(src interface{}) error {
+// Scan satisfies the database/sql.Scanner interface for BookType.
+func (bt *BookType) Scan(src interface{}) error {
 	buf, ok := src.([]byte)
 	if !ok {
-		return errors.New("invalid Booktype")
+		return errors.New("invalid BookType")
 	}
 
-	return b.UnmarshalText(buf)
+	return bt.UnmarshalText(buf)
 }

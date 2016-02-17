@@ -75,11 +75,9 @@ func ({{ shortname .Type }} *{{ .Type }}) Update(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `UPDATE {{ .TableSchema }}.{{ .TableName }} SET (` +
-		`{{ colnames .Fields .PrimaryKeyField }}` +
-		`) = ( ` +
-		`{{ colvals .Fields .PrimaryKeyField }}` +
-		`) WHERE {{ .PrimaryKey }} = ?`
+	const sqlstr = `UPDATE {{ .TableSchema }}.{{ .TableName }} SET ` +
+		`{{ colnamesquery .Fields ", " .PrimaryKeyField }}` +
+		` WHERE {{ .PrimaryKey }} = ?`
 
 	// run query
 	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})

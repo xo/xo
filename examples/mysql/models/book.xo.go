@@ -13,7 +13,7 @@ type Book struct {
 	BookID    int        // book_id
 	AuthorID  int        // author_id
 	Isbn      string     // isbn
-	Booktype  Booktype   // booktype
+	BookType  BookType   // book_type
 	Title     string     // title
 	Year      int        // year
 	Available *time.Time // available
@@ -44,13 +44,13 @@ func (b *Book) Insert(db XODB) error {
 
 	// sql query
 	const sqlstr = `INSERT INTO booktest.books (` +
-		`author_id, isbn, booktype, title, year, available, tags` +
+		`author_id, isbn, book_type, title, year, available, tags` +
 		`) VALUES (` +
 		`?, ?, ?, ?, ?, ?, ?` +
 		`)`
 
 	// run query
-	res, err := db.Exec(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)
+	res, err := db.Exec(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags)
 	if err != nil {
 		return err
 	}
@@ -83,14 +83,12 @@ func (b *Book) Update(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `UPDATE booktest.books SET (` +
-		`author_id, isbn, booktype, title, year, available, tags` +
-		`) = ( ` +
-		`?, ?, ?, ?, ?, ?, ?` +
-		`) WHERE book_id = ?`
+	const sqlstr = `UPDATE booktest.books SET ` +
+		`author_id = ?, isbn = ?, book_type = ?, title = ?, year = ?, available = ?, tags = ?` +
+		` WHERE book_id = ?`
 
 	// run query
-	_, err = db.Exec(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags, b.BookID)
+	_, err = db.Exec(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	return err
 }
 
@@ -140,7 +138,7 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, booktype, title, year, available, tags ` +
+		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM booktest.books ` +
 		`WHERE isbn = ?`
 
@@ -148,7 +146,7 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
+	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +162,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, booktype, title, year, available, tags ` +
+		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM booktest.books ` +
 		`WHERE title = ? AND year = ?`
 
@@ -183,7 +181,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 		}
 
 		// scan
-		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
+		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
 		if err != nil {
 			return nil, err
 		}
@@ -202,7 +200,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, booktype, title, year, available, tags ` +
+		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM booktest.books ` +
 		`WHERE book_id = ?`
 
@@ -210,7 +208,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
+	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
 	}

@@ -74,11 +74,9 @@ func (a *Author) Update(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `UPDATE booktest.authors SET (` +
-		`name` +
-		`) = ( ` +
-		`?` +
-		`) WHERE author_id = ?`
+	const sqlstr = `UPDATE booktest.authors SET ` +
+		`name = ?` +
+		` WHERE author_id = ?`
 
 	// run query
 	_, err = db.Exec(sqlstr, a.Name, a.AuthorID)
