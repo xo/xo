@@ -69,6 +69,9 @@ ENDSQL
 
 pushd $SRC &> /dev/null
 
-go build && ./postgres && psql -U booktest -c 'select * from books;'
+go build
+./postgres
 
 popd &> /dev/null
+
+psql -U booktest -c 'select * from books;'

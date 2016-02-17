@@ -70,7 +70,7 @@ func main() {
 	// update the title and tags
 	b1.Title = "changed second title"
 	b1.Tags = models.StringSlice{"cool", "disastor"}
-	err = b1.Save(db)
+	err = b1.Update(db)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -162,4 +162,14 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("SayHello response: %s\n", str)
+
+	// get book 4 and delete
+	b5, err := models.BookByBookID(db, 4)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = b5.Delete(db)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
