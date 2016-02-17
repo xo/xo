@@ -7,7 +7,12 @@ if [ -e $SRC/../../xo ]; then
   XOBIN=$SRC/../../xo
 fi
 
+DEST=$SRC/models
+
 set -x
+
+mkdir -p $DEST
+rm -f $DEST/*.go
 
 psql -U postgres -c "create user booktest password 'booktest';"
 psql -U postgres -c 'drop database booktest;'
@@ -63,5 +68,7 @@ WHERE b.tags && %%tags StringSlice%%::varchar[]
 ENDSQL
 
 pushd $SRC &> /dev/null
-go build
+
+go build && ./postgres && psql -U booktest -c 'select * from books;'
+
 popd &> /dev/null

@@ -67,6 +67,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// update the title and tags
+	b1.Title = "changed second title"
+	b1.Tags = models.StringSlice{"cool", "disastor"}
+	err = b1.Save(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// save third book
 	b2 := models.Book{
 		AuthorID:  a.AuthorID,

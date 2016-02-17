@@ -56,10 +56,11 @@ func (ss *StringSlice) Scan(src interface{}) error {
 
 // Value satisfies the driver.Valuer interface for StringSlice.
 func (ss StringSlice) Value() (driver.Value, error) {
+	v := make([]string, len(ss))
 	for i, s := range ss {
-		ss[i] = `"` + strings.Replace(strings.Replace(s, `\`, `\\\`, -1), `"`, `\"`, -1) + `"`
+		v[i] = `"` + strings.Replace(strings.Replace(s, `\`, `\\\`, -1), `"`, `\"`, -1) + `"`
 	}
-	return "{" + strings.Join(ss, ",") + "}", nil
+	return "{" + strings.Join(v, ",") + "}", nil
 }
 
 // Slice is a slice of ScannerValuers.
