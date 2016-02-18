@@ -59,7 +59,7 @@ func PgColumnsByRelkindSchema(db XODB, relkind string, schema string) ([]*Column
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
 		`LEFT JOIN pg_index ix ON a.attnum = ANY(ix.indkey) AND c.oid = a.attrelid AND c.oid = ix.indrelid ` +
 		`LEFT JOIN pg_class i ON i.oid = ix.indexrelid ` +
-		`WHERE c.relkind = $1 AND a.attnum > 0 AND n.nspname = $2 ` +
+		`WHERE a.attisdropped = false AND c.relkind = $1 AND a.attnum > 0 AND n.nspname = $2 ` +
 		`ORDER BY c.relname, a.attnum`
 
 	// run query

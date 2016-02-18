@@ -8,11 +8,11 @@ func {{ .Name }} (db XODB{{ range .Parameters }}, {{ .Name }} {{ .Type }}{{ end 
 	var err error
 
 	// sql query
-	const sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $QueryComments $i) }} // {{ index $QueryComments $i }}{{ end }}{{ if $i }}
+	{{ if .Interpolate }}var{{ else }}const{{ end }} sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $QueryComments $i) }} // {{ index $QueryComments $i }}{{ end }}{{ if $i }}
 	{{end -}}`{{ $l }}`{{ end }}
 
 	// run query
-	XOLog(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }})
+	XOLog(sqlstr{{ range .Parameters }}{{ if not .Interpolate }}, {{ .Name }}{{ end }}{{ end }})
 {{- if .OnlyOne }}
 	var {{ shortname .Type }} {{ .Type }}
 	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})

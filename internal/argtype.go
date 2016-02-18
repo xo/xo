@@ -71,8 +71,11 @@ type ArgType struct {
 	// QueryTrim enables triming whitespace on the supplied query.
 	QueryTrim bool `arg:"--query-trim,-M,help:toggle trimming of query whitespace in generated Go code"`
 
-	// QueryStrip enables stripping the '::<type> AS <name>' from queries.
-	QueryStrip bool `arg:"--query-strip,-B,help:toggle stripping '::type AS name' from query in generated Go code"`
+	// QueryStrip enables stripping the '::<type> AS <name>' from supplied query.
+	QueryStrip bool `arg:"--query-strip,-B,help:toggle stripping type casts from query in generated Go code"`
+
+	// QueryInterpolate enables interpolation in generated query.
+	QueryInterpolate bool `arg:"--query-interpolate,-I,help:toggle query interpolation in generated Go code"`
 
 	// TypeComment is the type comment for a query.
 	QueryTypeComment string `arg:"--query-type-comment,help:comment for query's generated Go type"`
@@ -83,12 +86,12 @@ type ArgType struct {
 	// QueryParamDelimiter is the delimiter for parameterized values for a query.
 	QueryParamDelimiter string `arg:"--query-delimiter,-D,help:delimiter for query's embedded Go parameters"`
 
+	// QueryFields are the fields to scan the result to.
+	QueryFields string `arg:"--query-fields,-Z,help:comma separated list of field names to scan query's results to the query's associated Go type"`
+
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
-
-	// NoExtra when toggled will not generate certain extras.
-	//NoExtra bool `arg:"--no-extra,-Z,help:"disable extra code generation"`
 
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`

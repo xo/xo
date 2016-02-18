@@ -1,6 +1,10 @@
 #!/bin/bash
 
+DBNAME=booktest.sqlite3
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
+
+DB=file:$SRC/$DBNAME
 
 XOBIN=$(which xo)
 if [ -e $SRC/../../xo ]; then
@@ -13,65 +17,53 @@ set -x
 
 mkdir -p $DEST
 rm -f $DEST/*.go
+rm -f $DEST/$DBNAME
 
-psql -U postgres -c "create user booktest password 'booktest';"
-psql -U postgres -c 'drop database booktest;'
-psql -U postgres -c 'create database booktest owner booktest;'
+sqlite3 $DB << 'ENDSQL'
+PRAGMA foreign_keys = 1;
 
-psql -U booktest << 'ENDSQL'
 CREATE TABLE authors (
-  author_id SERIAL PRIMARY KEY,
+  author_id integer PRIMARY KEY,
   name text NOT NULL DEFAULT ''
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
 
-CREATE TYPE book_type AS ENUM (
-  'FICTION',
-  'NONFICTION'
-);
-
 CREATE TABLE books (
-  book_id SERIAL PRIMARY KEY,
+  book_id integer PRIMARY KEY,
   author_id integer NOT NULL REFERENCES authors(author_id),
   isbn text NOT NULL DEFAULT '' UNIQUE,
-  booktype book_type NOT NULL DEFAULT 'FICTION',
   title text NOT NULL DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
-  available timestamp with time zone NOT NULL DEFAULT 'NOW()',
-  tags varchar[] NOT NULL DEFAULT '{}'
+  available text NOT NULL DEFAULT '',
+  tags text NOT NULL DEFAULT '{}'
 );
 
 CREATE INDEX books_title_idx ON books(title, year);
 
-CREATE FUNCTION say_hello(text) RETURNS text AS $$
-BEGIN
-  RETURN CONCAT('hello ', $1);
-END;
-$$ LANGUAGE plpgsql;
-
 ENDSQL
 
-$XOBIN pgsql://booktest:booktest@localhost/booktest -o $SRC/models
 
-cat << ENDSQL | $XOBIN pgsql://booktest:booktest@localhost/booktest -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+$XOBIN $DB -v -o $SRC/models
+
+cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
 SELECT
-  a.author_id::integer AS author_id,
-  a.name::text AS author_name,
-  b.book_id::integer AS book_id,
-  b.isbn::text AS book_isbn,
-  b.title::text AS book_title,
-  b.tags::text[] AS book_tags
+  a.author_id,
+  a.name AS author_name,
+  b.book_id,
+  b.isbn AS book_isbn,
+  b.title AS book_title,
+  b.tags AS book_tags
 FROM books b
 JOIN authors a ON a.author_id = b.author_id
-WHERE b.tags && %%tags StringSlice%%::varchar[]
+WHERE LIKE(b.tags, '%' || %%tag StringSlice%% || '%')
 ENDSQL
 
 pushd $SRC &> /dev/null
 
 go build
-./postgres
+./sqlite
 
 popd &> /dev/null
 
-psql -U booktest <<< 'select * from books;'
+sqlite3 $DB <<< 'select * from books;'

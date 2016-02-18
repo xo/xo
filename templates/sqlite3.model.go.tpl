@@ -1,0 +1,1 @@
+postgres.model.go.tpl

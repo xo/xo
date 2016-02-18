@@ -2,7 +2,7 @@
 
 PGSQL=pgsql://xodb:xodb@localhost/xodb
 MYSQL=mysql://xodb:xodb@localhost/xodb
-SQLTE=sqlite:./xodb.sqlite3
+SQLTE=file:xodb.sqlite3
 ORCLE=oracle://xodb:xodb@localhost/xodb
 
 DEST=$1
@@ -18,8 +18,9 @@ fi
 
 set -ex
 
-rm -rf $DEST
 mkdir -p $DEST
+rm -f *.sqlite3
+rm -rf $DEST/*.xo.go
 
 # postgresql enum query
 cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Enum -F PgEnumsBySchema --query-type-comment='Enum represents a enum value.' -o $DEST
@@ -66,7 +67,7 @@ FROM pg_attribute a
   LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum
   LEFT JOIN pg_index ix ON a.attnum = ANY(ix.indkey) AND c.oid = a.attrelid AND c.oid = ix.indrelid
   LEFT JOIN pg_class i ON i.oid = ix.indexrelid
-WHERE c.relkind = %%relkind string%% AND a.attnum > 0 AND n.nspname = %%schema string%%
+WHERE a.attisdropped = false AND c.relkind = %%relkind string%% AND a.attnum > 0 AND n.nspname = %%schema string%%
 ORDER BY c.relname, a.attnum
 ENDSQL
 
@@ -95,10 +96,10 @@ SELECT
   ''::varchar AS comment
 FROM pg_constraint r
   JOIN ONLY pg_class a ON a.oid = r.conrelid
-  JOIN ONLY pg_attribute b ON b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid
+  JOIN ONLY pg_attribute b ON b.attisdropped = false AND b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid
   JOIN ONLY pg_class i on i.oid = r.conindid
   JOIN ONLY pg_class c on c.oid = r.confrelid
-  JOIN ONLY pg_attribute d ON d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid
+  JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid
   JOIN ONLY pg_namespace n ON n.oid = r.connamespace
 WHERE r.contype = 'f' AND n.nspname = %%schema string%%
 ORDER BY r.conname, a.relname, b.attname
@@ -171,9 +172,32 @@ WHERE referenced_table_name IS NOT NULL AND table_schema = %%schema string%%
 ORDER BY table_name, constraint_name
 ENDSQL
 
-exit
+# sqlite table list query
+cat << ENDSQL | $XOBIN $SQLTE -v -N -M -B -T SqTableInfo -o $DEST
+SELECT
+  type,
+  name,
+  tbl_name AS table_name
+FROM sqlite_master
+WHERE type = %%relkind string%%
+ENDSQL
 
-# sqlite column query
-cat << ENDSQL | $XOBIN $SQLTE -a -v -N -M -B -T Column -F SqColumnsBySchemaTable -Z 'FieldOrdinal,ColumnName,DataType,IsNullable,DefaultValue,IsPrimary' -o $DEST
-PRAGMA %%schema string,interpolate%%.table_info(%%table string,interpolate%%)
+# sqlite table info query
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqColumn -Z 'FieldOrdinal int,ColumnName string,DataType string,IsNullable bool,DefaultValue sql.NullString,IsPrimaryKey bool' -o $DEST
+PRAGMA table_info(%%table string,interpolate%%)
+ENDSQL
+
+# sqlite index list query
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqIndex -Z 'Seq int,IndexName string,IsUnique bool,Origin string,IsPartial bool' -o $DEST
+PRAGMA index_list(%%table string,interpolate%%)
+ENDSQL
+
+# sqlite foreign key list query
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqForeignKeys -Z 'ID int,Seq int,RefTableName string,ColumnName string,RefColumnName string,OnUpdate string,OnDelete string,Match string' -o $DEST
+PRAGMA foreign_key_list(%%table string,interpolate%%)
+ENDSQL
+
+# sqlite index info query
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqIndexinfo -Z 'SeqNo int,Cid int,ColumnName string' -o $DEST
+PRAGMA index_info(%%index string,interpolate%%)
 ENDSQL

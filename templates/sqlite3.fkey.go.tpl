@@ -1,0 +1,1 @@
+postgres.fkey.go.tpl

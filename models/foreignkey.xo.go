@@ -29,10 +29,10 @@ func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		`'' ` + // ::varchar AS comment
 		`FROM pg_constraint r ` +
 		`JOIN ONLY pg_class a ON a.oid = r.conrelid ` +
-		`JOIN ONLY pg_attribute b ON b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid ` +
+		`JOIN ONLY pg_attribute b ON b.attisdropped = false AND b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid ` +
 		`JOIN ONLY pg_class i on i.oid = r.conindid ` +
 		`JOIN ONLY pg_class c on c.oid = r.confrelid ` +
-		`JOIN ONLY pg_attribute d ON d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid ` +
+		`JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = r.connamespace ` +
 		`WHERE r.contype = 'f' AND n.nspname = $1 ` +
 		`ORDER BY r.conname, a.relname, b.attname`

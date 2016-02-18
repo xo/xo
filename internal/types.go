@@ -84,8 +84,10 @@ type ForeignKeyTemplate struct {
 	ForeignKeyName string
 	ColumnName     string
 	Field          string
+	FieldType      string
 	RefType        string
 	RefField       string
+	RefFieldType   string
 }
 
 // IndexTemplate is a template item for a index into a table.
@@ -110,6 +112,7 @@ type QueryTemplate struct {
 	QueryComments []string
 	Parameters    []QueryParameter
 	OnlyOne       bool
+	Interpolate   bool
 	Comment       string
 	Table         *TableTemplate
 }

@@ -270,13 +270,15 @@ func PgLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*
 					ForeignKeyName: fk.ForeignKeyName,
 					ColumnName:     fk.ColumnName,
 					Field:          f.Field,
+					FieldType:      f.Type,
 					RefType:        tableMap[fk.RefTableName].Type,
 				}
 
-				// find field
+				// find ref field
 				for _, f := range tableMap[fk.RefTableName].Fields {
 					if f.ColumnName == fk.RefColumnName {
 						fkMap[fk.ForeignKeyName].RefField = f.Field
+						fkMap[fk.ForeignKeyName].RefFieldType = f.Type
 						break
 					}
 				}
@@ -544,8 +546,8 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 	}
 
 	// parse supplied query
-	queryStr, params := args.ParseQuery("$%d")
-	inspectStr, _ := args.ParseQuery("NULL")
+	queryStr, params := args.ParseQuery("$%d", true)
+	inspectStr, _ := args.ParseQuery("NULL", false)
 
 	// strip out
 	if args.QueryStrip {
@@ -671,6 +673,7 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 		QueryComments: queryComments,
 		Parameters:    params,
 		OnlyOne:       args.QueryOnlyOne,
+		Interpolate:   args.QueryInterpolate,
 		Comment:       args.QueryFuncComment,
 		Table:         typeTpl,
 	}

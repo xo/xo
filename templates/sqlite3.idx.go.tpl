@@ -1,0 +1,1 @@
+postgres.idx.go.tpl

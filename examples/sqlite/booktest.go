@@ -6,16 +6,21 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/knq/xo/examples/postgres/models"
+	"github.com/knq/xo/examples/sqlite/models"
 )
 
 func main() {
 	var err error
 
+	// set logging
+	models.XOLog = func(s string, p ...interface{}) {
+		fmt.Printf("> SQL: %s -- %v\n", s, p)
+	}
+
 	// open database
-	db, err := sql.Open("postgres", "postgres://booktest:booktest@localhost/booktest")
+	db, err := sql.Open("sqlite3", "booktest.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}

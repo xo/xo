@@ -1,6 +1,6 @@
 package main
 
-//go:generate go-bindata -pkg templates -prefix templates/ -o templates/tpls.go -ignore .go$ -ignore .swp$ -nometadata -nomemcopy templates/...
+//go:generate ./tpl.sh
 //go:generate ./gen.sh models
 
 import (

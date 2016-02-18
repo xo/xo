@@ -17,10 +17,10 @@ type QueryParameter struct {
 }
 
 // ParseQuery takes the query in args and looks for strings in the form of
-// "%%<name> <type>%%", replacing them with the supplied mask. mask can contain
-// "%d" to indicate current position. The modified query is returned, and the
-// extracted text.
-func (a *ArgType) ParseQuery(mask string) (string, []QueryParameter) {
+// "%%<name> <type>[,<option>,...]%%", replacing them with the supplied mask.
+// mask can contain "%d" to indicate current position. The modified query is
+// returned, and the slice of extracted QueryParameter's.
+func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []QueryParameter) {
 	dl := a.QueryParamDelimiter
 
 	// create the regexp for the delimiter
@@ -45,10 +45,7 @@ func (a *ArgType) ParseQuery(mask string) (string, []QueryParameter) {
 			pstr = fmt.Sprintf(mask, i)
 		}
 
-		// build string
-		str = str + a.Query[last:m[0]] + pstr
-
-		// create parameter
+		// extract parameter info
 		paramStr := a.Query[m[0]+len(dl) : m[1]-len(dl)]
 		p := strings.SplitN(paramStr, " ", 2)
 		param := QueryParameter{
@@ -56,19 +53,35 @@ func (a *ArgType) ParseQuery(mask string) (string, []QueryParameter) {
 			Type: p[1],
 		}
 
-		// parse options if present
+		// parse parameter options if present
 		if strings.Contains(param.Type, ",") {
 			opts := strings.Split(param.Type, ",")
 			param.Type = opts[0]
 			for _, opt := range opts[1:] {
 				switch opt {
 				case "interpolate":
+					if !a.QueryInterpolate {
+						panic("query interpolate is not enabled")
+					}
 					param.Interpolate = true
 
 				default:
-					panic(fmt.Sprintf("unknown option encountered on query parameter '%s'", paramStr))
+					panic(fmt.Errorf("unknown option encountered on query parameter '%s'", paramStr))
 				}
 			}
+		}
+
+		// add to string
+		str = str + a.Query[last:m[0]]
+		if interpol && param.Interpolate {
+			// handle interpolation case
+			xstr := `fmt.Sprintf("%v", ` + param.Name + `)`
+			if param.Type == "string" {
+				xstr = param.Name
+			}
+			str = str + "` + " + xstr + " + `"
+		} else {
+			str = str + pstr
 		}
 
 		params = append(params, param)
@@ -82,7 +95,7 @@ func (a *ArgType) ParseQuery(mask string) (string, []QueryParameter) {
 	return str, params
 }
 
-// letters for genRandomID
+// letters for GenRandomID
 var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 
 // GenRandomID generates a 8 character random string.

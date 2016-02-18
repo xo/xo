@@ -24,6 +24,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
 		"shortname":      a.shortname,
+		"nulltypeext":    a.nulltypeext,
 	}
 }
 
@@ -298,4 +299,14 @@ func (a *ArgType) goparamlist(columns []*models.Column, addType bool, ignoreFiel
 	}
 
 	return str
+}
+
+// nulltypeext determines if the type begins with Null (ie, NullString,
+// NullInt64, etc) and returns the remainder with the prefix.
+func (a *ArgType) nulltypeext(typ string) string {
+	if strings.HasPrefix(typ, "sql.Null") {
+		return "." + typ[8:]
+	}
+
+	return ""
 }

@@ -6,8 +6,8 @@ reduce the overhead/redundancy of writing (from scratch) Go types and funcs for
 common database tasks.
 
 Currently, xo can generate types for tables, enums, stored procedures, and
-custom SQL queries for PostgreSQL and MySQL databases. Work is also being done
-to add support for Oracle and SQLite, which will be released when they become
+custom SQL queries for PostgreSQL, MySQL, and SQLite databases. Work is also
+being done to add support for Oracle, which will be released when it is
 feature-complete.
 
 Additionally, support for other database abstractions (ie, views, many-to-many
@@ -18,6 +18,17 @@ Please note that xo is **NOT** an ORM, nor does xo generate an ORM. Instead, xo
 generates Go code by using database metadata to query the types and
 relationships within the database, and then generates representative Go types
 and funcs for well-defined database relationships using raw queries.
+
+# Database Support Features #
+
+The following is a table of the supported features per database:
+
+|            | ENUMs | Tables | Primary Keys | Indexes | Foreign Keys | Link Tables | Stored Procedures | 
+| ---------- |:-----:|
+| PostgreSQL |:white_check_mark:|
+| MySQL      |
+| Oracle     |
+| SQLite     | 
 
 # Installation #
 
