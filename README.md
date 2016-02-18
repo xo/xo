@@ -97,14 +97,15 @@ The following are xo's arguments and options:
 
 ```
 $ xo -h
-usage: xo [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--template-path TEMPLATE-PATH] DSN
+usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--template-path TEMPLATE-PATH] DSN
 
 positional arguments:
   dsn                    data source name
 
 options:
+  --verbose, -v          toggle verbose
   --schema SCHEMA, -s SCHEMA
-                         schema name to generate Go types for [default: public]
+                         schema name to generate Go types for
   --out OUT, -o OUT      output path or file name
   --append, -a           append to existing files
   --suffix SUFFIX, -f SUFFIX
