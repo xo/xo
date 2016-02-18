@@ -50,6 +50,7 @@ func (b *Book) Insert(db XODB) error {
 		`) RETURNING book_id`
 
 	// run query
+	XOLog(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)
 	err = db.QueryRow(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags).Scan(&b.BookID)
 	if err != nil {
 		return err
@@ -83,6 +84,7 @@ func (b *Book) Update(db XODB) error {
 		`) WHERE book_id = $8`
 
 	// run query
+	XOLog(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	_, err = db.Exec(sqlstr, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	return err
 }
@@ -119,6 +121,7 @@ func (b *Book) Upsert(db XODB) error {
 		`)`
 
 	// run query
+	XOLog(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)
 	_, err = db.Exec(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Booktype, b.Title, b.Year, b.Available, b.Tags)
 	if err != nil {
 		return err
@@ -148,6 +151,7 @@ func (b *Book) Delete(db XODB) error {
 	const sqlstr = `DELETE FROM public.books WHERE book_id = $1`
 
 	// run query
+	XOLog(sqlstr, b.BookID)
 	_, err = db.Exec(sqlstr, b.BookID)
 	if err != nil {
 		return err
@@ -172,6 +176,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 		`WHERE title = $1 AND year = $2`
 
 	// run query
+	XOLog(sqlstr, title, year)
 	q, err := db.Query(sqlstr, title, year)
 	if err != nil {
 		return nil, err
@@ -209,10 +214,12 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 		`FROM public.books ` +
 		`WHERE book_id = $1`
 
-	// run query
 	b := Book{
 		_exists: true,
 	}
+
+	// run query
+	XOLog(sqlstr, bookID)
 	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
@@ -233,10 +240,12 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 		`FROM public.books ` +
 		`WHERE isbn = $1`
 
-	// run query
 	b := Book{
 		_exists: true,
 	}
+
+	// run query
+	XOLog(sqlstr, isbn)
 	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err

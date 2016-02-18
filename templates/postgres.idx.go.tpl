@@ -11,12 +11,14 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
-	// run query
 	{{ shortname .Type }} := {{ .Type }}{
 	{{- if .Table.PrimaryKeyField }}
 		_exists: true,
 	{{ end -}}
 	}
+
+	// run query
+	XOLog(sqlstr{{ goparamlist .Fields false }})
 	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
 	if err != nil {
 		return nil, err
@@ -38,6 +40,7 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query
+	XOLog(sqlstr{{ goparamlist .Fields false }})
 	q, err := db.Query(sqlstr{{ goparamlist .Fields false }})
 	if err != nil {
 		return nil, err

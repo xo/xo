@@ -27,6 +27,7 @@ func PgProcsBySchema(db XODB, schema string) ([]*Proc, error) {
 		`ORDER BY p.proname`
 
 	// run query
+	XOLog(sqlstr, schema)
 	q, err := db.Query(sqlstr, schema)
 	if err != nil {
 		return nil, err
@@ -69,6 +70,7 @@ func MyProcsBySchema(db XODB, schema string) ([]*Proc, error) {
 		`ORDER BY r.specific_name`
 
 	// run query
+	XOLog(sqlstr, schema)
 	q, err := db.Query(sqlstr, schema)
 	if err != nil {
 		return nil, err

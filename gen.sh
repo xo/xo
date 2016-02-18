@@ -1,5 +1,10 @@
 #!/bin/bash
 
+PGSQL=pgsql://xodb:xodb@localhost/xodb
+MYSQL=mysql://xodb:xodb@localhost/xodb
+SQLTE=sqlite:./xodb.sqlite3
+ORCLE=oracle://xodb:xodb@localhost/xodb
+
 DEST=$1
 
 if [ -z "$DEST" ]; then
@@ -17,7 +22,7 @@ rm -rf $DEST
 mkdir -p $DEST
 
 # postgresql enum query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Enum -F PgEnumsBySchema --query-type-comment='Enum represents a enum value.' -o $DEST
+cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Enum -F PgEnumsBySchema --query-type-comment='Enum represents a enum value.' -o $DEST
 SELECT
   t.typname::varchar AS enum_type,
   e.enumlabel::varchar AS enum_value,
@@ -32,7 +37,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgresql column query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Column -F PgColumnsByRelkindSchema --query-type-comment='Column represents class (ie, table, view, etc) attributes.' -o $DEST
+cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Column -F PgColumnsByRelkindSchema --query-type-comment='Column represents class (ie, table, view, etc) attributes.' -o $DEST
 SELECT
   a.attname::varchar AS column_name,
   c.relname::varchar AS table_name,
@@ -66,7 +71,7 @@ ORDER BY c.relname, a.attnum
 ENDSQL
 
 # postgresql proc query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T Proc -F PgProcsBySchema --query-type-comment='Proc represents a stored procedure.' -o $DEST
+cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Proc -F PgProcsBySchema --query-type-comment='Proc represents a stored procedure.' -o $DEST
 SELECT
   p.proname::varchar AS proc_name,
   oidvectortypes(p.proargtypes)::varchar AS parameter_types,
@@ -79,7 +84,7 @@ ORDER BY p.proname
 ENDSQL
 
 # postgresql foreign key query
-cat << ENDSQL | $XOBIN pgsql://xodb:xodb@localhost/xodb -N -M -B -T ForeignKey -F PgForeignKeysBySchema --query-type-comment='ForeignKey represents a foreign key.' -o $DEST
+cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T ForeignKey -F PgForeignKeysBySchema --query-type-comment='ForeignKey represents a foreign key.' -o $DEST
 SELECT
   r.conname::varchar AS foreign_key_name,
   a.relname::varchar AS table_name,
@@ -100,7 +105,7 @@ ORDER BY r.conname, a.relname, b.attname
 ENDSQL
 
 # mysql enum query
-cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -N -M -B -T MyEnum -o $DEST
+cat << ENDSQL | $XOBIN $MYSQL -v -N -M -B -T MyEnum --query-type-comment='MyEnum represents a MySQL enum.' -o $DEST
 SELECT
   table_name AS table_name,
   column_name AS enum_type,
@@ -111,7 +116,7 @@ ORDER BY table_name, column_name
 ENDSQL
 
 # mysql column query
-cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T Column -F MyColumnsByRelkindSchema -o $DEST
+cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T Column -F MyColumnsByRelkindSchema -o $DEST
 SELECT
   c.column_name,
   c.table_name,
@@ -137,7 +142,7 @@ ORDER BY c.table_name, c.ordinal_position
 ENDSQL
 
 # mysql proc query
-cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T Proc -F MyProcsBySchema -o $DEST
+cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T Proc -F MyProcsBySchema -o $DEST
 SELECT
   r.routine_name AS proc_name,
   (SELECT GROUP_CONCAT(l.dtd_identifier SEPARATOR ', ')
@@ -153,7 +158,7 @@ ORDER BY r.specific_name
 ENDSQL
 
 # mysql foreign key query
-cat << ENDSQL | $XOBIN mysql://xodb:xodb@localhost/xodb -a -N -M -B -T ForeignKey -F MyForeignKeysBySchema -o $DEST
+cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T ForeignKey -F MyForeignKeysBySchema -o $DEST
 SELECT
   constraint_name AS foreign_key_name,
   table_name AS table_name,
@@ -169,8 +174,6 @@ ENDSQL
 exit
 
 # sqlite column query
-cat << ENDSQL | $XOBIN sqlite:/xodb.sqlite3 -a -N -M -B -T Column -F SqColumnsBySchemaTable -Z 'FieldOrdinal,ColumnName,DataType,IsNullable,DefaultValue,IsPrimary' -o $DEST
+cat << ENDSQL | $XOBIN $SQLTE -a -v -N -M -B -T Column -F SqColumnsBySchemaTable -Z 'FieldOrdinal,ColumnName,DataType,IsNullable,DefaultValue,IsPrimary' -o $DEST
 PRAGMA %%schema string,interpolate%%.table_info(%%table string,interpolate%%)
 ENDSQL
-
-#cat << ENDSQL | $XOBIN sqlite:/xodb.sqlite3 -a -N -M -B -T

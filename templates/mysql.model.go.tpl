@@ -42,6 +42,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Insert(db XODB) error {
 		`)`
 
 	// run query
+	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }})
 	res, err := db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }})
 	if err != nil {
 		return err
@@ -80,6 +81,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Update(db XODB) error {
 		` WHERE {{ .PrimaryKey }} = ?`
 
 	// run query
+	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Type) .PrimaryKeyField }}, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	return err
 }
@@ -111,6 +113,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Delete(db XODB) error {
 	const sqlstr = `DELETE FROM {{ .TableSchema }}.{{ .TableName }} WHERE {{ .PrimaryKey }} = ?`
 
 	// run query
+	XOLog(sqlstr, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	_, err = db.Exec(sqlstr, {{ shortname .Type }}.{{ .PrimaryKeyField }})
 	if err != nil {
 		return err

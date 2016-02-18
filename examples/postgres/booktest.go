@@ -14,6 +14,11 @@ import (
 func main() {
 	var err error
 
+	// set logging
+	models.XOLog = func(s string, p ...interface{}) {
+		fmt.Printf("> SQL: %s -- %v\n", s, p)
+	}
+
 	// open database
 	db, err := sql.Open("postgres", "postgres://booktest:booktest@localhost/booktest")
 	if err != nil {

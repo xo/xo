@@ -136,8 +136,9 @@ func (a *ArgType) colnames(columns []*models.Column, ignoreFields ...string) str
 // colnamesquery creates a list of the column names found in as a query and
 // joined by sep.
 //
-// Used to create a sql query list of column names (ie, field_1 = $1 AND
-// field_2 = $2 AND ... )
+// Used to create a sql query list of column names in a where clause (ie,
+// field_1 = $1 AND field_2 = $2 AND ... ) or in an update clause (ie, field =
+// $1, field = $2, ...)
 func (a *ArgType) colnamesquery(columns []*models.Column, sep string, ignoreFields ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreFields {

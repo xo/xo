@@ -30,6 +30,7 @@ func AuthorBookResultsByTags(db XODB, tags StringSlice) ([]*AuthorBookResult, er
 		`WHERE b.tags && $1::varchar[]`
 
 	// run query
+	XOLog(sqlstr, tags)
 	q, err := db.Query(sqlstr, tags)
 	if err != nil {
 		return nil, err

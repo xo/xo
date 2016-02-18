@@ -12,6 +12,7 @@ func SayHello(db XODB, v0 string) (string, error) {
 
 	// run query
 	var ret string
+	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
 		return "", err

@@ -30,6 +30,7 @@ func AuthorBookResultsByTag(db XODB, tag string) ([]*AuthorBookResult, error) {
 		`WHERE b.tags LIKE CONCAT('%', ?, '%')`
 
 	// run query
+	XOLog(sqlstr, tag)
 	q, err := db.Query(sqlstr, tag)
 	if err != nil {
 		return nil, err

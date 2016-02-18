@@ -31,6 +31,7 @@ func PgEnumsBySchema(db XODB, schema string) ([]*Enum, error) {
 		`WHERE n.nspname = $1`
 
 	// run query
+	XOLog(sqlstr, schema)
 	q, err := db.Query(sqlstr, schema)
 	if err != nil {
 		return nil, err

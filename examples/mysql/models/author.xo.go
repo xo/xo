@@ -41,6 +41,7 @@ func (a *Author) Insert(db XODB) error {
 		`)`
 
 	// run query
+	XOLog(sqlstr, a.Name)
 	res, err := db.Exec(sqlstr, a.Name)
 	if err != nil {
 		return err
@@ -79,6 +80,7 @@ func (a *Author) Update(db XODB) error {
 		` WHERE author_id = ?`
 
 	// run query
+	XOLog(sqlstr, a.Name, a.AuthorID)
 	_, err = db.Exec(sqlstr, a.Name, a.AuthorID)
 	return err
 }
@@ -110,6 +112,7 @@ func (a *Author) Delete(db XODB) error {
 	const sqlstr = `DELETE FROM booktest.authors WHERE author_id = ?`
 
 	// run query
+	XOLog(sqlstr, a.AuthorID)
 	_, err = db.Exec(sqlstr, a.AuthorID)
 	if err != nil {
 		return err
@@ -134,6 +137,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 		`WHERE name = ?`
 
 	// run query
+	XOLog(sqlstr, name)
 	q, err := db.Query(sqlstr, name)
 	if err != nil {
 		return nil, err
@@ -171,10 +175,12 @@ func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 		`FROM booktest.authors ` +
 		`WHERE author_id = ?`
 
-	// run query
 	a := Author{
 		_exists: true,
 	}
+
+	// run query
+	XOLog(sqlstr, authorID)
 	err = db.QueryRow(sqlstr, authorID).Scan(&a.AuthorID, &a.Name)
 	if err != nil {
 		return nil, err

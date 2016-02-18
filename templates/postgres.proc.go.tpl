@@ -7,6 +7,7 @@ func {{ .Name }}(db XODB{{ goparamlist .Parameters true }}) ({{ retype .ReturnTy
 
 	// run query
 	var ret {{ retype .ReturnType }}
+	XOLog(sqlstr{{ goparamlist .Parameters false }})
 	err = db.QueryRow(sqlstr{{ goparamlist .Parameters false }}).Scan(&ret)
 	if err != nil {
 		return {{ reniltype .NilReturnType }}, err

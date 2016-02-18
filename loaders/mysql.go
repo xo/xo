@@ -71,8 +71,10 @@ func MyProcessDSN(u *url.URL, protocol string) string {
 func MyLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
-	// load schema
-	err = db.QueryRow(`SELECT SCHEMA()`).Scan(&args.Schema)
+	// schema query
+	const sqlstr = `SELECT SCHEMA()`
+	models.XOLog(sqlstr)
+	err = db.QueryRow(sqlstr).Scan(&args.Schema)
 	if err != nil {
 		return err
 	}
@@ -429,7 +431,9 @@ func MyParseQuery(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
 	// schema query
-	err = db.QueryRow(`SELECT SCHEMA()`).Scan(&args.Schema)
+	const sqlstr = `SELECT SCHEMA()`
+	models.XOLog(sqlstr)
+	err = db.QueryRow(sqlstr).Scan(&args.Schema)
 	if err != nil {
 		return err
 	}
@@ -465,6 +469,7 @@ func MyParseQuery(args *internal.ArgType, db *sql.DB) error {
 	// create temporary view xoid
 	xoid := "_xo_" + internal.GenRandomID()
 	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	models.XOLog(viewq)
 	_, err = db.Exec(viewq)
 	if err != nil {
 		return err
@@ -478,6 +483,7 @@ func MyParseQuery(args *internal.ArgType, db *sql.DB) error {
 
 	// drop inspect view
 	dropq := `DROP VIEW ` + xoid
+	models.XOLog(dropq)
 	_, err = db.Exec(dropq)
 	if err != nil {
 		return err

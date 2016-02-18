@@ -8,7 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/knq/xo/example/postgres/models"
+	"github.com/knq/xo/examples/postgres/models"
 )
 
 func main() {
@@ -63,6 +63,14 @@ func main() {
 		Tags:      models.StringSlice{"cool", "unique"},
 	}
 	err = b1.Save(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// update the title and tags
+	b1.Title = "changed second title"
+	b1.Tags = models.StringSlice{"cool", "disastor"}
+	err = b1.Update(db)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -141,11 +149,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s'\nTags: ", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn)
-		for _, s := range ab.BookTags {
-			fmt.Printf("'%s' ", s)
-		}
-		fmt.Println()
+		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
 
 	// call say_hello(varchar)
@@ -154,4 +158,14 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("SayHello response: %s\n", str)
+
+	// get book 4 and delete
+	b5, err := models.BookByBookID(db, 4)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = b5.Delete(db)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

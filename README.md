@@ -372,6 +372,7 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
+* Column mapping option on custom queries
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)
@@ -383,7 +384,6 @@ The following projects work with similar concepts as xo:
 * Finish example and code for generated *Slice types
 * Add proper parameterization around generated code blocks (important for
   "extras" like Cond's)
-* Column mapping option on custom queries
 * Add example for many-to-many relationships and link tables
 * Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
 * Unit tests / code coverage / continuous builds for binary package releases 
@@ -397,7 +397,6 @@ The following projects work with similar concepts as xo:
 * Publish template set for *at least* one other language/framework
   [Doctrine/jOOQ/ActiveRecord/...?]
 * Add more links to other SQL code generation libs
-* Fix templates for < Go1.6 [is this even necessary?]
 * Add support for handling multiple custom queries at the same time [is this
   even necessary?]
 * Add ability to read *.sql files with 'markup' to parse multiple queries (a la

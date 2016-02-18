@@ -11,7 +11,7 @@ import (
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
 	// Verbose enables verbose output.
-	//Verbose bool `arg:"-v,help:toggle verbose"`
+	Verbose bool `arg:"-v,help:toggle verbose"`
 
 	// DSN is the database string (ie, pgsql://user@blah:localhost:5432/dbname?args=)
 	DSN string `arg:"positional,required,help:data source name"`

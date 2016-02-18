@@ -38,6 +38,7 @@ func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		`ORDER BY r.conname, a.relname, b.attname`
 
 	// run query
+	XOLog(sqlstr, schema)
 	q, err := db.Query(sqlstr, schema)
 	if err != nil {
 		return nil, err
@@ -78,6 +79,7 @@ func MyForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		`ORDER BY table_name, constraint_name`
 
 	// run query
+	XOLog(sqlstr, schema)
 	q, err := db.Query(sqlstr, schema)
 	if err != nil {
 		return nil, err

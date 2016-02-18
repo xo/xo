@@ -14,6 +14,11 @@ import (
 func main() {
 	var err error
 
+	// set logging
+	models.XOLog = func(s string, p ...interface{}) {
+		fmt.Printf("> SQL: %s -- %v\n", s, p)
+	}
+
 	// open database
 	db, err := sql.Open("mysql", "booktest:booktest@tcp(localhost:3306)/booktest?parseTime=true")
 	if err != nil {

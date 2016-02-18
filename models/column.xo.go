@@ -63,6 +63,7 @@ func PgColumnsByRelkindSchema(db XODB, relkind string, schema string) ([]*Column
 		`ORDER BY c.relname, a.attnum`
 
 	// run query
+	XOLog(sqlstr, relkind, schema)
 	q, err := db.Query(sqlstr, relkind, schema)
 	if err != nil {
 		return nil, err
@@ -115,6 +116,7 @@ func MyColumnsByRelkindSchema(db XODB, relkind string, schema string) ([]*Column
 		`ORDER BY c.table_name, c.ordinal_position`
 
 	// run query
+	XOLog(sqlstr, relkind, schema)
 	q, err := db.Query(sqlstr, relkind, schema)
 	if err != nil {
 		return nil, err

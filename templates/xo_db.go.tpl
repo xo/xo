@@ -8,6 +8,9 @@ type XODB interface {
 	QueryRow(string, ...interface{}) *sql.Row
 }
 
+// XOLog provides the log func used by generated queries.
+var XOLog = func(string, ...interface{}) { }
+
 // ScannerValuer is the common interface for types that implement both the
 // database/sql.Scanner and sql/driver.Valuer interfaces.
 type ScannerValuer interface {

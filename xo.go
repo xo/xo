@@ -20,11 +20,11 @@ import (
 
 	"github.com/knq/xo/internal"
 	_ "github.com/knq/xo/loaders"
+	"github.com/knq/xo/models"
 )
 
 // args is the default command line arguments.
 var args = &internal.ArgType{
-	Schema:              "public",
 	Suffix:              ".xo.go",
 	Int32Type:           "int",
 	Uint32Type:          "uint",
@@ -213,6 +213,13 @@ func processArgs() error {
 	// query trim
 	if args.QueryMode && args.QueryTrim {
 		args.Query = strings.TrimSpace(args.Query)
+	}
+
+	// if verbose
+	if args.Verbose {
+		models.XOLog = func(s string, p ...interface{}) {
+			fmt.Printf("SQL:\n%s\nPARAMS:\n%v\n\n", s, p)
+		}
 	}
 
 	return nil

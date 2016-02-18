@@ -28,6 +28,11 @@ func init() {
 func PgLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
+	// set schema
+	if args.Schema == "" {
+		args.Schema = "public"
+	}
+
 	// load enums
 	_, err = PgLoadEnums(args, db)
 	if err != nil {
@@ -533,6 +538,11 @@ var pgQueryStripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-
 func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
+	// set schema
+	if args.Schema == "" {
+		args.Schema = "public"
+	}
+
 	// parse supplied query
 	queryStr, params := args.ParseQuery("$%d")
 	inspectStr, _ := args.ParseQuery("NULL")
@@ -580,6 +590,7 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 	// create temporary view xoid
 	xoid := "_xo_" + internal.GenRandomID()
 	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	models.XOLog(viewq)
 	_, err = db.Exec(viewq)
 	if err != nil {
 		return err
@@ -594,6 +605,7 @@ func PgParseQuery(args *internal.ArgType, db *sql.DB) error {
 
 	// run schema query
 	var schema string
+	models.XOLog(nspq, xoid)
 	err = db.QueryRow(nspq, xoid).Scan(&schema)
 	if err != nil {
 		return err

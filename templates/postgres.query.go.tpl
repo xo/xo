@@ -12,6 +12,7 @@ func {{ .Name }} (db XODB{{ range .Parameters }}, {{ .Name }} {{ .Type }}{{ end 
 	{{end -}}`{{ $l }}`{{ end }}
 
 	// run query
+	XOLog(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }})
 {{- if .OnlyOne }}
 	var {{ shortname .Type }} {{ .Type }}
 	err = db.QueryRow(sqlstr{{ range .Parameters }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Table.Fields (print "&" (shortname .Type)) }})
