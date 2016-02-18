@@ -1,5 +1,12 @@
 #!/bin/bash
 
+DBUSER=booktest
+DBPASS=booktest
+DBHOST=localhost
+DBNAME=booktest
+
+DB=mysql://$DBUSER:$DBPASS@$DBHOST/$DBNAME
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
@@ -14,7 +21,7 @@ set -x
 mkdir -p $DEST
 rm -f $DEST/*.go
 
-mysql -u booktest -pbooktest booktest << 'ENDSQL'
+mysql -u $DBUSER -p$DBPASS $DBNAME << 'ENDSQL'
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS books;
@@ -47,9 +54,9 @@ CREATE FUNCTION say_hello(s text) RETURNS text
   RETURN CONCAT('hello ', s);
 ENDSQL
 
-$XOBIN mysql://booktest:booktest@localhost/booktest -o $SRC/models
+$XOBIN $DB -v -o $SRC/models
 
-cat << ENDSQL | $XOBIN mysql://booktest:booktest@localhost/booktest -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
 SELECT
   a.author_id AS author_id,
   a.name AS author_name,
@@ -69,4 +76,4 @@ go build
 
 popd &> /dev/null
 
-mysql -u booktest -pbooktest booktest <<< 'select * from books;'
+mysql -u $DBUSER -p$DBPASS $DBNAME <<< 'select * from books;'

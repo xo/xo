@@ -1,5 +1,12 @@
 #!/bin/bash
 
+DBUSER=booktest
+DBPASS=booktest
+DBHOST=localhost
+DBNAME=booktest
+
+DB=postgres://$DBUSER:$DBPASS@$DBHOST/$DBNAME
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
@@ -18,7 +25,7 @@ psql -U postgres -c "create user booktest password 'booktest';"
 psql -U postgres -c 'drop database booktest;'
 psql -U postgres -c 'create database booktest owner booktest;'
 
-psql -U booktest << 'ENDSQL'
+psql -U $DBUSER << 'ENDSQL'
 CREATE TABLE authors (
   author_id SERIAL PRIMARY KEY,
   name text NOT NULL DEFAULT ''
@@ -52,9 +59,9 @@ $$ LANGUAGE plpgsql;
 
 ENDSQL
 
-$XOBIN pgsql://booktest:booktest@localhost/booktest -o $SRC/models
+$XOBIN $DB -v -o $SRC/models
 
-cat << ENDSQL | $XOBIN pgsql://booktest:booktest@localhost/booktest -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
 SELECT
   a.author_id::integer AS author_id,
   a.name::text AS author_name,
@@ -74,4 +81,4 @@ go build
 
 popd &> /dev/null
 
-psql -U booktest <<< 'select * from books;'
+psql -U $DBUSER <<< 'select * from books;'
