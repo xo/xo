@@ -1,1 +1,1 @@
-postgres.model.go.tpl
+mysql.model.go.tpl

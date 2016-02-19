@@ -5,12 +5,12 @@ package models
 
 import "database/sql"
 
-// SqColumn represents a row from ..
+// SqColumn represents a row from .
 type SqColumn struct {
 	FieldOrdinal int            // field_ordinal
 	ColumnName   string         // column_name
 	DataType     string         // data_type
-	IsNullable   bool           // is_nullable
+	NotNull      bool           // not_null
 	DefaultValue sql.NullString // default_value
 	IsPrimaryKey bool           // is_primary_key
 }
@@ -36,7 +36,7 @@ func SqColumnsByTable(db XODB, table string) ([]*SqColumn, error) {
 		sc := SqColumn{}
 
 		// scan
-		err = q.Scan(&sc.FieldOrdinal, &sc.ColumnName, &sc.DataType, &sc.IsNullable, &sc.DefaultValue, &sc.IsPrimaryKey)
+		err = q.Scan(&sc.FieldOrdinal, &sc.ColumnName, &sc.DataType, &sc.NotNull, &sc.DefaultValue, &sc.IsPrimaryKey)
 		if err != nil {
 			return nil, err
 		}

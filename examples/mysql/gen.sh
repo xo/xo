@@ -20,6 +20,7 @@ set -x
 
 mkdir -p $DEST
 rm -f $DEST/*.go
+rm -f $SRC/mysql
 
 mysql -u $DBUSER -p$DBPASS $DBNAME << 'ENDSQL'
 SET FOREIGN_KEY_CHECKS=0;

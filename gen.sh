@@ -173,7 +173,7 @@ ORDER BY table_name, constraint_name
 ENDSQL
 
 # sqlite table list query
-cat << ENDSQL | $XOBIN $SQLTE -v -N -M -B -T SqTableInfo -o $DEST
+cat << ENDSQL | $XOBIN $SQLTE -v -N -M -B -T SqTableinfo -o $DEST
 SELECT
   type,
   name,
@@ -183,18 +183,18 @@ WHERE type = %%relkind string%%
 ENDSQL
 
 # sqlite table info query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqColumn -Z 'FieldOrdinal int,ColumnName string,DataType string,IsNullable bool,DefaultValue sql.NullString,IsPrimaryKey bool' -o $DEST
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqColumn -Z 'FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool' -o $DEST
 PRAGMA table_info(%%table string,interpolate%%)
+ENDSQL
+
+# sqlite foreign key list query
+cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqForeignKey -Z 'ID int,Seq int,RefTableName string,ColumnName string,RefColumnName string,OnUpdate string,OnDelete string,Match string' -o $DEST
+PRAGMA foreign_key_list(%%table string,interpolate%%)
 ENDSQL
 
 # sqlite index list query
 cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqIndex -Z 'Seq int,IndexName string,IsUnique bool,Origin string,IsPartial bool' -o $DEST
 PRAGMA index_list(%%table string,interpolate%%)
-ENDSQL
-
-# sqlite foreign key list query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqForeignKeys -Z 'ID int,Seq int,RefTableName string,ColumnName string,RefColumnName string,OnUpdate string,OnDelete string,Match string' -o $DEST
-PRAGMA foreign_key_list(%%table string,interpolate%%)
 ENDSQL
 
 # sqlite index info query

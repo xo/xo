@@ -1,7 +1,7 @@
 {{- if .Comment -}}
 // {{ .Comment }}
 {{- else -}}
-// {{ .Type }} represents a row from {{ .TableSchema }}.{{ .TableName }}.
+// {{ .Type }} represents a row from {{ schema .TableSchema .TableName }}.
 {{- end }}
 type {{ .Type }} struct {
 {{- range .Fields }}
@@ -35,7 +35,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Insert(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `INSERT INTO {{ .TableSchema }}.{{ .TableName }} (` +
+	const sqlstr = `INSERT INTO {{ schema .TableSchema .TableName }} (` +
 		`{{ colnames .Fields .PrimaryKeyField }}` +
 		`) VALUES (` +
 		`{{ colvals .Fields .PrimaryKeyField }}` +
@@ -69,7 +69,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Update(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `UPDATE {{ .TableSchema }}.{{ .TableName }} SET (` +
+	const sqlstr = `UPDATE {{ schema .TableSchema .TableName }} SET (` +
 		`{{ colnames .Fields .PrimaryKeyField }}` +
 		`) = ( ` +
 		`{{ colvals .Fields .PrimaryKeyField }}` +
@@ -102,7 +102,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Upsert(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `INSERT INTO {{ .TableSchema }}.{{ .TableName }} (` +
+	const sqlstr = `INSERT INTO {{ schema .TableSchema .TableName }} (` +
 		`{{ colnames .Fields }}` +
 		`) VALUES (` +
 		`{{ colvals .Fields }}` +
@@ -140,7 +140,7 @@ func ({{ shortname .Type }} *{{ .Type }}) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM {{ .TableSchema }}.{{ .TableName }} WHERE {{ .PrimaryKey }} = $1`
+	const sqlstr = `DELETE FROM {{ schema .TableSchema .TableName }} WHERE {{ .PrimaryKey }} = $1`
 
 	// run query
 	XOLog(sqlstr, {{ shortname .Type }}.{{ .PrimaryKeyField }})

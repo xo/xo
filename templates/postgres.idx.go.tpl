@@ -1,5 +1,5 @@
 {{ if .IsUnique }}
-// {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }} retrieves a row from {{ .TableSchema }}.{{ .TableName }} as a {{ .Type }}.
+// {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }} retrieves a row from {{ schema .TableSchema .TableName }} as a {{ .Type }}.
 //
 // Looks up using index {{ .IndexName }}.
 func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fields }}{{ .Field }}{{ end }}{{ end }}(db XODB{{ goparamlist .Fields true }}) (*{{ .Type }}, error) {
@@ -8,7 +8,7 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 	// sql query
 	const sqlstr = `SELECT ` +
 		`{{ colnames .Table.Fields }} ` +
-		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
+		`FROM {{ schema .TableSchema .TableName }} ` +
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	{{ shortname .Type }} := {{ .Type }}{
@@ -27,7 +27,7 @@ func {{ .Type }}By{{ if gt (len .Fields) 1 }}{{ .Name }}{{ else }}{{ range .Fiel
 	return &{{ shortname .Type }}, nil
 }
 {{ else }}
-// {{ .Plural }}By{{ .Name }} retrieves rows from {{ .TableSchema }}.{{ .TableName }}, each as a {{ .Type }}.
+// {{ .Plural }}By{{ .Name }} retrieves rows from {{ schema .TableSchema .TableName }}, each as a {{ .Type }}.
 //
 // Looks up using index {{ .IndexName }}.
 func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .Type }}, error) {
@@ -36,7 +36,7 @@ func {{ .Plural }}By{{ .Name }}(db XODB{{ goparamlist .Fields true }}) ([]*{{ .T
 	// sql query
 	const sqlstr = `SELECT ` +
 		`{{ colnames .Table.Fields }} ` +
-		`FROM {{ .TableSchema }}.{{ .TableName }} ` +
+		`FROM {{ schema .TableSchema .TableName }} ` +
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query

@@ -1,9 +1,9 @@
-// {{ .Name }} calls the stored procedure '{{ .TableSchema }}.{{ .ProcName }}({{ .ProcParameterTypes }}) {{ .ProcReturnType }}' on db.
+// {{ .Name }} calls the stored procedure '{{ schema .TableSchema .ProcName }}({{ .ProcParameterTypes }}) {{ .ProcReturnType }}' on db.
 func {{ .Name }}(db XODB{{ goparamlist .Parameters true }}) ({{ retype .ReturnType }}, error) {
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT {{ .TableSchema }}.{{ .ProcName }}({{ colvals .Parameters }})`
+	const sqlstr = `SELECT {{ schema .TableSchema .ProcName }}({{ colvals .Parameters }})`
 
 	// run query
 	var ret {{ retype .ReturnType }}

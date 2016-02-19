@@ -20,6 +20,7 @@ set -x
 
 mkdir -p $DEST
 rm -f $DEST/*.go
+rm -f $SRC/postgres
 
 psql -U postgres -c "create user booktest password 'booktest';"
 psql -U postgres -c 'drop database booktest;'

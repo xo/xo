@@ -25,6 +25,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"retype":         a.retype,
 		"shortname":      a.shortname,
 		"nulltypeext":    a.nulltypeext,
+		"schema":         a.schemafn,
 	}
 }
 
@@ -309,4 +310,19 @@ func (a *ArgType) nulltypeext(typ string) string {
 	}
 
 	return ""
+}
+
+// schemafn takes a series of names and joins them with the schema name.
+func (a *ArgType) schemafn(s string, names ...string) string {
+	n := strings.Join(names, ".")
+
+	if s == "" && n == "" {
+		return ""
+	}
+
+	if s != "" && n != "" {
+		s = s + "."
+	}
+
+	return s + n
 }

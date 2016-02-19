@@ -23,12 +23,16 @@ and funcs for well-defined database relationships using raw queries.
 
 The following is a table of the supported features per database:
 
-|            | Models           | Primary Keys     | Foreign Keys     | Indexes          | Link Tables      | Stored Procedures | ENUMs            | 
-| ---------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|:-----------------:|:----------------:|
-| PostgreSQL |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
-| MySQL      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
-| Oracle     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
-| SQLite     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|                   |                  |
+|              | PostgreSQL       | MySQL            | Oracle           | SQLite           |
+| ------------ |:----------------:|:----------------:|:----------------:|:----------------:|
+| Models       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Link Tables  |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Stored Procs |:white_check_mark:|:white_check_mark:|:white_check_mark:|                  |
+| ENUM types   |:white_check_mark:|:white_check_mark:|:white_check_mark:|                  |
+| Custom types |:white_check_mark:|                  |:white_check_mark:|                  |
 
 # Installation #
 

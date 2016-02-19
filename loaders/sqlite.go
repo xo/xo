@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
@@ -46,22 +47,26 @@ func SqProcessDSN(u *url.URL, protocol string) string {
 func SqLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 	var err error
 
-	// load tables
-	tableMap, err := SqLoadTables(args, db)
+	// load table info
+	tableInfo, err := models.SqTableinfosByRelkind(db, "table")
 	if err != nil {
 		return err
 	}
 
-	return nil
+	// load tables
+	tableMap, err := SqLoadTables(args, db, tableInfo)
+	if err != nil {
+		return err
+	}
 
 	// load foreign relationships
-	_, err = SqLoadForeignKeys(args, db, tableMap)
+	_, err = SqLoadForeignKeys(args, db, tableInfo, tableMap)
 	if err != nil {
 		return err
 	}
 
 	// load idx
-	_, err = SqLoadIndexes(args, db, tableMap)
+	_, err = SqLoadIndexes(args, db, tableInfo, tableMap)
 	if err != nil {
 		return err
 	}
@@ -71,14 +76,8 @@ func SqLoadSchemaTypes(args *internal.ArgType, db *sql.DB) error {
 
 // SqLoadTables loads the table definitions from the database, writing the
 // resulting templates to args.TypeMap and returning the created TableTemplates.
-func SqLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.TableTemplate, error) {
+func SqLoadTables(args *internal.ArgType, db *sql.DB, tableInfo []*models.SqTableinfo) (map[string]*internal.TableTemplate, error) {
 	var err error
-
-	// load table info
-	tableInfo, err := models.SqTableInfosByRelkind(db, "table")
-	if err != nil {
-		return nil, err
-	}
 
 	// loop over tables and get info for each
 	tableMap := make(map[string]*internal.TableTemplate)
@@ -91,7 +90,7 @@ func SqLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.Tabl
 		}
 
 		// load columns
-		err = SqLoadColumns(args, db, tableTpl)
+		err = SqLoadTableColumns(args, db, tableTpl)
 		if err != nil {
 			return nil, err
 		}
@@ -109,9 +108,9 @@ func SqLoadTables(args *internal.ArgType, db *sql.DB) (map[string]*internal.Tabl
 	return tableMap, nil
 }
 
-// SqLoadColumns loads the column definition from the database, writing the
+// SqLoadTableColumns loads the column definition from the database, writing the
 // adding the fields to the supplied table template.
-func SqLoadColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableTemplate) error {
+func SqLoadTableColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableTemplate) error {
 	var err error
 
 	// load columns
@@ -127,7 +126,7 @@ func SqLoadColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableT
 			FieldOrdinal: sqC.FieldOrdinal,
 			ColumnName:   sqC.ColumnName,
 			DataType:     sqC.DataType,
-			IsNullable:   sqC.IsNullable,
+			IsNullable:   !sqC.NotNull,
 			DefaultValue: sqC.DefaultValue.String,
 			HasDefault:   sqC.DefaultValue.Valid,
 			IsPrimaryKey: sqC.IsPrimaryKey,
@@ -135,6 +134,7 @@ func SqLoadColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableT
 
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
+		fmt.Printf(">>> %s -- not null: %t // %t\n", sqC.ColumnName, sqC.NotNull, c.IsNullable)
 		c.Len, c.NilType, c.Type = SqParseType(args, c.DataType, c.IsNullable)
 
 		// set primary key
@@ -152,48 +152,29 @@ func SqLoadColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableT
 }
 
 // SqLoadForeignKeys loads foreign key relationships from the database.
-func SqLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.ForeignKeyTemplate, error) {
+func SqLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableInfo []*models.SqTableinfo, tableMap map[string]*internal.TableTemplate) (map[string]*internal.ForeignKeyTemplate, error) {
 	var err error
 
-	// load foreign keys
-	fkeys, err := models.PgForeignKeysBySchema(db, args.Schema)
-	if err != nil {
-		return nil, err
-	}
-
-	// process foreign keys
 	fkMap := map[string]*internal.ForeignKeyTemplate{}
-	for _, t := range tableMap {
-		for _, f := range t.Fields {
-			if f.IsForeignKey {
-				var fk *models.ForeignKey
-				// find foreign key
-				for _, v := range fkeys {
-					if f.ForeignIndexName == v.ForeignKeyName {
-						fk = v
-						break
-					}
-				}
-
-				// create foreign key template
-				fkMap[fk.ForeignKeyName] = &internal.ForeignKeyTemplate{
-					Type:           t.Type,
-					ForeignKeyName: fk.ForeignKeyName,
-					ColumnName:     fk.ColumnName,
-					Field:          f.Field,
-					FieldType:      f.Type,
-					RefType:        tableMap[fk.RefTableName].Type,
-				}
-
-				// find ref field
-				for _, f := range tableMap[fk.RefTableName].Fields {
-					if f.ColumnName == fk.RefColumnName {
-						fkMap[fk.ForeignKeyName].RefField = f.Field
-						fkMap[fk.ForeignKeyName].RefFieldType = f.Type
-						break
-					}
-				}
+	for _, ti := range tableInfo {
+		// find table
+		var tableTpl *internal.TableTemplate
+		for _, t := range tableMap {
+			if ti.TableName == t.TableName {
+				tableTpl = t
+				break
 			}
+		}
+
+		// sanity check
+		if tableTpl == nil {
+			return nil, errors.New("could not find tableTpl")
+		}
+
+		// load keys per table
+		err = SqLoadTableForeignKeys(args, db, tableMap, tableTpl, fkMap)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -208,59 +189,102 @@ func SqLoadForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*
 	return fkMap, nil
 }
 
-// SqLoadIndexes loads indexes from the database.
-func SqLoadIndexes(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate) (map[string]*internal.IndexTemplate, error) {
-	var err error
+// SqLoadTableForeignKeys loads the foreign keys for the specified table.
+func SqLoadTableForeignKeys(args *internal.ArgType, db *sql.DB, tableMap map[string]*internal.TableTemplate, tableTpl *internal.TableTemplate, fkMap map[string]*internal.ForeignKeyTemplate) error {
+	// load foreign keys per table
+	fkeys, err := models.SqForeignKeysByTable(db, tableTpl.TableName)
+	if err != nil {
+		return err
+	}
 
-	// load idx's
-	idxMap := map[string]*internal.IndexTemplate{}
-	for _, t := range tableMap {
-		// find relevant columns
-		fields := []*models.Column{}
-		for _, f := range t.Fields {
-			if f.IsIndex && !f.IsForeignKey {
-				if _, ok := idxMap[f.IndexName]; !ok {
-					i := &internal.IndexTemplate{
-						Type:        t.Type,
-						Name:        snaker.SnakeToCamel(f.IndexName),
-						TableSchema: t.TableSchema,
-						TableName:   f.TableName,
-						IndexName:   f.IndexName,
-						IsUnique:    f.IsUnique,
-						Fields:      fields,
-						Table:       t,
-					}
+	// loop over foreign keys for table
+	for _, fk := range fkeys {
+		var refTpl *internal.TableTemplate
+		var col, refCol *models.Column
 
-					// non unique lookup
-					if !f.IsUnique {
-						idxName := i.IndexName
-
-						// chop off tablename_
-						if strings.HasPrefix(idxName, f.TableName+"_") {
-							idxName = idxName[len(f.TableName)+1:]
-						}
-
-						// chop off _idx or _index
-						switch {
-						case strings.HasSuffix(idxName, "_idx"):
-							idxName = idxName[:len(idxName)-len("_idx")]
-						case strings.HasSuffix(idxName, "_index"):
-							idxName = idxName[:len(idxName)-len("_index")]
-						}
-
-						i.Name = snaker.SnakeToCamel(idxName)
-						i.Plural = inflector.Pluralize(t.Type)
-					}
-
-					idxMap[f.IndexName] = i
-				}
-
-				idxMap[f.IndexName].Fields = append(idxMap[f.IndexName].Fields, f)
+	colLoop:
+		// find column
+		for _, c := range tableTpl.Fields {
+			if c.ColumnName == fk.ColumnName {
+				col = c
+				break colLoop
 			}
+		}
+
+	refTplLoop:
+		// find ref table
+		for _, t := range tableMap {
+			if t.TableName == fk.RefTableName {
+				refTpl = t
+				break refTplLoop
+			}
+		}
+
+	refColLoop:
+		// find ref column
+		for _, c := range refTpl.Fields {
+			if c.ColumnName == fk.RefColumnName {
+				refCol = c
+				break refColLoop
+			}
+		}
+
+		// sanity check
+		if col == nil || refTpl == nil || refCol == nil {
+			return errors.New("could not find col, refTpl, or refCol")
+		}
+
+		// foreign key name
+		fkName := tableTpl.TableName + "_" + col.ColumnName + "_fkey"
+
+		// set back in column
+		col.IsForeignKey = true
+		col.ForeignIndexName = fkName
+
+		// create foreign key template
+		fkMap[fkName] = &internal.ForeignKeyTemplate{
+			Type:           tableTpl.Type,
+			ForeignKeyName: fkName,
+			ColumnName:     fk.ColumnName,
+			Field:          col.Field,
+			FieldType:      col.Type,
+			RefType:        refTpl.Type,
+			RefField:       refCol.Field,
+			RefFieldType:   refCol.Type,
 		}
 	}
 
-	// idx keys
+	return nil
+}
+
+// SqLoadIndexes loads indexes from the database.
+func SqLoadIndexes(args *internal.ArgType, db *sql.DB, tableInfo []*models.SqTableinfo, tableMap map[string]*internal.TableTemplate) (map[string]*internal.IndexTemplate, error) {
+	var err error
+
+	idxMap := map[string]*internal.IndexTemplate{}
+	for _, ti := range tableInfo {
+		// find table
+		var tableTpl *internal.TableTemplate
+		for _, t := range tableMap {
+			if ti.TableName == t.TableName {
+				tableTpl = t
+				break
+			}
+		}
+
+		// sanity check
+		if tableTpl == nil {
+			return nil, errors.New("could not find tableTpl")
+		}
+
+		// load keys per table
+		err = SqLoadTableIndexes(args, db, tableTpl, idxMap)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// sort idx keys
 	idxKeys := []string{}
 	for k := range idxMap {
 		idxKeys = append(idxKeys, k)
@@ -276,6 +300,111 @@ func SqLoadIndexes(args *internal.ArgType, db *sql.DB, tableMap map[string]*inte
 	}
 
 	return idxMap, nil
+}
+
+// SqLoadTableIndexes loads indexes for the specified table.
+func SqLoadTableIndexes(args *internal.ArgType, db *sql.DB, tableTpl *internal.TableTemplate, idxMap map[string]*internal.IndexTemplate) error {
+	var err error
+
+	// load primary key
+	//SqLoadTablePrimaryKeyIndex(args, db, tableTpl, idxMap)
+	if tableTpl.PrimaryKey != "" {
+		// find primary field
+		var f *models.Column
+		for _, c := range tableTpl.Fields {
+			if c.ColumnName == tableTpl.PrimaryKey {
+				f = c
+				break
+			}
+		}
+
+		pkName := tableTpl.TableName + "_" + tableTpl.PrimaryKey + "_pkey"
+		idxMap[pkName] = &internal.IndexTemplate{
+			Type:        tableTpl.Type,
+			Name:        tableTpl.PrimaryKeyField,
+			TableSchema: tableTpl.TableSchema,
+			TableName:   tableTpl.TableName,
+			IndexName:   pkName,
+			IsUnique:    true,
+			Fields:      []*models.Column{f},
+			Table:       tableTpl,
+		}
+	}
+
+	// load indexes
+	indexes, err := models.SqIndicesByTable(db, tableTpl.TableName)
+	if err != nil {
+		return err
+	}
+
+	// loop each index
+	for _, ix := range indexes {
+		idxName := ix.IndexName
+
+		// chop off tablename_
+		if strings.HasPrefix(idxName, tableTpl.TableName+"_") {
+			idxName = idxName[len(tableTpl.TableName)+1:]
+		}
+
+		// chop off _idx or _index
+		switch {
+		case strings.HasSuffix(idxName, "_idx"):
+			idxName = idxName[:len(idxName)-len("_idx")]
+		case strings.HasSuffix(idxName, "_index"):
+			idxName = idxName[:len(idxName)-len("_index")]
+		}
+
+		// create index template
+		idxTpl := &internal.IndexTemplate{
+			Type:        tableTpl.Type,
+			Name:        snaker.SnakeToCamel(idxName),
+			Plural:      inflector.Pluralize(tableTpl.Type),
+			TableSchema: tableTpl.TableSchema,
+			TableName:   tableTpl.TableName,
+			IndexName:   ix.IndexName,
+			IsUnique:    ix.IsUnique,
+			Table:       tableTpl,
+			Fields:      []*models.Column{},
+		}
+
+		// load index info
+		err = SqLoadIndexInfo(args, db, idxTpl)
+		if err != nil {
+			return err
+		}
+
+		idxMap[ix.IndexName] = idxTpl
+	}
+
+	return nil
+}
+
+// SqLoadIndexInfo loads index info for the specified table and index.
+func SqLoadIndexInfo(args *internal.ArgType, db *sql.DB, idxTpl *internal.IndexTemplate) error {
+	var err error
+
+	// load index info
+	idxInfo, err := models.SqIndexinfosByIndex(db, idxTpl.IndexName)
+	if err != nil {
+		return err
+	}
+
+	// sort by seqno
+	infoList := SqIndexinfoList(idxInfo)
+	sort.Sort(infoList)
+
+	// build fields for index
+	for _, ii := range infoList {
+		// find field
+		for _, c := range idxTpl.Table.Fields {
+			if ii.ColumnName == c.ColumnName {
+				idxTpl.Fields = append(idxTpl.Fields, c)
+				break
+			}
+		}
+	}
+
+	return nil
 }
 
 // SqParseQuery parses a sqlite query and generates a type for it.
@@ -342,7 +471,7 @@ func SqParseQuery(args *internal.ArgType, db *sql.DB) error {
 				FieldOrdinal: sqC.FieldOrdinal,
 				ColumnName:   sqC.ColumnName,
 				DataType:     sqC.DataType,
-				IsNullable:   sqC.IsNullable,
+				IsNullable:   !sqC.NotNull,
 				DefaultValue: sqC.DefaultValue.String,
 				HasDefault:   sqC.DefaultValue.Valid,
 				IsPrimaryKey: sqC.IsPrimaryKey,
@@ -469,10 +598,22 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	case "blob":
 		typ = "[]byte"
-
-	default:
-		panic(fmt.Errorf("unknown type %s", dt))
 	}
 
 	return precision, nilType, typ
+}
+
+// sort interface for SqIndexinfo
+type SqIndexinfoList []*models.SqIndexinfo
+
+func (s SqIndexinfoList) Len() int {
+	return len(s)
+}
+
+func (s SqIndexinfoList) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s SqIndexinfoList) Less(i, j int) bool {
+	return s[i].SeqNo < s[j].SeqNo
 }

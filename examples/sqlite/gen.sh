@@ -17,20 +17,21 @@ set -x
 
 mkdir -p $DEST
 rm -f $DEST/*.go
-rm -f $DEST/$DBNAME
+rm -f $SRC/sqlite
+rm -f $SRC/$DBNAME
 
 sqlite3 $DB << 'ENDSQL'
 PRAGMA foreign_keys = 1;
 
 CREATE TABLE authors (
-  author_id integer PRIMARY KEY,
+  author_id integer NOT NULL PRIMARY KEY,
   name text NOT NULL DEFAULT ''
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
 
 CREATE TABLE books (
-  book_id integer PRIMARY KEY,
+  book_id integer NOT NULL PRIMARY KEY,
   author_id integer NOT NULL REFERENCES authors(author_id),
   isbn text NOT NULL DEFAULT '' UNIQUE,
   title text NOT NULL DEFAULT '',
@@ -56,7 +57,7 @@ SELECT
   b.tags AS book_tags
 FROM books b
 JOIN authors a ON a.author_id = b.author_id
-WHERE LIKE(b.tags, '%' || %%tag StringSlice%% || '%')
+WHERE LIKE(b.tags, '%' || %%tag string%% || '%')
 ENDSQL
 
 pushd $SRC &> /dev/null

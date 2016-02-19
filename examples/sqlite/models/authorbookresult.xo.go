@@ -14,7 +14,7 @@ type AuthorBookResult struct {
 }
 
 // AuthorBookResultsByTag runs a custom query, returning results as AuthorBookResult.
-func AuthorBookResultsByTag(db XODB, tag StringSlice) ([]*AuthorBookResult, error) {
+func AuthorBookResultsByTag(db XODB, tag string) ([]*AuthorBookResult, error) {
 	var err error
 
 	// sql query
