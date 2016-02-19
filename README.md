@@ -392,7 +392,6 @@ The following projects work with similar concepts as xo:
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)
-* Add support for SQLite
 * Finish support for Oracle
 * Finish many-to-many and link table support
 * Finish porting Cond, OrCond, OrderBy, Limit, GroupBy, Having
