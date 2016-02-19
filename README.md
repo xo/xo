@@ -23,12 +23,12 @@ and funcs for well-defined database relationships using raw queries.
 
 The following is a table of the supported features per database:
 
-|            | ENUMs | Tables | Primary Keys | Indexes | Foreign Keys | Link Tables | Stored Procedures | 
-| ---------- |:-----:|
-| PostgreSQL |:white_check_mark:|
-| MySQL      |
-| Oracle     |
-| SQLite     | 
+|            | Models           | Primary Keys     | Foreign Keys     | Indexes          | Link Tables      | Stored Procedures | ENUMs            | 
+| ---------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|:-----------------:|:----------------:|
+| PostgreSQL |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
+| MySQL      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
+| Oracle     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark: |:white_check_mark:|
+| SQLite     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|                   |                  |
 
 # Installation #
 
