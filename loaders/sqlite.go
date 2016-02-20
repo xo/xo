@@ -3,7 +3,6 @@ package loaders
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/url"
 	"path"
 	"sort"
@@ -134,7 +133,6 @@ func SqLoadTableColumns(args *internal.ArgType, db *sql.DB, tableTpl *internal.T
 
 		// set col info
 		c.Field = snaker.SnakeToCamel(c.ColumnName)
-		fmt.Printf(">>> %s -- not null: %t // %t\n", sqC.ColumnName, sqC.NotNull, c.IsNullable)
 		c.Len, c.NilType, c.Type = SqParseType(args, c.DataType, c.IsNullable)
 
 		// set primary key

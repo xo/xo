@@ -7,6 +7,8 @@ DBNAME=booktest
 
 DB=postgres://$DBUSER:$DBPASS@$DBHOST/$DBNAME
 
+EXTRA=$1
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
@@ -60,9 +62,9 @@ $$ LANGUAGE plpgsql;
 
 ENDSQL
 
-$XOBIN $DB -v -o $SRC/models
+$XOBIN $DB -o $SRC/models $EXTRA
 
-cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+cat << ENDSQL | $XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA
 SELECT
   a.author_id::integer AS author_id,
   a.name::text AS author_name,
@@ -78,7 +80,7 @@ ENDSQL
 pushd $SRC &> /dev/null
 
 go build
-./postgres
+./postgres $EXTRA
 
 popd &> /dev/null
 

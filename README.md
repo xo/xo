@@ -388,7 +388,6 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
-* Column mapping option on custom queries
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)

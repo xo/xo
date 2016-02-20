@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"log"
 	"time"
@@ -11,12 +12,17 @@ import (
 	"github.com/knq/xo/examples/postgres/models"
 )
 
+var flagVerbose = flag.Bool("v", false, "verbose")
+
 func main() {
 	var err error
 
 	// set logging
-	models.XOLog = func(s string, p ...interface{}) {
-		fmt.Printf("> SQL: %s -- %v\n", s, p)
+	flag.Parse()
+	if *flagVerbose {
+		models.XOLog = func(s string, p ...interface{}) {
+			fmt.Printf("> SQL: %s -- %v\n", s, p)
+		}
 	}
 
 	// open database

@@ -2,6 +2,8 @@
 
 DBNAME=booktest.sqlite3
 
+EXTRA=$1
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 DB=file:$SRC/$DBNAME
@@ -44,10 +46,9 @@ CREATE INDEX books_title_idx ON books(title, year);
 
 ENDSQL
 
+$XOBIN $DB -o $SRC/models $EXTRA
 
-$XOBIN $DB -v -o $SRC/models
-
-cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+cat << ENDSQL | $XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA
 SELECT
   a.author_id,
   a.name AS author_name,
@@ -57,14 +58,19 @@ SELECT
   b.tags AS book_tags
 FROM books b
 JOIN authors a ON a.author_id = b.author_id
-WHERE LIKE(b.tags, '%' || %%tag string%% || '%')
+WHERE b.tags LIKE '%' || %%tag string%% || '%'
 ENDSQL
 
 pushd $SRC &> /dev/null
 
 go build
-./sqlite
+./sqlite $EXTRA
 
 popd &> /dev/null
 
-sqlite3 $DB <<< 'select * from books;'
+sqlite3 $DB << ENDSQL
+.headers on
+.mode column
+.width 7 9 4 20 4 21 15
+select * from books;
+ENDSQL

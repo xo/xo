@@ -27,7 +27,7 @@ func AuthorBookResultsByTag(db XODB, tag string) ([]*AuthorBookResult, error) {
 		`b.tags AS book_tags ` +
 		`FROM books b ` +
 		`JOIN authors a ON a.author_id = b.author_id ` +
-		`WHERE LIKE(b.tags, '%' || ? || '%')`
+		`WHERE b.tags LIKE '%' || ? || '%'`
 
 	// run query
 	XOLog(sqlstr, tag)

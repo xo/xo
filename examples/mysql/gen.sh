@@ -7,6 +7,8 @@ DBNAME=booktest
 
 DB=mysql://$DBUSER:$DBPASS@$DBHOST/$DBNAME
 
+EXTRA=$1
+
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
@@ -55,9 +57,9 @@ CREATE FUNCTION say_hello(s text) RETURNS text
   RETURN CONCAT('hello ', s);
 ENDSQL
 
-$XOBIN $DB -v -o $SRC/models
+$XOBIN $DB -o $SRC/models $EXTRA
 
-cat << ENDSQL | $XOBIN $DB -v -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models
+cat << ENDSQL | $XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA
 SELECT
   a.author_id AS author_id,
   a.name AS author_name,
@@ -73,8 +75,8 @@ ENDSQL
 pushd $SRC &> /dev/null
 
 go build
-./mysql
+./mysql $EXTRA
 
 popd &> /dev/null
 
-mysql -u $DBUSER -p$DBPASS $DBNAME <<< 'select * from books;'
+mysql -u $DBUSER -p$DBPASS $DBNAME -e 'select * from books;'
