@@ -12,11 +12,11 @@ import (
 )
 
 func init() {
-	internal.SchemaLoaders["oracle"] = internal.TypeLoader{
+	/*internal.SchemaLoaders["oracle"] = internal.TypeLoader{
 		Schemes:        []string{"oracle", "ora", "oci", "oci8"},
 		QueryFunc:      OraParseQuery,
 		LoadSchemaFunc: OraLoadSchemaTypes,
-	}
+	}*/
 }
 
 // OraLoadSchemaTypes loads the oracle type definitions from a database.

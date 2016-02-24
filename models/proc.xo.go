@@ -5,26 +5,21 @@ package models
 
 // Proc represents a stored procedure.
 type Proc struct {
-	ProcName       string // proc_name
-	ParameterTypes string // parameter_types
-	ReturnType     string // return_type
-	Comment        string // comment
+	ProcName   string // proc_name
+	ReturnType string // return_type
 }
 
-// PgProcsBySchema runs a custom query, returning results as Proc.
-func PgProcsBySchema(db XODB, schema string) ([]*Proc, error) {
+// PgProcs runs a custom query, returning results as Proc.
+func PgProcs(db XODB, schema string) ([]*Proc, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
 		`p.proname, ` + // ::varchar AS proc_name
-		`oidvectortypes(p.proargtypes), ` + // ::varchar AS parameter_types
-		`pg_get_function_result(p.oid), ` + // ::varchar AS return_type
-		`'' ` + // ::varchar AS comment
+		`pg_get_function_result(p.oid) ` + // ::varchar AS return_type
 		`FROM pg_proc p ` +
-		`INNER JOIN pg_namespace n ON p.pronamespace = n.oid ` +
-		`WHERE n.nspname = $1 ` +
-		`ORDER BY p.proname`
+		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
+		`WHERE n.nspname = $1`
 
 	// run query
 	XOLog(sqlstr, schema)
@@ -40,7 +35,7 @@ func PgProcsBySchema(db XODB, schema string) ([]*Proc, error) {
 		p := Proc{}
 
 		// scan
-		err = q.Scan(&p.ProcName, &p.ParameterTypes, &p.ReturnType, &p.Comment)
+		err = q.Scan(&p.ProcName, &p.ReturnType)
 		if err != nil {
 			return nil, err
 		}
@@ -51,23 +46,18 @@ func PgProcsBySchema(db XODB, schema string) ([]*Proc, error) {
 	return res, nil
 }
 
-// MyProcsBySchema runs a custom query, returning results as Proc.
-func MyProcsBySchema(db XODB, schema string) ([]*Proc, error) {
+// MyProcs runs a custom query, returning results as Proc.
+func MyProcs(db XODB, schema string) ([]*Proc, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
 		`r.routine_name AS proc_name, ` +
-		`(SELECT GROUP_CONCAT(l.dtd_identifier SEPARATOR ', ') ` +
-		`FROM information_schema.parameters l ` +
-		`WHERE l.specific_schema = r.routine_schema AND l.specific_name = r.routine_name AND l.ordinal_position > 0 ` +
-		`ORDER BY l.ordinal_position) AS parameter_types, ` +
 		`p.dtd_identifier AS return_type ` +
 		`FROM information_schema.routines r ` +
-		`INNER JOIN information_schema.parameters p ON ` +
-		`p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0 ` +
-		`WHERE r.routine_schema = ? ` +
-		`ORDER BY r.specific_name`
+		`INNER JOIN information_schema.parameters p ` +
+		`ON p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0 ` +
+		`WHERE r.routine_schema = ?`
 
 	// run query
 	XOLog(sqlstr, schema)
@@ -83,7 +73,7 @@ func MyProcsBySchema(db XODB, schema string) ([]*Proc, error) {
 		p := Proc{}
 
 		// scan
-		err = q.Scan(&p.ProcName, &p.ParameterTypes, &p.ReturnType)
+		err = q.Scan(&p.ProcName, &p.ReturnType)
 		if err != nil {
 			return nil, err
 		}

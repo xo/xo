@@ -7,112 +7,156 @@ type TemplateType uint
 
 // the order here will be the alter the output order per file.
 const (
-	XO TemplateType = iota
-	Enum
-	Model
-	Proc
-	Index
-	ForeignKey
-	QueryModel
-	Query
+	EnumTemplate TemplateType = iota
+	ProcTemplate
+	TypeTemplate
+	ForeignKeyTemplate
+	IndexTemplate
+	QueryTypeTemplate
+	QueryTemplate
+
+	// always last
+	XOTemplate
 )
 
 // String returns the name for the associated template type.
 func (tt TemplateType) String() string {
 	var s string
 	switch tt {
-	case XO:
+	case XOTemplate:
 		s = "xo_db"
-	case Enum:
+	case EnumTemplate:
 		s = "enum"
-	case Proc:
+	case ProcTemplate:
 		s = "proc"
-	case Model:
-		s = "model"
-	case Index:
-		s = "idx"
-	case ForeignKey:
-		s = "fkey"
-	case QueryModel:
-		s = "model"
-	case Query:
+	case TypeTemplate:
+		s = "type"
+	case ForeignKeyTemplate:
+		s = "foreignkey"
+	case IndexTemplate:
+		s = "index"
+	case QueryTypeTemplate:
+		s = "querytype"
+	case QueryTemplate:
 		s = "query"
-
 	default:
 		panic("unknown TemplateType")
 	}
 	return s
 }
 
-// EnumTemplate is a template item for a enum.
-type EnumTemplate struct {
-	Type     string
-	EnumType string
+// RelType represents the different types of relational storage (table/view).
+type RelType uint
+
+const (
+	// Table reltype
+	Table RelType = iota
+
+	// View reltype
+	View
+)
+
+// String provides the string representation of RelType.
+func (rt RelType) String() string {
+	var s string
+	switch rt {
+	case Table:
+		s = "TABLE"
+	case View:
+		s = "VIEW"
+	default:
+		panic("unknown RelType")
+	}
+	return s
+}
+
+// EnumValue holds data for a single enum value.
+type EnumValue struct {
+	Name    string
+	Val     *models.EnumValue
+	Comment string
+}
+
+// Enum is a template item for a enum.
+type Enum struct {
+	Name    string
+	Schema  string
+	Values  []*EnumValue
+	Enum    *models.Enum
+	Comment string
+}
+
+// Proc is a template item for a stored procedure.
+type Proc struct {
+	Name       string
+	Schema     string
+	ProcParams string
+	Params     []*Field
+	Return     *Field
+	Proc       *models.Proc
+	Comment    string
+}
+
+// Field contains field information.
+type Field struct {
+	Name    string
+	Type    string
+	NilType string
+	Len     int
+	Col     *models.Column
+	Comment string
+}
+
+// Type is a template item for a type (ie, table/view/custom query).
+type Type struct {
+	Name       string
+	Schema     string
+	RelType    RelType
+	PrimaryKey *Field
+	Fields     []*Field
+	Table      *models.Table
+	Comment    string
+}
+
+// ForeignKey is a template item for a foreign relationship on a table.
+type ForeignKey struct {
+	/*Name       string*/
+	Schema     string
+	Type       *Type
+	Field      *Field
+	RefType    *Type
+	RefField   *Field
+	ForeignKey *models.ForeignKey
+	Comment    string
+}
+
+// Index is a template item for a index into a table.
+type Index struct {
+	Name     string
+	TypeName string
+	Schema   string
+	Type     *Type
+	Fields   []*Field
+	Index    *models.Index
 	Comment  string
-	Values   []*models.Enum
 }
 
-// TableTemplate is a template item for a table.
-type TableTemplate struct {
-	Type            string
-	TableSchema     string
-	TableName       string
-	PrimaryKey      string
-	PrimaryKeyField string
-	PrimaryKeyType  string
-	Comment         string
-	Fields          []*models.Column
-}
-
-// ProcTemplate is a template item for a stored procedure.
-type ProcTemplate struct {
-	Name               string
-	ReturnType         string
-	NilReturnType      string
-	TableSchema        string
-	ProcName           string
-	ProcParameterNames string
-	ProcParameterTypes string
-	ProcReturnType     string
-	Comment            string
-	Parameters         []*models.Column
-}
-
-// ForeignKeyTemplate is a template item for a foreign relationship on a table.
-type ForeignKeyTemplate struct {
-	Type           string
-	ForeignKeyName string
-	ColumnName     string
-	Field          string
-	FieldType      string
-	RefType        string
-	RefField       string
-	RefFieldType   string
-}
-
-// IndexTemplate is a template item for a index into a table.
-type IndexTemplate struct {
-	Type        string
+// QueryParam is a query parameter for a custom query.
+type QueryParam struct {
 	Name        string
-	TableSchema string
-	TableName   string
-	IndexName   string
-	IsUnique    bool
-	Plural      string
-	Comment     string
-	Fields      []*models.Column
-	Table       *TableTemplate
+	Type        string
+	Interpolate bool
 }
 
-// FuncTemplate is a template item for a custom query.
-type QueryTemplate struct {
+// Query is a template item for a custom query.
+type Query struct {
+	Schema        string
 	Name          string
-	Type          string
 	Query         []string
 	QueryComments []string
-	Parameters    []QueryParameter
+	QueryParams   []*QueryParam
 	OnlyOne       bool
 	Interpolate   bool
+	Type          *Type
 	Comment       string
-	Table         *TableTemplate
 }

@@ -6,8 +6,6 @@ import (
 	"text/template"
 
 	"github.com/serenize/snaker"
-
-	"github.com/knq/xo/models"
 )
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
@@ -107,28 +105,28 @@ func (a *ArgType) inc(i int) int {
 	return i + 1
 }
 
-// colnames creates a list of the column names found in columns, excluding any
-// FieldName in ignoreFields.
+// colnames creates a list of the column names found in fields, excluding any
+// Field.Name in ignoreNames.
 //
 // Used to present a comma separated list of column names, ie in a sql select,
 // or update. (ie, field_1, field_2, field_3, ...)
-func (a *ArgType) colnames(columns []*models.Column, ignoreFields ...string) string {
+func (a *ArgType) colnames(fields []*Field, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
 		if i != 0 {
 			str = str + ", "
 		}
-		str = str + col.ColumnName
+		str = str + f.Col.ColumnName
 		i++
 	}
 
@@ -141,72 +139,72 @@ func (a *ArgType) colnames(columns []*models.Column, ignoreFields ...string) str
 // Used to create a sql query list of column names in a where clause (ie,
 // field_1 = $1 AND field_2 = $2 AND ... ) or in an update clause (ie, field =
 // $1, field = $2, ...)
-func (a *ArgType) colnamesquery(columns []*models.Column, sep string, ignoreFields ...string) string {
+func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
 		if i != 0 {
 			str = str + sep
 		}
-		str = str + col.ColumnName + " = " + a.Loader.NthParam(i)
+		str = str + f.Col.ColumnName + " = " + a.Loader.NthParam(i)
 		i++
 	}
 
 	return str
 }
 
-// colprefixnames creates a list of the column names found in columns with the
-// supplied prefix, excluding any FieldName in ignoreFields.
+// colprefixnames creates a list of the column names found in fields with the
+// supplied prefix, excluding any FieldName in ignoreNames.
 //
 // Used to present a comma separated list of column names, with a prefix, ie in
 // a sql select, or update. (ie, t.field_1, t.field_2, t.field_3, ...)
-func (a *ArgType) colprefixnames(columns []*models.Column, prefix string, ignoreFields ...string) string {
+func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
 		if i != 0 {
 			str = str + ", "
 		}
-		str = str + prefix + "." + col.ColumnName
+		str = str + prefix + "." + f.Col.ColumnName
 		i++
 	}
 
 	return str
 }
 
-// colvals creates a list of value place holders for the columns found in
-// columns, excluding any FieldName in ignoreFields.
+// colvals creates a list of value place holders for the fields found in
+// fields, excluding any FieldName in ignoreNames.
 //
 // Used to present a comma separated list of column names, ie in a sql select,
 // or update. (ie, $1, $2, $3 ...)
-func (a *ArgType) colvals(columns []*models.Column, ignoreFields ...string) string {
+func (a *ArgType) colvals(fields []*Field, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
@@ -221,48 +219,48 @@ func (a *ArgType) colvals(columns []*models.Column, ignoreFields ...string) stri
 }
 
 // fieldnames creates a list of field names from the field names of the
-// provided columns, adding the prefix provided, and excluding any field name
-// in ignoreFields.
+// provided fields, adding the prefix provided, and excluding any field name
+// in ignoreNames.
 //
 // Used to present a comma separated list of field names, ie in a Go statement
 // (ie, t.Field1, t.Field2, t.Field3 ...)
-func (a *ArgType) fieldnames(columns []*models.Column, prefix string, ignoreFields ...string) string {
+func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
 		if i != 0 {
 			str = str + ", "
 		}
-		str = str + prefix + "." + col.Field
+		str = str + prefix + "." + f.Name
 		i++
 	}
 
 	return str
 }
 
-// count returns the 1-based count of columns, excluding any field name in
-// ignoreFields.
+// count returns the 1-based count of fields, excluding any field name in
+// ignoreNames.
 //
-// Used to get the count of columns, and useful for specifying the last sql
+// Used to get the count of fields, and useful for specifying the last sql
 // parameter.
-func (a *ArgType) colcount(columns []*models.Column, ignoreFields ...string) int {
+func (a *ArgType) colcount(fields []*Field, ignoreNames ...string) int {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	i := 1
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
@@ -272,28 +270,29 @@ func (a *ArgType) colcount(columns []*models.Column, ignoreFields ...string) int
 }
 
 // goparamlist converts a list of fields into their named Go parameters,
-// skipping any field names in ignoreFields.
-func (a *ArgType) goparamlist(columns []*models.Column, addType bool, ignoreFields ...string) string {
+// skipping any field names in ignoreNames.
+func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...string) string {
 	ignore := map[string]bool{}
-	for _, n := range ignoreFields {
+	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
 	str := ""
 	i := 0
-	for _, col := range columns {
-		if ignore[col.Field] {
+	for _, f := range fields {
+		if ignore[f.Name] {
 			continue
 		}
 
 		s := "v" + strconv.Itoa(i)
-		if len(col.Field) > 0 {
-			s = strings.ToLower(col.Field[:1]) + col.Field[1:]
+		if len(f.Name) > 0 {
+			n := strings.Split(snaker.CamelToSnake(f.Name), "_")
+			s = strings.ToLower(n[0]) + f.Name[len(n[0]):]
 		}
 
 		str = str + ", " + s
 		if addType {
-			str = str + " " + a.retype(col.Type)
+			str = str + " " + a.retype(f.Type)
 		}
 
 		i++

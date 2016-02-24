@@ -124,7 +124,33 @@ func (a *Author) Delete(db XODB) error {
 	return nil
 }
 
-// AuthorsByName retrieves rows from booktest.authors, each as a Author.
+// AuthorByAuthorID retrieves a row from booktest.authors as a Author.
+//
+// Looks up using index authors_author_id_pkey.
+func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`author_id, name ` +
+		`FROM booktest.authors ` +
+		`WHERE author_id = ?`
+
+	// run query
+	XOLog(sqlstr, authorID)
+	a := Author{
+		_exists: true,
+	}
+
+	err = db.QueryRow(sqlstr, authorID).Scan(&a.AuthorID, &a.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &a, nil
+}
+
+// AuthorsByName retrieves a row from booktest.authors as a Author.
 //
 // Looks up using index authors_name_idx.
 func AuthorsByName(db XODB, name string) ([]*Author, error) {
@@ -161,30 +187,4 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 	}
 
 	return res, nil
-}
-
-// AuthorByAuthorID retrieves a row from booktest.authors as a Author.
-//
-// Looks up using index author_id.
-func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`author_id, name ` +
-		`FROM booktest.authors ` +
-		`WHERE author_id = ?`
-
-	a := Author{
-		_exists: true,
-	}
-
-	// run query
-	XOLog(sqlstr, authorID)
-	err = db.QueryRow(sqlstr, authorID).Scan(&a.AuthorID, &a.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	return &a, nil
 }

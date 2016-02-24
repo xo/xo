@@ -1,15 +1,17 @@
 #!/bin/bash
 
-PGSQL=pgsql://xodb:xodb@localhost/xodb
-MYSQL=mysql://xodb:xodb@localhost/xodb
-SQLTE=file:xodb.sqlite3
-ORCLE=oracle://xodb:xodb@localhost/xodb
+PGDB=pgsql://xodb:xodb@localhost/xodb
+MYDB=mysql://xodb:xodb@localhost/xodb
+ORDB=oracle://xodb:xodb@localhost/xodb
+SQDB=file:xodb.sqlite3
 
 DEST=$1
 
 if [ -z "$DEST" ]; then
   DEST=x
 fi
+
+EXTRA=$2
 
 XOBIN=$(which xo)
 if [ -e ./xo ]; then
@@ -22,78 +24,95 @@ mkdir -p $DEST
 rm -f *.sqlite3
 rm -rf $DEST/*.xo.go
 
-# postgresql enum query
-cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Enum -F PgEnumsBySchema --query-type-comment='Enum represents a enum value.' -o $DEST
+# postgres enum list query
+COMMENT='Enum represents a enum.'
+$XOBIN $PGDB -N -M -B -T Enum -F PgEnums --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
 SELECT
-  t.typname::varchar AS enum_type,
-  e.enumlabel::varchar AS enum_value,
-  e.enumsortorder::integer AS const_value,
-  ''::varchar AS type,
-  ''::varchar AS value,
-  ''::varchar AS comment
+  t.typname::varchar AS enum_name
 FROM pg_type t
-  LEFT JOIN pg_namespace n ON n.oid = t.typnamespace
-  JOIN pg_enum e ON t.oid = e.enumtypid
+  JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
+  JOIN ONLY pg_enum e ON t.oid = e.enumtypid
 WHERE n.nspname = %%schema string%%
 ENDSQL
 
-# postgresql column query
-cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Column -F PgColumnsByRelkindSchema --query-type-comment='Column represents class (ie, table, view, etc) attributes.' -o $DEST
+# postgres enum value list query
+COMMENT='EnumValue represents a enum value.'
+$XOBIN $PGDB -N -M -B -T EnumValue -F PgEnumValues --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
 SELECT
-  a.attname::varchar AS column_name,
-  c.relname::varchar AS table_name,
-  format_type(a.atttypid, a.atttypmod)::varchar AS data_type,
+  e.enumlabel::varchar AS enum_value,
+  e.enumsortorder::integer AS const_value
+FROM pg_type t
+  JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
+  LEFT JOIN pg_enum e ON t.oid = e.enumtypid
+WHERE n.nspname = %%schema string%% AND t.typname = %%enum string%%
+ENDSQL
+
+# postgres proc list query
+COMMENT='Proc represents a stored procedure.'
+$XOBIN $PGDB -N -M -B -T Proc -F PgProcs --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+  p.proname::varchar AS proc_name,
+  pg_get_function_result(p.oid)::varchar AS return_type
+FROM pg_proc p
+  JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
+WHERE n.nspname = %%schema string%%
+ENDSQL
+
+# postgres proc parameter list query
+COMMENT='ProcParam represents a stored procedure param.'
+$XOBIN $PGDB -N -M -B -T ProcParam -F PgProcParams --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+  UNNEST(STRING_TO_ARRAY(oidvectortypes(p.proargtypes), ', '))::varchar AS param_type
+FROM pg_proc p
+  JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
+WHERE n.nspname = %%schema string%% AND p.proname = %%proc string%%
+ENDSQL
+
+# postgres table list query
+COMMENT='Table represents table info.'
+$XOBIN $PGDB -N -M -B -T Table -F PgTables --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+  c.relkind::varchar AS type,
+  c.relname::varchar AS table_name
+FROM pg_class c
+  JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = %%schema string%% AND c.relkind = %%relkind string%%
+ENDSQL
+
+# postgres table column list query
+FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
+COMMENT='Column represents column info.'
+$XOBIN $PGDB -N -M -B -T Column -F PgTableColumns -Z "$FIELDS" --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
   a.attnum::integer AS field_ordinal,
-  (NOT a.attnotnull)::boolean AS is_nullable,
-  COALESCE(i.oid <> 0, false)::boolean AS is_index,
-  COALESCE(ct.contype = 'u' OR ct.contype = 'p', false)::boolean AS is_unique,
-  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key,
-  COALESCE(cf.contype = 'f', false)::boolean AS is_foreign_key,
-  COALESCE(i.relname, '')::varchar AS index_name,
-  COALESCE(cf.conname, '')::varchar AS foreign_index_name,
-  a.atthasdef::boolean AS has_default,
+  a.attname::varchar AS column_name,
+  format_type(a.atttypid, a.atttypmod)::varchar AS data_type,
+  a.attnotnull::boolean AS not_null,
   COALESCE(pg_get_expr(ad.adbin, ad.adrelid), '')::varchar AS default_value,
-  ''::varchar AS field,
-  ''::varchar AS type,
-  ''::varchar AS nil_type,
-  ''::varchar AS tag,
-  0::integer AS len,
-  ''::varchar AS comment
+  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key
 FROM pg_attribute a
   JOIN ONLY pg_class c ON c.oid = a.attrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype IN('p', 'u')
-  LEFT JOIN pg_constraint cf ON cf.conrelid = c.oid AND a.attnum = ANY(cf.conkey) AND cf.contype IN('f')
   LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum
-  LEFT JOIN pg_index ix ON a.attnum = ANY(ix.indkey) AND c.oid = a.attrelid AND c.oid = ix.indrelid
-  LEFT JOIN pg_class i ON i.oid = ix.indexrelid
-WHERE a.attisdropped = false AND c.relkind = %%relkind string%% AND a.attnum > 0 AND n.nspname = %%schema string%%
-ORDER BY c.relname, a.attnum
+WHERE a.attisdropped = false AND a.attnum > 0 AND n.nspname = %%schema string%% AND c.relname = %%table string%%
+ORDER BY a.attnum
 ENDSQL
 
-# postgresql proc query
-cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T Proc -F PgProcsBySchema --query-type-comment='Proc represents a stored procedure.' -o $DEST
-SELECT
-  p.proname::varchar AS proc_name,
-  oidvectortypes(p.proargtypes)::varchar AS parameter_types,
-  pg_get_function_result(p.oid)::varchar AS return_type,
-  ''::varchar AS comment
-FROM pg_proc p
-  INNER JOIN pg_namespace n ON p.pronamespace = n.oid
-WHERE n.nspname = %%schema string%%
-ORDER BY p.proname
-ENDSQL
-
-# postgresql foreign key query
-cat << ENDSQL | $XOBIN $PGSQL -v -N -M -B -T ForeignKey -F PgForeignKeysBySchema --query-type-comment='ForeignKey represents a foreign key.' -o $DEST
+# postgres table foreign key list query
+COMMENT='ForeignKey represents a foreign key.'
+$XOBIN $PGDB -N -M -B -T ForeignKey -F PgTableForeignKeys --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
 SELECT
   r.conname::varchar AS foreign_key_name,
-  a.relname::varchar AS table_name,
   b.attname::varchar AS column_name,
   i.relname::varchar AS ref_index_name,
   c.relname::varchar AS ref_table_name,
   d.attname::varchar AS ref_column_name,
-  ''::varchar AS comment
+  0::integer AS key_id,
+  0::integer AS seq_no,
+  ''::varchar AS on_update,
+  ''::varchar AS on_delete,
+  ''::varchar AS match
 FROM pg_constraint r
   JOIN ONLY pg_class a ON a.oid = r.conrelid
   JOIN ONLY pg_attribute b ON b.attisdropped = false AND b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid
@@ -101,103 +120,170 @@ FROM pg_constraint r
   JOIN ONLY pg_class c on c.oid = r.confrelid
   JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid
   JOIN ONLY pg_namespace n ON n.oid = r.connamespace
-WHERE r.contype = 'f' AND n.nspname = %%schema string%%
-ORDER BY r.conname, a.relname, b.attname
+WHERE r.contype = 'f' AND n.nspname = %%schema string%% AND a.relname = %%table string%%
+ORDER BY r.conname, b.attname
 ENDSQL
 
-# mysql enum query
-cat << ENDSQL | $XOBIN $MYSQL -v -N -M -B -T MyEnum --query-type-comment='MyEnum represents a MySQL enum.' -o $DEST
+# postgres table index list query
+COMMENT='Index represents an index.'
+$XOBIN $PGDB -N -M -B -T Index -F PgTableIndexes --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
 SELECT
-  table_name AS table_name,
-  column_name AS enum_type,
-  SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values
+  DISTINCT ic.relname::varchar AS index_name,
+  i.indisunique::boolean AS is_unique,
+  i.indisprimary::boolean AS is_primary,
+  0::integer AS seq_no,
+  ''::varchar AS origin,
+  false::boolean AS is_partial
+FROM pg_index i
+  JOIN ONLY pg_class c ON c.oid = i.indrelid
+  JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
+  JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
+WHERE n.nspname = %%schema string%% AND c.relname = %%table string%%
+ENDSQL
+
+# postgres index column list query
+COMMENT='IndexColumn represents index column info.'
+$XOBIN $PGDB -N -M -B -T IndexColumn -F PgIndexColumns --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+  (row_number() over())::integer AS seq_no,
+  a.attnum::integer AS cid,
+  a.attname::varchar AS column_name
+FROM pg_index i
+  JOIN ONLY pg_class c ON c.oid = i.indrelid
+  JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
+  JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
+  LEFT JOIN pg_attribute a ON i.indrelid = a.attrelid AND a.attnum = ANY(i.indkey) AND a.attisdropped = false
+WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
+ENDSQL
+
+# postgres index column order query
+COMMENT='PgColOrder represents index column order.'
+$XOBIN $PGDB -N -M -B -1 -T PgColOrder -F PgGetColOrder --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+  i.indkey::varchar AS ord
+FROM pg_index i
+  JOIN ONLY pg_class c ON c.oid = i.indrelid
+  JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
+  JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
+WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
+ENDSQL
+
+# mysql enum list query
+$XOBIN $MYDB -a -N -M -B -T Enum -F MyEnums -o $DEST $EXTRA << ENDSQL
+SELECT
+  DISTINCT column_name AS enum_name
 FROM information_schema.columns
 WHERE data_type = 'enum' AND table_schema = %%schema string%%
-ORDER BY table_name, column_name
 ENDSQL
 
-# mysql column query
-cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T Column -F MyColumnsByRelkindSchema -o $DEST
+# mysql enum value list query
+$XOBIN $MYDB -N -M -B -1 -T MyEnumValue -F MyEnumValues -o $DEST $EXTRA << ENDSQL
 SELECT
-  c.column_name,
-  c.table_name,
-  IF(c.data_type = 'enum', c.column_name, c.column_type) AS data_type,
-  c.ordinal_position AS field_ordinal,
-  IF(c.is_nullable, true, false) AS is_nullable,
-  IF(c.column_key <> '', true, false) AS is_index,
-  IF(c.column_key IN('PRI', 'UNI'), true, false) AS is_unique,
-  IF(c.column_key = 'PRI', true, false) AS is_primary_key,
-  COALESCE((SELECT s.index_name
-    FROM information_schema.statistics s
-    WHERE s.table_schema = c.table_schema AND s.table_name = c.table_name AND s.column_name = c.column_name), '') AS index_name,
-  COALESCE((SELECT x.constraint_name
-    FROM information_schema.key_column_usage x
-    WHERE x.table_name = c.table_name AND x.column_name = c.column_name AND NOT x.referenced_table_name IS NULL), '') AS foreign_index_name,
-  COALESCE(IF(c.column_default IS NULL, true, false), false) AS has_default,
-  COALESCE(c.column_default, '') AS default_value,
-  COALESCE(c.column_comment, '') AS comment
-FROM information_schema.columns c
-LEFT JOIN information_schema.tables t ON t.table_schema = c.table_schema AND t.table_name = c.table_name
-WHERE t.table_type = %%relkind string%% AND c.table_schema = %%schema string%%
-ORDER BY c.table_name, c.ordinal_position
+  SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values
+FROM information_schema.columns
+WHERE data_type = 'enum' AND table_schema = %%schema string%% AND column_name = %%enum string%%
 ENDSQL
 
-# mysql proc query
-cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T Proc -F MyProcsBySchema -o $DEST
+# mysql proc list query
+$XOBIN $MYDB -a -N -M -B -T Proc -F MyProcs -o $DEST $EXTRA << ENDSQL
 SELECT
   r.routine_name AS proc_name,
-  (SELECT GROUP_CONCAT(l.dtd_identifier SEPARATOR ', ')
-    FROM information_schema.parameters l
-    WHERE l.specific_schema = r.routine_schema AND l.specific_name = r.routine_name AND l.ordinal_position > 0
-    ORDER BY l.ordinal_position) AS parameter_types,
   p.dtd_identifier AS return_type
 FROM information_schema.routines r
-INNER JOIN information_schema.parameters p ON
-  p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0
+INNER JOIN information_schema.parameters p
+  ON p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0
 WHERE r.routine_schema = %%schema string%%
-ORDER BY r.specific_name
 ENDSQL
 
-# mysql foreign key query
-cat << ENDSQL | $XOBIN $MYSQL -a -v -N -M -B -T ForeignKey -F MyForeignKeysBySchema -o $DEST
+# mysql proc parameter list query
+$XOBIN $MYDB -a -N -M -B -T ProcParam -F MyProcParams -o $DEST $EXTRA << ENDSQL
+SELECT
+  dtd_identifier AS param_type
+FROM information_schema.parameters
+WHERE ordinal_position > 0 AND specific_schema = %%schema string%% AND specific_name = %%proc string%%
+ORDER BY ordinal_position
+ENDSQL
+
+# mysql table list query
+$XOBIN $MYDB -a -N -M -B -T Table -F MyTables -o $DEST $EXTRA << ENDSQL
+SELECT
+  table_name
+FROM information_schema.tables
+WHERE table_schema = %%schema string%% AND table_type = %%relkind string%%
+ENDSQL
+
+# mysql table column list query
+$XOBIN $MYDB -a -N -M -B -T Column -F MyTableColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  ordinal_position AS field_ordinal,
+  column_name,
+  IF(data_type = 'enum', column_name, column_type) AS data_type,
+  IF(is_nullable, false, true) AS not_null,
+  column_default AS default_value,
+  IF(column_key = 'PRI', true, false) AS is_primary_key
+FROM information_schema.columns
+WHERE table_schema = %%schema string%% AND table_name = %%table string%%
+ORDER BY ordinal_position
+ENDSQL
+
+# mysql table foreign key list query
+$XOBIN $MYDB -a -N -M -B -T ForeignKey -F MyTableForeignKeys -o $DEST $EXTRA << ENDSQL
 SELECT
   constraint_name AS foreign_key_name,
-  table_name AS table_name,
   column_name AS column_name,
-  '' AS ref_index_name,
   referenced_table_name AS ref_table_name,
   referenced_column_name AS ref_column_name
 FROM information_schema.key_column_usage
-WHERE referenced_table_name IS NOT NULL AND table_schema = %%schema string%%
-ORDER BY table_name, constraint_name
+WHERE referenced_table_name IS NOT NULL AND table_schema = %%schema string%% AND table_name = %%table string%%
+ENDSQL
+
+# mysql table index list query
+$XOBIN $MYDB -a -N -M -B -T Index -F MyTableIndexes -o $DEST $EXTRA << ENDSQL
+SELECT
+  DISTINCT index_name,
+  NOT non_unique AS is_unique
+FROM information_schema.statistics
+WHERE index_name <> 'PRIMARY' AND index_schema = %%schema string%% AND table_name = %%table string%%
+ENDSQL
+
+# mysql index column list query
+$XOBIN $MYDB -a -N -M -B -T IndexColumn -F MyIndexColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  seq_in_index AS seq_no,
+  column_name
+FROM information_schema.statistics
+WHERE index_schema = %%schema string%% AND table_name = %%table string%% AND index_name = %%index string%%
+ORDER BY seq_in_index
 ENDSQL
 
 # sqlite table list query
-cat << ENDSQL | $XOBIN $SQLTE -v -N -M -B -T SqTableinfo -o $DEST
+$XOBIN $SQDB -a -N -M -B -T Table -F SqTables -o $DEST $EXTRA << ENDSQL
 SELECT
-  type,
-  name,
   tbl_name AS table_name
 FROM sqlite_master
 WHERE type = %%relkind string%%
 ENDSQL
 
-# sqlite table info query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqColumn -Z 'FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool' -o $DEST
+# sqlite table column list query
+FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
+$XOBIN $SQDB -a -I -N -M -B -T Column -F SqTableColumns -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA table_info(%%table string,interpolate%%)
 ENDSQL
 
-# sqlite foreign key list query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqForeignKey -Z 'ID int,Seq int,RefTableName string,ColumnName string,RefColumnName string,OnUpdate string,OnDelete string,Match string' -o $DEST
+# sqlite table foreign key list query
+FIELDS='KeyID int,SeqNo int,RefTableName string,ColumnName string,RefColumnName string,OnUpdate string,OnDelete string,Match string'
+$XOBIN $SQDB -a -I -N -M -B -T ForeignKey -F SqTableForeignKeys -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA foreign_key_list(%%table string,interpolate%%)
 ENDSQL
 
-# sqlite index list query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqIndex -Z 'Seq int,IndexName string,IsUnique bool,Origin string,IsPartial bool' -o $DEST
+# sqlite table index list query
+FIELDS='SeqNo int,IndexName string,IsUnique bool,Origin string,IsPartial bool'
+$XOBIN $SQDB -a -I -N -M -B -T Index -F SqTableIndexes -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA index_list(%%table string,interpolate%%)
 ENDSQL
 
-# sqlite index info query
-cat << ENDSQL | $XOBIN $SQLTE -v -I -N -M -B -T SqIndexinfo -Z 'SeqNo int,Cid int,ColumnName string' -o $DEST
+# sqlite index column list query
+FIELDS='SeqNo int,Cid int,ColumnName string'
+$XOBIN $SQDB -a -I -N -M -B -T IndexColumn -F SqIndexColumns -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA index_info(%%index string,interpolate%%)
 ENDSQL

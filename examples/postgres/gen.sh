@@ -64,7 +64,7 @@ ENDSQL
 
 $XOBIN $DB -o $SRC/models $EXTRA
 
-cat << ENDSQL | $XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA
+$XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA << ENDSQL
 SELECT
   a.author_id::integer AS author_id,
   a.name::text AS author_name,

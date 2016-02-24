@@ -136,7 +136,7 @@ func main() {
 	*/
 
 	// retrieve first book
-	books0, err := models.BooksByTitle(db, "my book title", 2016)
+	books0, err := models.BooksByTitleYear(db, "my book title", 2016)
 	if err != nil {
 		log.Fatal(err)
 	}

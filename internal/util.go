@@ -7,20 +7,15 @@ import (
 	"regexp"
 	"strings"
 	"time"
-)
 
-// QueryParameter is an extracted query parameter from a query.
-type QueryParameter struct {
-	Name        string
-	Type        string
-	Interpolate bool
-}
+	"github.com/serenize/snaker"
+)
 
 // ParseQuery takes the query in args and looks for strings in the form of
 // "%%<name> <type>[,<option>,...]%%", replacing them with the supplied mask.
 // mask can contain "%d" to indicate current position. The modified query is
-// returned, and the slice of extracted QueryParameter's.
-func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []QueryParameter) {
+// returned, and the slice of extracted QueryParam's.
+func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []*QueryParam) {
 	dl := a.QueryParamDelimiter
 
 	// create the regexp for the delimiter
@@ -33,7 +28,7 @@ func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []QueryParamet
 
 	// return vals and placeholders
 	str := ""
-	params := []QueryParameter{}
+	params := []*QueryParam{}
 	i := 1
 	last := 0
 
@@ -48,7 +43,7 @@ func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []QueryParamet
 		// extract parameter info
 		paramStr := a.Query[m[0]+len(dl) : m[1]-len(dl)]
 		p := strings.SplitN(paramStr, " ", 2)
-		param := QueryParameter{
+		param := &QueryParam{
 			Name: p[0],
 			Type: p[1],
 		}
@@ -108,21 +103,22 @@ func GenRandomID() string {
 	return string(b)
 }
 
-// lenRE is a regular expression that matches precision (length) definitions in
-// a database.
+// LenRE is the regexp that matches precision (length) definitions in a
+// database.
 var LenRE = regexp.MustCompile(`\([0-9]+\)$`)
 
-// intRE matches Go int types.
-var IntRE = regexp.MustCompile(`^int[0-9]*$`)
+// IntRE matches Go int types.
+var IntRE = regexp.MustCompile(`^int(32|64)?$`)
 
-// TBuf is to hold compiled template strings.
+// TBuf is to hold the executed templates.
 type TBuf struct {
-	Type TemplateType
-	Name string
-	Buf  *bytes.Buffer
+	TemplateType TemplateType
+	Name         string
+	Subname      string
+	Buf          *bytes.Buffer
 }
 
-// TBufSlice is a sortable slice of TBuf.
+// TBufSlice is a slice of TBuf compatible with sort.Interface.
 type TBufSlice []TBuf
 
 func (t TBufSlice) Len() int {
@@ -134,15 +130,31 @@ func (t TBufSlice) Swap(i, j int) {
 }
 
 func (t TBufSlice) Less(i, j int) bool {
-	if t[i].Type == XO {
-		return false
-	} else if t[j].Type == XO {
+	if t[i].TemplateType < t[j].TemplateType {
 		return true
+	} else if t[j].TemplateType < t[i].TemplateType {
+		return false
 	}
 
-	if t[i].Name == t[j].Name {
-		return t[i].Type <= t[j].Type
+	if strings.Compare(t[i].Name, t[j].Name) < 0 {
+		return true
+	} else if strings.Compare(t[j].Name, t[i].Name) < 0 {
+		return false
 	}
 
-	return strings.Compare(t[i].Name, t[j].Name) <= 0
+	return strings.Compare(t[i].Subname, t[j].Subname) < 0
+}
+
+var uRE = regexp.MustCompile(`_+`)
+
+// SnakeToCamel provides a safer version of snaker.SnakeToCamel
+func SnakeToCamel(s string) string {
+	// remove leading/trailing underscores
+	s = strings.TrimLeft(s, "_")
+	s = strings.TrimRight(s, "_")
+
+	// fix 2 or more __
+	s = uRE.ReplaceAllString(s, "_")
+
+	return snaker.SnakeToCamel(s)
 }

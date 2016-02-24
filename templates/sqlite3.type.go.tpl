@@ -1,0 +1,1 @@
+mysql.type.go.tpl

@@ -15,7 +15,6 @@ import (
 	"sort"
 	"strings"
 
-	// database drivers
 	"github.com/alexflint/go-arg"
 
 	"github.com/knq/xo/internal"
@@ -23,86 +22,44 @@ import (
 	"github.com/knq/xo/models"
 )
 
-// args is the default command line arguments.
-var args = &internal.ArgType{
-	Suffix:              ".xo.go",
-	Int32Type:           "int",
-	Uint32Type:          "uint",
-	QueryParamDelimiter: "%%",
-
-	// KnownTypeMap is the collection of known Go types.
-	KnownTypeMap: map[string]bool{
-		"bool":        true,
-		"string":      true,
-		"byte":        true,
-		"rune":        true,
-		"int":         true,
-		"int16":       true,
-		"int32":       true,
-		"int64":       true,
-		"uint":        true,
-		"uint8":       true,
-		"uint16":      true,
-		"uint32":      true,
-		"uint64":      true,
-		"float32":     true,
-		"float64":     true,
-		"Slice":       true,
-		"StringSlice": true,
-	},
-
-	// ShortNameTypeMap is the collection of Go style short names for types, mainly
-	// used for use with declaring a func receiver on a type.
-	ShortNameTypeMap: map[string]string{
-		"bool":        "b",
-		"string":      "s",
-		"byte":        "b",
-		"rune":        "r",
-		"int":         "i",
-		"int16":       "i",
-		"int32":       "i",
-		"int64":       "i",
-		"uint":        "u",
-		"uint8":       "u",
-		"uint16":      "u",
-		"uint32":      "u",
-		"uint64":      "u",
-		"float32":     "f",
-		"float64":     "f",
-		"Slice":       "s",
-		"StringSlice": "ss",
-	},
-}
-
 func main() {
 	var err error
+
+	// get defaults
+	var args = internal.NewDefaultArgs()
 
 	// parse args
 	arg.MustParse(args)
 
 	// process args
-	err = processArgs()
+	err = processArgs(args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
 	// open database
-	loader, db, err := openDB(args.DSN)
+	err = openDB(args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
-	defer db.Close()
+	defer args.DB.Close()
 
-	// set loader
-	args.Loader = loader
+	// load schema name
+	if args.Schema == "" {
+		args.Schema, err = args.Loader.SchemaName(args)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+	}
 
 	// load defs into type map
 	if args.QueryMode {
-		err = loader.ParseQuery(args, db)
+		err = args.Loader.ParseQuery(args)
 	} else {
-		err = loader.LoadSchemaTypes(args, db)
+		err = args.Loader.LoadSchema(args)
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
@@ -110,14 +67,14 @@ func main() {
 	}
 
 	// add xo
-	err = args.ExecuteTemplate(internal.XO, "xo_db", args)
+	err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
 	// output
-	err = writeTypes(internal.TBufSlice(args.Generated))
+	err = writeTypes(args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -125,7 +82,7 @@ func main() {
 }
 
 // processArgs processs cli args.
-func processArgs() error {
+func processArgs(args *internal.ArgType) error {
 	var err error
 
 	// get working directory
@@ -226,16 +183,16 @@ func processArgs() error {
 }
 
 // openDB attempts to open a database connection.
-func openDB(dsn string) (internal.Loader, *sql.DB, error) {
+func openDB(args *internal.ArgType) error {
 	var err error
 
 	// parse dsn
-	u, err := url.Parse(dsn)
+	u, err := url.Parse(args.DSN)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 	if u.Scheme == "" {
-		return nil, nil, errors.New("invalid dsn")
+		return errors.New("invalid dsn")
 	}
 
 	var dbtype, connStr string
@@ -249,16 +206,20 @@ func openDB(dsn string) (internal.Loader, *sql.DB, error) {
 		}
 	}
 	if !ok {
-		return nil, nil, errors.New("unknown scheme in dsn")
+		return errors.New("unknown scheme in dsn")
 	}
 
 	// open database
 	db, err := sql.Open(dbtype, connStr)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	return loader, db, err
+	args.LoaderType = dbtype
+	args.Loader = loader
+	args.DB = db
+
+	return nil
 }
 
 // files is a map of filenames to open file handles.
@@ -291,13 +252,13 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	fi, err := os.Stat(filename)
 	if err == nil && fi.IsDir() {
 		return nil, errors.New("filename cannot be directory")
-	} else if _, ok = err.(*os.PathError); !ok && args.Append && t.Type != internal.XO {
+	} else if _, ok = err.(*os.PathError); !ok && args.Append && t.TemplateType != internal.XOTemplate {
 		// file exists so append if append is set and not XO type
 		mode = os.O_APPEND | os.O_WRONLY
 	}
 
 	// skip
-	if t.Type == internal.XO && fi != nil {
+	if t.TemplateType == internal.XOTemplate && fi != nil {
 		return nil, nil
 	}
 
@@ -322,8 +283,10 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 }
 
 // writeTypes writes the generated definitions.
-func writeTypes(out internal.TBufSlice) error {
+func writeTypes(args *internal.ArgType) error {
 	var err error
+
+	out := internal.TBufSlice(args.Generated)
 
 	// sort segments
 	sort.Sort(out)
@@ -333,7 +296,7 @@ func writeTypes(out internal.TBufSlice) error {
 		var f *os.File
 
 		// skip when in append and type is XO
-		if args.Append && t.Type == internal.XO {
+		if args.Append && t.TemplateType == internal.XOTemplate {
 			continue
 		}
 
@@ -349,7 +312,7 @@ func writeTypes(out internal.TBufSlice) error {
 		}
 
 		// write segment
-		if !args.Append || (t.Type != internal.Model && t.Type != internal.QueryModel) {
+		if !args.Append || (t.TemplateType != internal.TypeTemplate && t.TemplateType != internal.QueryTypeTemplate) {
 			_, err = t.Buf.WriteTo(f)
 			if err != nil {
 				return err

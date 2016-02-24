@@ -8,14 +8,14 @@ import (
 	"errors"
 )
 
-// BookType is the 'book_type' enum type.
+// BookType is the 'book_type' enum type from public.
 type BookType uint16
 
 const (
-	// FictionBookType is the book_type for 'FICTION'.
+	// FictionBookType is the 'FICTION' BookType.
 	FictionBookType = BookType(1)
 
-	// NonfictionBookType is the book_type for 'NONFICTION'.
+	// NonfictionBookType is the 'NONFICTION' BookType.
 	NonfictionBookType = BookType(2)
 )
 

@@ -6,27 +6,33 @@ package models
 // ForeignKey represents a foreign key.
 type ForeignKey struct {
 	ForeignKeyName string // foreign_key_name
-	TableName      string // table_name
 	ColumnName     string // column_name
 	RefIndexName   string // ref_index_name
 	RefTableName   string // ref_table_name
 	RefColumnName  string // ref_column_name
-	Comment        string // comment
+	KeyID          int    // key_id
+	SeqNo          int    // seq_no
+	OnUpdate       string // on_update
+	OnDelete       string // on_delete
+	Match          string // match
 }
 
-// PgForeignKeysBySchema runs a custom query, returning results as ForeignKey.
-func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
+// PgTableForeignKeys runs a custom query, returning results as ForeignKey.
+func PgTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
 		`r.conname, ` + // ::varchar AS foreign_key_name
-		`a.relname, ` + // ::varchar AS table_name
 		`b.attname, ` + // ::varchar AS column_name
 		`i.relname, ` + // ::varchar AS ref_index_name
 		`c.relname, ` + // ::varchar AS ref_table_name
 		`d.attname, ` + // ::varchar AS ref_column_name
-		`'' ` + // ::varchar AS comment
+		`0, ` + // ::integer AS key_id
+		`0, ` + // ::integer AS seq_no
+		`'', ` + // ::varchar AS on_update
+		`'', ` + // ::varchar AS on_delete
+		`'' ` + // ::varchar AS match
 		`FROM pg_constraint r ` +
 		`JOIN ONLY pg_class a ON a.oid = r.conrelid ` +
 		`JOIN ONLY pg_attribute b ON b.attisdropped = false AND b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid ` +
@@ -34,12 +40,12 @@ func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		`JOIN ONLY pg_class c on c.oid = r.confrelid ` +
 		`JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = r.connamespace ` +
-		`WHERE r.contype = 'f' AND n.nspname = $1 ` +
-		`ORDER BY r.conname, a.relname, b.attname`
+		`WHERE r.contype = 'f' AND n.nspname = $1 AND a.relname = $2 ` +
+		`ORDER BY r.conname, b.attname`
 
 	// run query
-	XOLog(sqlstr, schema)
-	q, err := db.Query(sqlstr, schema)
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +57,7 @@ func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		fk := ForeignKey{}
 
 		// scan
-		err = q.Scan(&fk.ForeignKeyName, &fk.TableName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName, &fk.Comment)
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo, &fk.OnUpdate, &fk.OnDelete, &fk.Match)
 		if err != nil {
 			return nil, err
 		}
@@ -62,25 +68,22 @@ func PgForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 	return res, nil
 }
 
-// MyForeignKeysBySchema runs a custom query, returning results as ForeignKey.
-func MyForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
+// MyTableForeignKeys runs a custom query, returning results as ForeignKey.
+func MyTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
 		`constraint_name AS foreign_key_name, ` +
-		`table_name AS table_name, ` +
 		`column_name AS column_name, ` +
-		`'' AS ref_index_name, ` +
 		`referenced_table_name AS ref_table_name, ` +
 		`referenced_column_name AS ref_column_name ` +
 		`FROM information_schema.key_column_usage ` +
-		`WHERE referenced_table_name IS NOT NULL AND table_schema = ? ` +
-		`ORDER BY table_name, constraint_name`
+		`WHERE referenced_table_name IS NOT NULL AND table_schema = ? AND table_name = ?`
 
 	// run query
-	XOLog(sqlstr, schema)
-	q, err := db.Query(sqlstr, schema)
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +95,39 @@ func MyForeignKeysBySchema(db XODB, schema string) ([]*ForeignKey, error) {
 		fk := ForeignKey{}
 
 		// scan
-		err = q.Scan(&fk.ForeignKeyName, &fk.TableName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName)
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &fk)
+	}
+
+	return res, nil
+}
+
+// SqTableForeignKeys runs a custom query, returning results as ForeignKey.
+func SqTableForeignKeys(db XODB, table string) ([]*ForeignKey, error) {
+	var err error
+
+	// sql query
+	var sqlstr = `PRAGMA foreign_key_list(` + table + `)`
+
+	// run query
+	XOLog(sqlstr)
+	q, err := db.Query(sqlstr, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*ForeignKey{}
+	for q.Next() {
+		fk := ForeignKey{}
+
+		// scan
+		err = q.Scan(&fk.KeyID, &fk.SeqNo, &fk.RefTableName, &fk.ColumnName, &fk.RefColumnName, &fk.OnUpdate, &fk.OnDelete, &fk.Match)
 		if err != nil {
 			return nil, err
 		}

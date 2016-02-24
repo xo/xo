@@ -1,12 +1,6 @@
 package internal
 
-import (
-	"io/ioutil"
-	"path"
-	"text/template"
-
-	"github.com/knq/xo/templates"
-)
+import "database/sql"
 
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
@@ -99,8 +93,14 @@ type ArgType struct {
 	// Filename is the output filename, as derived from Out.
 	Filename string `arg:"-"`
 
-	// Loader is the schema loader
+	// LoaderType is the loader type.
+	LoaderType string `arg:"-"`
+
+	// Loader is the schema loader.
 	Loader Loader `arg:"-"`
+
+	// DB is the opened database handle.
+	DB *sql.DB `arg:"-"`
 
 	// templateSet is the set of templates to use for generating data.
 	templateSet *TemplateSet `arg:"-"`
@@ -116,25 +116,55 @@ type ArgType struct {
 	ShortNameTypeMap map[string]string `arg:"-"`
 }
 
-// UserTemplateLoader loads templates from the specified name
-func (a *ArgType) TemplateLoader(name string) ([]byte, error) {
-	// no template path specified
-	if a.TemplatePath == "" {
-		return templates.Asset(name)
+// NewDefaultArgs returns the default arguments.
+func NewDefaultArgs() *ArgType {
+	return &ArgType{
+		Suffix:              ".xo.go",
+		Int32Type:           "int",
+		Uint32Type:          "uint",
+		QueryParamDelimiter: "%%",
+
+		// KnownTypeMap is the collection of known Go types.
+		KnownTypeMap: map[string]bool{
+			"bool":        true,
+			"string":      true,
+			"byte":        true,
+			"rune":        true,
+			"int":         true,
+			"int16":       true,
+			"int32":       true,
+			"int64":       true,
+			"uint":        true,
+			"uint8":       true,
+			"uint16":      true,
+			"uint32":      true,
+			"uint64":      true,
+			"float32":     true,
+			"float64":     true,
+			"Slice":       true,
+			"StringSlice": true,
+		},
+
+		// ShortNameTypeMap is the collection of Go style short names for types, mainly
+		// used for use with declaring a func receiver on a type.
+		ShortNameTypeMap: map[string]string{
+			"bool":        "b",
+			"string":      "s",
+			"byte":        "b",
+			"rune":        "r",
+			"int":         "i",
+			"int16":       "i",
+			"int32":       "i",
+			"int64":       "i",
+			"uint":        "u",
+			"uint8":       "u",
+			"uint16":      "u",
+			"uint32":      "u",
+			"uint64":      "u",
+			"float32":     "f",
+			"float64":     "f",
+			"Slice":       "s",
+			"StringSlice": "ss",
+		},
 	}
-
-	return ioutil.ReadFile(path.Join(a.TemplatePath, name))
-}
-
-// TemplateSet retrieves the created template set.
-func (a *ArgType) TemplateSet() *TemplateSet {
-	if a.templateSet == nil {
-		a.templateSet = &TemplateSet{
-			funcs: a.NewTemplateFuncs(),
-			l:     a.TemplateLoader,
-			tpls:  map[string]*template.Template{},
-		}
-	}
-
-	return a.templateSet
 }

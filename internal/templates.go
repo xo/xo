@@ -1,16 +1,42 @@
-// Package templates contains the various Go code templates used by xo.
 package internal
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
+	"path"
 	"text/template"
+
+	"github.com/knq/xo/templates"
 )
+
+// TemplateLoader loads templates from the specified name.
+func (a *ArgType) TemplateLoader(name string) ([]byte, error) {
+	// no template path specified
+	if a.TemplatePath == "" {
+		return templates.Asset(name)
+	}
+
+	return ioutil.ReadFile(path.Join(a.TemplatePath, name))
+}
+
+// TemplateSet retrieves the created template set.
+func (a *ArgType) TemplateSet() *TemplateSet {
+	if a.templateSet == nil {
+		a.templateSet = &TemplateSet{
+			funcs: a.NewTemplateFuncs(),
+			l:     a.TemplateLoader,
+			tpls:  map[string]*template.Template{},
+		}
+	}
+
+	return a.templateSet
+}
 
 // ExecuteTemplate loads and parses the supplied template with name and
 // executes it with obj as the context.
-func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, obj interface{}) error {
+func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj interface{}) error {
 	var err error
 
 	// setup generated
@@ -20,23 +46,18 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, obj interface{})
 
 	// create store
 	v := TBuf{
-		Type: tt,
-		Name: name,
-		Buf:  new(bytes.Buffer),
+		TemplateType: tt,
+		Name:         name,
+		Subname:      sub,
+		Buf:          new(bytes.Buffer),
 	}
 
 	// build template name
-	templateName := ""
-	if tt != XO {
-		// grab tl
-		tl, ok := a.Loader.(TypeLoader)
-		if !ok {
-			return errors.New("internal error")
-		}
-
-		templateName = tl.Schemes[0] + "."
+	loaderType := ""
+	if tt != XOTemplate {
+		loaderType = a.LoaderType + "."
 	}
-	templateName = templateName + tt.String() + ".go.tpl"
+	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)
 
 	// execute template
 	err = a.TemplateSet().Execute(v.Buf, templateName, obj)
