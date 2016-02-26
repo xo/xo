@@ -165,14 +165,14 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from books_author_id_fkey.
+// Generated from foreign key 'books_author_id_fkey'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
-// BookByIsbn retrieves a row from public.books as a Book.
+// BookByIsbn retrieves a row from 'public.books' as a Book.
 //
-// Looks up using index books_isbn_key.
+// Generated from index 'books_isbn_key'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 
@@ -196,9 +196,9 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	return &b, nil
 }
 
-// BookByBookID retrieves a row from public.books as a Book.
+// BookByBookID retrieves a row from 'public.books' as a Book.
 //
-// Looks up using index books_pkey.
+// Generated from index 'books_pkey'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -222,9 +222,9 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitleYear retrieves a row from public.books as a Book.
+// BooksByTitleYear retrieves a row from 'public.books' as a Book.
 //
-// Looks up using index books_title_idx.
+// Generated from index 'books_title_idx'.
 func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	var err error
 

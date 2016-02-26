@@ -5,7 +5,7 @@ package models
 
 import "errors"
 
-// Author represents a row from authors.
+// Author represents a row from 'authors'.
 type Author struct {
 	AuthorID int    // author_id
 	Name     string // name
@@ -124,9 +124,9 @@ func (a *Author) Delete(db XODB) error {
 	return nil
 }
 
-// AuthorByAuthorID retrieves a row from authors as a Author.
+// AuthorByAuthorID retrieves a row from 'authors' as a Author.
 //
-// Looks up using index authors_author_id_pkey.
+// Generated from index 'authors_author_id_pkey'.
 func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 	var err error
 
@@ -150,9 +150,9 @@ func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 	return &a, nil
 }
 
-// AuthorsByName retrieves a row from authors as a Author.
+// AuthorsByName retrieves a row from 'authors' as a Author.
 //
-// Looks up using index authors_name_idx.
+// Generated from index 'authors_name_idx'.
 func AuthorsByName(db XODB, name string) ([]*Author, error) {
 	var err error
 

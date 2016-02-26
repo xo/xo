@@ -89,7 +89,7 @@ func SqTables(db XODB, relkind string) ([]*Table, error) {
 	const sqlstr = `SELECT ` +
 		`tbl_name AS table_name ` +
 		`FROM sqlite_master ` +
-		`WHERE type = ?`
+		`WHERE tbl_name NOT LIKE 'sqlite_%' AND type = ?`
 
 	// run query
 	XOLog(sqlstr, relkind)

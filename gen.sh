@@ -218,7 +218,7 @@ SELECT
   ordinal_position AS field_ordinal,
   column_name,
   IF(data_type = 'enum', column_name, column_type) AS data_type,
-  IF(is_nullable, false, true) AS not_null,
+  IF(is_nullable = 'YES', false, true) AS not_null,
   column_default AS default_value,
   IF(column_key = 'PRI', true, false) AS is_primary_key
 FROM information_schema.columns
@@ -261,7 +261,7 @@ $XOBIN $SQDB -a -N -M -B -T Table -F SqTables -o $DEST $EXTRA << ENDSQL
 SELECT
   tbl_name AS table_name
 FROM sqlite_master
-WHERE type = %%relkind string%%
+WHERE tbl_name NOT LIKE 'sqlite_%' AND type = %%relkind string%%
 ENDSQL
 
 # sqlite table column list query

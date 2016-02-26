@@ -3,6 +3,7 @@ package loaders
 import (
 	"net/url"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -67,11 +68,14 @@ func SqRelkind(relType internal.RelType) string {
 	return s
 }
 
+var uRE = regexp.MustCompile(`\s*unsigned\*`)
+
 // SqParseType parse a postgres type into a Go type based on the column
 // definition.
 func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilType := "nil"
+	unsigned := false
 
 	// extract length
 	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
@@ -79,9 +83,14 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		dt = dt[:loc[0]]
 	}
 
+	if uRE.MatchString(dt) {
+		unsigned = true
+		uRE.ReplaceAllString(dt, "")
+	}
+
 	var typ string
 	switch dt {
-	case "boolean":
+	case "bool", "boolean":
 		nilType = "false"
 		typ = "bool"
 		if nullable {
@@ -89,15 +98,7 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "sql.NullBool"
 		}
 
-	case "text":
-		nilType = `""`
-		typ = "string"
-		if nullable {
-			nilType = "sql.NullString{}"
-			typ = "sql.NullString"
-		}
-
-	case "integer":
+	case "int", "integer", "tinyint", "smallint", "mediumint", "bigint":
 		nilType = "0"
 		typ = args.Int32Type
 		if nullable {
@@ -105,7 +106,7 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "sql.NullInt64"
 		}
 
-	case "numeric", "real":
+	case "numeric", "real", "double", "float", "decimal":
 		nilType = "0.0"
 		typ = "float64"
 		if nullable {
@@ -115,6 +116,20 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	case "blob":
 		typ = "[]byte"
+
+	default:
+		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "datetime", "date", "time":
+		nilType = `""`
+		typ = "string"
+		if nullable {
+			nilType = "sql.NullString{}"
+			typ = "sql.NullString"
+		}
+	}
+
+	// if unsigned ...
+	if internal.IntRE.MatchString(typ) && unsigned {
+		typ = "u" + typ
 	}
 
 	return precision, nilType, typ

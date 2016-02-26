@@ -43,7 +43,7 @@ CREATE TABLE books (
   author_id integer NOT NULL,
   isbn varchar(255) NOT NULL DEFAULT '' UNIQUE,
   book_type ENUM('FICTION', 'NONFICTION') NOT NULL DEFAULT 'FICTION',
-  title text DEFAULT '',
+  title text NOT NULL DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
   available timestamp NOT NULL DEFAULT NOW(),
   tags text NOT NULL DEFAULT '',

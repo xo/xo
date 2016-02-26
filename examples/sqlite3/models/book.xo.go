@@ -5,7 +5,7 @@ package models
 
 import "errors"
 
-// Book represents a row from books.
+// Book represents a row from 'books'.
 type Book struct {
 	BookID    int    // book_id
 	AuthorID  int    // author_id
@@ -131,14 +131,14 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from books_author_id_fkey.
+// Generated from foreign key 'books_author_id_fkey'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
-// BookByBookID retrieves a row from books as a Book.
+// BookByBookID retrieves a row from 'books' as a Book.
 //
-// Looks up using index books_book_id_pkey.
+// Generated from index 'books_book_id_pkey'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -162,9 +162,9 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitleYear retrieves a row from books as a Book.
+// BooksByTitleYear retrieves a row from 'books' as a Book.
 //
-// Looks up using index books_title_idx.
+// Generated from index 'books_title_idx'.
 func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	var err error
 
@@ -201,9 +201,9 @@ func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	return res, nil
 }
 
-// BookByIsbn retrieves a row from books as a Book.
+// BookByIsbn retrieves a row from 'books' as a Book.
 //
-// Looks up using index sqlite_autoindex_books_1.
+// Generated from index 'sqlite_autoindex_books_1'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

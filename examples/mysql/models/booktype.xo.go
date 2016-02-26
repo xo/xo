@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-// BookType is the 'book_type' enum type from booktest.
+// BookType is the 'book_type' enum type from schema 'booktest'.
 type BookType uint16
 
 const (

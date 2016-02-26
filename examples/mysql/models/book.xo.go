@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Book represents a row from booktest.books.
+// Book represents a row from 'booktest.books'.
 type Book struct {
 	BookID    int        // book_id
 	AuthorID  int        // author_id
@@ -135,14 +135,14 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from books_ibfk_1.
+// Generated from foreign key 'books_ibfk_1'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
-// BooksByAuthorID retrieves a row from booktest.books as a Book.
+// BooksByAuthorID retrieves a row from 'booktest.books' as a Book.
 //
-// Looks up using index author_id.
+// Generated from index 'author_id'.
 func BooksByAuthorID(db XODB, authorID int) ([]*Book, error) {
 	var err error
 
@@ -179,9 +179,9 @@ func BooksByAuthorID(db XODB, authorID int) ([]*Book, error) {
 	return res, nil
 }
 
-// BookByBookID retrieves a row from booktest.books as a Book.
+// BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Looks up using index books_book_id_pkey.
+// Generated from index 'books_book_id_pkey'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -205,9 +205,9 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitleYear retrieves a row from booktest.books as a Book.
+// BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
-// Looks up using index books_title_idx.
+// Generated from index 'books_title_idx'.
 func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	var err error
 
@@ -244,9 +244,9 @@ func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	return res, nil
 }
 
-// BookByIsbn retrieves a row from booktest.books as a Book.
+// BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Looks up using index isbn.
+// Generated from index 'isbn'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 
