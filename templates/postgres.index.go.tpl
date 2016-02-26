@@ -1,6 +1,6 @@
-// {{ .TypeName }}By{{ range .Fields }}{{ .Name }}{{ end }} retrieves a row from {{ schema .Schema .Type.Table.TableName }} as a {{ .Type.Name }}.
+// {{ .TypeName }}By{{ range .Fields }}{{ .Name }}{{ end }} retrieves a row from '{{ schema .Schema .Type.Table.TableName }}' as a {{ .Type.Name }}.
 //
-// Looks up using index {{ .Index.IndexName }}.
+// Generated from index '{{ .Index.IndexName }}'.
 func {{ .TypeName }}By{{ range .Fields }}{{ .Name }}{{ end }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
 	var err error
 

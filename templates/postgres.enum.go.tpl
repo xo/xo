@@ -1,5 +1,5 @@
 {{- $type := .Name -}}
-// {{ $type }} is the '{{ .Enum.EnumName }}' enum type from {{ .Schema  }}.
+// {{ $type }} is the '{{ .Enum.EnumName }}' enum type from schema '{{ .Schema  }}'.
 type {{ $type }} uint16
 
 const (

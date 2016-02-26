@@ -1,7 +1,7 @@
 {{- if .Comment -}}
 // {{ .Comment }}
 {{- else -}}
-// {{ .Name }} represents a row from {{ schema .Schema .Table.TableName }}.
+// {{ .Name }} represents a row from '{{ schema .Schema .Table.TableName }}'.
 {{- end }}
 type {{ .Name }} struct {
 {{- range .Fields }}

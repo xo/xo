@@ -22,7 +22,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
 		"shortname":      a.shortname,
-		"nulltypeext":    a.nulltypeext,
+		"convext":        a.convext,
 		"schema":         a.schemafn,
 	}
 }
@@ -301,14 +301,24 @@ func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...stri
 	return str
 }
 
-// nulltypeext determines if the type begins with Null (ie, NullString,
-// NullInt64, etc) and returns the remainder with the prefix.
-func (a *ArgType) nulltypeext(typ string) string {
-	if strings.HasPrefix(typ, "sql.Null") {
-		return "." + typ[8:]
+// convext generates a conversion for field f to be assigned to field t.
+func (a *ArgType) convext(prefix string, f *Field, t *Field) string {
+	expr := prefix + "." + f.Name
+	if f.Type == t.Type {
+		return expr
 	}
 
-	return ""
+	ft := f.Type
+	if strings.HasPrefix(ft, "sql.Null") {
+		expr = expr + "." + f.Type[8:]
+		ft = strings.ToLower(f.Type[8:])
+	}
+
+	if t.Type != ft {
+		expr = t.Type + "(" + expr + ")"
+	}
+
+	return expr
 }
 
 // schemafn takes a series of names and joins them with the schema name.
