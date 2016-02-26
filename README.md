@@ -58,7 +58,7 @@ mkdir models
 xo pgsql://user:pass@host/dbname -o models
 
 # generate code for a custom postgres query
-cat << ENDSQL | xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/
+xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/ << ENDSQL
 SELECT
   a.name::varchar AS name,
   b.type::integer AS my_type
