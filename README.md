@@ -46,39 +46,6 @@ Then, install in the usual way:
 go get -u github.com/knq/xo
 ```
 
-## Oracle Support ##
-
-Oracle support is disabled by default as the Go driver for it relies on the
-Oracle client libs that may not be installed on your system. If you would like
-to build a version of xo with Oracle support, please first [install mattn's
-Oracle driver](https://github.com/mattn/go-oci8#installation).
-
-On Ubuntu/Debian, you may download the instantclient RPMs [available from
-here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
-You should then be able to do the following:
-
-```sh
-# install alien, if not already installed
-sudo aptitude install alien
-
-# install the instantclient RPMs
-alien -i oracle-instantclient-12.1-basic-*.rpm
-alien -i oracle-instantclient-12.1-devel-*.rpm
-alien -i oracle-instantclient-12.1-sqlplus-*.rpm
-
-# get xo, if not done already
-go get -u github.com/knq/xo
-
-# copy oci8.pc from xo contrib to pkg-config directory
-sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
-
-# install mattn's oci8 driver
-go get -u github.com/mattn/go-oci8
-
-# install xo with oracle support enabled
-go install -tags oracle github.com/knq/xo
-```
-
 # Quickstart #
 
 The following is a quick working example of how to use xo:
@@ -318,6 +285,39 @@ type XODB interface {
     Query(string, ...interface{}) (*sql.Rows, error)
     QueryRow(string, ...interface{}) *sql.Row
 }
+```
+
+## Oracle Support ##
+
+Oracle support is disabled by default as the Go driver for it relies on the
+Oracle client libs that may not be installed on your system. If you would like
+to build a version of xo with Oracle support, please first [install mattn's
+Oracle driver](https://github.com/mattn/go-oci8#installation).
+
+On Ubuntu/Debian, you may download the instantclient RPMs [available from
+here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
+You should then be able to do the following:
+
+```sh
+# install alien, if not already installed
+sudo aptitude install alien
+
+# install the instantclient RPMs
+alien -i oracle-instantclient-12.1-basic-*.rpm
+alien -i oracle-instantclient-12.1-devel-*.rpm
+alien -i oracle-instantclient-12.1-sqlplus-*.rpm
+
+# get xo, if not done already
+go get -u github.com/knq/xo
+
+# copy oci8.pc from xo contrib to pkg-config directory
+sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+
+# install mattn's oci8 driver
+go get -u github.com/mattn/go-oci8
+
+# install xo with oracle support enabled
+go install -tags oracle github.com/knq/xo
 ```
 
 # Design, Origin, Philosophy, and History #
