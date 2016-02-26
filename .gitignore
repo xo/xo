@@ -1,7 +1,7 @@
 /xo
 /examples/postgres/postgres
 /examples/mysql/mysql
-/examples/sqlite/sqlite
+/examples/sqlite3/sqlite3
 /examples/oracle/oracle
 /*.xo.go
 /p

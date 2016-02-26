@@ -19,7 +19,7 @@ set -x
 
 mkdir -p $DEST
 rm -f $DEST/*.go
-rm -f $SRC/sqlite
+rm -f $SRC/sqlite3
 rm -f $SRC/$DBNAME
 
 sqlite3 $DB << 'ENDSQL'
@@ -64,7 +64,7 @@ ENDSQL
 pushd $SRC &> /dev/null
 
 go build
-./sqlite $EXTRA
+./sqlite3 $EXTRA
 
 popd &> /dev/null
 
