@@ -16,7 +16,7 @@ type Column struct {
 }
 
 // PgTableColumns runs a custom query, returning results as Column.
-func PgTableColumns(db XODB, schema string, table string) ([]*Column, error) {
+func PgTableColumns(db XODB, schema string, table string, sys bool) ([]*Column, error) {
 	var err error
 
 	// sql query
@@ -32,12 +32,12 @@ func PgTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype IN('p', 'u') ` +
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
-		`WHERE a.attisdropped = false AND n.nspname = $1 AND c.relname = $2 ` +
+		`WHERE a.attisdropped = false AND n.nspname = $1 AND c.relname = $2 AND ($3 OR a.attnum > 0) ` +
 		`ORDER BY a.attnum`
 
 	// run query
-	XOLog(sqlstr, schema, table)
-	q, err := db.Query(sqlstr, schema, table)
+	XOLog(sqlstr, schema, table, sys)
+	q, err := db.Query(sqlstr, schema, table, sys)
 	if err != nil {
 		return nil, err
 	}

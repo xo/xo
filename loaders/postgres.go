@@ -14,16 +14,18 @@ import (
 
 func init() {
 	internal.SchemaLoaders["postgres"] = internal.TypeLoader{
-		Schemes:         []string{"postgres", "postgresql", "pgsql", "pg"},
-		ProcessRelkind:  PgRelkind,
-		Schema:          func(*internal.ArgType) (string, error) { return "public", nil },
-		ParseType:       PgParseType,
-		EnumList:        models.PgEnums,
-		EnumValueList:   models.PgEnumValues,
-		ProcList:        models.PgProcs,
-		ProcParamList:   models.PgProcParams,
-		TableList:       models.PgTables,
-		ColumnList:      models.PgTableColumns,
+		Schemes:        []string{"postgres", "postgresql", "pgsql", "pg"},
+		ProcessRelkind: PgRelkind,
+		Schema:         func(*internal.ArgType) (string, error) { return "public", nil },
+		ParseType:      PgParseType,
+		EnumList:       models.PgEnums,
+		EnumValueList:  models.PgEnumValues,
+		ProcList:       models.PgProcs,
+		ProcParamList:  models.PgProcParams,
+		TableList:      models.PgTables,
+		ColumnList: func(db models.XODB, schema string, table string) ([]*models.Column, error) {
+			return models.PgTableColumns(db, schema, table, internal.Args.EnablePostgresOIDs)
+		},
 		ForeignKeyList:  models.PgTableForeignKeys,
 		IndexList:       models.PgTableIndexes,
 		IndexColumnList: PgIndexColumns,
@@ -256,7 +258,7 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	}
 
 	// load column information
-	return models.PgTableColumns(args.DB, schema, xoid)
+	return models.PgTableColumns(args.DB, schema, xoid, false)
 }
 
 // PgIndexColumnList returns the column list for an index.

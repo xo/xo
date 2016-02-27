@@ -728,7 +728,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	// if no primary key index loaded, but a primary key column was defined in
 	// the type, then create the definition here. this is needed for sqlite, as
 	// sqlite doesn't define primary keys in its index list
-	if args.LoaderType == "sqlite3" && !priIxLoaded && typeTpl.PrimaryKey != nil {
+	if args.LoaderType != "ora" && !priIxLoaded && typeTpl.PrimaryKey != nil {
 		ixName := typeTpl.Table.TableName + "_" + typeTpl.PrimaryKey.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
 			Name:     SnakeToCamel(strings.ToLower(ixName)),

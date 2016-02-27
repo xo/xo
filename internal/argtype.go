@@ -83,6 +83,9 @@ type ArgType struct {
 	// QueryFields are the fields to scan the result to.
 	QueryFields string `arg:"--query-fields,-Z,help:comma separated list of field names to scan query's results to the query's associated Go type"`
 
+	// EnablePostgresOIDs toggles postgres oids
+	EnablePostgresOIDs bool `arg:"--enable-postgres-oids,help:enable postgres oids"`
+
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
@@ -168,3 +171,6 @@ func NewDefaultArgs() *ArgType {
 		},
 	}
 }
+
+// Args are the application arguments.
+var Args *ArgType

@@ -26,7 +26,8 @@ func main() {
 	var err error
 
 	// get defaults
-	var args = internal.NewDefaultArgs()
+	internal.Args = internal.NewDefaultArgs()
+	args := internal.Args
 
 	// parse args
 	arg.MustParse(args)
