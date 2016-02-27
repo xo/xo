@@ -55,7 +55,13 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 	// build template name
 	loaderType := ""
 	if tt != XOTemplate {
-		loaderType = a.LoaderType + "."
+		if a.LoaderType == "oci8" || a.LoaderType == "ora" {
+			// force oracle for oci8 since the oracle driver doesn't recognize
+			// 'oracle' as valid protocol
+			loaderType = "oracle."
+		} else {
+			loaderType = a.LoaderType + "."
+		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)
 

@@ -291,8 +291,8 @@ type XODB interface {
 
 Oracle support is disabled by default as the Go driver for it relies on the
 Oracle client libs that may not be installed on your system. If you would like
-to build a version of xo with Oracle support, please first [install mattn's
-Oracle driver](https://github.com/mattn/go-oci8#installation).
+to build a version of xo with Oracle support, please first [install rana's
+Oracle driver](https://github.com/rana/ora#installation).
 
 On Ubuntu/Debian, you may download the instantclient RPMs [available from
 here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
@@ -313,8 +313,8 @@ go get -u github.com/knq/xo
 # copy oci8.pc from xo contrib to pkg-config directory
 sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
-# install mattn's oci8 driver
-go get -u github.com/mattn/go-oci8
+# install rana's ora driver -- see here: https://github.com/rana/ora
+go get -u gopkg.in/rana/ora.v3
 
 # install xo with oracle support enabled
 go install -tags oracle github.com/knq/xo
@@ -393,7 +393,6 @@ The following projects work with similar concepts as xo:
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)
-* Finish support for Oracle
 * Finish many-to-many and link table support
 * Finish porting Cond, OrCond, OrderBy, Limit, GroupBy, Having
 * Add examples for Cond's

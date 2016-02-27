@@ -115,3 +115,43 @@ func SqTables(db XODB, relkind string) ([]*Table, error) {
 
 	return res, nil
 }
+
+// OrTables runs a custom query, returning results as Table.
+func OrTables(db XODB, schema string, relkind string) ([]*Table, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`object_name AS table_name ` +
+		`FROM all_objects ` +
+		`WHERE owner = UPPER(:1) AND object_type = UPPER(:2) ` +
+		`AND object_name NOT LIKE '%$%' ` +
+		`AND object_name NOT LIKE 'LOGMNR%_%' ` +
+		`AND object_name NOT LIKE 'REDO_%' ` +
+		`AND object_name NOT LIKE 'SCHEDULER_%_TBL' ` +
+		`AND object_name NOT LIKE 'SQLPLUS_%'`
+
+	// run query
+	XOLog(sqlstr, schema, relkind)
+	q, err := db.Query(sqlstr, schema, relkind)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Table{}
+	for q.Next() {
+		t := Table{}
+
+		// scan
+		err = q.Scan(&t.TableName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &t)
+	}
+
+	return res, nil
+}

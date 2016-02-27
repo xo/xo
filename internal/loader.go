@@ -614,6 +614,11 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 			}
 		}
 
+		// no ref col, but have ref tpl, so use primary key
+		if refTpl != nil && refCol == nil {
+			refCol = refTpl.PrimaryKey
+		}
+
 		// check everything was found
 		if col == nil || refTpl == nil || refCol == nil {
 			return errors.New("could not find col, refTpl, or refCol")
@@ -723,7 +728,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	// if no primary key index loaded, but a primary key column was defined in
 	// the type, then create the definition here. this is needed for sqlite, as
 	// sqlite doesn't define primary keys in its index list
-	if !priIxLoaded && typeTpl.PrimaryKey != nil {
+	if args.LoaderType == "sqlite3" && !priIxLoaded && typeTpl.PrimaryKey != nil {
 		ixName := typeTpl.Table.TableName + "_" + typeTpl.PrimaryKey.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
 			Name:     SnakeToCamel(strings.ToLower(ixName)),

@@ -119,3 +119,39 @@ func SqIndexColumns(db XODB, index string) ([]*IndexColumn, error) {
 
 	return res, nil
 }
+
+// OrIndexColumns runs a custom query, returning results as IndexColumn.
+func OrIndexColumns(db XODB, schema string, table string, index string) ([]*IndexColumn, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`column_position as seq_no, ` +
+		`column_name ` +
+		`FROM all_ind_columns ` +
+		`WHERE index_owner = UPPER(:1) AND table_name = UPPER(:2) AND index_name = UPPER(:3)`
+
+	// run query
+	XOLog(sqlstr, schema, table, index)
+	q, err := db.Query(sqlstr, schema, table, index)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*IndexColumn{}
+	for q.Next() {
+		ic := IndexColumn{}
+
+		// scan
+		err = q.Scan(&ic.SeqNo, &ic.ColumnName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &ic)
+	}
+
+	return res, nil
+}

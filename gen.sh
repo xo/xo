@@ -2,8 +2,8 @@
 
 PGDB=pgsql://xodb:xodb@localhost/xodb
 MYDB=mysql://xodb:xodb@localhost/xodb
-ORDB=oracle://xodb:xodb@localhost/xodb
 SQDB=file:xodb.sqlite3
+ORDB=oracle://xodb:xodb@$(docker port orcl 1521)/orcl
 
 DEST=$1
 
@@ -286,4 +286,76 @@ ENDSQL
 FIELDS='SeqNo int,Cid int,ColumnName string'
 $XOBIN $SQDB -a -I -N -M -B -T IndexColumn -F SqIndexColumns -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA index_info(%%index string,interpolate%%)
+ENDSQL
+
+# oracle proc list query
+#$XOBIN $ORDB -a -N -M -B -T Proc -F OrProcs -o $DEST $EXTRA << ENDSQL
+#SELECT
+#  object_name
+#FROM
+#ENDSQL
+
+# oracle proc parameter list query
+#$XOBIN $ORDB -a -N -M -B -T ProcParam -F OrProcParams -o $DEST $EXTRA << ENDSQL
+#SELECT
+#ENDSQL
+
+# oracle table list query
+$XOBIN $ORDB -a -N -M -B -T Table -F OrTables -o $DEST $EXTRA << ENDSQL
+SELECT
+  object_name AS table_name
+FROM all_objects
+WHERE owner = UPPER(%%schema string%%) AND object_type = UPPER(%%relkind string%%)
+  AND object_name NOT LIKE '%$%'
+  AND object_name NOT LIKE 'LOGMNR%_%'
+  AND object_name NOT LIKE 'REDO_%'
+  AND object_name NOT LIKE 'SCHEDULER_%_TBL'
+  AND object_name NOT LIKE 'SQLPLUS_%'
+ENDSQL
+
+# oracle table column list query
+$XOBIN $ORDB -a -N -M -B -T Column -F OrTableColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  c.column_id AS field_ordinal,
+  c.column_name,
+  c.data_type,
+  CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null,
+  COALESCE((SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END
+    FROM all_cons_columns l, all_constraints r
+    WHERE r.constraint_type = 'P' AND r.owner = c.owner AND r.table_name = c.table_name AND r.constraint_name = l.constraint_name
+    AND l.owner = c.owner AND l.table_name = c.table_name AND l.column_name = c.column_name), '0') AS is_primary_key
+FROM all_tab_columns c
+WHERE c.owner = UPPER(%%schema string%%) AND c.table_name = UPPER(%%table string%%)
+ORDER BY c.column_id
+ENDSQL
+
+# oracle table foreign key list query
+$XOBIN $ORDB -a -N -M -B -T ForeignKey -F OrTableForeignKeys -o $DEST $EXTRA << ENDSQL
+SELECT
+  a.constraint_name AS foreign_key_name,
+  a.column_name,
+  r.constraint_name AS ref_index_name,
+  r.table_name AS ref_table_name
+FROM all_cons_columns a
+  JOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name
+  JOIN all_constraints r ON c.r_owner = r.owner AND c.r_constraint_name = r.constraint_name
+  WHERE c.constraint_type = 'R' AND a.owner = UPPER(%%schema string%%) AND a.table_name = UPPER(%%table string%%)
+ENDSQL
+
+# oracle table index list query
+$XOBIN $ORDB -a -N -M -B -T Index -F OrTableIndexes -o $DEST $EXTRA << ENDSQL
+SELECT
+  index_name,
+  CASE WHEN uniqueness = 'UNIQUE' THEN '1' ELSE '0' END AS is_unique
+FROM all_indexes
+WHERE owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%)
+ENDSQL
+
+# oracle index column list query
+$XOBIN $ORDB -a -N -M -B -T IndexColumn -F OrIndexColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  column_position as seq_no,
+  column_name
+FROM all_ind_columns
+WHERE index_owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%) AND index_name = UPPER(%%index string%%)
 ENDSQL

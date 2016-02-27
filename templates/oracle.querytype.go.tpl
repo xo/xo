@@ -1,0 +1,1 @@
+postgres.querytype.go.tpl

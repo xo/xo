@@ -132,3 +132,46 @@ func SqTableColumns(db XODB, table string) ([]*Column, error) {
 
 	return res, nil
 }
+
+// OrTableColumns runs a custom query, returning results as Column.
+func OrTableColumns(db XODB, schema string, table string) ([]*Column, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`c.column_id AS field_ordinal, ` +
+		`c.column_name, ` +
+		`c.data_type, ` +
+		`CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null, ` +
+		`COALESCE((SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END ` +
+		`FROM all_cons_columns l, all_constraints r ` +
+		`WHERE r.constraint_type = 'P' AND r.owner = c.owner AND r.table_name = c.table_name AND r.constraint_name = l.constraint_name ` +
+		`AND l.owner = c.owner AND l.table_name = c.table_name AND l.column_name = c.column_name), '0') AS is_primary_key ` +
+		`FROM all_tab_columns c ` +
+		`WHERE c.owner = UPPER(:1) AND c.table_name = UPPER(:2) ` +
+		`ORDER BY c.column_id`
+
+	// run query
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Column{}
+	for q.Next() {
+		c := Column{}
+
+		// scan
+		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.IsPrimaryKey)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &c)
+	}
+
+	return res, nil
+}

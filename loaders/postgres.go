@@ -50,7 +50,7 @@ func PgRelkind(relType internal.RelType) string {
 // definition.
 func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
-	nilType := "nil"
+	nilVal := "nil"
 	asSlice := false
 
 	// handle SETOF
@@ -74,77 +74,77 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	var typ string
 	switch dt {
 	case "boolean":
-		nilType = "false"
+		nilVal = "false"
 		typ = "bool"
 		if nullable {
-			nilType = "sql.NullBool{}"
+			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "character", "character varying", "text":
-		nilType = `""`
+		nilVal = `""`
 		typ = "string"
 		if nullable {
-			nilType = "sql.NullString{}"
+			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
 
 	case "smallint":
-		nilType = "0"
+		nilVal = "0"
 		typ = "int16"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "integer":
-		nilType = "0"
+		nilVal = "0"
 		typ = args.Int32Type
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigint":
-		nilType = "0"
+		nilVal = "0"
 		typ = "int64"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "smallserial":
-		nilType = "0"
+		nilVal = "0"
 		typ = "uint16"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "serial":
-		nilType = "0"
+		nilVal = "0"
 		typ = args.Uint32Type
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigserial":
-		nilType = "0"
+		nilVal = "0"
 		typ = "uint64"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "real":
-		nilType = "0.0"
+		nilVal = "0.0"
 		typ = "float32"
 		if nullable {
-			nilType = "sql.NullFloat64{}"
+			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 	case "double precision":
-		nilType = "0.0"
+		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
-			nilType = "sql.NullFloat64{}"
+			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 
@@ -155,15 +155,15 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "timestamp with time zone":
 		typ = "*time.Time"
 		if nullable {
-			nilType = "pq.NullTime{}"
+			nilVal = "pq.NullTime{}"
 			typ = "pq.NullTime"
 		}
 
 	case "time with time zone", "time without time zone", "timestamp without time zone":
-		nilType = "0"
+		nilVal = "0"
 		typ = "int64"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
@@ -178,7 +178,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		// this is mainly here because postgres's pg_catalog.* meta tables have
 		// this as a type.
 		//typ = "rune"
-		nilType = `uint8(0)`
+		nilVal = `uint8(0)`
 		typ = "uint8"
 
 	case `"any"`, "bit varying":
@@ -189,10 +189,10 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
 			typ = internal.SnakeToCamel(dt[len(args.Schema)+1:])
-			nilType = typ + "(0)"
+			nilVal = typ + "(0)"
 		} else {
 			typ = internal.SnakeToCamel(dt)
-			nilType = typ + "{}"
+			nilVal = typ + "{}"
 		}
 	}
 
@@ -204,10 +204,10 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// correct type if slice
 	if asSlice {
 		typ = "[]" + typ
-		nilType = "nil"
+		nilVal = "nil"
 	}
 
-	return precision, nilType, typ
+	return precision, nilVal, typ
 }
 
 // pgQueryStripRE is the regexp to match the '::type AS name' portion in a query,

@@ -123,3 +123,39 @@ func SqTableIndexes(db XODB, table string) ([]*Index, error) {
 
 	return res, nil
 }
+
+// OrTableIndexes runs a custom query, returning results as Index.
+func OrTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`index_name, ` +
+		`CASE WHEN uniqueness = 'UNIQUE' THEN '1' ELSE '0' END AS is_unique ` +
+		`FROM all_indexes ` +
+		`WHERE owner = UPPER(:1) AND table_name = UPPER(:2)`
+
+	// run query
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Index{}
+	for q.Next() {
+		i := Index{}
+
+		// scan
+		err = q.Scan(&i.IndexName, &i.IsUnique)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &i)
+	}
+
+	return res, nil
+}

@@ -111,7 +111,7 @@ func MyRelkind(relType internal.RelType) string {
 // definition.
 func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
-	nilType := "nil"
+	nilVal := "nil"
 	asSlice := false
 	unsigned := false
 
@@ -130,55 +130,55 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	var typ string
 	switch dt {
 	case "bool", "boolean":
-		nilType = "false"
+		nilVal = "false"
 		typ = "bool"
 		if nullable {
-			nilType = "sql.NullBool{}"
+			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
-		nilType = `""`
+		nilVal = `""`
 		typ = "string"
 		if nullable {
-			nilType = "sql.NullString{}"
+			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
 
 	case "tinyint", "smallint", "mediumint":
-		nilType = "0"
+		nilVal = "0"
 		typ = "int16"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "int", "integer":
-		nilType = "0"
+		nilVal = "0"
 		typ = args.Int32Type
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigint":
-		nilType = "0"
+		nilVal = "0"
 		typ = "int64"
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "decimal", "float":
-		nilType = "0.0"
+		nilVal = "0.0"
 		typ = "float32"
 		if nullable {
-			nilType = "sql.NullFloat64{}"
+			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 	case "double":
-		nilType = "0.0"
+		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
-			nilType = "sql.NullFloat64{}"
+			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 
@@ -189,7 +189,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "timestamp", "datetime":
 		typ = "*time.Time"
 		if nullable {
-			nilType = "pq.NullTime{}"
+			nilVal = "pq.NullTime{}"
 			typ = "pq.NullTime"
 		}
 
@@ -197,10 +197,10 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
 			typ = internal.SnakeToCamel(dt[len(args.Schema)+1:])
-			nilType = typ + "(0)"
+			nilVal = typ + "(0)"
 		} else {
 			typ = internal.SnakeToCamel(dt)
-			nilType = typ + "{}"
+			nilVal = typ + "{}"
 		}
 	}
 
@@ -212,7 +212,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// correct type if slice
 	if asSlice {
 		typ = "[]" + typ
-		nilType = "nil"
+		nilVal = "nil"
 	}
 
 	// add 'u' as prefix to type if its unsigned
@@ -221,7 +221,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		typ = "u" + typ
 	}
 
-	return precision, nilType, typ
+	return precision, nilVal, typ
 }
 
 // MyEnumValues loads the enum values.

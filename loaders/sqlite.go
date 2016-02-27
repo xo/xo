@@ -15,7 +15,7 @@ import (
 
 func init() {
 	internal.SchemaLoaders["sqlite3"] = internal.TypeLoader{
-		Schemes:        []string{"sqlite3", "sqlite", "file"},
+		Schemes:        []string{"sqlite3", "sqlite", "file", "sq"},
 		ProcessDSN:     SqProcessDSN,
 		ProcessRelkind: SqRelkind,
 		ParamN:         func(int) string { return "?" },
@@ -74,7 +74,7 @@ var uRE = regexp.MustCompile(`\s*unsigned\*`)
 // definition.
 func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
-	nilType := "nil"
+	nilVal := "nil"
 	unsigned := false
 
 	// extract length
@@ -91,26 +91,26 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	var typ string
 	switch dt {
 	case "bool", "boolean":
-		nilType = "false"
+		nilVal = "false"
 		typ = "bool"
 		if nullable {
-			nilType = "sql.NullBool{}"
+			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "int", "integer", "tinyint", "smallint", "mediumint", "bigint":
-		nilType = "0"
+		nilVal = "0"
 		typ = args.Int32Type
 		if nullable {
-			nilType = "sql.NullInt64{}"
+			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "numeric", "real", "double", "float", "decimal":
-		nilType = "0.0"
+		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
-			nilType = "sql.NullFloat64{}"
+			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 
@@ -119,10 +119,10 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "datetime", "date", "time":
-		nilType = `""`
+		nilVal = `""`
 		typ = "string"
 		if nullable {
-			nilType = "sql.NullString{}"
+			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
 	}
@@ -132,7 +132,7 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		typ = "u" + typ
 	}
 
-	return precision, nilType, typ
+	return precision, nilVal, typ
 }
 
 // SqQueryColumns parses a sqlite query and generates a type for it.
