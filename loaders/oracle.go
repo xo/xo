@@ -81,7 +81,7 @@ func OrSchema(args *internal.ArgType) (string, error) {
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM dual`
+	const sqlstr = `SELECT LOWER(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')) FROM dual`
 
 	var schema string
 

@@ -126,8 +126,8 @@ func OrIndexColumns(db XODB, schema string, table string, index string) ([]*Inde
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`column_position as seq_no, ` +
-		`column_name ` +
+		`column_position AS seq_no, ` +
+		`LOWER(column_name) AS column_name ` +
 		`FROM all_ind_columns ` +
 		`WHERE index_owner = UPPER(:1) AND table_name = UPPER(:2) AND index_name = UPPER(:3)`
 

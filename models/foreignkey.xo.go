@@ -144,10 +144,10 @@ func OrTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`a.constraint_name AS foreign_key_name, ` +
-		`a.column_name, ` +
-		`r.constraint_name AS ref_index_name, ` +
-		`r.table_name AS ref_table_name ` +
+		`LOWER(a.constraint_name) AS foreign_key_name, ` +
+		`LOWER(a.column_name) AS column_name, ` +
+		`LOWER(r.constraint_name) AS ref_index_name, ` +
+		`LOWER(r.table_name) AS ref_table_name ` +
 		`FROM all_cons_columns a ` +
 		`JOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name ` +
 		`JOIN all_constraints r ON c.r_owner = r.owner AND c.r_constraint_name = r.constraint_name ` +

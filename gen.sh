@@ -303,7 +303,7 @@ ENDSQL
 # oracle table list query
 $XOBIN $ORDB -a -N -M -B -T Table -F OrTables -o $DEST $EXTRA << ENDSQL
 SELECT
-  object_name AS table_name
+  LOWER(object_name) AS table_name
 FROM all_objects
 WHERE owner = UPPER(%%schema string%%) AND object_type = UPPER(%%relkind string%%)
   AND object_name NOT LIKE '%$%'
@@ -317,8 +317,8 @@ ENDSQL
 $XOBIN $ORDB -a -N -M -B -T Column -F OrTableColumns -o $DEST $EXTRA << ENDSQL
 SELECT
   c.column_id AS field_ordinal,
-  c.column_name,
-  c.data_type,
+  LOWER(c.column_name) AS column_name,
+  LOWER(c.data_type) AS data_type,
   CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null,
   COALESCE((SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END
     FROM all_cons_columns l, all_constraints r
@@ -332,10 +332,10 @@ ENDSQL
 # oracle table foreign key list query
 $XOBIN $ORDB -a -N -M -B -T ForeignKey -F OrTableForeignKeys -o $DEST $EXTRA << ENDSQL
 SELECT
-  a.constraint_name AS foreign_key_name,
-  a.column_name,
-  r.constraint_name AS ref_index_name,
-  r.table_name AS ref_table_name
+  LOWER(a.constraint_name) AS foreign_key_name,
+  LOWER(a.column_name) AS column_name,
+  LOWER(r.constraint_name) AS ref_index_name,
+  LOWER(r.table_name) AS ref_table_name
 FROM all_cons_columns a
   JOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name
   JOIN all_constraints r ON c.r_owner = r.owner AND c.r_constraint_name = r.constraint_name
@@ -345,7 +345,7 @@ ENDSQL
 # oracle table index list query
 $XOBIN $ORDB -a -N -M -B -T Index -F OrTableIndexes -o $DEST $EXTRA << ENDSQL
 SELECT
-  index_name,
+  LOWER(index_name) AS index_name,
   CASE WHEN uniqueness = 'UNIQUE' THEN '1' ELSE '0' END AS is_unique
 FROM all_indexes
 WHERE owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%)
@@ -354,8 +354,8 @@ ENDSQL
 # oracle index column list query
 $XOBIN $ORDB -a -N -M -B -T IndexColumn -F OrIndexColumns -o $DEST $EXTRA << ENDSQL
 SELECT
-  column_position as seq_no,
-  column_name
+  column_position AS seq_no,
+  LOWER(column_name) AS column_name
 FROM all_ind_columns
 WHERE index_owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%) AND index_name = UPPER(%%index string%%)
 ENDSQL

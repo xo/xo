@@ -130,7 +130,7 @@ func OrTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`index_name, ` +
+		`LOWER(index_name) AS index_name, ` +
 		`CASE WHEN uniqueness = 'UNIQUE' THEN '1' ELSE '0' END AS is_unique ` +
 		`FROM all_indexes ` +
 		`WHERE owner = UPPER(:1) AND table_name = UPPER(:2)`

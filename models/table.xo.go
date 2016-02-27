@@ -122,7 +122,7 @@ func OrTables(db XODB, schema string, relkind string) ([]*Table, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`object_name AS table_name ` +
+		`LOWER(object_name) AS table_name ` +
 		`FROM all_objects ` +
 		`WHERE owner = UPPER(:1) AND object_type = UPPER(:2) ` +
 		`AND object_name NOT LIKE '%$%' ` +

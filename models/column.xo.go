@@ -140,8 +140,8 @@ func OrTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 	// sql query
 	const sqlstr = `SELECT ` +
 		`c.column_id AS field_ordinal, ` +
-		`c.column_name, ` +
-		`c.data_type, ` +
+		`LOWER(c.column_name) AS column_name, ` +
+		`LOWER(c.data_type) AS data_type, ` +
 		`CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null, ` +
 		`COALESCE((SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END ` +
 		`FROM all_cons_columns l, all_constraints r ` +
