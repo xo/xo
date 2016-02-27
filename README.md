@@ -388,8 +388,7 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
-* Fix/finish postgres index column order 
-* Add option to ignore index names
+* Add option to use index names
 * Fix name generated for indexes
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as

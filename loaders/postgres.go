@@ -1,6 +1,7 @@
 package loaders
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,21 +14,19 @@ import (
 
 func init() {
 	internal.SchemaLoaders["postgres"] = internal.TypeLoader{
-		Schemes:        []string{"postgres", "postgresql", "pgsql", "pg"},
-		ProcessRelkind: PgRelkind,
-		Schema:         func(*internal.ArgType) (string, error) { return "public", nil },
-		ParseType:      PgParseType,
-		EnumList:       models.PgEnums,
-		EnumValueList:  models.PgEnumValues,
-		ProcList:       models.PgProcs,
-		ProcParamList:  models.PgProcParams,
-		TableList:      models.PgTables,
-		ColumnList:     models.PgTableColumns,
-		ForeignKeyList: models.PgTableForeignKeys,
-		IndexList:      models.PgTableIndexes,
-		IndexColumnList: func(db models.XODB, schema string, table string, index string) ([]*models.IndexColumn, error) {
-			return models.PgIndexColumns(db, schema, index)
-		},
+		Schemes:         []string{"postgres", "postgresql", "pgsql", "pg"},
+		ProcessRelkind:  PgRelkind,
+		Schema:          func(*internal.ArgType) (string, error) { return "public", nil },
+		ParseType:       PgParseType,
+		EnumList:        models.PgEnums,
+		EnumValueList:   models.PgEnumValues,
+		ProcList:        models.PgProcs,
+		ProcParamList:   models.PgProcParams,
+		TableList:       models.PgTables,
+		ColumnList:      models.PgTableColumns,
+		ForeignKeyList:  models.PgTableForeignKeys,
+		IndexList:       models.PgTableIndexes,
+		IndexColumnList: PgIndexColumns,
 		QueryStrip:      PgQueryStrip,
 		QueryColumnList: PgQueryColumns,
 	}
@@ -258,4 +257,56 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 
 	// load column information
 	return models.PgTableColumns(args.DB, schema, xoid)
+}
+
+// PgIndexColumnList returns the column list for an index.
+func PgIndexColumns(db models.XODB, schema string, table string, index string) ([]*models.IndexColumn, error) {
+	var err error
+
+	// load columns
+	cols, err := models.PgIndexColumns(db, schema, index)
+	if err != nil {
+		return nil, err
+	}
+
+	// load col order
+	colOrd, err := models.PgGetColOrder(db, schema, index)
+	if err != nil {
+		return nil, err
+	}
+
+	// build schema name used in errors
+	s := schema
+	if s != "" {
+		s = s + "."
+	}
+
+	// put cols in order using colOrder
+	ret := []*models.IndexColumn{}
+	for _, v := range strings.Split(colOrd.Ord, " ") {
+		cid, err := strconv.Atoi(v)
+		if err != nil {
+			return nil, fmt.Errorf("could not convert %s%s index %s column %s to int", s, table, index, v)
+		}
+
+		// find column
+		found := false
+		var c *models.IndexColumn
+		for _, ic := range cols {
+			if cid == ic.Cid {
+				found = true
+				c = ic
+				break
+			}
+		}
+
+		// sanity check
+		if !found {
+			return nil, fmt.Errorf("could not find %s%s index %s column id %d", s, table, index, cid)
+		}
+
+		ret = append(ret, c)
+	}
+
+	return ret, nil
 }

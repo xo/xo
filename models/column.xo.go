@@ -32,7 +32,7 @@ func PgTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype IN('p', 'u') ` +
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
-		`WHERE a.attisdropped = false AND a.attnum > 0 AND n.nspname = $1 AND c.relname = $2 ` +
+		`WHERE a.attisdropped = false AND n.nspname = $1 AND c.relname = $2 ` +
 		`ORDER BY a.attnum`
 
 	// run query
