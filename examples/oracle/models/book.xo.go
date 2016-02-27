@@ -85,7 +85,7 @@ func (b *Book) Update(db XODB) error {
 	// sql query
 	const sqlstr = `UPDATE booktest.books SET ` +
 		`author_id = :1, isbn = :2, title = :3, year = :4, available = :5, tags = :6` +
-		` WHERE book_id = :1`
+		` WHERE book_id = :7`
 
 	// run query
 	XOLog(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
@@ -134,7 +134,7 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'sys_c005022'.
+// Generated from foreign key 'sys_c005118'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
@@ -180,7 +180,7 @@ func BooksByTitleYear(db XODB, title string, year float64) ([]*Book, error) {
 
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'sys_c005020'.
+// Generated from index 'sys_c005116'.
 func BookByBookID(db XODB, bookID float64) (*Book, error) {
 	var err error
 
@@ -206,7 +206,7 @@ func BookByBookID(db XODB, bookID float64) (*Book, error) {
 
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'sys_c005021'.
+// Generated from index 'sys_c005117'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

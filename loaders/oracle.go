@@ -95,6 +95,7 @@ func OrSchema(args *internal.ArgType) (string, error) {
 	return schema, nil
 }
 
+// OrLenRE is a regexp that matches lengths.
 var OrLenRE = regexp.MustCompile(`\([0-9]+\)`)
 
 // OrParseType parse a oracle type into a Go type based on the column

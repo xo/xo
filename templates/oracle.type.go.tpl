@@ -78,7 +78,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Update(db XODB) error {
 	// sql query
 	const sqlstr = `UPDATE {{ schema .Schema .Table.TableName }} SET ` +
 		`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
-		` WHERE {{ .PrimaryKey.Col.ColumnName }} = :1`
+		` WHERE {{ .PrimaryKey.Col.ColumnName }} = :{{ colcount .Fields .PrimaryKey.Name }}`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})

@@ -77,7 +77,7 @@ func (a *Author) Update(db XODB) error {
 	// sql query
 	const sqlstr = `UPDATE booktest.authors SET ` +
 		`name = :1` +
-		` WHERE author_id = :1`
+		` WHERE author_id = :2`
 
 	// run query
 	XOLog(sqlstr, a.Name, a.AuthorID)
@@ -165,7 +165,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'sys_c005012'.
+// Generated from index 'sys_c005108'.
 func AuthorByAuthorID(db XODB, authorID float64) (*Author, error) {
 	var err error
 

@@ -143,13 +143,13 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, book := range books0 {
-		fmt.Printf("Book %d: %s available: %s\n", book.BookID, book.Title, book.Available.Format(time.RFC822Z))
+		fmt.Printf("Book %1.0f: %s available: %s\n", book.BookID, book.Title, book.Available.Format(time.RFC822Z))
 		author, err := book.Author(db)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Book %d author: %s\n", book.BookID, author.Name)
+		fmt.Printf("Book %1.0f author: %s\n", book.BookID, author.Name)
 	}
 
 	// find a book with either "cool" or "other" tag
@@ -159,7 +159,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
+		fmt.Printf("Book %1.0f: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
 
 	// call say_hello(varchar)
