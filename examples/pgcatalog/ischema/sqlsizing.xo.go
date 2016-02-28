@@ -7,6 +7,12 @@ import "github.com/knq/xo/examples/pgcatalog/pgtypes"
 
 // SqlSizing represents a row from information_schema.sql_sizing.
 type SqlSizing struct {
+	Tableoid       pgtypes.Oid            // tableoid
+	Cmax           pgtypes.Cid            // cmax
+	Xmax           pgtypes.Xid            // xmax
+	Cmin           pgtypes.Cid            // cmin
+	Xmin           pgtypes.Xid            // xmin
+	Ctid           pgtypes.Tid            // ctid
 	SizingID       pgtypes.CardinalNumber // sizing_id
 	SizingName     pgtypes.CharacterData  // sizing_name
 	SupportedValue pgtypes.CardinalNumber // supported_value

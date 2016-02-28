@@ -7,6 +7,12 @@ import "github.com/knq/xo/examples/pgcatalog/pgtypes"
 
 // SqlPart represents a row from information_schema.sql_parts.
 type SqlPart struct {
+	Tableoid     pgtypes.Oid           // tableoid
+	Cmax         pgtypes.Cid           // cmax
+	Xmax         pgtypes.Xid           // xmax
+	Cmin         pgtypes.Cid           // cmin
+	Xmin         pgtypes.Xid           // xmin
+	Ctid         pgtypes.Tid           // ctid
 	FeatureID    pgtypes.CharacterData // feature_id
 	FeatureName  pgtypes.CharacterData // feature_name
 	IsSupported  pgtypes.YesOrNo       // is_supported

@@ -7,6 +7,12 @@ import "github.com/knq/xo/examples/pgcatalog/pgtypes"
 
 // SqlImplementationInfo represents a row from information_schema.sql_implementation_info.
 type SqlImplementationInfo struct {
+	Tableoid               pgtypes.Oid            // tableoid
+	Cmax                   pgtypes.Cid            // cmax
+	Xmax                   pgtypes.Xid            // xmax
+	Cmin                   pgtypes.Cid            // cmin
+	Xmin                   pgtypes.Xid            // xmin
+	Ctid                   pgtypes.Tid            // ctid
 	ImplementationInfoID   pgtypes.CharacterData  // implementation_info_id
 	ImplementationInfoName pgtypes.CharacterData  // implementation_info_name
 	IntegerValue           pgtypes.CardinalNumber // integer_value

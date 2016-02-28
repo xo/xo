@@ -7,6 +7,12 @@ import "github.com/knq/xo/examples/pgcatalog/pgtypes"
 
 // SqlSizingProfile represents a row from information_schema.sql_sizing_profiles.
 type SqlSizingProfile struct {
+	Tableoid      pgtypes.Oid            // tableoid
+	Cmax          pgtypes.Cid            // cmax
+	Xmax          pgtypes.Xid            // xmax
+	Cmin          pgtypes.Cid            // cmin
+	Xmin          pgtypes.Xid            // xmin
+	Ctid          pgtypes.Tid            // ctid
 	SizingID      pgtypes.CardinalNumber // sizing_id
 	SizingName    pgtypes.CharacterData  // sizing_name
 	ProfileID     pgtypes.CharacterData  // profile_id

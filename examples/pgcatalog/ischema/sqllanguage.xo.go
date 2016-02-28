@@ -7,6 +7,12 @@ import "github.com/knq/xo/examples/pgcatalog/pgtypes"
 
 // SqlLanguage represents a row from information_schema.sql_languages.
 type SqlLanguage struct {
+	Tableoid                       pgtypes.Oid           // tableoid
+	Cmax                           pgtypes.Cid           // cmax
+	Xmax                           pgtypes.Xid           // xmax
+	Cmin                           pgtypes.Cid           // cmin
+	Xmin                           pgtypes.Xid           // xmin
+	Ctid                           pgtypes.Tid           // ctid
 	SqlLanguageSource              pgtypes.CharacterData // sql_language_source
 	SqlLanguageYear                pgtypes.CharacterData // sql_language_year
 	SqlLanguageConformance         pgtypes.CharacterData // sql_language_conformance
