@@ -6,9 +6,7 @@ reduce the overhead/redundancy of writing (from scratch) Go types and funcs for
 common database tasks.
 
 Currently, xo can generate types for tables, enums, stored procedures, and
-custom SQL queries for PostgreSQL, MySQL, and SQLite databases. Work is also
-being done to add support for Oracle, which will be released when it is
-feature-complete.
+custom SQL queries for PostgreSQL, MySQL, and SQLite databases.
 
 Additionally, support for other database abstractions (ie, views, many-to-many
 relationships, etc) are in varying states of completion, and will be added as
@@ -313,6 +311,10 @@ go get -u github.com/knq/xo
 # copy oci8.pc from xo contrib to pkg-config directory
 sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
+# export cgo flags (rana's ora driver does not have a cgo pkg-config tag [yet])
+export CGO_CFLAGS=$(pkg-config --cflags oci8)
+export CGO_LDFLAGS=$(pkg-config --libs oci8)
+
 # install rana's ora driver -- see here: https://github.com/rana/ora
 go get -u gopkg.in/rana/ora.v3
 
@@ -344,7 +346,7 @@ could no longer efficiently serve the traffic volumes.
 In late 2014/early 2015, a decision was made to unify and strip out certain
 backend services and to fully isolate the API from the original application,
 allowing the various parts to instead speak to a common API layer instead of
-directly to the database, and to build the service layer in Go. 
+directly to the database, and to build the service layer in Go.
 
 However, unraveling the old PHP/Ruby/Java code became a relatively large
 headache as the code, the database, and the API, had all experienced
@@ -401,7 +403,7 @@ The following projects work with similar concepts as xo:
   "extras" like Cond's)
 * Add example for many-to-many relationships and link tables
 * Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
-* Unit tests / code coverage / continuous builds for binary package releases 
+* Unit tests / code coverage / continuous builds for binary package releases
 * Add support for supplying a file (ie, *.sql) for query generation
 * Add support for full text types (tsvector, tsquery on PostgreSQL)
 * Finish COMMENT support for PostgreSQL/MySQL and update templates accordingly.
