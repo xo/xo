@@ -16,5 +16,5 @@ create user $NAME identified by $NAME default tablespace $NAME;
 
 grant create session, create table, create view, create sequence, create procedure, create trigger, unlimited tablespace, select any dictionary to $NAME;
 
-alter system set open_cursors = 400 scope=both;
+alter system set open_cursors=400 scope=both;
 ENDSQL

@@ -1,5 +1,5 @@
-// Package pgcatalog contains the types from pg_catalog and information_schema.
-package pgcatalog
+// Package pgtypes contains the types from PostgreSQL's 'pg_catalog' and 'information_schema' schemas.
+package pgtypes
 
 // pg_catalog types
 type Abstime struct{}
