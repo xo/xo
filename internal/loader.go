@@ -537,7 +537,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)
 
 		// set primary key
-		if c.IsPrimaryKey {
+		if c.IsPrimaryKey && len(columnList) > 1 {
 			typeTpl.PrimaryKey = f
 		}
 
@@ -682,7 +682,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	for _, ix := range indexList {
 		ixName := ix.IndexName
 
-		// save that the primary key index was loaded
+		// save whether or not the primary key index was processed
 		priIxLoaded = priIxLoaded || ix.IsPrimary
 
 		// chop off tablename_
@@ -725,17 +725,28 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 		ixMap[ix.IndexName] = ixTpl
 	}
 
+	// search for primary key if it was skipped being set in the type
+	pk := typeTpl.PrimaryKey
+	if pk == nil {
+		for _, f := range typeTpl.Fields {
+			if f.Col.IsPrimaryKey {
+				pk = f
+				break
+			}
+		}
+	}
+
 	// if no primary key index loaded, but a primary key column was defined in
 	// the type, then create the definition here. this is needed for sqlite, as
 	// sqlite doesn't define primary keys in its index list
-	if args.LoaderType != "ora" && !priIxLoaded && typeTpl.PrimaryKey != nil {
-		ixName := typeTpl.Table.TableName + "_" + typeTpl.PrimaryKey.Col.ColumnName + "_pkey"
+	if args.LoaderType != "ora" && !priIxLoaded && pk != nil {
+		ixName := typeTpl.Table.TableName + "_" + pk.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
 			Name:     SnakeToCamel(strings.ToLower(ixName)),
 			TypeName: typeTpl.Name,
 			Schema:   args.Schema,
 			Type:     typeTpl,
-			Fields:   []*Field{typeTpl.PrimaryKey},
+			Fields:   []*Field{pk},
 			Index: &models.Index{
 				IndexName: ixName,
 				IsUnique:  true,
