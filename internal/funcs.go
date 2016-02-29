@@ -18,7 +18,6 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"colvals":        a.colvals,
 		"fieldnames":     a.fieldnames,
 		"goparamlist":    a.goparamlist,
-		"inc":            a.inc,
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
 		"shortname":      a.shortname,
@@ -98,11 +97,6 @@ func (a *ArgType) shortname(typ string) string {
 	}
 
 	return v
-}
-
-// inc increements i by 1.
-func (a *ArgType) inc(i int) int {
-	return i + 1
 }
 
 // colnames creates a list of the column names found in fields, excluding any
@@ -269,6 +263,35 @@ func (a *ArgType) colcount(fields []*Field, ignoreNames ...string) int {
 	return i
 }
 
+// goReservedNames is the list of go reserved names
+var goReservedNames = map[string]string{
+	"break":       "brk",
+	"case":        "cs",
+	"chan":        "chn",
+	"const":       "cnst",
+	"continue":    "cnt",
+	"default":     "def",
+	"defer":       "dfr",
+	"else":        "els",
+	"fallthrough": "flthrough",
+	"for":         "fr",
+	"func":        "fn",
+	"go":          "goVal",
+	"goto":        "gt",
+	"if":          "ifVal",
+	"import":      "imp",
+	"interface":   "iface",
+	"map":         "mp",
+	"package":     "pkg",
+	"range":       "rnge",
+	"return":      "ret",
+	"select":      "slct",
+	"struct":      "strct",
+	"switch":      "swtch",
+	"type":        "typ",
+	"var":         "vr",
+}
+
 // goparamlist converts a list of fields into their named Go parameters,
 // skipping any field names in ignoreNames.
 func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...string) string {
@@ -288,6 +311,11 @@ func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...stri
 		if len(f.Name) > 0 {
 			n := strings.Split(snaker.CamelToSnake(f.Name), "_")
 			s = strings.ToLower(n[0]) + f.Name[len(n[0]):]
+		}
+
+		// check go reserved names
+		if r, ok := goReservedNames[strings.ToLower(s)]; ok {
+			s = r
 		}
 
 		str = str + ", " + s
