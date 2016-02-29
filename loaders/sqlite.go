@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"path"
 	"regexp"
-	"strconv"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -77,11 +76,8 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	nilVal := "nil"
 	unsigned := false
 
-	// extract length
-	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
-		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
-		dt = dt[:loc[0]]
-	}
+	// extract precision
+	dt, precision, _ = args.ParsePrecision(dt)
 
 	if uRE.MatchString(dt) {
 		unsigned = true

@@ -90,18 +90,18 @@ func Abbrev(db XODB, v0 pgtypes.Cidr, v1 pgtypes.Inet) (string, error) {
 }
 
 // Abs calls the stored procedure 'pg_catalog.abs(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func Abs(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Abs(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.abs($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -1548,7 +1548,7 @@ func Atan2(db XODB, v0 float64, v1 float64) (float64, error) {
 }
 
 // Avg calls the stored procedure 'pg_catalog.avg(bigint, smallint, integer, real, double precision, interval, numeric) interval' on db.
-func Avg(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 *time.Duration, v6 pgtypes.Numeric) (*time.Duration, error) {
+func Avg(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 *time.Duration, v6 float64) (*time.Duration, error) {
 	var err error
 
 	// sql query
@@ -5328,7 +5328,7 @@ func Cardinality(db XODB, v0 pgtypes.Anyarray) (int, error) {
 }
 
 // CashCmp calls the stored procedure 'pg_catalog.cash_cmp(money, money) integer' on db.
-func CashCmp(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (int, error) {
+func CashCmp(db XODB, v0 string, v1 string) (int, error) {
 	var err error
 
 	// sql query
@@ -5346,7 +5346,7 @@ func CashCmp(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (int, error) {
 }
 
 // CashDivCash calls the stored procedure 'pg_catalog.cash_div_cash(money, money) double precision' on db.
-func CashDivCash(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (float64, error) {
+func CashDivCash(db XODB, v0 string, v1 string) (float64, error) {
 	var err error
 
 	// sql query
@@ -5364,79 +5364,79 @@ func CashDivCash(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (float64, error) {
 }
 
 // CashDivFlt4 calls the stored procedure 'pg_catalog.cash_div_flt4(money, real) money' on db.
-func CashDivFlt4(db XODB, v0 pgtypes.Money, v1 float32) (pgtypes.Money, error) {
+func CashDivFlt4(db XODB, v0 string, v1 float32) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_div_flt4($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashDivFlt8 calls the stored procedure 'pg_catalog.cash_div_flt8(money, double precision) money' on db.
-func CashDivFlt8(db XODB, v0 pgtypes.Money, v1 float64) (pgtypes.Money, error) {
+func CashDivFlt8(db XODB, v0 string, v1 float64) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_div_flt8($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashDivInt2 calls the stored procedure 'pg_catalog.cash_div_int2(money, smallint) money' on db.
-func CashDivInt2(db XODB, v0 pgtypes.Money, v1 int16) (pgtypes.Money, error) {
+func CashDivInt2(db XODB, v0 string, v1 int16) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_div_int2($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashDivInt4 calls the stored procedure 'pg_catalog.cash_div_int4(money, integer) money' on db.
-func CashDivInt4(db XODB, v0 pgtypes.Money, v1 int) (pgtypes.Money, error) {
+func CashDivInt4(db XODB, v0 string, v1 int) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_div_int4($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashEq calls the stored procedure 'pg_catalog.cash_eq(money, money) boolean' on db.
-func CashEq(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashEq(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5454,7 +5454,7 @@ func CashEq(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashGe calls the stored procedure 'pg_catalog.cash_ge(money, money) boolean' on db.
-func CashGe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashGe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5472,7 +5472,7 @@ func CashGe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashGt calls the stored procedure 'pg_catalog.cash_gt(money, money) boolean' on db.
-func CashGt(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashGt(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5490,25 +5490,25 @@ func CashGt(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashIn calls the stored procedure 'pg_catalog.cash_in(cstring) money' on db.
-func CashIn(db XODB, v0 pgtypes.Cstring) (pgtypes.Money, error) {
+func CashIn(db XODB, v0 pgtypes.Cstring) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_in($1)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashLe calls the stored procedure 'pg_catalog.cash_le(money, money) boolean' on db.
-func CashLe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashLe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5526,7 +5526,7 @@ func CashLe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashLt calls the stored procedure 'pg_catalog.cash_lt(money, money) boolean' on db.
-func CashLt(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashLt(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5544,97 +5544,97 @@ func CashLt(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashMi calls the stored procedure 'pg_catalog.cash_mi(money, money) money' on db.
-func CashMi(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (pgtypes.Money, error) {
+func CashMi(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_mi($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashMulFlt4 calls the stored procedure 'pg_catalog.cash_mul_flt4(money, real) money' on db.
-func CashMulFlt4(db XODB, v0 pgtypes.Money, v1 float32) (pgtypes.Money, error) {
+func CashMulFlt4(db XODB, v0 string, v1 float32) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_mul_flt4($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashMulFlt8 calls the stored procedure 'pg_catalog.cash_mul_flt8(money, double precision) money' on db.
-func CashMulFlt8(db XODB, v0 pgtypes.Money, v1 float64) (pgtypes.Money, error) {
+func CashMulFlt8(db XODB, v0 string, v1 float64) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_mul_flt8($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashMulInt2 calls the stored procedure 'pg_catalog.cash_mul_int2(money, smallint) money' on db.
-func CashMulInt2(db XODB, v0 pgtypes.Money, v1 int16) (pgtypes.Money, error) {
+func CashMulInt2(db XODB, v0 string, v1 int16) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_mul_int2($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashMulInt4 calls the stored procedure 'pg_catalog.cash_mul_int4(money, integer) money' on db.
-func CashMulInt4(db XODB, v0 pgtypes.Money, v1 int) (pgtypes.Money, error) {
+func CashMulInt4(db XODB, v0 string, v1 int) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_mul_int4($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashNe calls the stored procedure 'pg_catalog.cash_ne(money, money) boolean' on db.
-func CashNe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
+func CashNe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -5652,7 +5652,7 @@ func CashNe(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (bool, error) {
 }
 
 // CashOut calls the stored procedure 'pg_catalog.cash_out(money) cstring' on db.
-func CashOut(db XODB, v0 pgtypes.Money) (pgtypes.Cstring, error) {
+func CashOut(db XODB, v0 string) (pgtypes.Cstring, error) {
 	var err error
 
 	// sql query
@@ -5670,43 +5670,43 @@ func CashOut(db XODB, v0 pgtypes.Money) (pgtypes.Cstring, error) {
 }
 
 // CashPl calls the stored procedure 'pg_catalog.cash_pl(money, money) money' on db.
-func CashPl(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (pgtypes.Money, error) {
+func CashPl(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_pl($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashRecv calls the stored procedure 'pg_catalog.cash_recv(internal) money' on db.
-func CashRecv(db XODB, v0 pgtypes.Internal) (pgtypes.Money, error) {
+func CashRecv(db XODB, v0 pgtypes.Internal) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cash_recv($1)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // CashSend calls the stored procedure 'pg_catalog.cash_send(money) bytea' on db.
-func CashSend(db XODB, v0 pgtypes.Money) ([]byte, error) {
+func CashSend(db XODB, v0 string) ([]byte, error) {
 	var err error
 
 	// sql query
@@ -5724,7 +5724,7 @@ func CashSend(db XODB, v0 pgtypes.Money) ([]byte, error) {
 }
 
 // CashWords calls the stored procedure 'pg_catalog.cash_words(money) text' on db.
-func CashWords(db XODB, v0 pgtypes.Money) (string, error) {
+func CashWords(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
@@ -5742,36 +5742,36 @@ func CashWords(db XODB, v0 pgtypes.Money) (string, error) {
 }
 
 // Cashlarger calls the stored procedure 'pg_catalog.cashlarger(money, money) money' on db.
-func Cashlarger(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Cashlarger(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cashlarger($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Cashsmaller calls the stored procedure 'pg_catalog.cashsmaller(money, money) money' on db.
-func Cashsmaller(db XODB, v0 pgtypes.Money, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Cashsmaller(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.cashsmaller($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -5796,36 +5796,36 @@ func Cbrt(db XODB, v0 float64) (float64, error) {
 }
 
 // Ceil calls the stored procedure 'pg_catalog.ceil(double precision, numeric) numeric' on db.
-func Ceil(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Ceil(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ceil($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // Ceiling calls the stored procedure 'pg_catalog.ceiling(double precision, numeric) numeric' on db.
-func Ceiling(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Ceiling(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ceiling($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -8730,18 +8730,18 @@ func DistSl(db XODB, v0 pgtypes.Lseg, v1 pgtypes.Line) (float64, error) {
 }
 
 // Div calls the stored procedure 'pg_catalog.div(numeric, numeric) numeric' on db.
-func Div(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Div(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.div($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -9630,36 +9630,36 @@ func Every(db XODB, v0 bool) (bool, error) {
 }
 
 // Exp calls the stored procedure 'pg_catalog.exp(double precision, numeric) numeric' on db.
-func Exp(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Exp(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.exp($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // Factorial calls the stored procedure 'pg_catalog.factorial(bigint) numeric' on db.
-func Factorial(db XODB, v0 int64) (pgtypes.Numeric, error) {
+func Factorial(db XODB, v0 int64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.factorial($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -9738,7 +9738,7 @@ func FirstValue(db XODB, v0 pgtypes.Anyelement) (pgtypes.Anyelement, error) {
 }
 
 // Float4 calls the stored procedure 'pg_catalog.float4(bigint, smallint, integer, double precision, numeric) real' on db.
-func Float4(db XODB, v0 int64, v1 int16, v2 int, v3 float64, v4 pgtypes.Numeric) (float32, error) {
+func Float4(db XODB, v0 int64, v1 int16, v2 int, v3 float64, v4 float64) (float32, error) {
 	var err error
 
 	// sql query
@@ -10296,7 +10296,7 @@ func Float4up(db XODB, v0 float32) (float32, error) {
 }
 
 // Float8 calls the stored procedure 'pg_catalog.float8(bigint, smallint, integer, real, numeric) double precision' on db.
-func Float8(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 pgtypes.Numeric) (float64, error) {
+func Float8(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64) (float64, error) {
 	var err error
 
 	// sql query
@@ -11160,54 +11160,54 @@ func Float8up(db XODB, v0 float64) (float64, error) {
 }
 
 // Floor calls the stored procedure 'pg_catalog.floor(double precision, numeric) numeric' on db.
-func Floor(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Floor(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.floor($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // Flt4MulCash calls the stored procedure 'pg_catalog.flt4_mul_cash(real, money) money' on db.
-func Flt4MulCash(db XODB, v0 float32, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Flt4MulCash(db XODB, v0 float32, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.flt4_mul_cash($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Flt8MulCash calls the stored procedure 'pg_catalog.flt8_mul_cash(double precision, money) money' on db.
-func Flt8MulCash(db XODB, v0 float64, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Flt8MulCash(db XODB, v0 float64, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.flt8_mul_cash($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -11340,7 +11340,7 @@ func GbkToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal,
 }
 
 // GenerateSeries calls the stored procedure 'pg_catalog.generate_series(bigint, bigint, integer, integer, numeric, numeric, bigint, bigint, bigint, integer, integer, integer, timestamp without time zone, timestamp without time zone, interval, timestamp with time zone, timestamp with time zone, interval, numeric, numeric, numeric) SETOF timestamp with time zone' on db.
-func GenerateSeries(db XODB, v0 int64, v1 int64, v2 int, v3 int, v4 pgtypes.Numeric, v5 pgtypes.Numeric, v6 int64, v7 int64, v8 int64, v9 int, v10 int, v11 int, v12 int64, v13 int64, v14 *time.Duration, v15 *time.Time, v16 *time.Time, v17 *time.Duration, v18 pgtypes.Numeric, v19 pgtypes.Numeric, v20 pgtypes.Numeric) ([]*time.Time, error) {
+func GenerateSeries(db XODB, v0 int64, v1 int64, v2 int, v3 int, v4 float64, v5 float64, v6 int64, v7 int64, v8 int64, v9 int, v10 int, v11 int, v12 int64, v13 int64, v14 *time.Duration, v15 *time.Time, v16 *time.Time, v17 *time.Duration, v18 float64, v19 float64, v20 float64) ([]*time.Time, error) {
 	var err error
 
 	// sql query
@@ -13158,7 +13158,7 @@ func HashArray(db XODB, v0 pgtypes.Anyarray) (int, error) {
 }
 
 // HashNumeric calls the stored procedure 'pg_catalog.hash_numeric(numeric) integer' on db.
-func HashNumeric(db XODB, v0 pgtypes.Numeric) (int, error) {
+func HashNumeric(db XODB, v0 float64) (int, error) {
 	var err error
 
 	// sql query
@@ -14382,7 +14382,7 @@ func Initcap(db XODB, v0 string) (string, error) {
 }
 
 // Int2 calls the stored procedure 'pg_catalog.int2(bigint, integer, real, double precision, numeric) smallint' on db.
-func Int2(db XODB, v0 int64, v1 int, v2 float32, v3 float64, v4 pgtypes.Numeric) (int16, error) {
+func Int2(db XODB, v0 int64, v1 int, v2 float32, v3 float64, v4 float64) (int16, error) {
 	var err error
 
 	// sql query
@@ -14832,18 +14832,18 @@ func Int2AvgAccumInv(db XODB, v0 []int64, v1 int16) ([]int64, error) {
 }
 
 // Int2MulCash calls the stored procedure 'pg_catalog.int2_mul_cash(smallint, money) money' on db.
-func Int2MulCash(db XODB, v0 int16, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Int2MulCash(db XODB, v0 int16, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.int2_mul_cash($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -15444,7 +15444,7 @@ func Int2xor(db XODB, v0 int16, v1 int16) (int16, error) {
 }
 
 // Int4 calls the stored procedure 'pg_catalog.int4(boolean, "char", bigint, smallint, real, double precision, bit, numeric) integer' on db.
-func Int4(db XODB, v0 bool, v1 uint8, v2 int64, v3 int16, v4 float32, v5 float64, v6 uint8, v7 pgtypes.Numeric) (int, error) {
+func Int4(db XODB, v0 bool, v1 uint8, v2 int64, v3 int16, v4 float32, v5 float64, v6 uint8, v7 float64) (int, error) {
 	var err error
 
 	// sql query
@@ -15894,18 +15894,18 @@ func Int4AvgAccumInv(db XODB, v0 []int64, v1 int) ([]int64, error) {
 }
 
 // Int4MulCash calls the stored procedure 'pg_catalog.int4_mul_cash(integer, money) money' on db.
-func Int4MulCash(db XODB, v0 int, v1 pgtypes.Money) (pgtypes.Money, error) {
+func Int4MulCash(db XODB, v0 int, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.int4_mul_cash($1, $2)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -16470,7 +16470,7 @@ func Int4xor(db XODB, v0 int, v1 int) (int, error) {
 }
 
 // Int8 calls the stored procedure 'pg_catalog.int8(smallint, integer, oid, real, double precision, bit, numeric) bigint' on db.
-func Int8(db XODB, v0 int16, v1 int, v2 pgtypes.Oid, v3 float32, v4 float64, v5 uint8, v6 pgtypes.Numeric) (int64, error) {
+func Int8(db XODB, v0 int16, v1 int, v2 pgtypes.Oid, v3 float32, v4 float64, v5 uint8, v6 float64) (int64, error) {
 	var err error
 
 	// sql query
@@ -16884,18 +16884,18 @@ func Int8AccumInv(db XODB, v0 pgtypes.Internal, v1 int64) (pgtypes.Internal, err
 }
 
 // Int8Avg calls the stored procedure 'pg_catalog.int8_avg(bigint[]) numeric' on db.
-func Int8Avg(db XODB, v0 []int64) (pgtypes.Numeric, error) {
+func Int8Avg(db XODB, v0 []int64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.int8_avg($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -16938,18 +16938,18 @@ func Int8AvgAccumInv(db XODB, v0 pgtypes.Internal, v1 int64) (pgtypes.Internal, 
 }
 
 // Int8Sum calls the stored procedure 'pg_catalog.int8_sum(numeric, bigint) numeric' on db.
-func Int8Sum(db XODB, v0 pgtypes.Numeric, v1 int64) (pgtypes.Numeric, error) {
+func Int8Sum(db XODB, v0 float64, v1 int64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.int8_sum($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -20682,18 +20682,18 @@ func LineVertical(db XODB, v0 pgtypes.Line) (bool, error) {
 }
 
 // Ln calls the stored procedure 'pg_catalog.ln(double precision, numeric) numeric' on db.
-func Ln(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Ln(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ln($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -20988,18 +20988,18 @@ func LoUnlink(db XODB, v0 pgtypes.Oid) (int, error) {
 }
 
 // Log calls the stored procedure 'pg_catalog.log(double precision, numeric, numeric, numeric) numeric' on db.
-func Log(db XODB, v0 float64, v1 pgtypes.Numeric, v2 pgtypes.Numeric, v3 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Log(db XODB, v0 float64, v1 float64, v2 float64, v3 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.log($1, $2, $3, $4)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -21870,7 +21870,7 @@ func Masklen(db XODB, v0 pgtypes.Inet) (int, error) {
 }
 
 // Max calls the stored procedure 'pg_catalog.max(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 pgtypes.Money, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 pgtypes.Numeric, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -22194,7 +22194,7 @@ func MicToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Interna
 }
 
 // Min calls the stored procedure 'pg_catalog.min(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 pgtypes.Money, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 pgtypes.Numeric, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -22230,18 +22230,18 @@ func Mktinterval(db XODB, v0 pgtypes.Abstime, v1 pgtypes.Abstime) (pgtypes.Tinte
 }
 
 // Mod calls the stored procedure 'pg_catalog.mod(bigint, bigint, smallint, smallint, integer, integer, numeric, numeric) numeric' on db.
-func Mod(db XODB, v0 int64, v1 int64, v2 int16, v3 int16, v4 int, v5 int, v6 pgtypes.Numeric, v7 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Mod(db XODB, v0 int64, v1 int64, v2 int16, v3 int16, v4 int, v5 int, v6 float64, v7 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mod($1, $2, $3, $4, $5, $6, $7, $8)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -22284,18 +22284,18 @@ func ModeFinal(db XODB, v0 pgtypes.Internal, v1 pgtypes.Anyelement) (pgtypes.Any
 }
 
 // Money calls the stored procedure 'pg_catalog.money(bigint, integer, numeric) money' on db.
-func Money(db XODB, v0 int64, v1 int, v2 pgtypes.Numeric) (pgtypes.Money, error) {
+func Money(db XODB, v0 int64, v1 int, v2 float64) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.money($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Money
+	var ret string
 	XOLog(sqlstr, v0, v1, v2)
 	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
 	if err != nil {
-		return pgtypes.Money{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -23184,43 +23184,43 @@ func Ntile(db XODB, v0 int) (int, error) {
 }
 
 // Numeric calls the stored procedure 'pg_catalog.numeric(bigint, smallint, integer, real, double precision, money, numeric, integer) numeric' on db.
-func Numeric(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Money, v6 pgtypes.Numeric, v7 int) (pgtypes.Numeric, error) {
+func Numeric(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 float64, v7 int) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric($1, $2, $3, $4, $5, $6, $7, $8)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericAbs calls the stored procedure 'pg_catalog.numeric_abs(numeric) numeric' on db.
-func NumericAbs(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericAbs(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_abs($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericAccum calls the stored procedure 'pg_catalog.numeric_accum(internal, numeric) internal' on db.
-func NumericAccum(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.Internal, error) {
+func NumericAccum(db XODB, v0 pgtypes.Internal, v1 float64) (pgtypes.Internal, error) {
 	var err error
 
 	// sql query
@@ -23238,7 +23238,7 @@ func NumericAccum(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.Int
 }
 
 // NumericAccumInv calls the stored procedure 'pg_catalog.numeric_accum_inv(internal, numeric) internal' on db.
-func NumericAccumInv(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.Internal, error) {
+func NumericAccumInv(db XODB, v0 pgtypes.Internal, v1 float64) (pgtypes.Internal, error) {
 	var err error
 
 	// sql query
@@ -23256,43 +23256,43 @@ func NumericAccumInv(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.
 }
 
 // NumericAdd calls the stored procedure 'pg_catalog.numeric_add(numeric, numeric) numeric' on db.
-func NumericAdd(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericAdd(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_add($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericAvg calls the stored procedure 'pg_catalog.numeric_avg(internal) numeric' on db.
-func NumericAvg(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericAvg(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_avg($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericAvgAccum calls the stored procedure 'pg_catalog.numeric_avg_accum(internal, numeric) internal' on db.
-func NumericAvgAccum(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.Internal, error) {
+func NumericAvgAccum(db XODB, v0 pgtypes.Internal, v1 float64) (pgtypes.Internal, error) {
 	var err error
 
 	// sql query
@@ -23310,7 +23310,7 @@ func NumericAvgAccum(db XODB, v0 pgtypes.Internal, v1 pgtypes.Numeric) (pgtypes.
 }
 
 // NumericCmp calls the stored procedure 'pg_catalog.numeric_cmp(numeric, numeric) integer' on db.
-func NumericCmp(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (int, error) {
+func NumericCmp(db XODB, v0 float64, v1 float64) (int, error) {
 	var err error
 
 	// sql query
@@ -23328,43 +23328,43 @@ func NumericCmp(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (int, error) {
 }
 
 // NumericDiv calls the stored procedure 'pg_catalog.numeric_div(numeric, numeric) numeric' on db.
-func NumericDiv(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericDiv(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_div($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericDivTrunc calls the stored procedure 'pg_catalog.numeric_div_trunc(numeric, numeric) numeric' on db.
-func NumericDivTrunc(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericDivTrunc(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_div_trunc($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericEq calls the stored procedure 'pg_catalog.numeric_eq(numeric, numeric) boolean' on db.
-func NumericEq(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericEq(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23382,43 +23382,43 @@ func NumericEq(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericExp calls the stored procedure 'pg_catalog.numeric_exp(numeric) numeric' on db.
-func NumericExp(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericExp(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_exp($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericFac calls the stored procedure 'pg_catalog.numeric_fac(bigint) numeric' on db.
-func NumericFac(db XODB, v0 int64) (pgtypes.Numeric, error) {
+func NumericFac(db XODB, v0 int64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_fac($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericGe calls the stored procedure 'pg_catalog.numeric_ge(numeric, numeric) boolean' on db.
-func NumericGe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericGe(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23436,7 +23436,7 @@ func NumericGe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericGt calls the stored procedure 'pg_catalog.numeric_gt(numeric, numeric) boolean' on db.
-func NumericGt(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericGt(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23454,61 +23454,61 @@ func NumericGt(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericIn calls the stored procedure 'pg_catalog.numeric_in(cstring, oid, integer) numeric' on db.
-func NumericIn(db XODB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) (pgtypes.Numeric, error) {
+func NumericIn(db XODB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_in($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2)
 	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericInc calls the stored procedure 'pg_catalog.numeric_inc(numeric) numeric' on db.
-func NumericInc(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericInc(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_inc($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericLarger calls the stored procedure 'pg_catalog.numeric_larger(numeric, numeric) numeric' on db.
-func NumericLarger(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericLarger(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_larger($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericLe calls the stored procedure 'pg_catalog.numeric_le(numeric, numeric) boolean' on db.
-func NumericLe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericLe(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23526,43 +23526,43 @@ func NumericLe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericLn calls the stored procedure 'pg_catalog.numeric_ln(numeric) numeric' on db.
-func NumericLn(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericLn(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_ln($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericLog calls the stored procedure 'pg_catalog.numeric_log(numeric, numeric) numeric' on db.
-func NumericLog(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericLog(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_log($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericLt calls the stored procedure 'pg_catalog.numeric_lt(numeric, numeric) boolean' on db.
-func NumericLt(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericLt(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23580,43 +23580,43 @@ func NumericLt(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericMod calls the stored procedure 'pg_catalog.numeric_mod(numeric, numeric) numeric' on db.
-func NumericMod(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericMod(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_mod($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericMul calls the stored procedure 'pg_catalog.numeric_mul(numeric, numeric) numeric' on db.
-func NumericMul(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericMul(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_mul($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericNe calls the stored procedure 'pg_catalog.numeric_ne(numeric, numeric) boolean' on db.
-func NumericNe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
+func NumericNe(db XODB, v0 float64, v1 float64) (bool, error) {
 	var err error
 
 	// sql query
@@ -23634,7 +23634,7 @@ func NumericNe(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (bool, error) {
 }
 
 // NumericOut calls the stored procedure 'pg_catalog.numeric_out(numeric) cstring' on db.
-func NumericOut(db XODB, v0 pgtypes.Numeric) (pgtypes.Cstring, error) {
+func NumericOut(db XODB, v0 float64) (pgtypes.Cstring, error) {
 	var err error
 
 	// sql query
@@ -23652,151 +23652,151 @@ func NumericOut(db XODB, v0 pgtypes.Numeric) (pgtypes.Cstring, error) {
 }
 
 // NumericPolyAvg calls the stored procedure 'pg_catalog.numeric_poly_avg(internal) numeric' on db.
-func NumericPolyAvg(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolyAvg(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_avg($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPolyStddevPop calls the stored procedure 'pg_catalog.numeric_poly_stddev_pop(internal) numeric' on db.
-func NumericPolyStddevPop(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolyStddevPop(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_stddev_pop($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPolyStddevSamp calls the stored procedure 'pg_catalog.numeric_poly_stddev_samp(internal) numeric' on db.
-func NumericPolyStddevSamp(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolyStddevSamp(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_stddev_samp($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPolySum calls the stored procedure 'pg_catalog.numeric_poly_sum(internal) numeric' on db.
-func NumericPolySum(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolySum(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_sum($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPolyVarPop calls the stored procedure 'pg_catalog.numeric_poly_var_pop(internal) numeric' on db.
-func NumericPolyVarPop(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolyVarPop(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_var_pop($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPolyVarSamp calls the stored procedure 'pg_catalog.numeric_poly_var_samp(internal) numeric' on db.
-func NumericPolyVarSamp(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericPolyVarSamp(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_poly_var_samp($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericPower calls the stored procedure 'pg_catalog.numeric_power(numeric, numeric) numeric' on db.
-func NumericPower(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericPower(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_power($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericRecv calls the stored procedure 'pg_catalog.numeric_recv(internal, oid, integer) numeric' on db.
-func NumericRecv(db XODB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) (pgtypes.Numeric, error) {
+func NumericRecv(db XODB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_recv($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2)
 	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericSend calls the stored procedure 'pg_catalog.numeric_send(numeric) bytea' on db.
-func NumericSend(db XODB, v0 pgtypes.Numeric) ([]byte, error) {
+func NumericSend(db XODB, v0 float64) ([]byte, error) {
 	var err error
 
 	// sql query
@@ -23814,18 +23814,18 @@ func NumericSend(db XODB, v0 pgtypes.Numeric) ([]byte, error) {
 }
 
 // NumericSmaller calls the stored procedure 'pg_catalog.numeric_smaller(numeric, numeric) numeric' on db.
-func NumericSmaller(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericSmaller(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_smaller($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -23850,90 +23850,90 @@ func NumericSortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
 }
 
 // NumericSqrt calls the stored procedure 'pg_catalog.numeric_sqrt(numeric) numeric' on db.
-func NumericSqrt(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericSqrt(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_sqrt($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericStddevPop calls the stored procedure 'pg_catalog.numeric_stddev_pop(internal) numeric' on db.
-func NumericStddevPop(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericStddevPop(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_stddev_pop($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericStddevSamp calls the stored procedure 'pg_catalog.numeric_stddev_samp(internal) numeric' on db.
-func NumericStddevSamp(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericStddevSamp(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_stddev_samp($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericSub calls the stored procedure 'pg_catalog.numeric_sub(numeric, numeric) numeric' on db.
-func NumericSub(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericSub(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_sub($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericSum calls the stored procedure 'pg_catalog.numeric_sum(internal) numeric' on db.
-func NumericSum(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericSum(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_sum($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -23958,72 +23958,72 @@ func NumericTransform(db XODB, v0 pgtypes.Internal) (pgtypes.Internal, error) {
 }
 
 // NumericUminus calls the stored procedure 'pg_catalog.numeric_uminus(numeric) numeric' on db.
-func NumericUminus(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericUminus(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_uminus($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericUplus calls the stored procedure 'pg_catalog.numeric_uplus(numeric) numeric' on db.
-func NumericUplus(db XODB, v0 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func NumericUplus(db XODB, v0 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_uplus($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericVarPop calls the stored procedure 'pg_catalog.numeric_var_pop(internal) numeric' on db.
-func NumericVarPop(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericVarPop(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_var_pop($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // NumericVarSamp calls the stored procedure 'pg_catalog.numeric_var_samp(internal) numeric' on db.
-func NumericVarSamp(db XODB, v0 pgtypes.Internal) (pgtypes.Numeric, error) {
+func NumericVarSamp(db XODB, v0 pgtypes.Internal) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_var_samp($1)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -24084,7 +24084,7 @@ func Numnode(db XODB, v0 pgtypes.Tsquery) (int, error) {
 }
 
 // Numrange calls the stored procedure 'pg_catalog.numrange(numeric, numeric, numeric, numeric, text) numrange' on db.
-func Numrange(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric, v2 pgtypes.Numeric, v3 pgtypes.Numeric, v4 string) (pgtypes.Numrange, error) {
+func Numrange(db XODB, v0 float64, v1 float64, v2 float64, v3 float64, v4 string) (pgtypes.Numrange, error) {
 	var err error
 
 	// sql query
@@ -24102,7 +24102,7 @@ func Numrange(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric, v2 pgtypes.Numeri
 }
 
 // NumrangeSubdiff calls the stored procedure 'pg_catalog.numrange_subdiff(numeric, numeric) double precision' on db.
-func NumrangeSubdiff(db XODB, v0 pgtypes.Numeric, v1 pgtypes.Numeric) (float64, error) {
+func NumrangeSubdiff(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
@@ -26964,18 +26964,18 @@ func PgLsnLt(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (bool, error) {
 }
 
 // PgLsnMi calls the stored procedure 'pg_catalog.pg_lsn_mi(pg_lsn, pg_lsn) numeric' on db.
-func PgLsnMi(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (pgtypes.Numeric, error) {
+func PgLsnMi(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_lsn_mi($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -27702,7 +27702,7 @@ func PgShowReplicationOriginStatus(db XODB) ([]pgtypes.Record, error) {
 }
 
 // PgSizePretty calls the stored procedure 'pg_catalog.pg_size_pretty(bigint, numeric) text' on db.
-func PgSizePretty(db XODB, v0 int64, v1 pgtypes.Numeric) (string, error) {
+func PgSizePretty(db XODB, v0 int64, v1 float64) (string, error) {
 	var err error
 
 	// sql query
@@ -29808,18 +29808,18 @@ func PgXactCommitTimestamp(db XODB, v0 pgtypes.Xid) (*time.Time, error) {
 }
 
 // PgXlogLocationDiff calls the stored procedure 'pg_catalog.pg_xlog_location_diff(pg_lsn, pg_lsn) numeric' on db.
-func PgXlogLocationDiff(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (pgtypes.Numeric, error) {
+func PgXlogLocationDiff(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_xlog_location_diff($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -30780,36 +30780,36 @@ func PostgresqlFdwValidator(db XODB, v0 StringSlice, v1 pgtypes.Oid) (bool, erro
 }
 
 // Pow calls the stored procedure 'pg_catalog.pow(double precision, double precision, numeric, numeric) numeric' on db.
-func Pow(db XODB, v0 float64, v1 float64, v2 pgtypes.Numeric, v3 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Pow(db XODB, v0 float64, v1 float64, v2 float64, v3 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pow($1, $2, $3, $4)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // Power calls the stored procedure 'pg_catalog.power(double precision, double precision, numeric, numeric) numeric' on db.
-func Power(db XODB, v0 float64, v1 float64, v2 pgtypes.Numeric, v3 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Power(db XODB, v0 float64, v1 float64, v2 float64, v3 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.power($1, $2, $3, $4)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -33588,18 +33588,18 @@ func Right(db XODB, v0 string, v1 int) (string, error) {
 }
 
 // Round calls the stored procedure 'pg_catalog.round(double precision, numeric, numeric, integer) numeric' on db.
-func Round(db XODB, v0 float64, v1 pgtypes.Numeric, v2 pgtypes.Numeric, v3 int) (pgtypes.Numeric, error) {
+func Round(db XODB, v0 float64, v1 float64, v2 float64, v3 int) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.round($1, $2, $3, $4)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -34056,18 +34056,18 @@ func ShobjDescription(db XODB, v0 pgtypes.Oid, v1 pgtypes.Name) (string, error) 
 }
 
 // Sign calls the stored procedure 'pg_catalog.sign(double precision, numeric) numeric' on db.
-func Sign(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Sign(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sign($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -34884,18 +34884,18 @@ func SplitPart(db XODB, v0 string, v1 string, v2 int) (string, error) {
 }
 
 // Sqrt calls the stored procedure 'pg_catalog.sqrt(double precision, numeric) numeric' on db.
-func Sqrt(db XODB, v0 float64, v1 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Sqrt(db XODB, v0 float64, v1 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sqrt($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -34920,54 +34920,54 @@ func StatementTimestamp(db XODB) (*time.Time, error) {
 }
 
 // Stddev calls the stored procedure 'pg_catalog.stddev(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func Stddev(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Stddev(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.stddev($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // StddevPop calls the stored procedure 'pg_catalog.stddev_pop(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func StddevPop(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func StddevPop(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.stddev_pop($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // StddevSamp calls the stored procedure 'pg_catalog.stddev_samp(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func StddevSamp(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func StddevSamp(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.stddev_samp($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -35118,18 +35118,18 @@ func Substring(db XODB, v0 []byte, v1 int, v2 string, v3 int, v4 string, v5 stri
 }
 
 // Sum calls the stored procedure 'pg_catalog.sum(bigint, smallint, integer, real, double precision, money, interval, numeric) numeric' on db.
-func Sum(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Money, v6 *time.Duration, v7 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Sum(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 *time.Duration, v7 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sum($1, $2, $3, $4, $5, $6, $7, $8)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -38556,7 +38556,7 @@ func ToASCII(db XODB, v0 string, v1 string, v2 pgtypes.Name, v3 string, v4 int) 
 }
 
 // ToChar calls the stored procedure 'pg_catalog.to_char(bigint, text, integer, text, real, text, double precision, text, timestamp without time zone, text, timestamp with time zone, text, interval, text, numeric, text) text' on db.
-func ToChar(db XODB, v0 int64, v1 string, v2 int, v3 string, v4 float32, v5 string, v6 float64, v7 string, v8 int64, v9 string, v10 *time.Time, v11 string, v12 *time.Duration, v13 string, v14 pgtypes.Numeric, v15 string) (string, error) {
+func ToChar(db XODB, v0 int64, v1 string, v2 int, v3 string, v4 float32, v5 string, v6 float64, v7 string, v8 int64, v9 string, v10 *time.Time, v11 string, v12 *time.Duration, v13 string, v14 float64, v15 string) (string, error) {
 	var err error
 
 	// sql query
@@ -38646,18 +38646,18 @@ func ToJsonb(db XODB, v0 pgtypes.Anyelement) (pgtypes.Jsonb, error) {
 }
 
 // ToNumber calls the stored procedure 'pg_catalog.to_number(text, text) numeric' on db.
-func ToNumber(db XODB, v0 string, v1 string) (pgtypes.Numeric, error) {
+func ToNumber(db XODB, v0 string, v1 string) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.to_number($1, $2)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -38934,18 +38934,18 @@ func TriggerOut(db XODB, v0 pgtypes.Trigger) (pgtypes.Cstring, error) {
 }
 
 // Trunc calls the stored procedure 'pg_catalog.trunc(double precision, macaddr, numeric, numeric, integer) numeric' on db.
-func Trunc(db XODB, v0 float64, v1 pgtypes.Macaddr, v2 pgtypes.Numeric, v3 pgtypes.Numeric, v4 int) (pgtypes.Numeric, error) {
+func Trunc(db XODB, v0 float64, v1 pgtypes.Macaddr, v2 float64, v3 float64, v4 int) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.trunc($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -40788,36 +40788,36 @@ func UpperInf(db XODB, v0 pgtypes.Anyrange) (bool, error) {
 }
 
 // VarPop calls the stored procedure 'pg_catalog.var_pop(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func VarPop(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func VarPop(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.var_pop($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
 }
 
 // VarSamp calls the stored procedure 'pg_catalog.var_samp(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func VarSamp(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func VarSamp(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.var_samp($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -41238,18 +41238,18 @@ func Varchartypmodout(db XODB, v0 int) (pgtypes.Cstring, error) {
 }
 
 // Variance calls the stored procedure 'pg_catalog.variance(bigint, smallint, integer, real, double precision, numeric) numeric' on db.
-func Variance(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Numeric) (pgtypes.Numeric, error) {
+func Variance(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 float64) (float64, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.variance($1, $2, $3, $4, $5, $6)`
 
 	// run query
-	var ret pgtypes.Numeric
+	var ret float64
 	XOLog(sqlstr, v0, v1, v2, v3, v4, v5)
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret)
 	if err != nil {
-		return pgtypes.Numeric{}, err
+		return 0.0, err
 	}
 
 	return ret, nil
@@ -41364,7 +41364,7 @@ func Width(db XODB, v0 pgtypes.Box) (float64, error) {
 }
 
 // WidthBucket calls the stored procedure 'pg_catalog.width_bucket(anyelement, anyarray, double precision, double precision, double precision, integer, numeric, numeric, numeric, integer) integer' on db.
-func WidthBucket(db XODB, v0 pgtypes.Anyelement, v1 pgtypes.Anyarray, v2 float64, v3 float64, v4 float64, v5 int, v6 pgtypes.Numeric, v7 pgtypes.Numeric, v8 pgtypes.Numeric, v9 int) (int, error) {
+func WidthBucket(db XODB, v0 pgtypes.Anyelement, v1 pgtypes.Anyarray, v2 float64, v3 float64, v4 float64, v5 int, v6 float64, v7 float64, v8 float64, v9 int) (int, error) {
 	var err error
 
 	// sql query

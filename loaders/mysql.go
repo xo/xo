@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/url"
 	"path"
-	"strconv"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -112,7 +111,6 @@ func MyRelkind(relType internal.RelType) string {
 func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
-	asSlice := false
 	unsigned := false
 
 	// extract unsigned
@@ -121,11 +119,8 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		dt = dt[:len(dt)-len(" unsigned")]
 	}
 
-	// extract length
-	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
-		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
-		dt = dt[:loc[0]]
-	}
+	// extract precision
+	dt, precision, _ = args.ParsePrecision(dt)
 
 	var typ string
 	switch dt {
@@ -167,14 +162,14 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "sql.NullInt64"
 		}
 
-	case "decimal", "float":
+	case "float":
 		nilVal = "0.0"
 		typ = "float32"
 		if nullable {
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
-	case "double":
+	case "decimal", "double":
 		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
@@ -183,8 +178,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		}
 
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
-		asSlice = true
-		typ = "byte"
+		typ = "[]byte"
 
 	case "timestamp", "datetime":
 		typ = "*time.Time"
@@ -202,17 +196,6 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = internal.SnakeToCamel(dt)
 			nilVal = typ + "{}"
 		}
-	}
-
-	// special case for []slice
-	if typ == "string" && asSlice {
-		return precision, "StringSlice{}", "StringSlice"
-	}
-
-	// correct type if slice
-	if asSlice {
-		typ = "[]" + typ
-		nilVal = "nil"
 	}
 
 	// add 'u' as prefix to type if its unsigned

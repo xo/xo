@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 
 	_ "gopkg.in/rana/ora.v3"
@@ -111,11 +110,8 @@ func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		return 0, "false", "bool"
 	}
 
-	// extract length
-	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
-		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
-		dt = dt[:loc[0]]
-	}
+	// extract precision
+	dt, precision, _ = args.ParsePrecision(dt)
 
 	// strip remaining length (on things like timestamp)
 	dt = OrLenRE.ReplaceAllString(dt, "")

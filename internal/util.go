@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -90,6 +91,44 @@ func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []*QueryParam)
 	return str, params
 }
 
+// IntRE matches Go int types.
+var IntRE = regexp.MustCompile(`^int(32|64)?$`)
+
+// PrecScaleRE is the regexp that matches "(precision[,scale])" definitions in a
+// database.
+var PrecScaleRE = regexp.MustCompile(`\(([0-9]+)(\s*,[0-9]+)?\)$`)
+
+// ParsePrecision extracts (precision[,scale]) strings from a data type and
+// returns the data type without the string.
+func (a *ArgType) ParsePrecision(dt string) (string, int, int) {
+	var err error
+
+	precision := -1
+	scale := -1
+
+	m := PrecScaleRE.FindStringSubmatchIndex(dt)
+	if m != nil {
+		// extract precision
+		precision, err = strconv.Atoi(dt[m[2]:m[3]])
+		if err != nil {
+			panic("could not convert precision")
+		}
+
+		// extract scale
+		if m[4] != -1 {
+			scale, err = strconv.Atoi(dt[m[4]+1 : m[5]])
+			if err != nil {
+				panic("could not convert scale")
+			}
+		}
+
+		// change dt
+		dt = dt[:m[0]] + dt[m[1]:]
+	}
+
+	return dt, precision, scale
+}
+
 // letters for GenRandomID
 var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 
@@ -102,13 +141,6 @@ func GenRandomID() string {
 	}
 	return string(b)
 }
-
-// LenRE is the regexp that matches precision (length) definitions in a
-// database.
-var LenRE = regexp.MustCompile(`\([0-9]+\)$`)
-
-// IntRE matches Go int types.
-var IntRE = regexp.MustCompile(`^int(32|64)?$`)
 
 // TBuf is to hold the executed templates.
 type TBuf struct {

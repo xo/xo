@@ -67,11 +67,8 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		asSlice = true
 	}
 
-	// extract length
-	if loc := internal.LenRE.FindStringIndex(dt); len(loc) != 0 {
-		precision, _ = strconv.Atoi(dt[loc[0]+1 : loc[1]-1])
-		dt = dt[:loc[0]]
-	}
+	// extract precision
+	dt, precision, _ = args.ParsePrecision(dt)
 
 	var typ string
 	switch dt {
@@ -83,7 +80,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "sql.NullBool"
 		}
 
-	case "character", "character varying", "text":
+	case "character", "character varying", "text", "money":
 		nilVal = `""`
 		typ = "string"
 		if nullable {
@@ -142,7 +139,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
-	case "double precision":
+	case "numeric", "double precision":
 		nilVal = "0.0"
 		typ = "float64"
 		if nullable {

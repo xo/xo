@@ -31,9 +31,7 @@ type LanguageHandler struct{}
 type Line struct{}
 type Lseg struct{}
 type Macaddr struct{}
-type Money struct{}
 type Name struct{}
-type Numeric struct{}
 type Numrange struct{}
 type Oid struct{}
 type Oidvector struct{}
