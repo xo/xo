@@ -161,7 +161,7 @@ xo will generate the following (note: this is an abbreviated copy of actual
 output -- please see the [examples](examples) directory for how the generated
 types and funcs are used (generated via
 [examples/postgres/gen.sh](examples/postgres/gen.sh)), and see the
-[example/postgres/models](example/postgres/models) directory for the full
+[examples/postgres/models](examples/postgres/models) directory for the full
 generated code):
 ```go
 // Author represents a row from public.authors.
@@ -339,14 +339,14 @@ PHP to Go. The schema in use in the original app, while well designed, had
 become inconsistent over multiple iterations/generations, mainly due to
 different naming styles adopted by various developers/database admins over the
 preceding years. Additionally, some components had been written in different
-languages (Ruby, Java) and had also had drift from the original application and
-schema. Simultaneously, a large amount of growth meant that the PHP/Ruby code
-could no longer efficiently serve the traffic volumes.
+languages (Ruby, Java) and had also accumulated significant drift from the
+original application and schema. Simultaneously, a large amount of growth meant
+that the PHP/Ruby code could no longer efficiently serve the traffic volumes.
 
 In late 2014/early 2015, a decision was made to unify and strip out certain
 backend services and to fully isolate the API from the original application,
-allowing the various parts to instead speak to a common API layer instead of
-directly to the database, and to build the service layer in Go.
+allowing the various components to instead speak to a common API layer instead
+of directly to the database, and to build that service layer in Go.
 
 However, unraveling the old PHP/Ruby/Java code became a relatively large
 headache as the code, the database, and the API, had all experienced
@@ -354,25 +354,26 @@ significant drift, and thus underlying function names, fields, and API methods
 no longer aligned. As such, after a round of standardizing names, dropping
 accumulated cruft, and adding a small number of relationship changes to the
 schema, the various codebases were fixed to match the schema changes. After
-that was determined to be a success, the next target was a rewrite the backend
+that was determined to be a success, the next target was to rewrite the backend
 services in Go.
 
-In order to keep a similar and consistent workflow for the developers, a code
-generator similar to what was previously used with PHP was written for Go.
-Additionally, at this time, but tangential to the story here, the API
-definitions were ported from JSON to Protobuf to make use of its code
+In order to keep a similar and consistent workflow for the developers, the
+previous code generator (written in PHP and Twig templates) was modified to
+generate Go code. Additionally, at this time, but tangential to the story here,
+the API definitions were ported from JSON to Protobuf to make use of its code
 generation abilities as well.
 
-xo is part of the fruits of those development efforts, and it is hoped that
-others will be able to use and expand xo to support other databases (SQL or
-otherwise).
+xo is the open source version of that code generation tool, and is the the
+fruits of those development efforts. It is hoped that others will be able to
+use and expand xo to support other databases, SQL or otherwise, and that xo can
+become a common tool in any Go developer's toolbox.
 
-Part of xo's goal is to avoid writing an ORM, or an ORM-like in Go, and to use
-type-safe, fast, and idiomatic Go code. Additionally, the xo developers are of
-the opinion that relational databases should have proper, well-designed
-relationships and all the related definitions should reside within the database
-schema itself -- call it "self-documenting" schema. xo is an end to that
-pursuit.
+Part of xo's goal is to avoid writing an ORM, or an ORM-like in Go, and to
+instead generate static, type-safe, fast, and idiomatic Go code. Additionally,
+the xo developers are of the opinion that relational databases should have
+proper, well-designed relationships and all the related definitions should
+reside within the database schema itself -- call it "self-documenting" schema.
+xo is an end to that pursuit.
 
 # Similar Projects #
 The following projects work with similar concepts as xo:
