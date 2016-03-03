@@ -129,7 +129,8 @@ func OrIndexColumns(db XODB, schema string, table string, index string) ([]*Inde
 		`column_position AS seq_no, ` +
 		`LOWER(column_name) AS column_name ` +
 		`FROM all_ind_columns ` +
-		`WHERE index_owner = UPPER(:1) AND table_name = UPPER(:2) AND index_name = UPPER(:3)`
+		`WHERE index_owner = UPPER(:1) AND table_name = UPPER(:2) AND index_name = UPPER(:3) ` +
+		`ORDER BY column_position`
 
 	// run query
 	XOLog(sqlstr, schema, table, index)
@@ -146,6 +147,47 @@ func OrIndexColumns(db XODB, schema string, table string, index string) ([]*Inde
 
 		// scan
 		err = q.Scan(&ic.SeqNo, &ic.ColumnName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &ic)
+	}
+
+	return res, nil
+}
+
+// MsIndexColumns runs a custom query, returning results as IndexColumn.
+func MsIndexColumns(db XODB, schema string, table string, index string) ([]*IndexColumn, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`k.keyno AS seq_no, ` +
+		`k.colid AS cid, ` +
+		`c.name AS column_name ` +
+		`FROM sysindexes i ` +
+		`INNER JOIN sysobjects o ON i.id = o.id ` +
+		`INNER JOIN sysindexkeys k ON k.id = o.id AND k.indid = i.indid ` +
+		`INNER JOIN syscolumns c ON c.id = o.id AND c.colid = k.colid ` +
+		`WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = $1 AND o.name = $2 AND i.name = $3 ` +
+		`ORDER BY k.keyno`
+
+	// run query
+	XOLog(sqlstr, schema, table, index)
+	q, err := db.Query(sqlstr, schema, table, index)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*IndexColumn{}
+	for q.Next() {
+		ic := IndexColumn{}
+
+		// scan
+		err = q.Scan(&ic.SeqNo, &ic.Cid, &ic.ColumnName)
 		if err != nil {
 			return nil, err
 		}

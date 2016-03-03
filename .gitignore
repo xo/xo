@@ -3,5 +3,7 @@
 /examples/mysql/mysql
 /examples/sqlite3/sqlite3
 /examples/oracle/oracle
+/examples/mssql/mssql
+/x
 /*.xo.go
 *.sqlite3

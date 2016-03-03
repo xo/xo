@@ -6,7 +6,8 @@ reduce the overhead/redundancy of writing (from scratch) Go types and funcs for
 common database tasks.
 
 Currently, xo can generate types for tables, enums, stored procedures, and
-custom SQL queries for PostgreSQL, MySQL, and SQLite databases.
+custom SQL queries for PostgreSQL, MySQL, Oracle, Microsoft SQL Server, and
+SQLite databases.
 
 Additionally, support for other database abstractions (ie, views, many-to-many
 relationships, etc) are in varying states of completion, and will be added as
@@ -19,18 +20,18 @@ and funcs for well-defined database relationships using raw queries.
 
 # Database Support Features #
 
-The following is a table of the supported features per database:
+The following is a matrix of the supported features for each database:
 
-|              | PostgreSQL       | MySQL            | Oracle           | SQLite           |
-| ------------ |:----------------:|:----------------:|:----------------:|:----------------:|
-| Models       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Link Tables  |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Stored Procs |:white_check_mark:|:white_check_mark:|:white_check_mark:|                  |
-| ENUM types   |:white_check_mark:|:white_check_mark:|:white_check_mark:|                  |
-| Custom types |:white_check_mark:|                  |:white_check_mark:|                  |
+|              | PostgreSQL       | MySQL            | Oracle           | Microsoft SQL Server| SQLite           |
+| ------------ |:----------------:|:----------------:|:----------------:|:-------------------:|:----------------:|
+| Models       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Link Tables  |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Stored Procs |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |                  |
+| ENUM types   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |                  |
+| Custom types |:white_check_mark:|                  |:white_check_mark:|                     |                  |
 
 # Installation #
 
@@ -395,6 +396,7 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
+* Overhaul and better standardize type parsing
 * Add option to use index names
 * Fix name generated for indexes
 * Finish support for --{incl, excl}[ude] types
