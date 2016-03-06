@@ -1,7 +1,7 @@
-// {{ .TypeName }}By{{ range .Fields }}{{ .Name }}{{ end }} retrieves a row from '{{ schema .Schema .Type.Table.TableName }}' as a {{ .Type.Name }}.
+// {{ .FuncName }} retrieves a row from '{{ schema .Schema .Type.Table.TableName }}' as a {{ .Type.Name }}.
 //
 // Generated from index '{{ .Index.IndexName }}'.
-func {{ .TypeName }}By{{ range .Fields }}{{ .Name }}{{ end }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
+func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
 	var err error
 
 	// sql query

@@ -62,7 +62,7 @@ $$ LANGUAGE plpgsql;
 
 ENDSQL
 
-$XOBIN $DB -o $SRC/models $EXTRA
+$XOBIN $DB -o $SRC/models -j $EXTRA
 
 $XOBIN $DB -N -M -B -T AuthorBookResult --query-type-comment='AuthorBookResult is the result of a search.' -o $SRC/models $EXTRA << ENDSQL
 SELECT

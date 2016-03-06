@@ -680,40 +680,15 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 
 	// process indexes
 	for _, ix := range indexList {
-		ixName := ix.IndexName
-
 		// save whether or not the primary key index was processed
 		priIxLoaded = priIxLoaded || ix.IsPrimary
 
-		// chop off tablename_
-		if strings.HasPrefix(ixName, typeTpl.Table.TableName+"_") {
-			ixName = ixName[len(typeTpl.Table.TableName)+1:]
-		}
-
-		// chop off _ix, _idx, or _index
-		switch {
-		case strings.HasSuffix(ixName, "_ix"):
-			ixName = ixName[:len(ixName)-len("_ix")]
-		case strings.HasSuffix(ixName, "_idx"):
-			ixName = ixName[:len(ixName)-len("_idx")]
-		case strings.HasSuffix(ixName, "_index"):
-			ixName = ixName[:len(ixName)-len("_index")]
-		}
-
-		// determine the type name
-		typeName := typeTpl.Name
-		if !ix.IsUnique {
-			typeName = inflector.Pluralize(typeTpl.Name)
-		}
-
 		// create index template
 		ixTpl := &Index{
-			Name:     SnakeToCamel(strings.ToLower(ixName)),
-			TypeName: typeName,
-			Schema:   args.Schema,
-			Type:     typeTpl,
-			Fields:   []*Field{},
-			Index:    ix,
+			Schema: args.Schema,
+			Type:   typeTpl,
+			Fields: []*Field{},
+			Index:  ix,
 		}
 
 		// load index columns
@@ -721,6 +696,9 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 		if err != nil {
 			return err
 		}
+
+		// build func name
+		args.BuildIndexFuncName(ixTpl)
 
 		ixMap[ix.IndexName] = ixTpl
 	}
@@ -742,8 +720,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	if args.LoaderType != "ora" && !priIxLoaded && pk != nil {
 		ixName := typeTpl.Table.TableName + "_" + pk.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
-			Name:     SnakeToCamel(strings.ToLower(ixName)),
-			TypeName: typeTpl.Name,
+			FuncName: typeTpl.Name + "By" + pk.Name,
 			Schema:   args.Schema,
 			Type:     typeTpl,
 			Fields:   []*Field{pk},

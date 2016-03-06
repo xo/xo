@@ -81,8 +81,7 @@ go build ./models
 The following are xo's arguments and options:
 
 ```
-$ xo -h
-usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--template-path TEMPLATE-PATH] DSN
+usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--use-index-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] DSN
 
 positional arguments:
   dsn                    data source name
@@ -106,6 +105,8 @@ options:
                          Go type to assign to unsigned integers [default: uint]
   --include INCLUDE      include type(s)
   --exclude EXCLUDE      exclude type(s)
+  --use-index-names, -j
+                         use index names as defined in schema for generated Go code
   --query-mode, -N       enable query mode
   --query QUERY, -Q QUERY
                          query to generate Go type and func from
@@ -115,13 +116,19 @@ options:
                          query's generated Go func name
   --query-only-one, -1   toggle query's generated Go func to return only one result
   --query-trim, -M       toggle trimming of query whitespace in generated Go code
-  --query-strip, -B      toggle stripping '::type AS name' from query in generated Go code
+  --query-strip, -B      toggle stripping type casts from query in generated Go code
+  --query-interpolate, -I
+                         toggle query interpolation in generated Go code
   --query-type-comment QUERY-TYPE-COMMENT
                          comment for query's generated Go type
   --query-func-comment QUERY-FUNC-COMMENT
                          comment for query's generated Go func
   --query-delimiter QUERY-DELIMITER, -D QUERY-DELIMITER
                          delimiter for query's embedded Go parameters [default: %%]
+  --query-fields QUERY-FIELDS, -Z QUERY-FIELDS
+                         comma separated list of field names to scan query's results to the query's associated Go type
+  --enable-postgres-oids
+                         enable postgres oids
   --template-path TEMPLATE-PATH
                          user supplied template path
   --help, -h             display this help and exit
@@ -397,8 +404,6 @@ The following projects work with similar concepts as xo:
 
 # TODO #
 * Overhaul and better standardize type parsing
-* Add option to use index names
-* Fix name generated for indexes
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)

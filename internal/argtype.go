@@ -46,6 +46,14 @@ type ArgType struct {
 	// ExcTypes are the types to exclude.
 	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
 
+	// UseIndexNames toggles using index names.
+	//
+	// This is not enabled by default, because index names are often generated
+	// using database design software which has the nasty habit of giving
+	// non-helpful names to indexes as things like 'authors__b124214__u_idx'
+	// instead of 'authors_title_idx'.
+	UseIndexNames bool `arg:"--use-index-names,-j,help:use index names as defined in schema for generated Go code"`
+
 	// QueryMode toggles whether or not to parse a query from stdin.
 	QueryMode bool `arg:"--query-mode,-N,help:enable query mode"`
 

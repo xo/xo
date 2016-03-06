@@ -132,8 +132,7 @@ type ForeignKey struct {
 
 // Index is a template item for a index into a table.
 type Index struct {
-	Name     string
-	TypeName string
+	FuncName string
 	Schema   string
 	Type     *Type
 	Fields   []*Field

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
 )
 
@@ -127,6 +128,57 @@ func (a *ArgType) ParsePrecision(dt string) (string, int, int) {
 	}
 
 	return dt, precision, scale
+}
+
+// IndexChopSuffixRE is the regexp of index name suffixes that will be chopped off.
+var IndexChopSuffixRE = regexp.MustCompile(`(?i)_(ix|idx|index|pkey|ukey|key)$`)
+
+// fmtIndexName formats the index name.
+func fmtIndexName(ixName string, tableName string) string {
+	// chop off _ix, _idx, _index, _pkey, or _key
+	m := IndexChopSuffixRE.FindStringIndex(ixName)
+	if m != nil {
+		ixName = ixName[:m[0]]
+	}
+
+	// check tableName
+	if ixName == tableName {
+		return ""
+	}
+
+	// chop off tablename_
+	if strings.HasPrefix(ixName, tableName+"_") {
+		ixName = ixName[len(tableName)+1:]
+	}
+
+	// camel case name
+	return SnakeToCamel(ixName)
+}
+
+// BuildIndexFuncName builds the index func name for an index and its supplied
+// fields.
+func (a *ArgType) BuildIndexFuncName(ixTpl *Index) {
+	// build func name
+	funcName := ixTpl.Type.Name
+	if !ixTpl.Index.IsUnique {
+		funcName = inflector.Pluralize(ixTpl.Type.Name)
+	}
+	funcName = funcName + "By"
+
+	// add param names
+	paramNames := []string{}
+
+	ixName := fmtIndexName(ixTpl.Index.IndexName, ixTpl.Type.Table.TableName)
+	if a.UseIndexNames && ixName != "" {
+		paramNames = append(paramNames, ixName)
+	} else {
+		for _, f := range ixTpl.Fields {
+			paramNames = append(paramNames, f.Name)
+		}
+	}
+
+	// store resulting name back
+	ixTpl.FuncName = funcName + strings.Join(paramNames, "")
 }
 
 // letters for GenRandomID
