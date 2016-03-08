@@ -407,12 +407,9 @@ The following projects work with similar concepts as xo:
 * Finish support for --{incl, excl}[ude] types
 * Finish support for ignoring fields (ie, fields managed by database such as
   'modified' timestamps)
+* Write/publish template set for protobuf
 * Finish many-to-many and link table support
-* Finish porting Cond, OrCond, OrderBy, Limit, GroupBy, Having
-* Add examples for Cond's
 * Finish example and code for generated *Slice types
-* Add proper parameterization around generated code blocks (important for
-  "extras" like Cond's)
 * Add example for many-to-many relationships and link tables
 * Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
 * Unit tests / code coverage / continuous builds for binary package releases
@@ -422,10 +419,7 @@ The following projects work with similar concepts as xo:
 * Add support for JSON types (json, jsonb on PostgreSQL, json on MySQL)
 * Add support for GIN index queries (PostgreSQL)
 * Add introspection for CASCADE relationships and generate DeleteCascade()'s
-  (disabled by default)
-* Publish template set for *at least* one other language/framework
-  [Doctrine/jOOQ/ActiveRecord/...?]
-* Add more links to other SQL code generation libs
+  (disabled by default) [is this even necessary?]
 * Add support for handling multiple custom queries at the same time [is this
   even necessary?]
 * Add ability to read *.sql files with 'markup' to parse multiple queries (a la
