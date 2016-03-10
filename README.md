@@ -28,10 +28,9 @@ The following is a matrix of the supported features for each database:
 | Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
 | Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
 | Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Link Tables  |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Stored Procs |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |                  |
-| ENUM types   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |                  |
-| Custom types |:white_check_mark:|                  |:white_check_mark:|                     |                  |
+| Stored Procs |:white_check_mark:|:white_check_mark:|                  |                     |                  |
+| ENUM types   |:white_check_mark:|:white_check_mark:|                  |                     |                  |
+| Custom types |:white_check_mark:|                  |                  |                     |                  |
 
 # Installation #
 
