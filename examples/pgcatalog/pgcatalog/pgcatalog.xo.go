@@ -11249,8 +11249,8 @@ func FmgrInternalValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
 	return ret, nil
 }
 
-// FmgrSqlValidator calls the stored procedure 'pg_catalog.fmgr_sql_validator(oid) void' on db.
-func FmgrSqlValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+// FmgrSQLValidator calls the stored procedure 'pg_catalog.fmgr_sql_validator(oid) void' on db.
+func FmgrSQLValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
 	var err error
 
 	// sql query
