@@ -258,7 +258,7 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	return models.PgTableColumns(args.DB, schema, xoid, false)
 }
 
-// PgIndexColumnList returns the column list for an index.
+// PgIndexColumns returns the column list for an index.
 func PgIndexColumns(db models.XODB, schema string, table string, index string) ([]*models.IndexColumn, error) {
 	var err error
 
