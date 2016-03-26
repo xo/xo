@@ -12,11 +12,11 @@ import (
 type BookType uint16
 
 const (
-	// FictionBookType is the 'FICTION' BookType.
-	FictionBookType = BookType(1)
+	// BookTypeFiction is the 'FICTION' BookType.
+	BookTypeFiction = BookType(1)
 
-	// NonfictionBookType is the 'NONFICTION' BookType.
-	NonfictionBookType = BookType(2)
+	// BookTypeNonfiction is the 'NONFICTION' BookType.
+	BookTypeNonfiction = BookType(2)
 )
 
 // String returns the string value of the BookType.
@@ -24,10 +24,10 @@ func (bt BookType) String() string {
 	var enumVal string
 
 	switch bt {
-	case FictionBookType:
+	case BookTypeFiction:
 		enumVal = "FICTION"
 
-	case NonfictionBookType:
+	case BookTypeNonfiction:
 		enumVal = "NONFICTION"
 	}
 
@@ -43,10 +43,10 @@ func (bt BookType) MarshalText() ([]byte, error) {
 func (bt *BookType) UnmarshalText(text []byte) error {
 	switch string(text) {
 	case "FICTION":
-		*bt = FictionBookType
+		*bt = BookTypeFiction
 
 	case "NONFICTION":
-		*bt = NonfictionBookType
+		*bt = BookTypeNonfiction
 
 	default:
 		return errors.New("invalid BookType")

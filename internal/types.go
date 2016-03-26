@@ -79,11 +79,12 @@ type EnumValue struct {
 
 // Enum is a template item for a enum.
 type Enum struct {
-	Name    string
-	Schema  string
-	Values  []*EnumValue
-	Enum    *models.Enum
-	Comment string
+	Name              string
+	Schema            string
+	Values            []*EnumValue
+	Enum              *models.Enum
+	Comment           string
+	ReverseConstNames bool
 }
 
 // Proc is a template item for a stored procedure.

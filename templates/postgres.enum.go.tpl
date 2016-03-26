@@ -1,11 +1,12 @@
 {{- $type := .Name -}}
+{{- $reverseNames := .ReverseConstNames -}}
 // {{ $type }} is the '{{ .Enum.EnumName }}' enum type from schema '{{ .Schema  }}'.
 type {{ $type }} uint16
 
 const (
 {{- range .Values }}
-	// {{ .Name }}{{ $type }} is the '{{ .Val.EnumValue }}' {{ $type }}.
-	{{ .Name }}{{ $type }} = {{ $type }}({{ .Val.ConstValue }})
+	// {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }} is the '{{ .Val.EnumValue }}' {{ $type }}.
+	{{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }} = {{ $type }}({{ .Val.ConstValue }})
 {{ end -}}
 )
 
@@ -15,7 +16,7 @@ func ({{ shortname $type }} {{ $type }}) String() string {
 
 	switch {{ shortname $type }} {
 {{- range .Values }}
-	case {{ .Name }}{{ $type }}:
+	case {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }}:
 		enumVal = "{{ .Val.EnumValue }}"
 {{ end -}}
 	}
@@ -33,7 +34,7 @@ func ({{ shortname $type }} *{{ $type }}) UnmarshalText(text []byte) error {
 	switch string(text)	{
 {{- range .Values }}
 	case "{{ .Val.EnumValue }}":
-		*{{ shortname $type }} = {{ .Name }}{{ $type }}
+		*{{ shortname $type }} = {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }}
 {{ end }}
 
 	default:

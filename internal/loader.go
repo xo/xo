@@ -333,10 +333,11 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 	enumMap := map[string]*Enum{}
 	for _, e := range enumList {
 		enumTpl := &Enum{
-			Name:   inflector.Singularize(SnakeToCamel(e.EnumName)),
-			Schema: args.Schema,
-			Values: []*EnumValue{},
-			Enum:   e,
+			Name:              inflector.Singularize(SnakeToCamel(e.EnumName)),
+			Schema:            args.Schema,
+			Values:            []*EnumValue{},
+			Enum:              e,
+			ReverseConstNames: args.UseReversedEnumConstNames,
 		}
 
 		err = tl.LoadEnumValues(args, enumTpl)

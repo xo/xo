@@ -54,6 +54,9 @@ type ArgType struct {
 	// instead of 'authors_title_idx'.
 	UseIndexNames bool `arg:"--use-index-names,-j,help:use index names as defined in schema for generated Go code"`
 
+	// UseReversedEnumConstNames toggles using reversed enum names.
+	UseReversedEnumConstNames bool `arg:"--use-reversed-enum-const-names,-R,help:use reversed enum names for generated consts in Go code"`
+
 	// QueryMode toggles whether or not to parse a query from stdin.
 	QueryMode bool `arg:"--query-mode,-N,help:enable query mode"`
 
