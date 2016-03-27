@@ -266,11 +266,11 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) { /* ... */ 
 type BookType uint16
 
 const (
-    // FictionBookType is the book_type for 'FICTION'.
-    FictionBookType = BookType(1)
+    // BookTypeFiction is the book_type for 'FICTION'.
+    BookTypeFiction = BookType(1)
 
-    // NonfictionBookType is the book_type for 'NONFICTION'.
-    NonfictionBookType = BookType(2)
+    // BookTypeNonfiction is the book_type for 'NONFICTION'.
+    BookTypeNonfiction = BookType(2)
 )
 
 // String returns the string value of the BookType.
