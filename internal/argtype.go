@@ -144,8 +144,8 @@ type ArgType struct {
 // NewDefaultArgs returns the default arguments.
 func NewDefaultArgs() *ArgType {
 	return &ArgType{
-		ModifiedFieldName:   "Modified",
-		CreatedFieldName:	 "Created",
+		ModifiedFieldName:   "modified",
+		CreatedFieldName:	 "created",
 		Suffix:              ".xo.go",
 		Int32Type:           "int",
 		Uint32Type:          "uint",

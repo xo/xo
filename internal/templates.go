@@ -61,8 +61,9 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 			loaderType = "oracle."
 		} else {
 			// For now, AutoDates only supports type templates in mysql
+			// enable for other templates/schemes by changing this conditional
 			if a.LoaderType == "mysql" && a.AutoDates && tt.String() == "type"{
-				loaderType = "autodate.mysql."
+				loaderType = "autodate." + LoaderType + "."
 			} else {
 				loaderType = a.LoaderType + "."
 			}

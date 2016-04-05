@@ -248,6 +248,10 @@ func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...stri
 
 // fieldnameswithtime_insert
 func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, ignoreNames ...string) string {
+	// grab values to save lookups
+	modName := a.ModifiedFieldName
+	createName := a.CreatedFieldName
+	
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
@@ -264,7 +268,9 @@ func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, igno
 			str = str + ", "
 		}
 		
-		if f.Name == a.ModifiedFieldName || f.Name == a.CreatedFieldName{
+		// grab columnName into a local
+		colName := f.Col.ColumnName
+		if colName == modName || colName == createName {
 			str = str + "mysql.NullTime{time.Now(), true}"
 		} else {
 			str = str + prefix + "." + f.Name
@@ -277,6 +283,9 @@ func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, igno
 
 // fieldnameswithtime_update
 func (a *ArgType) fieldnameswithtime_update(fields []*Field, prefix string, ignoreNames ...string) string {
+	// grab values to save lookups
+	modName := a.ModifiedFieldName
+	
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
@@ -293,7 +302,7 @@ func (a *ArgType) fieldnameswithtime_update(fields []*Field, prefix string, igno
 			str = str + ", "
 		}
 		
-		if f.Name == a.ModifiedFieldName {
+		if f.Col.ColumnName == modName {
 			str = str + "mysql.NullTime{time.Now(), true}"
 		} else {
 			str = str + prefix + "." + f.Name
