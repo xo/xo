@@ -265,7 +265,7 @@ func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, igno
 		}
 		
 		if f.Name == "Modified" || f.Name == "Created"{
-			str = str + "pq.NullTime{time.Now(), true}"
+			str = str + "mysql.NullTime{time.Now(), true}"
 		} else {
 			str = str + prefix + "." + f.Name
 		}
@@ -294,7 +294,7 @@ func (a *ArgType) fieldnameswithtime_update(fields []*Field, prefix string, igno
 		}
 		
 		if f.Name == "Modified" {
-			str = str + "pq.NullTime{time.Now(), true}"
+			str = str + "mysql.NullTime{time.Now(), true}"
 		} else {
 			str = str + prefix + "." + f.Name
 		}

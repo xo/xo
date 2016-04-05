@@ -183,8 +183,8 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "timestamp", "datetime":
 		typ = "*time.Time"
 		if nullable {
-			nilVal = "pq.NullTime{}"
-			typ = "pq.NullTime"
+			nilVal = "mysql.NullTime{}"
+			typ = "mysql.NullTime"
 		}
 
 	default:
