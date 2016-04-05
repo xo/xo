@@ -4,8 +4,16 @@ import "database/sql"
 
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
+	// START mccolljr argument additions
 	// AutoDates enables automatic population of DateTime fields named created and modified (mysql only)
 	AutoDates bool `arg:"--autodates,help:enables automatic population of DateTime fields named created and modified (mysql only)"`
+	
+	// ModifiedFieldName and CreatedFieldName support AutoDates,
+	// and allow you to specify the names of the fields to be handled
+	ModifiedFieldName string `arg:"--modified,help:field name to treat as the modification time (autodates)"`
+	CreatedFieldName string `arg:"--created,help:field name to treat as the creation time (autodates)"`
+	
+	// END mccolljr argument additions
 	
 	// Verbose enables verbose output.
 	Verbose bool `arg:"-v,help:toggle verbose"`
@@ -136,6 +144,8 @@ type ArgType struct {
 // NewDefaultArgs returns the default arguments.
 func NewDefaultArgs() *ArgType {
 	return &ArgType{
+		ModifiedFieldName:   "Modified",
+		CreatedFieldName:	 "Created",
 		Suffix:              ".xo.go",
 		Int32Type:           "int",
 		Uint32Type:          "uint",
