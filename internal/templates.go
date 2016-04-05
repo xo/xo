@@ -8,7 +8,7 @@ import (
 	"path"
 	"text/template"
 
-	"github.com/knq/xo/templates"
+	"github.com/mccolljr/xo/templates"
 )
 
 // TemplateLoader loads templates from the specified name.
@@ -60,7 +60,12 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 			// 'oracle' as valid protocol
 			loaderType = "oracle."
 		} else {
-			loaderType = a.LoaderType + "."
+			// For now, AutoDates only supports type templates in mysql
+			if a.LoaderType == "mysql" && a.AutoDates && tt.String() == "type"{
+				loaderType = "autodate.mysql."
+			} else {
+				loaderType = a.LoaderType + "."
+			}
 		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)

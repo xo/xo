@@ -17,6 +17,8 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"colprefixnames": a.colprefixnames,
 		"colvals":        a.colvals,
 		"fieldnames":     a.fieldnames,
+		"fieldnameswithtime_insert": a.fieldnameswithtime_insert,
+		"fieldnameswithtime_update": a.fieldnameswithtime_update,
 		"goparamlist":    a.goparamlist,
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
@@ -161,7 +163,7 @@ func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...stri
 //
 // Used to present a comma separated list of column names, with a prefix, ie in
 // a sql select, or update. (ie, t.field_1, t.field_2, t.field_3, ...)
-func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string {
+func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string { // MODIFIED BY MCCOLLJR
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
@@ -170,7 +172,7 @@ func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...
 	str := ""
 	i := 0
 	for _, f := range fields {
-		if ignore[f.Name] {
+		if ignore[f.Name]{
 			continue
 		}
 
@@ -227,19 +229,82 @@ func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...stri
 	str := ""
 	i := 0
 	for _, f := range fields {
-		if ignore[f.Name] {
+		if ignore[f.Name]{
 			continue
 		}
 
 		if i != 0 {
 			str = str + ", "
 		}
+		
 		str = str + prefix + "." + f.Name
 		i++
 	}
 
 	return str
 }
+
+// Contributed by mccolljr to support autodates for mysql =====================
+
+// fieldnameswithtime_insert
+func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, ignoreNames ...string) string {
+	ignore := map[string]bool{}
+	for _, n := range ignoreNames {
+		ignore[n] = true
+	}
+
+	str := ""
+	i := 0
+	for _, f := range fields {
+		if ignore[f.Name]{
+			continue
+		}
+
+		if i != 0 {
+			str = str + ", "
+		}
+		
+		if f.Name == "Modified" || f.Name == "Created"{
+			str = str + "pq.NullTime{time.Now(), true}"
+		} else {
+			str = str + prefix + "." + f.Name
+		}
+		i++
+	}
+
+	return str
+}
+
+// fieldnameswithtime_update
+func (a *ArgType) fieldnameswithtime_update(fields []*Field, prefix string, ignoreNames ...string) string {
+	ignore := map[string]bool{}
+	for _, n := range ignoreNames {
+		ignore[n] = true
+	}
+
+	str := ""
+	i := 0
+	for _, f := range fields {
+		if ignore[f.Name]{
+			continue
+		}
+
+		if i != 0 {
+			str = str + ", "
+		}
+		
+		if f.Name == "Modified" {
+			str = str + "pq.NullTime{time.Now(), true}"
+		} else {
+			str = str + prefix + "." + f.Name
+		}
+		i++
+	}
+
+	return str
+}
+
+// END mccolljr contributions =================================================
 
 // count returns the 1-based count of fields, excluding any field name in
 // ignoreNames.

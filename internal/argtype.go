@@ -4,6 +4,9 @@ import "database/sql"
 
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
+	// AutoDates enables automatic population of DateTime fields named created and modified (mysql only)
+	AutoDates bool `arg:"--autodates,help:enables automatic population of DateTime fields named created and modified (mysql only)"`
+	
 	// Verbose enables verbose output.
 	Verbose bool `arg:"-v,help:toggle verbose"`
 
