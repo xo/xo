@@ -123,6 +123,11 @@ func processArgs(args *internal.ArgType) error {
 			return err
 		}
 	}
+	
+	// fail if we detect that AutoFields and QueryMode are being called together
+	if args.AutoFields && args.QueryMode {
+		return errors.New("AutoFields: the --autofields flag cannot be used with the --query-mode/-N flag")
+	}
 
 	// check user template path
 	if args.TemplatePath != "" {
