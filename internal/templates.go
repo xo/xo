@@ -8,7 +8,7 @@ import (
 	"path"
 	"text/template"
 
-	"github.com/mccolljr/xo/templates"
+	"github.com/knq/xo/templates"
 )
 
 // TemplateLoader loads templates from the specified name.
@@ -60,8 +60,6 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 			// 'oracle' as valid protocol
 			loaderType = "oracle."
 		} else {
-//******	// TODO: 
-			// determine if we still need separate templates for AutoFields
 			loaderType = a.LoaderType + "."
 		}
 	}

@@ -247,8 +247,6 @@ func SnakeToCamel(s string) string {
 // START mccolljr additions to utility methods
 
 func ParseAFExpression(a *ArgType, el, op string) error {
-	// TODO: validate column names against RegExp
-	
 	parts := strings.SplitN(el, "=", 2)
 	
 	if len(parts) != 2 {

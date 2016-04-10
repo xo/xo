@@ -9,7 +9,7 @@ import (
 
 	_ "gopkg.in/rana/ora.v3"
 
-	"github.com/mccolljr/xo/examples/oracle/models"
+	"github.com/knq/xo/examples/oracle/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
