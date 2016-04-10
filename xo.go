@@ -91,6 +91,13 @@ func processArgs(args *internal.ArgType) error {
 	if err != nil {
 		return err
 	}
+	
+	/* OPTIONALLY DISABLED
+	// fail if --include and --exclude are both used
+	if len(args.ExclTypes) != 0 && len(args.InclTypes) != 0 {
+		return errors.New("Strict Mode: --include and --exclude both specified")
+	}
+	// */
 
 	// determine out path
 	if args.Out == "" {

@@ -40,10 +40,10 @@ type ArgType struct {
 	// Uint32Type is the type to assign those discovered as uint32.
 	Uint32Type string `arg:"--uint32-type,-u,help:Go type to assign to unsigned integers"`
 
-	// IncTypes are the types to include.
+	// InclTypes are the types to include.
 	InclTypes []string `arg:"--include,help:include type(s)"`
 
-	// ExcTypes are the types to exclude.
+	// ExclTypes are the types to exclude.
 	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
 
 	// UseIndexNames toggles using index names.
