@@ -246,16 +246,6 @@ func SnakeToCamel(s string) string {
 
 // START mccolljr additions to utility methods
 
-// TODO: Move to the appropriate file
-var AFSupportedTypes = map[string]bool{
-	"mysql.type": true,
-}
-// END TODO
-
-func supportsAutoFields(a *ArgType, tt string) bool {
-	return true //TODO ADD FUNCTIONALITY
-}
-
 func ParseAFExpression(a *ArgType, el, op string) error {
 	// TODO: validate column names against RegExp
 	
@@ -266,7 +256,9 @@ func ParseAFExpression(a *ArgType, el, op string) error {
 	}
 	
 	a.AFExpressions[op + "." + parts[0]] = parts[1]
+	fmt.Println("AutoFields: adding automatic expression for " + op + "." + parts[0] + ": " + parts[1]);
 	
 	return nil
 }
+
 // END mccolljr additions to utility methods

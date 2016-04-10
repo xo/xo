@@ -106,9 +106,8 @@ type ArgType struct {
 	AutoFields bool `arg:"--autofields,help:enable automatic assignment of field values on operations"`
 	
 	// the following arguments support autofields
-	OnUpdate []string `arg:"-U"`
-	OnInsert []string `arg:"-I"`
-	// OnDelete []string `arg:"-D"`
+	OnUpdate []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Update"`
+	OnInsert []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Insert"`
 	
 	// -- END mccolljr argument additions
 

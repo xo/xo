@@ -198,8 +198,6 @@ func processArgs(args *internal.ArgType) error {
 			}
 		}
 	}
-	
-	fmt.Println(args.AFExpressions)
 
 	return nil
 }

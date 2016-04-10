@@ -17,6 +17,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"colprefixnames": a.colprefixnames,
 		"colvals":        a.colvals,
 		"fieldnames":     a.fieldnames,
+		"fieldnames_autofields": a.fieldnames_autofields,
 		"goparamlist":    a.goparamlist,
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
@@ -242,7 +243,7 @@ func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...stri
 	return str
 }
 
-// -- mccolljr autofields-supporting template functions START
+// -- START mccolljr autofields-supporting template functions
 
 func (a *ArgType) fieldnames_autofields(operation string, fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
@@ -261,14 +262,23 @@ func (a *ArgType) fieldnames_autofields(operation string, fields []*Field, prefi
 			str = str + ", "
 		}
 		
-		str = str + prefix + "." + f.Name
+		// determine if there is an autofield expression for this field
+		exp, ok := a.AFExpressions[operation + "." + f.Col.ColumnName]
+		if ok {
+			// if yes, we use that expression
+			str = str + exp
+		} else {
+			// otherwise, we pull the value from the struct
+			str = str + prefix + "." + f.Name
+		}
+		
 		i++
 	}
 
 	return str
 }
 
-// -- mccolljr autofields-supporting template functions END
+// -- END mccolljr autofields-supporting template functions
 
 // count returns the 1-based count of fields, excluding any field name in
 // ignoreNames.

@@ -42,8 +42,8 @@ func ({{ shortname .Name }} *{{ .Name }}) Insert(db XODB) error {
 		`)`
 
 	// run query
-	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }})
-	res, err := db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }})
+	XOLog(sqlstr, {{ fieldnames_autofields "insert" .Fields (shortname .Name) .PrimaryKey.Name }})
+	res, err := db.Exec(sqlstr, {{ fieldnames_autofields "insert" .Fields (shortname .Name) .PrimaryKey.Name }})
 	if err != nil {
 		return err
 	}
@@ -81,8 +81,8 @@ func ({{ shortname .Name }} *{{ .Name }}) Update(db XODB) error {
 		` WHERE {{ .PrimaryKey.Col.ColumnName }} = ?`
 
 	// run query
-	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
-	_, err = db.Exec(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
+	XOLog(sqlstr, {{ fieldnames_autofields "update" .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
+	_, err = db.Exec(sqlstr, {{ fieldnames_autofields "update" .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
 	return err
 }
 
