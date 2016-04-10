@@ -9,7 +9,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/mccolljr/xo/examples/postgres/models"
+	"github.com/knq/xo/examples/postgres/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

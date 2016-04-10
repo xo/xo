@@ -9,7 +9,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/mccolljr/xo/examples/sqlite3/models"
+	"github.com/knq/xo/examples/sqlite3/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

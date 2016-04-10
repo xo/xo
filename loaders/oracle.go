@@ -11,8 +11,8 @@ import (
 
 	_ "gopkg.in/rana/ora.v3"
 
-	"github.com/mccolljr/xo/internal"
-	"github.com/mccolljr/xo/models"
+	"github.com/knq/xo/internal"
+	"github.com/knq/xo/models"
 )
 
 func init() {

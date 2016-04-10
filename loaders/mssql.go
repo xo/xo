@@ -8,8 +8,8 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
-	"github.com/mccolljr/xo/internal"
-	"github.com/mccolljr/xo/models"
+	"github.com/knq/xo/internal"
+	"github.com/knq/xo/models"
 )
 
 func init() {
