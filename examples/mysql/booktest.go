@@ -9,7 +9,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/knq/xo/examples/mysql/models"
+	"github.com/mccolljr/xo/examples/mysql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

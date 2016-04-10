@@ -9,7 +9,7 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
-	"github.com/knq/xo/examples/mssql/models"
+	"github.com/mccolljr/xo/examples/mssql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

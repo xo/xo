@@ -8,8 +8,8 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/knq/xo/internal"
-	"github.com/knq/xo/models"
+	"github.com/mccolljr/xo/internal"
+	"github.com/mccolljr/xo/models"
 )
 
 func init() {
