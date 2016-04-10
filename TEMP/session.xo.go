@@ -6,6 +6,7 @@ package TEMP
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 )
@@ -49,8 +50,8 @@ func (s *Session) Insert(db XODB) error {
 		`)`
 
 	// run query
-	XOLog(sqlstr, s.Secret, s.Modified, s.Expires, s.Data)
-	res, err := db.Exec(sqlstr, s.Secret, s.Modified, s.Expires, s.Data)
+	XOLog(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 12)}, s.Data)
+	res, err := db.Exec(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 12)}, s.Data)
 	if err != nil {
 		return err
 	}
@@ -88,8 +89,8 @@ func (s *Session) Update(db XODB) error {
 		` WHERE id = ?`
 
 	// run query
-	XOLog(sqlstr, s.Secret, s.Modified, s.Expires, s.Data, s.ID)
-	_, err = db.Exec(sqlstr, s.Secret, s.Modified, s.Expires, s.Data, s.ID)
+	XOLog(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 12)}, s.Data, s.ID)
+	_, err = db.Exec(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 12)}, s.Data, s.ID)
 	return err
 }
 
