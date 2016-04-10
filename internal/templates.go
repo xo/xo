@@ -60,8 +60,6 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 			// 'oracle' as valid protocol
 			loaderType = "oracle."
 		} else {
-//******	// TODO: 
-			// determine if we still need separate templates for AutoFields
 			loaderType = a.LoaderType + "."
 		}
 	}

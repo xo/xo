@@ -162,7 +162,7 @@ func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...stri
 //
 // Used to present a comma separated list of column names, with a prefix, ie in
 // a sql select, or update. (ie, t.field_1, t.field_2, t.field_3, ...)
-func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string { // MODIFIED BY MCCOLLJR
+func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
