@@ -102,22 +102,12 @@ type ArgType struct {
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
 	
 	// -- START mccolljr argument additions
-<<<<<<< HEAD
 	// AutoFields supports the automatic generation of code to manage setting the values of certain fields at certain times
 	AutoFields bool `arg:"--autofields,help:enable automatic assignment of field values on operations"`
 	
 	// the following arguments support autofields
 	OnUpdate []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Update"`
 	OnInsert []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Insert"`
-=======
-	// AutoDates enables automatic population of DateTime fields named created and modified (mysql only)
-	AutoDates bool `arg:"--autodates,help:enables automatic population of DateTime fields named created and modified (mysql only)"`
-	
-	// ModifiedFieldName and CreatedFieldName support AutoDates,
-	// and allow you to specify the names of the fields to be handled
-	ModifiedFieldName string `arg:"--modified,help:field name to treat as the modification time (autodates)"`
-	CreatedFieldName string `arg:"--created,help:field name to treat as the creation time (autodates)"`
->>>>>>> master
 	
 	// -- END mccolljr argument additions
 
