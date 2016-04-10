@@ -60,13 +60,9 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 			// 'oracle' as valid protocol
 			loaderType = "oracle."
 		} else {
-			// For now, AutoDates only supports type templates in mysql
-			// enable for other templates/schemes by changing this conditional
-			if a.LoaderType == "mysql" && a.AutoDates && tt.String() == "type"{
-				loaderType = "autodate." + a.LoaderType + "."
-			} else {
-				loaderType = a.LoaderType + "."
-			}
+//******	// TODO: 
+			// determine if we still need separate templates for AutoFields
+			loaderType = a.LoaderType + "."
 		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)

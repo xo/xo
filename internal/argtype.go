@@ -4,17 +4,6 @@ import "database/sql"
 
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
-	// START mccolljr argument additions
-	// AutoDates enables automatic population of DateTime fields named created and modified (mysql only)
-	AutoDates bool `arg:"--autodates,help:enables automatic population of DateTime fields named created and modified (mysql only)"`
-	
-	// ModifiedFieldName and CreatedFieldName support AutoDates,
-	// and allow you to specify the names of the fields to be handled
-	ModifiedFieldName string `arg:"--modified,help:field name to treat as the modification time (autodates)"`
-	CreatedFieldName string `arg:"--created,help:field name to treat as the creation time (autodates)"`
-	
-	// END mccolljr argument additions
-	
 	// Verbose enables verbose output.
 	Verbose bool `arg:"-v,help:toggle verbose"`
 
@@ -111,7 +100,21 @@ type ArgType struct {
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
+	
+	// -- START mccolljr argument additions
+	// AutoFields supports the automatic generation of code to manage setting the values of certain fields at certain times
+	AutoFields bool `arg:"--autofields,help:enable automatic assignment of field values on operations"`
+	
+	// the following arguments support autofields
+	OnUpdate []string `arg:"-U"`
+	OnInsert []string `arg:"-I"`
+	// OnDelete []string `arg:"-D"`
+	
+	// -- END mccolljr argument additions
 
+	//AFExpressions matches <Scheme>.<ColumnName>.<Operation> to an expression, for AutoFields
+	AFExpressions map[string]string `arg:"-"`
+	
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`
 
@@ -144,8 +147,6 @@ type ArgType struct {
 // NewDefaultArgs returns the default arguments.
 func NewDefaultArgs() *ArgType {
 	return &ArgType{
-		ModifiedFieldName:   "modified",
-		CreatedFieldName:	 "created",
 		Suffix:              ".xo.go",
 		Int32Type:           "int",
 		Uint32Type:          "uint",
@@ -193,6 +194,8 @@ func NewDefaultArgs() *ArgType {
 			"Slice":       "s",
 			"StringSlice": "ss",
 		},
+		
+		AFExpressions: map[string]string{},
 	}
 }
 

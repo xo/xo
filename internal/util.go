@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"errors"
 
 	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
@@ -242,3 +243,30 @@ func SnakeToCamel(s string) string {
 
 	return snaker.SnakeToCamel(s)
 }
+
+// START mccolljr additions to utility methods
+
+// TODO: Move to the appropriate file
+var AFSupportedTypes = map[string]bool{
+	"mysql.type": true,
+}
+// END TODO
+
+func supportsAutoFields(a *ArgType, tt string) bool {
+	return true //TODO ADD FUNCTIONALITY
+}
+
+func ParseAFExpression(a *ArgType, el, op string) error {
+	// TODO: validate column names against RegExp
+	
+	parts := strings.SplitN(el, "=", 2)
+	
+	if len(parts) != 2 {
+		return errors.New("AutoFields: " + el + " isn't of the form [column name]=[expression]")
+	}
+	
+	a.AFExpressions[op + "." + parts[0]] = parts[1]
+	
+	return nil
+}
+// END mccolljr additions to utility methods

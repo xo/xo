@@ -179,6 +179,27 @@ func processArgs(args *internal.ArgType) error {
 			fmt.Printf("SQL:\n%s\nPARAMS:\n%v\n\n", s, p)
 		}
 	}
+	
+	// if autofields enabled
+	if args.AutoFields {
+		// parse expressions for columns to be auto-set on Insert operations
+		for _, val := range args.OnInsert {
+			err := internal.ParseAFExpression(args, val, "insert")
+			if err != nil {
+				return err
+			}
+		}
+		
+		// parse expressions for columns to be auto-set on Update operations
+		for _, val := range args.OnUpdate {
+			err := internal.ParseAFExpression(args, val, "update")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	
+	fmt.Println(args.AFExpressions)
 
 	return nil
 }

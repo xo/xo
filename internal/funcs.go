@@ -17,8 +17,6 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"colprefixnames": a.colprefixnames,
 		"colvals":        a.colvals,
 		"fieldnames":     a.fieldnames,
-		"fieldnameswithtime_insert": a.fieldnameswithtime_insert,
-		"fieldnameswithtime_update": a.fieldnameswithtime_update,
 		"goparamlist":    a.goparamlist,
 		"reniltype":      a.reniltype,
 		"retype":         a.retype,
@@ -244,14 +242,9 @@ func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...stri
 	return str
 }
 
-// Contributed by mccolljr to support autodates for mysql =====================
+// -- mccolljr autofields-supporting template functions START
 
-// fieldnameswithtime_insert
-func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, ignoreNames ...string) string {
-	// grab values to save lookups
-	modName := a.ModifiedFieldName
-	createName := a.CreatedFieldName
-	
+func (a *ArgType) fieldnames_autofields(operation string, fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
@@ -268,52 +261,14 @@ func (a *ArgType) fieldnameswithtime_insert(fields []*Field, prefix string, igno
 			str = str + ", "
 		}
 		
-		// grab columnName into a local
-		colName := f.Col.ColumnName
-		if colName == modName || colName == createName {
-			str = str + "mysql.NullTime{time.Now(), true}"
-		} else {
-			str = str + prefix + "." + f.Name
-		}
+		str = str + prefix + "." + f.Name
 		i++
 	}
 
 	return str
 }
 
-// fieldnameswithtime_update
-func (a *ArgType) fieldnameswithtime_update(fields []*Field, prefix string, ignoreNames ...string) string {
-	// grab values to save lookups
-	modName := a.ModifiedFieldName
-	
-	ignore := map[string]bool{}
-	for _, n := range ignoreNames {
-		ignore[n] = true
-	}
-
-	str := ""
-	i := 0
-	for _, f := range fields {
-		if ignore[f.Name]{
-			continue
-		}
-
-		if i != 0 {
-			str = str + ", "
-		}
-		
-		if f.Col.ColumnName == modName {
-			str = str + "mysql.NullTime{time.Now(), true}"
-		} else {
-			str = str + prefix + "." + f.Name
-		}
-		i++
-	}
-
-	return str
-}
-
-// END mccolljr contributions =================================================
+// -- mccolljr autofields-supporting template functions END
 
 // count returns the 1-based count of fields, excluding any field name in
 // ignoreNames.
