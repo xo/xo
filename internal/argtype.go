@@ -108,10 +108,9 @@ type ArgType struct {
 	// the following arguments support autofields
 	OnUpdate []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Update"`
 	OnInsert []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Insert"`
-	
 	// -- END mccolljr argument additions
-
-	//AFExpressions matches <Scheme>.<ColumnName>.<Operation> to an expression, for AutoFields
+	
+	//AFExpressions matches [operation].[column name] to an expression, for AutoFields
 	AFExpressions map[string]string `arg:"-"`
 	
 	// Path is the output path, as derived from Out.
