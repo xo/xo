@@ -80,7 +80,7 @@ go build ./models
 The following are xo's arguments and options:
 
 ```
-usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--use-index-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] DSN
+usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--use-index-names] [--use-reversed-enum-const-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] [--autofields] [--onupdate ONUPDATE] [--oninsert ONINSERT] DSN
 
 positional arguments:
   dsn                    data source name
@@ -106,6 +106,8 @@ options:
   --exclude EXCLUDE      exclude type(s)
   --use-index-names, -j
                          use index names as defined in schema for generated Go code
+  --use-reversed-enum-const-names, -R
+                         use reversed enum names for generated consts in Go code
   --query-mode, -N       enable query mode
   --query QUERY, -Q QUERY
                          query to generate Go type and func from
@@ -130,6 +132,9 @@ options:
                          enable postgres oids
   --template-path TEMPLATE-PATH
                          user supplied template path
+  --autofields           enable automatic assignment of field values on operations
+  --onupdate ONUPDATE    a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Update
+  --oninsert ONINSERT    a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Insert
   --help, -h             display this help and exit
 ```
 
@@ -332,6 +337,221 @@ go get -u gopkg.in/rana/ora.v3
 # install xo with oracle support enabled
 go install -tags oracle github.com/knq/xo
 ```
+
+
+# Using AutoFields #
+by @mccolljr
+## Info ##
+Originally, the code xo would generate left it up to the developer to build the 
+necessary wrapper functions in the event they needed to have columns automatically
+set to some value or expression on each `INSERT` or `UPDATE` operation.
+
+Now, we can use the `--autofields` option with `--onupdate` and/or `--oninsert`
+values to specify fields we'd like to have automatically set for either
+`INSERT` or `UPDATE` operations, like so:
+
+```sh
+xo mysql://user:pass@localhost/db --autofields \
+--oninsert [columnC]=[expressionC] \
+--onupdate [columnA]=[expressionA] [columnB]=[expressionB]
+```
+
+Please note, this functionality currently only applies to types representing
+individual tables.
+
+## Examples ##
+So how would this look in use? Let's take these two tables
+(defined for MySQL):
+```mysql
+CREATE TABLE `reservations` (
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `requester_name` VARCHAR(120) NOT NULL,
+    `created` DATETIME,
+    `modified` DATETIME
+) ENGINE=InnoDB;
+```
+```mysql
+CREATE TABLE `session` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `secret` varchar(140) NOT NULL,
+  `modified` datetime,
+  `expires` datetime,
+  `data` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+```
+
+What would using `--autofields` look like for the above table definitions?
+For the reservations table:
+```sh
+xo mysql://user:pass@localhost/db --include reservations --autofields \
+--oninsert "created=mysql.NullTime{time.Now(),true}" \
+--onupdate "modified=mysql.NullTime{time.Now(),true}"
+```
+and, for the sessions table:
+```sh
+xo mysql://user:pass@localhost/db --include session --autofields \
+--oninsert "modified=mysql.NullTime{time.Now(),true}" \
+--onupdate "modified=mysql.NullTime{time.Now(),true}" "expires=mysql.NullTime{time.Now().Add(time.Hour),true}"
+```
+The generated code:
+```go
+// Reservations code, condensed
+
+type Reservation struct {
+	ID            int            // id
+	RequesterName string         // requester_name
+	Created       mysql.NullTime // created
+	Modified      mysql.NullTime // modified
+
+	// xo fields
+	_exists, _deleted bool
+}
+
+/* ... (removed for brevity) */
+
+func (r *Reservation) Insert(db XODB) error {
+	var err error
+
+	// if already exist, bail
+	if r._exists {
+		return errors.New("insert failed: already exists")
+	}
+
+	// sql query
+	const sqlstr = `INSERT INTO c9.reservations (` +
+		`requester_name, created, modified` +
+		`) VALUES (` +
+		`?, ?, ?` +
+		`)`
+
+	// run query
+	XOLog(sqlstr, r.RequesterName, mysql.NullTime{time.Now(), true}, r.Modified)
+	res, err := db.Exec(sqlstr, r.RequesterName, mysql.NullTime{time.Now(), true}, r.Modified)
+	if err != nil {
+		return err
+	}
+
+	// retrieve id
+	id, err := res.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	// set primary key and existence
+	r.ID = int(id)
+	r._exists = true
+
+	return nil
+}
+
+func (r *Reservation) Update(db XODB) error {
+	var err error
+
+	// if doesn't exist, bail
+	if !r._exists {
+		return errors.New("update failed: does not exist")
+	}
+
+	// if deleted, bail
+	if r._deleted {
+		return errors.New("update failed: marked for deletion")
+	}
+
+	// sql query
+	const sqlstr = `UPDATE c9.reservations SET ` +
+		`requester_name = ?, created = ?, modified = ?` +
+		` WHERE id = ?`
+
+	// run query
+	XOLog(sqlstr, r.RequesterName, r.Created, mysql.NullTime{time.Now(), true}, r.ID)
+	_, err = db.Exec(sqlstr, r.RequesterName, r.Created, mysql.NullTime{time.Now(), true}, r.ID)
+	return err
+}
+
+/* ... (removed for brevity) */
+```
+
+```go
+// Session code, condensed
+
+type Session struct {
+	ID       int            // id
+	Secret   string         // secret
+	Modified mysql.NullTime // modified
+	Expires  mysql.NullTime // expires
+	Data     sql.NullString // data
+
+	_exists, _deleted bool
+}
+
+/* ... (removed for brevity) */
+
+func (s *Session) Insert(db XODB) error {
+	var err error
+
+	// if already exist, bail
+	if s._exists {
+		return errors.New("insert failed: already exists")
+	}
+
+	// sql query
+	const sqlstr = `INSERT INTO c9.session (` +
+		`secret, modified, expires, data` +
+		`) VALUES (` +
+		`?, ?, ?, ?` +
+		`)`
+
+	// run query
+	XOLog(sqlstr, s.Secret, mysql.NullTime{time.Now(),true}, s.Expires, s.Data)
+	res, err := db.Exec(sqlstr, s.Secret, mysql.NullTime{time.Now(),true}, s.Expires, s.Data)
+	if err != nil {
+		return err
+	}
+
+	// retrieve id
+	id, err := res.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	// set primary key and existence
+	s.ID = int(id)
+	s._exists = true
+
+	return nil
+}
+
+// Update updates the Session in the database.
+func (s *Session) Update(db XODB) error {
+	var err error
+
+	// if doesn't exist, bail
+	if !s._exists {
+		return errors.New("update failed: does not exist")
+	}
+
+	// if deleted, bail
+	if s._deleted {
+		return errors.New("update failed: marked for deletion")
+	}
+
+	// sql query
+	const sqlstr = `UPDATE c9.session SET ` +
+		`secret = ?, modified = ?, expires = ?, data = ?` +
+		` WHERE id = ?`
+
+	// run query 
+	XOLog(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 24), true}, s.Data, s.ID)
+	_, err = db.Exec(sqlstr, s.Secret, mysql.NullTime{time.Now(), true}, mysql.NullTime{time.Now().Add(time.Hour * 24), true}, s.Data, s.ID)
+	return err
+}
+
+/* ... (removed for brevity) */
+```
+
+This definitely doesn't cover all possible use cases for program-managed columns,
+but it's a start and as feedback comes in, it will continue to improve.
 
 # Design, Origin, Philosophy, and History #
 

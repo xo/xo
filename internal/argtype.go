@@ -40,10 +40,10 @@ type ArgType struct {
 	// Uint32Type is the type to assign those discovered as uint32.
 	Uint32Type string `arg:"--uint32-type,-u,help:Go type to assign to unsigned integers"`
 
-	// IncTypes are the types to include.
+	// InclTypes are the types to include.
 	InclTypes []string `arg:"--include,help:include type(s)"`
 
-	// ExcTypes are the types to exclude.
+	// ExclTypes are the types to exclude.
 	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
 
 	// UseIndexNames toggles using index names.
@@ -100,7 +100,19 @@ type ArgType struct {
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
-
+	
+	// -- START mccolljr argument additions
+	// AutoFields supports the automatic generation of code to manage setting the values of certain fields at certain times
+	AutoFields bool `arg:"--autofields,help:enable automatic assignment of field values on operations"`
+	
+	// the following arguments support autofields
+	OnUpdate []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Update"`
+	OnInsert []string `arg:"help:a collection of [column name]=[expression] where [expression] is the go code used to set the value of [column name] on Insert"`
+	// -- END mccolljr argument additions
+	
+	//AFExpressions matches [operation].[column name] to an expression, for AutoFields
+	AFExpressions map[string]string `arg:"-"`
+	
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`
 
@@ -180,6 +192,8 @@ func NewDefaultArgs() *ArgType {
 			"Slice":       "s",
 			"StringSlice": "ss",
 		},
+		
+		AFExpressions: map[string]string{},
 	}
 }
 

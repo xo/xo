@@ -91,6 +91,13 @@ func processArgs(args *internal.ArgType) error {
 	if err != nil {
 		return err
 	}
+	
+	/* OPTIONALLY DISABLED
+	// fail if --include and --exclude are both used
+	if len(args.ExclTypes) != 0 && len(args.InclTypes) != 0 {
+		return errors.New("Strict Mode: --include and --exclude both specified")
+	}
+	// */
 
 	// determine out path
 	if args.Out == "" {
@@ -122,6 +129,11 @@ func processArgs(args *internal.ArgType) error {
 		} else {
 			return err
 		}
+	}
+	
+	// fail if we detect that AutoFields and QueryMode are being called together
+	if args.AutoFields && args.QueryMode {
+		return errors.New("AutoFields: the --autofields flag cannot be used with the --query-mode/-N flag")
 	}
 
 	// check user template path
@@ -177,6 +189,25 @@ func processArgs(args *internal.ArgType) error {
 	if args.Verbose {
 		models.XOLog = func(s string, p ...interface{}) {
 			fmt.Printf("SQL:\n%s\nPARAMS:\n%v\n\n", s, p)
+		}
+	}
+	
+	// if autofields enabled
+	if args.AutoFields {
+		// parse expressions for columns to be auto-set on Insert operations
+		for _, val := range args.OnInsert {
+			err := internal.ParseAFExpression(args, val, "insert")
+			if err != nil {
+				return err
+			}
+		}
+		
+		// parse expressions for columns to be auto-set on Update operations
+		for _, val := range args.OnUpdate {
+			err := internal.ParseAFExpression(args, val, "update")
+			if err != nil {
+				return err
+			}
 		}
 	}
 

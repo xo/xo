@@ -486,9 +486,28 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 		return nil, err
 	}
 
+	// load incl, excl types and counts before parsing tables to types
+	inclTypeString := "," + strings.Join(args.InclTypes, ",") + ","
+	inclTypeCount  := len(args.InclTypes)
+	exclTypeString := "," + strings.Join(args.ExclTypes, ",") + ","
+	exclTypeCount  := len(args.ExclTypes)
+	
 	// tables
 	tableMap := make(map[string]*Type)
 	for _, ti := range tableList {
+		
+		// build string for comparison ",[table name],"
+		tiCompareString := "," + ti.TableName + ","
+		
+		// check for exclusion/inclusion of types
+		if exclTypeCount != 0 && strings.Contains(exclTypeString, tiCompareString){
+			fmt.Println("Skipping type " + ti.TableName + ", excluded")
+			continue
+		} else if inclTypeCount != 0 && !strings.Contains(inclTypeString, tiCompareString) {
+			fmt.Println("Skipping type " + ti.TableName + ", not included")
+			continue
+		}
+		
 		// create template
 		typeTpl := &Type{
 			Name:    inflector.Singularize(SnakeToCamel(strings.ToLower(ti.TableName))),
@@ -497,7 +516,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 			Fields:  []*Field{},
 			Table:   ti,
 		}
-
+		
 		// process columns
 		err = tl.LoadColumns(args, typeTpl)
 		if err != nil {
