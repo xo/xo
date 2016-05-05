@@ -562,6 +562,11 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type) (
 		}
 	}
 
+	// determine foreign key names
+	for _, fk := range fkMap {
+		fk.Name = args.ForeignKeyName(fkMap, fk)
+	}
+
 	// generate templates
 	for _, fk := range fkMap {
 		err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.Name, fk.ForeignKey.ForeignKeyName, fk)

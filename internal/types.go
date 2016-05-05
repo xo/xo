@@ -121,7 +121,7 @@ type Type struct {
 
 // ForeignKey is a template item for a foreign relationship on a table.
 type ForeignKey struct {
-	/*Name       string*/
+	Name       string
 	Schema     string
 	Type       *Type
 	Field      *Field

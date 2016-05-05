@@ -46,6 +46,9 @@ type ArgType struct {
 	// ExcTypes are the types to exclude.
 	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
 
+	// ForeignKeyMode is the foreign key mode for generating foreign key names.
+	ForeignKeyMode *FkMode `arg:"--fk-mode,-k,help:sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]"`
+
 	// UseIndexNames toggles using index names.
 	//
 	// This is not enabled by default, because index names are often generated
@@ -132,10 +135,13 @@ type ArgType struct {
 
 // NewDefaultArgs returns the default arguments.
 func NewDefaultArgs() *ArgType {
+	fkMode := FkModeSmart
+
 	return &ArgType{
 		Suffix:              ".xo.go",
 		Int32Type:           "int",
 		Uint32Type:          "uint",
+		ForeignKeyMode:      &fkMode,
 		QueryParamDelimiter: "%%",
 
 		// KnownTypeMap is the collection of known Go types.
