@@ -76,7 +76,8 @@ func (a *ArgType) reniltype(typ string) string {
 
 // shortname checks the passed type against the ShortNameTypeMap and returns
 // the value for it. If the type is not found, then the value is calculated and
-// stored in the ShortNameTypeMap for use in the future.
+// stored in the ShortNameTypeMap for use in the future. Also checks against
+// go's reserved names.
 func (a *ArgType) shortname(typ string) string {
 	var v string
 	var ok bool
@@ -91,6 +92,11 @@ func (a *ArgType) shortname(typ string) string {
 			}
 		}
 		v = strings.Join(u, "")
+
+		// check go reserved names
+		if n, ok := goReservedNames[v]; ok {
+			v = n
+		}
 
 		// store back in short name map
 		a.ShortNameTypeMap[typ] = v
