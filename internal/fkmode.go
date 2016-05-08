@@ -85,13 +85,14 @@ func fkName(mode FkMode, fkMap map[string]*ForeignKey, fk *ForeignKey) string {
 	}
 
 	// mode is FkModeSmart
-	// look for other foreign keys with same parent name
+	// inspect all foreign keys and use FkModeField if conflict found
 	for _, f := range fkMap {
-		if f != fk && fk.RefType.Name == f.RefType.Name {
+		if fk != f && fk.Type.Name == f.Type.Name && fk.RefType.Name == f.RefType.Name {
 			return fkName(FkModeField, fkMap, fk)
 		}
 	}
 
+	// no conflict, so use FkModeParent
 	return fkName(FkModeParent, fkMap, fk)
 }
 
