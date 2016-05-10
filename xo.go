@@ -193,21 +193,20 @@ func openDB(args *internal.ArgType) error {
 		return err
 	}
 
+	args.LoaderType = u.Driver
+
 	// grab loader
-	loader, ok := internal.SchemaLoaders[u.Driver]
+	var ok bool
+	args.Loader, ok = internal.SchemaLoaders[u.Driver]
 	if !ok {
 		return errors.New("unsupported database type")
 	}
 
 	// open database connection
-	db, err := sql.Open(u.Driver, u.DSN)
+	args.DB, err = sql.Open(u.Driver, u.DSN)
 	if err != nil {
 		return err
 	}
-
-	args.LoaderType = u.Driver
-	args.Loader = loader
-	args.DB = db
 
 	return nil
 }
