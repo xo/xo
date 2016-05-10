@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -17,6 +16,7 @@ import (
 
 	"github.com/alexflint/go-arg"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/internal"
 	_ "github.com/knq/xo/loaders"
 	"github.com/knq/xo/models"
@@ -188,35 +188,24 @@ func openDB(args *internal.ArgType) error {
 	var err error
 
 	// parse dsn
-	u, err := url.Parse(args.DSN)
+	u, err := dburl.Parse(args.DSN)
 	if err != nil {
 		return err
 	}
-	if u.Scheme == "" {
-		return errors.New("invalid dsn")
-	}
 
-	var dbtype, connStr string
-	var loader internal.Loader
-	var ok bool
-
-	// find schema loader
-	for dbtype, loader = range internal.SchemaLoaders {
-		if connStr, ok = loader.IsSupported(u); ok {
-			break
-		}
-	}
+	// grab loader
+	loader, ok := internal.SchemaLoaders[u.Driver]
 	if !ok {
-		return errors.New("unknown scheme in dsn")
+		return errors.New("unsupported database type")
 	}
 
-	// open database
-	db, err := sql.Open(dbtype, connStr)
+	// open database connection
+	db, err := sql.Open(u.Driver, u.DSN)
 	if err != nil {
 		return err
 	}
 
-	args.LoaderType = dbtype
+	args.LoaderType = u.Driver
 	args.Loader = loader
 	args.DB = db
 

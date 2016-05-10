@@ -3,7 +3,6 @@ package internal
 import (
 	"errors"
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -15,11 +14,6 @@ import (
 // Loader is the common interface for database drivers that can generate code
 // from a database schema.
 type Loader interface {
-	// IsSupported processes the passed url.URL, returning the sql.Open
-	// driverName and dataSourceName and whether or not the Loader supports the
-	// scheme in the url.
-	IsSupported(*url.URL) (string, bool)
-
 	// NthParam returns the 0-based Nth param for the Loader.
 	NthParam(i int) string
 
@@ -47,8 +41,6 @@ var SchemaLoaders = map[string]Loader{}
 // TypeLoader provides a common Loader implementation used by the built in
 // schema/query loaders.
 type TypeLoader struct {
-	Schemes         []string
-	ProcessDSN      func(*url.URL, string) string
 	ParamN          func(int) string
 	MaskFunc        func() string
 	ProcessRelkind  func(RelType) string
@@ -65,45 +57,6 @@ type TypeLoader struct {
 	IndexColumnList func(models.XODB, string, string, string) ([]*models.IndexColumn, error)
 	QueryStrip      func([]string, []string)
 	QueryColumnList func(*ArgType, []string) ([]*models.Column, error)
-}
-
-// IsSupported processes the passed url.URL, returning the sql.Open driverName
-// and dataSourceName and whether or not the Loader supports the scheme in the
-// url.
-func (tl TypeLoader) IsSupported(u *url.URL) (string, bool) {
-	uscheme := strings.ToLower(u.Scheme)
-	protocol := "tcp"
-
-	// check if +unix or whatever is in the scheme
-	if strings.Contains(uscheme, "+") {
-		p := strings.SplitN(uscheme, "+", 2)
-		uscheme = p[0]
-		protocol = p[1]
-	}
-
-	// determine if this type loader works for the url scheme
-	var found bool
-	for _, s := range tl.Schemes {
-		if uscheme == strings.ToLower(s) {
-			found = true
-			break
-		}
-	}
-
-	// bail if not found
-	if !found {
-		return "", false
-	}
-
-	// fix scheme
-	u.Scheme = tl.Schemes[0]
-
-	// process dsn if func is non-nil
-	if tl.ProcessDSN != nil {
-		return tl.ProcessDSN(u, protocol), true
-	}
-
-	return u.String(), true
 }
 
 // NthParam satisifies Loader's NthParam.

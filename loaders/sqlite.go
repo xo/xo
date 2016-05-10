@@ -1,8 +1,6 @@
 package loaders
 
 import (
-	"net/url"
-	"path"
 	"regexp"
 	"strings"
 
@@ -14,8 +12,6 @@ import (
 
 func init() {
 	internal.SchemaLoaders["sqlite3"] = internal.TypeLoader{
-		Schemes:        []string{"sqlite3", "sqlite", "file", "sq"},
-		ProcessDSN:     SqProcessDSN,
 		ProcessRelkind: SqRelkind,
 		ParamN:         func(int) string { return "?" },
 		MaskFunc:       func() string { return "?" },
@@ -37,20 +33,6 @@ func init() {
 		},
 		QueryColumnList: SqQueryColumns,
 	}
-}
-
-// SqProcessDSN processes a sqlite DSN.
-func SqProcessDSN(u *url.URL, protocol string) string {
-	p := u.Opaque
-	if u.Path != "" {
-		p = u.Path
-	}
-
-	if u.Host != "" && u.Host != "localhost" {
-		p = path.Join(u.Host, p)
-	}
-
-	return p + u.Query().Encode()
 }
 
 // SqRelkind returns the sqlite string representation for RelType.

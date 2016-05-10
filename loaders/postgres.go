@@ -14,7 +14,6 @@ import (
 
 func init() {
 	internal.SchemaLoaders["postgres"] = internal.TypeLoader{
-		Schemes:        []string{"postgres", "postgresql", "pgsql", "pg"},
 		ProcessRelkind: PgRelkind,
 		Schema:         func(*internal.ArgType) (string, error) { return "public", nil },
 		ParseType:      PgParseType,

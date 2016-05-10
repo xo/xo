@@ -1,9 +1,6 @@
 package loaders
 
 import (
-	"fmt"
-	"net/url"
-	"strconv"
 	"strings"
 
 	_ "github.com/denisenkom/go-mssqldb"
@@ -14,8 +11,6 @@ import (
 
 func init() {
 	internal.SchemaLoaders["mssql"] = internal.TypeLoader{
-		Schemes:        []string{"mssql", "sqlserver", "ms"},
-		ProcessDSN:     MsProcessDSN,
 		MaskFunc:       func() string { return "$%d" },
 		ProcessRelkind: MsRelkind,
 		Schema:         MsSchema,
@@ -31,44 +26,6 @@ func init() {
 		IndexColumnList: models.MsIndexColumns,
 		QueryColumnList: MsQueryColumns,
 	}
-}
-
-// MsProcessDSN processes a mssql DSN.
-func MsProcessDSN(u *url.URL, protocol string) string {
-	var err error
-
-	// build host or domain socket
-	host := u.Host
-	port := 1433
-	dbname := u.Path[1:]
-
-	// read port if present
-	pos := strings.Index(host, ":")
-	if pos != -1 {
-		port, err = strconv.Atoi(host[pos+1:])
-		if err != nil {
-			panic("invalid port")
-		}
-		host = host[:pos]
-	}
-
-	// format dsn
-	dsn := fmt.Sprintf("server=%s;port=%d;database=%s", host, port, dbname)
-
-	// add user/pass
-	if user := u.User.Username(); len(user) > 0 {
-		dsn = dsn + ";user id=" + user
-	}
-	if pass, ok := u.User.Password(); ok {
-		dsn = dsn + ";password=" + pass
-	}
-
-	// add params
-	for k, v := range u.Query() {
-		dsn = dsn + ";" + k + "=" + v[0]
-	}
-
-	return dsn
 }
 
 // MsSchema retrieves the name of the current schema.

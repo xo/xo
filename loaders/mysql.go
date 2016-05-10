@@ -1,9 +1,6 @@
 package loaders
 
 import (
-	"fmt"
-	"net/url"
-	"path"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -14,8 +11,6 @@ import (
 
 func init() {
 	internal.SchemaLoaders["mysql"] = internal.TypeLoader{
-		Schemes:         []string{"mysql", "mariadb", "maria", "percona", "aurora", "my"},
-		ProcessDSN:      MyProcessDSN,
 		ParamN:          func(int) string { return "?" },
 		MaskFunc:        func() string { return "?" },
 		ProcessRelkind:  MyRelkind,
@@ -32,45 +27,6 @@ func init() {
 		IndexColumnList: models.MyIndexColumns,
 		QueryColumnList: MyQueryColumns,
 	}
-}
-
-// MyProcessDSN processes a mysql DSN.
-func MyProcessDSN(u *url.URL, protocol string) string {
-	// build host or domain socket
-	host := u.Host
-	dbname := u.Path[1:]
-	if protocol == "unix" {
-		host = path.Join(u.Host, path.Dir(u.Path))
-		dbname = path.Base(u.Path)
-	} else if !strings.Contains(host, ":") {
-		// append default port
-		host = host + ":3306"
-	}
-
-	// build user/pass
-	userinfo := ""
-	if un := u.User.Username(); len(un) > 0 {
-		userinfo = un
-		if up, ok := u.User.Password(); ok {
-			userinfo = userinfo + ":" + up
-		}
-	}
-
-	// build params
-	params := u.Query().Encode()
-	if len(params) > 0 {
-		params = "?" + params
-	}
-
-	// format
-	return fmt.Sprintf(
-		"%s@%s(%s)/%s%s",
-		userinfo,
-		protocol,
-		host,
-		dbname,
-		params,
-	)
 }
 
 // MySchema retrieves the name of the current schema.

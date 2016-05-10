@@ -4,7 +4,6 @@ package loaders
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -17,8 +16,6 @@ import (
 
 func init() {
 	internal.SchemaLoaders["ora"] = internal.TypeLoader{
-		Schemes:        []string{"ora", "oracle", "oci8", "oci", "or"},
-		ProcessDSN:     OrProcessDSN,
 		ParamN:         func(i int) string { return fmt.Sprintf(":%d", i+1) },
 		MaskFunc:       func() string { return ":%d" },
 		ProcessRelkind: OrRelkind,
@@ -49,30 +46,6 @@ func OrRelkind(relType internal.RelType) string {
 		panic("unsupported RelType")
 	}
 	return s
-}
-
-// OrProcessDSN processes a oracle DSN.
-func OrProcessDSN(u *url.URL, protocol string) string {
-	// build host or domain socket
-	host := u.Host
-	dbname := u.Path[1:]
-
-	// build user/pass
-	userinfo := ""
-	if un := u.User.Username(); len(un) > 0 {
-		userinfo = un
-		if up, ok := u.User.Password(); ok {
-			userinfo = userinfo + "/" + up
-		}
-	}
-
-	// format
-	return fmt.Sprintf(
-		"%s@%s/%s",
-		userinfo,
-		host,
-		dbname,
-	)
 }
 
 // OrSchema retrieves the name of the current schema.
