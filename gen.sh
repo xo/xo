@@ -139,7 +139,7 @@ FROM pg_index i
   JOIN ONLY pg_class c ON c.oid = i.indrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
-WHERE n.nspname = %%schema string%% AND c.relname = %%table string%%
+WHERE i.indkey <> '0' AND n.nspname = %%schema string%% AND c.relname = %%table string%%
 ENDSQL
 
 # postgres index column list query
@@ -154,7 +154,7 @@ FROM pg_index i
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
   LEFT JOIN pg_attribute a ON i.indrelid = a.attrelid AND a.attnum = ANY(i.indkey) AND a.attisdropped = false
-WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
+WHERE i.indkey <> '0' AND n.nspname = %%schema string%% AND ic.relname = %%index string%%
 ENDSQL
 
 # postgres index column order query

@@ -24,7 +24,7 @@ func PgIndexColumns(db XODB, schema string, index string) ([]*IndexColumn, error
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`JOIN ONLY pg_class ic ON ic.oid = i.indexrelid ` +
 		`LEFT JOIN pg_attribute a ON i.indrelid = a.attrelid AND a.attnum = ANY(i.indkey) AND a.attisdropped = false ` +
-		`WHERE n.nspname = $1 AND ic.relname = $2`
+		`WHERE i.indkey <> '0' AND n.nspname = $1 AND ic.relname = $2`
 
 	// run query
 	XOLog(sqlstr, schema, index)

@@ -29,7 +29,7 @@ func PgTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
 		`JOIN ONLY pg_class c ON c.oid = i.indrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`JOIN ONLY pg_class ic ON ic.oid = i.indexrelid ` +
-		`WHERE n.nspname = $1 AND c.relname = $2`
+		`WHERE i.indkey <> '0' AND n.nspname = $1 AND c.relname = $2`
 
 	// run query
 	XOLog(sqlstr, schema, table)

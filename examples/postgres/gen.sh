@@ -60,6 +60,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE INDEX books_title_lower_idx ON books(title);
+
 ENDSQL
 
 $XOBIN $DB -o $SRC/models -j $EXTRA

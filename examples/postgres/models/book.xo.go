@@ -260,3 +260,42 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 
 	return res, nil
 }
+
+// BooksByTitleLower retrieves a row from 'public.books' as a Book.
+//
+// Generated from index 'books_title_lower_idx'.
+func BooksByTitleLower(db XODB, title string) ([]*Book, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`book_id, author_id, isbn, booktype, title, year, available, tags ` +
+		`FROM public.books ` +
+		`WHERE title = $1`
+
+	// run query
+	XOLog(sqlstr, title)
+	q, err := db.Query(sqlstr, title)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Book{}
+	for q.Next() {
+		b := Book{
+			_exists: true,
+		}
+
+		// scan
+		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Booktype, &b.Title, &b.Year, &b.Available, &b.Tags)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &b)
+	}
+
+	return res, nil
+}
