@@ -417,7 +417,7 @@ SELECT
   i.is_unique
 FROM sys.indexes i
   INNER JOIN sysobjects o ON i.object_id = o.id
-WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%%
+WHERE i.name IS NOT NULL AND o.type = 'U' AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%%
 ENDSQL
 
 # mssql index column list query

@@ -171,7 +171,7 @@ func MsTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
 		`i.is_unique ` +
 		`FROM sys.indexes i ` +
 		`INNER JOIN sysobjects o ON i.object_id = o.id ` +
-		`WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = $1 AND o.name = $2`
+		`WHERE i.name IS NOT NULL AND o.type = 'U' AND SCHEMA_NAME(o.uid) = $1 AND o.name = $2`
 
 	// run query
 	XOLog(sqlstr, schema, table)
