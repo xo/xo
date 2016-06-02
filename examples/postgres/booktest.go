@@ -58,7 +58,7 @@ func main() {
 		Year:      2016,
 		Available: &now,
 	}
-	err = b0.Save(db)
+	err = b0.Save(tx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +73,7 @@ func main() {
 		Available: &now,
 		Tags:      models.StringSlice{"cool", "unique"},
 	}
-	err = b1.Save(db)
+	err = b1.Save(tx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +81,7 @@ func main() {
 	// update the title and tags
 	b1.Title = "changed second title"
 	b1.Tags = models.StringSlice{"cool", "disastor"}
-	err = b1.Update(db)
+	err = b1.Update(tx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -96,7 +96,7 @@ func main() {
 		Available: &now,
 		Tags:      models.StringSlice{"cool"},
 	}
-	err = b2.Save(db)
+	err = b2.Save(tx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -111,7 +111,7 @@ func main() {
 		Available: &now,
 		Tags:      models.StringSlice{"other"},
 	}
-	err = b3.Save(db)
+	err = b3.Save(tx)
 	if err != nil {
 		log.Fatal(err)
 	}
