@@ -173,6 +173,13 @@ func processArgs(args *internal.ArgType) error {
 		args.Query = strings.TrimSpace(args.Query)
 	}
 
+	// escape all
+	if args.EscapeAll {
+		args.EscapeSchemaName = true
+		args.EscapeTableNames = true
+		args.EscapeColumnNames = true
+	}
+
 	// if verbose
 	if args.Verbose {
 		models.XOLog = func(s string, p ...interface{}) {

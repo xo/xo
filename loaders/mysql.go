@@ -146,10 +146,10 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
-			typ = internal.SnakeToCamel(dt[len(args.Schema)+1:])
+			typ = internal.SnakeToIdentifier(dt[len(args.Schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
-			typ = internal.SnakeToCamel(dt)
+			typ = internal.SnakeToIdentifier(dt)
 			nilVal = typ + "{}"
 		}
 	}

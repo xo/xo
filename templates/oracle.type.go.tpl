@@ -39,7 +39,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Insert(db XODB) error {
 		`{{ colnames .Fields .PrimaryKey.Name }}` +
 		`) VALUES (` +
 		`{{ colvals .Fields .PrimaryKey.Name }}` +
-		`) RETURNING {{ .PrimaryKey.Col.ColumnName }} /*lastInsertId*/ INTO :pk`
+		`) RETURNING {{ colname .PrimaryKey.Col }} /*lastInsertId*/ INTO :pk`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, nil)
@@ -78,7 +78,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Update(db XODB) error {
 	// sql query
 	const sqlstr = `UPDATE {{ schema .Schema .Table.TableName }} SET ` +
 		`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
-		` WHERE {{ .PrimaryKey.Col.ColumnName }} = :{{ colcount .Fields .PrimaryKey.Name }}`
+		` WHERE {{ colname .PrimaryKey.Col }} = :{{ colcount .Fields .PrimaryKey.Name }}`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
@@ -110,7 +110,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ .PrimaryKey.Col.ColumnName }} = :1`
+	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ colname .PrimaryKey.Col }} = :1`
 
 	// run query
 	XOLog(sqlstr, {{ shortname .Name }}.{{ .PrimaryKey.Name }})

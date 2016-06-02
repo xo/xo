@@ -6,6 +6,8 @@ import (
 	"text/template"
 
 	"github.com/serenize/snaker"
+
+	"github.com/knq/xo/models"
 )
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
@@ -23,11 +25,12 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"shortname":      a.shortname,
 		"convext":        a.convext,
 		"schema":         a.schemafn,
+		"colname":        a.colname,
 	}
 }
 
-// retype checks the type against the known types, adding the custom type
-// package (if any).
+// retype checks typ against known types, and prefixing
+// ArgType.CustomTypePackage (if applicable).
 func (a *ArgType) retype(typ string) string {
 	if strings.Contains(typ, ".") {
 		return typ
@@ -51,8 +54,8 @@ func (a *ArgType) retype(typ string) string {
 	return prefix + typ
 }
 
-// reniltype checks the nil type against the known types (similar to retype),
-// adding the custom type package (if applicable).
+// reniltype checks typ against known nil types (similar to retype), prefixing
+// ArgType.CustomTypePackage (if applicable).
 func (a *ArgType) reniltype(typ string) string {
 	if strings.Contains(typ, ".") {
 		return typ
@@ -74,10 +77,16 @@ func (a *ArgType) reniltype(typ string) string {
 	return typ
 }
 
-// shortname checks the passed type against the ShortNameTypeMap and returns
-// the value for it. If the type is not found, then the value is calculated and
-// stored in the ShortNameTypeMap for use in the future. Also checks against
-// go's reserved names.
+// shortname generates the a safe Go identifier for typ. typ is first checked
+// against ArgType.ShortNameTypeMap, and if not found, then the value is
+// calculated and stored in the ShortNameTypeMap for future use.
+//
+// A shortname is the concatentation of the lowercase of the first character in
+// the words comprising the name. For example, "MyCustomName" will have have
+// the shortname of "mcn".
+//
+// If a generated shortname conflicts with a Go reserved name, then the
+// corresponding value in goReservedNames map will be used.
 func (a *ArgType) shortname(typ string) string {
 	var v string
 	var ok bool
@@ -106,10 +115,11 @@ func (a *ArgType) shortname(typ string) string {
 }
 
 // colnames creates a list of the column names found in fields, excluding any
-// Field.Name in ignoreNames.
+// Field with Name contained in ignoreNames.
 //
-// Used to present a comma separated list of column names, ie in a sql select,
-// or update. (ie, field_1, field_2, field_3, ...)
+// Used to present a comma separated list of column names, that can be used in
+// a SELECT, or UPDATE, or other SQL clause requiring an list of identifiers
+// (ie, "field_1, field_2, field_3, ...").
 func (a *ArgType) colnames(fields []*Field, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -126,19 +136,19 @@ func (a *ArgType) colnames(fields []*Field, ignoreNames ...string) string {
 		if i != 0 {
 			str = str + ", "
 		}
-		str = str + f.Col.ColumnName
+		str = str + a.colname(f.Col)
 		i++
 	}
 
 	return str
 }
 
-// colnamesquery creates a list of the column names found in as a query and
-// joined by sep.
+// colnamesquery creates a list of the column names in fields as a query and
+// joined by sep, excluding any Field with Name contained in ignoreNames.
 //
-// Used to create a sql query list of column names in a where clause (ie,
-// field_1 = $1 AND field_2 = $2 AND ... ) or in an update clause (ie, field =
-// $1, field = $2, ...)
+// Used to create a list of column names in a WHERE clause (ie, "field_1 = $1
+// AND field_2 = $2 AND ...") or in an UPDATE clause (ie, "field = $1, field =
+// $2, ...").
 func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -155,7 +165,7 @@ func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...stri
 		if i != 0 {
 			str = str + sep
 		}
-		str = str + f.Col.ColumnName + " = " + a.Loader.NthParam(i)
+		str = str + a.colname(f.Col) + " = " + a.Loader.NthParam(i)
 		i++
 	}
 
@@ -163,10 +173,10 @@ func (a *ArgType) colnamesquery(fields []*Field, sep string, ignoreNames ...stri
 }
 
 // colprefixnames creates a list of the column names found in fields with the
-// supplied prefix, excluding any FieldName in ignoreNames.
+// supplied prefix, excluding any Field with Name contained in ignoreNames.
 //
-// Used to present a comma separated list of column names, with a prefix, ie in
-// a sql select, or update. (ie, t.field_1, t.field_2, t.field_3, ...)
+// Used to present a comma separated list of column names with a prefix. Used in
+// a SELECT, or UPDATE (ie, "t.field_1, t.field_2, t.field_3, ...").
 func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -183,18 +193,18 @@ func (a *ArgType) colprefixnames(fields []*Field, prefix string, ignoreNames ...
 		if i != 0 {
 			str = str + ", "
 		}
-		str = str + prefix + "." + f.Col.ColumnName
+		str = str + prefix + "." + a.colname(f.Col)
 		i++
 	}
 
 	return str
 }
 
-// colvals creates a list of value place holders for the fields found in
-// fields, excluding any FieldName in ignoreNames.
+// colvals creates a list of value place holders for fields excluding any Field
+// with Name contained in ignoreNames.
 //
-// Used to present a comma separated list of column names, ie in a sql select,
-// or update. (ie, $1, $2, $3 ...)
+// Used to present a comma separated list of column place holders, used in a
+// SELECT or UPDATE statement (ie, "$1, $2, $3 ...").
 func (a *ArgType) colvals(fields []*Field, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -218,12 +228,11 @@ func (a *ArgType) colvals(fields []*Field, ignoreNames ...string) string {
 	return str
 }
 
-// fieldnames creates a list of field names from the field names of the
-// provided fields, adding the prefix provided, and excluding any field name
-// in ignoreNames.
+// fieldnames creates a list of field names from fields of the adding the
+// provided prefix, and excluding any Field with Name contained in ignoreNames.
 //
 // Used to present a comma separated list of field names, ie in a Go statement
-// (ie, t.Field1, t.Field2, t.Field3 ...)
+// (ie, "t.Field1, t.Field2, t.Field3 ...")
 func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -247,10 +256,10 @@ func (a *ArgType) fieldnames(fields []*Field, prefix string, ignoreNames ...stri
 	return str
 }
 
-// count returns the 1-based count of fields, excluding any field name in
-// ignoreNames.
+// colcount returns the 1-based count of fields, excluding any Field with Name
+// contained in ignoreNames.
 //
-// Used to get the count of fields, and useful for specifying the last sql
+// Used to get the count of fields, and useful for specifying the last SQL
 // parameter.
 func (a *ArgType) colcount(fields []*Field, ignoreNames ...string) int {
 	ignore := map[string]bool{}
@@ -269,7 +278,7 @@ func (a *ArgType) colcount(fields []*Field, ignoreNames ...string) int {
 	return i
 }
 
-// goReservedNames is the list of go reserved names
+// goReservedNames is a map of of go reserved names to "safe" names.
 var goReservedNames = map[string]string{
 	"break":       "brk",
 	"case":        "cs",
@@ -299,7 +308,7 @@ var goReservedNames = map[string]string{
 }
 
 // goparamlist converts a list of fields into their named Go parameters,
-// skipping any field names in ignoreNames.
+// skipping any Field with Name contained in ignoreNames.
 func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
@@ -335,7 +344,10 @@ func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...stri
 	return str
 }
 
-// convext generates a conversion for field f to be assigned to field t.
+// convext generates the Go conversion for f in order for it to be assignable
+// to t.
+//
+// FIXME: this should be a better name, like "goconversion" or some such.
 func (a *ArgType) convext(prefix string, f *Field, t *Field) string {
 	expr := prefix + "." + f.Name
 	if f.Type == t.Type {
@@ -357,6 +369,13 @@ func (a *ArgType) convext(prefix string, f *Field, t *Field) string {
 
 // schemafn takes a series of names and joins them with the schema name.
 func (a *ArgType) schemafn(s string, names ...string) string {
+	// escape table names
+	if a.EscapeTableNames {
+		for i, t := range names {
+			names[i] = a.Loader.Escape(TableEsc, t)
+		}
+	}
+
 	n := strings.Join(names, ".")
 
 	if s == "" && n == "" {
@@ -364,8 +383,21 @@ func (a *ArgType) schemafn(s string, names ...string) string {
 	}
 
 	if s != "" && n != "" {
+		if a.EscapeSchemaName {
+			s = a.Loader.Escape(SchemaEsc, s)
+		}
 		s = s + "."
 	}
 
 	return s + n
+}
+
+// colname returns the ColumnName of col, optionally escaping it if
+// ArgType.EscapeColumnNames is toggled.
+func (a *ArgType) colname(col *models.Column) string {
+	if a.EscapeColumnNames {
+		return a.Loader.Escape(ColumnEsc, col.ColumnName)
+	}
+
+	return col.ColumnName
 }

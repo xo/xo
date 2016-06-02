@@ -78,7 +78,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Update(db XODB) error {
 	// sql query
 	const sqlstr = `UPDATE {{ schema .Schema .Table.TableName }} SET ` +
 		`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
-		` WHERE {{ .PrimaryKey.Col.ColumnName }} = ?`
+		` WHERE {{ colname .PrimaryKey.Col }} = ?`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
@@ -110,7 +110,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ .PrimaryKey.Col.ColumnName }} = ?`
+	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ colname .PrimaryKey.Col }} = ?`
 
 	// run query
 	XOLog(sqlstr, {{ shortname .Name }}.{{ .PrimaryKey.Name }})

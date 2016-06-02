@@ -20,6 +20,9 @@ type Loader interface {
 	// Mask returns the mask.
 	Mask() string
 
+	// Escape escapes the passed identifier based on its EscType.
+	Escape(EscType, string) string
+
 	// Relkind returns the schema's relkind identifier (ie, TABLE, VIEW, BASE TABLE, etc).
 	Relkind(RelType) string
 
@@ -43,6 +46,7 @@ var SchemaLoaders = map[string]Loader{}
 type TypeLoader struct {
 	ParamN          func(int) string
 	MaskFunc        func() string
+	Esc             map[EscType]func(string) string
 	ProcessRelkind  func(RelType) string
 	Schema          func(*ArgType) (string, error)
 	ParseType       func(*ArgType, string, bool) (int, string, string)
@@ -68,13 +72,22 @@ func (tl TypeLoader) NthParam(i int) string {
 	return fmt.Sprintf("$%d", i+1)
 }
 
-// Mask returns the parameter mask
+// Mask returns the parameter mask.
 func (tl TypeLoader) Mask() string {
 	if tl.MaskFunc != nil {
 		return tl.MaskFunc()
 	}
 
 	return "$%d"
+}
+
+// Escape escapes the provided identifier based on the EscType.
+func (tl TypeLoader) Escape(typ EscType, s string) string {
+	if e, ok := tl.Esc[typ]; ok && e != nil {
+		return e(s)
+	}
+
+	return `"` + s + `"`
 }
 
 // Relkind satisfies Loader's Relkind.
@@ -153,7 +166,7 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 		// process columns
 		for _, c := range colList {
 			f := &Field{
-				Name: SnakeToCamel(strings.ToLower(c.ColumnName)),
+				Name: SnakeToIdentifier(c.ColumnName),
 				Col:  c,
 			}
 			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, false)
@@ -286,7 +299,7 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 	enumMap := map[string]*Enum{}
 	for _, e := range enumList {
 		enumTpl := &Enum{
-			Name:              inflector.Singularize(SnakeToCamel(e.EnumName)),
+			Name:              inflector.Singularize(SnakeToIdentifier(e.EnumName)),
 			Schema:            args.Schema,
 			Values:            []*EnumValue{},
 			Enum:              e,
@@ -326,7 +339,7 @@ func (tl TypeLoader) LoadEnumValues(args *ArgType, enumTpl *Enum) error {
 	// process enum values
 	for _, ev := range enumValues {
 		// chop off redundant enum name if applicable
-		name := SnakeToCamel(strings.ToLower(ev.EnumValue))
+		name := SnakeToIdentifier(ev.EnumValue)
 		if strings.HasSuffix(strings.ToLower(name), strings.ToLower(enumTpl.Name)) {
 			n := name[:len(name)-len(enumTpl.Name)]
 			if len(n) > 0 {
@@ -369,7 +382,7 @@ func (tl TypeLoader) LoadProcs(args *ArgType) (map[string]*Proc, error) {
 
 		// create template
 		procTpl := &Proc{
-			Name:   SnakeToCamel(strings.ToLower(name)),
+			Name:   SnakeToIdentifier(name),
 			Schema: args.Schema,
 			Params: []*Field{},
 			Return: &Field{},
@@ -444,7 +457,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    inflector.Singularize(SnakeToCamel(strings.ToLower(ti.TableName))),
+			Name:    inflector.Singularize(SnakeToIdentifier(ti.TableName)),
 			Schema:  args.Schema,
 			RelType: relType,
 			Fields:  []*Field{},
@@ -485,7 +498,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 	for _, c := range columnList {
 		// set col info
 		f := &Field{
-			Name: SnakeToCamel(strings.ToLower(c.ColumnName)),
+			Name: SnakeToIdentifier(c.ColumnName),
 			Col:  c,
 		}
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)

@@ -81,7 +81,7 @@ func fkName(mode FkMode, fkMap map[string]*ForeignKey, fk *ForeignKey) string {
 	case FkModeField:
 		return fk.RefType.Name + "By" + fk.Field.Name
 	case FkModeKey:
-		return fk.RefType.Name + "By" + SnakeToCamel(fk.ForeignKey.ForeignKeyName)
+		return fk.RefType.Name + "By" + SnakeToIdentifier(fk.ForeignKey.ForeignKeyName)
 	}
 
 	// mode is FkModeSmart

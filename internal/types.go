@@ -2,7 +2,7 @@ package internal
 
 import "github.com/knq/xo/models"
 
-// TemplateType represents a template type
+// TemplateType represents a template type.
 type TemplateType uint
 
 // the order here will be the alter the output order per file.
@@ -54,6 +54,15 @@ const (
 
 	// View reltype
 	View
+)
+
+// EscType represents the different escape types.
+type EscType uint
+
+const (
+	SchemaEsc = iota
+	TableEsc
+	ColumnEsc
 )
 
 // String provides the string representation of RelType.

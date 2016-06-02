@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
@@ -152,7 +153,7 @@ func fmtIndexName(ixName string, tableName string) string {
 	}
 
 	// camel case name
-	return SnakeToCamel(ixName)
+	return SnakeToIdentifier(ixName)
 }
 
 // BuildIndexFuncName builds the index func name for an index and its supplied
@@ -229,16 +230,46 @@ func (t TBufSlice) Less(i, j int) bool {
 	return strings.Compare(t[i].Subname, t[j].Subname) < 0
 }
 
-var uRE = regexp.MustCompile(`_+`)
+// isIdentifierChar determines if ch is a valid character for a Go identifier.
+//
+// see: go/src/go/scanner/scanner.go
+func isIdentifierChar(ch rune) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || ch >= 0x80 && unicode.IsLetter(ch) ||
+		'0' <= ch && ch <= '9' || ch >= 0x80 && unicode.IsDigit(ch)
+}
 
-// SnakeToCamel provides a safer version of snaker.SnakeToCamel
-func SnakeToCamel(s string) string {
+// replaceBadChars strips characters and character sequences that are invalid
+// characters for Go identifiers.
+func replaceBadChars(s string) string {
+	// strip bad characters
+	r := []rune{}
+	for _, ch := range s {
+		if isIdentifierChar(ch) {
+			r = append(r, ch)
+		} else {
+			r = append(r, '_')
+		}
+	}
+
+	return string(r)
+}
+
+var underscoreRE = regexp.MustCompile(`_+`)
+
+// SnakeToIdentifier wraps snaker.SnakeToCamel and adds logic specific for xo and go.
+func SnakeToIdentifier(s string) string {
+	// lowercase
+	s = strings.ToLower(s)
+
+	// replace bad chars with _
+	s = replaceBadChars(s)
+
 	// remove leading/trailing underscores
 	s = strings.TrimLeft(s, "_")
 	s = strings.TrimRight(s, "_")
 
 	// fix 2 or more __
-	s = uRE.ReplaceAllString(s, "_")
+	s = underscoreRE.ReplaceAllString(s, "_")
 
 	return snaker.SnakeToCamel(s)
 }

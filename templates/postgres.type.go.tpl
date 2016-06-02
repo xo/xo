@@ -39,7 +39,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Insert(db XODB) error {
 		`{{ colnames .Fields .PrimaryKey.Name }}` +
 		`) VALUES (` +
 		`{{ colvals .Fields .PrimaryKey.Name }}` +
-		`) RETURNING {{ .PrimaryKey.Col.ColumnName }}`
+		`) RETURNING {{ colname .PrimaryKey.Col }}`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }})
@@ -73,7 +73,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Update(db XODB) error {
 		`{{ colnames .Fields .PrimaryKey.Name }}` +
 		`) = ( ` +
 		`{{ colvals .Fields .PrimaryKey.Name }}` +
-		`) WHERE {{ .PrimaryKey.Col.ColumnName }} = ${{ colcount .Fields .PrimaryKey.Name }}`
+		`) WHERE {{ colname .PrimaryKey.Col }} = ${{ colcount .Fields .PrimaryKey.Name }}`
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields (shortname .Name) .PrimaryKey.Name }}, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
@@ -106,7 +106,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Upsert(db XODB) error {
 		`{{ colnames .Fields }}` +
 		`) VALUES (` +
 		`{{ colvals .Fields }}` +
-		`) ON CONFLICT ({{ .PrimaryKey.Col.ColumnName }}) DO UPDATE SET (` +
+		`) ON CONFLICT ({{ colname .PrimaryKey.Col }}) DO UPDATE SET (` +
 		`{{ colnames .Fields }}` +
 		`) = (` +
 		`{{ colprefixnames .Fields "EXCLUDED" }}` +
@@ -140,7 +140,7 @@ func ({{ shortname .Name }} *{{ .Name }}) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ .PrimaryKey.Col.ColumnName }} = $1`
+	const sqlstr = `DELETE FROM {{ schema .Schema .Table.TableName }} WHERE {{ colname .PrimaryKey.Col }} = $1`
 
 	// run query
 	XOLog(sqlstr, {{ shortname .Name }}.{{ .PrimaryKey.Name }})
