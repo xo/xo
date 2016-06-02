@@ -7596,25 +7596,25 @@ func DatabaseToXmlschema(db XODB, v0 bool, v1 bool, v2 string) (pgtypes.XML, err
 }
 
 // Date calls the stored procedure 'pg_catalog.date(abstime, timestamp without time zone, timestamp with time zone) date' on db.
-func Date(db XODB, v0 pgtypes.Abstime, v1 int64, v2 *time.Time) (pgtypes.Date, error) {
+func Date(db XODB, v0 pgtypes.Abstime, v1 int64, v2 *time.Time) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1, v2)
 	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateCmp calls the stored procedure 'pg_catalog.date_cmp(date, date) integer' on db.
-func DateCmp(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (int, error) {
+func DateCmp(db XODB, v0 *time.Time, v1 *time.Time) (int, error) {
 	var err error
 
 	// sql query
@@ -7632,7 +7632,7 @@ func DateCmp(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (int, error) {
 }
 
 // DateCmpTimestamp calls the stored procedure 'pg_catalog.date_cmp_timestamp(date, timestamp without time zone) integer' on db.
-func DateCmpTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (int, error) {
+func DateCmpTimestamp(db XODB, v0 *time.Time, v1 int64) (int, error) {
 	var err error
 
 	// sql query
@@ -7650,7 +7650,7 @@ func DateCmpTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (int, error) {
 }
 
 // DateCmpTimestamptz calls the stored procedure 'pg_catalog.date_cmp_timestamptz(date, timestamp with time zone) integer' on db.
-func DateCmpTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (int, error) {
+func DateCmpTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (int, error) {
 	var err error
 
 	// sql query
@@ -7668,7 +7668,7 @@ func DateCmpTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (int, error) {
 }
 
 // DateEq calls the stored procedure 'pg_catalog.date_eq(date, date) boolean' on db.
-func DateEq(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateEq(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7686,7 +7686,7 @@ func DateEq(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateEqTimestamp calls the stored procedure 'pg_catalog.date_eq_timestamp(date, timestamp without time zone) boolean' on db.
-func DateEqTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateEqTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -7704,7 +7704,7 @@ func DateEqTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateEqTimestamptz calls the stored procedure 'pg_catalog.date_eq_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateEqTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateEqTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7722,7 +7722,7 @@ func DateEqTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateGe calls the stored procedure 'pg_catalog.date_ge(date, date) boolean' on db.
-func DateGe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateGe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7740,7 +7740,7 @@ func DateGe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateGeTimestamp calls the stored procedure 'pg_catalog.date_ge_timestamp(date, timestamp without time zone) boolean' on db.
-func DateGeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateGeTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -7758,7 +7758,7 @@ func DateGeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateGeTimestamptz calls the stored procedure 'pg_catalog.date_ge_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateGeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateGeTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7776,7 +7776,7 @@ func DateGeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateGt calls the stored procedure 'pg_catalog.date_gt(date, date) boolean' on db.
-func DateGt(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateGt(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7794,7 +7794,7 @@ func DateGt(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateGtTimestamp calls the stored procedure 'pg_catalog.date_gt_timestamp(date, timestamp without time zone) boolean' on db.
-func DateGtTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateGtTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -7812,7 +7812,7 @@ func DateGtTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateGtTimestamptz calls the stored procedure 'pg_catalog.date_gt_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateGtTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateGtTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7830,43 +7830,43 @@ func DateGtTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateIn calls the stored procedure 'pg_catalog.date_in(cstring) date' on db.
-func DateIn(db XODB, v0 pgtypes.Cstring) (pgtypes.Date, error) {
+func DateIn(db XODB, v0 pgtypes.Cstring) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_in($1)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateLarger calls the stored procedure 'pg_catalog.date_larger(date, date) date' on db.
-func DateLarger(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (pgtypes.Date, error) {
+func DateLarger(db XODB, v0 *time.Time, v1 *time.Time) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_larger($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateLe calls the stored procedure 'pg_catalog.date_le(date, date) boolean' on db.
-func DateLe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateLe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7884,7 +7884,7 @@ func DateLe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateLeTimestamp calls the stored procedure 'pg_catalog.date_le_timestamp(date, timestamp without time zone) boolean' on db.
-func DateLeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateLeTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -7902,7 +7902,7 @@ func DateLeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateLeTimestamptz calls the stored procedure 'pg_catalog.date_le_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateLeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateLeTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7920,7 +7920,7 @@ func DateLeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateLt calls the stored procedure 'pg_catalog.date_lt(date, date) boolean' on db.
-func DateLt(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateLt(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7938,7 +7938,7 @@ func DateLt(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateLtTimestamp calls the stored procedure 'pg_catalog.date_lt_timestamp(date, timestamp without time zone) boolean' on db.
-func DateLtTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateLtTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -7956,7 +7956,7 @@ func DateLtTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateLtTimestamptz calls the stored procedure 'pg_catalog.date_lt_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateLtTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateLtTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -7974,7 +7974,7 @@ func DateLtTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateMi calls the stored procedure 'pg_catalog.date_mi(date, date) integer' on db.
-func DateMi(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (int, error) {
+func DateMi(db XODB, v0 *time.Time, v1 *time.Time) (int, error) {
 	var err error
 
 	// sql query
@@ -7992,7 +7992,7 @@ func DateMi(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (int, error) {
 }
 
 // DateMiInterval calls the stored procedure 'pg_catalog.date_mi_interval(date, interval) timestamp without time zone' on db.
-func DateMiInterval(db XODB, v0 pgtypes.Date, v1 *time.Duration) (int64, error) {
+func DateMiInterval(db XODB, v0 *time.Time, v1 *time.Duration) (int64, error) {
 	var err error
 
 	// sql query
@@ -8010,25 +8010,25 @@ func DateMiInterval(db XODB, v0 pgtypes.Date, v1 *time.Duration) (int64, error) 
 }
 
 // DateMii calls the stored procedure 'pg_catalog.date_mii(date, integer) date' on db.
-func DateMii(db XODB, v0 pgtypes.Date, v1 int) (pgtypes.Date, error) {
+func DateMii(db XODB, v0 *time.Time, v1 int) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_mii($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateNe calls the stored procedure 'pg_catalog.date_ne(date, date) boolean' on db.
-func DateNe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
+func DateNe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -8046,7 +8046,7 @@ func DateNe(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (bool, error) {
 }
 
 // DateNeTimestamp calls the stored procedure 'pg_catalog.date_ne_timestamp(date, timestamp without time zone) boolean' on db.
-func DateNeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
+func DateNeTimestamp(db XODB, v0 *time.Time, v1 int64) (bool, error) {
 	var err error
 
 	// sql query
@@ -8064,7 +8064,7 @@ func DateNeTimestamp(db XODB, v0 pgtypes.Date, v1 int64) (bool, error) {
 }
 
 // DateNeTimestamptz calls the stored procedure 'pg_catalog.date_ne_timestamptz(date, timestamp with time zone) boolean' on db.
-func DateNeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
+func DateNeTimestamptz(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -8082,7 +8082,7 @@ func DateNeTimestamptz(db XODB, v0 pgtypes.Date, v1 *time.Time) (bool, error) {
 }
 
 // DateOut calls the stored procedure 'pg_catalog.date_out(date) cstring' on db.
-func DateOut(db XODB, v0 pgtypes.Date) (pgtypes.Cstring, error) {
+func DateOut(db XODB, v0 *time.Time) (pgtypes.Cstring, error) {
 	var err error
 
 	// sql query
@@ -8100,7 +8100,7 @@ func DateOut(db XODB, v0 pgtypes.Date) (pgtypes.Cstring, error) {
 }
 
 // DatePart calls the stored procedure 'pg_catalog.date_part(text, abstime, text, reltime, text, date, text, time without time zone, text, timestamp without time zone, text, timestamp with time zone, text, interval, text, time with time zone) double precision' on db.
-func DatePart(db XODB, v0 string, v1 pgtypes.Abstime, v2 string, v3 pgtypes.Reltime, v4 string, v5 pgtypes.Date, v6 string, v7 int64, v8 string, v9 int64, v10 string, v11 *time.Time, v12 string, v13 *time.Duration, v14 string, v15 int64) (float64, error) {
+func DatePart(db XODB, v0 string, v1 pgtypes.Abstime, v2 string, v3 pgtypes.Reltime, v4 string, v5 *time.Time, v6 string, v7 int64, v8 string, v9 int64, v10 string, v11 *time.Time, v12 string, v13 *time.Duration, v14 string, v15 int64) (float64, error) {
 	var err error
 
 	// sql query
@@ -8118,7 +8118,7 @@ func DatePart(db XODB, v0 string, v1 pgtypes.Abstime, v2 string, v3 pgtypes.Relt
 }
 
 // DatePlInterval calls the stored procedure 'pg_catalog.date_pl_interval(date, interval) timestamp without time zone' on db.
-func DatePlInterval(db XODB, v0 pgtypes.Date, v1 *time.Duration) (int64, error) {
+func DatePlInterval(db XODB, v0 *time.Time, v1 *time.Duration) (int64, error) {
 	var err error
 
 	// sql query
@@ -8136,43 +8136,43 @@ func DatePlInterval(db XODB, v0 pgtypes.Date, v1 *time.Duration) (int64, error) 
 }
 
 // DatePli calls the stored procedure 'pg_catalog.date_pli(date, integer) date' on db.
-func DatePli(db XODB, v0 pgtypes.Date, v1 int) (pgtypes.Date, error) {
+func DatePli(db XODB, v0 *time.Time, v1 int) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_pli($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateRecv calls the stored procedure 'pg_catalog.date_recv(internal) date' on db.
-func DateRecv(db XODB, v0 pgtypes.Internal) (pgtypes.Date, error) {
+func DateRecv(db XODB, v0 pgtypes.Internal) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_recv($1)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
 }
 
 // DateSend calls the stored procedure 'pg_catalog.date_send(date) bytea' on db.
-func DateSend(db XODB, v0 pgtypes.Date) ([]byte, error) {
+func DateSend(db XODB, v0 *time.Time) ([]byte, error) {
 	var err error
 
 	// sql query
@@ -8190,18 +8190,18 @@ func DateSend(db XODB, v0 pgtypes.Date) ([]byte, error) {
 }
 
 // DateSmaller calls the stored procedure 'pg_catalog.date_smaller(date, date) date' on db.
-func DateSmaller(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (pgtypes.Date, error) {
+func DateSmaller(db XODB, v0 *time.Time, v1 *time.Time) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_smaller($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
@@ -8244,7 +8244,7 @@ func DateTrunc(db XODB, v0 string, v1 int64, v2 string, v3 *time.Time, v4 string
 }
 
 // Daterange calls the stored procedure 'pg_catalog.daterange(date, date, date, date, text) daterange' on db.
-func Daterange(db XODB, v0 pgtypes.Date, v1 pgtypes.Date, v2 pgtypes.Date, v3 pgtypes.Date, v4 string) (pgtypes.Daterange, error) {
+func Daterange(db XODB, v0 *time.Time, v1 *time.Time, v2 *time.Time, v3 *time.Time, v4 string) (pgtypes.Daterange, error) {
 	var err error
 
 	// sql query
@@ -8280,7 +8280,7 @@ func DaterangeCanonical(db XODB, v0 pgtypes.Daterange) (pgtypes.Daterange, error
 }
 
 // DaterangeSubdiff calls the stored procedure 'pg_catalog.daterange_subdiff(date, date) double precision' on db.
-func DaterangeSubdiff(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (float64, error) {
+func DaterangeSubdiff(db XODB, v0 *time.Time, v1 *time.Time) (float64, error) {
 	var err error
 
 	// sql query
@@ -8298,7 +8298,7 @@ func DaterangeSubdiff(db XODB, v0 pgtypes.Date, v1 pgtypes.Date) (float64, error
 }
 
 // DatetimePl calls the stored procedure 'pg_catalog.datetime_pl(date, time without time zone) timestamp without time zone' on db.
-func DatetimePl(db XODB, v0 pgtypes.Date, v1 int64) (int64, error) {
+func DatetimePl(db XODB, v0 *time.Time, v1 int64) (int64, error) {
 	var err error
 
 	// sql query
@@ -8316,7 +8316,7 @@ func DatetimePl(db XODB, v0 pgtypes.Date, v1 int64) (int64, error) {
 }
 
 // DatetimetzPl calls the stored procedure 'pg_catalog.datetimetz_pl(date, time with time zone) timestamp with time zone' on db.
-func DatetimetzPl(db XODB, v0 pgtypes.Date, v1 int64) (*time.Time, error) {
+func DatetimetzPl(db XODB, v0 *time.Time, v1 int64) (*time.Time, error) {
 	var err error
 
 	// sql query
@@ -17586,18 +17586,18 @@ func Int8xor(db XODB, v0 int64, v1 int64) (int64, error) {
 }
 
 // IntegerPlDate calls the stored procedure 'pg_catalog.integer_pl_date(integer, date) date' on db.
-func IntegerPlDate(db XODB, v0 int, v1 pgtypes.Date) (pgtypes.Date, error) {
+func IntegerPlDate(db XODB, v0 int, v1 *time.Time) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.integer_pl_date($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
@@ -18036,7 +18036,7 @@ func IntervalPl(db XODB, v0 *time.Duration, v1 *time.Duration) (*time.Duration, 
 }
 
 // IntervalPlDate calls the stored procedure 'pg_catalog.interval_pl_date(interval, date) timestamp without time zone' on db.
-func IntervalPlDate(db XODB, v0 *time.Duration, v1 pgtypes.Date) (int64, error) {
+func IntervalPlDate(db XODB, v0 *time.Duration, v1 *time.Time) (int64, error) {
 	var err error
 
 	// sql query
@@ -18306,7 +18306,7 @@ func Isempty(db XODB, v0 pgtypes.Anyrange) (bool, error) {
 }
 
 // Isfinite calls the stored procedure 'pg_catalog.isfinite(abstime, date, timestamp without time zone, timestamp with time zone, interval) boolean' on db.
-func Isfinite(db XODB, v0 pgtypes.Abstime, v1 pgtypes.Date, v2 int64, v3 *time.Time, v4 *time.Duration) (bool, error) {
+func Isfinite(db XODB, v0 pgtypes.Abstime, v1 *time.Time, v2 int64, v3 *time.Time, v4 *time.Duration) (bool, error) {
 	var err error
 
 	// sql query
@@ -21744,18 +21744,18 @@ func MacaddrSend(db XODB, v0 pgtypes.Macaddr) ([]byte, error) {
 }
 
 // MakeDate calls the stored procedure 'pg_catalog.make_date(integer, integer, integer) date' on db.
-func MakeDate(db XODB, v0 int, v1 int, v2 int) (pgtypes.Date, error) {
+func MakeDate(db XODB, v0 int, v1 int, v2 int) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.make_date($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1, v2)
 	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
@@ -21870,7 +21870,7 @@ func Masklen(db XODB, v0 pgtypes.Inet) (int, error) {
 }
 
 // Max calls the stored procedure 'pg_catalog.max(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 *time.Time, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -22194,7 +22194,7 @@ func MicToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Interna
 }
 
 // Min calls the stored procedure 'pg_catalog.min(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 pgtypes.Date, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 *time.Time, v13 int64, v14 int64, v15 *time.Time, v16 *time.Duration, v17 int64, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -36342,7 +36342,7 @@ func TimeTransform(db XODB, v0 pgtypes.Internal) (pgtypes.Internal, error) {
 }
 
 // TimedatePl calls the stored procedure 'pg_catalog.timedate_pl(time without time zone, date) timestamp without time zone' on db.
-func TimedatePl(db XODB, v0 int64, v1 pgtypes.Date) (int64, error) {
+func TimedatePl(db XODB, v0 int64, v1 *time.Time) (int64, error) {
 	var err error
 
 	// sql query
@@ -36432,7 +36432,7 @@ func Timepl(db XODB, v0 pgtypes.Abstime, v1 pgtypes.Reltime) (pgtypes.Abstime, e
 }
 
 // Timestamp calls the stored procedure 'pg_catalog.timestamp(abstime, date, timestamp with time zone, date, time without time zone, timestamp without time zone, integer) timestamp without time zone' on db.
-func Timestamp(db XODB, v0 pgtypes.Abstime, v1 pgtypes.Date, v2 *time.Time, v3 pgtypes.Date, v4 int64, v5 int64, v6 int) (int64, error) {
+func Timestamp(db XODB, v0 pgtypes.Abstime, v1 *time.Time, v2 *time.Time, v3 *time.Time, v4 int64, v5 int64, v6 int) (int64, error) {
 	var err error
 
 	// sql query
@@ -36468,7 +36468,7 @@ func TimestampCmp(db XODB, v0 int64, v1 int64) (int, error) {
 }
 
 // TimestampCmpDate calls the stored procedure 'pg_catalog.timestamp_cmp_date(timestamp without time zone, date) integer' on db.
-func TimestampCmpDate(db XODB, v0 int64, v1 pgtypes.Date) (int, error) {
+func TimestampCmpDate(db XODB, v0 int64, v1 *time.Time) (int, error) {
 	var err error
 
 	// sql query
@@ -36522,7 +36522,7 @@ func TimestampEq(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampEqDate calls the stored procedure 'pg_catalog.timestamp_eq_date(timestamp without time zone, date) boolean' on db.
-func TimestampEqDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampEqDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -36576,7 +36576,7 @@ func TimestampGe(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampGeDate calls the stored procedure 'pg_catalog.timestamp_ge_date(timestamp without time zone, date) boolean' on db.
-func TimestampGeDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampGeDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -36630,7 +36630,7 @@ func TimestampGt(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampGtDate calls the stored procedure 'pg_catalog.timestamp_gt_date(timestamp without time zone, date) boolean' on db.
-func TimestampGtDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampGtDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -36756,7 +36756,7 @@ func TimestampLe(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampLeDate calls the stored procedure 'pg_catalog.timestamp_le_date(timestamp without time zone, date) boolean' on db.
-func TimestampLeDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampLeDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -36810,7 +36810,7 @@ func TimestampLt(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampLtDate calls the stored procedure 'pg_catalog.timestamp_lt_date(timestamp without time zone, date) boolean' on db.
-func TimestampLtDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampLtDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -36900,7 +36900,7 @@ func TimestampNe(db XODB, v0 int64, v1 int64) (bool, error) {
 }
 
 // TimestampNeDate calls the stored procedure 'pg_catalog.timestamp_ne_date(timestamp without time zone, date) boolean' on db.
-func TimestampNeDate(db XODB, v0 int64, v1 pgtypes.Date) (bool, error) {
+func TimestampNeDate(db XODB, v0 int64, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37116,7 +37116,7 @@ func Timestamptypmodout(db XODB, v0 int) (pgtypes.Cstring, error) {
 }
 
 // Timestamptz calls the stored procedure 'pg_catalog.timestamptz(abstime, date, timestamp without time zone, date, time without time zone, date, time with time zone, timestamp with time zone, integer) timestamp with time zone' on db.
-func Timestamptz(db XODB, v0 pgtypes.Abstime, v1 pgtypes.Date, v2 int64, v3 pgtypes.Date, v4 int64, v5 pgtypes.Date, v6 int64, v7 *time.Time, v8 int) (*time.Time, error) {
+func Timestamptz(db XODB, v0 pgtypes.Abstime, v1 *time.Time, v2 int64, v3 *time.Time, v4 int64, v5 *time.Time, v6 int64, v7 *time.Time, v8 int) (*time.Time, error) {
 	var err error
 
 	// sql query
@@ -37152,7 +37152,7 @@ func TimestamptzCmp(db XODB, v0 *time.Time, v1 *time.Time) (int, error) {
 }
 
 // TimestamptzCmpDate calls the stored procedure 'pg_catalog.timestamptz_cmp_date(timestamp with time zone, date) integer' on db.
-func TimestamptzCmpDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (int, error) {
+func TimestamptzCmpDate(db XODB, v0 *time.Time, v1 *time.Time) (int, error) {
 	var err error
 
 	// sql query
@@ -37206,7 +37206,7 @@ func TimestamptzEq(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzEqDate calls the stored procedure 'pg_catalog.timestamptz_eq_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzEqDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzEqDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37260,7 +37260,7 @@ func TimestamptzGe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzGeDate calls the stored procedure 'pg_catalog.timestamptz_ge_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzGeDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzGeDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37314,7 +37314,7 @@ func TimestamptzGt(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzGtDate calls the stored procedure 'pg_catalog.timestamptz_gt_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzGtDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzGtDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37404,7 +37404,7 @@ func TimestamptzLe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzLeDate calls the stored procedure 'pg_catalog.timestamptz_le_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzLeDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzLeDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37458,7 +37458,7 @@ func TimestamptzLt(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzLtDate calls the stored procedure 'pg_catalog.timestamptz_lt_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzLtDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzLtDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -37548,7 +37548,7 @@ func TimestamptzNe(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 }
 
 // TimestamptzNeDate calls the stored procedure 'pg_catalog.timestamptz_ne_date(timestamp with time zone, date) boolean' on db.
-func TimestamptzNeDate(db XODB, v0 *time.Time, v1 pgtypes.Date) (bool, error) {
+func TimestamptzNeDate(db XODB, v0 *time.Time, v1 *time.Time) (bool, error) {
 	var err error
 
 	// sql query
@@ -38052,7 +38052,7 @@ func TimetzSmaller(db XODB, v0 int64, v1 int64) (int64, error) {
 }
 
 // TimetzdatePl calls the stored procedure 'pg_catalog.timetzdate_pl(time with time zone, date) timestamp with time zone' on db.
-func TimetzdatePl(db XODB, v0 int64, v1 pgtypes.Date) (*time.Time, error) {
+func TimetzdatePl(db XODB, v0 int64, v1 *time.Time) (*time.Time, error) {
 	var err error
 
 	// sql query
@@ -38574,18 +38574,18 @@ func ToChar(db XODB, v0 int64, v1 string, v2 int, v3 string, v4 float32, v5 stri
 }
 
 // ToDate calls the stored procedure 'pg_catalog.to_date(text, text) date' on db.
-func ToDate(db XODB, v0 string, v1 string) (pgtypes.Date, error) {
+func ToDate(db XODB, v0 string, v1 string) (*time.Time, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.to_date($1, $2)`
 
 	// run query
-	var ret pgtypes.Date
+	var ret *time.Time
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Date{}, err
+		return nil, err
 	}
 
 	return ret, nil
