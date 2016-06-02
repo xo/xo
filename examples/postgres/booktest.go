@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/postgres/models"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// open database
-	db, err := sql.Open("postgres", "postgres://booktest:booktest@localhost/booktest")
+	db, err := dburl.Open("pgsql://booktest:booktest@localhost/booktest")
 	if err != nil {
 		log.Fatal(err)
 	}

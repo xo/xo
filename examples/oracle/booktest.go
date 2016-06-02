@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	_ "gopkg.in/rana/ora.v3"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/oracle/models"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	// open database
-	db, err := sql.Open("ora", "booktest/booktest@"+*flagHost+"/orcl")
+	db, err := dburl.Open("oracle://booktest:booktest@" + *flagHost + "/orcl")
 	if err != nil {
 		log.Fatal(err)
 	}

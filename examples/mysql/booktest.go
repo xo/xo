@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/mysql/models"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// open database
-	db, err := sql.Open("mysql", "booktest:booktest@tcp(localhost:3306)/booktest?parseTime=true")
+	db, err := dburl.Open("mysql://booktest:booktest@localhost/booktest?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}

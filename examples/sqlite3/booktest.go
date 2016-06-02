@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/sqlite3/models"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// open database
-	db, err := sql.Open("sqlite3", "booktest.sqlite3")
+	db, err := dburl.Open("file:booktest.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}

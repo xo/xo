@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +8,7 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
+	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/mssql/models"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// open database
-	db, err := sql.Open("mssql", "server=sqlexpress;user id=booktest;password=booktest;database=booktest")
+	db, err := dburl.Open("mssql://booktest:booktest@sqlexpress/booktest")
 	if err != nil {
 		log.Fatal(err)
 	}
