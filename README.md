@@ -80,7 +80,7 @@ go build ./models
 The following are xo's arguments and options:
 
 ```
-usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--fk-mode FK-MODE] [--use-index-names] [--use-reversed-enum-const-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] DSN
+usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--fk-mode FK-MODE] [--use-index-names] [--use-reversed-enum-const-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--escape-all] [--escape-schema] [--escape-table] [--escape-column] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] DSN
 
 positional arguments:
   dsn                    data source name
@@ -105,7 +105,7 @@ options:
   --include INCLUDE      include type(s)
   --exclude EXCLUDE      exclude type(s)
   --fk-mode FK-MODE, -k FK-MODE
-                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart] [default: 0xc82000e9f8]
+                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart] [default: 0xc8201024d8]
   --use-index-names, -j
                          use index names as defined in schema for generated Go code
   --use-reversed-enum-const-names, -R
@@ -130,6 +130,10 @@ options:
                          delimiter for query's embedded Go parameters [default: %%]
   --query-fields QUERY-FIELDS, -Z QUERY-FIELDS
                          comma separated list of field names to scan query's results to the query's associated Go type
+  --escape-all, -X       escape all names in SQL queries
+  --escape-schema, -z    escape schema name in SQL queries
+  --escape-table, -y     escape table names in SQL queries
+  --escape-column, -x    escape column names in SQL queries
   --enable-postgres-oids
                          enable postgres oids
   --template-path TEMPLATE-PATH
