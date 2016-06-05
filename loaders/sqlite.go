@@ -58,6 +58,8 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	nilVal := "nil"
 	unsigned := false
 
+	dt = strings.ToLower(dt)
+
 	// extract precision
 	dt, precision, _ = args.ParsePrecision(dt)
 
