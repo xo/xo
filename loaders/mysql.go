@@ -80,7 +80,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	var typ string
 	switch dt {
-	case "bool", "boolean":
+	case "bool", "boolean", "bit":
 		nilVal = "false"
 		typ = "bool"
 		if nullable {
@@ -136,7 +136,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
 		typ = "[]byte"
 
-	case "timestamp", "datetime":
+	case "timestamp", "datetime", "date":
 		typ = "*time.Time"
 		if nullable {
 			nilVal = "pq.NullTime{}"
