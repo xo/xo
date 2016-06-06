@@ -79,8 +79,34 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	dt, precision, _ = args.ParsePrecision(dt)
 
 	var typ string
+
+switchDT:
 	switch dt {
-	case "bool", "boolean", "bit":
+	case "bit":
+		nilVal = "0"
+		if precision == 1 {
+			nilVal = "false"
+			typ = "bool"
+			if nullable {
+				nilVal = "sql.NullBool{}"
+				typ = "sql.NullBool"
+			}
+			break switchDT
+		} else if precision <= 8 {
+			typ = "uint8"
+		} else if precision <= 16 {
+			typ = "uint16"
+		} else if precision <= 32 {
+			typ = "uint32"
+		} else {
+			typ = "uint64"
+		}
+		if nullable {
+			nilVal = "sql.NullInt64{}"
+			typ = "sql.NullInt64"
+		}
+
+	case "bool", "boolean":
 		nilVal = "false"
 		typ = "bool"
 		if nullable {
@@ -103,6 +129,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
+
 	case "int", "integer":
 		nilVal = "0"
 		typ = args.Int32Type
@@ -110,6 +137,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
+
 	case "bigint":
 		nilVal = "0"
 		typ = "int64"
@@ -125,6 +153,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
+
 	case "decimal", "double":
 		nilVal = "0.0"
 		typ = "float64"
