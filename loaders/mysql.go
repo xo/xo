@@ -122,7 +122,7 @@ switchDT:
 			typ = "sql.NullString"
 		}
 
-	case "tinyint", "smallint", "mediumint":
+	case "tinyint", "smallint":
 		nilVal = "0"
 		typ = "int16"
 		if nullable {
@@ -130,7 +130,7 @@ switchDT:
 			typ = "sql.NullInt64"
 		}
 
-	case "int", "integer":
+	case "mediumint", "int", "integer":
 		nilVal = "0"
 		typ = args.Int32Type
 		if nullable {
