@@ -296,6 +296,12 @@ func writeTypes(args *internal.ArgType) error {
 			continue
 		}
 
+		// check if generated template is only whitespace/empty
+		bufStr := strings.TrimSpace(t.Buf.String())
+		if len(bufStr) == 0 {
+			continue
+		}
+
 		// get file and filename
 		f, err = getFile(args, &t)
 		if err != nil {
