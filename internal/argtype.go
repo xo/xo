@@ -40,6 +40,9 @@ type ArgType struct {
 	// Uint32Type is the type to assign those discovered as uint32.
 	Uint32Type string `arg:"--uint32-type,-u,help:Go type to assign to unsigned integers"`
 
+	// IgnoreFields allows the user to specify field names which should not be handled by xo in the generated code.
+	IgnoreFields []string `arg:"--ignore-fields,help:Fields to exclude from the generated code"`
+
 	// IncTypes are the types to include.
 	InclTypes []string `arg:"--include,help:include type(s)"`
 

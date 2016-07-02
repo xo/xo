@@ -141,7 +141,7 @@ options:
   --help, -h             display this help and exit
 ```
 
-# End-to-End Example #
+# Example: End-to-End #
 
 For example, given the following PostgreSQL schema:
 ```PLpgSQL
@@ -304,6 +304,43 @@ type XODB interface {
 }
 ```
 
+# Example: Ignoring Fields #
+
+Sometimes you may wish to have the database manage the values of columns instead
+of having them managed in the generated Go code.  If you are generating the Go
+code from an existing database, you can use the `--ignore-fields` flag to
+specify that the fields should not be managed by `xo`.
+
+For instance, consider this PostgreSQL schema which defines a function and
+trigger to set the `modified_at` column automatically on `UPDATE` (as well as
+defaulting the `created_at` column to `now()` when the row is first created):
+
+```
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name text NOT NULL DEFAULT '' UNIQUE,
+  created_at timestamptz default now(),
+  modified_at timestamptz default now(),
+);
+
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.modfified_at = now();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_users_modtime BEFORE UPDATE ON users FROM EACH ROW EXECUTE PROCEDURE update_modified_column();
+```
+
+We could ensure that these columns are managed by PostgreSQL and not by the
+generated Go code using `--ignore-fields`:
+
+```
+$ xo psql://user:pass@host/db -o models --ignore-fields created_at modified_at
+```
+
 ## Oracle Support ##
 
 Oracle support is disabled by default as the Go driver for it relies on the
@@ -412,8 +449,6 @@ The following projects work with similar concepts as xo:
 # TODO #
 * Overhaul and better standardize type parsing
 * Finish support for --{incl, excl}[ude] types
-* Finish support for ignoring fields (ie, fields managed by database such as
-  'modified' timestamps)
 * Write/publish template set for protobuf
 * Finish many-to-many and link table support
 * Finish example and code for generated *Slice types

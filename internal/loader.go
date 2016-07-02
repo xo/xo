@@ -496,6 +496,24 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 
 	// process columns
 	for _, c := range columnList {
+		ignore := false
+
+		for _, ignoreField := range args.IgnoreFields {
+			if ignoreField == c.ColumnName {
+				// Skip adding this field if user has specified they are not
+				// interested.
+				//
+				// This could be useful for fields which are managed by the
+				// database (e.g. automatically updated timestamps) instead of
+				// via Go code.
+				ignore = true
+			}
+		}
+
+		if ignore {
+			continue
+		}
+
 		// set col info
 		f := &Field{
 			Name: SnakeToIdentifier(c.ColumnName),
