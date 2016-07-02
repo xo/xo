@@ -10,9 +10,9 @@ import (
 
 // DjangoSession represents a row from 'django.django_session'.
 type DjangoSession struct {
-	SessionKey  string     // session_key
-	SessionData string     // session_data
-	ExpireDate  *time.Time // expire_date
+	SessionKey  string     `json:"session_key"`  // session_key
+	SessionData string     `json:"session_data"` // session_data
+	ExpireDate  *time.Time `json:"expire_date"`  // expire_date
 
 	// xo fields
 	_exists, _deleted bool

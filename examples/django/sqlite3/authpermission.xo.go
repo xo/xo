@@ -7,10 +7,10 @@ import "errors"
 
 // AuthPermission represents a row from 'auth_permission'.
 type AuthPermission struct {
-	ID            int    // id
-	ContentTypeID int    // content_type_id
-	Codename      string // codename
-	Name          string // name
+	ID            int    `json:"id"`              // id
+	ContentTypeID int    `json:"content_type_id"` // content_type_id
+	Codename      string `json:"codename"`        // codename
+	Name          string `json:"name"`            // name
 
 	// xo fields
 	_exists, _deleted bool

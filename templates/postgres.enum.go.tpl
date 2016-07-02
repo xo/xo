@@ -1,4 +1,5 @@
 {{- $type := .Name -}}
+{{- $short := (shortname $type "enumVal" "text" "buf" "ok" "src") -}}
 {{- $reverseNames := .ReverseConstNames -}}
 // {{ $type }} is the '{{ .Enum.EnumName }}' enum type from schema '{{ .Schema  }}'.
 type {{ $type }} uint16
@@ -11,10 +12,10 @@ const (
 )
 
 // String returns the string value of the {{ $type }}.
-func ({{ shortname $type }} {{ $type }}) String() string {
+func ({{ $short }} {{ $type }}) String() string {
 	var enumVal string
 
-	switch {{ shortname $type }} {
+	switch {{ $short }} {
 {{- range .Values }}
 	case {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }}:
 		enumVal = "{{ .Val.EnumValue }}"
@@ -25,16 +26,16 @@ func ({{ shortname $type }} {{ $type }}) String() string {
 }
 
 // MarshalText marshals {{ $type }} into text.
-func ({{ shortname $type }} {{ $type }}) MarshalText() ([]byte, error) {
-	return []byte({{ shortname $type }}.String()), nil
+func ({{ $short }} {{ $type }}) MarshalText() ([]byte, error) {
+	return []byte({{ $short }}.String()), nil
 }
 
 // UnmarshalText unmarshals {{ $type }} from text.
-func ({{ shortname $type }} *{{ $type }}) UnmarshalText(text []byte) error {
+func ({{ $short }} *{{ $type }}) UnmarshalText(text []byte) error {
 	switch string(text)	{
 {{- range .Values }}
 	case "{{ .Val.EnumValue }}":
-		*{{ shortname $type }} = {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }}
+		*{{ $short }} = {{ if $reverseNames }}{{ .Name }}{{ $type }}{{ else }}{{ $type }}{{ .Name }}{{ end }}
 {{ end }}
 
 	default:
@@ -45,17 +46,17 @@ func ({{ shortname $type }} *{{ $type }}) UnmarshalText(text []byte) error {
 }
 
 // Value satisfies the sql/driver.Valuer interface for {{ $type }}.
-func ({{ shortname $type }} {{ $type }}) Value() (driver.Value, error) {
-	return {{ shortname $type }}.String(), nil
+func ({{ $short }} {{ $type }}) Value() (driver.Value, error) {
+	return {{ $short }}.String(), nil
 }
 
 // Scan satisfies the database/sql.Scanner interface for {{ $type }}.
-func ({{ shortname $type }} *{{ $type }}) Scan(src interface{}) error {
+func ({{ $short }} *{{ $type }}) Scan(src interface{}) error {
 	buf, ok := src.([]byte)
 	if !ok {
 	   return errors.New("invalid {{ $type }}")
 	}
 
-	return {{ shortname $type }}.UnmarshalText(buf)
+	return {{ $short }}.UnmarshalText(buf)
 }
 

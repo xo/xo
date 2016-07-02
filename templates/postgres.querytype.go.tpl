@@ -1,7 +1,8 @@
+{{- $table := (schema .Schema .Table.TableName) -}}
 {{- if .Comment -}}
 // {{ .Comment }}
 {{- else -}}
-// {{ .Name }} represents a row from '{{ schema .Schema .Table.TableName }}'.
+// {{ .Name }} represents a row from '{{ $table }}'.
 {{- end }}
 type {{ .Name }} struct {
 {{- range .Fields }}

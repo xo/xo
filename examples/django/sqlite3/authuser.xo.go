@@ -10,17 +10,17 @@ import (
 
 // AuthUser represents a row from 'auth_user'.
 type AuthUser struct {
-	ID          int            // id
-	Password    string         // password
-	LastLogin   sql.NullString // last_login
-	IsSuperuser bool           // is_superuser
-	FirstName   string         // first_name
-	LastName    string         // last_name
-	Email       string         // email
-	IsStaff     bool           // is_staff
-	IsActive    bool           // is_active
-	DateJoined  string         // date_joined
-	Username    string         // username
+	ID          int            `json:"id"`           // id
+	Password    string         `json:"password"`     // password
+	LastLogin   sql.NullString `json:"last_login"`   // last_login
+	IsSuperuser bool           `json:"is_superuser"` // is_superuser
+	FirstName   string         `json:"first_name"`   // first_name
+	LastName    string         `json:"last_name"`    // last_name
+	Email       string         `json:"email"`        // email
+	IsStaff     bool           `json:"is_staff"`     // is_staff
+	IsActive    bool           `json:"is_active"`    // is_active
+	DateJoined  string         `json:"date_joined"`  // date_joined
+	Username    string         `json:"username"`     // username
 
 	// xo fields
 	_exists, _deleted bool

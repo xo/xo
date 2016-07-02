@@ -7,10 +7,10 @@ import "errors"
 
 // DjangoMigration represents a row from 'django_migrations'.
 type DjangoMigration struct {
-	ID      int    // id
-	App     string // app
-	Name    string // name
-	Applied string // applied
+	ID      int    `json:"id"`      // id
+	App     string `json:"app"`     // app
+	Name    string `json:"name"`    // name
+	Applied string `json:"applied"` // applied
 
 	// xo fields
 	_exists, _deleted bool

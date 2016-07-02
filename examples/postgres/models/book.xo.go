@@ -8,16 +8,16 @@ import (
 	"time"
 )
 
-// Book represents a row from public.books.
+// Book represents a row from 'public.books'.
 type Book struct {
-	BookID    int         // book_id
-	AuthorID  int         // author_id
-	Isbn      string      // isbn
-	Booktype  BookType    // booktype
-	Title     string      // title
-	Year      int         // year
-	Available *time.Time  // available
-	Tags      StringSlice // tags
+	BookID    int         `json:"book_id"`   // book_id
+	AuthorID  int         `json:"author_id"` // author_id
+	Isbn      string      `json:"isbn"`      // isbn
+	Booktype  BookType    `json:"booktype"`  // booktype
+	Title     string      `json:"title"`     // title
+	Year      int         `json:"year"`      // year
+	Available *time.Time  `json:"available"` // available
+	Tags      StringSlice `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool

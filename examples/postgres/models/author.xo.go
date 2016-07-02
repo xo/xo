@@ -5,10 +5,10 @@ package models
 
 import "errors"
 
-// Author represents a row from public.authors.
+// Author represents a row from 'public.authors'.
 type Author struct {
-	AuthorID int    // author_id
-	Name     string // name
+	AuthorID int    `json:"author_id"` // author_id
+	Name     string `json:"name"`      // name
 
 	// xo fields
 	_exists, _deleted bool

@@ -7,10 +7,10 @@ import "errors"
 
 // AuthPermission represents a row from 'django.auth_permission'.
 type AuthPermission struct {
-	ID            int    // id
-	Name          string // name
-	ContentTypeID int    // content_type_id
-	Codename      string // codename
+	ID            int    `json:"id"`              // id
+	Name          string `json:"name"`            // name
+	ContentTypeID int    `json:"content_type_id"` // content_type_id
+	Codename      string `json:"codename"`        // codename
 
 	// xo fields
 	_exists, _deleted bool

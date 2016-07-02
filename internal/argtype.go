@@ -112,8 +112,11 @@ type ArgType struct {
 	// EscapeColumnNames toggles escaping column names in SQL queries.
 	EscapeColumnNames bool `arg:"--escape-column,-x,help:escape column names in SQL queries"`
 
-	// EnablePostgresOIDs toggles postgres oids
+	// EnablePostgresOIDs toggles postgres oids.
 	EnablePostgresOIDs bool `arg:"--enable-postgres-oids,help:enable postgres oids"`
+
+	// NameConflictSuffix is the suffix used when a name conflicts with a scoped Go variable.
+	NameConflictSuffix string `arg:"--name-conflict-suffix,-w,help:suffix to append when a name conflicts with a Go variable"`
 
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
@@ -158,6 +161,7 @@ func NewDefaultArgs() *ArgType {
 		Uint32Type:          "uint",
 		ForeignKeyMode:      &fkMode,
 		QueryParamDelimiter: "%%",
+		NameConflictSuffix:  "Val",
 
 		// KnownTypeMap is the collection of known Go types.
 		KnownTypeMap: map[string]bool{

@@ -7,13 +7,13 @@ import "errors"
 
 // Book represents a row from 'books'.
 type Book struct {
-	BookID    int    // book_id
-	AuthorID  int    // author_id
-	Isbn      string // isbn
-	Title     string // title
-	Year      int    // year
-	Available string // available
-	Tags      string // tags
+	BookID    int    `json:"book_id"`   // book_id
+	AuthorID  int    `json:"author_id"` // author_id
+	Isbn      string `json:"isbn"`      // isbn
+	Title     string `json:"title"`     // title
+	Year      int    `json:"year"`      // year
+	Available string `json:"available"` // available
+	Tags      string `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool

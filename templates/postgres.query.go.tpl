@@ -1,4 +1,5 @@
-{{ $QueryComments := .QueryComments }}
+{{- $short := (shortname .Type.Name "err" "sqlstr" "db" "q" "res" "XOLog" .QueryParams) -}}
+{{- $queryComments := .QueryComments -}}
 {{- if .Comment -}}
 // {{ .Comment }}
 {{- else -}}
@@ -8,19 +9,19 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 	var err error
 
 	// sql query
-	{{ if .Interpolate }}var{{ else }}const{{ end }} sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $QueryComments $i) }} // {{ index $QueryComments $i }}{{ end }}{{ if $i }}
+	{{ if .Interpolate }}var{{ else }}const{{ end }} sqlstr = {{ range $i, $l := .Query }}{{ if $i }} +{{ end }}{{ if (index $queryComments $i) }} // {{ index $queryComments $i }}{{ end }}{{ if $i }}
 	{{end -}}`{{ $l }}`{{ end }}
 
 	// run query
 	XOLog(sqlstr{{ range .QueryParams }}{{ if not .Interpolate }}, {{ .Name }}{{ end }}{{ end }})
 {{- if .OnlyOne }}
-	var {{ shortname .Type.Name }} {{ .Type.Name }}
-	err = db.QueryRow(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Type.Fields (print "&" (shortname .Type.Name)) }})
+	var {{ $short }} {{ .Type.Name }}
+	err = db.QueryRow(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
 		return nil, err
 	}
 
-	return &{{ shortname .Type.Name }}, nil
+	return &{{ $short }}, nil
 {{- else }}
 	q, err := db.Query(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }})
 	if err != nil {
@@ -31,15 +32,15 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 	// load results
 	res := []*{{ .Type.Name }}{}
 	for q.Next() {
-		{{ shortname .Type.Name}} := {{ .Type.Name }}{}
+		{{ $short }} := {{ .Type.Name }}{}
 
 		// scan
-		err = q.Scan({{ fieldnames .Type.Fields (print "&" (shortname .Type.Name)) }})
+		err = q.Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 		if err != nil {
 			return nil, err
 		}
 
-		res = append(res, &{{ shortname .Type.Name }})
+		res = append(res, &{{ $short }})
 	}
 
 	return res, nil

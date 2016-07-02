@@ -5,11 +5,11 @@ package postgres
 
 import "errors"
 
-// AuthUserGroup represents a row from public.auth_user_groups.
+// AuthUserGroup represents a row from 'public.auth_user_groups'.
 type AuthUserGroup struct {
-	ID      int // id
-	UserID  int // user_id
-	GroupID int // group_id
+	ID      int `json:"id"`       // id
+	UserID  int `json:"user_id"`  // user_id
+	GroupID int `json:"group_id"` // group_id
 
 	// xo fields
 	_exists, _deleted bool

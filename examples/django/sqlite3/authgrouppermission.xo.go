@@ -7,9 +7,9 @@ import "errors"
 
 // AuthGroupPermission represents a row from 'auth_group_permissions'.
 type AuthGroupPermission struct {
-	ID           int // id
-	GroupID      int // group_id
-	PermissionID int // permission_id
+	ID           int `json:"id"`            // id
+	GroupID      int `json:"group_id"`      // group_id
+	PermissionID int `json:"permission_id"` // permission_id
 
 	// xo fields
 	_exists, _deleted bool

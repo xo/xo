@@ -7,8 +7,8 @@ import "errors"
 
 // AuthGroup represents a row from 'auth_group'.
 type AuthGroup struct {
-	ID   int    // id
-	Name string // name
+	ID   int    `json:"id"`   // id
+	Name string `json:"name"` // name
 
 	// xo fields
 	_exists, _deleted bool

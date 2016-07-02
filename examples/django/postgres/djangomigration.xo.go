@@ -8,12 +8,12 @@ import (
 	"time"
 )
 
-// DjangoMigration represents a row from public.django_migrations.
+// DjangoMigration represents a row from 'public.django_migrations'.
 type DjangoMigration struct {
-	ID      int        // id
-	App     string     // app
-	Name    string     // name
-	Applied *time.Time // applied
+	ID      int        `json:"id"`      // id
+	App     string     `json:"app"`     // app
+	Name    string     `json:"name"`    // name
+	Applied *time.Time `json:"applied"` // applied
 
 	// xo fields
 	_exists, _deleted bool

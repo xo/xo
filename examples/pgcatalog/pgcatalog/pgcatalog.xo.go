@@ -36,39 +36,29 @@ func ASCII(db XODB, v0 string) (int, error) {
 }
 
 // ASCIIToMic calls the stored procedure 'pg_catalog.ascii_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func ASCIIToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func ASCIIToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ascii_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // ASCIIToUTF8 calls the stored procedure 'pg_catalog.ascii_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func ASCIIToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func ASCIIToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ascii_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Abbrev calls the stored procedure 'pg_catalog.abbrev(cidr, inet) text' on db.
@@ -1584,219 +1574,159 @@ func Bernoulli(db XODB, v0 pgtypes.Internal) (pgtypes.TsmHandler, error) {
 }
 
 // Big5ToEucTw calls the stored procedure 'pg_catalog.big5_to_euc_tw(integer, integer, cstring, internal, integer) void' on db.
-func Big5ToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Big5ToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.big5_to_euc_tw($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Big5ToMic calls the stored procedure 'pg_catalog.big5_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Big5ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Big5ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.big5_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Big5ToUTF8 calls the stored procedure 'pg_catalog.big5_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Big5ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Big5ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.big5_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeCreateEmptyExtension calls the stored procedure 'pg_catalog.binary_upgrade_create_empty_extension(text, text, boolean, text, oid[], text[], text[]) void' on db.
-func BinaryUpgradeCreateEmptyExtension(db XODB, v0 string, v1 string, v2 bool, v3 string, v4 []pgtypes.Oid, v5 StringSlice, v6 StringSlice) (pgtypes.Void, error) {
+func BinaryUpgradeCreateEmptyExtension(db XODB, v0 string, v1 string, v2 bool, v3 string, v4 []pgtypes.Oid, v5 StringSlice, v6 StringSlice) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_create_empty_extension($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextArrayPgTypeOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_array_pg_type_oid(oid) void' on db.
-func BinaryUpgradeSetNextArrayPgTypeOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextArrayPgTypeOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_array_pg_type_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextHeapPgClassOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_heap_pg_class_oid(oid) void' on db.
-func BinaryUpgradeSetNextHeapPgClassOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextHeapPgClassOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_heap_pg_class_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextIndexPgClassOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_index_pg_class_oid(oid) void' on db.
-func BinaryUpgradeSetNextIndexPgClassOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextIndexPgClassOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_index_pg_class_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextPgAuthidOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_pg_authid_oid(oid) void' on db.
-func BinaryUpgradeSetNextPgAuthidOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextPgAuthidOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_pg_authid_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextPgEnumOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_pg_enum_oid(oid) void' on db.
-func BinaryUpgradeSetNextPgEnumOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextPgEnumOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_pg_enum_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextPgTypeOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_pg_type_oid(oid) void' on db.
-func BinaryUpgradeSetNextPgTypeOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextPgTypeOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_pg_type_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextToastPgClassOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_toast_pg_class_oid(oid) void' on db.
-func BinaryUpgradeSetNextToastPgClassOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextToastPgClassOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_toast_pg_class_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // BinaryUpgradeSetNextToastPgTypeOid calls the stored procedure 'pg_catalog.binary_upgrade_set_next_toast_pg_type_oid(oid) void' on db.
-func BinaryUpgradeSetNextToastPgTypeOid(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func BinaryUpgradeSetNextToastPgTypeOid(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.binary_upgrade_set_next_toast_pg_type_oid($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Bit calls the stored procedure 'pg_catalog.bit(bigint, integer, integer, integer, bit, integer, boolean) bit' on db.
@@ -3870,21 +3800,16 @@ func Brinbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Int
 }
 
 // Brinbuildempty calls the stored procedure 'pg_catalog.brinbuildempty(internal) void' on db.
-func Brinbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Brinbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brinbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Brinbulkdelete calls the stored procedure 'pg_catalog.brinbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -3906,39 +3831,29 @@ func Brinbulkdelete(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtype
 }
 
 // Brincostestimate calls the stored procedure 'pg_catalog.brincostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Brincostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Brincostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brincostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Brinendscan calls the stored procedure 'pg_catalog.brinendscan(internal) void' on db.
-func Brinendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Brinendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brinendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Bringetbitmap calls the stored procedure 'pg_catalog.bringetbitmap(internal, internal) bigint' on db.
@@ -3978,21 +3893,16 @@ func Brininsert(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.In
 }
 
 // Brinmarkpos calls the stored procedure 'pg_catalog.brinmarkpos(internal) void' on db.
-func Brinmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Brinmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brinmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Brinoptions calls the stored procedure 'pg_catalog.brinoptions(text[], boolean) bytea' on db.
@@ -4014,39 +3924,29 @@ func Brinoptions(db XODB, v0 StringSlice, v1 bool) ([]byte, error) {
 }
 
 // Brinrescan calls the stored procedure 'pg_catalog.brinrescan(internal, internal, internal, internal, internal) void' on db.
-func Brinrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Brinrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brinrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Brinrestrpos calls the stored procedure 'pg_catalog.brinrestrpos(internal) void' on db.
-func Brinrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Brinrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.brinrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Brinvacuumcleanup calls the stored procedure 'pg_catalog.brinvacuumcleanup(internal, internal) internal' on db.
@@ -4194,21 +4094,16 @@ func Btbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Inter
 }
 
 // Btbuildempty calls the stored procedure 'pg_catalog.btbuildempty(internal) void' on db.
-func Btbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btbulkdelete calls the stored procedure 'pg_catalog.btbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -4266,39 +4161,29 @@ func Btcharcmp(db XODB, v0 uint8, v1 uint8) (int, error) {
 }
 
 // Btcostestimate calls the stored procedure 'pg_catalog.btcostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Btcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Btcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btcostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btendscan calls the stored procedure 'pg_catalog.btendscan(internal) void' on db.
-func Btendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btfloat48cmp calls the stored procedure 'pg_catalog.btfloat48cmp(real, double precision) integer' on db.
@@ -4338,21 +4223,16 @@ func Btfloat4cmp(db XODB, v0 float32, v1 float32) (int, error) {
 }
 
 // Btfloat4sortsupport calls the stored procedure 'pg_catalog.btfloat4sortsupport(internal) void' on db.
-func Btfloat4sortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btfloat4sortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btfloat4sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btfloat84cmp calls the stored procedure 'pg_catalog.btfloat84cmp(double precision, real) integer' on db.
@@ -4392,21 +4272,16 @@ func Btfloat8cmp(db XODB, v0 float64, v1 float64) (int, error) {
 }
 
 // Btfloat8sortsupport calls the stored procedure 'pg_catalog.btfloat8sortsupport(internal) void' on db.
-func Btfloat8sortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btfloat8sortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btfloat8sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btgetbitmap calls the stored procedure 'pg_catalog.btgetbitmap(internal, internal) bigint' on db.
@@ -4518,21 +4393,16 @@ func Btint2cmp(db XODB, v0 int16, v1 int16) (int, error) {
 }
 
 // Btint2sortsupport calls the stored procedure 'pg_catalog.btint2sortsupport(internal) void' on db.
-func Btint2sortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btint2sortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btint2sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btint42cmp calls the stored procedure 'pg_catalog.btint42cmp(integer, smallint) integer' on db.
@@ -4590,21 +4460,16 @@ func Btint4cmp(db XODB, v0 int, v1 int) (int, error) {
 }
 
 // Btint4sortsupport calls the stored procedure 'pg_catalog.btint4sortsupport(internal) void' on db.
-func Btint4sortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btint4sortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btint4sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btint82cmp calls the stored procedure 'pg_catalog.btint82cmp(bigint, smallint) integer' on db.
@@ -4662,39 +4527,29 @@ func Btint8cmp(db XODB, v0 int64, v1 int64) (int, error) {
 }
 
 // Btint8sortsupport calls the stored procedure 'pg_catalog.btint8sortsupport(internal) void' on db.
-func Btint8sortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btint8sortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btint8sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btmarkpos calls the stored procedure 'pg_catalog.btmarkpos(internal) void' on db.
-func Btmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btnamecmp calls the stored procedure 'pg_catalog.btnamecmp(name, name) integer' on db.
@@ -4716,21 +4571,16 @@ func Btnamecmp(db XODB, v0 pgtypes.Name, v1 pgtypes.Name) (int, error) {
 }
 
 // Btnamesortsupport calls the stored procedure 'pg_catalog.btnamesortsupport(internal) void' on db.
-func Btnamesortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btnamesortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btnamesortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btoidcmp calls the stored procedure 'pg_catalog.btoidcmp(oid, oid) integer' on db.
@@ -4752,21 +4602,16 @@ func Btoidcmp(db XODB, v0 pgtypes.Oid, v1 pgtypes.Oid) (int, error) {
 }
 
 // Btoidsortsupport calls the stored procedure 'pg_catalog.btoidsortsupport(internal) void' on db.
-func Btoidsortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btoidsortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btoidsortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btoidvectorcmp calls the stored procedure 'pg_catalog.btoidvectorcmp(oidvector, oidvector) integer' on db.
@@ -4860,39 +4705,29 @@ func Btreltimecmp(db XODB, v0 pgtypes.Reltime, v1 pgtypes.Reltime) (int, error) 
 }
 
 // Btrescan calls the stored procedure 'pg_catalog.btrescan(internal, internal, internal, internal, internal) void' on db.
-func Btrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Btrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btrestrpos calls the stored procedure 'pg_catalog.btrestrpos(internal) void' on db.
-func Btrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Btrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.btrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Btrim calls the stored procedure 'pg_catalog.btrim(text, bytea, bytea, text, text) bytea' on db.
@@ -4950,21 +4785,16 @@ func Bttextcmp(db XODB, v0 string, v1 string) (int, error) {
 }
 
 // Bttextsortsupport calls the stored procedure 'pg_catalog.bttextsortsupport(internal) void' on db.
-func Bttextsortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Bttextsortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.bttextsortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Bttidcmp calls the stored procedure 'pg_catalog.bttidcmp(tid, tid) integer' on db.
@@ -8208,21 +8038,16 @@ func DateSmaller(db XODB, v0 *time.Time, v1 *time.Time) (*time.Time, error) {
 }
 
 // DateSortsupport calls the stored procedure 'pg_catalog.date_sortsupport(internal) void' on db.
-func DateSortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func DateSortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.date_sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // DateTrunc calls the stored procedure 'pg_catalog.date_trunc(text, timestamp without time zone, text, timestamp with time zone, text, interval) timestamp without time zone' on db.
@@ -9360,219 +9185,159 @@ func Eqsel(db XODB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 pgtypes.Internal, v3
 }
 
 // EucCnToMic calls the stored procedure 'pg_catalog.euc_cn_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func EucCnToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucCnToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_cn_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucCnToUTF8 calls the stored procedure 'pg_catalog.euc_cn_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func EucCnToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucCnToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_cn_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucJis2004ToShiftJis2004 calls the stored procedure 'pg_catalog.euc_jis_2004_to_shift_jis_2004(integer, integer, cstring, internal, integer) void' on db.
-func EucJis2004ToShiftJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucJis2004ToShiftJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_jis_2004_to_shift_jis_2004($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucJis2004ToUTF8 calls the stored procedure 'pg_catalog.euc_jis_2004_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func EucJis2004ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucJis2004ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_jis_2004_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucJpToMic calls the stored procedure 'pg_catalog.euc_jp_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func EucJpToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucJpToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_jp_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucJpToSjis calls the stored procedure 'pg_catalog.euc_jp_to_sjis(integer, integer, cstring, internal, integer) void' on db.
-func EucJpToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucJpToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_jp_to_sjis($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucJpToUTF8 calls the stored procedure 'pg_catalog.euc_jp_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func EucJpToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucJpToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_jp_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucKrToMic calls the stored procedure 'pg_catalog.euc_kr_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func EucKrToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucKrToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_kr_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucKrToUTF8 calls the stored procedure 'pg_catalog.euc_kr_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func EucKrToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucKrToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_kr_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucTwToBig5 calls the stored procedure 'pg_catalog.euc_tw_to_big5(integer, integer, cstring, internal, integer) void' on db.
-func EucTwToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucTwToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_tw_to_big5($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucTwToMic calls the stored procedure 'pg_catalog.euc_tw_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func EucTwToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucTwToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_tw_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EucTwToUTF8 calls the stored procedure 'pg_catalog.euc_tw_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func EucTwToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func EucTwToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.euc_tw_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // EventTriggerIn calls the stored procedure 'pg_catalog.event_trigger_in(cstring) event_trigger' on db.
@@ -11214,57 +10979,42 @@ func Flt8MulCash(db XODB, v0 float64, v1 string) (string, error) {
 }
 
 // FmgrCValidator calls the stored procedure 'pg_catalog.fmgr_c_validator(oid) void' on db.
-func FmgrCValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func FmgrCValidator(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.fmgr_c_validator($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // FmgrInternalValidator calls the stored procedure 'pg_catalog.fmgr_internal_validator(oid) void' on db.
-func FmgrInternalValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func FmgrInternalValidator(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.fmgr_internal_validator($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // FmgrSQLValidator calls the stored procedure 'pg_catalog.fmgr_sql_validator(oid) void' on db.
-func FmgrSQLValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func FmgrSQLValidator(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.fmgr_sql_validator($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Format calls the stored procedure 'pg_catalog.format(text, text, "any") text' on db.
@@ -11304,39 +11054,29 @@ func FormatType(db XODB, v0 pgtypes.Oid, v1 int) (string, error) {
 }
 
 // Gb18030ToUTF8 calls the stored procedure 'pg_catalog.gb18030_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Gb18030ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Gb18030ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gb18030_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // GbkToUTF8 calls the stored procedure 'pg_catalog.gbk_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func GbkToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func GbkToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gbk_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // GenerateSeries calls the stored procedure 'pg_catalog.generate_series(bigint, bigint, integer, integer, numeric, numeric, bigint, bigint, bigint, integer, integer, integer, timestamp without time zone, timestamp without time zone, interval, timestamp with time zone, timestamp with time zone, interval, numeric, numeric, numeric) SETOF timestamp with time zone' on db.
@@ -11826,21 +11566,16 @@ func Ginbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Inte
 }
 
 // Ginbuildempty calls the stored procedure 'pg_catalog.ginbuildempty(internal) void' on db.
-func Ginbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Ginbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ginbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Ginbulkdelete calls the stored procedure 'pg_catalog.ginbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -11862,39 +11597,29 @@ func Ginbulkdelete(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes
 }
 
 // Gincostestimate calls the stored procedure 'pg_catalog.gincostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Gincostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Gincostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gincostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Ginendscan calls the stored procedure 'pg_catalog.ginendscan(internal) void' on db.
-func Ginendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Ginendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ginendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gingetbitmap calls the stored procedure 'pg_catalog.gingetbitmap(internal, internal) bigint' on db.
@@ -11934,21 +11659,16 @@ func Gininsert(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Int
 }
 
 // Ginmarkpos calls the stored procedure 'pg_catalog.ginmarkpos(internal) void' on db.
-func Ginmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Ginmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ginmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Ginoptions calls the stored procedure 'pg_catalog.ginoptions(text[], boolean) bytea' on db.
@@ -11988,39 +11708,29 @@ func Ginqueryarrayextract(db XODB, v0 pgtypes.Anyarray, v1 pgtypes.Internal, v2 
 }
 
 // Ginrescan calls the stored procedure 'pg_catalog.ginrescan(internal, internal, internal, internal, internal) void' on db.
-func Ginrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Ginrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ginrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Ginrestrpos calls the stored procedure 'pg_catalog.ginrestrpos(internal) void' on db.
-func Ginrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Ginrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.ginrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Ginvacuumcleanup calls the stored procedure 'pg_catalog.ginvacuumcleanup(internal, internal) internal' on db.
@@ -12384,21 +12094,16 @@ func Gistbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Int
 }
 
 // Gistbuildempty calls the stored procedure 'pg_catalog.gistbuildempty(internal) void' on db.
-func Gistbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistbulkdelete calls the stored procedure 'pg_catalog.gistbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -12438,39 +12143,29 @@ func Gistcanreturn(db XODB, v0 pgtypes.Internal, v1 int) (bool, error) {
 }
 
 // Gistcostestimate calls the stored procedure 'pg_catalog.gistcostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Gistcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistcostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistendscan calls the stored procedure 'pg_catalog.gistendscan(internal) void' on db.
-func Gistendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistgetbitmap calls the stored procedure 'pg_catalog.gistgetbitmap(internal, internal) bigint' on db.
@@ -12528,21 +12223,16 @@ func Gistinsert(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.In
 }
 
 // Gistmarkpos calls the stored procedure 'pg_catalog.gistmarkpos(internal) void' on db.
-func Gistmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistoptions calls the stored procedure 'pg_catalog.gistoptions(text[], boolean) bytea' on db.
@@ -12564,39 +12254,29 @@ func Gistoptions(db XODB, v0 StringSlice, v1 bool) ([]byte, error) {
 }
 
 // Gistrescan calls the stored procedure 'pg_catalog.gistrescan(internal, internal, internal, internal, internal) void' on db.
-func Gistrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistrestrpos calls the stored procedure 'pg_catalog.gistrestrpos(internal) void' on db.
-func Gistrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Gistrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.gistrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Gistvacuumcleanup calls the stored procedure 'pg_catalog.gistvacuumcleanup(internal, internal) internal' on db.
@@ -13248,21 +12928,16 @@ func Hashbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Int
 }
 
 // Hashbuildempty calls the stored procedure 'pg_catalog.hashbuildempty(internal) void' on db.
-func Hashbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashbulkdelete calls the stored procedure 'pg_catalog.hashbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -13302,39 +12977,29 @@ func Hashchar(db XODB, v0 uint8) (int, error) {
 }
 
 // Hashcostestimate calls the stored procedure 'pg_catalog.hashcostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Hashcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashcostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashendscan calls the stored procedure 'pg_catalog.hashendscan(internal) void' on db.
-func Hashendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashenum calls the stored procedure 'pg_catalog.hashenum(anyenum) integer' on db.
@@ -13554,21 +13219,16 @@ func Hashmacaddr(db XODB, v0 pgtypes.Macaddr) (int, error) {
 }
 
 // Hashmarkpos calls the stored procedure 'pg_catalog.hashmarkpos(internal) void' on db.
-func Hashmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashname calls the stored procedure 'pg_catalog.hashname(name) integer' on db.
@@ -13644,39 +13304,29 @@ func Hashoptions(db XODB, v0 StringSlice, v1 bool) ([]byte, error) {
 }
 
 // Hashrescan calls the stored procedure 'pg_catalog.hashrescan(internal, internal, internal, internal, internal) void' on db.
-func Hashrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashrestrpos calls the stored procedure 'pg_catalog.hashrestrpos(internal) void' on db.
-func Hashrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Hashrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hashrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Hashtext calls the stored procedure 'pg_catalog.hashtext(text) integer' on db.
@@ -18342,111 +17992,81 @@ func Ishorizontal(db XODB, v0 pgtypes.Lseg, v1 pgtypes.Line, v2 pgtypes.Point, v
 }
 
 // Iso88591ToUTF8 calls the stored procedure 'pg_catalog.iso8859_1_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Iso88591ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Iso88591ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso8859_1_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Iso8859ToUTF8 calls the stored procedure 'pg_catalog.iso8859_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Iso8859ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Iso8859ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso8859_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // IsoToKoi8r calls the stored procedure 'pg_catalog.iso_to_koi8r(integer, integer, cstring, internal, integer) void' on db.
-func IsoToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func IsoToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso_to_koi8r($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // IsoToMic calls the stored procedure 'pg_catalog.iso_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func IsoToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func IsoToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // IsoToWin1251 calls the stored procedure 'pg_catalog.iso_to_win1251(integer, integer, cstring, internal, integer) void' on db.
-func IsoToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func IsoToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso_to_win1251($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // IsoToWin866 calls the stored procedure 'pg_catalog.iso_to_win866(integer, integer, cstring, internal, integer) void' on db.
-func IsoToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func IsoToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.iso_to_win866($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Isopen calls the stored procedure 'pg_catalog.isopen(path) boolean' on db.
@@ -19080,21 +18700,16 @@ func JSONTypeof(db XODB, v0 pgtypes.JSON) (string, error) {
 }
 
 // JohabToUTF8 calls the stored procedure 'pg_catalog.johab_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func JohabToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func JohabToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.johab_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // JsonbAgg calls the stored procedure 'pg_catalog.jsonb_agg(anyelement) jsonb' on db.
@@ -20034,111 +19649,81 @@ func JustifyInterval(db XODB, v0 *time.Duration) (*time.Duration, error) {
 }
 
 // Koi8rToIso calls the stored procedure 'pg_catalog.koi8r_to_iso(integer, integer, cstring, internal, integer) void' on db.
-func Koi8rToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8rToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8r_to_iso($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Koi8rToMic calls the stored procedure 'pg_catalog.koi8r_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Koi8rToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8rToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8r_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Koi8rToUTF8 calls the stored procedure 'pg_catalog.koi8r_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Koi8rToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8rToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8r_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Koi8rToWin1251 calls the stored procedure 'pg_catalog.koi8r_to_win1251(integer, integer, cstring, internal, integer) void' on db.
-func Koi8rToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8rToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8r_to_win1251($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Koi8rToWin866 calls the stored procedure 'pg_catalog.koi8r_to_win866(integer, integer, cstring, internal, integer) void' on db.
-func Koi8rToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8rToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8r_to_win866($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Koi8uToUTF8 calls the stored procedure 'pg_catalog.koi8u_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func Koi8uToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Koi8uToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.koi8u_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Lag calls the stored procedure 'pg_catalog.lag(anyelement, anyelement, integer, anyelement, integer, anyelement) anyelement' on db.
@@ -20232,93 +19817,68 @@ func Lastval(db XODB) (int64, error) {
 }
 
 // Latin1ToMic calls the stored procedure 'pg_catalog.latin1_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Latin1ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Latin1ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.latin1_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Latin2ToMic calls the stored procedure 'pg_catalog.latin2_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Latin2ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Latin2ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.latin2_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Latin2ToWin1250 calls the stored procedure 'pg_catalog.latin2_to_win1250(integer, integer, cstring, internal, integer) void' on db.
-func Latin2ToWin1250(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Latin2ToWin1250(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.latin2_to_win1250($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Latin3ToMic calls the stored procedure 'pg_catalog.latin3_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Latin3ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Latin3ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.latin3_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Latin4ToMic calls the stored procedure 'pg_catalog.latin4_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Latin4ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Latin4ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.latin4_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Lead calls the stored procedure 'pg_catalog.lead(anyelement, anyelement, integer, anyelement, integer, anyelement) anyelement' on db.
@@ -20880,21 +20440,16 @@ func LoOpen(db XODB, v0 pgtypes.Oid, v1 int) (int, error) {
 }
 
 // LoPut calls the stored procedure 'pg_catalog.lo_put(oid, bigint, bytea) void' on db.
-func LoPut(db XODB, v0 pgtypes.Oid, v1 int64, v2 []byte) (pgtypes.Void, error) {
+func LoPut(db XODB, v0 pgtypes.Oid, v1 int64, v2 []byte) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.lo_put($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2)
-	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // LoTell calls the stored procedure 'pg_catalog.lo_tell(integer) integer' on db.
@@ -21906,291 +21461,211 @@ func Md5(db XODB, v0 []byte, v1 string) (string, error) {
 }
 
 // MicToASCII calls the stored procedure 'pg_catalog.mic_to_ascii(integer, integer, cstring, internal, integer) void' on db.
-func MicToASCII(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToASCII(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_ascii($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToBig5 calls the stored procedure 'pg_catalog.mic_to_big5(integer, integer, cstring, internal, integer) void' on db.
-func MicToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_big5($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToEucCn calls the stored procedure 'pg_catalog.mic_to_euc_cn(integer, integer, cstring, internal, integer) void' on db.
-func MicToEucCn(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToEucCn(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_euc_cn($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToEucJp calls the stored procedure 'pg_catalog.mic_to_euc_jp(integer, integer, cstring, internal, integer) void' on db.
-func MicToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_euc_jp($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToEucKr calls the stored procedure 'pg_catalog.mic_to_euc_kr(integer, integer, cstring, internal, integer) void' on db.
-func MicToEucKr(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToEucKr(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_euc_kr($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToEucTw calls the stored procedure 'pg_catalog.mic_to_euc_tw(integer, integer, cstring, internal, integer) void' on db.
-func MicToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_euc_tw($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToIso calls the stored procedure 'pg_catalog.mic_to_iso(integer, integer, cstring, internal, integer) void' on db.
-func MicToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_iso($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToKoi8r calls the stored procedure 'pg_catalog.mic_to_koi8r(integer, integer, cstring, internal, integer) void' on db.
-func MicToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_koi8r($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToLatin1 calls the stored procedure 'pg_catalog.mic_to_latin1(integer, integer, cstring, internal, integer) void' on db.
-func MicToLatin1(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToLatin1(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_latin1($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToLatin2 calls the stored procedure 'pg_catalog.mic_to_latin2(integer, integer, cstring, internal, integer) void' on db.
-func MicToLatin2(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToLatin2(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_latin2($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToLatin3 calls the stored procedure 'pg_catalog.mic_to_latin3(integer, integer, cstring, internal, integer) void' on db.
-func MicToLatin3(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToLatin3(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_latin3($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToLatin4 calls the stored procedure 'pg_catalog.mic_to_latin4(integer, integer, cstring, internal, integer) void' on db.
-func MicToLatin4(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToLatin4(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_latin4($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToSjis calls the stored procedure 'pg_catalog.mic_to_sjis(integer, integer, cstring, internal, integer) void' on db.
-func MicToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_sjis($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToWin1250 calls the stored procedure 'pg_catalog.mic_to_win1250(integer, integer, cstring, internal, integer) void' on db.
-func MicToWin1250(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToWin1250(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_win1250($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToWin1251 calls the stored procedure 'pg_catalog.mic_to_win1251(integer, integer, cstring, internal, integer) void' on db.
-func MicToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_win1251($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // MicToWin866 calls the stored procedure 'pg_catalog.mic_to_win866(integer, integer, cstring, internal, integer) void' on db.
-func MicToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func MicToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.mic_to_win866($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Min calls the stored procedure 'pg_catalog.min(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
@@ -23832,21 +23307,16 @@ func NumericSmaller(db XODB, v0 float64, v1 float64) (float64, error) {
 }
 
 // NumericSortsupport calls the stored procedure 'pg_catalog.numeric_sortsupport(internal) void' on db.
-func NumericSortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func NumericSortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.numeric_sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // NumericSqrt calls the stored procedure 'pg_catalog.numeric_sqrt(numeric) numeric' on db.
@@ -25380,39 +24850,29 @@ func PercentileDiscMultiFinal(db XODB, v0 pgtypes.Internal, v1 []float64, v2 pgt
 }
 
 // PgAdvisoryLock calls the stored procedure 'pg_catalog.pg_advisory_lock(bigint, integer, integer) void' on db.
-func PgAdvisoryLock(db XODB, v0 int64, v1 int, v2 int) (pgtypes.Void, error) {
+func PgAdvisoryLock(db XODB, v0 int64, v1 int, v2 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_advisory_lock($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2)
-	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgAdvisoryLockShared calls the stored procedure 'pg_catalog.pg_advisory_lock_shared(bigint, integer, integer) void' on db.
-func PgAdvisoryLockShared(db XODB, v0 int64, v1 int, v2 int) (pgtypes.Void, error) {
+func PgAdvisoryLockShared(db XODB, v0 int64, v1 int, v2 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_advisory_lock_shared($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2)
-	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgAdvisoryUnlock calls the stored procedure 'pg_catalog.pg_advisory_unlock(bigint, integer, integer) boolean' on db.
@@ -25434,21 +24894,16 @@ func PgAdvisoryUnlock(db XODB, v0 int64, v1 int, v2 int) (bool, error) {
 }
 
 // PgAdvisoryUnlockAll calls the stored procedure 'pg_catalog.pg_advisory_unlock_all() void' on db.
-func PgAdvisoryUnlockAll(db XODB) (pgtypes.Void, error) {
+func PgAdvisoryUnlockAll(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_advisory_unlock_all()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgAdvisoryUnlockShared calls the stored procedure 'pg_catalog.pg_advisory_unlock_shared(bigint, integer, integer) boolean' on db.
@@ -25470,39 +24925,29 @@ func PgAdvisoryUnlockShared(db XODB, v0 int64, v1 int, v2 int) (bool, error) {
 }
 
 // PgAdvisoryXactLock calls the stored procedure 'pg_catalog.pg_advisory_xact_lock(bigint, integer, integer) void' on db.
-func PgAdvisoryXactLock(db XODB, v0 int64, v1 int, v2 int) (pgtypes.Void, error) {
+func PgAdvisoryXactLock(db XODB, v0 int64, v1 int, v2 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_advisory_xact_lock($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2)
-	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgAdvisoryXactLockShared calls the stored procedure 'pg_catalog.pg_advisory_xact_lock_shared(bigint, integer, integer) void' on db.
-func PgAdvisoryXactLockShared(db XODB, v0 int64, v1 int, v2 int) (pgtypes.Void, error) {
+func PgAdvisoryXactLockShared(db XODB, v0 int64, v1 int, v2 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_advisory_xact_lock_shared($1, $2, $3)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2)
-	err = db.QueryRow(sqlstr, v0, v1, v2).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgAvailableExtensionVersions calls the stored procedure 'pg_catalog.pg_available_extension_versions() SETOF record' on db.
@@ -25956,21 +25401,16 @@ func PgDescribeObject(db XODB, v0 pgtypes.Oid, v1 pgtypes.Oid, v2 int) (string, 
 }
 
 // PgDropReplicationSlot calls the stored procedure 'pg_catalog.pg_drop_replication_slot(name) void' on db.
-func PgDropReplicationSlot(db XODB, v0 pgtypes.Name) (pgtypes.Void, error) {
+func PgDropReplicationSlot(db XODB, v0 pgtypes.Name) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_drop_replication_slot($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgEncodingMaxLength calls the stored procedure 'pg_catalog.pg_encoding_max_length(integer) integer' on db.
@@ -26100,21 +25540,16 @@ func PgExportSnapshot(db XODB) (string, error) {
 }
 
 // PgExtensionConfigDump calls the stored procedure 'pg_catalog.pg_extension_config_dump(regclass, text) void' on db.
-func PgExtensionConfigDump(db XODB, v0 pgtypes.Regclass, v1 string) (pgtypes.Void, error) {
+func PgExtensionConfigDump(db XODB, v0 pgtypes.Regclass, v1 string) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_extension_config_dump($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgExtensionUpdatePaths calls the stored procedure 'pg_catalog.pg_extension_update_paths(name) SETOF record' on db.
@@ -27144,21 +26579,16 @@ func PgNodeTreeSend(db XODB, v0 pgtypes.PgNodeTree) ([]byte, error) {
 }
 
 // PgNotify calls the stored procedure 'pg_catalog.pg_notify(text, text) void' on db.
-func PgNotify(db XODB, v0 string, v1 string) (pgtypes.Void, error) {
+func PgNotify(db XODB, v0 string, v1 string) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_notify($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgOpclassIsVisible calls the stored procedure 'pg_catalog.pg_opclass_is_visible(oid) boolean' on db.
@@ -27414,21 +26844,16 @@ func PgReloadConf(db XODB) (bool, error) {
 }
 
 // PgReplicationOriginAdvance calls the stored procedure 'pg_catalog.pg_replication_origin_advance(text, pg_lsn) void' on db.
-func PgReplicationOriginAdvance(db XODB, v0 string, v1 pgtypes.PgLsn) (pgtypes.Void, error) {
+func PgReplicationOriginAdvance(db XODB, v0 string, v1 pgtypes.PgLsn) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_advance($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgReplicationOriginCreate calls the stored procedure 'pg_catalog.pg_replication_origin_create(text) oid' on db.
@@ -27450,21 +26875,16 @@ func PgReplicationOriginCreate(db XODB, v0 string) (pgtypes.Oid, error) {
 }
 
 // PgReplicationOriginDrop calls the stored procedure 'pg_catalog.pg_replication_origin_drop(text) void' on db.
-func PgReplicationOriginDrop(db XODB, v0 string) (pgtypes.Void, error) {
+func PgReplicationOriginDrop(db XODB, v0 string) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_drop($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgReplicationOriginOid calls the stored procedure 'pg_catalog.pg_replication_origin_oid(text) oid' on db.
@@ -27540,75 +26960,55 @@ func PgReplicationOriginSessionProgress(db XODB, v0 bool) (pgtypes.PgLsn, error)
 }
 
 // PgReplicationOriginSessionReset calls the stored procedure 'pg_catalog.pg_replication_origin_session_reset() void' on db.
-func PgReplicationOriginSessionReset(db XODB) (pgtypes.Void, error) {
+func PgReplicationOriginSessionReset(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_session_reset()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgReplicationOriginSessionSetup calls the stored procedure 'pg_catalog.pg_replication_origin_session_setup(text) void' on db.
-func PgReplicationOriginSessionSetup(db XODB, v0 string) (pgtypes.Void, error) {
+func PgReplicationOriginSessionSetup(db XODB, v0 string) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_session_setup($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgReplicationOriginXactReset calls the stored procedure 'pg_catalog.pg_replication_origin_xact_reset(pg_lsn, timestamp with time zone) void' on db.
-func PgReplicationOriginXactReset(db XODB, v0 pgtypes.PgLsn, v1 *time.Time) (pgtypes.Void, error) {
+func PgReplicationOriginXactReset(db XODB, v0 pgtypes.PgLsn, v1 *time.Time) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_xact_reset($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgReplicationOriginXactSetup calls the stored procedure 'pg_catalog.pg_replication_origin_xact_setup(pg_lsn, timestamp with time zone) void' on db.
-func PgReplicationOriginXactSetup(db XODB, v0 pgtypes.PgLsn, v1 *time.Time) (pgtypes.Void, error) {
+func PgReplicationOriginXactSetup(db XODB, v0 pgtypes.PgLsn, v1 *time.Time) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_replication_origin_xact_setup($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgRotateLogfile calls the stored procedure 'pg_catalog.pg_rotate_logfile() boolean' on db.
@@ -27720,57 +27120,42 @@ func PgSizePretty(db XODB, v0 int64, v1 float64) (string, error) {
 }
 
 // PgSleep calls the stored procedure 'pg_catalog.pg_sleep(double precision) void' on db.
-func PgSleep(db XODB, v0 float64) (pgtypes.Void, error) {
+func PgSleep(db XODB, v0 float64) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_sleep($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgSleepFor calls the stored procedure 'pg_catalog.pg_sleep_for(interval) void' on db.
-func PgSleepFor(db XODB, v0 *time.Duration) (pgtypes.Void, error) {
+func PgSleepFor(db XODB, v0 *time.Duration) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_sleep_for($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgSleepUntil calls the stored procedure 'pg_catalog.pg_sleep_until(timestamp with time zone) void' on db.
-func PgSleepUntil(db XODB, v0 *time.Time) (pgtypes.Void, error) {
+func PgSleepUntil(db XODB, v0 *time.Time) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_sleep_until($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStartBackup calls the stored procedure 'pg_catalog.pg_start_backup(text, boolean) pg_lsn' on db.
@@ -27792,21 +27177,16 @@ func PgStartBackup(db XODB, v0 string, v1 bool) (pgtypes.PgLsn, error) {
 }
 
 // PgStatClearSnapshot calls the stored procedure 'pg_catalog.pg_stat_clear_snapshot() void' on db.
-func PgStatClearSnapshot(db XODB) (pgtypes.Void, error) {
+func PgStatClearSnapshot(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_clear_snapshot()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStatFile calls the stored procedure 'pg_catalog.pg_stat_file(text, text, boolean) record' on db.
@@ -29322,75 +28702,55 @@ func PgStatGetXactTuplesUpdated(db XODB, v0 pgtypes.Oid) (int64, error) {
 }
 
 // PgStatReset calls the stored procedure 'pg_catalog.pg_stat_reset() void' on db.
-func PgStatReset(db XODB) (pgtypes.Void, error) {
+func PgStatReset(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_reset()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStatResetShared calls the stored procedure 'pg_catalog.pg_stat_reset_shared(text) void' on db.
-func PgStatResetShared(db XODB, v0 string) (pgtypes.Void, error) {
+func PgStatResetShared(db XODB, v0 string) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_reset_shared($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStatResetSingleFunctionCounters calls the stored procedure 'pg_catalog.pg_stat_reset_single_function_counters(oid) void' on db.
-func PgStatResetSingleFunctionCounters(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func PgStatResetSingleFunctionCounters(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_reset_single_function_counters($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStatResetSingleTableCounters calls the stored procedure 'pg_catalog.pg_stat_reset_single_table_counters(oid) void' on db.
-func PgStatResetSingleTableCounters(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func PgStatResetSingleTableCounters(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_reset_single_table_counters($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgStopBackup calls the stored procedure 'pg_catalog.pg_stop_backup() pg_lsn' on db.
@@ -29826,39 +29186,29 @@ func PgXlogLocationDiff(db XODB, v0 pgtypes.PgLsn, v1 pgtypes.PgLsn) (float64, e
 }
 
 // PgXlogReplayPause calls the stored procedure 'pg_catalog.pg_xlog_replay_pause() void' on db.
-func PgXlogReplayPause(db XODB) (pgtypes.Void, error) {
+func PgXlogReplayPause(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_xlog_replay_pause()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgXlogReplayResume calls the stored procedure 'pg_catalog.pg_xlog_replay_resume() void' on db.
-func PgXlogReplayResume(db XODB) (pgtypes.Void, error) {
+func PgXlogReplayResume(db XODB) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_xlog_replay_resume()`
 
 	// run query
-	var ret pgtypes.Void
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PgXlogfileName calls the stored procedure 'pg_catalog.pg_xlogfile_name(pg_lsn) text' on db.
@@ -29952,39 +29302,29 @@ func PlpgsqlCallHandler(db XODB) (pgtypes.LanguageHandler, error) {
 }
 
 // PlpgsqlInlineHandler calls the stored procedure 'pg_catalog.plpgsql_inline_handler(internal) void' on db.
-func PlpgsqlInlineHandler(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func PlpgsqlInlineHandler(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.plpgsql_inline_handler($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PlpgsqlValidator calls the stored procedure 'pg_catalog.plpgsql_validator(oid) void' on db.
-func PlpgsqlValidator(db XODB, v0 pgtypes.Oid) (pgtypes.Void, error) {
+func PlpgsqlValidator(db XODB, v0 pgtypes.Oid) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.plpgsql_validator($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Point calls the stored procedure 'pg_catalog.point(lseg, path, box, polygon, circle, double precision, double precision) point' on db.
@@ -30816,21 +30156,16 @@ func Power(db XODB, v0 float64, v1 float64, v2 float64, v3 float64) (float64, er
 }
 
 // PrsdEnd calls the stored procedure 'pg_catalog.prsd_end(internal) void' on db.
-func PrsdEnd(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func PrsdEnd(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.prsd_end($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // PrsdHeadline calls the stored procedure 'pg_catalog.prsd_headline(internal, internal, tsquery) internal' on db.
@@ -33353,222 +32688,6 @@ func Reverse(db XODB, v0 string) (string, error) {
 	return ret, nil
 }
 
-// RiFkeyCascadeDel calls the stored procedure 'pg_catalog.RI_FKey_cascade_del() trigger' on db.
-func RiFkeyCascadeDel(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_cascade_del()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyCascadeUpd calls the stored procedure 'pg_catalog.RI_FKey_cascade_upd() trigger' on db.
-func RiFkeyCascadeUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_cascade_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyCheckIns calls the stored procedure 'pg_catalog.RI_FKey_check_ins() trigger' on db.
-func RiFkeyCheckIns(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_check_ins()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyCheckUpd calls the stored procedure 'pg_catalog.RI_FKey_check_upd() trigger' on db.
-func RiFkeyCheckUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_check_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyNoactionDel calls the stored procedure 'pg_catalog.RI_FKey_noaction_del() trigger' on db.
-func RiFkeyNoactionDel(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_noaction_del()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyNoactionUpd calls the stored procedure 'pg_catalog.RI_FKey_noaction_upd() trigger' on db.
-func RiFkeyNoactionUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_noaction_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyRestrictDel calls the stored procedure 'pg_catalog.RI_FKey_restrict_del() trigger' on db.
-func RiFkeyRestrictDel(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_restrict_del()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeyRestrictUpd calls the stored procedure 'pg_catalog.RI_FKey_restrict_upd() trigger' on db.
-func RiFkeyRestrictUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_restrict_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeySetdefaultDel calls the stored procedure 'pg_catalog.RI_FKey_setdefault_del() trigger' on db.
-func RiFkeySetdefaultDel(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_setdefault_del()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeySetdefaultUpd calls the stored procedure 'pg_catalog.RI_FKey_setdefault_upd() trigger' on db.
-func RiFkeySetdefaultUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_setdefault_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeySetnullDel calls the stored procedure 'pg_catalog.RI_FKey_setnull_del() trigger' on db.
-func RiFkeySetnullDel(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_setnull_del()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// RiFkeySetnullUpd calls the stored procedure 'pg_catalog.RI_FKey_setnull_upd() trigger' on db.
-func RiFkeySetnullUpd(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.RI_FKey_setnull_upd()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
 // Right calls the stored procedure 'pg_catalog.right(text, integer) text' on db.
 func Right(db XODB, v0 string, v1 int) (string, error) {
 	var err error
@@ -33912,21 +33031,16 @@ func SetMasklen(db XODB, v0 pgtypes.Cidr, v1 int, v2 pgtypes.Inet, v3 int) (pgty
 }
 
 // Setseed calls the stored procedure 'pg_catalog.setseed(double precision) void' on db.
-func Setseed(db XODB, v0 float64) (pgtypes.Void, error) {
+func Setseed(db XODB, v0 float64) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.setseed($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Setval calls the stored procedure 'pg_catalog.setval(regclass, bigint, regclass, bigint, boolean) bigint' on db.
@@ -34002,39 +33116,29 @@ func ShellOut(db XODB, v0 pgtypes.Opaque) (pgtypes.Cstring, error) {
 }
 
 // ShiftJis2004ToEucJis2004 calls the stored procedure 'pg_catalog.shift_jis_2004_to_euc_jis_2004(integer, integer, cstring, internal, integer) void' on db.
-func ShiftJis2004ToEucJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func ShiftJis2004ToEucJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.shift_jis_2004_to_euc_jis_2004($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // ShiftJis2004ToUTF8 calls the stored procedure 'pg_catalog.shift_jis_2004_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func ShiftJis2004ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func ShiftJis2004ToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.shift_jis_2004_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // ShobjDescription calls the stored procedure 'pg_catalog.shobj_description(oid, name) text' on db.
@@ -34110,57 +33214,42 @@ func Sin(db XODB, v0 float64) (float64, error) {
 }
 
 // SjisToEucJp calls the stored procedure 'pg_catalog.sjis_to_euc_jp(integer, integer, cstring, internal, integer) void' on db.
-func SjisToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func SjisToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sjis_to_euc_jp($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SjisToMic calls the stored procedure 'pg_catalog.sjis_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func SjisToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func SjisToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sjis_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SjisToUTF8 calls the stored procedure 'pg_catalog.sjis_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func SjisToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func SjisToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.sjis_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Slope calls the stored procedure 'pg_catalog.slope(point, point) double precision' on db.
@@ -34254,129 +33343,94 @@ func Smgrout(db XODB, v0 pgtypes.Smgr) (pgtypes.Cstring, error) {
 }
 
 // SpgKdChoose calls the stored procedure 'pg_catalog.spg_kd_choose(internal, internal) void' on db.
-func SpgKdChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgKdChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_kd_choose($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgKdConfig calls the stored procedure 'pg_catalog.spg_kd_config(internal, internal) void' on db.
-func SpgKdConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgKdConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_kd_config($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgKdInnerConsistent calls the stored procedure 'pg_catalog.spg_kd_inner_consistent(internal, internal) void' on db.
-func SpgKdInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgKdInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_kd_inner_consistent($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgKdPicksplit calls the stored procedure 'pg_catalog.spg_kd_picksplit(internal, internal) void' on db.
-func SpgKdPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgKdPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_kd_picksplit($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgQuadChoose calls the stored procedure 'pg_catalog.spg_quad_choose(internal, internal) void' on db.
-func SpgQuadChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgQuadChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_quad_choose($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgQuadConfig calls the stored procedure 'pg_catalog.spg_quad_config(internal, internal) void' on db.
-func SpgQuadConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgQuadConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_quad_config($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgQuadInnerConsistent calls the stored procedure 'pg_catalog.spg_quad_inner_consistent(internal, internal) void' on db.
-func SpgQuadInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgQuadInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_quad_inner_consistent($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgQuadLeafConsistent calls the stored procedure 'pg_catalog.spg_quad_leaf_consistent(internal, internal) boolean' on db.
@@ -34398,75 +33452,55 @@ func SpgQuadLeafConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (b
 }
 
 // SpgQuadPicksplit calls the stored procedure 'pg_catalog.spg_quad_picksplit(internal, internal) void' on db.
-func SpgQuadPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgQuadPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_quad_picksplit($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgRangeQuadChoose calls the stored procedure 'pg_catalog.spg_range_quad_choose(internal, internal) void' on db.
-func SpgRangeQuadChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgRangeQuadChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_range_quad_choose($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgRangeQuadConfig calls the stored procedure 'pg_catalog.spg_range_quad_config(internal, internal) void' on db.
-func SpgRangeQuadConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgRangeQuadConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_range_quad_config($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgRangeQuadInnerConsistent calls the stored procedure 'pg_catalog.spg_range_quad_inner_consistent(internal, internal) void' on db.
-func SpgRangeQuadInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgRangeQuadInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_range_quad_inner_consistent($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgRangeQuadLeafConsistent calls the stored procedure 'pg_catalog.spg_range_quad_leaf_consistent(internal, internal) boolean' on db.
@@ -34488,75 +33522,55 @@ func SpgRangeQuadLeafConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Interna
 }
 
 // SpgRangeQuadPicksplit calls the stored procedure 'pg_catalog.spg_range_quad_picksplit(internal, internal) void' on db.
-func SpgRangeQuadPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgRangeQuadPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_range_quad_picksplit($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgTextChoose calls the stored procedure 'pg_catalog.spg_text_choose(internal, internal) void' on db.
-func SpgTextChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgTextChoose(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_text_choose($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgTextConfig calls the stored procedure 'pg_catalog.spg_text_config(internal, internal) void' on db.
-func SpgTextConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgTextConfig(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_text_config($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgTextInnerConsistent calls the stored procedure 'pg_catalog.spg_text_inner_consistent(internal, internal) void' on db.
-func SpgTextInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgTextInnerConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_text_inner_consistent($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // SpgTextLeafConsistent calls the stored procedure 'pg_catalog.spg_text_leaf_consistent(internal, internal) boolean' on db.
@@ -34578,21 +33592,16 @@ func SpgTextLeafConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (b
 }
 
 // SpgTextPicksplit calls the stored procedure 'pg_catalog.spg_text_picksplit(internal, internal) void' on db.
-func SpgTextPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.Void, error) {
+func SpgTextPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spg_text_picksplit($1, $2)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1)
-	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgbeginscan calls the stored procedure 'pg_catalog.spgbeginscan(internal, internal, internal) internal' on db.
@@ -34632,21 +33641,16 @@ func Spgbuild(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Inte
 }
 
 // Spgbuildempty calls the stored procedure 'pg_catalog.spgbuildempty(internal) void' on db.
-func Spgbuildempty(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgbuildempty(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgbuildempty($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgbulkdelete calls the stored procedure 'pg_catalog.spgbulkdelete(internal, internal, internal, internal) internal' on db.
@@ -34686,39 +33690,29 @@ func Spgcanreturn(db XODB, v0 pgtypes.Internal, v1 int) (bool, error) {
 }
 
 // Spgcostestimate calls the stored procedure 'pg_catalog.spgcostestimate(internal, internal, internal, internal, internal, internal, internal) void' on db.
-func Spgcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgcostestimate(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal, v5 pgtypes.Internal, v6 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgcostestimate($1, $2, $3, $4, $5, $6, $7)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4, v5, v6)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgendscan calls the stored procedure 'pg_catalog.spgendscan(internal) void' on db.
-func Spgendscan(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgendscan(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgendscan($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spggetbitmap calls the stored procedure 'pg_catalog.spggetbitmap(internal, internal) bigint' on db.
@@ -34776,21 +33770,16 @@ func Spginsert(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Int
 }
 
 // Spgmarkpos calls the stored procedure 'pg_catalog.spgmarkpos(internal) void' on db.
-func Spgmarkpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgmarkpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgmarkpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgoptions calls the stored procedure 'pg_catalog.spgoptions(text[], boolean) bytea' on db.
@@ -34812,39 +33801,29 @@ func Spgoptions(db XODB, v0 StringSlice, v1 bool) ([]byte, error) {
 }
 
 // Spgrescan calls the stored procedure 'pg_catalog.spgrescan(internal, internal, internal, internal, internal) void' on db.
-func Spgrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgrescan(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal, v2 pgtypes.Internal, v3 pgtypes.Internal, v4 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgrescan($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgrestrpos calls the stored procedure 'pg_catalog.spgrestrpos(internal) void' on db.
-func Spgrestrpos(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func Spgrestrpos(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.spgrestrpos($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Spgvacuumcleanup calls the stored procedure 'pg_catalog.spgvacuumcleanup(internal, internal) internal' on db.
@@ -35130,24 +34109,6 @@ func Sum(db XODB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string,
 	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7).Scan(&ret)
 	if err != nil {
 		return 0.0, err
-	}
-
-	return ret, nil
-}
-
-// SuppressRedundantUpdatesTrigger calls the stored procedure 'pg_catalog.suppress_redundant_updates_trigger() trigger' on db.
-func SuppressRedundantUpdatesTrigger(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.suppress_redundant_updates_trigger()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
 	}
 
 	return ret, nil
@@ -37026,21 +35987,16 @@ func TimestampSmaller(db XODB, v0 int64, v1 int64) (int64, error) {
 }
 
 // TimestampSortsupport calls the stored procedure 'pg_catalog.timestamp_sortsupport(internal) void' on db.
-func TimestampSortsupport(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func TimestampSortsupport(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.timestamp_sortsupport($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // TimestampTransform calls the stored procedure 'pg_catalog.timestamp_transform(internal) internal' on db.
@@ -38897,24 +37853,6 @@ func Translate(db XODB, v0 string, v1 string, v2 string) (string, error) {
 	return ret, nil
 }
 
-// TriggerIn calls the stored procedure 'pg_catalog.trigger_in(cstring) trigger' on db.
-func TriggerIn(db XODB, v0 pgtypes.Cstring) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.trigger_in($1)`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
 // TriggerOut calls the stored procedure 'pg_catalog.trigger_out(trigger) cstring' on db.
 func TriggerOut(db XODB, v0 pgtypes.Trigger) (pgtypes.Cstring, error) {
 	var err error
@@ -39779,42 +38717,6 @@ func TsvectorNe(db XODB, v0 pgtypes.Tsvector, v1 pgtypes.Tsvector) (bool, error)
 	return ret, nil
 }
 
-// TsvectorUpdateTrigger calls the stored procedure 'pg_catalog.tsvector_update_trigger() trigger' on db.
-func TsvectorUpdateTrigger(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.tsvector_update_trigger()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
-// TsvectorUpdateTriggerColumn calls the stored procedure 'pg_catalog.tsvector_update_trigger_column() trigger' on db.
-func TsvectorUpdateTriggerColumn(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.tsvector_update_trigger_column()`
-
-	// run query
-	var ret pgtypes.Trigger
-	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
-}
-
 // Tsvectorin calls the stored procedure 'pg_catalog.tsvectorin(cstring) tsvector' on db.
 func Tsvectorin(db XODB, v0 pgtypes.Cstring) (pgtypes.Tsvector, error) {
 	var err error
@@ -40068,327 +38970,237 @@ func TxidVisibleInSnapshot(db XODB, v0 int64, v1 pgtypes.TxidSnapshot) (bool, er
 }
 
 // UTF8ToASCII calls the stored procedure 'pg_catalog.utf8_to_ascii(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToASCII(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToASCII(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_ascii($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToBig5 calls the stored procedure 'pg_catalog.utf8_to_big5(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToBig5(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_big5($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToEucCn calls the stored procedure 'pg_catalog.utf8_to_euc_cn(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToEucCn(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToEucCn(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_euc_cn($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToEucJis2004 calls the stored procedure 'pg_catalog.utf8_to_euc_jis_2004(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToEucJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToEucJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_euc_jis_2004($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToEucJp calls the stored procedure 'pg_catalog.utf8_to_euc_jp(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToEucJp(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_euc_jp($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToEucKr calls the stored procedure 'pg_catalog.utf8_to_euc_kr(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToEucKr(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToEucKr(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_euc_kr($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToEucTw calls the stored procedure 'pg_catalog.utf8_to_euc_tw(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToEucTw(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_euc_tw($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToGb18030 calls the stored procedure 'pg_catalog.utf8_to_gb18030(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToGb18030(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToGb18030(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_gb18030($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToGbk calls the stored procedure 'pg_catalog.utf8_to_gbk(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToGbk(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToGbk(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_gbk($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToIso8859 calls the stored procedure 'pg_catalog.utf8_to_iso8859(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToIso8859(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToIso8859(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_iso8859($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToIso88591 calls the stored procedure 'pg_catalog.utf8_to_iso8859_1(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToIso88591(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToIso88591(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_iso8859_1($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToJohab calls the stored procedure 'pg_catalog.utf8_to_johab(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToJohab(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToJohab(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_johab($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToKoi8r calls the stored procedure 'pg_catalog.utf8_to_koi8r(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_koi8r($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToKoi8u calls the stored procedure 'pg_catalog.utf8_to_koi8u(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToKoi8u(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToKoi8u(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_koi8u($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToShiftJis2004 calls the stored procedure 'pg_catalog.utf8_to_shift_jis_2004(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToShiftJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToShiftJis2004(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_shift_jis_2004($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToSjis calls the stored procedure 'pg_catalog.utf8_to_sjis(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToSjis(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_sjis($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToUhc calls the stored procedure 'pg_catalog.utf8_to_uhc(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToUhc(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToUhc(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_uhc($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UTF8ToWin calls the stored procedure 'pg_catalog.utf8_to_win(integer, integer, cstring, internal, integer) void' on db.
-func UTF8ToWin(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UTF8ToWin(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.utf8_to_win($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // UUIDCmp calls the stored procedure 'pg_catalog.uuid_cmp(uuid, uuid) integer' on db.
@@ -40608,39 +39420,16 @@ func UUIDSend(db XODB, v0 pgtypes.UUID) ([]byte, error) {
 }
 
 // UhcToUTF8 calls the stored procedure 'pg_catalog.uhc_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func UhcToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func UhcToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.uhc_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
-}
-
-// UniqueKeyRecheck calls the stored procedure 'pg_catalog.unique_key_recheck() trigger' on db.
-func UniqueKeyRecheck(db XODB) (pgtypes.Trigger, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT pg_catalog.unique_key_recheck()`
-
-	// run query
-	var ret pgtypes.Trigger
 	XOLog(sqlstr)
-	err = db.QueryRow(sqlstr).Scan(&ret)
-	if err != nil {
-		return pgtypes.Trigger{}, err
-	}
-
-	return ret, nil
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Unknownin calls the stored procedure 'pg_catalog.unknownin(cstring) unknown' on db.
@@ -41274,21 +40063,16 @@ func Version(db XODB) (string, error) {
 }
 
 // VoidIn calls the stored procedure 'pg_catalog.void_in(cstring) void' on db.
-func VoidIn(db XODB, v0 pgtypes.Cstring) (pgtypes.Void, error) {
+func VoidIn(db XODB, v0 pgtypes.Cstring) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.void_in($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // VoidOut calls the stored procedure 'pg_catalog.void_out(void) cstring' on db.
@@ -41310,21 +40094,16 @@ func VoidOut(db XODB, v0 pgtypes.Void) (pgtypes.Cstring, error) {
 }
 
 // VoidRecv calls the stored procedure 'pg_catalog.void_recv(internal) void' on db.
-func VoidRecv(db XODB, v0 pgtypes.Internal) (pgtypes.Void, error) {
+func VoidRecv(db XODB, v0 pgtypes.Internal) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.void_recv($1)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0)
-	err = db.QueryRow(sqlstr, v0).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // VoidSend calls the stored procedure 'pg_catalog.void_send(void) bytea' on db.
@@ -41382,201 +40161,146 @@ func WidthBucket(db XODB, v0 pgtypes.Anyelement, v1 pgtypes.Anyarray, v2 float64
 }
 
 // Win1250ToLatin2 calls the stored procedure 'pg_catalog.win1250_to_latin2(integer, integer, cstring, internal, integer) void' on db.
-func Win1250ToLatin2(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1250ToLatin2(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1250_to_latin2($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win1250ToMic calls the stored procedure 'pg_catalog.win1250_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Win1250ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1250ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1250_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win1251ToIso calls the stored procedure 'pg_catalog.win1251_to_iso(integer, integer, cstring, internal, integer) void' on db.
-func Win1251ToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1251ToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1251_to_iso($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win1251ToKoi8r calls the stored procedure 'pg_catalog.win1251_to_koi8r(integer, integer, cstring, internal, integer) void' on db.
-func Win1251ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1251ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1251_to_koi8r($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win1251ToMic calls the stored procedure 'pg_catalog.win1251_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Win1251ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1251ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1251_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win1251ToWin866 calls the stored procedure 'pg_catalog.win1251_to_win866(integer, integer, cstring, internal, integer) void' on db.
-func Win1251ToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win1251ToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win1251_to_win866($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win866ToIso calls the stored procedure 'pg_catalog.win866_to_iso(integer, integer, cstring, internal, integer) void' on db.
-func Win866ToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win866ToIso(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win866_to_iso($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win866ToKoi8r calls the stored procedure 'pg_catalog.win866_to_koi8r(integer, integer, cstring, internal, integer) void' on db.
-func Win866ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win866ToKoi8r(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win866_to_koi8r($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win866ToMic calls the stored procedure 'pg_catalog.win866_to_mic(integer, integer, cstring, internal, integer) void' on db.
-func Win866ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win866ToMic(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win866_to_mic($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // Win866ToWin1251 calls the stored procedure 'pg_catalog.win866_to_win1251(integer, integer, cstring, internal, integer) void' on db.
-func Win866ToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func Win866ToWin1251(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win866_to_win1251($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // WinToUTF8 calls the stored procedure 'pg_catalog.win_to_utf8(integer, integer, cstring, internal, integer) void' on db.
-func WinToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) (pgtypes.Void, error) {
+func WinToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Internal, v4 int) error {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.win_to_utf8($1, $2, $3, $4, $5)`
 
 	// run query
-	var ret pgtypes.Void
-	XOLog(sqlstr, v0, v1, v2, v3, v4)
-	err = db.QueryRow(sqlstr, v0, v1, v2, v3, v4).Scan(&ret)
-	if err != nil {
-		return pgtypes.Void{}, err
-	}
-
-	return ret, nil
+	XOLog(sqlstr)
+	_, err = db.Exec(sqlstr)
+	return err
 }
 
 // XML calls the stored procedure 'pg_catalog.xml(text) xml' on db.
@@ -41957,1061 +40681,1061 @@ func XpathExists(db XODB, v0 string, v1 pgtypes.XML, v2 string, v3 pgtypes.XML, 
 	return ret, nil
 }
 
-// PgAggregate represents a row from pg_catalog.pg_aggregate.
+// PgAggregate represents a row from 'pg_catalog.pg_aggregate'.
 type PgAggregate struct {
-	Tableoid         pgtypes.Oid     // tableoid
-	Cmax             pgtypes.Cid     // cmax
-	Xmax             pgtypes.Xid     // xmax
-	Cmin             pgtypes.Cid     // cmin
-	Xmin             pgtypes.Xid     // xmin
-	Ctid             pgtypes.Tid     // ctid
-	Aggfnoid         pgtypes.Regproc // aggfnoid
-	Aggkind          uint8           // aggkind
-	Aggnumdirectargs int16           // aggnumdirectargs
-	Aggtransfn       pgtypes.Regproc // aggtransfn
-	Aggfinalfn       pgtypes.Regproc // aggfinalfn
-	Aggmtransfn      pgtypes.Regproc // aggmtransfn
-	Aggminvtransfn   pgtypes.Regproc // aggminvtransfn
-	Aggmfinalfn      pgtypes.Regproc // aggmfinalfn
-	Aggfinalextra    bool            // aggfinalextra
-	Aggmfinalextra   bool            // aggmfinalextra
-	Aggsortop        pgtypes.Oid     // aggsortop
-	Aggtranstype     pgtypes.Oid     // aggtranstype
-	Aggtransspace    int             // aggtransspace
-	Aggmtranstype    pgtypes.Oid     // aggmtranstype
-	Aggmtransspace   int             // aggmtransspace
-	Agginitval       sql.NullString  // agginitval
-	Aggminitval      sql.NullString  // aggminitval
+	Tableoid         pgtypes.Oid     `json:"tableoid"`         // tableoid
+	Cmax             pgtypes.Cid     `json:"cmax"`             // cmax
+	Xmax             pgtypes.Xid     `json:"xmax"`             // xmax
+	Cmin             pgtypes.Cid     `json:"cmin"`             // cmin
+	Xmin             pgtypes.Xid     `json:"xmin"`             // xmin
+	Ctid             pgtypes.Tid     `json:"ctid"`             // ctid
+	Aggfnoid         pgtypes.Regproc `json:"aggfnoid"`         // aggfnoid
+	Aggkind          uint8           `json:"aggkind"`          // aggkind
+	Aggnumdirectargs int16           `json:"aggnumdirectargs"` // aggnumdirectargs
+	Aggtransfn       pgtypes.Regproc `json:"aggtransfn"`       // aggtransfn
+	Aggfinalfn       pgtypes.Regproc `json:"aggfinalfn"`       // aggfinalfn
+	Aggmtransfn      pgtypes.Regproc `json:"aggmtransfn"`      // aggmtransfn
+	Aggminvtransfn   pgtypes.Regproc `json:"aggminvtransfn"`   // aggminvtransfn
+	Aggmfinalfn      pgtypes.Regproc `json:"aggmfinalfn"`      // aggmfinalfn
+	Aggfinalextra    bool            `json:"aggfinalextra"`    // aggfinalextra
+	Aggmfinalextra   bool            `json:"aggmfinalextra"`   // aggmfinalextra
+	Aggsortop        pgtypes.Oid     `json:"aggsortop"`        // aggsortop
+	Aggtranstype     pgtypes.Oid     `json:"aggtranstype"`     // aggtranstype
+	Aggtransspace    int             `json:"aggtransspace"`    // aggtransspace
+	Aggmtranstype    pgtypes.Oid     `json:"aggmtranstype"`    // aggmtranstype
+	Aggmtransspace   int             `json:"aggmtransspace"`   // aggmtransspace
+	Agginitval       sql.NullString  `json:"agginitval"`       // agginitval
+	Aggminitval      sql.NullString  `json:"aggminitval"`      // aggminitval
 }
 
-// PgAm represents a row from pg_catalog.pg_am.
+// PgAm represents a row from 'pg_catalog.pg_am'.
 type PgAm struct {
-	Tableoid        pgtypes.Oid     // tableoid
-	Cmax            pgtypes.Cid     // cmax
-	Xmax            pgtypes.Xid     // xmax
-	Cmin            pgtypes.Cid     // cmin
-	Xmin            pgtypes.Xid     // xmin
-	Oid             pgtypes.Oid     // oid
-	Ctid            pgtypes.Tid     // ctid
-	Amname          pgtypes.Name    // amname
-	Amstrategies    int16           // amstrategies
-	Amsupport       int16           // amsupport
-	Amcanorder      bool            // amcanorder
-	Amcanorderbyop  bool            // amcanorderbyop
-	Amcanbackward   bool            // amcanbackward
-	Amcanunique     bool            // amcanunique
-	Amcanmulticol   bool            // amcanmulticol
-	Amoptionalkey   bool            // amoptionalkey
-	Amsearcharray   bool            // amsearcharray
-	Amsearchnulls   bool            // amsearchnulls
-	Amstorage       bool            // amstorage
-	Amclusterable   bool            // amclusterable
-	Ampredlocks     bool            // ampredlocks
-	Amkeytype       pgtypes.Oid     // amkeytype
-	Aminsert        pgtypes.Regproc // aminsert
-	Ambeginscan     pgtypes.Regproc // ambeginscan
-	Amgettuple      pgtypes.Regproc // amgettuple
-	Amgetbitmap     pgtypes.Regproc // amgetbitmap
-	Amrescan        pgtypes.Regproc // amrescan
-	Amendscan       pgtypes.Regproc // amendscan
-	Ammarkpos       pgtypes.Regproc // ammarkpos
-	Amrestrpos      pgtypes.Regproc // amrestrpos
-	Ambuild         pgtypes.Regproc // ambuild
-	Ambuildempty    pgtypes.Regproc // ambuildempty
-	Ambulkdelete    pgtypes.Regproc // ambulkdelete
-	Amvacuumcleanup pgtypes.Regproc // amvacuumcleanup
-	Amcanreturn     pgtypes.Regproc // amcanreturn
-	Amcostestimate  pgtypes.Regproc // amcostestimate
-	Amoptions       pgtypes.Regproc // amoptions
+	Tableoid        pgtypes.Oid     `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid     `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid     `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid     `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid     `json:"xmin"`            // xmin
+	Oid             pgtypes.Oid     `json:"oid"`             // oid
+	Ctid            pgtypes.Tid     `json:"ctid"`            // ctid
+	Amname          pgtypes.Name    `json:"amname"`          // amname
+	Amstrategies    int16           `json:"amstrategies"`    // amstrategies
+	Amsupport       int16           `json:"amsupport"`       // amsupport
+	Amcanorder      bool            `json:"amcanorder"`      // amcanorder
+	Amcanorderbyop  bool            `json:"amcanorderbyop"`  // amcanorderbyop
+	Amcanbackward   bool            `json:"amcanbackward"`   // amcanbackward
+	Amcanunique     bool            `json:"amcanunique"`     // amcanunique
+	Amcanmulticol   bool            `json:"amcanmulticol"`   // amcanmulticol
+	Amoptionalkey   bool            `json:"amoptionalkey"`   // amoptionalkey
+	Amsearcharray   bool            `json:"amsearcharray"`   // amsearcharray
+	Amsearchnulls   bool            `json:"amsearchnulls"`   // amsearchnulls
+	Amstorage       bool            `json:"amstorage"`       // amstorage
+	Amclusterable   bool            `json:"amclusterable"`   // amclusterable
+	Ampredlocks     bool            `json:"ampredlocks"`     // ampredlocks
+	Amkeytype       pgtypes.Oid     `json:"amkeytype"`       // amkeytype
+	Aminsert        pgtypes.Regproc `json:"aminsert"`        // aminsert
+	Ambeginscan     pgtypes.Regproc `json:"ambeginscan"`     // ambeginscan
+	Amgettuple      pgtypes.Regproc `json:"amgettuple"`      // amgettuple
+	Amgetbitmap     pgtypes.Regproc `json:"amgetbitmap"`     // amgetbitmap
+	Amrescan        pgtypes.Regproc `json:"amrescan"`        // amrescan
+	Amendscan       pgtypes.Regproc `json:"amendscan"`       // amendscan
+	Ammarkpos       pgtypes.Regproc `json:"ammarkpos"`       // ammarkpos
+	Amrestrpos      pgtypes.Regproc `json:"amrestrpos"`      // amrestrpos
+	Ambuild         pgtypes.Regproc `json:"ambuild"`         // ambuild
+	Ambuildempty    pgtypes.Regproc `json:"ambuildempty"`    // ambuildempty
+	Ambulkdelete    pgtypes.Regproc `json:"ambulkdelete"`    // ambulkdelete
+	Amvacuumcleanup pgtypes.Regproc `json:"amvacuumcleanup"` // amvacuumcleanup
+	Amcanreturn     pgtypes.Regproc `json:"amcanreturn"`     // amcanreturn
+	Amcostestimate  pgtypes.Regproc `json:"amcostestimate"`  // amcostestimate
+	Amoptions       pgtypes.Regproc `json:"amoptions"`       // amoptions
 }
 
-// PgAmop represents a row from pg_catalog.pg_amop.
+// PgAmop represents a row from 'pg_catalog.pg_amop'.
 type PgAmop struct {
-	Tableoid       pgtypes.Oid // tableoid
-	Cmax           pgtypes.Cid // cmax
-	Xmax           pgtypes.Xid // xmax
-	Cmin           pgtypes.Cid // cmin
-	Xmin           pgtypes.Xid // xmin
-	Oid            pgtypes.Oid // oid
-	Ctid           pgtypes.Tid // ctid
-	Amopfamily     pgtypes.Oid // amopfamily
-	Amoplefttype   pgtypes.Oid // amoplefttype
-	Amoprighttype  pgtypes.Oid // amoprighttype
-	Amopstrategy   int16       // amopstrategy
-	Amoppurpose    uint8       // amoppurpose
-	Amopopr        pgtypes.Oid // amopopr
-	Amopmethod     pgtypes.Oid // amopmethod
-	Amopsortfamily pgtypes.Oid // amopsortfamily
+	Tableoid       pgtypes.Oid `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid `json:"oid"`            // oid
+	Ctid           pgtypes.Tid `json:"ctid"`           // ctid
+	Amopfamily     pgtypes.Oid `json:"amopfamily"`     // amopfamily
+	Amoplefttype   pgtypes.Oid `json:"amoplefttype"`   // amoplefttype
+	Amoprighttype  pgtypes.Oid `json:"amoprighttype"`  // amoprighttype
+	Amopstrategy   int16       `json:"amopstrategy"`   // amopstrategy
+	Amoppurpose    uint8       `json:"amoppurpose"`    // amoppurpose
+	Amopopr        pgtypes.Oid `json:"amopopr"`        // amopopr
+	Amopmethod     pgtypes.Oid `json:"amopmethod"`     // amopmethod
+	Amopsortfamily pgtypes.Oid `json:"amopsortfamily"` // amopsortfamily
 }
 
-// PgAmproc represents a row from pg_catalog.pg_amproc.
+// PgAmproc represents a row from 'pg_catalog.pg_amproc'.
 type PgAmproc struct {
-	Tableoid        pgtypes.Oid     // tableoid
-	Cmax            pgtypes.Cid     // cmax
-	Xmax            pgtypes.Xid     // xmax
-	Cmin            pgtypes.Cid     // cmin
-	Xmin            pgtypes.Xid     // xmin
-	Oid             pgtypes.Oid     // oid
-	Ctid            pgtypes.Tid     // ctid
-	Amprocfamily    pgtypes.Oid     // amprocfamily
-	Amproclefttype  pgtypes.Oid     // amproclefttype
-	Amprocrighttype pgtypes.Oid     // amprocrighttype
-	Amprocnum       int16           // amprocnum
-	Amproc          pgtypes.Regproc // amproc
+	Tableoid        pgtypes.Oid     `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid     `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid     `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid     `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid     `json:"xmin"`            // xmin
+	Oid             pgtypes.Oid     `json:"oid"`             // oid
+	Ctid            pgtypes.Tid     `json:"ctid"`            // ctid
+	Amprocfamily    pgtypes.Oid     `json:"amprocfamily"`    // amprocfamily
+	Amproclefttype  pgtypes.Oid     `json:"amproclefttype"`  // amproclefttype
+	Amprocrighttype pgtypes.Oid     `json:"amprocrighttype"` // amprocrighttype
+	Amprocnum       int16           `json:"amprocnum"`       // amprocnum
+	Amproc          pgtypes.Regproc `json:"amproc"`          // amproc
 }
 
-// PgAttrdef represents a row from pg_catalog.pg_attrdef.
+// PgAttrdef represents a row from 'pg_catalog.pg_attrdef'.
 type PgAttrdef struct {
-	Tableoid pgtypes.Oid        // tableoid
-	Cmax     pgtypes.Cid        // cmax
-	Xmax     pgtypes.Xid        // xmax
-	Cmin     pgtypes.Cid        // cmin
-	Xmin     pgtypes.Xid        // xmin
-	Oid      pgtypes.Oid        // oid
-	Ctid     pgtypes.Tid        // ctid
-	Adrelid  pgtypes.Oid        // adrelid
-	Adnum    int16              // adnum
-	Adbin    pgtypes.PgNodeTree // adbin
-	Adsrc    sql.NullString     // adsrc
+	Tableoid pgtypes.Oid        `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid        `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid        `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid        `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid        `json:"xmin"`     // xmin
+	Oid      pgtypes.Oid        `json:"oid"`      // oid
+	Ctid     pgtypes.Tid        `json:"ctid"`     // ctid
+	Adrelid  pgtypes.Oid        `json:"adrelid"`  // adrelid
+	Adnum    int16              `json:"adnum"`    // adnum
+	Adbin    pgtypes.PgNodeTree `json:"adbin"`    // adbin
+	Adsrc    sql.NullString     `json:"adsrc"`    // adsrc
 }
 
-// PgAttribute represents a row from pg_catalog.pg_attribute.
+// PgAttribute represents a row from 'pg_catalog.pg_attribute'.
 type PgAttribute struct {
-	Tableoid      pgtypes.Oid       // tableoid
-	Cmax          pgtypes.Cid       // cmax
-	Xmax          pgtypes.Xid       // xmax
-	Cmin          pgtypes.Cid       // cmin
-	Xmin          pgtypes.Xid       // xmin
-	Ctid          pgtypes.Tid       // ctid
-	Attrelid      pgtypes.Oid       // attrelid
-	Attname       pgtypes.Name      // attname
-	Atttypid      pgtypes.Oid       // atttypid
-	Attstattarget int               // attstattarget
-	Attlen        int16             // attlen
-	Attnum        int16             // attnum
-	Attndims      int               // attndims
-	Attcacheoff   int               // attcacheoff
-	Atttypmod     int               // atttypmod
-	Attbyval      bool              // attbyval
-	Attstorage    uint8             // attstorage
-	Attalign      uint8             // attalign
-	Attnotnull    bool              // attnotnull
-	Atthasdef     bool              // atthasdef
-	Attisdropped  bool              // attisdropped
-	Attislocal    bool              // attislocal
-	Attinhcount   int               // attinhcount
-	Attcollation  pgtypes.Oid       // attcollation
-	Attacl        []pgtypes.Aclitem // attacl
-	Attoptions    []sql.NullString  // attoptions
-	Attfdwoptions []sql.NullString  // attfdwoptions
+	Tableoid      pgtypes.Oid       `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid       `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid       `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid       `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid       `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid       `json:"ctid"`          // ctid
+	Attrelid      pgtypes.Oid       `json:"attrelid"`      // attrelid
+	Attname       pgtypes.Name      `json:"attname"`       // attname
+	Atttypid      pgtypes.Oid       `json:"atttypid"`      // atttypid
+	Attstattarget int               `json:"attstattarget"` // attstattarget
+	Attlen        int16             `json:"attlen"`        // attlen
+	Attnum        int16             `json:"attnum"`        // attnum
+	Attndims      int               `json:"attndims"`      // attndims
+	Attcacheoff   int               `json:"attcacheoff"`   // attcacheoff
+	Atttypmod     int               `json:"atttypmod"`     // atttypmod
+	Attbyval      bool              `json:"attbyval"`      // attbyval
+	Attstorage    uint8             `json:"attstorage"`    // attstorage
+	Attalign      uint8             `json:"attalign"`      // attalign
+	Attnotnull    bool              `json:"attnotnull"`    // attnotnull
+	Atthasdef     bool              `json:"atthasdef"`     // atthasdef
+	Attisdropped  bool              `json:"attisdropped"`  // attisdropped
+	Attislocal    bool              `json:"attislocal"`    // attislocal
+	Attinhcount   int               `json:"attinhcount"`   // attinhcount
+	Attcollation  pgtypes.Oid       `json:"attcollation"`  // attcollation
+	Attacl        []pgtypes.Aclitem `json:"attacl"`        // attacl
+	Attoptions    []sql.NullString  `json:"attoptions"`    // attoptions
+	Attfdwoptions []sql.NullString  `json:"attfdwoptions"` // attfdwoptions
 }
 
-// PgAuthMember represents a row from pg_catalog.pg_auth_members.
+// PgAuthMember represents a row from 'pg_catalog.pg_auth_members'.
 type PgAuthMember struct {
-	Tableoid    pgtypes.Oid // tableoid
-	Cmax        pgtypes.Cid // cmax
-	Xmax        pgtypes.Xid // xmax
-	Cmin        pgtypes.Cid // cmin
-	Xmin        pgtypes.Xid // xmin
-	Ctid        pgtypes.Tid // ctid
-	Roleid      pgtypes.Oid // roleid
-	Member      pgtypes.Oid // member
-	Grantor     pgtypes.Oid // grantor
-	AdminOption bool        // admin_option
+	Tableoid    pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`         // ctid
+	Roleid      pgtypes.Oid `json:"roleid"`       // roleid
+	Member      pgtypes.Oid `json:"member"`       // member
+	Grantor     pgtypes.Oid `json:"grantor"`      // grantor
+	AdminOption bool        `json:"admin_option"` // admin_option
 }
 
-// PgAuthid represents a row from pg_catalog.pg_authid.
+// PgAuthid represents a row from 'pg_catalog.pg_authid'.
 type PgAuthid struct {
-	Tableoid       pgtypes.Oid    // tableoid
-	Cmax           pgtypes.Cid    // cmax
-	Xmax           pgtypes.Xid    // xmax
-	Cmin           pgtypes.Cid    // cmin
-	Xmin           pgtypes.Xid    // xmin
-	Oid            pgtypes.Oid    // oid
-	Ctid           pgtypes.Tid    // ctid
-	Rolname        pgtypes.Name   // rolname
-	Rolsuper       bool           // rolsuper
-	Rolinherit     bool           // rolinherit
-	Rolcreaterole  bool           // rolcreaterole
-	Rolcreatedb    bool           // rolcreatedb
-	Rolcanlogin    bool           // rolcanlogin
-	Rolreplication bool           // rolreplication
-	Rolbypassrls   bool           // rolbypassrls
-	Rolconnlimit   int            // rolconnlimit
-	Rolpassword    sql.NullString // rolpassword
-	Rolvaliduntil  pq.NullTime    // rolvaliduntil
+	Tableoid       pgtypes.Oid    `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid    `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid    `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid    `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid    `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid    `json:"oid"`            // oid
+	Ctid           pgtypes.Tid    `json:"ctid"`           // ctid
+	Rolname        pgtypes.Name   `json:"rolname"`        // rolname
+	Rolsuper       bool           `json:"rolsuper"`       // rolsuper
+	Rolinherit     bool           `json:"rolinherit"`     // rolinherit
+	Rolcreaterole  bool           `json:"rolcreaterole"`  // rolcreaterole
+	Rolcreatedb    bool           `json:"rolcreatedb"`    // rolcreatedb
+	Rolcanlogin    bool           `json:"rolcanlogin"`    // rolcanlogin
+	Rolreplication bool           `json:"rolreplication"` // rolreplication
+	Rolbypassrls   bool           `json:"rolbypassrls"`   // rolbypassrls
+	Rolconnlimit   int            `json:"rolconnlimit"`   // rolconnlimit
+	Rolpassword    sql.NullString `json:"rolpassword"`    // rolpassword
+	Rolvaliduntil  pq.NullTime    `json:"rolvaliduntil"`  // rolvaliduntil
 }
 
-// PgCast represents a row from pg_catalog.pg_cast.
+// PgCast represents a row from 'pg_catalog.pg_cast'.
 type PgCast struct {
-	Tableoid    pgtypes.Oid // tableoid
-	Cmax        pgtypes.Cid // cmax
-	Xmax        pgtypes.Xid // xmax
-	Cmin        pgtypes.Cid // cmin
-	Xmin        pgtypes.Xid // xmin
-	Oid         pgtypes.Oid // oid
-	Ctid        pgtypes.Tid // ctid
-	Castsource  pgtypes.Oid // castsource
-	Casttarget  pgtypes.Oid // casttarget
-	Castfunc    pgtypes.Oid // castfunc
-	Castcontext uint8       // castcontext
-	Castmethod  uint8       // castmethod
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Oid         pgtypes.Oid `json:"oid"`         // oid
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Castsource  pgtypes.Oid `json:"castsource"`  // castsource
+	Casttarget  pgtypes.Oid `json:"casttarget"`  // casttarget
+	Castfunc    pgtypes.Oid `json:"castfunc"`    // castfunc
+	Castcontext uint8       `json:"castcontext"` // castcontext
+	Castmethod  uint8       `json:"castmethod"`  // castmethod
 }
 
-// PgClass represents a row from pg_catalog.pg_class.
+// PgClass represents a row from 'pg_catalog.pg_class'.
 type PgClass struct {
-	Tableoid            pgtypes.Oid       // tableoid
-	Cmax                pgtypes.Cid       // cmax
-	Xmax                pgtypes.Xid       // xmax
-	Cmin                pgtypes.Cid       // cmin
-	Xmin                pgtypes.Xid       // xmin
-	Oid                 pgtypes.Oid       // oid
-	Ctid                pgtypes.Tid       // ctid
-	Relname             pgtypes.Name      // relname
-	Relnamespace        pgtypes.Oid       // relnamespace
-	Reltype             pgtypes.Oid       // reltype
-	Reloftype           pgtypes.Oid       // reloftype
-	Relowner            pgtypes.Oid       // relowner
-	Relam               pgtypes.Oid       // relam
-	Relfilenode         pgtypes.Oid       // relfilenode
-	Reltablespace       pgtypes.Oid       // reltablespace
-	Relpages            int               // relpages
-	Reltuples           float32           // reltuples
-	Relallvisible       int               // relallvisible
-	Reltoastrelid       pgtypes.Oid       // reltoastrelid
-	Relhasindex         bool              // relhasindex
-	Relisshared         bool              // relisshared
-	Relpersistence      uint8             // relpersistence
-	Relkind             uint8             // relkind
-	Relnatts            int16             // relnatts
-	Relchecks           int16             // relchecks
-	Relhasoids          bool              // relhasoids
-	Relhaspkey          bool              // relhaspkey
-	Relhasrules         bool              // relhasrules
-	Relhastriggers      bool              // relhastriggers
-	Relhassubclass      bool              // relhassubclass
-	Relrowsecurity      bool              // relrowsecurity
-	Relforcerowsecurity bool              // relforcerowsecurity
-	Relispopulated      bool              // relispopulated
-	Relreplident        uint8             // relreplident
-	Relfrozenxid        pgtypes.Xid       // relfrozenxid
-	Relminmxid          pgtypes.Xid       // relminmxid
-	Relacl              []pgtypes.Aclitem // relacl
-	Reloptions          []sql.NullString  // reloptions
+	Tableoid            pgtypes.Oid       `json:"tableoid"`            // tableoid
+	Cmax                pgtypes.Cid       `json:"cmax"`                // cmax
+	Xmax                pgtypes.Xid       `json:"xmax"`                // xmax
+	Cmin                pgtypes.Cid       `json:"cmin"`                // cmin
+	Xmin                pgtypes.Xid       `json:"xmin"`                // xmin
+	Oid                 pgtypes.Oid       `json:"oid"`                 // oid
+	Ctid                pgtypes.Tid       `json:"ctid"`                // ctid
+	Relname             pgtypes.Name      `json:"relname"`             // relname
+	Relnamespace        pgtypes.Oid       `json:"relnamespace"`        // relnamespace
+	Reltype             pgtypes.Oid       `json:"reltype"`             // reltype
+	Reloftype           pgtypes.Oid       `json:"reloftype"`           // reloftype
+	Relowner            pgtypes.Oid       `json:"relowner"`            // relowner
+	Relam               pgtypes.Oid       `json:"relam"`               // relam
+	Relfilenode         pgtypes.Oid       `json:"relfilenode"`         // relfilenode
+	Reltablespace       pgtypes.Oid       `json:"reltablespace"`       // reltablespace
+	Relpages            int               `json:"relpages"`            // relpages
+	Reltuples           float32           `json:"reltuples"`           // reltuples
+	Relallvisible       int               `json:"relallvisible"`       // relallvisible
+	Reltoastrelid       pgtypes.Oid       `json:"reltoastrelid"`       // reltoastrelid
+	Relhasindex         bool              `json:"relhasindex"`         // relhasindex
+	Relisshared         bool              `json:"relisshared"`         // relisshared
+	Relpersistence      uint8             `json:"relpersistence"`      // relpersistence
+	Relkind             uint8             `json:"relkind"`             // relkind
+	Relnatts            int16             `json:"relnatts"`            // relnatts
+	Relchecks           int16             `json:"relchecks"`           // relchecks
+	Relhasoids          bool              `json:"relhasoids"`          // relhasoids
+	Relhaspkey          bool              `json:"relhaspkey"`          // relhaspkey
+	Relhasrules         bool              `json:"relhasrules"`         // relhasrules
+	Relhastriggers      bool              `json:"relhastriggers"`      // relhastriggers
+	Relhassubclass      bool              `json:"relhassubclass"`      // relhassubclass
+	Relrowsecurity      bool              `json:"relrowsecurity"`      // relrowsecurity
+	Relforcerowsecurity bool              `json:"relforcerowsecurity"` // relforcerowsecurity
+	Relispopulated      bool              `json:"relispopulated"`      // relispopulated
+	Relreplident        uint8             `json:"relreplident"`        // relreplident
+	Relfrozenxid        pgtypes.Xid       `json:"relfrozenxid"`        // relfrozenxid
+	Relminmxid          pgtypes.Xid       `json:"relminmxid"`          // relminmxid
+	Relacl              []pgtypes.Aclitem `json:"relacl"`              // relacl
+	Reloptions          []sql.NullString  `json:"reloptions"`          // reloptions
 }
 
-// PgCollation represents a row from pg_catalog.pg_collation.
+// PgCollation represents a row from 'pg_catalog.pg_collation'.
 type PgCollation struct {
-	Tableoid      pgtypes.Oid  // tableoid
-	Cmax          pgtypes.Cid  // cmax
-	Xmax          pgtypes.Xid  // xmax
-	Cmin          pgtypes.Cid  // cmin
-	Xmin          pgtypes.Xid  // xmin
-	Oid           pgtypes.Oid  // oid
-	Ctid          pgtypes.Tid  // ctid
-	Collname      pgtypes.Name // collname
-	Collnamespace pgtypes.Oid  // collnamespace
-	Collowner     pgtypes.Oid  // collowner
-	Collencoding  int          // collencoding
-	Collcollate   pgtypes.Name // collcollate
-	Collctype     pgtypes.Name // collctype
+	Tableoid      pgtypes.Oid  `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid  `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid  `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid  `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid  `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid  `json:"oid"`           // oid
+	Ctid          pgtypes.Tid  `json:"ctid"`          // ctid
+	Collname      pgtypes.Name `json:"collname"`      // collname
+	Collnamespace pgtypes.Oid  `json:"collnamespace"` // collnamespace
+	Collowner     pgtypes.Oid  `json:"collowner"`     // collowner
+	Collencoding  int          `json:"collencoding"`  // collencoding
+	Collcollate   pgtypes.Name `json:"collcollate"`   // collcollate
+	Collctype     pgtypes.Name `json:"collctype"`     // collctype
 }
 
-// PgConstraint represents a row from pg_catalog.pg_constraint.
+// PgConstraint represents a row from 'pg_catalog.pg_constraint'.
 type PgConstraint struct {
-	Tableoid      pgtypes.Oid        // tableoid
-	Cmax          pgtypes.Cid        // cmax
-	Xmax          pgtypes.Xid        // xmax
-	Cmin          pgtypes.Cid        // cmin
-	Xmin          pgtypes.Xid        // xmin
-	Oid           pgtypes.Oid        // oid
-	Ctid          pgtypes.Tid        // ctid
-	Conname       pgtypes.Name       // conname
-	Connamespace  pgtypes.Oid        // connamespace
-	Contype       uint8              // contype
-	Condeferrable bool               // condeferrable
-	Condeferred   bool               // condeferred
-	Convalidated  bool               // convalidated
-	Conrelid      pgtypes.Oid        // conrelid
-	Contypid      pgtypes.Oid        // contypid
-	Conindid      pgtypes.Oid        // conindid
-	Confrelid     pgtypes.Oid        // confrelid
-	Confupdtype   uint8              // confupdtype
-	Confdeltype   uint8              // confdeltype
-	Confmatchtype uint8              // confmatchtype
-	Conislocal    bool               // conislocal
-	Coninhcount   int                // coninhcount
-	Connoinherit  bool               // connoinherit
-	Conkey        []sql.NullInt64    // conkey
-	Confkey       []sql.NullInt64    // confkey
-	Conpfeqop     []pgtypes.Oid      // conpfeqop
-	Conppeqop     []pgtypes.Oid      // conppeqop
-	Conffeqop     []pgtypes.Oid      // conffeqop
-	Conexclop     []pgtypes.Oid      // conexclop
-	Conbin        pgtypes.PgNodeTree // conbin
-	Consrc        sql.NullString     // consrc
+	Tableoid      pgtypes.Oid        `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid        `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid        `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid        `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid        `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid        `json:"oid"`           // oid
+	Ctid          pgtypes.Tid        `json:"ctid"`          // ctid
+	Conname       pgtypes.Name       `json:"conname"`       // conname
+	Connamespace  pgtypes.Oid        `json:"connamespace"`  // connamespace
+	Contype       uint8              `json:"contype"`       // contype
+	Condeferrable bool               `json:"condeferrable"` // condeferrable
+	Condeferred   bool               `json:"condeferred"`   // condeferred
+	Convalidated  bool               `json:"convalidated"`  // convalidated
+	Conrelid      pgtypes.Oid        `json:"conrelid"`      // conrelid
+	Contypid      pgtypes.Oid        `json:"contypid"`      // contypid
+	Conindid      pgtypes.Oid        `json:"conindid"`      // conindid
+	Confrelid     pgtypes.Oid        `json:"confrelid"`     // confrelid
+	Confupdtype   uint8              `json:"confupdtype"`   // confupdtype
+	Confdeltype   uint8              `json:"confdeltype"`   // confdeltype
+	Confmatchtype uint8              `json:"confmatchtype"` // confmatchtype
+	Conislocal    bool               `json:"conislocal"`    // conislocal
+	Coninhcount   int                `json:"coninhcount"`   // coninhcount
+	Connoinherit  bool               `json:"connoinherit"`  // connoinherit
+	Conkey        []sql.NullInt64    `json:"conkey"`        // conkey
+	Confkey       []sql.NullInt64    `json:"confkey"`       // confkey
+	Conpfeqop     []pgtypes.Oid      `json:"conpfeqop"`     // conpfeqop
+	Conppeqop     []pgtypes.Oid      `json:"conppeqop"`     // conppeqop
+	Conffeqop     []pgtypes.Oid      `json:"conffeqop"`     // conffeqop
+	Conexclop     []pgtypes.Oid      `json:"conexclop"`     // conexclop
+	Conbin        pgtypes.PgNodeTree `json:"conbin"`        // conbin
+	Consrc        sql.NullString     `json:"consrc"`        // consrc
 }
 
-// PgConversion represents a row from pg_catalog.pg_conversion.
+// PgConversion represents a row from 'pg_catalog.pg_conversion'.
 type PgConversion struct {
-	Tableoid       pgtypes.Oid     // tableoid
-	Cmax           pgtypes.Cid     // cmax
-	Xmax           pgtypes.Xid     // xmax
-	Cmin           pgtypes.Cid     // cmin
-	Xmin           pgtypes.Xid     // xmin
-	Oid            pgtypes.Oid     // oid
-	Ctid           pgtypes.Tid     // ctid
-	Conname        pgtypes.Name    // conname
-	Connamespace   pgtypes.Oid     // connamespace
-	Conowner       pgtypes.Oid     // conowner
-	Conforencoding int             // conforencoding
-	Contoencoding  int             // contoencoding
-	Conproc        pgtypes.Regproc // conproc
-	Condefault     bool            // condefault
+	Tableoid       pgtypes.Oid     `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid     `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid     `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid     `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid     `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid     `json:"oid"`            // oid
+	Ctid           pgtypes.Tid     `json:"ctid"`           // ctid
+	Conname        pgtypes.Name    `json:"conname"`        // conname
+	Connamespace   pgtypes.Oid     `json:"connamespace"`   // connamespace
+	Conowner       pgtypes.Oid     `json:"conowner"`       // conowner
+	Conforencoding int             `json:"conforencoding"` // conforencoding
+	Contoencoding  int             `json:"contoencoding"`  // contoencoding
+	Conproc        pgtypes.Regproc `json:"conproc"`        // conproc
+	Condefault     bool            `json:"condefault"`     // condefault
 }
 
-// PgDatabase represents a row from pg_catalog.pg_database.
+// PgDatabase represents a row from 'pg_catalog.pg_database'.
 type PgDatabase struct {
-	Tableoid      pgtypes.Oid       // tableoid
-	Cmax          pgtypes.Cid       // cmax
-	Xmax          pgtypes.Xid       // xmax
-	Cmin          pgtypes.Cid       // cmin
-	Xmin          pgtypes.Xid       // xmin
-	Oid           pgtypes.Oid       // oid
-	Ctid          pgtypes.Tid       // ctid
-	Datname       pgtypes.Name      // datname
-	Datdba        pgtypes.Oid       // datdba
-	Encoding      int               // encoding
-	Datcollate    pgtypes.Name      // datcollate
-	Datctype      pgtypes.Name      // datctype
-	Datistemplate bool              // datistemplate
-	Datallowconn  bool              // datallowconn
-	Datconnlimit  int               // datconnlimit
-	Datlastsysoid pgtypes.Oid       // datlastsysoid
-	Datfrozenxid  pgtypes.Xid       // datfrozenxid
-	Datminmxid    pgtypes.Xid       // datminmxid
-	Dattablespace pgtypes.Oid       // dattablespace
-	Datacl        []pgtypes.Aclitem // datacl
+	Tableoid      pgtypes.Oid       `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid       `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid       `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid       `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid       `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid       `json:"oid"`           // oid
+	Ctid          pgtypes.Tid       `json:"ctid"`          // ctid
+	Datname       pgtypes.Name      `json:"datname"`       // datname
+	Datdba        pgtypes.Oid       `json:"datdba"`        // datdba
+	Encoding      int               `json:"encoding"`      // encoding
+	Datcollate    pgtypes.Name      `json:"datcollate"`    // datcollate
+	Datctype      pgtypes.Name      `json:"datctype"`      // datctype
+	Datistemplate bool              `json:"datistemplate"` // datistemplate
+	Datallowconn  bool              `json:"datallowconn"`  // datallowconn
+	Datconnlimit  int               `json:"datconnlimit"`  // datconnlimit
+	Datlastsysoid pgtypes.Oid       `json:"datlastsysoid"` // datlastsysoid
+	Datfrozenxid  pgtypes.Xid       `json:"datfrozenxid"`  // datfrozenxid
+	Datminmxid    pgtypes.Xid       `json:"datminmxid"`    // datminmxid
+	Dattablespace pgtypes.Oid       `json:"dattablespace"` // dattablespace
+	Datacl        []pgtypes.Aclitem `json:"datacl"`        // datacl
 }
 
-// PgDbRoleSetting represents a row from pg_catalog.pg_db_role_setting.
+// PgDbRoleSetting represents a row from 'pg_catalog.pg_db_role_setting'.
 type PgDbRoleSetting struct {
-	Tableoid    pgtypes.Oid      // tableoid
-	Cmax        pgtypes.Cid      // cmax
-	Xmax        pgtypes.Xid      // xmax
-	Cmin        pgtypes.Cid      // cmin
-	Xmin        pgtypes.Xid      // xmin
-	Ctid        pgtypes.Tid      // ctid
-	Setdatabase pgtypes.Oid      // setdatabase
-	Setrole     pgtypes.Oid      // setrole
-	Setconfig   []sql.NullString // setconfig
+	Tableoid    pgtypes.Oid      `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid      `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid      `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid      `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid      `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid      `json:"ctid"`        // ctid
+	Setdatabase pgtypes.Oid      `json:"setdatabase"` // setdatabase
+	Setrole     pgtypes.Oid      `json:"setrole"`     // setrole
+	Setconfig   []sql.NullString `json:"setconfig"`   // setconfig
 }
 
-// PgDefaultAcl represents a row from pg_catalog.pg_default_acl.
+// PgDefaultAcl represents a row from 'pg_catalog.pg_default_acl'.
 type PgDefaultAcl struct {
-	Tableoid        pgtypes.Oid       // tableoid
-	Cmax            pgtypes.Cid       // cmax
-	Xmax            pgtypes.Xid       // xmax
-	Cmin            pgtypes.Cid       // cmin
-	Xmin            pgtypes.Xid       // xmin
-	Oid             pgtypes.Oid       // oid
-	Ctid            pgtypes.Tid       // ctid
-	Defaclrole      pgtypes.Oid       // defaclrole
-	Defaclnamespace pgtypes.Oid       // defaclnamespace
-	Defaclobjtype   uint8             // defaclobjtype
-	Defaclacl       []pgtypes.Aclitem // defaclacl
+	Tableoid        pgtypes.Oid       `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid       `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid       `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid       `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid       `json:"xmin"`            // xmin
+	Oid             pgtypes.Oid       `json:"oid"`             // oid
+	Ctid            pgtypes.Tid       `json:"ctid"`            // ctid
+	Defaclrole      pgtypes.Oid       `json:"defaclrole"`      // defaclrole
+	Defaclnamespace pgtypes.Oid       `json:"defaclnamespace"` // defaclnamespace
+	Defaclobjtype   uint8             `json:"defaclobjtype"`   // defaclobjtype
+	Defaclacl       []pgtypes.Aclitem `json:"defaclacl"`       // defaclacl
 }
 
-// PgDepend represents a row from pg_catalog.pg_depend.
+// PgDepend represents a row from 'pg_catalog.pg_depend'.
 type PgDepend struct {
-	Tableoid    pgtypes.Oid // tableoid
-	Cmax        pgtypes.Cid // cmax
-	Xmax        pgtypes.Xid // xmax
-	Cmin        pgtypes.Cid // cmin
-	Xmin        pgtypes.Xid // xmin
-	Ctid        pgtypes.Tid // ctid
-	Classid     pgtypes.Oid // classid
-	Objid       pgtypes.Oid // objid
-	Objsubid    int         // objsubid
-	Refclassid  pgtypes.Oid // refclassid
-	Refobjid    pgtypes.Oid // refobjid
-	Refobjsubid int         // refobjsubid
-	Deptype     uint8       // deptype
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Classid     pgtypes.Oid `json:"classid"`     // classid
+	Objid       pgtypes.Oid `json:"objid"`       // objid
+	Objsubid    int         `json:"objsubid"`    // objsubid
+	Refclassid  pgtypes.Oid `json:"refclassid"`  // refclassid
+	Refobjid    pgtypes.Oid `json:"refobjid"`    // refobjid
+	Refobjsubid int         `json:"refobjsubid"` // refobjsubid
+	Deptype     uint8       `json:"deptype"`     // deptype
 }
 
-// PgDescription represents a row from pg_catalog.pg_description.
+// PgDescription represents a row from 'pg_catalog.pg_description'.
 type PgDescription struct {
-	Tableoid    pgtypes.Oid // tableoid
-	Cmax        pgtypes.Cid // cmax
-	Xmax        pgtypes.Xid // xmax
-	Cmin        pgtypes.Cid // cmin
-	Xmin        pgtypes.Xid // xmin
-	Ctid        pgtypes.Tid // ctid
-	Objoid      pgtypes.Oid // objoid
-	Classoid    pgtypes.Oid // classoid
-	Objsubid    int         // objsubid
-	Description string      // description
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
+	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
+	Objsubid    int         `json:"objsubid"`    // objsubid
+	Description string      `json:"description"` // description
 }
 
-// PgEnum represents a row from pg_catalog.pg_enum.
+// PgEnum represents a row from 'pg_catalog.pg_enum'.
 type PgEnum struct {
-	Tableoid      pgtypes.Oid  // tableoid
-	Cmax          pgtypes.Cid  // cmax
-	Xmax          pgtypes.Xid  // xmax
-	Cmin          pgtypes.Cid  // cmin
-	Xmin          pgtypes.Xid  // xmin
-	Oid           pgtypes.Oid  // oid
-	Ctid          pgtypes.Tid  // ctid
-	Enumtypid     pgtypes.Oid  // enumtypid
-	Enumsortorder float32      // enumsortorder
-	Enumlabel     pgtypes.Name // enumlabel
+	Tableoid      pgtypes.Oid  `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid  `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid  `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid  `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid  `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid  `json:"oid"`           // oid
+	Ctid          pgtypes.Tid  `json:"ctid"`          // ctid
+	Enumtypid     pgtypes.Oid  `json:"enumtypid"`     // enumtypid
+	Enumsortorder float32      `json:"enumsortorder"` // enumsortorder
+	Enumlabel     pgtypes.Name `json:"enumlabel"`     // enumlabel
 }
 
-// PgEventTrigger represents a row from pg_catalog.pg_event_trigger.
+// PgEventTrigger represents a row from 'pg_catalog.pg_event_trigger'.
 type PgEventTrigger struct {
-	Tableoid   pgtypes.Oid      // tableoid
-	Cmax       pgtypes.Cid      // cmax
-	Xmax       pgtypes.Xid      // xmax
-	Cmin       pgtypes.Cid      // cmin
-	Xmin       pgtypes.Xid      // xmin
-	Oid        pgtypes.Oid      // oid
-	Ctid       pgtypes.Tid      // ctid
-	Evtname    pgtypes.Name     // evtname
-	Evtevent   pgtypes.Name     // evtevent
-	Evtowner   pgtypes.Oid      // evtowner
-	Evtfoid    pgtypes.Oid      // evtfoid
-	Evtenabled uint8            // evtenabled
-	Evttags    []sql.NullString // evttags
+	Tableoid   pgtypes.Oid      `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid      `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid      `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid      `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid      `json:"xmin"`       // xmin
+	Oid        pgtypes.Oid      `json:"oid"`        // oid
+	Ctid       pgtypes.Tid      `json:"ctid"`       // ctid
+	Evtname    pgtypes.Name     `json:"evtname"`    // evtname
+	Evtevent   pgtypes.Name     `json:"evtevent"`   // evtevent
+	Evtowner   pgtypes.Oid      `json:"evtowner"`   // evtowner
+	Evtfoid    pgtypes.Oid      `json:"evtfoid"`    // evtfoid
+	Evtenabled uint8            `json:"evtenabled"` // evtenabled
+	Evttags    []sql.NullString `json:"evttags"`    // evttags
 }
 
-// PgExtension represents a row from pg_catalog.pg_extension.
+// PgExtension represents a row from 'pg_catalog.pg_extension'.
 type PgExtension struct {
-	Tableoid       pgtypes.Oid      // tableoid
-	Cmax           pgtypes.Cid      // cmax
-	Xmax           pgtypes.Xid      // xmax
-	Cmin           pgtypes.Cid      // cmin
-	Xmin           pgtypes.Xid      // xmin
-	Oid            pgtypes.Oid      // oid
-	Ctid           pgtypes.Tid      // ctid
-	Extname        pgtypes.Name     // extname
-	Extowner       pgtypes.Oid      // extowner
-	Extnamespace   pgtypes.Oid      // extnamespace
-	Extrelocatable bool             // extrelocatable
-	Extversion     string           // extversion
-	Extconfig      []pgtypes.Oid    // extconfig
-	Extcondition   []sql.NullString // extcondition
+	Tableoid       pgtypes.Oid      `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid      `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid      `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid      `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid      `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid      `json:"oid"`            // oid
+	Ctid           pgtypes.Tid      `json:"ctid"`           // ctid
+	Extname        pgtypes.Name     `json:"extname"`        // extname
+	Extowner       pgtypes.Oid      `json:"extowner"`       // extowner
+	Extnamespace   pgtypes.Oid      `json:"extnamespace"`   // extnamespace
+	Extrelocatable bool             `json:"extrelocatable"` // extrelocatable
+	Extversion     string           `json:"extversion"`     // extversion
+	Extconfig      []pgtypes.Oid    `json:"extconfig"`      // extconfig
+	Extcondition   []sql.NullString `json:"extcondition"`   // extcondition
 }
 
-// PgForeignDataWrapper represents a row from pg_catalog.pg_foreign_data_wrapper.
+// PgForeignDataWrapper represents a row from 'pg_catalog.pg_foreign_data_wrapper'.
 type PgForeignDataWrapper struct {
-	Tableoid     pgtypes.Oid       // tableoid
-	Cmax         pgtypes.Cid       // cmax
-	Xmax         pgtypes.Xid       // xmax
-	Cmin         pgtypes.Cid       // cmin
-	Xmin         pgtypes.Xid       // xmin
-	Oid          pgtypes.Oid       // oid
-	Ctid         pgtypes.Tid       // ctid
-	Fdwname      pgtypes.Name      // fdwname
-	Fdwowner     pgtypes.Oid       // fdwowner
-	Fdwhandler   pgtypes.Oid       // fdwhandler
-	Fdwvalidator pgtypes.Oid       // fdwvalidator
-	Fdwacl       []pgtypes.Aclitem // fdwacl
-	Fdwoptions   []sql.NullString  // fdwoptions
+	Tableoid     pgtypes.Oid       `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid       `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid       `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid       `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid       `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid       `json:"oid"`          // oid
+	Ctid         pgtypes.Tid       `json:"ctid"`         // ctid
+	Fdwname      pgtypes.Name      `json:"fdwname"`      // fdwname
+	Fdwowner     pgtypes.Oid       `json:"fdwowner"`     // fdwowner
+	Fdwhandler   pgtypes.Oid       `json:"fdwhandler"`   // fdwhandler
+	Fdwvalidator pgtypes.Oid       `json:"fdwvalidator"` // fdwvalidator
+	Fdwacl       []pgtypes.Aclitem `json:"fdwacl"`       // fdwacl
+	Fdwoptions   []sql.NullString  `json:"fdwoptions"`   // fdwoptions
 }
 
-// PgForeignServer represents a row from pg_catalog.pg_foreign_server.
+// PgForeignServer represents a row from 'pg_catalog.pg_foreign_server'.
 type PgForeignServer struct {
-	Tableoid   pgtypes.Oid       // tableoid
-	Cmax       pgtypes.Cid       // cmax
-	Xmax       pgtypes.Xid       // xmax
-	Cmin       pgtypes.Cid       // cmin
-	Xmin       pgtypes.Xid       // xmin
-	Oid        pgtypes.Oid       // oid
-	Ctid       pgtypes.Tid       // ctid
-	Srvname    pgtypes.Name      // srvname
-	Srvowner   pgtypes.Oid       // srvowner
-	Srvfdw     pgtypes.Oid       // srvfdw
-	Srvtype    sql.NullString    // srvtype
-	Srvversion sql.NullString    // srvversion
-	Srvacl     []pgtypes.Aclitem // srvacl
-	Srvoptions []sql.NullString  // srvoptions
+	Tableoid   pgtypes.Oid       `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid       `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid       `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid       `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid       `json:"xmin"`       // xmin
+	Oid        pgtypes.Oid       `json:"oid"`        // oid
+	Ctid       pgtypes.Tid       `json:"ctid"`       // ctid
+	Srvname    pgtypes.Name      `json:"srvname"`    // srvname
+	Srvowner   pgtypes.Oid       `json:"srvowner"`   // srvowner
+	Srvfdw     pgtypes.Oid       `json:"srvfdw"`     // srvfdw
+	Srvtype    sql.NullString    `json:"srvtype"`    // srvtype
+	Srvversion sql.NullString    `json:"srvversion"` // srvversion
+	Srvacl     []pgtypes.Aclitem `json:"srvacl"`     // srvacl
+	Srvoptions []sql.NullString  `json:"srvoptions"` // srvoptions
 }
 
-// PgForeignTable represents a row from pg_catalog.pg_foreign_table.
+// PgForeignTable represents a row from 'pg_catalog.pg_foreign_table'.
 type PgForeignTable struct {
-	Tableoid  pgtypes.Oid      // tableoid
-	Cmax      pgtypes.Cid      // cmax
-	Xmax      pgtypes.Xid      // xmax
-	Cmin      pgtypes.Cid      // cmin
-	Xmin      pgtypes.Xid      // xmin
-	Ctid      pgtypes.Tid      // ctid
-	Ftrelid   pgtypes.Oid      // ftrelid
-	Ftserver  pgtypes.Oid      // ftserver
-	Ftoptions []sql.NullString // ftoptions
+	Tableoid  pgtypes.Oid      `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid      `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid      `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid      `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid      `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid      `json:"ctid"`      // ctid
+	Ftrelid   pgtypes.Oid      `json:"ftrelid"`   // ftrelid
+	Ftserver  pgtypes.Oid      `json:"ftserver"`  // ftserver
+	Ftoptions []sql.NullString `json:"ftoptions"` // ftoptions
 }
 
-// PgIndex represents a row from pg_catalog.pg_index.
+// PgIndex represents a row from 'pg_catalog.pg_index'.
 type PgIndex struct {
-	Tableoid       pgtypes.Oid        // tableoid
-	Cmax           pgtypes.Cid        // cmax
-	Xmax           pgtypes.Xid        // xmax
-	Cmin           pgtypes.Cid        // cmin
-	Xmin           pgtypes.Xid        // xmin
-	Ctid           pgtypes.Tid        // ctid
-	Indexrelid     pgtypes.Oid        // indexrelid
-	Indrelid       pgtypes.Oid        // indrelid
-	Indnatts       int16              // indnatts
-	Indisunique    bool               // indisunique
-	Indisprimary   bool               // indisprimary
-	Indisexclusion bool               // indisexclusion
-	Indimmediate   bool               // indimmediate
-	Indisclustered bool               // indisclustered
-	Indisvalid     bool               // indisvalid
-	Indcheckxmin   bool               // indcheckxmin
-	Indisready     bool               // indisready
-	Indislive      bool               // indislive
-	Indisreplident bool               // indisreplident
-	Indkey         pgtypes.Int2vector // indkey
-	Indcollation   pgtypes.Oidvector  // indcollation
-	Indclass       pgtypes.Oidvector  // indclass
-	Indoption      pgtypes.Int2vector // indoption
-	Indexprs       pgtypes.PgNodeTree // indexprs
-	Indpred        pgtypes.PgNodeTree // indpred
+	Tableoid       pgtypes.Oid        `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid        `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid        `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid        `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid        `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid        `json:"ctid"`           // ctid
+	Indexrelid     pgtypes.Oid        `json:"indexrelid"`     // indexrelid
+	Indrelid       pgtypes.Oid        `json:"indrelid"`       // indrelid
+	Indnatts       int16              `json:"indnatts"`       // indnatts
+	Indisunique    bool               `json:"indisunique"`    // indisunique
+	Indisprimary   bool               `json:"indisprimary"`   // indisprimary
+	Indisexclusion bool               `json:"indisexclusion"` // indisexclusion
+	Indimmediate   bool               `json:"indimmediate"`   // indimmediate
+	Indisclustered bool               `json:"indisclustered"` // indisclustered
+	Indisvalid     bool               `json:"indisvalid"`     // indisvalid
+	Indcheckxmin   bool               `json:"indcheckxmin"`   // indcheckxmin
+	Indisready     bool               `json:"indisready"`     // indisready
+	Indislive      bool               `json:"indislive"`      // indislive
+	Indisreplident bool               `json:"indisreplident"` // indisreplident
+	Indkey         pgtypes.Int2vector `json:"indkey"`         // indkey
+	Indcollation   pgtypes.Oidvector  `json:"indcollation"`   // indcollation
+	Indclass       pgtypes.Oidvector  `json:"indclass"`       // indclass
+	Indoption      pgtypes.Int2vector `json:"indoption"`      // indoption
+	Indexprs       pgtypes.PgNodeTree `json:"indexprs"`       // indexprs
+	Indpred        pgtypes.PgNodeTree `json:"indpred"`        // indpred
 }
 
-// PgInherit represents a row from pg_catalog.pg_inherits.
+// PgInherit represents a row from 'pg_catalog.pg_inherits'.
 type PgInherit struct {
-	Tableoid  pgtypes.Oid // tableoid
-	Cmax      pgtypes.Cid // cmax
-	Xmax      pgtypes.Xid // xmax
-	Cmin      pgtypes.Cid // cmin
-	Xmin      pgtypes.Xid // xmin
-	Ctid      pgtypes.Tid // ctid
-	Inhrelid  pgtypes.Oid // inhrelid
-	Inhparent pgtypes.Oid // inhparent
-	Inhseqno  int         // inhseqno
+	Tableoid  pgtypes.Oid `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid `json:"ctid"`      // ctid
+	Inhrelid  pgtypes.Oid `json:"inhrelid"`  // inhrelid
+	Inhparent pgtypes.Oid `json:"inhparent"` // inhparent
+	Inhseqno  int         `json:"inhseqno"`  // inhseqno
 }
 
-// PgLanguage represents a row from pg_catalog.pg_language.
+// PgLanguage represents a row from 'pg_catalog.pg_language'.
 type PgLanguage struct {
-	Tableoid      pgtypes.Oid       // tableoid
-	Cmax          pgtypes.Cid       // cmax
-	Xmax          pgtypes.Xid       // xmax
-	Cmin          pgtypes.Cid       // cmin
-	Xmin          pgtypes.Xid       // xmin
-	Oid           pgtypes.Oid       // oid
-	Ctid          pgtypes.Tid       // ctid
-	Lanname       pgtypes.Name      // lanname
-	Lanowner      pgtypes.Oid       // lanowner
-	Lanispl       bool              // lanispl
-	Lanpltrusted  bool              // lanpltrusted
-	Lanplcallfoid pgtypes.Oid       // lanplcallfoid
-	Laninline     pgtypes.Oid       // laninline
-	Lanvalidator  pgtypes.Oid       // lanvalidator
-	Lanacl        []pgtypes.Aclitem // lanacl
+	Tableoid      pgtypes.Oid       `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid       `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid       `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid       `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid       `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid       `json:"oid"`           // oid
+	Ctid          pgtypes.Tid       `json:"ctid"`          // ctid
+	Lanname       pgtypes.Name      `json:"lanname"`       // lanname
+	Lanowner      pgtypes.Oid       `json:"lanowner"`      // lanowner
+	Lanispl       bool              `json:"lanispl"`       // lanispl
+	Lanpltrusted  bool              `json:"lanpltrusted"`  // lanpltrusted
+	Lanplcallfoid pgtypes.Oid       `json:"lanplcallfoid"` // lanplcallfoid
+	Laninline     pgtypes.Oid       `json:"laninline"`     // laninline
+	Lanvalidator  pgtypes.Oid       `json:"lanvalidator"`  // lanvalidator
+	Lanacl        []pgtypes.Aclitem `json:"lanacl"`        // lanacl
 }
 
-// PgLargeobject represents a row from pg_catalog.pg_largeobject.
+// PgLargeobject represents a row from 'pg_catalog.pg_largeobject'.
 type PgLargeobject struct {
-	Tableoid pgtypes.Oid // tableoid
-	Cmax     pgtypes.Cid // cmax
-	Xmax     pgtypes.Xid // xmax
-	Cmin     pgtypes.Cid // cmin
-	Xmin     pgtypes.Xid // xmin
-	Ctid     pgtypes.Tid // ctid
-	Loid     pgtypes.Oid // loid
-	Pageno   int         // pageno
-	Data     []byte      // data
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Loid     pgtypes.Oid `json:"loid"`     // loid
+	Pageno   int         `json:"pageno"`   // pageno
+	Data     []byte      `json:"data"`     // data
 }
 
-// PgLargeobjectMetadatum represents a row from pg_catalog.pg_largeobject_metadata.
+// PgLargeobjectMetadatum represents a row from 'pg_catalog.pg_largeobject_metadata'.
 type PgLargeobjectMetadatum struct {
-	Tableoid pgtypes.Oid       // tableoid
-	Cmax     pgtypes.Cid       // cmax
-	Xmax     pgtypes.Xid       // xmax
-	Cmin     pgtypes.Cid       // cmin
-	Xmin     pgtypes.Xid       // xmin
-	Oid      pgtypes.Oid       // oid
-	Ctid     pgtypes.Tid       // ctid
-	Lomowner pgtypes.Oid       // lomowner
-	Lomacl   []pgtypes.Aclitem // lomacl
+	Tableoid pgtypes.Oid       `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid       `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid       `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid       `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid       `json:"xmin"`     // xmin
+	Oid      pgtypes.Oid       `json:"oid"`      // oid
+	Ctid     pgtypes.Tid       `json:"ctid"`     // ctid
+	Lomowner pgtypes.Oid       `json:"lomowner"` // lomowner
+	Lomacl   []pgtypes.Aclitem `json:"lomacl"`   // lomacl
 }
 
-// PgNamespace represents a row from pg_catalog.pg_namespace.
+// PgNamespace represents a row from 'pg_catalog.pg_namespace'.
 type PgNamespace struct {
-	Tableoid pgtypes.Oid       // tableoid
-	Cmax     pgtypes.Cid       // cmax
-	Xmax     pgtypes.Xid       // xmax
-	Cmin     pgtypes.Cid       // cmin
-	Xmin     pgtypes.Xid       // xmin
-	Oid      pgtypes.Oid       // oid
-	Ctid     pgtypes.Tid       // ctid
-	Nspname  pgtypes.Name      // nspname
-	Nspowner pgtypes.Oid       // nspowner
-	Nspacl   []pgtypes.Aclitem // nspacl
+	Tableoid pgtypes.Oid       `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid       `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid       `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid       `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid       `json:"xmin"`     // xmin
+	Oid      pgtypes.Oid       `json:"oid"`      // oid
+	Ctid     pgtypes.Tid       `json:"ctid"`     // ctid
+	Nspname  pgtypes.Name      `json:"nspname"`  // nspname
+	Nspowner pgtypes.Oid       `json:"nspowner"` // nspowner
+	Nspacl   []pgtypes.Aclitem `json:"nspacl"`   // nspacl
 }
 
-// PgOpclass represents a row from pg_catalog.pg_opclass.
+// PgOpclass represents a row from 'pg_catalog.pg_opclass'.
 type PgOpclass struct {
-	Tableoid     pgtypes.Oid  // tableoid
-	Cmax         pgtypes.Cid  // cmax
-	Xmax         pgtypes.Xid  // xmax
-	Cmin         pgtypes.Cid  // cmin
-	Xmin         pgtypes.Xid  // xmin
-	Oid          pgtypes.Oid  // oid
-	Ctid         pgtypes.Tid  // ctid
-	Opcmethod    pgtypes.Oid  // opcmethod
-	Opcname      pgtypes.Name // opcname
-	Opcnamespace pgtypes.Oid  // opcnamespace
-	Opcowner     pgtypes.Oid  // opcowner
-	Opcfamily    pgtypes.Oid  // opcfamily
-	Opcintype    pgtypes.Oid  // opcintype
-	Opcdefault   bool         // opcdefault
-	Opckeytype   pgtypes.Oid  // opckeytype
+	Tableoid     pgtypes.Oid  `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid  `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid  `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid  `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid  `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid  `json:"oid"`          // oid
+	Ctid         pgtypes.Tid  `json:"ctid"`         // ctid
+	Opcmethod    pgtypes.Oid  `json:"opcmethod"`    // opcmethod
+	Opcname      pgtypes.Name `json:"opcname"`      // opcname
+	Opcnamespace pgtypes.Oid  `json:"opcnamespace"` // opcnamespace
+	Opcowner     pgtypes.Oid  `json:"opcowner"`     // opcowner
+	Opcfamily    pgtypes.Oid  `json:"opcfamily"`    // opcfamily
+	Opcintype    pgtypes.Oid  `json:"opcintype"`    // opcintype
+	Opcdefault   bool         `json:"opcdefault"`   // opcdefault
+	Opckeytype   pgtypes.Oid  `json:"opckeytype"`   // opckeytype
 }
 
-// PgOperator represents a row from pg_catalog.pg_operator.
+// PgOperator represents a row from 'pg_catalog.pg_operator'.
 type PgOperator struct {
-	Tableoid     pgtypes.Oid     // tableoid
-	Cmax         pgtypes.Cid     // cmax
-	Xmax         pgtypes.Xid     // xmax
-	Cmin         pgtypes.Cid     // cmin
-	Xmin         pgtypes.Xid     // xmin
-	Oid          pgtypes.Oid     // oid
-	Ctid         pgtypes.Tid     // ctid
-	Oprname      pgtypes.Name    // oprname
-	Oprnamespace pgtypes.Oid     // oprnamespace
-	Oprowner     pgtypes.Oid     // oprowner
-	Oprkind      uint8           // oprkind
-	Oprcanmerge  bool            // oprcanmerge
-	Oprcanhash   bool            // oprcanhash
-	Oprleft      pgtypes.Oid     // oprleft
-	Oprright     pgtypes.Oid     // oprright
-	Oprresult    pgtypes.Oid     // oprresult
-	Oprcom       pgtypes.Oid     // oprcom
-	Oprnegate    pgtypes.Oid     // oprnegate
-	Oprcode      pgtypes.Regproc // oprcode
-	Oprrest      pgtypes.Regproc // oprrest
-	Oprjoin      pgtypes.Regproc // oprjoin
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid     `json:"oid"`          // oid
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Oprname      pgtypes.Name    `json:"oprname"`      // oprname
+	Oprnamespace pgtypes.Oid     `json:"oprnamespace"` // oprnamespace
+	Oprowner     pgtypes.Oid     `json:"oprowner"`     // oprowner
+	Oprkind      uint8           `json:"oprkind"`      // oprkind
+	Oprcanmerge  bool            `json:"oprcanmerge"`  // oprcanmerge
+	Oprcanhash   bool            `json:"oprcanhash"`   // oprcanhash
+	Oprleft      pgtypes.Oid     `json:"oprleft"`      // oprleft
+	Oprright     pgtypes.Oid     `json:"oprright"`     // oprright
+	Oprresult    pgtypes.Oid     `json:"oprresult"`    // oprresult
+	Oprcom       pgtypes.Oid     `json:"oprcom"`       // oprcom
+	Oprnegate    pgtypes.Oid     `json:"oprnegate"`    // oprnegate
+	Oprcode      pgtypes.Regproc `json:"oprcode"`      // oprcode
+	Oprrest      pgtypes.Regproc `json:"oprrest"`      // oprrest
+	Oprjoin      pgtypes.Regproc `json:"oprjoin"`      // oprjoin
 }
 
-// PgOpfamily represents a row from pg_catalog.pg_opfamily.
+// PgOpfamily represents a row from 'pg_catalog.pg_opfamily'.
 type PgOpfamily struct {
-	Tableoid     pgtypes.Oid  // tableoid
-	Cmax         pgtypes.Cid  // cmax
-	Xmax         pgtypes.Xid  // xmax
-	Cmin         pgtypes.Cid  // cmin
-	Xmin         pgtypes.Xid  // xmin
-	Oid          pgtypes.Oid  // oid
-	Ctid         pgtypes.Tid  // ctid
-	Opfmethod    pgtypes.Oid  // opfmethod
-	Opfname      pgtypes.Name // opfname
-	Opfnamespace pgtypes.Oid  // opfnamespace
-	Opfowner     pgtypes.Oid  // opfowner
+	Tableoid     pgtypes.Oid  `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid  `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid  `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid  `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid  `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid  `json:"oid"`          // oid
+	Ctid         pgtypes.Tid  `json:"ctid"`         // ctid
+	Opfmethod    pgtypes.Oid  `json:"opfmethod"`    // opfmethod
+	Opfname      pgtypes.Name `json:"opfname"`      // opfname
+	Opfnamespace pgtypes.Oid  `json:"opfnamespace"` // opfnamespace
+	Opfowner     pgtypes.Oid  `json:"opfowner"`     // opfowner
 }
 
-// PgPltemplate represents a row from pg_catalog.pg_pltemplate.
+// PgPltemplate represents a row from 'pg_catalog.pg_pltemplate'.
 type PgPltemplate struct {
-	Tableoid      pgtypes.Oid       // tableoid
-	Cmax          pgtypes.Cid       // cmax
-	Xmax          pgtypes.Xid       // xmax
-	Cmin          pgtypes.Cid       // cmin
-	Xmin          pgtypes.Xid       // xmin
-	Ctid          pgtypes.Tid       // ctid
-	Tmplname      pgtypes.Name      // tmplname
-	Tmpltrusted   bool              // tmpltrusted
-	Tmpldbacreate bool              // tmpldbacreate
-	Tmplhandler   string            // tmplhandler
-	Tmplinline    sql.NullString    // tmplinline
-	Tmplvalidator sql.NullString    // tmplvalidator
-	Tmpllibrary   string            // tmpllibrary
-	Tmplacl       []pgtypes.Aclitem // tmplacl
+	Tableoid      pgtypes.Oid       `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid       `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid       `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid       `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid       `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid       `json:"ctid"`          // ctid
+	Tmplname      pgtypes.Name      `json:"tmplname"`      // tmplname
+	Tmpltrusted   bool              `json:"tmpltrusted"`   // tmpltrusted
+	Tmpldbacreate bool              `json:"tmpldbacreate"` // tmpldbacreate
+	Tmplhandler   string            `json:"tmplhandler"`   // tmplhandler
+	Tmplinline    sql.NullString    `json:"tmplinline"`    // tmplinline
+	Tmplvalidator sql.NullString    `json:"tmplvalidator"` // tmplvalidator
+	Tmpllibrary   string            `json:"tmpllibrary"`   // tmpllibrary
+	Tmplacl       []pgtypes.Aclitem `json:"tmplacl"`       // tmplacl
 }
 
-// PgPolicy represents a row from pg_catalog.pg_policy.
+// PgPolicy represents a row from 'pg_catalog.pg_policy'.
 type PgPolicy struct {
-	Tableoid     pgtypes.Oid        // tableoid
-	Cmax         pgtypes.Cid        // cmax
-	Xmax         pgtypes.Xid        // xmax
-	Cmin         pgtypes.Cid        // cmin
-	Xmin         pgtypes.Xid        // xmin
-	Oid          pgtypes.Oid        // oid
-	Ctid         pgtypes.Tid        // ctid
-	Polname      pgtypes.Name       // polname
-	Polrelid     pgtypes.Oid        // polrelid
-	Polcmd       uint8              // polcmd
-	Polroles     []pgtypes.Oid      // polroles
-	Polqual      pgtypes.PgNodeTree // polqual
-	Polwithcheck pgtypes.PgNodeTree // polwithcheck
+	Tableoid     pgtypes.Oid        `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid        `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid        `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid        `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid        `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid        `json:"oid"`          // oid
+	Ctid         pgtypes.Tid        `json:"ctid"`         // ctid
+	Polname      pgtypes.Name       `json:"polname"`      // polname
+	Polrelid     pgtypes.Oid        `json:"polrelid"`     // polrelid
+	Polcmd       uint8              `json:"polcmd"`       // polcmd
+	Polroles     []pgtypes.Oid      `json:"polroles"`     // polroles
+	Polqual      pgtypes.PgNodeTree `json:"polqual"`      // polqual
+	Polwithcheck pgtypes.PgNodeTree `json:"polwithcheck"` // polwithcheck
 }
 
-// PgProc represents a row from pg_catalog.pg_proc.
+// PgProc represents a row from 'pg_catalog.pg_proc'.
 type PgProc struct {
-	Tableoid        pgtypes.Oid        // tableoid
-	Cmax            pgtypes.Cid        // cmax
-	Xmax            pgtypes.Xid        // xmax
-	Cmin            pgtypes.Cid        // cmin
-	Xmin            pgtypes.Xid        // xmin
-	Oid             pgtypes.Oid        // oid
-	Ctid            pgtypes.Tid        // ctid
-	Proname         pgtypes.Name       // proname
-	Pronamespace    pgtypes.Oid        // pronamespace
-	Proowner        pgtypes.Oid        // proowner
-	Prolang         pgtypes.Oid        // prolang
-	Procost         float32            // procost
-	Prorows         float32            // prorows
-	Provariadic     pgtypes.Oid        // provariadic
-	Protransform    pgtypes.Regproc    // protransform
-	Proisagg        bool               // proisagg
-	Proiswindow     bool               // proiswindow
-	Prosecdef       bool               // prosecdef
-	Proleakproof    bool               // proleakproof
-	Proisstrict     bool               // proisstrict
-	Proretset       bool               // proretset
-	Provolatile     uint8              // provolatile
-	Pronargs        int16              // pronargs
-	Pronargdefaults int16              // pronargdefaults
-	Prorettype      pgtypes.Oid        // prorettype
-	Proargtypes     pgtypes.Oidvector  // proargtypes
-	Proallargtypes  []pgtypes.Oid      // proallargtypes
-	Proargmodes     []uint8            // proargmodes
-	Proargnames     []sql.NullString   // proargnames
-	Proargdefaults  pgtypes.PgNodeTree // proargdefaults
-	Protrftypes     []pgtypes.Oid      // protrftypes
-	Prosrc          string             // prosrc
-	Probin          sql.NullString     // probin
-	Proconfig       []sql.NullString   // proconfig
-	Proacl          []pgtypes.Aclitem  // proacl
+	Tableoid        pgtypes.Oid        `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid        `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid        `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid        `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid        `json:"xmin"`            // xmin
+	Oid             pgtypes.Oid        `json:"oid"`             // oid
+	Ctid            pgtypes.Tid        `json:"ctid"`            // ctid
+	Proname         pgtypes.Name       `json:"proname"`         // proname
+	Pronamespace    pgtypes.Oid        `json:"pronamespace"`    // pronamespace
+	Proowner        pgtypes.Oid        `json:"proowner"`        // proowner
+	Prolang         pgtypes.Oid        `json:"prolang"`         // prolang
+	Procost         float32            `json:"procost"`         // procost
+	Prorows         float32            `json:"prorows"`         // prorows
+	Provariadic     pgtypes.Oid        `json:"provariadic"`     // provariadic
+	Protransform    pgtypes.Regproc    `json:"protransform"`    // protransform
+	Proisagg        bool               `json:"proisagg"`        // proisagg
+	Proiswindow     bool               `json:"proiswindow"`     // proiswindow
+	Prosecdef       bool               `json:"prosecdef"`       // prosecdef
+	Proleakproof    bool               `json:"proleakproof"`    // proleakproof
+	Proisstrict     bool               `json:"proisstrict"`     // proisstrict
+	Proretset       bool               `json:"proretset"`       // proretset
+	Provolatile     uint8              `json:"provolatile"`     // provolatile
+	Pronargs        int16              `json:"pronargs"`        // pronargs
+	Pronargdefaults int16              `json:"pronargdefaults"` // pronargdefaults
+	Prorettype      pgtypes.Oid        `json:"prorettype"`      // prorettype
+	Proargtypes     pgtypes.Oidvector  `json:"proargtypes"`     // proargtypes
+	Proallargtypes  []pgtypes.Oid      `json:"proallargtypes"`  // proallargtypes
+	Proargmodes     []uint8            `json:"proargmodes"`     // proargmodes
+	Proargnames     []sql.NullString   `json:"proargnames"`     // proargnames
+	Proargdefaults  pgtypes.PgNodeTree `json:"proargdefaults"`  // proargdefaults
+	Protrftypes     []pgtypes.Oid      `json:"protrftypes"`     // protrftypes
+	Prosrc          string             `json:"prosrc"`          // prosrc
+	Probin          sql.NullString     `json:"probin"`          // probin
+	Proconfig       []sql.NullString   `json:"proconfig"`       // proconfig
+	Proacl          []pgtypes.Aclitem  `json:"proacl"`          // proacl
 }
 
-// PgRange represents a row from pg_catalog.pg_range.
+// PgRange represents a row from 'pg_catalog.pg_range'.
 type PgRange struct {
-	Tableoid     pgtypes.Oid     // tableoid
-	Cmax         pgtypes.Cid     // cmax
-	Xmax         pgtypes.Xid     // xmax
-	Cmin         pgtypes.Cid     // cmin
-	Xmin         pgtypes.Xid     // xmin
-	Ctid         pgtypes.Tid     // ctid
-	Rngtypid     pgtypes.Oid     // rngtypid
-	Rngsubtype   pgtypes.Oid     // rngsubtype
-	Rngcollation pgtypes.Oid     // rngcollation
-	Rngsubopc    pgtypes.Oid     // rngsubopc
-	Rngcanonical pgtypes.Regproc // rngcanonical
-	Rngsubdiff   pgtypes.Regproc // rngsubdiff
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Rngtypid     pgtypes.Oid     `json:"rngtypid"`     // rngtypid
+	Rngsubtype   pgtypes.Oid     `json:"rngsubtype"`   // rngsubtype
+	Rngcollation pgtypes.Oid     `json:"rngcollation"` // rngcollation
+	Rngsubopc    pgtypes.Oid     `json:"rngsubopc"`    // rngsubopc
+	Rngcanonical pgtypes.Regproc `json:"rngcanonical"` // rngcanonical
+	Rngsubdiff   pgtypes.Regproc `json:"rngsubdiff"`   // rngsubdiff
 }
 
-// PgReplicationOrigin represents a row from pg_catalog.pg_replication_origin.
+// PgReplicationOrigin represents a row from 'pg_catalog.pg_replication_origin'.
 type PgReplicationOrigin struct {
-	Tableoid pgtypes.Oid // tableoid
-	Cmax     pgtypes.Cid // cmax
-	Xmax     pgtypes.Xid // xmax
-	Cmin     pgtypes.Cid // cmin
-	Xmin     pgtypes.Xid // xmin
-	Ctid     pgtypes.Tid // ctid
-	Roident  pgtypes.Oid // roident
-	Roname   string      // roname
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Roident  pgtypes.Oid `json:"roident"`  // roident
+	Roname   string      `json:"roname"`   // roname
 }
 
-// PgRewrite represents a row from pg_catalog.pg_rewrite.
+// PgRewrite represents a row from 'pg_catalog.pg_rewrite'.
 type PgRewrite struct {
-	Tableoid  pgtypes.Oid        // tableoid
-	Cmax      pgtypes.Cid        // cmax
-	Xmax      pgtypes.Xid        // xmax
-	Cmin      pgtypes.Cid        // cmin
-	Xmin      pgtypes.Xid        // xmin
-	Oid       pgtypes.Oid        // oid
-	Ctid      pgtypes.Tid        // ctid
-	Rulename  pgtypes.Name       // rulename
-	EvClass   pgtypes.Oid        // ev_class
-	EvType    uint8              // ev_type
-	EvEnabled uint8              // ev_enabled
-	IsInstead bool               // is_instead
-	EvQual    pgtypes.PgNodeTree // ev_qual
-	EvAction  pgtypes.PgNodeTree // ev_action
+	Tableoid  pgtypes.Oid        `json:"tableoid"`   // tableoid
+	Cmax      pgtypes.Cid        `json:"cmax"`       // cmax
+	Xmax      pgtypes.Xid        `json:"xmax"`       // xmax
+	Cmin      pgtypes.Cid        `json:"cmin"`       // cmin
+	Xmin      pgtypes.Xid        `json:"xmin"`       // xmin
+	Oid       pgtypes.Oid        `json:"oid"`        // oid
+	Ctid      pgtypes.Tid        `json:"ctid"`       // ctid
+	Rulename  pgtypes.Name       `json:"rulename"`   // rulename
+	EvClass   pgtypes.Oid        `json:"ev_class"`   // ev_class
+	EvType    uint8              `json:"ev_type"`    // ev_type
+	EvEnabled uint8              `json:"ev_enabled"` // ev_enabled
+	IsInstead bool               `json:"is_instead"` // is_instead
+	EvQual    pgtypes.PgNodeTree `json:"ev_qual"`    // ev_qual
+	EvAction  pgtypes.PgNodeTree `json:"ev_action"`  // ev_action
 }
 
-// PgSeclabel represents a row from pg_catalog.pg_seclabel.
+// PgSeclabel represents a row from 'pg_catalog.pg_seclabel'.
 type PgSeclabel struct {
-	Tableoid pgtypes.Oid // tableoid
-	Cmax     pgtypes.Cid // cmax
-	Xmax     pgtypes.Xid // xmax
-	Cmin     pgtypes.Cid // cmin
-	Xmin     pgtypes.Xid // xmin
-	Ctid     pgtypes.Tid // ctid
-	Objoid   pgtypes.Oid // objoid
-	Classoid pgtypes.Oid // classoid
-	Objsubid int         // objsubid
-	Provider string      // provider
-	Label    string      // label
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Objoid   pgtypes.Oid `json:"objoid"`   // objoid
+	Classoid pgtypes.Oid `json:"classoid"` // classoid
+	Objsubid int         `json:"objsubid"` // objsubid
+	Provider string      `json:"provider"` // provider
+	Label    string      `json:"label"`    // label
 }
 
-// PgShdepend represents a row from pg_catalog.pg_shdepend.
+// PgShdepend represents a row from 'pg_catalog.pg_shdepend'.
 type PgShdepend struct {
-	Tableoid   pgtypes.Oid // tableoid
-	Cmax       pgtypes.Cid // cmax
-	Xmax       pgtypes.Xid // xmax
-	Cmin       pgtypes.Cid // cmin
-	Xmin       pgtypes.Xid // xmin
-	Ctid       pgtypes.Tid // ctid
-	Dbid       pgtypes.Oid // dbid
-	Classid    pgtypes.Oid // classid
-	Objid      pgtypes.Oid // objid
-	Objsubid   int         // objsubid
-	Refclassid pgtypes.Oid // refclassid
-	Refobjid   pgtypes.Oid // refobjid
-	Deptype    uint8       // deptype
+	Tableoid   pgtypes.Oid `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid `json:"ctid"`       // ctid
+	Dbid       pgtypes.Oid `json:"dbid"`       // dbid
+	Classid    pgtypes.Oid `json:"classid"`    // classid
+	Objid      pgtypes.Oid `json:"objid"`      // objid
+	Objsubid   int         `json:"objsubid"`   // objsubid
+	Refclassid pgtypes.Oid `json:"refclassid"` // refclassid
+	Refobjid   pgtypes.Oid `json:"refobjid"`   // refobjid
+	Deptype    uint8       `json:"deptype"`    // deptype
 }
 
-// PgShdescription represents a row from pg_catalog.pg_shdescription.
+// PgShdescription represents a row from 'pg_catalog.pg_shdescription'.
 type PgShdescription struct {
-	Tableoid    pgtypes.Oid // tableoid
-	Cmax        pgtypes.Cid // cmax
-	Xmax        pgtypes.Xid // xmax
-	Cmin        pgtypes.Cid // cmin
-	Xmin        pgtypes.Xid // xmin
-	Ctid        pgtypes.Tid // ctid
-	Objoid      pgtypes.Oid // objoid
-	Classoid    pgtypes.Oid // classoid
-	Description string      // description
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
+	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
+	Description string      `json:"description"` // description
 }
 
-// PgShseclabel represents a row from pg_catalog.pg_shseclabel.
+// PgShseclabel represents a row from 'pg_catalog.pg_shseclabel'.
 type PgShseclabel struct {
-	Tableoid pgtypes.Oid // tableoid
-	Cmax     pgtypes.Cid // cmax
-	Xmax     pgtypes.Xid // xmax
-	Cmin     pgtypes.Cid // cmin
-	Xmin     pgtypes.Xid // xmin
-	Ctid     pgtypes.Tid // ctid
-	Objoid   pgtypes.Oid // objoid
-	Classoid pgtypes.Oid // classoid
-	Provider string      // provider
-	Label    string      // label
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Objoid   pgtypes.Oid `json:"objoid"`   // objoid
+	Classoid pgtypes.Oid `json:"classoid"` // classoid
+	Provider string      `json:"provider"` // provider
+	Label    string      `json:"label"`    // label
 }
 
-// PgStatistic represents a row from pg_catalog.pg_statistic.
+// PgStatistic represents a row from 'pg_catalog.pg_statistic'.
 type PgStatistic struct {
-	Tableoid    pgtypes.Oid       // tableoid
-	Cmax        pgtypes.Cid       // cmax
-	Xmax        pgtypes.Xid       // xmax
-	Cmin        pgtypes.Cid       // cmin
-	Xmin        pgtypes.Xid       // xmin
-	Ctid        pgtypes.Tid       // ctid
-	Starelid    pgtypes.Oid       // starelid
-	Staattnum   int16             // staattnum
-	Stainherit  bool              // stainherit
-	Stanullfrac float32           // stanullfrac
-	Stawidth    int               // stawidth
-	Stadistinct float32           // stadistinct
-	Stakind1    int16             // stakind1
-	Stakind2    int16             // stakind2
-	Stakind3    int16             // stakind3
-	Stakind4    int16             // stakind4
-	Stakind5    int16             // stakind5
-	Staop1      pgtypes.Oid       // staop1
-	Staop2      pgtypes.Oid       // staop2
-	Staop3      pgtypes.Oid       // staop3
-	Staop4      pgtypes.Oid       // staop4
-	Staop5      pgtypes.Oid       // staop5
-	Stanumbers1 []sql.NullFloat64 // stanumbers1
-	Stanumbers2 []sql.NullFloat64 // stanumbers2
-	Stanumbers3 []sql.NullFloat64 // stanumbers3
-	Stanumbers4 []sql.NullFloat64 // stanumbers4
-	Stanumbers5 []sql.NullFloat64 // stanumbers5
-	Stavalues1  pgtypes.Anyarray  // stavalues1
-	Stavalues2  pgtypes.Anyarray  // stavalues2
-	Stavalues3  pgtypes.Anyarray  // stavalues3
-	Stavalues4  pgtypes.Anyarray  // stavalues4
-	Stavalues5  pgtypes.Anyarray  // stavalues5
+	Tableoid    pgtypes.Oid       `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid       `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid       `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid       `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid       `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid       `json:"ctid"`        // ctid
+	Starelid    pgtypes.Oid       `json:"starelid"`    // starelid
+	Staattnum   int16             `json:"staattnum"`   // staattnum
+	Stainherit  bool              `json:"stainherit"`  // stainherit
+	Stanullfrac float32           `json:"stanullfrac"` // stanullfrac
+	Stawidth    int               `json:"stawidth"`    // stawidth
+	Stadistinct float32           `json:"stadistinct"` // stadistinct
+	Stakind1    int16             `json:"stakind1"`    // stakind1
+	Stakind2    int16             `json:"stakind2"`    // stakind2
+	Stakind3    int16             `json:"stakind3"`    // stakind3
+	Stakind4    int16             `json:"stakind4"`    // stakind4
+	Stakind5    int16             `json:"stakind5"`    // stakind5
+	Staop1      pgtypes.Oid       `json:"staop1"`      // staop1
+	Staop2      pgtypes.Oid       `json:"staop2"`      // staop2
+	Staop3      pgtypes.Oid       `json:"staop3"`      // staop3
+	Staop4      pgtypes.Oid       `json:"staop4"`      // staop4
+	Staop5      pgtypes.Oid       `json:"staop5"`      // staop5
+	Stanumbers1 []sql.NullFloat64 `json:"stanumbers1"` // stanumbers1
+	Stanumbers2 []sql.NullFloat64 `json:"stanumbers2"` // stanumbers2
+	Stanumbers3 []sql.NullFloat64 `json:"stanumbers3"` // stanumbers3
+	Stanumbers4 []sql.NullFloat64 `json:"stanumbers4"` // stanumbers4
+	Stanumbers5 []sql.NullFloat64 `json:"stanumbers5"` // stanumbers5
+	Stavalues1  pgtypes.Anyarray  `json:"stavalues1"`  // stavalues1
+	Stavalues2  pgtypes.Anyarray  `json:"stavalues2"`  // stavalues2
+	Stavalues3  pgtypes.Anyarray  `json:"stavalues3"`  // stavalues3
+	Stavalues4  pgtypes.Anyarray  `json:"stavalues4"`  // stavalues4
+	Stavalues5  pgtypes.Anyarray  `json:"stavalues5"`  // stavalues5
 }
 
-// PgTablespace represents a row from pg_catalog.pg_tablespace.
+// PgTablespace represents a row from 'pg_catalog.pg_tablespace'.
 type PgTablespace struct {
-	Tableoid   pgtypes.Oid       // tableoid
-	Cmax       pgtypes.Cid       // cmax
-	Xmax       pgtypes.Xid       // xmax
-	Cmin       pgtypes.Cid       // cmin
-	Xmin       pgtypes.Xid       // xmin
-	Oid        pgtypes.Oid       // oid
-	Ctid       pgtypes.Tid       // ctid
-	Spcname    pgtypes.Name      // spcname
-	Spcowner   pgtypes.Oid       // spcowner
-	Spcacl     []pgtypes.Aclitem // spcacl
-	Spcoptions []sql.NullString  // spcoptions
+	Tableoid   pgtypes.Oid       `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid       `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid       `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid       `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid       `json:"xmin"`       // xmin
+	Oid        pgtypes.Oid       `json:"oid"`        // oid
+	Ctid       pgtypes.Tid       `json:"ctid"`       // ctid
+	Spcname    pgtypes.Name      `json:"spcname"`    // spcname
+	Spcowner   pgtypes.Oid       `json:"spcowner"`   // spcowner
+	Spcacl     []pgtypes.Aclitem `json:"spcacl"`     // spcacl
+	Spcoptions []sql.NullString  `json:"spcoptions"` // spcoptions
 }
 
-// PgTransform represents a row from pg_catalog.pg_transform.
+// PgTransform represents a row from 'pg_catalog.pg_transform'.
 type PgTransform struct {
-	Tableoid   pgtypes.Oid     // tableoid
-	Cmax       pgtypes.Cid     // cmax
-	Xmax       pgtypes.Xid     // xmax
-	Cmin       pgtypes.Cid     // cmin
-	Xmin       pgtypes.Xid     // xmin
-	Oid        pgtypes.Oid     // oid
-	Ctid       pgtypes.Tid     // ctid
-	Trftype    pgtypes.Oid     // trftype
-	Trflang    pgtypes.Oid     // trflang
-	Trffromsql pgtypes.Regproc // trffromsql
-	Trftosql   pgtypes.Regproc // trftosql
+	Tableoid   pgtypes.Oid     `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid     `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid     `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid     `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid     `json:"xmin"`       // xmin
+	Oid        pgtypes.Oid     `json:"oid"`        // oid
+	Ctid       pgtypes.Tid     `json:"ctid"`       // ctid
+	Trftype    pgtypes.Oid     `json:"trftype"`    // trftype
+	Trflang    pgtypes.Oid     `json:"trflang"`    // trflang
+	Trffromsql pgtypes.Regproc `json:"trffromsql"` // trffromsql
+	Trftosql   pgtypes.Regproc `json:"trftosql"`   // trftosql
 }
 
-// PgTrigger represents a row from pg_catalog.pg_trigger.
+// PgTrigger represents a row from 'pg_catalog.pg_trigger'.
 type PgTrigger struct {
-	Tableoid       pgtypes.Oid        // tableoid
-	Cmax           pgtypes.Cid        // cmax
-	Xmax           pgtypes.Xid        // xmax
-	Cmin           pgtypes.Cid        // cmin
-	Xmin           pgtypes.Xid        // xmin
-	Oid            pgtypes.Oid        // oid
-	Ctid           pgtypes.Tid        // ctid
-	Tgrelid        pgtypes.Oid        // tgrelid
-	Tgname         pgtypes.Name       // tgname
-	Tgfoid         pgtypes.Oid        // tgfoid
-	Tgtype         int16              // tgtype
-	Tgenabled      uint8              // tgenabled
-	Tgisinternal   bool               // tgisinternal
-	Tgconstrrelid  pgtypes.Oid        // tgconstrrelid
-	Tgconstrindid  pgtypes.Oid        // tgconstrindid
-	Tgconstraint   pgtypes.Oid        // tgconstraint
-	Tgdeferrable   bool               // tgdeferrable
-	Tginitdeferred bool               // tginitdeferred
-	Tgnargs        int16              // tgnargs
-	Tgattr         pgtypes.Int2vector // tgattr
-	Tgargs         []byte             // tgargs
-	Tgqual         pgtypes.PgNodeTree // tgqual
+	Tableoid       pgtypes.Oid        `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid        `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid        `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid        `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid        `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid        `json:"oid"`            // oid
+	Ctid           pgtypes.Tid        `json:"ctid"`           // ctid
+	Tgrelid        pgtypes.Oid        `json:"tgrelid"`        // tgrelid
+	Tgname         pgtypes.Name       `json:"tgname"`         // tgname
+	Tgfoid         pgtypes.Oid        `json:"tgfoid"`         // tgfoid
+	Tgtype         int16              `json:"tgtype"`         // tgtype
+	Tgenabled      uint8              `json:"tgenabled"`      // tgenabled
+	Tgisinternal   bool               `json:"tgisinternal"`   // tgisinternal
+	Tgconstrrelid  pgtypes.Oid        `json:"tgconstrrelid"`  // tgconstrrelid
+	Tgconstrindid  pgtypes.Oid        `json:"tgconstrindid"`  // tgconstrindid
+	Tgconstraint   pgtypes.Oid        `json:"tgconstraint"`   // tgconstraint
+	Tgdeferrable   bool               `json:"tgdeferrable"`   // tgdeferrable
+	Tginitdeferred bool               `json:"tginitdeferred"` // tginitdeferred
+	Tgnargs        int16              `json:"tgnargs"`        // tgnargs
+	Tgattr         pgtypes.Int2vector `json:"tgattr"`         // tgattr
+	Tgargs         []byte             `json:"tgargs"`         // tgargs
+	Tgqual         pgtypes.PgNodeTree `json:"tgqual"`         // tgqual
 }
 
-// PgTsConfig represents a row from pg_catalog.pg_ts_config.
+// PgTsConfig represents a row from 'pg_catalog.pg_ts_config'.
 type PgTsConfig struct {
-	Tableoid     pgtypes.Oid  // tableoid
-	Cmax         pgtypes.Cid  // cmax
-	Xmax         pgtypes.Xid  // xmax
-	Cmin         pgtypes.Cid  // cmin
-	Xmin         pgtypes.Xid  // xmin
-	Oid          pgtypes.Oid  // oid
-	Ctid         pgtypes.Tid  // ctid
-	Cfgname      pgtypes.Name // cfgname
-	Cfgnamespace pgtypes.Oid  // cfgnamespace
-	Cfgowner     pgtypes.Oid  // cfgowner
-	Cfgparser    pgtypes.Oid  // cfgparser
+	Tableoid     pgtypes.Oid  `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid  `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid  `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid  `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid  `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid  `json:"oid"`          // oid
+	Ctid         pgtypes.Tid  `json:"ctid"`         // ctid
+	Cfgname      pgtypes.Name `json:"cfgname"`      // cfgname
+	Cfgnamespace pgtypes.Oid  `json:"cfgnamespace"` // cfgnamespace
+	Cfgowner     pgtypes.Oid  `json:"cfgowner"`     // cfgowner
+	Cfgparser    pgtypes.Oid  `json:"cfgparser"`    // cfgparser
 }
 
-// PgTsConfigMap represents a row from pg_catalog.pg_ts_config_map.
+// PgTsConfigMap represents a row from 'pg_catalog.pg_ts_config_map'.
 type PgTsConfigMap struct {
-	Tableoid     pgtypes.Oid // tableoid
-	Cmax         pgtypes.Cid // cmax
-	Xmax         pgtypes.Xid // xmax
-	Cmin         pgtypes.Cid // cmin
-	Xmin         pgtypes.Xid // xmin
-	Ctid         pgtypes.Tid // ctid
-	Mapcfg       pgtypes.Oid // mapcfg
-	Maptokentype int         // maptokentype
-	Mapseqno     int         // mapseqno
-	Mapdict      pgtypes.Oid // mapdict
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Mapcfg       pgtypes.Oid `json:"mapcfg"`       // mapcfg
+	Maptokentype int         `json:"maptokentype"` // maptokentype
+	Mapseqno     int         `json:"mapseqno"`     // mapseqno
+	Mapdict      pgtypes.Oid `json:"mapdict"`      // mapdict
 }
 
-// PgTsDict represents a row from pg_catalog.pg_ts_dict.
+// PgTsDict represents a row from 'pg_catalog.pg_ts_dict'.
 type PgTsDict struct {
-	Tableoid       pgtypes.Oid    // tableoid
-	Cmax           pgtypes.Cid    // cmax
-	Xmax           pgtypes.Xid    // xmax
-	Cmin           pgtypes.Cid    // cmin
-	Xmin           pgtypes.Xid    // xmin
-	Oid            pgtypes.Oid    // oid
-	Ctid           pgtypes.Tid    // ctid
-	Dictname       pgtypes.Name   // dictname
-	Dictnamespace  pgtypes.Oid    // dictnamespace
-	Dictowner      pgtypes.Oid    // dictowner
-	Dicttemplate   pgtypes.Oid    // dicttemplate
-	Dictinitoption sql.NullString // dictinitoption
+	Tableoid       pgtypes.Oid    `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid    `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid    `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid    `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid    `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid    `json:"oid"`            // oid
+	Ctid           pgtypes.Tid    `json:"ctid"`           // ctid
+	Dictname       pgtypes.Name   `json:"dictname"`       // dictname
+	Dictnamespace  pgtypes.Oid    `json:"dictnamespace"`  // dictnamespace
+	Dictowner      pgtypes.Oid    `json:"dictowner"`      // dictowner
+	Dicttemplate   pgtypes.Oid    `json:"dicttemplate"`   // dicttemplate
+	Dictinitoption sql.NullString `json:"dictinitoption"` // dictinitoption
 }
 
-// PgTsParser represents a row from pg_catalog.pg_ts_parser.
+// PgTsParser represents a row from 'pg_catalog.pg_ts_parser'.
 type PgTsParser struct {
-	Tableoid     pgtypes.Oid     // tableoid
-	Cmax         pgtypes.Cid     // cmax
-	Xmax         pgtypes.Xid     // xmax
-	Cmin         pgtypes.Cid     // cmin
-	Xmin         pgtypes.Xid     // xmin
-	Oid          pgtypes.Oid     // oid
-	Ctid         pgtypes.Tid     // ctid
-	Prsname      pgtypes.Name    // prsname
-	Prsnamespace pgtypes.Oid     // prsnamespace
-	Prsstart     pgtypes.Regproc // prsstart
-	Prstoken     pgtypes.Regproc // prstoken
-	Prsend       pgtypes.Regproc // prsend
-	Prsheadline  pgtypes.Regproc // prsheadline
-	Prslextype   pgtypes.Regproc // prslextype
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Oid          pgtypes.Oid     `json:"oid"`          // oid
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Prsname      pgtypes.Name    `json:"prsname"`      // prsname
+	Prsnamespace pgtypes.Oid     `json:"prsnamespace"` // prsnamespace
+	Prsstart     pgtypes.Regproc `json:"prsstart"`     // prsstart
+	Prstoken     pgtypes.Regproc `json:"prstoken"`     // prstoken
+	Prsend       pgtypes.Regproc `json:"prsend"`       // prsend
+	Prsheadline  pgtypes.Regproc `json:"prsheadline"`  // prsheadline
+	Prslextype   pgtypes.Regproc `json:"prslextype"`   // prslextype
 }
 
-// PgTsTemplate represents a row from pg_catalog.pg_ts_template.
+// PgTsTemplate represents a row from 'pg_catalog.pg_ts_template'.
 type PgTsTemplate struct {
-	Tableoid      pgtypes.Oid     // tableoid
-	Cmax          pgtypes.Cid     // cmax
-	Xmax          pgtypes.Xid     // xmax
-	Cmin          pgtypes.Cid     // cmin
-	Xmin          pgtypes.Xid     // xmin
-	Oid           pgtypes.Oid     // oid
-	Ctid          pgtypes.Tid     // ctid
-	Tmplname      pgtypes.Name    // tmplname
-	Tmplnamespace pgtypes.Oid     // tmplnamespace
-	Tmplinit      pgtypes.Regproc // tmplinit
-	Tmpllexize    pgtypes.Regproc // tmpllexize
+	Tableoid      pgtypes.Oid     `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid     `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid     `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid     `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid     `json:"xmin"`          // xmin
+	Oid           pgtypes.Oid     `json:"oid"`           // oid
+	Ctid          pgtypes.Tid     `json:"ctid"`          // ctid
+	Tmplname      pgtypes.Name    `json:"tmplname"`      // tmplname
+	Tmplnamespace pgtypes.Oid     `json:"tmplnamespace"` // tmplnamespace
+	Tmplinit      pgtypes.Regproc `json:"tmplinit"`      // tmplinit
+	Tmpllexize    pgtypes.Regproc `json:"tmpllexize"`    // tmpllexize
 }
 
-// PgType represents a row from pg_catalog.pg_type.
+// PgType represents a row from 'pg_catalog.pg_type'.
 type PgType struct {
-	Tableoid       pgtypes.Oid        // tableoid
-	Cmax           pgtypes.Cid        // cmax
-	Xmax           pgtypes.Xid        // xmax
-	Cmin           pgtypes.Cid        // cmin
-	Xmin           pgtypes.Xid        // xmin
-	Oid            pgtypes.Oid        // oid
-	Ctid           pgtypes.Tid        // ctid
-	Typname        pgtypes.Name       // typname
-	Typnamespace   pgtypes.Oid        // typnamespace
-	Typowner       pgtypes.Oid        // typowner
-	Typlen         int16              // typlen
-	Typbyval       bool               // typbyval
-	Typtype        uint8              // typtype
-	Typcategory    uint8              // typcategory
-	Typispreferred bool               // typispreferred
-	Typisdefined   bool               // typisdefined
-	Typdelim       uint8              // typdelim
-	Typrelid       pgtypes.Oid        // typrelid
-	Typelem        pgtypes.Oid        // typelem
-	Typarray       pgtypes.Oid        // typarray
-	Typinput       pgtypes.Regproc    // typinput
-	Typoutput      pgtypes.Regproc    // typoutput
-	Typreceive     pgtypes.Regproc    // typreceive
-	Typsend        pgtypes.Regproc    // typsend
-	Typmodin       pgtypes.Regproc    // typmodin
-	Typmodout      pgtypes.Regproc    // typmodout
-	Typanalyze     pgtypes.Regproc    // typanalyze
-	Typalign       uint8              // typalign
-	Typstorage     uint8              // typstorage
-	Typnotnull     bool               // typnotnull
-	Typbasetype    pgtypes.Oid        // typbasetype
-	Typtypmod      int                // typtypmod
-	Typndims       int                // typndims
-	Typcollation   pgtypes.Oid        // typcollation
-	Typdefaultbin  pgtypes.PgNodeTree // typdefaultbin
-	Typdefault     sql.NullString     // typdefault
-	Typacl         []pgtypes.Aclitem  // typacl
+	Tableoid       pgtypes.Oid        `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid        `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid        `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid        `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid        `json:"xmin"`           // xmin
+	Oid            pgtypes.Oid        `json:"oid"`            // oid
+	Ctid           pgtypes.Tid        `json:"ctid"`           // ctid
+	Typname        pgtypes.Name       `json:"typname"`        // typname
+	Typnamespace   pgtypes.Oid        `json:"typnamespace"`   // typnamespace
+	Typowner       pgtypes.Oid        `json:"typowner"`       // typowner
+	Typlen         int16              `json:"typlen"`         // typlen
+	Typbyval       bool               `json:"typbyval"`       // typbyval
+	Typtype        uint8              `json:"typtype"`        // typtype
+	Typcategory    uint8              `json:"typcategory"`    // typcategory
+	Typispreferred bool               `json:"typispreferred"` // typispreferred
+	Typisdefined   bool               `json:"typisdefined"`   // typisdefined
+	Typdelim       uint8              `json:"typdelim"`       // typdelim
+	Typrelid       pgtypes.Oid        `json:"typrelid"`       // typrelid
+	Typelem        pgtypes.Oid        `json:"typelem"`        // typelem
+	Typarray       pgtypes.Oid        `json:"typarray"`       // typarray
+	Typinput       pgtypes.Regproc    `json:"typinput"`       // typinput
+	Typoutput      pgtypes.Regproc    `json:"typoutput"`      // typoutput
+	Typreceive     pgtypes.Regproc    `json:"typreceive"`     // typreceive
+	Typsend        pgtypes.Regproc    `json:"typsend"`        // typsend
+	Typmodin       pgtypes.Regproc    `json:"typmodin"`       // typmodin
+	Typmodout      pgtypes.Regproc    `json:"typmodout"`      // typmodout
+	Typanalyze     pgtypes.Regproc    `json:"typanalyze"`     // typanalyze
+	Typalign       uint8              `json:"typalign"`       // typalign
+	Typstorage     uint8              `json:"typstorage"`     // typstorage
+	Typnotnull     bool               `json:"typnotnull"`     // typnotnull
+	Typbasetype    pgtypes.Oid        `json:"typbasetype"`    // typbasetype
+	Typtypmod      int                `json:"typtypmod"`      // typtypmod
+	Typndims       int                `json:"typndims"`       // typndims
+	Typcollation   pgtypes.Oid        `json:"typcollation"`   // typcollation
+	Typdefaultbin  pgtypes.PgNodeTree `json:"typdefaultbin"`  // typdefaultbin
+	Typdefault     sql.NullString     `json:"typdefault"`     // typdefault
+	Typacl         []pgtypes.Aclitem  `json:"typacl"`         // typacl
 }
 
-// PgUserMapping represents a row from pg_catalog.pg_user_mapping.
+// PgUserMapping represents a row from 'pg_catalog.pg_user_mapping'.
 type PgUserMapping struct {
-	Tableoid  pgtypes.Oid      // tableoid
-	Cmax      pgtypes.Cid      // cmax
-	Xmax      pgtypes.Xid      // xmax
-	Cmin      pgtypes.Cid      // cmin
-	Xmin      pgtypes.Xid      // xmin
-	Oid       pgtypes.Oid      // oid
-	Ctid      pgtypes.Tid      // ctid
-	Umuser    pgtypes.Oid      // umuser
-	Umserver  pgtypes.Oid      // umserver
-	Umoptions []sql.NullString // umoptions
+	Tableoid  pgtypes.Oid      `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid      `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid      `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid      `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid      `json:"xmin"`      // xmin
+	Oid       pgtypes.Oid      `json:"oid"`       // oid
+	Ctid      pgtypes.Tid      `json:"ctid"`      // ctid
+	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
+	Umserver  pgtypes.Oid      `json:"umserver"`  // umserver
+	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
 
 // PgAggregateByAggfnoid retrieves a row from 'pg_catalog.pg_aggregate' as a PgAggregate.

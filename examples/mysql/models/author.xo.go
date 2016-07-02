@@ -7,8 +7,8 @@ import "errors"
 
 // Author represents a row from 'booktest.authors'.
 type Author struct {
-	AuthorID int    // author_id
-	Name     string // name
+	AuthorID int    `json:"author_id"` // author_id
+	Name     string `json:"name"`      // name
 
 	// xo fields
 	_exists, _deleted bool

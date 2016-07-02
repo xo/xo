@@ -200,6 +200,7 @@ func openDB(args *internal.ArgType) error {
 		return err
 	}
 
+	// save driver type
 	args.LoaderType = u.Driver
 
 	// grab loader

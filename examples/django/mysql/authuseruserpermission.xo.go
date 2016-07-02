@@ -7,9 +7,9 @@ import "errors"
 
 // AuthUserUserPermission represents a row from 'django.auth_user_user_permissions'.
 type AuthUserUserPermission struct {
-	ID           int // id
-	UserID       int // user_id
-	PermissionID int // permission_id
+	ID           int `json:"id"`            // id
+	UserID       int `json:"user_id"`       // user_id
+	PermissionID int `json:"permission_id"` // permission_id
 
 	// xo fields
 	_exists, _deleted bool

@@ -1,4 +1,6 @@
-// {{ .FuncName }} retrieves a row from '{{ schema .Schema .Type.Table.TableName }}' as a {{ .Type.Name }}.
+{{- $short := (shortname .Type.Name "err" "sqlstr" "db" "q" "res" "XOLog" .Fields) -}}
+{{- $table := (schema .Schema .Type.Table.TableName) -}}
+// {{ .FuncName }} retrieves a row from '{{ $table }}' as a {{ .Type.Name }}.
 //
 // Generated from index '{{ .Index.IndexName }}'.
 func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
@@ -7,24 +9,24 @@ func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.Is
 	// sql query
 	const sqlstr = `SELECT ` +
 		`{{ colnames .Type.Fields }} ` +
-		`FROM {{ schema .Schema .Type.Table.TableName }} ` +
+		`FROM {{ $table }} ` +
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query
 	XOLog(sqlstr{{ goparamlist .Fields false }})
 {{- if .Index.IsUnique }}
-	{{ shortname .Type.Name }} := {{ .Type.Name }}{
+	{{ $short }} := {{ .Type.Name }}{
 	{{- if .Type.PrimaryKey }}
 		_exists: true,
 	{{ end -}}
 	}
 
-	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Type.Fields (print "&" (shortname .Type.Name)) }})
+	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
 		return nil, err
 	}
 
-	return &{{ shortname .Type.Name }}, nil
+	return &{{ $short }}, nil
 {{- else }}
 	q, err := db.Query(sqlstr{{ goparamlist .Fields false }})
 	if err != nil {
@@ -35,19 +37,19 @@ func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.Is
 	// load results
 	res := []*{{ .Type.Name }}{}
 	for q.Next() {
-		{{ shortname .Type.Name }} := {{ .Type.Name }}{
+		{{ $short }} := {{ .Type.Name }}{
 		{{- if .Type.PrimaryKey }}
 			_exists: true,
 		{{ end -}}
 		}
 
 		// scan
-		err = q.Scan({{ fieldnames .Type.Fields (print "&" (shortname .Type.Name)) }})
+		err = q.Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 		if err != nil {
 			return nil, err
 		}
 
-		res = append(res, &{{ shortname .Type.Name }})
+		res = append(res, &{{ $short }})
 	}
 
 	return res, nil

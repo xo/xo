@@ -7,9 +7,9 @@ import "errors"
 
 // DjangoContentType represents a row from 'django_content_type'.
 type DjangoContentType struct {
-	ID       int    // id
-	AppLabel string // app_label
-	Model    string // model
+	ID       int    `json:"id"`        // id
+	AppLabel string `json:"app_label"` // app_label
+	Model    string `json:"model"`     // model
 
 	// xo fields
 	_exists, _deleted bool

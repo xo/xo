@@ -9,16 +9,16 @@ import (
 	"time"
 )
 
-// DjangoAdminLog represents a row from public.django_admin_log.
+// DjangoAdminLog represents a row from 'public.django_admin_log'.
 type DjangoAdminLog struct {
-	ID            int            // id
-	ActionTime    *time.Time     // action_time
-	ObjectID      sql.NullString // object_id
-	ObjectRepr    string         // object_repr
-	ActionFlag    int16          // action_flag
-	ChangeMessage string         // change_message
-	ContentTypeID sql.NullInt64  // content_type_id
-	UserID        int            // user_id
+	ID            int            `json:"id"`              // id
+	ActionTime    *time.Time     `json:"action_time"`     // action_time
+	ObjectID      sql.NullString `json:"object_id"`       // object_id
+	ObjectRepr    string         `json:"object_repr"`     // object_repr
+	ActionFlag    int16          `json:"action_flag"`     // action_flag
+	ChangeMessage string         `json:"change_message"`  // change_message
+	ContentTypeID sql.NullInt64  `json:"content_type_id"` // content_type_id
+	UserID        int            `json:"user_id"`         // user_id
 
 	// xo fields
 	_exists, _deleted bool

@@ -77,7 +77,7 @@ func (a *ArgType) reniltype(typ string) string {
 	return typ
 }
 
-// shortname generates the a safe Go identifier for typ. typ is first checked
+// shortname generates a safe Go identifier for typ. typ is first checked
 // against ArgType.ShortNameTypeMap, and if not found, then the value is
 // calculated and stored in the ShortNameTypeMap for future use.
 //
@@ -87,7 +87,10 @@ func (a *ArgType) reniltype(typ string) string {
 //
 // If a generated shortname conflicts with a Go reserved name, then the
 // corresponding value in goReservedNames map will be used.
-func (a *ArgType) shortname(typ string) string {
+//
+// Generated shortnames that have conflicts with any scopeConflicts member
+// (string, []Field, etc) will have ArgType.NameConflictSuffix appended.
+func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 	var v string
 	var ok bool
 
@@ -106,9 +109,38 @@ func (a *ArgType) shortname(typ string) string {
 		if n, ok := goReservedNames[v]; ok {
 			v = n
 		}
+	}
 
-		// store back in short name map
-		a.ShortNameTypeMap[typ] = v
+	// initial conflicts are the default imported packages from
+	// xo_package.go.tpl
+	conflicts := map[string]bool{
+		"sql":     true,
+		"driver":  true,
+		"csv":     true,
+		"errors":  true,
+		"fmt":     true,
+		"regexp":  true,
+		"strings": true,
+		"time":    true,
+	}
+
+	// add scopeConflicts to conflicts
+	for _, c := range scopeConflicts {
+		switch k := c.(type) {
+		case string:
+			conflicts[k] = true
+		case []*Field:
+			for _, f := range k {
+				conflicts[f.Name] = true
+			}
+		default:
+			panic("not implemented")
+		}
+	}
+
+	// append suffix if conflict exists
+	if _, ok := conflicts[v]; ok {
+		v = v + a.NameConflictSuffix
 	}
 
 	return v
