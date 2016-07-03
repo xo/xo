@@ -338,7 +338,7 @@ We could ensure that these columns are managed by PostgreSQL and not by the
 generated Go code using `--ignore-fields`:
 
 ```
-$ xo psql://user:pass@host/db -o models --ignore-fields created_at modified_at
+$ xo pgsql://user:pass@host/db -o models --ignore-fields created_at modified_at
 ```
 
 ## Oracle Support ##
