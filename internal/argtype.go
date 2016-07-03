@@ -43,12 +43,6 @@ type ArgType struct {
 	// IgnoreFields allows the user to specify field names which should not be handled by xo in the generated code.
 	IgnoreFields []string `arg:"--ignore-fields,help:Fields to exclude from the generated code"`
 
-	// IncTypes are the types to include.
-	InclTypes []string `arg:"--include,help:include type(s)"`
-
-	// ExcTypes are the types to exclude.
-	ExclTypes []string `arg:"--exclude,help:exclude type(s)"`
-
 	// ForeignKeyMode is the foreign key mode for generating foreign key names.
 	ForeignKeyMode *FkMode `arg:"--fk-mode,-k,help:sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]"`
 
