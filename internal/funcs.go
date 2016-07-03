@@ -88,8 +88,11 @@ func (a *ArgType) reniltype(typ string) string {
 // If a generated shortname conflicts with a Go reserved name, then the
 // corresponding value in goReservedNames map will be used.
 //
-// Generated shortnames that have conflicts with any scopeConflicts member
-// (string, []Field, etc) will have ArgType.NameConflictSuffix appended.
+// Generated shortnames that have conflicts with any scopeConflicts member will
+// have ArgType.NameConflictSuffix appended.
+//
+// Note: recognized types for scopeConflicts are string, []*Field,
+// []*QueryParam.
 func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 	var v string
 	var ok bool
@@ -109,6 +112,9 @@ func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 		if n, ok := goReservedNames[v]; ok {
 			v = n
 		}
+
+		// store back to short name map
+		a.ShortNameTypeMap[typ] = v
 	}
 
 	// initial conflicts are the default imported packages from
@@ -129,10 +135,16 @@ func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 		switch k := c.(type) {
 		case string:
 			conflicts[k] = true
+
 		case []*Field:
 			for _, f := range k {
 				conflicts[f.Name] = true
 			}
+		case []*QueryParam:
+			for _, f := range k {
+				conflicts[f.Name] = true
+			}
+
 		default:
 			panic("not implemented")
 		}
