@@ -378,6 +378,70 @@ go get -u gopkg.in/rana/ora.v3
 go install -tags oracle github.com/knq/xo
 ```
 
+# Example: Adding Methods With Custom Templates #
+
+<!---
+Note to maintainers: Make sure to update this file with the proper values if
+directory structure changes!!
+-->
+
+The Go code rendered by `xo` is customizable using the `--template-path` flag.
+Notice that in this source repo, `templates/` points towards a default
+selection of templates which you might be able to use to customize the
+templated code to your needs. You can vendor these templates into your own
+project to do so.  e.g.:
+
+```console
+$ mkdir templates
+$ cp -r "$GOPATH/go/src/github.com/knq/xo/templates" .
+$ xo pgsql://user:pass@host/db -o models --template-path templates
+```
+
+The outermost template file for a generated `struct` is in
+`templates/$DBTYPE.type.go.tpl`.  This is an excellent place to add a new
+method for all generated `struct`s to have. For instance, if we have a
+timestamp field `created_at` (such as the one managed by Postgres above) we can
+ensure that our generated `struct`s have a query which returns the N (or less)
+most recent entries in a table by adding this template:
+
+```go
+// MostRecent will return N rows from the table sorted by recency ('created_at'
+// field).
+func {{ .Name }}MostRecent (db XODB, n int) ([]*{{ .Name}}, error) {
+    recent := fmt.Sprintf(`SELECT {{ colnames .Fields "created_at" "modified_at" }} FROM {{ $table }} ORDER BY created_at DESC LIMIT %d`, n)
+    q, err := db.Query(recent)
+    if err != nil {
+        return nil, err
+    }
+    defer q.Close()
+
+    // load results
+    res := []*{{ .Name }}{}
+    for q.Next() {
+        {{ $short }} := {{ .Name }}{}
+
+        // scan
+        err = q.Scan({{ fieldnames .Fields (print "&" $short) }})
+        if err != nil {
+            return nil, err
+        }
+
+        res = append(res, &{{ $short }})
+    }
+
+    return res, nil
+}
+```
+
+Note that the context (`.`) in the template can be divined from the source code
+of `xo`,  e.g. at the time of writing, `.` represents an instance of `Type`
+from `github.com/knq/xo/internal/types.go`.
+
+You may want to consider deleting the templates for databases other than the
+one you are using, as well as the generated `templates/tpls.go` "binary" file,
+from a vendored `templates/` directory.  Those are needed by `xo` upstream, but
+are most likely not needed for your project.
+
 # Design, Origin, Philosophy, and History #
 
 xo can likely get you 99% "of the way there" on medium or large database
