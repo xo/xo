@@ -168,8 +168,8 @@ switchDT:
 	case "timestamp", "datetime", "date":
 		typ = "*time.Time"
 		if nullable {
-			nilVal = "pq.NullTime{}"
-			typ = "pq.NullTime"
+			nilVal = "mysql.NullTime{}"
+			typ = "mysql.NullTime"
 		}
 
 	default:
