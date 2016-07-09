@@ -513,22 +513,22 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
-* Overhaul and better standardize type parsing
+* Add (finish) stored proc support for Oracle + Microsoft SQL Server
+* Better standardize example `gen.sh` scripts, using [usql](https://github.com/knq/usql) tool
+* v1 release + binary packages for Linux, OSX, Windows
+* Unit tests / code coverage / continuous builds for binary package releases
+* Move database introspection to separate package for reuse by other Go packages
+* Overhaul/standardize type parsing
 * Finish support for --{incl, excl}[ude] types
 * Write/publish template set for protobuf
+* Add support for generating models for other languages
 * Finish many-to-many and link table support
 * Finish example and code for generated *Slice types
 * Add example for many-to-many relationships and link tables
-* Binary packaging for Linux, OSX, Windows [amd64 only, likely via goxc]
-* Unit tests / code coverage / continuous builds for binary package releases
 * Add support for supplying a file (ie, *.sql) for query generation
 * Add support for full text types (tsvector, tsquery on PostgreSQL)
 * Finish COMMENT support for PostgreSQL/MySQL and update templates accordingly.
 * Add support for JSON types (json, jsonb on PostgreSQL, json on MySQL)
 * Add support for GIN index queries (PostgreSQL)
-* Add introspection for CASCADE relationships and generate DeleteCascade()'s
-  (disabled by default) [is this even necessary?]
-* Add support for handling multiple custom queries at the same time [is this
-  even necessary?]
 * Add ability to read *.sql files with 'markup' to parse multiple queries (a la
   migration scripts) [is this even necessary?]
