@@ -341,43 +341,6 @@ generated Go code using `--ignore-fields`:
 $ xo pgsql://user:pass@host/db -o models --ignore-fields created_at modified_at
 ```
 
-## Oracle Support ##
-
-Oracle support is disabled by default as the Go driver for it relies on the
-Oracle client libs that may not be installed on your system. If you would like
-to build a version of xo with Oracle support, please first [install rana's
-Oracle driver](https://github.com/rana/ora#installation).
-
-On Ubuntu/Debian, you may download the instantclient RPMs [available from
-here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
-You should then be able to do the following:
-
-```sh
-# install alien, if not already installed
-sudo aptitude install alien
-
-# install the instantclient RPMs
-alien -i oracle-instantclient-12.1-basic-*.rpm
-alien -i oracle-instantclient-12.1-devel-*.rpm
-alien -i oracle-instantclient-12.1-sqlplus-*.rpm
-
-# get xo, if not done already
-go get -u github.com/knq/xo
-
-# copy oci8.pc from xo contrib to pkg-config directory
-sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
-
-# export cgo flags (rana's ora driver does not have a cgo pkg-config tag [yet])
-export CGO_CFLAGS=$(pkg-config --cflags oci8)
-export CGO_LDFLAGS=$(pkg-config --libs oci8)
-
-# install rana's ora driver -- see here: https://github.com/rana/ora
-go get -u gopkg.in/rana/ora.v3
-
-# install xo with oracle support enabled
-go install -tags oracle github.com/knq/xo
-```
-
 # Example: Adding Methods With Custom Templates #
 
 <!---
@@ -441,6 +404,43 @@ You may want to consider deleting the templates for databases other than the
 one you are using, as well as the generated `templates/tpls.go` "binary" file,
 from a vendored `templates/` directory.  Those are needed by `xo` upstream, but
 are most likely not needed for your project.
+
+# Oracle Support #
+
+Oracle support is disabled by default as the Go driver for it relies on the
+Oracle client libs that may not be installed on your system. If you would like
+to build a version of xo with Oracle support, please first [install rana's
+Oracle driver](https://github.com/rana/ora#installation).
+
+On Ubuntu/Debian, you may download the instantclient RPMs [available from
+here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
+You should then be able to do the following:
+
+```sh
+# install alien, if not already installed
+sudo aptitude install alien
+
+# install the instantclient RPMs
+alien -i oracle-instantclient-12.1-basic-*.rpm
+alien -i oracle-instantclient-12.1-devel-*.rpm
+alien -i oracle-instantclient-12.1-sqlplus-*.rpm
+
+# get xo, if not done already
+go get -u github.com/knq/xo
+
+# copy oci8.pc from xo contrib to pkg-config directory
+sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+
+# export cgo flags (rana's ora driver does not have a cgo pkg-config tag [yet])
+export CGO_CFLAGS=$(pkg-config --cflags oci8)
+export CGO_LDFLAGS=$(pkg-config --libs oci8)
+
+# install rana's ora driver -- see here: https://github.com/rana/ora
+go get -u gopkg.in/rana/ora.v3
+
+# install xo with oracle support enabled
+go install -tags oracle github.com/knq/xo
+```
 
 # Design, Origin, Philosophy, and History #
 
