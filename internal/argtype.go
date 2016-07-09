@@ -40,8 +40,9 @@ type ArgType struct {
 	// Uint32Type is the type to assign those discovered as uint32.
 	Uint32Type string `arg:"--uint32-type,-u,help:Go type to assign to unsigned integers"`
 
-	// IgnoreFields allows the user to specify field names which should not be handled by xo in the generated code.
-	IgnoreFields []string `arg:"--ignore-fields,help:Fields to exclude from the generated code"`
+	// IgnoreFields allows the user to specify field names which should not be
+	// handled by xo in the generated code.
+	IgnoreFields []string `arg:"--ignore-fields,help:fields to exclude from the generated Go code types"`
 
 	// ForeignKeyMode is the foreign key mode for generating foreign key names.
 	ForeignKeyMode *FkMode `arg:"--fk-mode,-k,help:sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]"`

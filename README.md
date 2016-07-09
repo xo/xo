@@ -80,7 +80,7 @@ go build ./models
 The following are xo's arguments and options:
 
 ```
-usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--include INCLUDE] [--exclude EXCLUDE] [--fk-mode FK-MODE] [--use-index-names] [--use-reversed-enum-const-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--escape-all] [--escape-schema] [--escape-table] [--escape-column] [--enable-postgres-oids] [--template-path TEMPLATE-PATH] DSN
+usage: xo [--verbose] [--schema SCHEMA] [--out OUT] [--append] [--suffix SUFFIX] [--single-file] [--package PACKAGE] [--custom-type-package CUSTOM-TYPE-PACKAGE] [--int32-type INT32-TYPE] [--uint32-type UINT32-TYPE] [--ignore-fields IGNORE-FIELDS] [--fk-mode FK-MODE] [--use-index-names] [--use-reversed-enum-const-names] [--query-mode] [--query QUERY] [--query-type QUERY-TYPE] [--query-func QUERY-FUNC] [--query-only-one] [--query-trim] [--query-strip] [--query-interpolate] [--query-type-comment QUERY-TYPE-COMMENT] [--query-func-comment QUERY-FUNC-COMMENT] [--query-delimiter QUERY-DELIMITER] [--query-fields QUERY-FIELDS] [--escape-all] [--escape-schema] [--escape-table] [--escape-column] [--enable-postgres-oids] [--name-conflict-suffix NAME-CONFLICT-SUFFIX] [--template-path TEMPLATE-PATH] DSN
 
 positional arguments:
   dsn                    data source name
@@ -102,10 +102,10 @@ options:
                          Go type to assign to integers [default: int]
   --uint32-type UINT32-TYPE, -u UINT32-TYPE
                          Go type to assign to unsigned integers [default: uint]
-  --include INCLUDE      include type(s)
-  --exclude EXCLUDE      exclude type(s)
+  --ignore-fields IGNORE-FIELDS
+                         fields to exclude from the generated Go code types
   --fk-mode FK-MODE, -k FK-MODE
-                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart] [default: 0xc8201024d8]
+                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart] [default: 0xc8200f0500]
   --use-index-names, -j
                          use index names as defined in schema for generated Go code
   --use-reversed-enum-const-names, -R
@@ -136,6 +136,8 @@ options:
   --escape-column, -x    escape column names in SQL queries
   --enable-postgres-oids
                          enable postgres oids
+  --name-conflict-suffix NAME-CONFLICT-SUFFIX, -w NAME-CONFLICT-SUFFIX
+                         suffix to append when a name conflicts with a Go variable [default: Val]
   --template-path TEMPLATE-PATH
                          user supplied template path
   --help, -h             display this help and exit
