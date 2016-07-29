@@ -26,7 +26,16 @@ func init() {
 			return models.SqTableForeignKeys(db, table)
 		},
 		IndexList: func(db models.XODB, schema string, table string) ([]*models.Index, error) {
-			return models.SqTableIndexes(db, table)
+			indexes, err := models.SqTableIndexes(db, table)
+			if err != nil {
+				return nil, err
+			}
+			for _, index := range indexes {
+				if index.Origin == "pk" {
+					index.IsPrimary = true
+				}
+			}
+			return indexes, nil
 		},
 		IndexColumnList: func(db models.XODB, schema string, table string, index string) ([]*models.IndexColumn, error) {
 			return models.SqIndexColumns(db, index)
