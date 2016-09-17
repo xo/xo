@@ -150,19 +150,11 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		asSlice = true
 		typ = "byte"
 
-	case "date", "timestamp with time zone":
+	case "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
 		typ = "*time.Time"
 		if nullable {
 			nilVal = "pq.NullTime{}"
 			typ = "pq.NullTime"
-		}
-
-	case "time with time zone", "time without time zone", "timestamp without time zone":
-		nilVal = "0"
-		typ = "int64"
-		if nullable {
-			nilVal = "sql.NullInt64{}"
-			typ = "sql.NullInt64"
 		}
 
 	case "interval":
