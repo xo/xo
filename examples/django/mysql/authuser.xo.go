@@ -7,22 +7,22 @@ import (
 	"errors"
 	"time"
 
-	"github.com/lib/pq"
+	"github.com/go-sql-driver/mysql"
 )
 
 // AuthUser represents a row from 'django.auth_user'.
 type AuthUser struct {
-	ID          int         `json:"id"`           // id
-	Password    string      `json:"password"`     // password
-	LastLogin   pq.NullTime `json:"last_login"`   // last_login
-	IsSuperuser int16       `json:"is_superuser"` // is_superuser
-	Username    string      `json:"username"`     // username
-	FirstName   string      `json:"first_name"`   // first_name
-	LastName    string      `json:"last_name"`    // last_name
-	Email       string      `json:"email"`        // email
-	IsStaff     int16       `json:"is_staff"`     // is_staff
-	IsActive    int16       `json:"is_active"`    // is_active
-	DateJoined  *time.Time  `json:"date_joined"`  // date_joined
+	ID          int            `json:"id"`           // id
+	Password    string         `json:"password"`     // password
+	LastLogin   mysql.NullTime `json:"last_login"`   // last_login
+	IsSuperuser int16          `json:"is_superuser"` // is_superuser
+	Username    string         `json:"username"`     // username
+	FirstName   string         `json:"first_name"`   // first_name
+	LastName    string         `json:"last_name"`    // last_name
+	Email       string         `json:"email"`        // email
+	IsStaff     int16          `json:"is_staff"`     // is_staff
+	IsActive    int16          `json:"is_active"`    // is_active
+	DateJoined  *time.Time     `json:"date_joined"`  // date_joined
 
 	// xo fields
 	_exists, _deleted bool
