@@ -26,6 +26,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"convext":        a.convext,
 		"schema":         a.schemafn,
 		"colname":        a.colname,
+		"hascolumn":      a.hascolumn,
 	}
 }
 
@@ -444,4 +445,14 @@ func (a *ArgType) colname(col *models.Column) string {
 	}
 
 	return col.ColumnName
+}
+
+// hascolumn returns by bool if .Fields has "colName" or not.
+func (a *ArgType) hascolumn(fields []*Field, colName string) bool {
+	for _, f := range fields {
+		if a.colname(f.Col) == colName {
+			return true
+		}
+	}
+	return false
 }
