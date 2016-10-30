@@ -332,6 +332,7 @@ var goReservedNames = map[string]string{
 	"default":     "def",
 	"defer":       "dfr",
 	"else":        "els",
+	"error":       "err",
 	"fallthrough": "flthrough",
 	"for":         "fr",
 	"func":        "fn",
