@@ -3,7 +3,7 @@
 // {{ .FuncName }} retrieves a row from '{{ $table }}' as a {{ .Type.Name }}.
 //
 // Generated from index '{{ .Index.IndexName }}'.
-func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
+func {{ .FuncName }}(db XODB{{ goparamlist .Fields true true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
 	var err error
 
 	// sql query
@@ -13,7 +13,7 @@ func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.Is
 		`WHERE {{ colnamesquery .Fields " AND " }}`
 
 	// run query
-	XOLog(sqlstr{{ goparamlist .Fields false }})
+	XOLog(sqlstr{{ goparamlist .Fields true false }})
 {{- if .Index.IsUnique }}
 	{{ $short }} := {{ .Type.Name }}{
 	{{- if .Type.PrimaryKey }}
@@ -21,14 +21,14 @@ func {{ .FuncName }}(db XODB{{ goparamlist .Fields true }}) ({{ if not .Index.Is
 	{{ end -}}
 	}
 
-	err = db.QueryRow(sqlstr{{ goparamlist .Fields false }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
+	err = db.QueryRow(sqlstr{{ goparamlist .Fields true false }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
 		return nil, err
 	}
 
 	return &{{ $short }}, nil
 {{- else }}
-	q, err := db.Query(sqlstr{{ goparamlist .Fields false }})
+	q, err := db.Query(sqlstr{{ goparamlist .Fields true false }})
 	if err != nil {
 		return nil, err
 	}

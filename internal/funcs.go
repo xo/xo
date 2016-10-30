@@ -376,15 +376,25 @@ var goReservedNames = map[string]string{
 }
 
 // goparamlist converts a list of fields into their named Go parameters,
-// skipping any Field with Name contained in ignoreNames.
-func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...string) string {
+// skipping any Field with Name contained in ignoreNames. addType will cause
+// the go Type to be added after each variable name. addPrefix will cause the
+// returned string to be prefixed with ", " if the generated string is not
+// empty.
+//
+// Any field name encountered will be checked against goReservedNames, and will
+// have its name substituted by its corresponding looked up value.
+//
+// Used to present a comma separated list of Go variable names for use with as
+// either a Go func parameter list, or in a call to another Go func.
+// (ie, ", a, b, c, ..." or ", a T1, b T2, c T3, ...").
+func (a *ArgType) goparamlist(fields []*Field, addPrefix bool, addType bool, ignoreNames ...string) string {
 	ignore := map[string]bool{}
 	for _, n := range ignoreNames {
 		ignore[n] = true
 	}
 
-	str := ""
 	i := 0
+	vals := []string{}
 	for _, f := range fields {
 		if ignore[f.Name] {
 			continue
@@ -401,12 +411,21 @@ func (a *ArgType) goparamlist(fields []*Field, addType bool, ignoreNames ...stri
 			s = r
 		}
 
-		str = str + ", " + s
+		// add the go type
 		if addType {
-			str = str + " " + a.retype(f.Type)
+			s += " " + a.retype(f.Type)
 		}
 
+		// add to vals
+		vals = append(vals, s)
+
 		i++
+	}
+
+	// concat generated values
+	str := strings.Join(vals, ", ")
+	if addPrefix && str != "" {
+		return ", " + str
 	}
 
 	return str

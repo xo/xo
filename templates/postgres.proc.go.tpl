@@ -2,7 +2,7 @@
 {{- $proc := (schema .Schema .Proc.ProcName) -}}
 {{- if ne .Proc.ReturnType "trigger" -}}
 // {{ .Name }} calls the stored procedure '{{ $proc }}({{ .ProcParams }}) {{ .Proc.ReturnType }}' on db.
-func {{ .Name }}(db XODB{{ goparamlist .Params true }}) ({{ if $notVoid }}{{ retype .Return.Type }}, {{ end }}error) {
+func {{ .Name }}(db XODB{{ goparamlist .Params true true }}) ({{ if $notVoid }}{{ retype .Return.Type }}, {{ end }}error) {
 	var err error
 
 	// sql query
@@ -11,8 +11,8 @@ func {{ .Name }}(db XODB{{ goparamlist .Params true }}) ({{ if $notVoid }}{{ ret
 	// run query
 {{- if $notVoid }}
 	var ret {{ retype .Return.Type }}
-	XOLog(sqlstr{{ goparamlist .Params false }})
-	err = db.QueryRow(sqlstr{{ goparamlist .Params false }}).Scan(&ret)
+	XOLog(sqlstr{{ goparamlist .Params true false }})
+	err = db.QueryRow(sqlstr{{ goparamlist .Params true false }}).Scan(&ret)
 	if err != nil {
 		return {{ reniltype .Return.NilType }}, err
 	}
