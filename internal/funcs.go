@@ -26,6 +26,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"convext":        a.convext,
 		"schema":         a.schemafn,
 		"colname":        a.colname,
+		"replace":        strings.Replace,
 	}
 }
 
