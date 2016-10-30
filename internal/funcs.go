@@ -26,6 +26,8 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"convext":        a.convext,
 		"schema":         a.schemafn,
 		"colname":        a.colname,
+		"hascolumn":      a.hascolumn,
+		"hasfield":       a.hasfield,
 	}
 }
 
@@ -356,7 +358,7 @@ var goReservedNames = map[string]string{
 	"string":     "str",
 	"byte":       "byt",
 	"rune":       "r",
-	"uintptr":    "up",
+	"uintptr":    "uptr",
 	"int":        "i",
 	"int8":       "i8",
 	"int16":      "i16",
@@ -466,4 +468,28 @@ func (a *ArgType) colname(col *models.Column) string {
 	}
 
 	return col.ColumnName
+}
+
+// hascolumn takes a list of fields and determines if field with the specified
+// column name is in the list.
+func (a *ArgType) hascolumn(fields []*Field, name string) bool {
+	for _, f := range fields {
+		if f.Col.ColumnName == name {
+			return true
+		}
+	}
+
+	return false
+}
+
+// hasfield takes a list of fields and determines if field with the specified
+// field name is in the list.
+func (a *ArgType) hasfield(fields []*Field, name string) bool {
+	for _, f := range fields {
+		if f.Name == name {
+			return true
+		}
+	}
+
+	return false
 }
