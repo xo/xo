@@ -165,7 +165,7 @@ switchDT:
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
 		typ = "[]byte"
 
-	case "timestamp", "datetime", "date":
+	case "timestamp", "datetime", "date", "time":
 		typ = "*time.Time"
 		if nullable {
 			nilVal = "mysql.NullTime{}"
