@@ -513,6 +513,7 @@ The following projects work with similar concepts as xo:
 * [sqlc](https://github.com/relops/sqlc)
 
 # TODO #
+* Completely refactor / fix code, templates, and other issues (PRIORITY #1)
 * Add (finish) stored proc support for Oracle + Microsoft SQL Server
 * Better standardize example `gen.sh` scripts, using [usql](https://github.com/knq/usql) tool
 * v1 release + binary packages for Linux, OSX, Windows
