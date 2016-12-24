@@ -10,13 +10,13 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    int       // book_id
-	AuthorID  int       // author_id
-	Isbn      string    // isbn
-	Title     string    // title
-	Year      int       // year
-	Available time.Time // available
-	Tags      string    // tags
+	BookID    int       `json:"book_id"`   // book_id
+	AuthorID  int       `json:"author_id"` // author_id
+	Isbn      string    `json:"isbn"`      // isbn
+	Title     string    `json:"title"`     // title
+	Year      int       `json:"year"`      // year
+	Available time.Time `json:"available"` // available
+	Tags      string    `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool
@@ -134,14 +134,14 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'FK__books__author_id__145C0A3F'.
+// Generated from foreign key 'FK__books__author_id__3A81B327'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'PK__books__490D1AE116081FD2'.
+// Generated from index 'PK__books__490D1AE194BD6A2C'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -167,7 +167,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'UQ__books__99F9D0A4F19F3C52'.
+// Generated from index 'UQ__books__99F9D0A40420D486'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

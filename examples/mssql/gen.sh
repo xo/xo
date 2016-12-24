@@ -5,7 +5,7 @@ SAPASS=changeit
 
 DBUSER=booktest
 DBPASS=booktest
-DBHOST=sqlexpress
+DBHOST=localhost
 DBNAME=booktest
 
 DB=mssql://$DBUSER:$DBPASS@$DBHOST/$DBNAME

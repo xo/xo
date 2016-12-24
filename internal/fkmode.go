@@ -3,6 +3,8 @@ package internal
 import (
 	"errors"
 	"strings"
+
+	"github.com/knq/snaker"
 )
 
 // FkMode represents the different foreign key naming modes.
@@ -81,7 +83,7 @@ func fkName(mode FkMode, fkMap map[string]*ForeignKey, fk *ForeignKey) string {
 	case FkModeField:
 		return fk.RefType.Name + "By" + fk.Field.Name
 	case FkModeKey:
-		return fk.RefType.Name + "By" + SnakeToIdentifier(fk.ForeignKey.ForeignKeyName)
+		return fk.RefType.Name + "By" + snaker.SnakeToCamelIdentifier(fk.ForeignKey.ForeignKeyName)
 	}
 
 	// mode is FkModeSmart

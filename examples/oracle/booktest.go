@@ -14,6 +14,7 @@ import (
 
 var flagVerbose = flag.Bool("v", false, "verbose")
 var flagHost = flag.String("host", "", "host")
+var flagDatabase = flag.String("db", "", "database name")
 
 func main() {
 	var err error
@@ -27,7 +28,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("oracle://booktest:booktest@" + *flagHost + "/orcl")
+	db, err := dburl.Open("oracle://booktest:booktest@" + *flagHost + "/" + *flagDatabase)
 	if err != nil {
 		log.Fatal(err)
 	}

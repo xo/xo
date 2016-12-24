@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/gedex/inflector"
-	"github.com/serenize/snaker"
 
+	"github.com/knq/snaker"
 	"github.com/knq/xo/models"
 )
 
@@ -166,7 +166,7 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 		// process columns
 		for _, c := range colList {
 			f := &Field{
-				Name: SnakeToIdentifier(c.ColumnName),
+				Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 				Col:  c,
 			}
 			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, false)
@@ -299,7 +299,7 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 	enumMap := map[string]*Enum{}
 	for _, e := range enumList {
 		enumTpl := &Enum{
-			Name:              inflector.Singularize(SnakeToIdentifier(e.EnumName)),
+			Name:              inflector.Singularize(snaker.SnakeToCamelIdentifier(e.EnumName)),
 			Schema:            args.Schema,
 			Values:            []*EnumValue{},
 			Enum:              e,
@@ -339,7 +339,7 @@ func (tl TypeLoader) LoadEnumValues(args *ArgType, enumTpl *Enum) error {
 	// process enum values
 	for _, ev := range enumValues {
 		// chop off redundant enum name if applicable
-		name := SnakeToIdentifier(ev.EnumValue)
+		name := snaker.SnakeToCamelIdentifier(ev.EnumValue)
 		if strings.HasSuffix(strings.ToLower(name), strings.ToLower(enumTpl.Name)) {
 			n := name[:len(name)-len(enumTpl.Name)]
 			if len(n) > 0 {
@@ -382,7 +382,7 @@ func (tl TypeLoader) LoadProcs(args *ArgType) (map[string]*Proc, error) {
 
 		// create template
 		procTpl := &Proc{
-			Name:   SnakeToIdentifier(name),
+			Name:   snaker.SnakeToCamelIdentifier(name),
 			Schema: args.Schema,
 			Params: []*Field{},
 			Return: &Field{},
@@ -457,7 +457,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    inflector.Singularize(SnakeToIdentifier(ti.TableName)),
+			Name:    inflector.Singularize(snaker.SnakeToCamelIdentifier(ti.TableName)),
 			Schema:  args.Schema,
 			RelType: relType,
 			Fields:  []*Field{},
@@ -516,7 +516,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 
 		// set col info
 		f := &Field{
-			Name: SnakeToIdentifier(c.ColumnName),
+			Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 			Col:  c,
 		}
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)
@@ -671,7 +671,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	// process indexes
 	for _, ix := range indexList {
 		// save whether or not the primary key index was processed
-		priIxLoaded = priIxLoaded || ix.IsPrimary
+		priIxLoaded = priIxLoaded || ix.IsPrimary || (ix.Origin == "pk")
 
 		// create index template
 		ixTpl := &Index{

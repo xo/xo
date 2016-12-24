@@ -41031,8 +41031,8 @@ type PgDbRoleSetting struct {
 	Setconfig   []sql.NullString `json:"setconfig"`   // setconfig
 }
 
-// PgDefaultAcl represents a row from 'pg_catalog.pg_default_acl'.
-type PgDefaultAcl struct {
+// PgDefaultACL represents a row from 'pg_catalog.pg_default_acl'.
+type PgDefaultACL struct {
 	Tableoid        pgtypes.Oid       `json:"tableoid"`        // tableoid
 	Cmax            pgtypes.Cid       `json:"cmax"`            // cmax
 	Xmax            pgtypes.Xid       `json:"xmax"`            // xmax
@@ -42582,10 +42582,10 @@ func PgDbRoleSettingBySetdatabaseSetrole(db XODB, setdatabase pgtypes.Oid, setro
 	return &pdrs, nil
 }
 
-// PgDefaultAclByOid retrieves a row from 'pg_catalog.pg_default_acl' as a PgDefaultAcl.
+// PgDefaultACLByOid retrieves a row from 'pg_catalog.pg_default_acl' as a PgDefaultACL.
 //
 // Generated from index 'pg_default_acl_oid_index'.
-func PgDefaultAclByOid(db XODB, oid pgtypes.Oid) (*PgDefaultAcl, error) {
+func PgDefaultACLByOid(db XODB, oid pgtypes.Oid) (*PgDefaultACL, error) {
 	var err error
 
 	// sql query
@@ -42596,7 +42596,7 @@ func PgDefaultAclByOid(db XODB, oid pgtypes.Oid) (*PgDefaultAcl, error) {
 
 	// run query
 	XOLog(sqlstr, oid)
-	pda := PgDefaultAcl{}
+	pda := PgDefaultACL{}
 
 	err = db.QueryRow(sqlstr, oid).Scan(&pda.Tableoid, &pda.Cmax, &pda.Xmax, &pda.Cmin, &pda.Xmin, &pda.Oid, &pda.Ctid, &pda.Defaclrole, &pda.Defaclnamespace, &pda.Defaclobjtype, &pda.Defaclacl)
 	if err != nil {
@@ -42606,10 +42606,10 @@ func PgDefaultAclByOid(db XODB, oid pgtypes.Oid) (*PgDefaultAcl, error) {
 	return &pda, nil
 }
 
-// PgDefaultAclByDefaclroleDefaclnamespaceDefaclobjtype retrieves a row from 'pg_catalog.pg_default_acl' as a PgDefaultAcl.
+// PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype retrieves a row from 'pg_catalog.pg_default_acl' as a PgDefaultACL.
 //
 // Generated from index 'pg_default_acl_role_nsp_obj_index'.
-func PgDefaultAclByDefaclroleDefaclnamespaceDefaclobjtype(db XODB, defaclrole pgtypes.Oid, defaclnamespace pgtypes.Oid, defaclobjtype uint8) (*PgDefaultAcl, error) {
+func PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype(db XODB, defaclrole pgtypes.Oid, defaclnamespace pgtypes.Oid, defaclobjtype uint8) (*PgDefaultACL, error) {
 	var err error
 
 	// sql query
@@ -42620,7 +42620,7 @@ func PgDefaultAclByDefaclroleDefaclnamespaceDefaclobjtype(db XODB, defaclrole pg
 
 	// run query
 	XOLog(sqlstr, defaclrole, defaclnamespace, defaclobjtype)
-	pda := PgDefaultAcl{}
+	pda := PgDefaultACL{}
 
 	err = db.QueryRow(sqlstr, defaclrole, defaclnamespace, defaclobjtype).Scan(&pda.Tableoid, &pda.Cmax, &pda.Xmax, &pda.Cmin, &pda.Xmin, &pda.Oid, &pda.Ctid, &pda.Defaclrole, &pda.Defaclnamespace, &pda.Defaclobjtype, &pda.Defaclacl)
 	if err != nil {

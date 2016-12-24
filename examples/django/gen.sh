@@ -19,7 +19,7 @@ rm -f postgres/*.xo.go mysql/*.xo.go sqlite3/*.xo.go oracle/*.xo.go
 $XOBIN $EXTRA -o postgres postgres://django:django@localhost/django
 $XOBIN $EXTRA -o mysql mysql://django:django@localhost/django
 $XOBIN $EXTRA -o sqlite3 file:$SRC/django.sqlite3
-$XOBIN $EXTRA -o oracle oracle://django:django@$(docker port orcl 1521)/orcl
+#$XOBIN $EXTRA -o oracle oracle://django:django@$(docker port orcl 1521)/xe.oracle.docker
 
 go build ./postgres/
 go build ./mysql/
