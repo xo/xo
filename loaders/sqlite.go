@@ -19,9 +19,7 @@ func init() {
 		TableList: func(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
 			return models.SqTables(db, relkind)
 		},
-		ColumnList: func(db models.XODB, schema string, table string) ([]*models.Column, error) {
-			return models.SqTableColumns(db, table)
-		},
+		ColumnList: SqTableColumns,
 		ForeignKeyList: func(db models.XODB, schema string, table string) ([]*models.ForeignKey, error) {
 			return models.SqTableForeignKeys(db, table)
 		},
@@ -51,7 +49,7 @@ func SqRelkind(relType internal.RelType) string {
 
 var uRE = regexp.MustCompile(`\s*unsigned\*`)
 
-// SqParseType parse a postgres type into a Go type based on the column
+// SqParseType parse a sqlite type into a Go type based on the column
 // definition.
 func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
@@ -97,6 +95,10 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "blob":
 		typ = "[]byte"
 
+	case "timestamp", "datetime", "date":
+		nilVal = "time.Time{}"
+		typ = "time.Time"
+
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "datetime", "date", "time":
 		nilVal = `""`
@@ -115,6 +117,32 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	return precision, nilVal, typ
 }
 
+// SqTableColumns returns the sqlite table column info.
+func SqTableColumns(db models.XODB, schema string, table string) ([]*models.Column, error) {
+	var err error
+
+	// grab
+	rows, err := models.SqTableColumns(db, table)
+	if err != nil {
+		return nil, err
+	}
+
+	// fix columns
+	var cols []*models.Column
+	for _, row := range rows {
+		cols = append(cols, &models.Column{
+			FieldOrdinal: row.FieldOrdinal,
+			ColumnName:   row.ColumnName,
+			DataType:     row.DataType,
+			NotNull:      row.NotNull,
+			DefaultValue: row.DefaultValue,
+			IsPrimaryKey: row.PkColIndex != 0,
+		})
+	}
+
+	return cols, nil
+}
+
 // SqQueryColumns parses a sqlite query and generates a type for it.
 func SqQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column, error) {
 	var err error
@@ -129,5 +157,5 @@ func SqQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	}
 
 	// load column information
-	return models.SqTableColumns(args.DB, xoid)
+	return SqTableColumns(args.DB, "", xoid)
 }

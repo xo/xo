@@ -3,7 +3,7 @@
 DBUSER=booktest
 DBPASS=booktest
 DBHOST=$(docker port orcl 1521)
-DBNAME=orcl
+DBNAME=xe.oracle.docker
 
 SP=$DBUSER/$DBPASS@$DBHOST/$DBNAME
 DB=oracle://$DBUSER:$DBPASS@$DBHOST/$DBNAME
@@ -70,7 +70,7 @@ ENDSQL
 pushd $SRC &> /dev/null
 
 go build
-./oracle -host $DBHOST $EXTRA
+./oracle -host $DBHOST -db $DBNAME $EXTRA
 
 popd &> /dev/null
 

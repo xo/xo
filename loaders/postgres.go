@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/knq/snaker"
 	"github.com/knq/xo/internal"
 	"github.com/knq/xo/models"
 )
@@ -178,10 +179,10 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
-			typ = internal.SnakeToIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
-			typ = internal.SnakeToIdentifier(dt)
+			typ = snaker.SnakeToCamelIdentifier(dt)
 			nilVal = typ + "{}"
 		}
 	}

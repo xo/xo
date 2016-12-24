@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
+	"github.com/knq/snaker"
 	"github.com/knq/xo/internal"
 	"github.com/knq/xo/models"
 )
@@ -61,7 +62,7 @@ func MsRelkind(relType internal.RelType) string {
 	return s
 }
 
-// MsParseType parse a postgres type into a Go type based on the column
+// MsParseType parse a mssql type into a Go type based on the column
 // definition.
 func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
 	precision := 0
@@ -168,10 +169,10 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
-			typ = internal.SnakeToIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
-			typ = internal.SnakeToIdentifier(dt)
+			typ = snaker.SnakeToCamelIdentifier(dt)
 			nilVal = typ + "{}"
 		}
 	}

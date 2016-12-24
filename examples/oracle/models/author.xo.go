@@ -7,8 +7,8 @@ import "errors"
 
 // Author represents a row from 'booktest.authors'.
 type Author struct {
-	AuthorID float64 // author_id
-	Name     string  // name
+	AuthorID float64 `json:"author_id"` // author_id
+	Name     string  `json:"name"`      // name
 
 	// xo fields
 	_exists, _deleted bool
@@ -165,7 +165,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'sys_c005108'.
+// Generated from index 'sys_c0010039'.
 func AuthorByAuthorID(db XODB, authorID float64) (*Author, error) {
 	var err error
 

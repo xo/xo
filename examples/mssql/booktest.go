@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("mssql://booktest:booktest@sqlexpress/booktest")
+	db, err := dburl.Open("mssql://booktest:booktest@localhost/booktest")
 	if err != nil {
 		log.Fatal(err)
 	}

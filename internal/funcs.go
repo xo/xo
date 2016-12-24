@@ -5,8 +5,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/serenize/snaker"
-
+	"github.com/knq/snaker"
 	"github.com/knq/xo/models"
 )
 
