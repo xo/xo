@@ -18,6 +18,12 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 	var {{ $short }} {{ .Type.Name }}
 	err = db.QueryRow(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
+		{{- if .HandleNoRow }}
+			if err == sql.ErrNoRows {
+				return nil, nil
+			}
+		{{ end }}
+
 		return nil, err
 	}
 
@@ -46,4 +52,3 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 	return res, nil
 {{- end }}
 }
-

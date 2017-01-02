@@ -144,6 +144,9 @@ type ArgType struct {
 	// ShortNameTypeMap is the collection of Go style short names for types, mainly
 	// used for use with declaring a func receiver on a type.
 	ShortNameTypeMap map[string]string `arg:"-"`
+
+	// HandleNoRow checks for sql.ErrNoRows when using QueryRow() and returns nil instead
+	HandleNoRow bool `arg:"--handle-norow,help:return nil instead of an error if no record is found"`
 }
 
 // NewDefaultArgs returns the default arguments.
