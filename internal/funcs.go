@@ -464,6 +464,10 @@ func (a *ArgType) schemafn(s string, names ...string) string {
 
 	n := strings.Join(names, ".")
 
+	if a.IgnoreSchemaName {
+		return n
+	}
+
 	if s == "" && n == "" {
 		return ""
 	}
