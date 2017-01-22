@@ -74,7 +74,8 @@ COMMENT='Table represents table info.'
 $XOBIN $PGDB -N -M -B -T Table -F PgTables --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
 SELECT
   c.relkind::varchar AS type,
-  c.relname::varchar AS table_name
+  c.relname::varchar AS table_name,
+  false::boolean AS manual_pk
 FROM pg_class c
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = %%schema string%% AND c.relkind = %%relkind string%%
@@ -255,6 +256,15 @@ SELECT
 FROM information_schema.statistics
 WHERE index_schema = %%schema string%% AND table_name = %%table string%% AND index_name = %%index string%%
 ORDER BY seq_in_index
+ENDSQL
+
+# sqlite sequence list query
+$XOBIN $SQDB -N -M -B -T SqSequence -F SqSequences -o $DEST $EXTRA << ENDSQL
+SELECT
+  name as table_name, sql
+FROM sqlite_master
+WHERE type='table'
+ORDER BY name
 ENDSQL
 
 # sqlite table list query
