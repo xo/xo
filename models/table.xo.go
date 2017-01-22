@@ -7,6 +7,7 @@ package models
 type Table struct {
 	Type      string // type
 	TableName string // table_name
+	ManualPk  bool   // manual_pk
 }
 
 // PgTables runs a custom query, returning results as Table.
@@ -16,7 +17,8 @@ func PgTables(db XODB, schema string, relkind string) ([]*Table, error) {
 	// sql query
 	const sqlstr = `SELECT ` +
 		`c.relkind, ` + // ::varchar AS type
-		`c.relname ` + // ::varchar AS table_name
+		`c.relname, ` + // ::varchar AS table_name
+		`false ` + // ::boolean AS manual_pk
 		`FROM pg_class c ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`WHERE n.nspname = $1 AND c.relkind = $2`
@@ -35,7 +37,7 @@ func PgTables(db XODB, schema string, relkind string) ([]*Table, error) {
 		t := Table{}
 
 		// scan
-		err = q.Scan(&t.Type, &t.TableName)
+		err = q.Scan(&t.Type, &t.TableName, &t.ManualPk)
 		if err != nil {
 			return nil, err
 		}

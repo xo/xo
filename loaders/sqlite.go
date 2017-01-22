@@ -16,10 +16,8 @@ func init() {
 		ParamN:         func(int) string { return "?" },
 		MaskFunc:       func() string { return "?" },
 		ParseType:      SqParseType,
-		TableList: func(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
-			return models.SqTables(db, relkind)
-		},
-		ColumnList: SqTableColumns,
+		TableList:      SqTables,
+		ColumnList:     SqTableColumns,
 		ForeignKeyList: func(db models.XODB, schema string, table string) ([]*models.ForeignKey, error) {
 			return models.SqTableForeignKeys(db, table)
 		},
@@ -115,6 +113,46 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	}
 
 	return precision, nilVal, typ
+}
+
+// SqTables returns the sqlite tables with the manual PK information added.
+// ManualPk is true when the table's primary key is not autoincrement.
+func SqTables(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
+	var err error
+
+	// get the tables
+	rows, err := models.SqTables(db, relkind)
+	if err != nil {
+		return nil, err
+	}
+
+	// get the sequences, ignore the error in case the sequences table is missing
+	sequences, err := models.SqSequences(db)
+	if err != nil {
+		// Set it to an empty set on error.
+		sequences = []*models.SqSequence{}
+	}
+
+	// Add information about manual FK.
+	var tables []*models.Table
+	for _, row := range rows {
+		manualPk := true
+		// Look for a match in the table name where it contains the autoincrement
+		// keyword for the given table in the SQL.
+		for _, sequence := range sequences {
+			lSQL := strings.ToLower(sequence.SQL)
+			if sequence.TableName == row.TableName && strings.Contains(lSQL, "autoincrement") {
+				manualPk = false
+			}
+		}
+		tables = append(tables, &models.Table{
+			TableName: row.TableName,
+			Type:      row.Type,
+			ManualPk:  manualPk,
+		})
+	}
+
+	return tables, nil
 }
 
 // SqTableColumns returns the sqlite table column info.
