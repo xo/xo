@@ -80,7 +80,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "sql.NullBool"
 		}
 
-	case "character", "character varying", "text", "money", "inet":
+	case "character", "character varying", "text", "money", "inet", "cidr", "macaddr":
 		nilVal = `""`
 		typ = "string"
 		if nullable {
