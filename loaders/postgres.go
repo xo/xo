@@ -180,6 +180,10 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "hstore":
 		typ = "hstore.Hstore"
 
+	case "uuid":
++               nilVal = "uuid.New()"
++               typ = "uuid.UUID"
+		
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
