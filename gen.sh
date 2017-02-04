@@ -178,6 +178,14 @@ FROM information_schema.columns
 WHERE data_type = 'enum' AND table_schema = %%schema string%%
 ENDSQL
 
+# mysql autoincrement list query
+$XOBIN $MYDB -N -M -B -T MyAutoIncrement -F MyAutoIncrements -o $DEST $EXTRA << ENDSQL
+SELECT
+  table_name
+FROM information_schema.tables
+WHERE auto_increment IS NOT null AND table_schema = %%schema string%%
+ENDSQL
+
 # mysql enum value list query
 $XOBIN $MYDB -N -M -B -1 -T MyEnumValue -F MyEnumValues -o $DEST $EXTRA << ENDSQL
 SELECT
@@ -258,8 +266,8 @@ WHERE index_schema = %%schema string%% AND table_name = %%table string%% AND ind
 ORDER BY seq_in_index
 ENDSQL
 
-# sqlite sequence list query
-$XOBIN $SQDB -N -M -B -T SqSequence -F SqSequences -o $DEST $EXTRA << ENDSQL
+# sqlite autoincrement query
+$XOBIN $SQDB -N -M -B -T SqAutoIncrement -F SqAutoIncrements -o $DEST $EXTRA << ENDSQL
 SELECT
   name as table_name, sql
 FROM sqlite_master

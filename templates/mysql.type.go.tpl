@@ -47,7 +47,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short }})
-	res, err := db.Exec(sqlstr, {{ fieldnames .Fields $short }})
+	_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short }})
 	if err != nil {
 		return err
 	}
