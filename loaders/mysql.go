@@ -21,7 +21,7 @@ func init() {
 		EnumValueList:   MyEnumValues,
 		ProcList:        models.MyProcs,
 		ProcParamList:   models.MyProcParams,
-		TableList:       models.MyTables,
+		TableList:       MyTables,
 		ColumnList:      models.MyTableColumns,
 		ForeignKeyList:  models.MyTableForeignKeys,
 		IndexList:       models.MyTableIndexes,
@@ -213,6 +213,44 @@ func MyEnumValues(db models.XODB, schema string, enum string) ([]*models.EnumVal
 	}
 
 	return enumVals, nil
+}
+
+// MyTables returns the MySql tables with the manual PK information added.
+// ManualPk is true when the table's primary key is not autoincrement.
+func MyTables(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
+	var err error
+
+	// get the tables
+	rows, err := models.MyTables(db, schema, relkind)
+	if err != nil {
+		return nil, err
+	}
+
+	// get the tables that have Autoincrementing included
+	autoIncrements, err := models.MyAutoIncrements(db, schema)
+	if err != nil {
+		// Set it to an empty set on error.
+		autoIncrements = []*models.MyAutoIncrement{}
+	}
+
+	// Add information about manual FK.
+	var tables []*models.Table
+	for _, row := range rows {
+		manualPk := true
+		// Look for a match in the table name where it contains the autoincrement
+		for _, autoInc := range autoIncrements {
+			if autoInc.TableName == row.TableName {
+				manualPk = false
+			}
+		}
+		tables = append(tables, &models.Table{
+			TableName: row.TableName,
+			Type:      row.Type,
+			ManualPk:  manualPk,
+		})
+	}
+
+	return tables, nil
 }
 
 // MyQueryColumns parses the query and generates a type for it.

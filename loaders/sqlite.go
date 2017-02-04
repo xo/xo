@@ -126,11 +126,11 @@ func SqTables(db models.XODB, schema string, relkind string) ([]*models.Table, e
 		return nil, err
 	}
 
-	// get the sequences, ignore the error in case the sequences table is missing
-	sequences, err := models.SqSequences(db)
+	// get the SQL for the Autoincrement detection
+	autoIncrements, err := models.SqAutoIncrements(db)
 	if err != nil {
 		// Set it to an empty set on error.
-		sequences = []*models.SqSequence{}
+		autoIncrements = []*models.SqAutoIncrement{}
 	}
 
 	// Add information about manual FK.
@@ -139,9 +139,9 @@ func SqTables(db models.XODB, schema string, relkind string) ([]*models.Table, e
 		manualPk := true
 		// Look for a match in the table name where it contains the autoincrement
 		// keyword for the given table in the SQL.
-		for _, sequence := range sequences {
-			lSQL := strings.ToLower(sequence.SQL)
-			if sequence.TableName == row.TableName && strings.Contains(lSQL, "autoincrement") {
+		for _, autoInc := range autoIncrements {
+			lSQL := strings.ToLower(autoInc.SQL)
+			if autoInc.TableName == row.TableName && strings.Contains(lSQL, "autoincrement") {
 				manualPk = false
 			}
 		}
