@@ -48,6 +48,18 @@ FROM pg_type t
 WHERE n.nspname = %%schema string%% AND t.typname = %%enum string%%
 ENDSQL
 
+# postgres sequence list query
+COMMENT='Sequence represents a table that references a sequence.'
+$XOBIN $PGDB -N -M -B -T Sequence -F PgSequences -o $DEST $EXTRA << ENDSQL
+SELECT
+  t.relname::varchar AS table_name
+FROM pg_class s
+  JOIN pg_depend d ON d.objid = s.oid
+  JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
+  JOIN pg_namespace n ON n.oid = s.relnamespace 
+WHERE n.nspname = %%schema string%% AND s.relkind = 'S'
+ENDSQL
+
 # postgres proc list query
 COMMENT='Proc represents a stored procedure.'
 $XOBIN $PGDB -N -M -B -T Proc -F PgProcs --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
@@ -178,20 +190,20 @@ FROM information_schema.columns
 WHERE data_type = 'enum' AND table_schema = %%schema string%%
 ENDSQL
 
-# mysql autoincrement list query
-$XOBIN $MYDB -N -M -B -T MyAutoIncrement -F MyAutoIncrements -o $DEST $EXTRA << ENDSQL
-SELECT
-  table_name
-FROM information_schema.tables
-WHERE auto_increment IS NOT null AND table_schema = %%schema string%%
-ENDSQL
-
 # mysql enum value list query
 $XOBIN $MYDB -N -M -B -1 -T MyEnumValue -F MyEnumValues -o $DEST $EXTRA << ENDSQL
 SELECT
   SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values
 FROM information_schema.columns
 WHERE data_type = 'enum' AND table_schema = %%schema string%% AND column_name = %%enum string%%
+ENDSQL
+
+# mysql autoincrement list query
+$XOBIN $MYDB -N -M -B -T MyAutoIncrement -F MyAutoIncrements -o $DEST $EXTRA << ENDSQL
+SELECT
+  table_name
+FROM information_schema.tables
+WHERE auto_increment IS NOT null AND table_schema = %%schema string%%
 ENDSQL
 
 # mysql proc list query

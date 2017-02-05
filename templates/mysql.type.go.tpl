@@ -38,7 +38,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 
 {{ if .Table.ManualPk  }}
-	// sql query
+	// sql insert query, primary key must be provided
 	const sqlstr = `INSERT INTO {{ $table }} (` +
 		`{{ colnames .Fields }}` +
 		`) VALUES (` +
@@ -55,7 +55,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	// set existence
 	{{ $short }}._exists = true
 {{ else }}
-	// sql query
+	// sql insert query, primary key provided by autoincrement
 	const sqlstr = `INSERT INTO {{ $table }} (` +
 		`{{ colnames .Fields .PrimaryKey.Name }}` +
 		`) VALUES (` +

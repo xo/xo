@@ -22,7 +22,7 @@ func init() {
 		EnumValueList:  models.PgEnumValues,
 		ProcList:       models.PgProcs,
 		ProcParamList:  models.PgProcParams,
-		TableList:      models.PgTables,
+		TableList:      PgTables,
 		ColumnList: func(db models.XODB, schema string, table string) ([]*models.Column, error) {
 			return models.PgTableColumns(db, schema, table, internal.Args.EnablePostgresOIDs)
 		},
@@ -220,6 +220,44 @@ func PgQueryStrip(query []string, queryComments []string) {
 			queryComments[i+1] = ""
 		}
 	}
+}
+
+// PgTables returns the Postgres tables with the manual PK information added.
+// ManualPk is true when the table does not have a sequence defined.
+func PgTables(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
+	var err error
+
+	// get the tables
+	rows, err := models.PgTables(db, schema, relkind)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the tables that have a sequence defined.
+	sequences, err := models.PgSequences(db, schema)
+	if err != nil {
+		// Set it to an empty set on error.
+		sequences = []*models.Sequence{}
+	}
+
+	// Add information about manual FK.
+	var tables []*models.Table
+	for _, row := range rows {
+		manualPk := true
+		// Look for a match in the table name where it contains the sequence
+		for _, sequence := range sequences {
+			if sequence.TableName == row.TableName {
+				manualPk = false
+			}
+		}
+		tables = append(tables, &models.Table{
+			TableName: row.TableName,
+			Type:      row.Type,
+			ManualPk:  manualPk,
+		})
+	}
+
+	return tables, nil
 }
 
 // PgQueryColumns parses the query and generates a type for it.
