@@ -20,7 +20,7 @@ func init() {
 		//EnumValueList:  models.MsEnumValues,
 		//ProcList:       models.MsProcs,
 		//ProcParamList:  models.MsProcParams,
-		TableList:       models.MsTables,
+		TableList:       MsTables,
 		ColumnList:      models.MsTableColumns,
 		ForeignKeyList:  models.MsTableForeignKeys,
 		IndexList:       models.MsTableIndexes,
@@ -211,4 +211,42 @@ func MsQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 
 	// load column information
 	return cols, err
+}
+
+// MsTables returns the MsSQL tables with the manual PK information added.
+// ManualPk is true when the table's primary key is not an identity.
+func MsTables(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
+	var err error
+
+	// get the tables
+	rows, err := models.MsTables(db, schema, relkind)
+	if err != nil {
+		return nil, err
+	}
+
+	// get the tables that have Identity included
+	identities, err := models.MsIdentities(db, schema)
+	if err != nil {
+		// Set it to an empty set on error.
+		identities = []*models.MsIdentity{}
+	}
+
+	// Add information about manual FK.
+	var tables []*models.Table
+	for _, row := range rows {
+		manualPk := true
+		// Look for a match in the table name where it contains the identity
+		for _, identity := range identities {
+			if identity.TableName == row.TableName {
+				manualPk = false
+			}
+		}
+		tables = append(tables, &models.Table{
+			TableName: row.TableName,
+			Type:      row.Type,
+			ManualPk:  manualPk,
+		})
+	}
+
+	return tables, nil
 }

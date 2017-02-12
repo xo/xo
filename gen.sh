@@ -319,6 +319,14 @@ $XOBIN $SQDB -a -I -N -M -B -T IndexColumn -F SqIndexColumns -Z "$FIELDS" -o $DE
 PRAGMA index_info(%%index string,interpolate%%)
 ENDSQL
 
+# mssql identity table list query
+$XOBIN $MSDB -N -M -B -T MsIdentity -F MsIdentities -o $DEST $EXTRA << ENDSQL
+SELECT o.name as table_name
+FROM sys.objects o inner join sys.columns c on o.object_id = c.object_id
+WHERE c.is_identity = 1
+AND schema_name(o.schema_id) = %%schema string%% AND o.type = 'U'
+ENDSQL
+
 # mssql table list query
 $XOBIN $MSDB -a -N -M -B -T Table -F MsTables -o $DEST $EXTRA << ENDSQL
 SELECT
