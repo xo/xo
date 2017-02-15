@@ -34,6 +34,8 @@ The following is a matrix of the supported features for each database:
 
 # Installation #
 
+*Go 1.6+ is required.*
+
 Install goimports dependency (if not already installed):
 ```sh
 go get -u golang.org/x/tools/cmd/goimports
