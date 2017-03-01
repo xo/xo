@@ -116,7 +116,7 @@ options:
   --ignore-fields IGNORE-FIELDS
                          fields to exclude from the generated Go code types
   --fk-mode FK-MODE, -k FK-MODE
-                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart] [default: 0xc8200f0500]
+                         sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]
   --use-index-names, -j
                          use index names as defined in schema for generated Go code
   --use-reversed-enum-const-names, -R

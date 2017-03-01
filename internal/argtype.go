@@ -45,7 +45,7 @@ type ArgType struct {
 	IgnoreFields []string `arg:"--ignore-fields,help:fields to exclude from the generated Go code types"`
 
 	// ForeignKeyMode is the foreign key mode for generating foreign key names.
-	ForeignKeyMode *FkMode `arg:"--fk-mode,-k,help:sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]"`
+	ForeignKeyMode *FkMode `arg:"--fk-mode,-k,help:sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>]"`
 
 	// UseIndexNames toggles using index names.
 	//
