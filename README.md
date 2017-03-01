@@ -302,7 +302,7 @@ $ go get -u github.com/knq/xo
 $ sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
 # install rana's ora driver
-$ go get -u gopkg.in/rana/ora.v3
+$ go get -u gopkg.in/rana/ora.v4
 
 # install xo with oracle support enabled
 $ go install -tags oracle github.com/knq/xo

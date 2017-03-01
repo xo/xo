@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "gopkg.in/rana/ora.v3"
+	_ "gopkg.in/rana/ora.v4"
 
 	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/booktest/oracle/models"
