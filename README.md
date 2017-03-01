@@ -197,7 +197,7 @@ generated Go code using `--ignore-fields`:
 $ xo pgsql://user:pass@host/db -o models --ignore-fields created_at modified_at
 ```
 
-# Example: Adding Methods With Custom Templates #
+## Example: Adding Methods With Custom Templates ##
 
 <!---
 Note to maintainers: Make sure to update this file with the proper values if
@@ -279,7 +279,7 @@ Additionally, there are some additional scripts available in the [contrib](contr
 directory that makes it significantly easier to rapidly build schemas using
 `xo` and an Oracle database.
 
-### Installing Oracle instantclient Libraries on Debian/Ubuntu ###
+### Installing Oracle instantclient on Debian/Ubuntu ###
 
 On Ubuntu/Debian, you may download the instantclient RPMs
 [here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
@@ -298,7 +298,7 @@ $ sudo alien -i oracle-instantclient-12.1-sqlplus-*.rpm
 # get xo
 $ go get -u github.com/knq/xo
 
-# copy oci8.pc from xo contrib to pkg-config directory
+# copy oci8.pc from xo/contrib to system pkg-config directory
 $ sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
 # install rana's ora driver
@@ -308,7 +308,7 @@ $ go get -u gopkg.in/rana/ora.v3
 $ go install -tags oracle github.com/knq/xo
 ```
 
-# Design, Origin, Philosophy, and History #
+## Design, Origin, Philosophy, and History ##
 
 xo can likely get you 99% "of the way there" on medium or large database
 schemas and 100% of the way there for small or trivial database schemas. In
