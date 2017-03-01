@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# NOTE: please use xo/contrib/orcreate.sh to create a booktest user and database first
+# also, consider using xo/contrib/orstart.sh to start your docker instance
+
 DBUSER=booktest
 DBPASS=booktest
 DBHOST=$(docker port orcl 1521)
@@ -13,8 +16,8 @@ EXTRA=$1
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
-if [ -e $SRC/../../xo ]; then
-  XOBIN=$SRC/../../xo
+if [ -e $SRC/../../../xo ]; then
+  XOBIN=$SRC/../../../xo
 fi
 
 DEST=$SRC/models

@@ -62,7 +62,7 @@ func ASCIIToUTF8(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Interna
 }
 
 // Abbrev calls the stored procedure 'pg_catalog.abbrev(cidr, inet) text' on db.
-func Abbrev(db XODB, v0 pgtypes.Cidr, v1 pgtypes.Inet) (string, error) {
+func Abbrev(db XODB, v0 pgtypes.Cidr, v1 string) (string, error) {
 	var err error
 
 	// sql query
@@ -3968,18 +3968,18 @@ func Brinvacuumcleanup(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtyp
 }
 
 // Broadcast calls the stored procedure 'pg_catalog.broadcast(inet) inet' on db.
-func Broadcast(db XODB, v0 pgtypes.Inet) (pgtypes.Inet, error) {
+func Broadcast(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.broadcast($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -5986,7 +5986,7 @@ func Cidout(db XODB, v0 pgtypes.Cid) (pgtypes.Cstring, error) {
 }
 
 // Cidr calls the stored procedure 'pg_catalog.cidr(inet) cidr' on db.
-func Cidr(db XODB, v0 pgtypes.Inet) (pgtypes.Cidr, error) {
+func Cidr(db XODB, v0 string) (pgtypes.Cidr, error) {
 	var err error
 
 	// sql query
@@ -9431,7 +9431,7 @@ func Factorial(db XODB, v0 int64) (float64, error) {
 }
 
 // Family calls the stored procedure 'pg_catalog.family(inet) integer' on db.
-func Family(db XODB, v0 pgtypes.Inet) (int, error) {
+func Family(db XODB, v0 string) (int, error) {
 	var err error
 
 	// sql query
@@ -13093,7 +13093,7 @@ func Hashgettuple(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (bool, erro
 }
 
 // Hashinet calls the stored procedure 'pg_catalog.hashinet(inet) integer' on db.
-func Hashinet(db XODB, v0 pgtypes.Inet) (int, error) {
+func Hashinet(db XODB, v0 string) (int, error) {
 	var err error
 
 	// sql query
@@ -13402,7 +13402,7 @@ func Height(db XODB, v0 pgtypes.Box) (float64, error) {
 }
 
 // Host calls the stored procedure 'pg_catalog.host(inet) text' on db.
-func Host(db XODB, v0 pgtypes.Inet) (string, error) {
+func Host(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
@@ -13420,18 +13420,18 @@ func Host(db XODB, v0 pgtypes.Inet) (string, error) {
 }
 
 // Hostmask calls the stored procedure 'pg_catalog.hostmask(inet) inet' on db.
-func Hostmask(db XODB, v0 pgtypes.Inet) (pgtypes.Inet, error) {
+func Hostmask(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.hostmask($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -13582,18 +13582,18 @@ func Icregexnesel(db XODB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 pgtypes.Inter
 }
 
 // InetClientAddr calls the stored procedure 'pg_catalog.inet_client_addr() inet' on db.
-func InetClientAddr(db XODB) (pgtypes.Inet, error) {
+func InetClientAddr(db XODB) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inet_client_addr()`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr)
 	err = db.QueryRow(sqlstr).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -13636,7 +13636,7 @@ func InetGistCompress(db XODB, v0 pgtypes.Internal) (pgtypes.Internal, error) {
 }
 
 // InetGistConsistent calls the stored procedure 'pg_catalog.inet_gist_consistent(internal, inet, integer, oid, internal) boolean' on db.
-func InetGistConsistent(db XODB, v0 pgtypes.Internal, v1 pgtypes.Inet, v2 int, v3 pgtypes.Oid, v4 pgtypes.Internal) (bool, error) {
+func InetGistConsistent(db XODB, v0 pgtypes.Internal, v1 string, v2 int, v3 pgtypes.Oid, v4 pgtypes.Internal) (bool, error) {
 	var err error
 
 	// sql query
@@ -13726,7 +13726,7 @@ func InetGistPicksplit(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtyp
 }
 
 // InetGistSame calls the stored procedure 'pg_catalog.inet_gist_same(inet, inet, internal) internal' on db.
-func InetGistSame(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet, v2 pgtypes.Internal) (pgtypes.Internal, error) {
+func InetGistSame(db XODB, v0 string, v1 string, v2 pgtypes.Internal) (pgtypes.Internal, error) {
 	var err error
 
 	// sql query
@@ -13762,25 +13762,25 @@ func InetGistUnion(db XODB, v0 pgtypes.Internal, v1 pgtypes.Internal) (pgtypes.I
 }
 
 // InetIn calls the stored procedure 'pg_catalog.inet_in(cstring) inet' on db.
-func InetIn(db XODB, v0 pgtypes.Cstring) (pgtypes.Inet, error) {
+func InetIn(db XODB, v0 pgtypes.Cstring) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inet_in($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // InetMerge calls the stored procedure 'pg_catalog.inet_merge(inet, inet) cidr' on db.
-func InetMerge(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Cidr, error) {
+func InetMerge(db XODB, v0 string, v1 string) (pgtypes.Cidr, error) {
 	var err error
 
 	// sql query
@@ -13798,7 +13798,7 @@ func InetMerge(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Cidr, error) 
 }
 
 // InetOut calls the stored procedure 'pg_catalog.inet_out(inet) cstring' on db.
-func InetOut(db XODB, v0 pgtypes.Inet) (pgtypes.Cstring, error) {
+func InetOut(db XODB, v0 string) (pgtypes.Cstring, error) {
 	var err error
 
 	// sql query
@@ -13816,25 +13816,25 @@ func InetOut(db XODB, v0 pgtypes.Inet) (pgtypes.Cstring, error) {
 }
 
 // InetRecv calls the stored procedure 'pg_catalog.inet_recv(internal) inet' on db.
-func InetRecv(db XODB, v0 pgtypes.Internal) (pgtypes.Inet, error) {
+func InetRecv(db XODB, v0 pgtypes.Internal) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inet_recv($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // InetSameFamily calls the stored procedure 'pg_catalog.inet_same_family(inet, inet) boolean' on db.
-func InetSameFamily(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func InetSameFamily(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -13852,7 +13852,7 @@ func InetSameFamily(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // InetSend calls the stored procedure 'pg_catalog.inet_send(inet) bytea' on db.
-func InetSend(db XODB, v0 pgtypes.Inet) ([]byte, error) {
+func InetSend(db XODB, v0 string) ([]byte, error) {
 	var err error
 
 	// sql query
@@ -13870,18 +13870,18 @@ func InetSend(db XODB, v0 pgtypes.Inet) ([]byte, error) {
 }
 
 // InetServerAddr calls the stored procedure 'pg_catalog.inet_server_addr() inet' on db.
-func InetServerAddr(db XODB) (pgtypes.Inet, error) {
+func InetServerAddr(db XODB) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inet_server_addr()`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr)
 	err = db.QueryRow(sqlstr).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -13906,25 +13906,25 @@ func InetServerPort(db XODB) (int, error) {
 }
 
 // Inetand calls the stored procedure 'pg_catalog.inetand(inet, inet) inet' on db.
-func Inetand(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Inet, error) {
+func Inetand(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inetand($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Inetmi calls the stored procedure 'pg_catalog.inetmi(inet, inet) bigint' on db.
-func Inetmi(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (int64, error) {
+func Inetmi(db XODB, v0 string, v1 string) (int64, error) {
 	var err error
 
 	// sql query
@@ -13942,72 +13942,72 @@ func Inetmi(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (int64, error) {
 }
 
 // InetmiInt8 calls the stored procedure 'pg_catalog.inetmi_int8(inet, bigint) inet' on db.
-func InetmiInt8(db XODB, v0 pgtypes.Inet, v1 int64) (pgtypes.Inet, error) {
+func InetmiInt8(db XODB, v0 string, v1 int64) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inetmi_int8($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Inetnot calls the stored procedure 'pg_catalog.inetnot(inet) inet' on db.
-func Inetnot(db XODB, v0 pgtypes.Inet) (pgtypes.Inet, error) {
+func Inetnot(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inetnot($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Inetor calls the stored procedure 'pg_catalog.inetor(inet, inet) inet' on db.
-func Inetor(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Inet, error) {
+func Inetor(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inetor($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Inetpl calls the stored procedure 'pg_catalog.inetpl(inet, bigint) inet' on db.
-func Inetpl(db XODB, v0 pgtypes.Inet, v1 int64) (pgtypes.Inet, error) {
+func Inetpl(db XODB, v0 string, v1 int64) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.inetpl($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -17020,18 +17020,18 @@ func Int8pl(db XODB, v0 int64, v1 int64) (int64, error) {
 }
 
 // Int8plInet calls the stored procedure 'pg_catalog.int8pl_inet(bigint, inet) inet' on db.
-func Int8plInet(db XODB, v0 int64, v1 pgtypes.Inet) (pgtypes.Inet, error) {
+func Int8plInet(db XODB, v0 int64, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.int8pl_inet($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -21407,7 +21407,7 @@ func Makeaclitem(db XODB, v0 pgtypes.Oid, v1 pgtypes.Oid, v2 string, v3 bool) (p
 }
 
 // Masklen calls the stored procedure 'pg_catalog.masklen(inet) integer' on db.
-func Masklen(db XODB, v0 pgtypes.Inet) (int, error) {
+func Masklen(db XODB, v0 string) (int, error) {
 	var err error
 
 	// sql query
@@ -21425,7 +21425,7 @@ func Masklen(db XODB, v0 pgtypes.Inet) (int, error) {
 }
 
 // Max calls the stored procedure 'pg_catalog.max(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 *time.Time, v13 *time.Time, v14 *time.Time, v15 *time.Time, v16 *time.Duration, v17 *time.Time, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Max(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 string, v11 string, v12 *time.Time, v13 *time.Time, v14 *time.Time, v15 *time.Time, v16 *time.Duration, v17 *time.Time, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -21669,7 +21669,7 @@ func MicToWin866(db XODB, v0 int, v1 int, v2 pgtypes.Cstring, v3 pgtypes.Interna
 }
 
 // Min calls the stored procedure 'pg_catalog.min(bigint, smallint, integer, text, oid, tid, real, double precision, abstime, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, anyenum) anyenum' on db.
-func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 pgtypes.Inet, v11 string, v12 *time.Time, v13 *time.Time, v14 *time.Time, v15 *time.Time, v16 *time.Duration, v17 *time.Time, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Min(db XODB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8 pgtypes.Abstime, v9 string, v10 string, v11 string, v12 *time.Time, v13 *time.Time, v14 *time.Time, v15 *time.Time, v16 *time.Duration, v17 *time.Time, v18 float64, v19 pgtypes.Anyarray, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	var err error
 
 	// sql query
@@ -22191,25 +22191,25 @@ func Neqsel(db XODB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 pgtypes.Internal, v
 }
 
 // Netmask calls the stored procedure 'pg_catalog.netmask(inet) inet' on db.
-func Netmask(db XODB, v0 pgtypes.Inet) (pgtypes.Inet, error) {
+func Netmask(db XODB, v0 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.netmask($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // Network calls the stored procedure 'pg_catalog.network(inet) cidr' on db.
-func Network(db XODB, v0 pgtypes.Inet) (pgtypes.Cidr, error) {
+func Network(db XODB, v0 string) (pgtypes.Cidr, error) {
 	var err error
 
 	// sql query
@@ -22227,7 +22227,7 @@ func Network(db XODB, v0 pgtypes.Inet) (pgtypes.Cidr, error) {
 }
 
 // NetworkCmp calls the stored procedure 'pg_catalog.network_cmp(inet, inet) integer' on db.
-func NetworkCmp(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (int, error) {
+func NetworkCmp(db XODB, v0 string, v1 string) (int, error) {
 	var err error
 
 	// sql query
@@ -22245,7 +22245,7 @@ func NetworkCmp(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (int, error) {
 }
 
 // NetworkEq calls the stored procedure 'pg_catalog.network_eq(inet, inet) boolean' on db.
-func NetworkEq(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkEq(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22263,7 +22263,7 @@ func NetworkEq(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkGe calls the stored procedure 'pg_catalog.network_ge(inet, inet) boolean' on db.
-func NetworkGe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkGe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22281,7 +22281,7 @@ func NetworkGe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkGt calls the stored procedure 'pg_catalog.network_gt(inet, inet) boolean' on db.
-func NetworkGt(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkGt(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22299,25 +22299,25 @@ func NetworkGt(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkLarger calls the stored procedure 'pg_catalog.network_larger(inet, inet) inet' on db.
-func NetworkLarger(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Inet, error) {
+func NetworkLarger(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.network_larger($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // NetworkLe calls the stored procedure 'pg_catalog.network_le(inet, inet) boolean' on db.
-func NetworkLe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkLe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22335,7 +22335,7 @@ func NetworkLe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkLt calls the stored procedure 'pg_catalog.network_lt(inet, inet) boolean' on db.
-func NetworkLt(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkLt(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22353,7 +22353,7 @@ func NetworkLt(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkNe calls the stored procedure 'pg_catalog.network_ne(inet, inet) boolean' on db.
-func NetworkNe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkNe(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22371,7 +22371,7 @@ func NetworkNe(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkOverlap calls the stored procedure 'pg_catalog.network_overlap(inet, inet) boolean' on db.
-func NetworkOverlap(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkOverlap(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22389,25 +22389,25 @@ func NetworkOverlap(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkSmaller calls the stored procedure 'pg_catalog.network_smaller(inet, inet) inet' on db.
-func NetworkSmaller(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (pgtypes.Inet, error) {
+func NetworkSmaller(db XODB, v0 string, v1 string) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.network_smaller($1, $2)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0, v1)
 	err = db.QueryRow(sqlstr, v0, v1).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
 }
 
 // NetworkSub calls the stored procedure 'pg_catalog.network_sub(inet, inet) boolean' on db.
-func NetworkSub(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkSub(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22425,7 +22425,7 @@ func NetworkSub(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkSubeq calls the stored procedure 'pg_catalog.network_subeq(inet, inet) boolean' on db.
-func NetworkSubeq(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkSubeq(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22443,7 +22443,7 @@ func NetworkSubeq(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkSup calls the stored procedure 'pg_catalog.network_sup(inet, inet) boolean' on db.
-func NetworkSup(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkSup(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -22461,7 +22461,7 @@ func NetworkSup(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
 }
 
 // NetworkSupeq calls the stored procedure 'pg_catalog.network_supeq(inet, inet) boolean' on db.
-func NetworkSupeq(db XODB, v0 pgtypes.Inet, v1 pgtypes.Inet) (bool, error) {
+func NetworkSupeq(db XODB, v0 string, v1 string) (bool, error) {
 	var err error
 
 	// sql query
@@ -27334,18 +27334,18 @@ func PgStatGetBackendActivityStart(db XODB, v0 int) (*time.Time, error) {
 }
 
 // PgStatGetBackendClientAddr calls the stored procedure 'pg_catalog.pg_stat_get_backend_client_addr(integer) inet' on db.
-func PgStatGetBackendClientAddr(db XODB, v0 int) (pgtypes.Inet, error) {
+func PgStatGetBackendClientAddr(db XODB, v0 int) (string, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT pg_catalog.pg_stat_get_backend_client_addr($1)`
 
 	// run query
-	var ret pgtypes.Inet
+	var ret string
 	XOLog(sqlstr, v0)
 	err = db.QueryRow(sqlstr, v0).Scan(&ret)
 	if err != nil {
-		return pgtypes.Inet{}, err
+		return "", err
 	}
 
 	return ret, nil
@@ -33013,7 +33013,7 @@ func SetConfig(db XODB, v0 string, v1 string, v2 bool) (string, error) {
 }
 
 // SetMasklen calls the stored procedure 'pg_catalog.set_masklen(cidr, integer, inet, integer) cidr' on db.
-func SetMasklen(db XODB, v0 pgtypes.Cidr, v1 int, v2 pgtypes.Inet, v3 int) (pgtypes.Cidr, error) {
+func SetMasklen(db XODB, v0 pgtypes.Cidr, v1 int, v2 string, v3 int) (pgtypes.Cidr, error) {
 	var err error
 
 	// sql query
@@ -34205,7 +34205,7 @@ func Tan(db XODB, v0 float64) (float64, error) {
 }
 
 // Text calls the stored procedure 'pg_catalog.text(boolean, "char", name, xml, inet, character) text' on db.
-func Text(db XODB, v0 bool, v1 uint8, v2 pgtypes.Name, v3 pgtypes.XML, v4 pgtypes.Inet, v5 string) (string, error) {
+func Text(db XODB, v0 bool, v1 uint8, v2 pgtypes.Name, v3 pgtypes.XML, v4 string, v5 string) (string, error) {
 	var err error
 
 	// sql query

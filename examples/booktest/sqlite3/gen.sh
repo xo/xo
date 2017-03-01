@@ -9,8 +9,8 @@ SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 DB=file:$SRC/$DBNAME
 
 XOBIN=$(which xo)
-if [ -e $SRC/../../xo ]; then
-  XOBIN=$SRC/../../xo
+if [ -e $SRC/../../../xo ]; then
+  XOBIN=$SRC/../../../xo
 fi
 
 DEST=$SRC/models

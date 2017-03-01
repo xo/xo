@@ -6,10 +6,10 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/knq/dburl"
-	"github.com/knq/xo/examples/mysql/models"
+	"github.com/knq/xo/examples/booktest/sqlite3/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
@@ -21,12 +21,12 @@ func main() {
 	flag.Parse()
 	if *flagVerbose {
 		models.XOLog = func(s string, p ...interface{}) {
-			fmt.Printf("> SQL: %s -- %v\n", s, p)
+			fmt.Printf("-------------------------------------\nQUERY: %s\n  VAL: %v\n", s, p)
 		}
 	}
 
 	// open database
-	db, err := dburl.Open("mysql://booktest:booktest@localhost/booktest?parseTime=true")
+	db, err := dburl.Open("file:booktest.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,9 +54,8 @@ func main() {
 		AuthorID:  a.AuthorID,
 		Isbn:      "1",
 		Title:     "my book title",
-		BookType:  models.BookTypeFiction,
 		Year:      2016,
-		Available: &now,
+		Available: now.Format(time.RFC822Z),
 	}
 	err = b0.Save(tx)
 	if err != nil {
@@ -68,9 +67,8 @@ func main() {
 		AuthorID:  a.AuthorID,
 		Isbn:      "2",
 		Title:     "the second book",
-		BookType:  models.BookTypeFiction,
 		Year:      2016,
-		Available: &now,
+		Available: now.Format(time.RFC822Z),
 		Tags:      "cool unique",
 	}
 	err = b1.Save(tx)
@@ -91,9 +89,8 @@ func main() {
 		AuthorID:  a.AuthorID,
 		Isbn:      "3",
 		Title:     "the third book",
-		BookType:  models.BookTypeFiction,
 		Year:      2001,
-		Available: &now,
+		Available: now.Format(time.RFC822Z),
 		Tags:      "cool",
 	}
 	err = b2.Save(tx)
@@ -106,9 +103,8 @@ func main() {
 		AuthorID:  a.AuthorID,
 		Isbn:      "4",
 		Title:     "4th place finisher",
-		BookType:  models.BookTypeNonfiction,
 		Year:      2011,
-		Available: &now,
+		Available: now.Format(time.RFC822Z),
 		Tags:      "other",
 	}
 	err = b3.Save(tx)
@@ -128,10 +124,9 @@ func main() {
 			BookID:    b3.BookID,
 			AuthorID:  a.AuthorID,
 			Isbn:      "NEW ISBN",
-			BookType:  b3.BookType,
 			Title:     "never ever gonna finish, a quatrain",
 			Year:      b3.Year,
-			Available: b3.Available,
+			Available: now.Format(time.RFC822Z),
 			Tags:      "someother",
 		}
 		err = b4.Upsert(db)
@@ -141,12 +136,12 @@ func main() {
 	*/
 
 	// retrieve first book
-	books0, err := models.BooksByTitle(db, "my book title", 2016)
+	books0, err := models.BooksByTitleYear(db, "my book title", 2016)
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, book := range books0 {
-		fmt.Printf("Book %d (%s): %s available: %s\n", book.BookID, book.BookType, book.Title, book.Available.Format(time.RFC822Z))
+		fmt.Printf("Book %d: %s available: %s\n", book.BookID, book.Title, book.Available)
 		author, err := book.Author(db)
 		if err != nil {
 			log.Fatal(err)
@@ -164,13 +159,6 @@ func main() {
 	for _, ab := range res {
 		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
-
-	// call say_hello(varchar)
-	str, err := models.SayHello(db, "john")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("SayHello response: %s\n", str)
 
 	// get book 4 and delete
 	b5, err := models.BookByBookID(db, 4)

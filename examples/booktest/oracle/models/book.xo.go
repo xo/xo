@@ -10,14 +10,13 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    int        `json:"book_id"`   // book_id
-	AuthorID  int        `json:"author_id"` // author_id
-	Isbn      string     `json:"isbn"`      // isbn
-	BookType  BookType   `json:"book_type"` // book_type
-	Title     string     `json:"title"`     // title
-	Year      int        `json:"year"`      // year
-	Available *time.Time `json:"available"` // available
-	Tags      string     `json:"tags"`      // tags
+	BookID    float64   `json:"book_id"`   // book_id
+	AuthorID  float64   `json:"author_id"` // author_id
+	Isbn      string    `json:"isbn"`      // isbn
+	Title     string    `json:"title"`     // title
+	Year      float64   `json:"year"`      // year
+	Available time.Time `json:"available"` // available
+	Tags      string    `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool
@@ -44,14 +43,14 @@ func (b *Book) Insert(db XODB) error {
 
 	// sql query
 	const sqlstr = `INSERT INTO booktest.books (` +
-		`author_id, isbn, book_type, title, year, available, tags` +
+		`author_id, isbn, title, year, available, tags` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?` +
-		`)`
+		`:1, :2, :3, :4, :5, :6` +
+		`) RETURNING book_id /*lastInsertId*/ INTO :pk`
 
 	// run query
-	XOLog(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags)
-	res, err := db.Exec(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags)
+	XOLog(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, nil)
+	res, err := db.Exec(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, nil)
 	if err != nil {
 		return err
 	}
@@ -63,7 +62,7 @@ func (b *Book) Insert(db XODB) error {
 	}
 
 	// set primary key and existence
-	b.BookID = int(id)
+	b.BookID = float64(id)
 	b._exists = true
 
 	return nil
@@ -85,12 +84,12 @@ func (b *Book) Update(db XODB) error {
 
 	// sql query
 	const sqlstr = `UPDATE booktest.books SET ` +
-		`author_id = ?, isbn = ?, book_type = ?, title = ?, year = ?, available = ?, tags = ?` +
-		` WHERE book_id = ?`
+		`author_id = :1, isbn = :2, title = :3, year = :4, available = :5, tags = :6` +
+		` WHERE book_id = :7`
 
 	// run query
-	XOLog(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID)
-	_, err = db.Exec(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID)
+	XOLog(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
+	_, err = db.Exec(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	return err
 }
 
@@ -118,7 +117,7 @@ func (b *Book) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM booktest.books WHERE book_id = ?`
+	const sqlstr = `DELETE FROM booktest.books WHERE book_id = :1`
 
 	// run query
 	XOLog(sqlstr, b.BookID)
@@ -135,87 +134,22 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'books_ibfk_1'.
+// Generated from foreign key 'sys_c0010202'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
-// BooksByAuthorID retrieves a row from 'booktest.books' as a Book.
-//
-// Generated from index 'author_id'.
-func BooksByAuthorID(db XODB, authorID int) ([]*Book, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
-		`FROM booktest.books ` +
-		`WHERE author_id = ?`
-
-	// run query
-	XOLog(sqlstr, authorID)
-	q, err := db.Query(sqlstr, authorID)
-	if err != nil {
-		return nil, err
-	}
-	defer q.Close()
-
-	// load results
-	res := []*Book{}
-	for q.Next() {
-		b := Book{
-			_exists: true,
-		}
-
-		// scan
-		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
-		if err != nil {
-			return nil, err
-		}
-
-		res = append(res, &b)
-	}
-
-	return res, nil
-}
-
-// BookByBookID retrieves a row from 'booktest.books' as a Book.
-//
-// Generated from index 'books_book_id_pkey'.
-func BookByBookID(db XODB, bookID int) (*Book, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
-		`FROM booktest.books ` +
-		`WHERE book_id = ?`
-
-	// run query
-	XOLog(sqlstr, bookID)
-	b := Book{
-		_exists: true,
-	}
-
-	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
-	if err != nil {
-		return nil, err
-	}
-
-	return &b, nil
-}
-
-// BooksByTitle retrieves a row from 'booktest.books' as a Book.
+// BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
-func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
+func BooksByTitleYear(db XODB, title string, year float64) ([]*Book, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE title = ? AND year = ?`
+		`WHERE title = :1 AND year = :2`
 
 	// run query
 	XOLog(sqlstr, title, year)
@@ -233,7 +167,7 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 		}
 
 		// scan
-		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
+		err = q.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags)
 		if err != nil {
 			return nil, err
 		}
@@ -244,17 +178,43 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 	return res, nil
 }
 
+// BookByBookID retrieves a row from 'booktest.books' as a Book.
+//
+// Generated from index 'sys_c0010200'.
+func BookByBookID(db XODB, bookID float64) (*Book, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
+		`FROM booktest.books ` +
+		`WHERE book_id = :1`
+
+	// run query
+	XOLog(sqlstr, bookID)
+	b := Book{
+		_exists: true,
+	}
+
+	err = db.QueryRow(sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags)
+	if err != nil {
+		return nil, err
+	}
+
+	return &b, nil
+}
+
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'isbn'.
+// Generated from index 'sys_c0010201'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE isbn = ?`
+		`WHERE isbn = :1`
 
 	// run query
 	XOLog(sqlstr, isbn)
@@ -262,7 +222,7 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 		_exists: true,
 	}
 
-	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Tags)
+	err = db.QueryRow(sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags)
 	if err != nil {
 		return nil, err
 	}

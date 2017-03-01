@@ -6,15 +6,13 @@ import (
 	"log"
 	"time"
 
-	_ "gopkg.in/rana/ora.v3"
+	_ "github.com/denisenkom/go-mssqldb"
 
 	"github.com/knq/dburl"
-	"github.com/knq/xo/examples/oracle/models"
+	"github.com/knq/xo/examples/booktest/mssql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
-var flagHost = flag.String("host", "", "host")
-var flagDatabase = flag.String("db", "", "database name")
 
 func main() {
 	var err error
@@ -23,12 +21,12 @@ func main() {
 	flag.Parse()
 	if *flagVerbose {
 		models.XOLog = func(s string, p ...interface{}) {
-			fmt.Printf("> SQL: %s -- %v\n", s, p)
+			fmt.Printf("-------------------------------------\nQUERY: %s\n  VAL: %v\n", s, p)
 		}
 	}
 
 	// open database
-	db, err := dburl.Open("oracle://booktest:booktest@" + *flagHost + "/" + *flagDatabase)
+	db, err := dburl.Open("mssql://booktest:booktest@localhost/booktest")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +56,6 @@ func main() {
 		Title:     "my book title",
 		Year:      2016,
 		Available: now,
-		Tags:      "empty",
 	}
 	err = b0.Save(tx)
 	if err != nil {
@@ -144,13 +141,13 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, book := range books0 {
-		fmt.Printf("Book %1.0f: %s available: %s\n", book.BookID, book.Title, book.Available.Format(time.RFC822Z))
+		fmt.Printf("Book %d: %s available: %s\n", book.BookID, book.Title, book.Available.Format(time.RFC822Z))
 		author, err := book.Author(db)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Book %1.0f author: %s\n", book.BookID, author.Name)
+		fmt.Printf("Book %d author: %s\n", book.BookID, author.Name)
 	}
 
 	// find a book with either "cool" or "other" tag
@@ -160,15 +157,8 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %1.0f: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
+		fmt.Printf("Book %d: '%s', Author: '%s', ISBN: '%s' Tags: '%v'\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
-
-	// call say_hello(varchar)
-	/*str, err := models.SayHello(db, "john")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("SayHello response: %s\n", str)*/
 
 	// get book 4 and delete
 	b5, err := models.BookByBookID(db, 4)

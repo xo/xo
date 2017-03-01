@@ -15,8 +15,8 @@ EXTRA=$1
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
 XOBIN=$(which xo)
-if [ -e $SRC/../../xo ]; then
-  XOBIN=$SRC/../../xo
+if [ -e $SRC/../../../xo ]; then
+  XOBIN=$SRC/../../../xo
 fi
 
 DEST=$SRC/models
@@ -29,7 +29,7 @@ rm -f $SRC/mssql
 
 mssql -u $SAUSER -p $SAPASS -s $DBHOST -q "drop database $DBNAME;"
 
-$SRC/../../contrib/mscreate.sh $DBNAME
+$SRC/../../../contrib/mscreate.sh $DBNAME
 
 SQLFILE=$(mktemp /tmp/mssql.XXXXXX.sql)
 cat > $SQLFILE << ENDSQL

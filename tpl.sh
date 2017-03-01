@@ -3,7 +3,7 @@
 go-bindata \
   -pkg templates \
   -prefix templates/ \
-  -o templates/tpls.go \
+  -o templates/templates.go \
   -ignore .go$ \
   -ignore .swp$ \
   -nometadata \

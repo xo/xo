@@ -42,7 +42,7 @@ func (b *Book) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key provided by sequence
 	const sqlstr = `INSERT INTO public.books (` +
 		`author_id, isbn, booktype, title, year, available, tags` +
 		`) VALUES (` +

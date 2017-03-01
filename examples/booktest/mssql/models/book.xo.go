@@ -41,7 +41,7 @@ func (b *Book) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key provided by identity
 	const sqlstr = `INSERT INTO booktest.books (` +
 		`author_id, isbn, title, year, available, tags` +
 		`) VALUES (` +
@@ -134,14 +134,14 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'FK__books__author_id__3A81B327'.
+// Generated from foreign key 'FK__books__author_id__4D94879B'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'PK__books__490D1AE194BD6A2C'.
+// Generated from index 'PK__books__490D1AE192C1980E'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -167,7 +167,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'UQ__books__99F9D0A40420D486'.
+// Generated from index 'UQ__books__99F9D0A4861C1DA3'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

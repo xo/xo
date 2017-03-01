@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/knq/dburl"
-	"github.com/knq/xo/examples/postgres/models"
+	"github.com/knq/xo/examples/booktest/postgres/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
@@ -21,7 +21,7 @@ func main() {
 	flag.Parse()
 	if *flagVerbose {
 		models.XOLog = func(s string, p ...interface{}) {
-			fmt.Printf("> SQL: %s -- %v\n", s, p)
+			fmt.Printf("-------------------------------------\nQUERY: %s\n  VAL: %v\n", s, p)
 		}
 	}
 

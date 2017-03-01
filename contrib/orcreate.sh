@@ -1,14 +1,14 @@
 #!/bin/bash
 
-USER="system"
-PASS="oracle"
-SVC="xe.oracle.docker"
+USER=system
+PASS=oracle
+SVC=xe.oracle.docker
 HOST=$(docker port orcl 1521)
 
 NAME=$1
 
 if [ -z "$NAME" ]; then
-  echo "need name"
+  echo "usage: $0 <NAME>"
   exit 1
 fi
 
