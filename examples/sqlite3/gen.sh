@@ -26,14 +26,14 @@ sqlite3 $DB << 'ENDSQL'
 PRAGMA foreign_keys = 1;
 
 CREATE TABLE authors (
-  author_id integer NOT NULL PRIMARY KEY,
+  author_id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   name text NOT NULL DEFAULT ''
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
 
 CREATE TABLE books (
-  book_id integer NOT NULL PRIMARY KEY,
+  book_id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   author_id integer NOT NULL REFERENCES authors(author_id),
   isbn text NOT NULL DEFAULT '' UNIQUE,
   title text NOT NULL DEFAULT '',
