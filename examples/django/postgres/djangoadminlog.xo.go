@@ -43,7 +43,7 @@ func (dal *DjangoAdminLog) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key provided by sequence
 	const sqlstr = `INSERT INTO public.django_admin_log (` +
 		`action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id` +
 		`) VALUES (` +

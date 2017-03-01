@@ -38,7 +38,7 @@ func (dm *DjangoMigration) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key provided by autoincrement
 	const sqlstr = `INSERT INTO django_migrations (` +
 		`app, name, applied` +
 		`) VALUES (` +

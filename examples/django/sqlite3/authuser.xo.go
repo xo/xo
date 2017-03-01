@@ -45,7 +45,7 @@ func (au *AuthUser) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key provided by autoincrement
 	const sqlstr = `INSERT INTO auth_user (` +
 		`password, last_login, is_superuser, first_name, last_name, email, is_staff, is_active, date_joined, username` +
 		`) VALUES (` +

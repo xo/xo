@@ -37,28 +37,21 @@ func (ds *DjangoSession) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql query
+	// sql insert query, primary key must be provided
 	const sqlstr = `INSERT INTO django.django_session (` +
-		`session_data, expire_date` +
+		`session_key, session_data, expire_date` +
 		`) VALUES (` +
-		`?, ?` +
+		`?, ?, ?` +
 		`)`
 
 	// run query
-	XOLog(sqlstr, ds.SessionData, ds.ExpireDate)
-	res, err := db.Exec(sqlstr, ds.SessionData, ds.ExpireDate)
+	XOLog(sqlstr, ds.SessionKey, ds.SessionData, ds.ExpireDate)
+	_, err = db.Exec(sqlstr, ds.SessionKey, ds.SessionData, ds.ExpireDate)
 	if err != nil {
 		return err
 	}
 
-	// retrieve id
-	id, err := res.LastInsertId()
-	if err != nil {
-		return err
-	}
-
-	// set primary key and existence
-	ds.SessionKey = string(id)
+	// set existence
 	ds._exists = true
 
 	return nil
