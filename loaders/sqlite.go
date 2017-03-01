@@ -143,6 +143,20 @@ func SqTables(db models.XODB, schema string, relkind string) ([]*models.Table, e
 			lSQL := strings.ToLower(autoInc.SQL)
 			if autoInc.TableName == row.TableName && strings.Contains(lSQL, "autoincrement") {
 				manualPk = false
+			} else {
+				cols, err := SqTableColumns(db, schema, row.TableName)
+				if err != nil {
+					return nil, err
+				}
+				var col *models.Column
+				for _, col = range cols {
+					if col.IsPrimaryKey == true {
+						if col.DataType == "integer" {
+							manualPk = false
+						}
+						break
+					}
+				}
 			}
 		}
 		tables = append(tables, &models.Table{
