@@ -9,21 +9,25 @@ if [ -e $SRC/../../xo ]; then
   XOBIN=$SRC/../../xo
 fi
 
-set -ex
+set -e
 
 pushd $SRC &> /dev/null
 
-mkdir -p postgres mysql sqlite3 oracle
-rm -f postgres/*.xo.go mysql/*.xo.go sqlite3/*.xo.go oracle/*.xo.go
+for i in postgres mysql sqlite3 oracle mssql; do
+  # skip if no config
+  if [ ! -f $i/config ]; then
+    continue
+  fi
 
-$XOBIN $EXTRA -o postgres postgres://django:django@localhost/django
-$XOBIN $EXTRA -o mysql mysql://django:django@localhost/django
-$XOBIN $EXTRA -o sqlite3 file:$SRC/django.sqlite3
-#$XOBIN $EXTRA -o oracle oracle://django:django@$(docker port orcl 1521)/xe.oracle.docker
+  # erase generated files
+  rm -f $i/*.xo.go
 
-go build ./postgres/
-go build ./mysql/
-go build ./sqlite3/
-go build ./oracle/
+  # load config
+  . $i/config
+
+  $XOBIN $EXTRA -o $i $DB
+
+  go build ./$i/
+done
 
 popd &> /dev/null

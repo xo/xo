@@ -1,0 +1,8 @@
+PROTO=postgres
+
+HOST=localhost
+USER=django
+PASS=django
+DBNAME=django
+
+DB=$PROTO://$USER:$PASS@$HOST/$DBNAME
