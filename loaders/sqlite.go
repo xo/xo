@@ -148,10 +148,10 @@ func SqTables(db models.XODB, schema string, relkind string) ([]*models.Table, e
 				if err != nil {
 					return nil, err
 				}
-				var col *models.Column
-				for _, col = range cols {
+				for _, col := range cols {
 					if col.IsPrimaryKey == true {
-						if col.DataType == "integer" {
+						dt := strings.ToUpper(col.DataType)
+						if dt == "INTEGER" {
 							manualPk = false
 						}
 						break
