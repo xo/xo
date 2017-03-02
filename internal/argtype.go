@@ -203,5 +203,11 @@ func NewDefaultArgs() *ArgType {
 	}
 }
 
+// Description provides the description for the command output.
+func (a *ArgType) Description() string {
+	return `xo is a command line utility to generate Go code from a database schema.
+`
+}
+
 // Args are the application arguments.
 var Args *ArgType
