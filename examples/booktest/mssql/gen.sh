@@ -46,7 +46,7 @@ CREATE TABLE books (
   isbn varchar(255) NOT NULL DEFAULT '' UNIQUE,
   title varchar(255) NOT NULL DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
-  available datetime NOT NULL,
+  available datetime2 NOT NULL,
   tags varchar(255) NOT NULL DEFAULT ''
 );
 
