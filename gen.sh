@@ -56,7 +56,7 @@ SELECT
 FROM pg_class s
   JOIN pg_depend d ON d.objid = s.oid
   JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
-  JOIN pg_namespace n ON n.oid = s.relnamespace 
+  JOIN pg_namespace n ON n.oid = s.relnamespace
 WHERE n.nspname = %%schema string%% AND s.relkind = 'S'
 ENDSQL
 
