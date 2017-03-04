@@ -18,8 +18,10 @@ import (
 
 	"github.com/knq/dburl"
 	"github.com/knq/xo/internal"
-	_ "github.com/knq/xo/loaders"
 	"github.com/knq/xo/models"
+
+	_ "github.com/knq/xo/loaders"
+	_ "github.com/knq/xoutil"
 )
 
 func main() {
