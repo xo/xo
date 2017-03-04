@@ -10,14 +10,14 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    int        `json:"book_id"`   // book_id
-	AuthorID  int        `json:"author_id"` // author_id
-	Isbn      string     `json:"isbn"`      // isbn
-	BookType  BookType   `json:"book_type"` // book_type
-	Title     string     `json:"title"`     // title
-	Year      int        `json:"year"`      // year
-	Available *time.Time `json:"available"` // available
-	Tags      string     `json:"tags"`      // tags
+	BookID    int       `json:"book_id"`   // book_id
+	AuthorID  int       `json:"author_id"` // author_id
+	Isbn      string    `json:"isbn"`      // isbn
+	BookType  BookType  `json:"book_type"` // book_type
+	Title     string    `json:"title"`     // title
+	Year      int       `json:"year"`      // year
+	Available time.Time `json:"available"` // available
+	Tags      string    `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool

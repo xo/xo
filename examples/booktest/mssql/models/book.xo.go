@@ -141,7 +141,7 @@ func (b *Book) Author(db XODB) (*Author, error) {
 
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'PK__books__490D1AE192C1980E'.
+// Generated from index 'PK__books__490D1AE126373576'.
 func BookByBookID(db XODB, bookID int) (*Book, error) {
 	var err error
 
@@ -167,7 +167,7 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'UQ__books__99F9D0A4861C1DA3'.
+// Generated from index 'UQ__books__99F9D0A4DBD4D1D6'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

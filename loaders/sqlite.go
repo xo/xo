@@ -93,9 +93,9 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "blob":
 		typ = "[]byte"
 
-	case "timestamp", "datetime", "date":
-		nilVal = "time.Time{}"
-		typ = "time.Time"
+	case "timestamp", "datetime", "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
+		nilVal = "xoutil.SqTime{}"
+		typ = "xoutil.SqTime"
 
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "datetime", "date", "time":

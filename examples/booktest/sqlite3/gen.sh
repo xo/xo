@@ -6,7 +6,7 @@ EXTRA=$1
 
 SRC=$(realpath $(cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
 
-DB=file:$SRC/$DBNAME
+DB="file://$SRC/$DBNAME?loc=auto"
 
 XOBIN=$(which xo)
 if [ -e $SRC/../../../xo ]; then
@@ -38,7 +38,7 @@ CREATE TABLE books (
   isbn text NOT NULL DEFAULT '' UNIQUE,
   title text NOT NULL DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
-  available text NOT NULL DEFAULT '',
+  available timestamp with time zone NOT NULL DEFAULT '',
   tags text NOT NULL DEFAULT '{}'
 );
 

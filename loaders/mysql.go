@@ -167,7 +167,8 @@ switchDT:
 		typ = "[]byte"
 
 	case "timestamp", "datetime", "date", "time":
-		typ = "*time.Time"
+		nilVal = "time.Time{}"
+		typ = "time.Time"
 		if nullable {
 			nilVal = "mysql.NullTime{}"
 			typ = "mysql.NullTime"

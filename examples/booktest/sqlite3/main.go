@@ -10,6 +10,7 @@ import (
 
 	"github.com/knq/dburl"
 	"github.com/knq/xo/examples/booktest/sqlite3/models"
+	"github.com/knq/xoutil"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
@@ -26,7 +27,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("file:booktest.sqlite3")
+	db, err := dburl.Open("file:booktest.sqlite3?loc=auto")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,13 +50,13 @@ func main() {
 	}
 
 	// save first book
-	now := time.Now()
+	now := xoutil.SqTime(time.Now())
 	b0 := models.Book{
 		AuthorID:  a.AuthorID,
 		Isbn:      "1",
 		Title:     "my book title",
 		Year:      2016,
-		Available: now.Format(time.RFC822Z),
+		Available: now,
 	}
 	err = b0.Save(tx)
 	if err != nil {
@@ -68,7 +69,7 @@ func main() {
 		Isbn:      "2",
 		Title:     "the second book",
 		Year:      2016,
-		Available: now.Format(time.RFC822Z),
+		Available: now,
 		Tags:      "cool unique",
 	}
 	err = b1.Save(tx)
@@ -90,7 +91,7 @@ func main() {
 		Isbn:      "3",
 		Title:     "the third book",
 		Year:      2001,
-		Available: now.Format(time.RFC822Z),
+		Available: now,
 		Tags:      "cool",
 	}
 	err = b2.Save(tx)
@@ -104,7 +105,7 @@ func main() {
 		Isbn:      "4",
 		Title:     "4th place finisher",
 		Year:      2011,
-		Available: now.Format(time.RFC822Z),
+		Available: now,
 		Tags:      "other",
 	}
 	err = b3.Save(tx)

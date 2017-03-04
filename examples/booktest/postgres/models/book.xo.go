@@ -16,7 +16,7 @@ type Book struct {
 	Booktype  BookType    `json:"booktype"`  // booktype
 	Title     string      `json:"title"`     // title
 	Year      int         `json:"year"`      // year
-	Available *time.Time  `json:"available"` // available
+	Available time.Time   `json:"available"` // available
 	Tags      StringSlice `json:"tags"`      // tags
 
 	// xo fields

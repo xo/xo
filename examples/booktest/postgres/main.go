@@ -56,7 +56,7 @@ func main() {
 		Title:     "my book title",
 		Booktype:  models.BookTypeFiction,
 		Year:      2016,
-		Available: &now,
+		Available: now,
 	}
 	err = b0.Save(tx)
 	if err != nil {
@@ -70,7 +70,7 @@ func main() {
 		Title:     "the second book",
 		Booktype:  models.BookTypeFiction,
 		Year:      2016,
-		Available: &now,
+		Available: now,
 		Tags:      models.StringSlice{"cool", "unique"},
 	}
 	err = b1.Save(tx)
@@ -93,7 +93,7 @@ func main() {
 		Title:     "the third book",
 		Booktype:  models.BookTypeFiction,
 		Year:      2001,
-		Available: &now,
+		Available: now,
 		Tags:      models.StringSlice{"cool"},
 	}
 	err = b2.Save(tx)
@@ -108,7 +108,7 @@ func main() {
 		Title:     "4th place finisher",
 		Booktype:  models.BookTypeNonfiction,
 		Year:      2011,
-		Available: &now,
+		Available: now,
 		Tags:      models.StringSlice{"other"},
 	}
 	err = b3.Save(tx)
