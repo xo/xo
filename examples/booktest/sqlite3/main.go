@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// save first book
-	now := xoutil.SqTime(time.Now())
+	now := xoutil.SqTime{time.Now()}
 	b0 := models.Book{
 		AuthorID:  a.AuthorID,
 		Isbn:      "1",

@@ -45,7 +45,7 @@ CREATE TABLE books (
   book_type ENUM('FICTION', 'NONFICTION') NOT NULL DEFAULT 'FICTION',
   title text NOT NULL DEFAULT '',
   year integer NOT NULL DEFAULT 2000,
-  available timestamp(6) NOT NULL DEFAULT NOW(),
+  available datetime NOT NULL DEFAULT NOW(),
   tags text NOT NULL DEFAULT '',
   CONSTRAINT FOREIGN KEY (author_id) REFERENCES authors(author_id)
 ) ENGINE=InnoDB;
