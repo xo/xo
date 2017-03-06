@@ -1,2 +1,7 @@
+/postgres/postgres
+/mysql/mysql
+/mssql/mssql
+/oracle/oracle
+/sqlite3/sqlite3
 */skip
 /booktest-*
