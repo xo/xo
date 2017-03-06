@@ -1,19 +1,21 @@
 # xo "booktest" examples
 
-This directory contains the `xo` "booktest" examples which  serve to
-demonstrate an "end-to-end" use of `xo` from schema to practical use of
-generated "models" in a Go application. These examples are also used by the
-`xo` developers to compare generated code for the various databases.
+This directory contains the `xo` "booktest" examples which serve to demonstrate
+an "end-to-end" use of `xo` from schema to practical use of "models" generated
+by `xo` in a Go application. These examples are also used by the `xo`
+developers to compare generated code for between databases and revisions.
 
 Each subdirectory contains a single, practically identical example for each
 supported database, demonstrating how to write and use a schema/custom query
-for each database, and the resulting, generated "models" for each. The example,
-toy schemas in use are meant to simply show a basic realtionship between
-"books" and "authors".
+for each, and the `xo` generated "models" for each. Each subdirectory contains
+`<database>/schema.sql`, representing a basic "authors" and "books" schema
+relationship, and in turn serving to demonstrate how how the various schema
+column types correspond to their generated Go equivalents in the
+`<database>/models/` directory.
 
-Please note that these examples are meant to only demonstrate hitting the
-ground running with `xo`, and are not meant to be an exhaustive demonstration
-of the feature support for each database.
+Please note that the "booktest" examples are meant only to demonstrate how to
+hit the ground running with `xo`, and are not meant to be an exhaustive
+demonstration of `xo`'s feature support for each database.
 
 ## Examples
 
@@ -25,7 +27,7 @@ The following databases have a "booktest" example:
 * [PostgreSQL](postgres/)
 * [SQLite3](sqlite3/)
 
-Each database's directory contains the following files:
+Each database's directory contains the following:
 
 | File                  | Description                                                     | Required |
 |-----------------------|-----------------------------------------------------------------|----------|
@@ -37,23 +39,24 @@ Each database's directory contains the following files:
 | `skip`                | when present, `gen.sh` will skip the directory                  | no       |
 | `pre`                 | when present, `gen.sh` will source the script                   | no       |
 
-## Generating booktest "models"
+## Generating database models with gen.sh
 
-This directory contains a single [`gen.sh`](gen.sh) that uses
-[usql](https://github.com/knq/usql) to load a `schema.sql` for the database,
-after which it uses `xo` to generate each databases' `models` directory.
+This directory contains [`gen.sh`](gen.sh), a script that uses
+[usql](https://github.com/knq/usql) to execute `<database>/schema.sql` against
+the database URL found in `<database>/config`.
 
-`gen.sh` will then run `go build` to build the directory and execute the
-resulting `booktest-<database>` executable.
+`gen.sh` then uses `xo` to generate each databases' `<database>/models`
+directory, and then runs `go build -o booktest-<database> <database>/` to build
+the example usage code for that database, and in turn executes the built
+`booktest-<database>` executable.
 
-Finally, `gen.sh` uses `usql` display the rows from the "books" table.
+Finally, `gen.sh` uses `usql` to display the rows from the "books" table.
 
-### Running gen.sh
+### Running
 
-When running `gen.sh`, it will try to use the `xo` executable in the root
-repository path, otherwise if it is not present then `gen.sh` will attempt to
-use the `xo` executable on the system `$PATH`. The `usql` executable must be
-available on `$PATH`.
+`gen.sh` will try to use the `xo` executable in the root repository path,
+otherwise `gen.sh` will attempt to use the `xo` executable on the system
+`$PATH`. The `usql` executable must be available on `$PATH`.
 
 If you have not already installed `usql`, you may install it in the usual Go
 fashion:
@@ -65,10 +68,10 @@ $ go get -u github.com/knq/usql
 $ go get -tags oracle -u github.com/knq/usql
 ```
 
-#### Skipping databases
+### Skipping databases
 
-If you would like `gen.sh` to skip a specific database, simply ensure that a
-file named `skip` is present in the respective directory:
+If you would like `gen.sh` to skip a database, simply create a file named
+`<database>/skip`:
 
 ```sh
 # skip mysql
@@ -78,35 +81,45 @@ $ touch mysql/skip
 $ ./gen.sh
 ```
 
-#### Configuring databases for gen.sh
+### Configuring databases
 
-Each database needs to be configured to be running on `localhost` with its
-default port. Additionally, each database needs to have a user named `booktest`
-with password `booktest`.
+Each database needs to be configured to run on `localhost` with its default
+port. Additionally, each database needs a user named `booktest` with password
+`booktest`. With the exception of Oracle and SQLite3 databases, the `gen.sh`
+script also expects the database to be named `booktest` and owned by the
+`booktest` user.
 
-With the exception of SQLite and Oracle databases, the `gen.sh` script also
-expects the database to be named `booktest` and owned by the `booktest` user.
-
-SQLite3 will instead use `booktest.sqlite3`. Oracle will connect to the service
-name `xe.oracle.docker`, which is the default service name used by the Docker
-[sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/) image.
+Oracle will connect to the service name `xe.oracle.docker`, which is the
+default service name used by the Docker [sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/)
+image. SQLite3 will use the regular file `booktest.sqlite3`.
 
 If you would like to modify an individual database's configuration, please edit
-the `<database>/config` and change the `DB` variable to suit your environment.
+the `<database>/config` and change the `DB` variable to suit your environment:
 
-Please see the [`contrib/`](../../contrib/) directory for some helper scripts
-that can assist with creating the various databases.
+```sh
+$ cat postgres/config
+DB=postgres://booktest:booktest@localhost/booktest
 
-#### Passing options to gen.sh
+$ echo 'postgres://myuser:mypass@remotehost:1112/database?sslmode=disable' > postgres/config
+```
 
-`gen.sh` will pass any additional options to `usql`, `xo`, and the built
-`booktest-<database>` executable. At the moment, the most useful command line
-option is passing `-v`, which will enable verbose output for `xo`, `usql` and
-the built `booktest-<database>` executable.
+Please see the [`contrib/`](../../contrib/) directory for helper scripts that
+can assist with creating the various databases.
 
-#### Example Output
+### Passing options to gen.sh
 
-The following is the output from `gen.sh`:
+`gen.sh` will pass any additional command-line options to `usql`, `xo`, and the
+built `booktest-<database>` executable. At the moment, the most useful option
+to pass is `-v`, which will enable verbose output for `xo`, `usql` and the
+built `booktest-<database>` executable:
+
+```sh
+$ ./gen.sh -v
+```
+
+### Example Output
+
+The following is the example non-verbose output from `gen.sh`:
 
 ```sh
 $ gen.sh
