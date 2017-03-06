@@ -205,10 +205,10 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitle retrieves a row from 'booktest.books' as a Book.
+// BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
-func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
+func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	var err error
 
 	// sql query

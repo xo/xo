@@ -126,7 +126,7 @@ func (a *Author) Delete(db XODB) error {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'PK__authors__86516BCFFAD1C1EE'.
+// Generated from index 'PK__authors__86516BCF2452DED9'.
 func AuthorByAuthorID(db XODB, authorID int) (*Author, error) {
 	var err error
 

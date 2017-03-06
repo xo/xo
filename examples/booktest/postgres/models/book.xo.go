@@ -222,10 +222,10 @@ func BookByBookID(db XODB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitle retrieves a row from 'public.books' as a Book.
+// BooksByTitleYear retrieves a row from 'public.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
-func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
+func BooksByTitleYear(db XODB, title string, year int) ([]*Book, error) {
 	var err error
 
 	// sql query
@@ -261,10 +261,10 @@ func BooksByTitle(db XODB, title string, year int) ([]*Book, error) {
 	return res, nil
 }
 
-// BooksByTitleLower retrieves a row from 'public.books' as a Book.
+// BooksByTitle retrieves a row from 'public.books' as a Book.
 //
 // Generated from index 'books_title_lower_idx'.
-func BooksByTitleLower(db XODB, title string) ([]*Book, error) {
+func BooksByTitle(db XODB, title string) ([]*Book, error) {
 	var err error
 
 	// sql query

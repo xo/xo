@@ -9,10 +9,12 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 
 	"github.com/knq/dburl"
+
 	"github.com/knq/xo/examples/booktest/mssql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
+var flagURL = flag.String("url", "mssql://booktest:booktest@localhost/booktest", "url")
 
 func main() {
 	var err error
@@ -26,7 +28,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("mssql://booktest:booktest@localhost/booktest")
+	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
 	}

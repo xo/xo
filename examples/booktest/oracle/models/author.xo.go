@@ -165,7 +165,7 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'sys_c0010307'.
+// Generated from index 'sys_c0010608'.
 func AuthorByAuthorID(db XODB, authorID float64) (*Author, error) {
 	var err error
 

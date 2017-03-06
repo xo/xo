@@ -9,12 +9,12 @@ import (
 	_ "gopkg.in/rana/ora.v4"
 
 	"github.com/knq/dburl"
+
 	"github.com/knq/xo/examples/booktest/oracle/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
-var flagHost = flag.String("host", "", "host")
-var flagDatabase = flag.String("db", "", "database name")
+var flagURL = flag.String("url", "oracle://booktest:booktest@localhost/booktest", "url")
 
 func main() {
 	var err error
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("oracle://booktest:booktest@" + *flagHost + "/" + *flagDatabase)
+	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
 	}

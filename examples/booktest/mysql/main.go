@@ -9,10 +9,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/knq/dburl"
+
 	"github.com/knq/xo/examples/booktest/mysql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
+var flagURL = flag.String("url", "mysql://booktest:booktest@localhost/booktest", "url")
 
 func main() {
 	var err error
@@ -26,7 +28,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("mysql://booktest:booktest@localhost/booktest?parseTime=true")
+	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -141,7 +143,7 @@ func main() {
 	*/
 
 	// retrieve first book
-	books0, err := models.BooksByTitle(db, "my book title", 2016)
+	books0, err := models.BooksByTitleYear(db, "my book title", 2016)
 	if err != nil {
 		log.Fatal(err)
 	}

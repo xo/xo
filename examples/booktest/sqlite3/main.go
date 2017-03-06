@@ -9,11 +9,13 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/knq/dburl"
-	"github.com/knq/xo/examples/booktest/sqlite3/models"
 	"github.com/knq/xoutil"
+
+	"github.com/knq/xo/examples/booktest/sqlite3/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
+var flagURL = flag.String("url", "file:booktest.sqlite3?loc=auto", "url")
 
 func main() {
 	var err error
@@ -27,7 +29,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("file:booktest.sqlite3?loc=auto")
+	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
 	}

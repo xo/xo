@@ -21,4 +21,5 @@ fi
 
 set -x
 
-sqlplus $USER/$PASS@$HOST/$SVC
+#sqlplus $USER/$PASS@$HOST/$SVC
+usql oracle://$USER:$PASS@$HOST/$SVC

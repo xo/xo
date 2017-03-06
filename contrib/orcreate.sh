@@ -12,7 +12,9 @@ if [ -z "$NAME" ]; then
   exit 1
 fi
 
-sqlplus $USER/$PASS@$HOST/$SVC << ENDSQL
+#sqlplus $USER/$PASS@$HOST/$SVC << ENDSQL
+
+usql oracle://$USER:$PASS@$HOST/$SVC << ENDSQL
 create tablespace $NAME nologging datafile '${NAME}.dat' size 100m autoextend on;
 
 create user $NAME identified by $NAME default tablespace $NAME;

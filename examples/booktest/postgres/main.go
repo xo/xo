@@ -9,10 +9,12 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/knq/dburl"
+
 	"github.com/knq/xo/examples/booktest/postgres/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
+var flagURL = flag.String("url", "postgres://booktest:booktest@localhost/booktest", "url")
 
 func main() {
 	var err error
@@ -26,7 +28,7 @@ func main() {
 	}
 
 	// open database
-	db, err := dburl.Open("pgsql://booktest:booktest@localhost/booktest")
+	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,7 +141,7 @@ func main() {
 	}
 
 	// retrieve first book
-	books0, err := models.BooksByTitle(db, "my book title", 2016)
+	books0, err := models.BooksByTitleYear(db, "my book title", 2016)
 	if err != nil {
 		log.Fatal(err)
 	}
