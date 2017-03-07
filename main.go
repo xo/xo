@@ -281,6 +281,12 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 
 	// file didn't originally exist, so add package header
 	if fi == nil || !args.Append {
+		// add build tags
+		if args.Tags != "" {
+			f.WriteString(`// +build ` + args.Tags + "\n\n")
+		}
+
+		// execute
 		err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
 		if err != nil {
 			return nil, err

@@ -117,6 +117,9 @@ type ArgType struct {
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
 
+	// Tags is the list of build tags to add to generated Go files.
+	Tags string `arg:"--tags,help:build tags to add to package header"`
+
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`
 
