@@ -299,7 +299,7 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 	enumMap := map[string]*Enum{}
 	for _, e := range enumList {
 		enumTpl := &Enum{
-			Name:              inflector.Singularize(snaker.SnakeToCamelIdentifier(e.EnumName)),
+			Name:              SingularizeIdentifier(e.EnumName),
 			Schema:            args.Schema,
 			Values:            []*EnumValue{},
 			Enum:              e,
@@ -457,7 +457,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    inflector.Singularize(snaker.SnakeToCamelIdentifier(ti.TableName)),
+			Name:    SingularizeIdentifier(ti.TableName),
 			Schema:  args.Schema,
 			RelType: relType,
 			Fields:  []*Field{},
