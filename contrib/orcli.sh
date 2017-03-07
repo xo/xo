@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# connects to oracle docker instance using sqlplus cli tool
+# connects to oracle docker instance
 
 HOST=$(docker port orcl 1521)
 
