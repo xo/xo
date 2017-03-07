@@ -1,0 +1,2 @@
+ENGINE="oracle://pokedex:pokedex@localhost:1521/?service_name=xe.oracle.docker&auto_setinputsizes=False"
+DB=oracle://pokedex:pokedex@localhost/xe.oracle.docker

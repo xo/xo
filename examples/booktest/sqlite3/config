@@ -1,1 +1,1 @@
-DB="file:booktest.sqlite3?loc=auto"
+DB=file:booktest.sqlite3?loc=auto

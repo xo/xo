@@ -1,0 +1,21 @@
+ADMIN="mssql://sa:changeit@localhost"
+DBNAME="pokedex"
+
+set +e
+
+usql $ADMIN \
+  -c "exec sp_configure 'contained database authentication', 1;" \
+  -c "reconfigure;" \
+  -c "drop schema $DBNAME;" \
+  -c "drop database $DBNAME;" \
+  -c "drop user $DBNAME;" \
+  -c "drop login $DBNAME;" \
+  -c "create database $DBNAME containment=partial;"
+
+usql $ADMIN/$DBNAME \
+  -c "create login $DBNAME with password='$DBNAME', check_policy=off, default_database=$DBNAME;" \
+  -c "create user $DBNAME for login $DBNAME with default_schema=$DBNAME;" \
+  -c "create schema $DBNAME authorization $DBNAME;" \
+  -c "exec sp_addrolemember 'db_owner', '$DBNAME';"
+
+set -e

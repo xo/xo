@@ -1,0 +1,1 @@
+DB=postgres://pokedex:pokedex@localhost/pokedex

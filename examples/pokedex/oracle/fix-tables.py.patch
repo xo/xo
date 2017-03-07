@@ -1,0 +1,13 @@
+diff --git a/pokedex/db/tables.py b/pokedex/db/tables.py
+index b5e20ba..f86f6a8 100644
+--- a/pokedex/db/tables.py
++++ b/pokedex/db/tables.py
+@@ -1048,7 +1048,7 @@ class ItemFlavorText(TableBase):
+         doc=u"ID of the version group that sports this text")
+     language_id = Column(Integer, ForeignKey('languages.id'), primary_key=True, nullable=False,
+         doc=u"The language")
+-    flavor_text = Column(UnicodeText, nullable=False,
++    flavor_text = Column(UnicodeText, nullable=True,
+         doc=u"The flavor text itself",
+         info=dict(official=True, format='gametext'))
+ 

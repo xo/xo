@@ -1,0 +1,1 @@
+DB=mysql://pokedex:pokedex@localhost/pokedex

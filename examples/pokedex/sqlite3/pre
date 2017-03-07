@@ -1,0 +1,7 @@
+SQLITE_DB=$(realpath $SRC/${ENGINE#sqlite:///})
+if [ -f "$SQLITE_DB" ]; then
+    echo "rm $SQLITE_DB"
+    rm "$SQLITE_DB"
+else
+    echo "did not erase $SQLITE_DB"
+fi

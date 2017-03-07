@@ -1,0 +1,7 @@
+ADMIN="mysql://root:changeit@localhost/mysql"
+
+usql $ADMIN \
+  -c 'drop database pokedex;' \
+  -c 'create database pokedex;' \
+  -c "grant all privileges on pokedex.* to 'pokedex'@'%' identified by 'pokedex';" \
+  -c "flush privileges;"
