@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"strings"
 	"time"
 
 	"github.com/knq/dburl"
@@ -33,14 +32,6 @@ func main() {
 	db, err := dburl.Open(*flagURL)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	// force ansi mode on mysql to fix escape issue
-	if strings.Contains(*flagURL, "mysql") {
-		_, err = db.Exec("SET sql_mode='ANSI';")
-		if err != nil {
-			log.Fatal(err)
-		}
 	}
 
 	// get random id

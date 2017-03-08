@@ -1,1 +1,1 @@
-DB=postgres://pokedex:pokedex@localhost/pokedex
+DB="postgres://pokedex:pokedex@localhost/pokedex"

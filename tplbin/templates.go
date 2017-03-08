@@ -33,7 +33,7 @@
 // templates/xo_package.go.tpl
 // DO NOT EDIT!
 
-package templates
+package tplbin
 
 import (
 	"bytes"

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 go-bindata \
-  -pkg templates \
+  -pkg tplbin \
   -prefix templates/ \
-  -o templates/templates.go \
+  -o tplbin/templates.go \
   -ignore .go$ \
   -ignore .swp$ \
   -nometadata \

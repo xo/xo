@@ -1,1 +1,1 @@
-DB=postgres://booktest:booktest@localhost/booktest
+DB="postgres://booktest:booktest@localhost/booktest"

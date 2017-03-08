@@ -14,7 +14,7 @@ import (
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
-var flagURL = flag.String("url", "mysql://booktest:booktest@localhost/booktest", "url")
+var flagURL = flag.String("url", "mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi", "url")
 
 func main() {
 	var err error

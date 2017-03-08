@@ -176,9 +176,9 @@ select * from books;
 
 
 ------------------------------------------------------
-mysql='mysql://booktest:booktest@localhost/booktest?parseTime=true'
+mysql='mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi'
 
-usql mysql://booktest:booktest@localhost/booktest?parseTime=true -f mysql/schema.sql
+usql mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi -f mysql/schema.sql
 SET
 DROP
 DROP
@@ -190,9 +190,9 @@ CREATE
 CREATE
 CREATE
 
-xo mysql://booktest:booktest@localhost/booktest?parseTime=true -o mysql/models
+xo mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi -o mysql/models
 
-xo mysql://booktest:booktest@localhost/booktest?parseTime=true -o mysql/models < mysql/custom-query.xo.sql
+xo mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi -o mysql/models < mysql/custom-query.xo.sql
 
 go build -o booktest-mysql ./mysql/
 

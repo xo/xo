@@ -1,1 +1,1 @@
-DB=oracle://booktest:booktest@localhost/xe.oracle.docker
+DB="oracle://booktest:booktest@localhost/xe.oracle.docker"

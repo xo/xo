@@ -1,2 +1,2 @@
-ENGINE=mssql+pymssql://pokedex:pokedex@localhost/pokedex
-DB=mssql://pokedex:pokedex@localhost/pokedex
+ENGINE="mssql+pymssql://pokedex:pokedex@localhost/pokedex"
+DB="mssql://pokedex:pokedex@localhost/pokedex"
