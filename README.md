@@ -36,12 +36,15 @@ The following is a matrix of the supported features for each database:
 
 Install `goimports` dependency (if not already installed):
 ```sh
-go get -u golang.org/x/tools/cmd/goimports
+$ go get -u golang.org/x/tools/cmd/goimports
 ```
 
 Then, install in the usual way:
 ```sh
-go get -u github.com/knq/xo
+$ go get -u github.com/knq/xo
+
+# install with oracle support (see instructions below)
+$ go get -tags oracle -u github.com/knq/xo
 ```
 
 **_NOTE:_** Go 1.6+ is needed for installing from source, as xo makes use of
