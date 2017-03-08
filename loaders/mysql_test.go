@@ -104,3 +104,32 @@ func Test_MyParseType(t *testing.T) {
 		}
 	}
 }
+
+func Test_MyEscape(t *testing.T) {
+	l := internal.SchemaLoaders["mysql"]
+	name := "Name"
+	expectedEscape := "`Name`"
+	tests := []struct {
+		desc    string
+		escType internal.EscType
+	}{
+		{
+			desc:    "SchemaEsc",
+			escType: internal.SchemaEsc,
+		},
+		{
+			desc:    "TableEsc",
+			escType: internal.TableEsc,
+		},
+		{
+			desc:    "ColumnEsc",
+			escType: internal.ColumnEsc,
+		},
+	}
+	for i, tt := range tests {
+		esc := l.Escape(tt.escType, name)
+		if esc != expectedEscape {
+			t.Errorf("test #%d: Escape for %v failed. exp: %v got: %v", i, tt.desc, expectedEscape, esc)
+		}
+	}
+}

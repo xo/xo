@@ -39,11 +39,11 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	const sqlstr = `INSERT INTO {{ $table }} (` +
-		`{{ colnames .Fields }}` +
-		`) VALUES (` +
-		`{{ colvals .Fields }}` +
-		`)`
+	const sqlstr = "INSERT INTO {{ $table }} (" +
+		"{{ colnames .Fields }}" +
+		") VALUES (" +
+		"{{ colvals .Fields }}" +
+		")"
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short }})
@@ -56,11 +56,11 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	{{ $short }}._exists = true
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	const sqlstr = `INSERT INTO {{ $table }} (` +
-		`{{ colnames .Fields .PrimaryKey.Name }}` +
-		`) VALUES (` +
-		`{{ colvals .Fields .PrimaryKey.Name }}` +
-		`)`
+	const sqlstr = "INSERT INTO {{ $table }} (" +
+		"{{ colnames .Fields .PrimaryKey.Name }}" +
+		") VALUES (" +
+		"{{ colvals .Fields .PrimaryKey.Name }}" +
+		")"
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }})
@@ -98,9 +98,9 @@ func ({{ $short }} *{{ .Name }}) Update(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `UPDATE {{ $table }} SET ` +
-		`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
-		` WHERE {{ colname .PrimaryKey.Col }} = ?`
+	const sqlstr = "UPDATE {{ $table }} SET " +
+		"{{ colnamesquery .Fields ", " .PrimaryKey.Name }}" +
+		" WHERE {{ colname .PrimaryKey.Col }} = ?"
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
@@ -132,7 +132,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 	}
 
 	// sql query
-	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = ?`
+	const sqlstr = "DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = ?"
 
 	// run query
 	XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
