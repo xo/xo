@@ -264,13 +264,13 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 	if err != nil {
 		return err
 	}
-	
+
 	// load views
 	viewMap, err := tl.LoadRelkind(args, View)
 	if err != nil {
-		return err	
+		return err
 	}
-	
+
 	// merge views with the tableMap
 	for k, v := range viewMap {
 		tableMap[k] = v
