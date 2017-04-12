@@ -95,6 +95,30 @@ func Test_MyParseType(t *testing.T) {
 			typ:       "sql.NullInt64",
 			nullable:  true,
 		},
+		{
+			desc:      "tinyint with precision one parses into bool",
+			dt:        "tinyint(1)",
+			precision: 1,
+			nilVal:    "false",
+			typ:       "bool",
+			nullable:  false,
+		},
+		{
+			desc:      "nullable tinyint with precision one parses into bool",
+			dt:        "tinyint(1)",
+			precision: 1,
+			nilVal:    "sql.NullBool{}",
+			typ:       "sql.NullBool",
+			nullable:  true,
+		},
+		{
+			desc:      "tinyint with greater than one precision parses into int8",
+			dt:        "tinyint(4)",
+			precision: 4,
+			nilVal:    "0",
+			typ:       "int8",
+			nullable:  false,
+		},
 	}
 
 	for i, tt := range tests {
