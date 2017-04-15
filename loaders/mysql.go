@@ -27,6 +27,11 @@ func init() {
 		IndexList:       models.MyTableIndexes,
 		IndexColumnList: models.MyIndexColumns,
 		QueryColumnList: MyQueryColumns,
+		Esc: map[internal.EscType]func(string) string{
+			internal.ColumnEsc: MyEscape,
+			internal.TableEsc:  MyEscape,
+			internal.SchemaEsc: MyEscape,
+		},
 	}
 }
 
@@ -295,4 +300,10 @@ func MyQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 
 	// load column information
 	return cols, err
+}
+
+// MyEscape escapes names using the backtick (`).
+// https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
+func MyEscape(s string) string {
+	return "`" + s + "`"
 }
