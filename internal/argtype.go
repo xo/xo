@@ -95,6 +95,9 @@ type ArgType struct {
 	// QueryFields are the fields to scan the result to.
 	QueryFields string `arg:"--query-fields,-Z,help:comma separated list of field names to scan query's results to the query's associated Go type"`
 
+	// QueryAllowNulls indicates that custom query results can contain null types.
+	QueryAllowNulls bool `arg:"--query-allow-nulls,-U,help:use query column NULL state"`
+
 	// EscapeAll toggles escaping schema, table, and column names in SQL queries.
 	EscapeAll bool `arg:"--escape-all,-X,help:escape all names in SQL queries"`
 

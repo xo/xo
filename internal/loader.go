@@ -169,7 +169,7 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 				Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 				Col:  c,
 			}
-			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, false)
+			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, args.QueryAllowNulls && !c.NotNull)
 			typeTpl.Fields = append(typeTpl.Fields, f)
 		}
 	} else {
@@ -401,6 +401,7 @@ func (tl TypeLoader) LoadProcs(args *ArgType) (map[string]*Proc, error) {
 		}
 
 		// parse return type into template
+		// TODO: fix this so that nullable types can be returned
 		_, procTpl.Return.NilType, procTpl.Return.Type = tl.ParseType(args, p.ReturnType, false)
 
 		// load proc parameters
@@ -439,6 +440,8 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 		paramTpl := &Field{
 			Name: fmt.Sprintf("v%d", i),
 		}
+
+		// TODO: fix this so that nullable types can be used as parameters
 		_, _, paramTpl.Type = tl.ParseType(args, strings.TrimSpace(p.ParamType), false)
 
 		// add to proc params
