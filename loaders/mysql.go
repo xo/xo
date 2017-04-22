@@ -184,13 +184,17 @@ switchDT:
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
 		typ = "[]byte"
 
-	case "timestamp", "datetime", "date", "time":
+	case "timestamp", "datetime", "date":
 		nilVal = "time.Time{}"
 		typ = "time.Time"
 		if nullable {
 			nilVal = "mysql.NullTime{}"
 			typ = "mysql.NullTime"
 		}
+
+	case "time":
+		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
+		typ = "string"
 
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
