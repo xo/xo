@@ -36,6 +36,11 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
+	err = db.BeforeInsert({{ $short }})
+    if err != nil {
+        return err
+    }
+
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
 	const sqlstr = `INSERT INTO {{ $table }} (` +
@@ -79,7 +84,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	{{ $short }}._exists = true
 {{ end }}
 
-	return nil
+	return db.AfterInsert({{ $short }})
 }
 
 {{ if ne (fieldnames .Fields $short .PrimaryKey.Name) "" }}
@@ -97,6 +102,11 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			return errors.New("update failed: marked for deletion")
 		}
 
+		err = db.BeforeUpdate({{ $short }})
+        if err != nil {
+            return err
+        }
+
 		// sql query
 		const sqlstr = `UPDATE {{ $table }} SET ` +
 			`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
@@ -105,16 +115,33 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 		// run query
 		XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
 		_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
-		return err
+		if err != nil {
+            return err
+        }
+
+		return db.AfterUpdate({{ $short }})
 	}
 
 	// Save saves the {{ .Name }} to the database.
 	func ({{ $short }} *{{ .Name }}) Save(db XODB) error {
-		if {{ $short }}.Exists() {
-			return {{ $short }}.Update(db)
-		}
+		var err error
 
-		return {{ $short }}.Insert(db)
+        err = db.BeforeSave({{ $short }})
+        if err != nil {
+            return err
+        }
+
+		if {{ $short }}.Exists() {
+			err = {{ $short }}.Update(db)
+		} else {
+            err = {{ $short }}.Insert(db)
+        }
+
+        if err != nil {
+            return err
+        }
+
+        return db.AfterSave({{ $short }})
 	}
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
@@ -134,6 +161,11 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		return nil
 	}
 
+	err = db.BeforeDelete({{ $short }})
+    if err != nil {
+        return err
+    }
+
 	// sql query
 	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = $1`
 
@@ -147,7 +179,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 	// set deleted
 	{{ $short }}._deleted = true
 
-	return nil
+	return db.AfterDelete({{ $short }})
 }
 {{- end }}
 
