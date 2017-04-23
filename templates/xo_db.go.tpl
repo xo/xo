@@ -94,54 +94,54 @@ func runCallback(db XODB, m Model, name string) error {
 
 // BeforeSave runs callback before model save to db
 func BeforeSave(db XODB, m Model) error {
-	return runCallbacks(db, m, "BeforeSave")
+	return runCallback(db, m, "BeforeSave")
 }
 
-// BeforeCreate runs callback before model create in db
-func BeforeCreate(db XODB, m Model) error {
-	return runCallbacks(db, m, "BeforeCreate")
+// BeforeInsert runs callback before model insert in db
+func BeforeInsert(db XODB, m Model) error {
+	return runCallback(db, m, "BeforeInsert")
 }
 
 // BeforeUpdate runs callback before model update in db
 func BeforeUpdate(db XODB, m Model) error {
-	return runCallbacks(model, "BeforeUpdate")
+	return runCallback(db, m, "BeforeUpdate")
 }
 
 // BeforeDelete runs callback before model destroy in db
 func BeforeDelete(db XODB, m Model) error {
-	return runCallbacks(model, "BeforeDelete")
+	return runCallback(db, m, "BeforeDelete")
 }
 
 // BeforeUpsert runs callback before model upsert in db
 //
 // NOTE: PostgreSQL 9.5+ only
 func BeforeUpsert(db XODB, m Model) error {
-	return runCallbacks(model, "BeforeUpsert")
+	return runCallback(db, m, "BeforeUpsert")
 }
 
 // AfterDelete runs callback after model destroy in db
 func AfterDelete(db XODB, m Model) error {
-	return runCallbacks(model, "AfterDelete")
+	return runCallback(db, m, "AfterDelete")
 }
 
 // AfterUpdate runs callback after model update in db
 func AfterUpdate(db XODB, m Model) error {
-	return runCallbacks(model, "AfterUpdate")
+	return runCallback(db, m, "AfterUpdate")
 }
 
-// AfterCreate runs callback after model create in db
-func AfterCreate(db XODB, m Model) error {
-	return runCallbacks(model, "AfterCreate")
+// AfterInsert runs callback after model insert in db
+func AfterInsert(db XODB, m Model) error {
+	return runCallback(db, m, "AfterInsert")
 }
 
 // AfterSave runs callback after model save to db
 func AfterSave(db XODB, m Model) error {
-	return runCallbacks(model, "AfterSave")
+	return runCallback(db, m, "AfterSave")
 }
 
 // AfterUpsert runs callback after model upsert in db
 //
 // NOTE: PostgreSQL 9.5+ only
 func AfterUpsert(db XODB, m Model) error {
-	return runCallbacks(model, "AfterUpsert")
+	return runCallback(db, m, "AfterUpsert")
 }
