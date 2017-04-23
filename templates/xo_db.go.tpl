@@ -72,7 +72,7 @@ type Slice []ScannerValuer
 // Model to satify callbacks
 type Model interface{}
 
-func runCallback(db XODB, db XODB, m Model, name string) error {
+func runCallback(db XODB, m Model, name string) error {
 	rv := reflect.ValueOf(model)
 	mv := rv.MethodByName(name)
 	if mv.IsValid() {
