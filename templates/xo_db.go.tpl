@@ -69,10 +69,10 @@ func (ss StringSlice) Value() (driver.Value, error) {
 // Slice is a slice of ScannerValuers.
 type Slice []ScannerValuer
 
-//Model to satify callbacks
+// Model to satify callbacks
 type Model interface{}
 
-func (db *XODB) runCallback(m Model, name string) error {
+func runCallback(db XODB, db XODB, m Model, name string) error {
 	rv := reflect.ValueOf(model)
 	mv := rv.MethodByName(name)
 	if mv.IsValid() {
@@ -93,55 +93,55 @@ func (db *XODB) runCallback(m Model, name string) error {
 }
 
 // BeforeSave runs callback before model save to db
-func (db *XODB) BeforeSave(m Model) error {
-	return db.runCallbacks(m, "BeforeSave")
+func BeforeSave(db XODB, m Model) error {
+	return db.runCallbacks(db, m, "BeforeSave")
 }
 
 // BeforeCreate runs callback before model create in db
-func (db *XODB) BeforeCreate(m Model) error {
-	return db.runCallbacks(m, "BeforeCreate")
+func BeforeCreate(db XODB, m Model) error {
+	return db.runCallbacks(db, m, "BeforeCreate")
 }
 
 // BeforeUpdate runs callback before model update in db
-func (db *XODB) BeforeUpdate(m Model) error {
+func BeforeUpdate(db XODB, m Model) error {
 	return db.runCallbacks(model, "BeforeUpdate")
 }
 
 // BeforeDelete runs callback before model destroy in db
-func (db *XODB) BeforeDelete(m Model) error {
+func BeforeDelete(db XODB, m Model) error {
 	return db.runCallbacks(model, "BeforeDelete")
 }
 
 // BeforeUpsert runs callback before model upsert in db
 //
 // NOTE: PostgreSQL 9.5+ only
-func (db *XODB) BeforeUpsert(m Model) error {
+func BeforeUpsert(db XODB, m Model) error {
 	return db.runCallbacks(model, "BeforeUpsert")
 }
 
 // AfterDelete runs callback after model destroy in db
-func (db *XODB) AfterDelete(m Model) error {
+func AfterDelete(db XODB, db XODB, m Model) error {
 	return db.runCallbacks(model, "AfterDelete")
 }
 
 // AfterUpdate runs callback after model update in db
-func (db *XODB) AfterUpdate(m Model) error {
+func AfterUpdate(db XODB, m Model) error {
 	return db.runCallbacks(model, "AfterUpdate")
 }
 
 // AfterCreate runs callback after model create in db
-func (db *XODB) AfterCreate(m Model) error {
+func AfterCreate(db XODB, m Model) error {
 	return db.runCallbacks(model, "AfterCreate")
 }
 
 // AfterSave runs callback after model save to db
-func (db *XODB) AfterSave(m Model) error {
+func AfterSave(db XODB, m Model) error {
 	return db.runCallbacks(model, "AfterSave")
 }
 
 // AfterUpsert runs callback after model upsert in db
 //
 // NOTE: PostgreSQL 9.5+ only
-func (db *XODB) AfterUpsert(m Model) error {
+func AfterUpsert(db XODB, m Model) error {
 	return db.runCallbacks(model, "AfterUpsert")
 }

@@ -36,7 +36,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	err = db.BeforeInsert({{ $short }})
+	err = BeforeInsert(db, {{ $short }})
     if err != nil {
         return err
     }
@@ -74,7 +74,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	// set existence
 	{{ $short }}._exists = true
 
-	return db.AfterInsert({{ $short }})
+	return AfterInsert(db, {{ $short }})
 }
 
 {{ if ne (fieldnames .Fields $short .PrimaryKey.Name) "" }}
@@ -92,7 +92,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			return errors.New("update failed: marked for deletion")
 		}
 
-		err = db.BeforeUpdate({{ $short }})
+		err = BeforeUpdate(db, {{ $short }})
         if err != nil {
             return err
         }
@@ -111,14 +111,14 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
             return err
         }
 
-		return db.AfterUpdate({{ $short }})
+		return AfterUpdate(db, {{ $short }})
 	}
 
 	// Save saves the {{ .Name }} to the database.
 	func ({{ $short }} *{{ .Name }}) Save(db XODB) error {
 		var err error
 
-        err = db.BeforeSave({{ $short }})
+        err = BeforeSave(db, {{ $short }})
         if err != nil {
             return err
         }
@@ -133,7 +133,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
             return err
         }
 
-        return db.AfterSave({{ $short }})
+        return AfterSave(db, {{ $short }})
 	}
 
 	// Upsert performs an upsert for {{ .Name }}.
@@ -147,7 +147,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			return errors.New("insert failed: already exists")
 		}
 		
-		err = db.BeforeUpsert({{ $short }})
+		err = BeforeUpsert(db, {{ $short }})
 		if err != nil {
 			return err
 		}
@@ -173,7 +173,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 		// set existence
 		{{ $short }}._exists = true
 
-		return db.AfterUpsert({{ $short }})
+		return AfterUpsert(db, {{ $short }})
 }
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
@@ -193,7 +193,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		return nil
 	}
 
-	err = db.BeforeDelete({{ $short }})
+	err = BeforeDelete(db, {{ $short }})
     if err != nil {
         return err
     }
@@ -211,7 +211,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 	// set deleted
 	{{ $short }}._deleted = true
 
-	return db.AfterDelete({{ $short }})
+	return AfterDelete(db, {{ $short }})
 }
 {{- end }}
 
