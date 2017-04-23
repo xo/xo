@@ -139,12 +139,17 @@ func MsTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 	res := []*Column{}
 	for q.Next() {
 		c := Column{}
+		var primaryKeyIndex int
 
 		// scan
-		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey)
+		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &primaryKeyIndex)
 		if err != nil {
 			return nil, err
 		}
+
+		// The pk column from Sqlite is column's index in the primary key,
+		// or 0 if not in primary key.
+		c.IsPrimaryKey = primaryKeyIndex != 0
 
 		res = append(res, &c)
 	}
