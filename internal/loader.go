@@ -489,6 +489,12 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 
 	// generate table templates
 	for _, t := range tableMap {
+		for _, field := range t.Fields {
+			if field.Col.ColumnName == field.Col.DataType {
+				//field is enum (or perhaps another special type)
+				field.Type = SingularizeIdentifier(t.Table.TableName + "_" + field.Type)
+			}
+		}
 		err = args.ExecuteTemplate(TypeTemplate, t.Name, "", t)
 		if err != nil {
 			return nil, err

@@ -16,7 +16,7 @@ func MyEnumValues(db XODB, schema string, enum string) (*MyEnumValue, error) {
 	const sqlstr = `SELECT ` +
 		`SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values ` +
 		`FROM information_schema.columns ` +
-		`WHERE data_type = 'enum' AND table_schema = ? AND column_name = ?`
+		`WHERE data_type = 'enum' AND table_schema = ? AND CONCAT(table_name, "_", column_name) = ?`
 
 	// run query
 	XOLog(sqlstr, schema, enum)
