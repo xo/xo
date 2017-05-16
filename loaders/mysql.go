@@ -231,7 +231,7 @@ func MyEnumValues(db models.XODB, schema string, enum string) ([]*models.EnumVal
 	for i, ev := range strings.Split(res.EnumValues[1:len(res.EnumValues)-1], "','") {
 		enumVals = append(enumVals, &models.EnumValue{
 			EnumValue:  ev,
-			ConstValue: i + 1,
+			ConstValue: i,
 		})
 	}
 
