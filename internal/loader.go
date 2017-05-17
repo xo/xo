@@ -535,13 +535,18 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 		}
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)
 
-		// set primary key
+		// Set primary key fields. Multiple columns may participate in a key.
 		if c.IsPrimaryKey && len(columnList) > 1 {
-			typeTpl.PrimaryKey = f
+			typeTpl.PrimaryKeyFields = append(typeTpl.PrimaryKeyFields, f)
 		}
 
 		// append col to template fields
 		typeTpl.Fields = append(typeTpl.Fields, f)
+	}
+
+	// set primary key if it is a single column
+	if len(typeTpl.PrimaryKeyFields) == 1 {
+		typeTpl.PrimaryKey = typeTpl.PrimaryKeyFields[0]
 	}
 
 	return nil
