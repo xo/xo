@@ -72,7 +72,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	return nil
 }
 
-{{ if ne (fieldnames .Fields $short .PrimaryKey.Name) "" }}
+{{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ .Name }} in the database.
 	func ({{ $short }} *{{ .Name }}) Update(db XODB) error {
 		var err error
@@ -87,17 +87,30 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			return errors.New("update failed: marked for deletion")
 		}
 
-		// sql query
-		const sqlstr = `UPDATE {{ $table }} SET (` +
-			`{{ colnames .Fields .PrimaryKey.Name }}` +
-			`) = ( ` +
-			`{{ colvals .Fields .PrimaryKey.Name }}` +
-			`) WHERE {{ colname .PrimaryKey.Col }} = ${{ colcount .Fields .PrimaryKey.Name }}`
+		{{ if gt ( len .PrimaryKeyFields ) 1 }}
+			// sql query with multiple PK's
+			const sqlstr = `UPDATE {{ $table }} SET (` +
+				`{{ colnamesmulti .Fields .PrimaryKeyFields }}` +
+				`) = ( ` +
+				`{{ colvalsmulti .Fields .PrimaryKeyFields }}` +
+				`) WHERE {{ colnamesquerymulti .PrimaryKeyFields " AND " (getstartcount .Fields .PrimaryKeyFields) nil }}`
 
-		// run query
-		XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
-		_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+			// run query
+			XOLog(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
+			_, err = db.Exec(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
 		return err
+		{{ else }}
+			// sql query
+			const sqlstr = `UPDATE {{ $table }} SET (` +
+				`{{ colnames .Fields .PrimaryKey.Name }}` +
+				`) = ( ` +
+				`{{ colvals .Fields .PrimaryKey.Name }}` +
+				`) WHERE {{ colname .PrimaryKey.Col }} = ${{ colcount .Fields .PrimaryKey.Name }}`
+
+			// run query
+			XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+			_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+		{{ end }}
 	}
 
 	// Save saves the {{ .Name }} to the database.
@@ -125,7 +138,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			`{{ colnames .Fields }}` +
 			`) VALUES (` +
 			`{{ colvals .Fields }}` +
-			`) ON CONFLICT ({{ colname .PrimaryKey.Col }}) DO UPDATE SET (` +
+			`) ON CONFLICT ({{ colnames .PrimaryKeyFields }}) DO UPDATE SET (` +
 			`{{ colnames .Fields }}` +
 			`) = (` +
 			`{{ colprefixnames .Fields "EXCLUDED" }}` +
@@ -161,15 +174,27 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		return nil
 	}
 
-	// sql query
-	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = $1`
+	{{ if gt ( len .PrimaryKeyFields ) 1 }}
+		// sql query
+		const sqlstr = `DELETE FROM {{ $table }}  WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
 
-	// run query
-	XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
-	_, err = db.Exec(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
-	if err != nil {
-		return err
-	}
+		// run query with mulitple PK's
+		XOLog(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
+		_, err = db.Exec(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
+		if err != nil {
+			return err
+		}
+	{{ else }} 
+		// sql query
+		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = $1`
+
+		// run query
+		XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
+		_, err = db.Exec(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
+		if err != nil {
+			return err
+		}
+	{{ end }}
 
 	// set deleted
 	{{ $short }}._deleted = true
