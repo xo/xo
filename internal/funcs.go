@@ -270,7 +270,7 @@ func (a *ArgType) colnamesquerymulti(fields []*Field, sep string, startCount int
 			continue
 		}
 
-		if i != 0 {
+		if i > startCount {
 			str = str + sep
 		}
 		str = str + a.colname(f.Col) + " = " + a.Loader.NthParam(i)
