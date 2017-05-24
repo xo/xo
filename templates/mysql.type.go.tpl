@@ -83,7 +83,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 	return nil
 }
 
-{{ if ne (fieldnames .Fields $short .PrimaryKey.Name) "" }}
+{{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ .Name }} in the database.
 	func ({{ $short }} *{{ .Name }}) Update(db XODB) error {
 		var err error
@@ -98,15 +98,27 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			return errors.New("update failed: marked for deletion")
 		}
 
-		// sql query
-		const sqlstr = `UPDATE {{ $table }} SET ` +
-			`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
-			` WHERE {{ colname .PrimaryKey.Col }} = ?`
+		{{ if gt ( len .PrimaryKeyFields ) 1 }}
+			// sql query with composite primary key
+			const sqlstr = `UPDATE {{ $table }} SET ` +
+				`{{ colnamesquerymulti .Fields ", " 0 .PrimaryKeyFields }}` +
+				` WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
 
-		// run query
-		XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
-		_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
-		return err
+			// run query
+			XOLog(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
+			_, err = db.Exec(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
+			return err
+		{{ else }}
+			// sql query
+			const sqlstr = `UPDATE {{ $table }} SET ` +
+				`{{ colnamesquery .Fields ", " .PrimaryKey.Name }}` +
+				` WHERE {{ colname .PrimaryKey.Col }} = ?`
+
+			// run query
+			XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+			_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+			return err
+		{{ end }}
 	}
 
 	// Save saves the {{ .Name }} to the database.
@@ -135,15 +147,27 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		return nil
 	}
 
-	// sql query
-	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = ?`
+	{{ if gt ( len .PrimaryKeyFields ) 1 }}
+		// sql query with composite primary key
+		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
 
-	// run query
-	XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
-	_, err = db.Exec(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
-	if err != nil {
-		return err
-	}
+		// run query
+		XOLog(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
+		_, err = db.Exec(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
+		if err != nil {
+			return err
+		}
+	{{ else }}
+		// sql query
+		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = ?`
+
+		// run query
+		XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
+		_, err = db.Exec(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
+		if err != nil {
+			return err
+		}
+	{{ end }}
 
 	// set deleted
 	{{ $short }}._deleted = true

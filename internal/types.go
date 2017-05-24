@@ -119,13 +119,14 @@ type Field struct {
 
 // Type is a template item for a type (ie, table/view/custom query).
 type Type struct {
-	Name       string
-	Schema     string
-	RelType    RelType
-	PrimaryKey *Field
-	Fields     []*Field
-	Table      *models.Table
-	Comment    string
+	Name             string
+	Schema           string
+	RelType          RelType
+	PrimaryKey       *Field
+	PrimaryKeyFields []*Field
+	Fields           []*Field
+	Table            *models.Table
+	Comment          string
 }
 
 // ForeignKey is a template item for a foreign relationship on a table.

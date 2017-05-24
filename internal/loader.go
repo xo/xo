@@ -536,7 +536,9 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)
 
 		// set primary key
-		if c.IsPrimaryKey && len(columnList) > 1 {
+		if c.IsPrimaryKey {
+			typeTpl.PrimaryKeyFields = append(typeTpl.PrimaryKeyFields, f)
+			// This is retained for backward compatibility in the templates.
 			typeTpl.PrimaryKey = f
 		}
 
