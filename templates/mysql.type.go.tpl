@@ -99,7 +99,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 		}
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
-			// sql query with multiple PK's
+			// sql query with composite primary key
 			const sqlstr = `UPDATE {{ $table }} SET ` +
 				`{{ colnamesquerymulti .Fields ", " 0 .PrimaryKeyFields }}` +
 				` WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
@@ -148,10 +148,10 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 	}
 
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
-		// sql query
+		// sql query with composite primary key
 		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
 
-		// run query with mulitple PK's
+		// run query
 		XOLog(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
 		_, err = db.Exec(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
 		if err != nil {
