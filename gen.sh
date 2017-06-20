@@ -97,7 +97,7 @@ ENDSQL
 FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
 COMMENT='Column represents column info.'
 $XOBIN $PGDB -N -M -B -T Column -F PgTableColumns -Z "$FIELDS" --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
-SELECT
+SELECT DISTINCT
   a.attnum::integer AS field_ordinal,
   a.attname::varchar AS column_name,
   format_type(a.atttypid, a.atttypmod)::varchar AS data_type,
