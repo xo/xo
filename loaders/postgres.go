@@ -65,6 +65,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	if strings.HasSuffix(dt, "[]") {
 		dt = dt[:len(dt)-2]
 		asSlice = true
+		nullable = false
 	}
 
 	// extract precision
