@@ -609,6 +609,10 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 			}
 		}
 
+		if refTpl == nil {
+			return fmt.Errorf("could not find table %q for fk %v in schema %v", fk.RefTableName, fk.ForeignKeyName, args.Schema)
+		}
+
 	refColLoop:
 		// find ref column
 		for _, f := range refTpl.Fields {
