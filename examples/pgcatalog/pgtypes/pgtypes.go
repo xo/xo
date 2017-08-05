@@ -56,7 +56,9 @@ type Regrole struct{}
 type Regtype struct{}
 type Reltime struct{}
 type Smgr struct{}
+type SQLIdentifier struct{}
 type Tid struct{}
+type TimeStamp struct{}
 type Tinterval struct{}
 type Trigger struct{}
 type TsmHandler struct{}

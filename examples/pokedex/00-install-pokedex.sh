@@ -18,6 +18,10 @@ git pull
 popd &> /dev/null
 
 # install
+sudo python2.7 -m pip install psycopg2
+sudo python2.7 -m pip install pymssql
+sudo python2.7 -m pip install MySQL-python
+sudo easy_install cx_Oracle
 sudo python2.7 -m pip install -e ./pokedex/
 
 popd &> /dev/null

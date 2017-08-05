@@ -1,4 +1,5 @@
-ADMIN="mysql://root:changeit@localhost/mysql"
+read -s -p 'MySQL Password: ' MYSQL_PASS
+ADMIN="mysql://root:$MYSQL_PASS@localhost/mysql"
 
 usql $ADMIN \
   -c 'drop database pokedex;' \

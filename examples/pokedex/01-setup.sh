@@ -15,7 +15,8 @@ for i in */config; do
   i=$(dirname $i)
 
   # skip
-  if [ -f $i/setup-skip ]; then
+  if [[ -f $i/skip || -f $i/setup-skip ]]; then
+    echo "skipping $i"
     continue
   fi
 
