@@ -73,31 +73,22 @@ var OrLenRE = regexp.MustCompile(`\([0-9]+\)`)
 // OrParseType parse a oracle type into a Go type based on the column
 // definition.
 func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
-	precision := 0
 	nilVal := "nil"
 
 	dt = strings.ToLower(dt)
 
-	// special boolean case
-	if dt == "char(1)" {
-		return 0, "false", "bool"
-	}
-
 	// extract precision
-	dt, precision, _ = args.ParsePrecision(dt)
-
-	// strip remaining length (on things like timestamp)
-	dt = OrLenRE.ReplaceAllString(dt, "")
+	dt, precision, scale := args.ParsePrecision(dt)
 
 	var typ string
-	switch dt {
-	case "char", "nchar", "varchar", "varchar2", "nvarchar2", "long", "clob", "nclob":
+	// strip remaining length (on things like timestamp)
+	switch OrLenRE.ReplaceAllString(dt, "") {
+	case "char", "nchar", "varchar", "varchar2", "nvarchar2",
+		"long",
+		"clob", "nclob",
+		"rowid":
 		nilVal = `""`
 		typ = "string"
-		if nullable {
-			nilVal = "sql.NullString{}"
-			typ = "sql.NullString"
-		}
 
 	case "shortint":
 		nilVal = "0"
@@ -113,7 +104,7 @@ func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
-	case "longinteger", "rowid":
+	case "longinteger":
 		nilVal = "0"
 		typ = "int64"
 		if nullable {
@@ -128,12 +119,24 @@ func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
+
 	case "number", "decimal":
 		nilVal = "0.0"
-		typ = "float64"
-		if nullable {
-			nilVal = "sql.NullFloat64{}"
-			typ = "sql.NullFloat64"
+		if 0 < precision && precision < 18 && scale > 0 {
+			typ = "float64"
+			if nullable {
+				nilVal = "sql.NullFloat64{}"
+				typ = "sql.NullFloat64"
+			}
+		} else if 0 < precision && precision <= 19 && scale == 0 {
+			typ = "int64"
+			if nullable {
+				nilVal = "sql.NullInt64{}"
+				typ = "sql.NullInt64"
+			}
+		} else {
+			nilVal = `""`
+			typ = "string"
 		}
 
 	case "blob", "long raw", "raw":
@@ -145,7 +148,7 @@ func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	default:
 		// bail
-		fmt.Fprintf(os.Stderr, "error: unknown type %s\n", dt)
+		fmt.Fprintf(os.Stderr, "error: unknown type %q\n", dt)
 		os.Exit(1)
 	}
 
