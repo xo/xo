@@ -9,8 +9,8 @@ import (
 
 // Author represents a row from 'booktest.authors'.
 type Author struct {
-	AuthorID float64 `json:"author_id"` // author_id
-	Name     string  `json:"name"`      // name
+	AuthorID int64  `json:"author_id"` // author_id
+	Name     string `json:"name"`      // name
 
 	// xo fields
 	_exists, _deleted bool
@@ -56,7 +56,7 @@ func (a *Author) Insert(db XODB) error {
 	}
 
 	// set primary key and existence
-	a.AuthorID = float64(id)
+	a.AuthorID = int64(id)
 	a._exists = true
 
 	return nil
@@ -167,8 +167,8 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'sys_c0025502'.
-func AuthorByAuthorID(db XODB, authorID float64) (*Author, error) {
+// Generated from index 'sys_c0025665'.
+func AuthorByAuthorID(db XODB, authorID int64) (*Author, error) {
 	var err error
 
 	// sql query

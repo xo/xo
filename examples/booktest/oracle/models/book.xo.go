@@ -10,11 +10,11 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    float64   `json:"book_id"`   // book_id
-	AuthorID  float64   `json:"author_id"` // author_id
+	BookID    int64     `json:"book_id"`   // book_id
+	AuthorID  int64     `json:"author_id"` // author_id
 	Isbn      string    `json:"isbn"`      // isbn
 	Title     string    `json:"title"`     // title
-	Year      float64   `json:"year"`      // year
+	Year      int64     `json:"year"`      // year
 	Available time.Time `json:"available"` // available
 	Tags      string    `json:"tags"`      // tags
 
@@ -62,7 +62,7 @@ func (b *Book) Insert(db XODB) error {
 	}
 
 	// set primary key and existence
-	b.BookID = float64(id)
+	b.BookID = int64(id)
 	b._exists = true
 
 	return nil
@@ -134,7 +134,7 @@ func (b *Book) Delete(db XODB) error {
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'sys_c0025512'.
+// Generated from foreign key 'sys_c0025674'.
 func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
@@ -142,7 +142,7 @@ func (b *Book) Author(db XODB) (*Author, error) {
 // BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
-func BooksByTitleYear(db XODB, title string, year float64) ([]*Book, error) {
+func BooksByTitleYear(db XODB, title string, year int64) ([]*Book, error) {
 	var err error
 
 	// sql query
@@ -180,8 +180,8 @@ func BooksByTitleYear(db XODB, title string, year float64) ([]*Book, error) {
 
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'sys_c0025510'.
-func BookByBookID(db XODB, bookID float64) (*Book, error) {
+// Generated from index 'sys_c0025672'.
+func BookByBookID(db XODB, bookID int64) (*Book, error) {
 	var err error
 
 	// sql query
@@ -206,7 +206,7 @@ func BookByBookID(db XODB, bookID float64) (*Book, error) {
 
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'sys_c0025511'.
+// Generated from index 'sys_c0025673'.
 func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	var err error
 

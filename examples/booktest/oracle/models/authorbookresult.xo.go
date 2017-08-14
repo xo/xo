@@ -5,12 +5,12 @@ package models
 
 // AuthorBookResult is the result of a search.
 type AuthorBookResult struct {
-	AuthorID   float64 // author_id
-	AuthorName string  // author_name
-	BookID     float64 // book_id
-	BookIsbn   string  // book_isbn
-	BookTitle  string  // book_title
-	BookTags   string  // book_tags
+	AuthorID   int64  // author_id
+	AuthorName string // author_name
+	BookID     int64  // book_id
+	BookIsbn   string // book_isbn
+	BookTitle  string // book_title
+	BookTags   string // book_tags
 }
 
 // AuthorBookResultsByTags runs a custom query, returning results as AuthorBookResult.
