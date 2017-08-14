@@ -60,8 +60,11 @@ const (
 type EscType uint
 
 const (
+	// SchemaEsc constant
 	SchemaEsc = iota
+	// TableEsc constant
 	TableEsc
+	// ColumnEsc constant
 	ColumnEsc
 )
 
