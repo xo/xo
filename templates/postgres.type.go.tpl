@@ -99,7 +99,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			XOLog(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
 			_, err = db.Exec(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
 		return err
-		{{ else }}
+		{{- else }}
 			// sql query
 			const sqlstr = `UPDATE {{ $table }} SET (` +
 				`{{ colnames .Fields .PrimaryKey.Name }}` +
@@ -111,7 +111,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 			XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
 			_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
 			return err
-		{{ end }}
+		{{- end }}
 	}
 
 	// Save saves the {{ .Name }} to the database.
@@ -185,7 +185,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		if err != nil {
 			return err
 		}
-	{{ else }} 
+	{{- else }}
 		// sql query
 		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname .PrimaryKey.Col }} = $1`
 
@@ -195,7 +195,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 		if err != nil {
 			return err
 		}
-	{{ end }}
+	{{- end }}
 
 	// set deleted
 	{{ $short }}._deleted = true
