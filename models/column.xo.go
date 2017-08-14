@@ -160,12 +160,13 @@ func OrTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 	const sqlstr = `SELECT ` +
 		`c.column_id AS field_ordinal, ` +
 		`LOWER(c.column_name) AS column_name, ` +
-		`LOWER(CASE c.data_type
-           WHEN 'CHAR' THEN 'CHAR('||c.data_length||')'
-           WHEN 'VARCHAR2' THEN 'VARCHAR2('||data_length||')'
-           WHEN 'NUMBER' THEN (CASE WHEN c.data_precision IS NULL AND c.data_scale IS NULL THEN 'NUMBER'
-                               ELSE 'NUMBER('||NVL(c.data_precision, 38)||','||NVL(c.data_scale, 0)||')' END)
-	       ELSE c.data_type END) AS data_type, ` +
+		`LOWER(CASE c.data_type ` +
+		`WHEN 'CHAR' THEN 'CHAR('||c.data_length||')' ` +
+		`WHEN 'VARCHAR2' THEN 'VARCHAR2('||data_length||')' ` +
+		`WHEN 'NUMBER' THEN ` +
+		`(CASE WHEN c.data_precision IS NULL AND c.data_scale IS NULL THEN 'NUMBER' ` +
+		`ELSE 'NUMBER('||NVL(c.data_precision, 38)||','||NVL(c.data_scale, 0)||')' END) ` +
+		`ELSE c.data_type END) AS data_type, ` +
 		`CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null, ` +
 		`COALESCE((SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END ` +
 		`FROM all_cons_columns l, all_constraints r ` +
