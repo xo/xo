@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch xo Postgres",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "remotePath": "",
+            "port": 2345,
+            "host": "127.0.0.1",
+            "program": "${workspaceRoot}",
+            "env": {},
+            "args": ["pg://xodb:xodb@localhost/xodb","-o","x","-v"],
+            "showLog": true
+        },
+        {
+            "name": "Launch xo CockroachDB",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "remotePath": "",
+            "port": 2345,
+            "host": "127.0.0.1",
+            "program": "${workspaceRoot}",
+            "env": {},
+            "args": ["cr://xo:xo@localhost:26257/xo?sslmode=disable","-o","x","-s","xo","-v"],
+            "showLog": true
+        }
+    ]
+}

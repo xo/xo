@@ -20,7 +20,7 @@ func init() {
 		ParseType:      PgParseType,
 		EnumList:       models.PgEnums,
 		EnumValueList:  models.PgEnumValues,
-		ProcList:       models.PgProcs,
+		ProcList:       PgProcs,
 		ProcParamList:  models.PgProcParams,
 		TableList:      PgTables,
 		ColumnList: func(db models.XODB, schema string, table string) ([]*models.Column, error) {
@@ -227,6 +227,28 @@ func PgQueryStrip(query []string, queryComments []string) {
 	}
 }
 
+// PgProcs returns the Postgres procs after checking whether the
+// pg_get_function_result function exits (it is missing on CockRoachDB)
+func PgProcs(db models.XODB, schema string) ([]*models.Proc, error) {
+	var err error
+	res := []*models.Proc{}
+
+	// Check if the get function result function is supported
+	funcExists, err := models.PgGetFuncResExists(db)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the results from PgProcs only if the required function exists.
+	if len(funcExists) == 1 && funcExists[0].Exists {
+		res, err = models.PgProcs(db, schema)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 // PgTables returns the Postgres tables with the manual PK information added.
 // ManualPk is true when the table does not have a sequence defined.
 func PgTables(db models.XODB, schema string, relkind string) ([]*models.Table, error) {
@@ -245,13 +267,26 @@ func PgTables(db models.XODB, schema string, relkind string) ([]*models.Table, e
 		sequences = []*models.Sequence{}
 	}
 
+	// Get the tables that alternatively have a Cockroach autoincrement defined.
+	crAutoIncrements, err := models.CrAutoIncrements(db, schema)
+	if err != nil {
+		// Set it to an empty set on error.
+		crAutoIncrements = []*models.CrAutoincrement{}
+	}
+
 	// Add information about manual FK.
 	var tables []*models.Table
 	for _, row := range rows {
 		manualPk := true
 		// Look for a match in the table name where it contains the sequence
+		// or a CockRoachDB autoincrement table.
 		for _, sequence := range sequences {
 			if sequence.TableName == row.TableName {
+				manualPk = false
+			}
+		}
+		for _, crAutoInc := range crAutoIncrements {
+			if crAutoInc.TableName == row.TableName {
 				manualPk = false
 			}
 		}
@@ -270,19 +305,20 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	var err error
 
 	// create temporary view xoid
+	// modified to create a view to be deleted as TEMPORARY isn't supported by CockroachDB
 	xoid := "_xo_" + internal.GenRandomID()
-	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
 	models.XOLog(viewq)
 	_, err = args.DB.Exec(viewq)
 	if err != nil {
 		return nil, err
 	}
 
-	// query to determine schema name where temporary view was created
+	// query to determine schema name where view was created
 	var nspq = `SELECT n.nspname ` +
 		`FROM pg_class c ` +
 		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
-		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`
+		`WHERE c.relname = $1`
 
 	// run query
 	var schema string
@@ -293,7 +329,16 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	}
 
 	// load column information
-	return models.PgTableColumns(args.DB, schema, xoid, false)
+	result, err := models.PgTableColumns(args.DB, schema, xoid, false)
+
+	// delete temporary view
+	var dropq = `DROP VIEW ` + xoid
+	models.XOLog(dropq)
+	_, err = args.DB.Exec(dropq)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
 }
 
 // PgIndexColumns returns the column list for an index.
