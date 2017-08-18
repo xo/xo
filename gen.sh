@@ -60,6 +60,15 @@ FROM pg_class s
 WHERE n.nspname = %%schema string%% AND s.relkind = 'S'
 ENDSQL
 
+# CockroachDB Autoincrement query (will be used by Postgres loader)
+COMMENT='CrAutoIncrement represents a table that has a primary key with unique_rowid() default.'
+$XOBIN $PGDB -N -M -B -T CrAutoincrement -F CrAutoIncrements -o $DEST $EXTRA << ENDSQL
+SELECT c.table_name::varchar AS table_name
+FROM information_schema.key_column_usage AS u, information_schema.columns AS c 
+WHERE c.column_name = u.column_name AND u.constraint_name = 'primary'
+ AND c.column_default = 'unique_rowid()' AND c.table_schema = %%schema string%%
+ENDSQL
+
 # postgres proc list query
 COMMENT='Proc represents a stored procedure.'
 $XOBIN $PGDB -N -M -B -T Proc -F PgProcs --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
@@ -107,7 +116,7 @@ SELECT
 FROM pg_attribute a
   JOIN ONLY pg_class c ON c.oid = a.attrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
-  LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype = 'p'
+  LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype IN('p', 'u')
   LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum
 WHERE a.attisdropped = false AND n.nspname = %%schema string%% AND c.relname = %%table string%% AND (%%sys bool%% OR a.attnum > 0)
 ORDER BY a.attnum
@@ -152,7 +161,7 @@ FROM pg_index i
   JOIN ONLY pg_class c ON c.oid = i.indrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
-WHERE i.indkey <> '0' AND n.nspname = %%schema string%% AND c.relname = %%table string%%
+WHERE 0 != any(i.indkey) AND n.nspname = %%schema string%% AND c.relname = %%table string%%
 ENDSQL
 
 # postgres index column list query
@@ -167,7 +176,7 @@ FROM pg_index i
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
   LEFT JOIN pg_attribute a ON i.indrelid = a.attrelid AND a.attnum = ANY(i.indkey) AND a.attisdropped = false
-WHERE i.indkey <> '0' AND n.nspname = %%schema string%% AND ic.relname = %%index string%%
+WHERE 0 != any(i.indkey) AND n.nspname = %%schema string%% AND ic.relname = %%index string%%
 ENDSQL
 
 # postgres index column order query
@@ -180,6 +189,11 @@ FROM pg_index i
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
 WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
+ENDSQL
+
+# postgres get function result exists query
+$XOBIN $PGDB -N -M -B -T PgGetFuncResExist -F PgGetFuncResExists -o $DEST $EXTRA << ENDSQL
+SELECT EXISTS (SELECT * FROM pg_proc WHERE proname = 'pg_get_function_result')
 ENDSQL
 
 # mysql enum list query
