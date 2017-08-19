@@ -5,12 +5,12 @@ cockroach start --insecure --store=booktest --host=localhost --background
 
 cockroach user set booktest --insecure
 
-cockroach sql --insecure -e 'CREATE DATABASE booktest'
+cockroach sql --insecure -e 'CREATE DATABASE public'
 
-cockroach sql --insecure -e 'GRANT ALL ON DATABASE booktest TO booktest'
+cockroach sql --insecure -e 'GRANT ALL ON DATABASE public TO booktest'
 
 #SEED THE DB WITH TABLES:
-cockroach sql --url="postgresql://booktest@localhost:26257/booktest?sslmode=disable" << 'ENDSQL'
+cockroach sql --url="postgresql://booktest@localhost:26257/public?sslmode=disable" << 'ENDSQL'
 
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS authors CASCADE;
@@ -56,11 +56,11 @@ mkdir -p $DEST
 rm -f $DEST/*.go
 rm -f $SRC/postgres
 
-$XOBIN CR:booktest:booktest@localhost:26257/booktest?sslmode=disable $EXTRA -o $DEST -s booktest
+$XOBIN CR:booktest:booktest@localhost:26257/public?sslmode=disable -o $DEST
 
 pushd $SRC &> /dev/null
 
 go build
 ./cockroachdb $EXTRA
 
-cockroach sql --insecure -e 'set database = booktest; select * from books;'
+cockroach sql --insecure -e 'set database = public; select * from books;'

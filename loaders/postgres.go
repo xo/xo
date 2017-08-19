@@ -305,19 +305,20 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	var err error
 
 	// create temporary view xoid
+	// modified to create a view to be deleted as TEMPORARY isn't supported by CockroachDB
 	xoid := "_xo_" + internal.GenRandomID()
-	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
+	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
 	models.XOLog(viewq)
 	_, err = args.DB.Exec(viewq)
 	if err != nil {
 		return nil, err
 	}
 
-	// query to determine schema name where temporary view was created
+	// query to determine schema name where view was created
 	var nspq = `SELECT n.nspname ` +
 		`FROM pg_class c ` +
 		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
-		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`
+		`WHERE c.relname = $1`
 
 	// run query
 	var schema string
@@ -328,7 +329,16 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	}
 
 	// load column information
-	return models.PgTableColumns(args.DB, schema, xoid, false)
+	result, err := models.PgTableColumns(args.DB, schema, xoid, false)
+
+	// delete temporary view
+	var dropq = `DROP VIEW ` + xoid
+	models.XOLog(dropq)
+	_, err = args.DB.Exec(dropq)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
 }
 
 // PgIndexColumns returns the column list for an index.

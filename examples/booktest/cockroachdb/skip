@@ -1,1 +1,0 @@
-Skip the cockroachdb tests for now. Can run the gen.sh in this folder to generate the schema.
