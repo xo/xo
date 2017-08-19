@@ -56,13 +56,11 @@ mkdir -p $DEST
 rm -f $DEST/*.go
 rm -f $SRC/postgres
 
-$XOBIN CR:booktest:booktest@localhost:26257/booktest?sslmode=disable -o $DEST -s booktest -j $EXTRA
+$XOBIN CR:booktest:booktest@localhost:26257/booktest?sslmode=disable $EXTRA -o $DEST -s booktest
 
 pushd $SRC &> /dev/null
 
 go build
-#./cockroachdb $EXTRA
+./cockroachdb $EXTRA
 
-#popd &> /dev/null
-
-#cockroach sql --insecure -e 'select * from books;'
+cockroach sql --insecure -e 'set database = booktest; select * from books;'

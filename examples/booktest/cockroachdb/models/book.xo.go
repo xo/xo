@@ -170,10 +170,10 @@ func (b *Book) Author(db XODB) (*Author, error) {
 	return AuthorByAuthorID(db, b.AuthorID)
 }
 
-// BooksByAutoIndexFkAuthorIDRefAuthors retrieves a row from 'booktest.books' as a Book.
+// BooksByAuthorID retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_auto_index_fk_author_id_ref_authors'.
-func BooksByAutoIndexFkAuthorIDRefAuthors(db XODB, authorID int64) ([]*Book, error) {
+func BooksByAuthorID(db XODB, authorID int64) ([]*Book, error) {
 	var err error
 
 	// sql query
@@ -235,10 +235,10 @@ func BookByIsbn(db XODB, isbn string) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByTitleLower retrieves a row from 'booktest.books' as a Book.
+// BooksByTitle retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_lower_idx'.
-func BooksByTitleLower(db XODB, title string) ([]*Book, error) {
+func BooksByTitle(db XODB, title string) ([]*Book, error) {
 	var err error
 
 	// sql query
@@ -313,10 +313,10 @@ func BooksByTitleYear(db XODB, title string, year int64) ([]*Book, error) {
 	return res, nil
 }
 
-// BookByPrimary retrieves a row from 'booktest.books' as a Book.
+// BookByAuthorID retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'primary'.
-func BookByPrimary(db XODB, authorID int64) (*Book, error) {
+func BookByAuthorID(db XODB, authorID int64) (*Book, error) {
 	var err error
 
 	// sql query

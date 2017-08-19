@@ -193,10 +193,10 @@ func AuthorsByName(db XODB, name string) ([]*Author, error) {
 	return res, nil
 }
 
-// AuthorByPrimary retrieves a row from 'booktest.authors' as a Author.
+// AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
 // Generated from index 'primary'.
-func AuthorByPrimary(db XODB, authorID int64) (*Author, error) {
+func AuthorByAuthorID(db XODB, authorID int64) (*Author, error) {
 	var err error
 
 	// sql query
