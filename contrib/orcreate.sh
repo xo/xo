@@ -2,7 +2,7 @@
 
 USER=system
 PASS=oracle
-SVC=xe.oracle.docker
+SVC=xe
 HOST=$(docker port orcl 1521)
 
 NAME=$1

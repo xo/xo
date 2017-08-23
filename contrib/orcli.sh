@@ -7,7 +7,7 @@ HOST=$(docker port orcl 1521)
 USER=$1
 PASS=$2
 
-SVC=xe.oracle.docker
+SVC=xe
 
 if [ -z "$USER" ]; then
   USER=system

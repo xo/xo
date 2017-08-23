@@ -107,7 +107,7 @@ port. Additionally, each database needs a user named `booktest` with password
 script also expects the database to be named `booktest` and owned by the
 `booktest` user.
 
-Oracle will connect to the service name `xe.oracle.docker`, which is the
+Oracle will connect to the service name `xe`, which is the
 default service name used by the Docker [sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/)
 image. SQLite3 will use the regular file `booktest.sqlite3`.
 
@@ -215,7 +215,7 @@ select * from books;
 
 
 ------------------------------------------------------
-oracle='oracle://booktest:booktest@localhost/xe.oracle.docker'
+oracle='oracle://booktest:booktest@localhost/xe'
 
 sourcing oracle/pre
 DROP
@@ -223,15 +223,15 @@ DROP
 DROP
 DROP
 
-usql oracle://booktest:booktest@localhost/xe.oracle.docker -f oracle/schema.sql
+usql oracle://booktest:booktest@localhost/xe -f oracle/schema.sql
 CREATE
 CREATE
 CREATE
 CREATE
 
-xo oracle://booktest:booktest@localhost/xe.oracle.docker -o oracle/models
+xo oracle://booktest:booktest@localhost/xe -o oracle/models
 
-xo oracle://booktest:booktest@localhost/xe.oracle.docker -o oracle/models < oracle/custom-query.xo.sql
+xo oracle://booktest:booktest@localhost/xe -o oracle/models < oracle/custom-query.xo.sql
 
 go build -o booktest-oracle ./oracle/
 
