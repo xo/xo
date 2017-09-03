@@ -1,10 +1,10 @@
 #!/bin/bash
 
-PGDB=pg://xodb:xodb@localhost/xodb
-MYDB=my://xodb:xodb@localhost/xodb
-MSDB=ms://xodb:xodb@localhost/xodb
+PGDB=pg://xodb:xodb@postgres/xodb?sslmode=disable
+MYDB=my://xodb:xodb@mysql/xodb
+MSDB=ms://sa:P@55w0rd@mssql/master
 SQDB=sq:xodb.sqlite3
-ORDB=or://xodb:xodb@localhost/xe
+ORDB=or://system:oracle@oracle/xe
 
 DEST=$1
 

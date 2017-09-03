@@ -1,6 +1,6 @@
 # pkg-config file for Ubuntu/Debian when using alien to install
 # oracle-instantclient-{basic,devel,sqlplus}-*.rpm
-prefix=/usr
+prefix=/usr/local/oracle
 
 version=12.1
 build=client64
