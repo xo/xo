@@ -695,11 +695,16 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 				generatedFunctions[newIndex.FuncName] = true
 			}
 
+			uniqueIndex := newIndex.Index.IsUnique
+			newIndex.Index.IsUnique = false
+
 			// We can now generate the function for this new index
 			err = args.ExecuteTemplate(IndexTemplate, newIndex.Type.Name, newIndex.Index.IndexName, newIndex)
 			if err != nil {
 				return nil, err
 			}
+
+			newIndex.Index.IsUnique = uniqueIndex
 		}
 
 		// We make sure not to generate twice the same function
