@@ -9,8 +9,8 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/knq/snaker"
-	"github.com/knq/xo/internal"
-	"github.com/knq/xo/models"
+	"github.com/hunter-io/xo/internal"
+	"github.com/hunter-io/xo/models"
 )
 
 func init() {

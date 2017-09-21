@@ -185,7 +185,7 @@ $ cd $GOPATH/src/path/to/my/project
 $ mkdir -p templates
 
 # copy xo templates for postgres
-$ cp "$GOPATH/src/github.com/knq/xo/templates/*" templates/
+$ cp "$GOPATH/src/github.com/hunter-io/xo/templates/*" templates/
 
 # remove xo binary data
 $ rm templates/*.go
@@ -364,7 +364,7 @@ $ cd $GOPATH/src/path/to/project
 
 $ mkdir -p templates
 
-$ cp $GOPATH/src/github.com/knq/xo/templates/* templates/
+$ cp $GOPATH/src/github.com/hunter-io/xo/templates/* templates/
 ```
 
 We can now modify the templates to suit our specific schema, adding lookups,
@@ -513,7 +513,7 @@ $ sudo alien -i oracle-instantclient-12.1-sqlplus-*.rpm
 $ go get -u github.com/knq/xo
 
 # copy oci8.pc from xo/contrib to system pkg-config directory
-$ sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+$ sudo cp $GOPATH/src/github.com/hunter-io/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
 # install rana's ora driver
 $ go get -u gopkg.in/rana/ora.v4

@@ -11,7 +11,7 @@ import (
 	"github.com/knq/dburl"
 	"github.com/knq/xoutil"
 
-	"github.com/knq/xo/examples/booktest/sqlite3/models"
+	"github.com/hunter-io/xo/examples/booktest/sqlite3/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
