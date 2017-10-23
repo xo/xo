@@ -40,10 +40,10 @@ $ go get -u golang.org/x/tools/cmd/goimports
 Then, install in the usual Go way:
 
 ```sh
-$ go get -u github.com/codercom/xo
+$ go get -u github.com/knq/xo
 
 # install with oracle support (see notes below)
-$ go get -tags oracle -u github.com/codercom/xo
+$ go get -tags oracle -u github.com/knq/xo
 ```
 
 **_NOTE:_** Go 1.6+ is needed for installing `xo` from source, as it makes use
@@ -185,7 +185,7 @@ $ cd $GOPATH/src/path/to/my/project
 $ mkdir -p templates
 
 # copy xo templates for postgres
-$ cp "$GOPATH/src/github.com/codercom/xo/templates/*" templates/
+$ cp "$GOPATH/src/github.com/knq/xo/templates/*" templates/
 
 # remove xo binary data
 $ rm templates/*.go
@@ -364,7 +364,7 @@ $ cd $GOPATH/src/path/to/project
 
 $ mkdir -p templates
 
-$ cp $GOPATH/src/github.com/codercom/xo/templates/* templates/
+$ cp $GOPATH/src/github.com/knq/xo/templates/* templates/
 ```
 
 We can now modify the templates to suit our specific schema, adding lookups,
@@ -490,7 +490,7 @@ according to the installation instructions, you can simply pass `-tags oracle`
 to `go get`, `go install` or `go build` to enable Oracle support:
 
 ```sh
-$ go get -tags oracle -u github.com/codercom/xo
+$ go get -tags oracle -u github.com/knq/xo
 ```
 
 #### Installing Oracle instantclient on Debian/Ubuntu
@@ -510,16 +510,16 @@ $ sudo alien -i oracle-instantclient-12.1-devel-*.rpm
 $ sudo alien -i oracle-instantclient-12.1-sqlplus-*.rpm
 
 # get xo
-$ go get -u github.com/codercom/xo
+$ go get -u github.com/knq/xo
 
 # copy oci8.pc from xo/contrib to system pkg-config directory
-$ sudo cp $GOPATH/src/github.com/codercom/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+$ sudo cp $GOPATH/src/github.com/knq/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
 # install rana's ora driver
 $ go get -u gopkg.in/rana/ora.v4
 
 # assuming the above succeeded, install xo with oracle support enabled
-$ go install -tags oracle github.com/codercom/xo
+$ go install -tags oracle github.com/knq/xo
 ```
 
 #### Contrib Scripts and Oracle Docker Image
