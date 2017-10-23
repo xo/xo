@@ -6,7 +6,7 @@ package ischema
 import (
 	"database/sql"
 
-	"github.com/knq/xo/examples/pgcatalog/pgtypes"
+	"github.com/codercom/xo/examples/pgcatalog/pgtypes"
 )
 
 // PgForeignTableColumn represents a row from 'information_schema._pg_foreign_table_columns'.

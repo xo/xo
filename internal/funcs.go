@@ -5,8 +5,9 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gedex/inflector"
 	"github.com/knq/snaker"
-	"github.com/knq/xo/models"
+	"github.com/codercom/xo/models"
 )
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
@@ -32,6 +33,13 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hascolumn":          a.hascolumn,
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
+		"cameltosnake":       snaker.CamelToSnake,
+		"snaketocamel":       snaker.SnakeToCamel,
+		"pluralize":          inflector.Pluralize,
+		"singularize":        inflector.Singularize,
+		"toupper":            strings.ToUpper,
+		"tolower":            strings.ToLower,
+		"totitle":            strings.Title,
 	}
 }
 
