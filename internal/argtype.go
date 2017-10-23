@@ -120,6 +120,11 @@ type ArgType struct {
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
 
+	// DefinesGlob is a Go compatible glob pointing to files to be Parsed
+	// containing template define blocks. These blocks will be made available
+	// when executing top-level templates.
+	DefinesGlob string `arg:"--defines-glob,help:user supplied glob of template files containing block defines"`
+
 	// Tags is the list of build tags to add to generated Go files.
 	Tags string `arg:"--tags,help:build tags to add to package header"`
 

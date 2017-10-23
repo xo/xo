@@ -28,6 +28,7 @@ func (a *ArgType) TemplateSet() *TemplateSet {
 			funcs: a.NewTemplateFuncs(),
 			l:     a.TemplateLoader,
 			tpls:  map[string]*template.Template{},
+			glob:  a.DefinesGlob,
 		}
 	}
 
@@ -80,6 +81,7 @@ type TemplateSet struct {
 	funcs template.FuncMap
 	l     func(string) ([]byte, error)
 	tpls  map[string]*template.Template
+	glob  string
 }
 
 // Execute executes a specified template in the template set using the supplied
@@ -97,6 +99,13 @@ func (ts *TemplateSet) Execute(w io.Writer, name string, obj interface{}) error 
 		tpl, err = template.New(name).Funcs(ts.funcs).Parse(string(buf))
 		if err != nil {
 			return err
+		}
+
+		if ts.glob != "" {
+			tpl, err = tpl.ParseGlob(ts.glob)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
