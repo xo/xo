@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -117,8 +117,8 @@ func processArgs(args *internal.ArgType) error {
 			args.Path = args.Out
 		} else if err == nil && !fi.IsDir() {
 			// file exists (will truncate later)
-			args.Path = path.Dir(args.Out)
-			args.Filename = path.Base(args.Out)
+			args.Path = filepath.Dir(args.Out)
+			args.Filename = filepath.Base(args.Out)
 
 			// error if not split was set, but destination is not a directory
 			if !args.SingleFile {
@@ -126,8 +126,8 @@ func processArgs(args *internal.ArgType) error {
 			}
 		} else if _, ok := err.(*os.PathError); ok {
 			// path error (ie, file doesn't exist yet)
-			args.Path = path.Dir(args.Out)
-			args.Filename = path.Base(args.Out)
+			args.Path = filepath.Dir(args.Out)
+			args.Filename = filepath.Base(args.Out)
 
 			// error if split was set, but dest doesn't exist
 			if !args.SingleFile {
@@ -155,7 +155,7 @@ func processArgs(args *internal.ArgType) error {
 
 	// determine package name
 	if args.Package == "" {
-		args.Package = path.Base(args.Path)
+		args.Package = filepath.Base(args.Path)
 	}
 
 	// determine filename if not previously set
@@ -248,7 +248,7 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	if args.SingleFile {
 		filename = args.Filename
 	}
-	filename = path.Join(args.Path, filename)
+	filename = pathpath.Join(args.Path, filename)
 
 	// lookup file
 	f, ok := files[filename]

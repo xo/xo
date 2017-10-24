@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"text/template"
 
 	templates "github.com/knq/xo/tplbin"
@@ -18,7 +18,7 @@ func (a *ArgType) TemplateLoader(name string) ([]byte, error) {
 		return templates.Asset(name)
 	}
 
-	return ioutil.ReadFile(path.Join(a.TemplatePath, name))
+	return ioutil.ReadFile(filepath.Join(a.TemplatePath, name))
 }
 
 // TemplateSet retrieves the created template set.
