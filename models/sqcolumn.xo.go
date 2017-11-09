@@ -5,6 +5,7 @@ package models
 
 import (
 	"database/sql"
+	"strings"
 )
 
 // SqColumn represents a row from '[custom sq_column]'.
@@ -32,6 +33,8 @@ func SqTableColumns(db XODB, table string) ([]*SqColumn, error) {
 	}
 	defer q.Close()
 
+	var pks []*SqColumn
+
 	// load results
 	res := []*SqColumn{}
 	for q.Next() {
@@ -43,7 +46,28 @@ func SqTableColumns(db XODB, table string) ([]*SqColumn, error) {
 			return nil, err
 		}
 
+		if sc.PkColIndex > 0 {
+			pks = append(pks, &sc)
+		}
+
 		res = append(res, &sc)
+	}
+
+	// if there's a single primary key which is INTEGER in a rowid table, it's an alias for rowid thus not null.
+	if len(pks) != 1 {
+		return res, nil
+	}
+	pk := pks[0]
+
+	// if it's a WITHOUT ROWID table, this will fail.
+	q, err = db.Query("SELECT ROWID FROM " + table + " LIMIT 1")
+	if err != nil {
+		return res, nil
+	}
+	defer q.Close()
+
+	if strings.EqualFold(pk.DataType, "INTEGER") {
+		pk.NotNull = true
 	}
 
 	return res, nil
