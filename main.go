@@ -211,7 +211,7 @@ func openDB(args *internal.ArgType) error {
 	// parse dsn
 	u, err := dburl.Parse(args.DSN)
 	if err != nil {
-		return err
+		return fmt.Errorf("%v: %q", err, args.DSN)
 	}
 
 	// save driver type
@@ -221,7 +221,11 @@ func openDB(args *internal.ArgType) error {
 	var ok bool
 	args.Loader, ok = internal.SchemaLoaders[u.Driver]
 	if !ok {
-		return errors.New("unsupported database type")
+		keys := make([]string, 0, len(internal.SchemaLoaders))
+		for k := range internal.SchemaLoaders {
+			keys = append(keys, k)
+		}
+		return fmt.Errorf("unsupported database type %q (available: %q)", u.Driver, keys)
 	}
 
 	// open database connection

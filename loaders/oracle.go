@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	internal.SchemaLoaders["ora"] = internal.TypeLoader{
+	internal.SchemaLoaders["goracle"] = internal.TypeLoader{
 		ParamN:         func(i int) string { return fmt.Sprintf(":%d", i+1) },
 		MaskFunc:       func() string { return ":%d" },
 		ProcessRelkind: OrRelkind,
