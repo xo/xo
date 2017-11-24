@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	_ "gopkg.in/rana/ora.v4"
+	_ "gopkg.in/goracle.v2"
 
 	"github.com/knq/xo/internal"
 	"github.com/knq/xo/models"
