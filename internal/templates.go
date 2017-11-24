@@ -55,11 +55,12 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 	// build template name
 	loaderType := ""
 	if tt != XOTemplate {
-		if a.LoaderType == "oci8" || a.LoaderType == "ora" {
+		switch a.LoaderType {
+		case "oci8", "ora", "goracle":
 			// force oracle for oci8 since the oracle driver doesn't recognize
 			// 'oracle' as valid protocol
 			loaderType = "oracle."
-		} else {
+		default:
 			loaderType = a.LoaderType + "."
 		}
 	}
