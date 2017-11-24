@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "gopkg.in/rana/ora.v4"
+	_ "gopkg.in/goracle.v2"
 
 	"github.com/knq/dburl"
 
