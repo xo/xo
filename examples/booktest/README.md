@@ -42,7 +42,7 @@ demonstration of `xo`'s feature support for each database.
 ## Generating database models with gen.sh
 
 This directory contains [`gen.sh`](gen.sh), a script that uses
-[usql](https://github.com/knq/usql) to execute `<database>/schema.sql` against
+[usql](https://github.com/xo/usql) to execute `<database>/schema.sql` against
 the database URL found in `<database>/config`.
 
 `gen.sh` then uses `xo` to generate each databases' `<database>/models`
@@ -80,10 +80,10 @@ If you have not already installed `usql`, you may install it in the usual Go
 fashion:
 
 ```sh
-$ go get -u github.com/knq/usql
+$ go get -u github.com/xo/usql
 
 # install with oracle support
-$ go get -tags oracle -u github.com/knq/usql
+$ go get -tags oracle -u github.com/xo/usql
 ```
 
 ### Skipping databases

@@ -16,12 +16,12 @@ import (
 
 	"github.com/alexflint/go-arg"
 
-	"github.com/knq/dburl"
-	"github.com/knq/xo/internal"
-	"github.com/knq/xo/models"
+	"github.com/xo/dburl"
+	"github.com/xo/xo/internal"
+	"github.com/xo/xo/models"
 
-	_ "github.com/knq/xo/loaders"
-	_ "github.com/knq/xoutil"
+	_ "github.com/xo/xo/loaders"
+	_ "github.com/xo/xoutil"
 )
 
 func main() {
