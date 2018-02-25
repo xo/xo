@@ -284,6 +284,7 @@ func MyQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	xoid := "_xo_" + internal.GenRandomID()
 	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
 	viewq = strings.Replace(viewq, "\nLIMIT NULL", "\nLIMIT 0", -1)
+	viewq = strings.Replace(viewq, "\nOFFSET NULL", "\nOFFSET 0", -1)
 	models.XOLog(viewq)
 	_, err = args.DB.Exec(viewq)
 	if err != nil {
