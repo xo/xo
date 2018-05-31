@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -662,10 +663,22 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 		}
 	}
 
+	// As maps don't guarantee order we have to use a sorted slice to get
+	// the functions generated in the same order each time.
+	var indices []Index
+
+	for _, i := range ixMap {
+		indices = append(indices, *i)
+	}
+
+	sort.Slice(indices, func(i, j int) bool {
+		return indices[i].FuncName > indices[j].FuncName
+	})
+
 	generatedFunctions := make(map[string]bool)
 
 	// generate templates
-	for _, ix := range ixMap {
+	for _, ix := range indices {
 		// Some index are on multiple columns and we want to create multiple functions
 		// for them. For example, an index on company_id + employee_id (in this order)
 		// should lead to a function to search by company_id and another to search
