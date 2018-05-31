@@ -8,9 +8,9 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/hunter-io/xo/internal"
+	"github.com/hunter-io/xo/models"
 	"github.com/knq/snaker"
-	"github.com/knq/xo/internal"
-	"github.com/knq/xo/models"
 )
 
 func init() {
@@ -97,7 +97,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		}
 	case "integer":
 		nilVal = "0"
-		typ = args.Int32Type
+		typ = "int64"
 		if nullable {
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"

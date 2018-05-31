@@ -10,7 +10,7 @@ import (
 
 	"github.com/knq/dburl"
 
-	"github.com/knq/xo/examples/booktest/oracle/models"
+	"github.com/hunter-io/xo/examples/booktest/oracle/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

@@ -3,12 +3,13 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/gedex/inflector"
 
+	"github.com/hunter-io/xo/models"
 	"github.com/knq/snaker"
-	"github.com/knq/xo/models"
 )
 
 // Loader is the common interface for database drivers that can generate code
@@ -662,8 +663,70 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 		}
 	}
 
+	// As maps don't guarantee order we have to use a sorted slice to get
+	// the functions generated in the same order each time.
+	var indices []Index
+
+	for _, i := range ixMap {
+		indices = append(indices, *i)
+	}
+
+	sort.Slice(indices, func(i, j int) bool {
+		return indices[i].FuncName > indices[j].FuncName
+	})
+
+	generatedFunctions := make(map[string]bool)
+
 	// generate templates
-	for _, ix := range ixMap {
+	for _, ix := range indices {
+		// Some index are on multiple columns and we want to create multiple functions
+		// for them. For example, an index on company_id + employee_id (in this order)
+		// should lead to a function to search by company_id and another to search
+		// by employee_id.
+
+		for i := 1; i <= len(ix.Fields)-1; i++ {
+			newIndex := &Index{
+				Schema:   ix.Schema,
+				Comment:  ix.Comment,
+				Type:     ix.Type,
+				Fields:   ix.Fields,
+				FuncName: ix.FuncName,
+				Index:    ix.Index,
+			}
+
+			for j := 0; j < i; j++ {
+				// We must fix the name of the function and remove the unused field.
+				lastItem := newIndex.Fields[len(newIndex.Fields)-1]
+				newIndex.FuncName = newIndex.FuncName[:len(newIndex.FuncName)-len(lastItem.Name)]
+				newIndex.Fields = newIndex.Fields[:len(newIndex.Fields)-1]
+			}
+
+			// We make sure not to generate twice the same function
+			if generatedFunctions[newIndex.FuncName] {
+				continue
+			} else {
+				generatedFunctions[newIndex.FuncName] = true
+			}
+
+			uniqueIndex := newIndex.Index.IsUnique
+			newIndex.Index.IsUnique = false
+
+			// We can now generate the function for this new index
+			err = args.ExecuteTemplate(IndexTemplate, newIndex.Type.Name, newIndex.Index.IndexName, newIndex)
+			if err != nil {
+				return nil, err
+			}
+
+			newIndex.Index.IsUnique = uniqueIndex
+		}
+
+		// We make sure not to generate twice the same function
+		if generatedFunctions[ix.FuncName] {
+			continue
+		} else {
+			generatedFunctions[ix.FuncName] = true
+		}
+
 		err = args.ExecuteTemplate(IndexTemplate, ix.Type.Name, ix.Index.IndexName, ix)
 		if err != nil {
 			return nil, err
