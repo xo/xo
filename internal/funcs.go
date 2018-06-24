@@ -6,7 +6,8 @@ import (
 	"text/template"
 
 	"github.com/knq/snaker"
-	"github.com/knq/xo/models"
+
+	"github.com/xo/xo/models"
 )
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.

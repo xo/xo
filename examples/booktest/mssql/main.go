@@ -8,9 +8,9 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
-	"github.com/knq/dburl"
+	"github.com/xo/dburl"
 
-	"github.com/knq/xo/examples/booktest/mssql/models"
+	"github.com/xo/xo/examples/booktest/mssql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
