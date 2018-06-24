@@ -5,6 +5,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/knq/snaker"
 
 	"github.com/xo/xo/models"
@@ -12,7 +13,7 @@ import (
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
 func (a *ArgType) NewTemplateFuncs() template.FuncMap {
-	return template.FuncMap{
+	funcs := template.FuncMap{
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
 		"colnamesmulti":      a.colnamesmulti,
@@ -34,6 +35,12 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
 	}
+	for k, v := range sprig.FuncMap() {
+		if _, exists := funcs[k]; !exists {
+			funcs[k] = v
+		}
+	}
+	return funcs
 }
 
 // retype checks typ against known types, and prefixing
