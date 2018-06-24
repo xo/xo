@@ -8,14 +8,14 @@ import (
 	"regexp"
 	"strings"
 
-	_ "gopkg.in/rana/ora.v4"
+	_ "gopkg.in/goracle.v2"
 
 	"github.com/xo/xo/internal"
 	"github.com/xo/xo/models"
 )
 
 func init() {
-	internal.SchemaLoaders["ora"] = internal.TypeLoader{
+	internal.SchemaLoaders["goracle"] = internal.TypeLoader{
 		ParamN:         func(i int) string { return fmt.Sprintf(":%d", i+1) },
 		MaskFunc:       func() string { return ":%d" },
 		ProcessRelkind: OrRelkind,
