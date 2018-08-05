@@ -83,3 +83,41 @@ func MyProcs(db XODB, schema string) ([]*Proc, error) {
 
 	return res, nil
 }
+
+// OrProcs runs a custom query, returning results as Proc.
+func OrProcs(db XODB, schema string) ([]*Proc, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`NVL2(A.package_name, A.package_name||'.', '')||A.object_name proc_name, ` +
+		`(SELECT MIN(X.data_type) FROM all_arguments X ` +
+		`WHERE X.owner = A.owner AND X.object_id = A.object_id AND ` +
+		`X.position = 0) return_type ` +
+		`FROM all_arguments A ` +
+		`WHERE A.owner = :1`
+
+	// run query
+	XOLog(sqlstr, schema)
+	q, err := db.Query(sqlstr, schema)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Proc{}
+	for q.Next() {
+		p := Proc{}
+
+		// scan
+		err = q.Scan(&p.ProcName, &p.ReturnType)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &p)
+	}
+
+	return res, nil
+}

@@ -1,10 +1,19 @@
 #!/bin/bash
 
-PGDB=pg://xodb:xodb@localhost/xodb
-MYDB=my://xodb:xodb@localhost/xodb
-MSDB=ms://xodb:xodb@localhost/xodb
-SQDB=sq:xodb.sqlite3
-ORDB=or://xodb:xodb@localhost/xe
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
+PGDB="$(trim "${PGDB:-pg://xodb:xodb@localhost/xodb}")"
+MYDB="$(trim "${MYDB:-my://xodb:xodb@localhost/xodb}")"
+MSDB="$(trim "${MSDB:-ms://xodb:xodb@localhost/xodb}")"
+SQDB="$(trim "${SQDB:-sq:xodb.sqlite3}")"
+ORDB="$(trim "${ORDB:-or://xodb:xodb@localhost/xe}")"
 
 DEST=$1
 
@@ -25,6 +34,8 @@ mkdir -p $DEST
 rm -f *.sqlite3
 rm -rf $DEST/*.xo.go
 
+if [ -n "$PGDB" ]; then
+	echo "PGDB=$PGDB"
 # postgres enum list query
 COMMENT='Enum represents a enum.'
 $XOBIN $PGDB -N -M -B -T Enum -F PgEnums --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
@@ -181,7 +192,9 @@ FROM pg_index i
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
 WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
 ENDSQL
+fi
 
+if [ -n "$MYDB" ]; then
 # mysql enum list query
 $XOBIN $MYDB -a -N -M -B -T Enum -F MyEnums -o $DEST $EXTRA << ENDSQL
 SELECT
@@ -277,7 +290,9 @@ FROM information_schema.statistics
 WHERE index_schema = %%schema string%% AND table_name = %%table string%% AND index_name = %%index string%%
 ORDER BY seq_in_index
 ENDSQL
+fi
 
+if [ -n "$SQDB" ]; then
 # sqlite autoincrement query
 $XOBIN $SQDB -N -M -B -T SqAutoIncrement -F SqAutoIncrements -o $DEST $EXTRA << ENDSQL
 SELECT
@@ -318,7 +333,9 @@ FIELDS='SeqNo int,Cid int,ColumnName string'
 $XOBIN $SQDB -a -I -N -M -B -T IndexColumn -F SqIndexColumns -Z "$FIELDS" -o $DEST $EXTRA << ENDSQL
 PRAGMA index_info(%%index string,interpolate%%)
 ENDSQL
+fi
 
+if [ -n "$MSDB" ]; then
 # mssql identity table list query
 $XOBIN $MSDB -N -M -B -T MsIdentity -F MsIdentities -o $DEST $EXTRA << ENDSQL
 SELECT o.name as table_name
@@ -398,18 +415,38 @@ FROM sysindexes i
 WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%% AND i.name = %%index string%%
 ORDER BY k.keyno
 ENDSQL
+fi
 
+if [ -n "$ORDB" ]; then
 # oracle proc list query
-#$XOBIN $ORDB -a -N -M -B -T Proc -F OrProcs -o $DEST $EXTRA << ENDSQL
-#SELECT
-#  object_name
-#FROM
-#ENDSQL
+$XOBIN $ORDB -a -N -M -B -T Proc -F OrProcs -o $DEST $EXTRA << ENDSQL
+SELECT
+	NVL2(A.package_name, A.package_name||'.', '')||A.object_name proc_name,
+	(SELECT MIN(X.data_type) FROM all_arguments X
+	   WHERE X.owner = A.owner AND X.object_id = A.object_id AND
+	         X.position = 0) return_type
+FROM all_arguments A
+WHERE A.owner = %%schema string%%
+ENDSQL
 
 # oracle proc parameter list query
-#$XOBIN $ORDB -a -N -M -B -T ProcParam -F OrProcParams -o $DEST $EXTRA << ENDSQL
-#SELECT
-#ENDSQL
+$XOBIN $ORDB -a -N -M -B -T ProcParam -F OrProcParams -o $DEST $EXTRA << ENDSQL
+SELECT
+  LOWER(CASE
+  WHEN A.data_type LIKE '%CHAR%' THEN A.data_type||'('||A.data_length||')'
+  WHEN A.data_type = 'NUMBER' THEN
+    (CASE WHEN A.data_precision IS NULL AND A.data_scale IS NULL THEN 'NUMBER'
+          ELSE 'NUMBER('||NVL(A.data_precision, 38)||','||NVL(A.data_scale, 0)||')' END)
+  ELSE A.data_type END) AS param_type
+  --other types?
+  --argument name?
+  --in, out, inout?
+  --default?
+FROM all_arguments A
+WHERE A.owner = %%schema string%% AND
+      A.package_name||'.'||A.object_name = %%proc string%%
+ORDER BY A.sequence
+ENDSQL
 
 # oracle table list query
 $XOBIN $ORDB -a -N -M -B -T Table -F OrTables -o $DEST $EXTRA << ENDSQL
@@ -477,3 +514,4 @@ FROM all_ind_columns
 WHERE index_owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%) AND index_name = UPPER(%%index string%%)
 ORDER BY column_position
 ENDSQL
+fi

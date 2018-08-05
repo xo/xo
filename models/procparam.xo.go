@@ -79,3 +79,49 @@ func MyProcParams(db XODB, schema string, proc string) ([]*ProcParam, error) {
 
 	return res, nil
 }
+
+// OrProcParams runs a custom query, returning results as ProcParam.
+func OrProcParams(db XODB, schema string, proc string) ([]*ProcParam, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`LOWER(CASE ` +
+		`WHEN A.data_type LIKE '%CHAR%' THEN A.data_type||'('||A.data_length||')' ` +
+		`WHEN A.data_type = 'NUMBER' THEN ` +
+		`(CASE WHEN A.data_precision IS NULL AND A.data_scale IS NULL THEN 'NUMBER' ` +
+		`ELSE 'NUMBER('||NVL(A.data_precision, 38)||','||NVL(A.data_scale, 0)||')' END) ` +
+		`ELSE A.data_type END) AS param_type ` +
+		`--other types? ` +
+		`--argument name? ` +
+		`--in, out, inout? ` +
+		`--default? ` +
+		`FROM all_arguments A ` +
+		`WHERE A.owner = :1 AND ` +
+		`A.package_name||'.'||A.object_name = :2 ` +
+		`ORDER BY A.sequence`
+
+	// run query
+	XOLog(sqlstr, schema, proc)
+	q, err := db.Query(sqlstr, schema, proc)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*ProcParam{}
+	for q.Next() {
+		pp := ProcParam{}
+
+		// scan
+		err = q.Scan(&pp.ParamType)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &pp)
+	}
+
+	return res, nil
+}
