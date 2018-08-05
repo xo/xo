@@ -201,6 +201,9 @@ func openDB(args *internal.ArgType) error {
 	if err != nil {
 		return err
 	}
+	if u.Driver == "ora" { // force the one supported goracle driver
+		u.Driver = "goracle"
+	}
 
 	// save driver type
 	args.LoaderType = u.Driver
