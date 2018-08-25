@@ -6,7 +6,7 @@ package models
 import (
 	"errors"
 
-	"github.com/knq/xoutil"
+	"github.com/xo/xoutil"
 )
 
 // Book represents a row from 'books'.

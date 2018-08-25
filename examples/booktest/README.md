@@ -42,7 +42,7 @@ demonstration of `xo`'s feature support for each database.
 ## Generating database models with gen.sh
 
 This directory contains [`gen.sh`](gen.sh), a script that uses
-[usql](https://github.com/knq/usql) to execute `<database>/schema.sql` against
+[usql](https://github.com/xo/usql) to execute `<database>/schema.sql` against
 the database URL found in `<database>/config`.
 
 `gen.sh` then uses `xo` to generate each databases' `<database>/models`
@@ -80,10 +80,10 @@ If you have not already installed `usql`, you may install it in the usual Go
 fashion:
 
 ```sh
-$ go get -u github.com/knq/usql
+$ go get -u github.com/xo/usql
 
 # install with oracle support
-$ go get -tags oracle -u github.com/knq/usql
+$ go get -tags oracle -u github.com/xo/usql
 ```
 
 ### Skipping databases
@@ -107,7 +107,7 @@ port. Additionally, each database needs a user named `booktest` with password
 script also expects the database to be named `booktest` and owned by the
 `booktest` user.
 
-Oracle will connect to the service name `xe.oracle.docker`, which is the
+Oracle will connect to the service name `xe`, which is the
 default service name used by the Docker [sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/)
 image. SQLite3 will use the regular file `booktest.sqlite3`.
 
@@ -215,7 +215,7 @@ select * from books;
 
 
 ------------------------------------------------------
-oracle='oracle://booktest:booktest@localhost/xe.oracle.docker'
+oracle='oracle://booktest:booktest@localhost/xe'
 
 sourcing oracle/pre
 DROP
@@ -223,15 +223,15 @@ DROP
 DROP
 DROP
 
-usql oracle://booktest:booktest@localhost/xe.oracle.docker -f oracle/schema.sql
+usql oracle://booktest:booktest@localhost/xe -f oracle/schema.sql
 CREATE
 CREATE
 CREATE
 CREATE
 
-xo oracle://booktest:booktest@localhost/xe.oracle.docker -o oracle/models
+xo oracle://booktest:booktest@localhost/xe -o oracle/models
 
-xo oracle://booktest:booktest@localhost/xe.oracle.docker -o oracle/models < oracle/custom-query.xo.sql
+xo oracle://booktest:booktest@localhost/xe -o oracle/models < oracle/custom-query.xo.sql
 
 go build -o booktest-oracle ./oracle/
 

@@ -1,6 +1,6 @@
 DBNAME="pokedex"
 
-ADMIN="oracle://system:oracle@localhost/xe.oracle.docker"
+ADMIN="oracle://system:oracle@localhost/xe"
 
 pushd $SRC/pokedex &> /dev/null
 patch -p1 < $SRC/oracle/fix-tables.py.patch

@@ -4,7 +4,7 @@ PGDB=pg://xodb:xodb@localhost/xodb
 MYDB=my://xodb:xodb@localhost/xodb
 MSDB=ms://xodb:xodb@localhost/xodb
 SQDB=sq:xodb.sqlite3
-ORDB=or://xodb:xodb@localhost/xe.oracle.docker
+ORDB=or://xodb:xodb@localhost/xe
 
 DEST=$1
 
