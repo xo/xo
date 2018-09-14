@@ -147,9 +147,10 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 
 	// create template for query type
 	typeTpl := &Type{
-		Name:    args.QueryType,
-		RelType: Table,
-		Fields:  []*Field{},
+		Name:             args.QueryType,
+		RelType:          Table,
+		Fields:           []*Field{},
+		UnfilteredFields: []*Field{}, // Maybe we should populate this in here also?
 		Table: &models.Table{
 			TableName: "[custom " + strings.ToLower(snaker.CamelToSnake(args.QueryType)) + "]",
 		},
@@ -471,11 +472,12 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    SingularizeIdentifier(ti.TableName),
-			Schema:  args.Schema,
-			RelType: relType,
-			Fields:  []*Field{},
-			Table:   ti,
+			Name:             SingularizeIdentifier(ti.TableName),
+			Schema:           args.Schema,
+			RelType:          relType,
+			Fields:           []*Field{},
+			UnfilteredFields: []*Field{},
+			Table:            ti,
 		}
 
 		// process columns
@@ -524,10 +526,6 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 			}
 		}
 
-		if ignore {
-			continue
-		}
-
 		// set col info
 		f := &Field{
 			Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
@@ -542,6 +540,11 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 			typeTpl.PrimaryKey = f
 		}
 
+		// append col to template unfiltered fields
+		typeTpl.UnfilteredFields = append(typeTpl.UnfilteredFields, f)
+		if ignore {
+			continue
+		}
 		// append col to template fields
 		typeTpl.Fields = append(typeTpl.Fields, f)
 	}
