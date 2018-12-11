@@ -10,7 +10,7 @@ import (
 
 	"github.com/xo/dburl"
 
-	"github.com/xo/xo/examples/booktest/mssql/models"
+	"xo/examples/booktest/mssql/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

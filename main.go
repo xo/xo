@@ -17,10 +17,10 @@ import (
 	"github.com/alexflint/go-arg"
 
 	"github.com/xo/dburl"
-	"github.com/xo/xo/internal"
-	"github.com/xo/xo/models"
+	"xo/internal"
+	"xo/models"
 
-	_ "github.com/xo/xo/loaders"
+	_ "xo/loaders"
 	_ "github.com/xo/xoutil"
 )
 
@@ -240,7 +240,7 @@ var files = map[string]*os.File{}
 // file from files. If the built filename is not already defined, then it calls
 // the os.OpenFile with the correct parameters depending on the state of args.
 func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
-	var f *os.File
+		var f *os.File
 	var err error
 
 	// determine filename
