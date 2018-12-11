@@ -23,9 +23,11 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"colvalsmulti":       a.colvalsmulti,
 		"fieldnames":         a.fieldnames,
 		"fieldnamesmulti":    a.fieldnamesmulti,
+		"goparam":            a.goparam,
 		"goparamlist":        a.goparamlist,
 		"reniltype":          a.reniltype,
 		"retype":             a.retype,
+		"retypeNull":         a.retypeNull,
 		"shortname":          a.shortname,
 		"convext":            a.convext,
 		"schema":             a.schemafn,
@@ -59,6 +61,16 @@ func (a *ArgType) retype(typ string) string {
 	}
 
 	return prefix + typ
+}
+
+// retype checks typ against known types, and prefixing
+// ArgType.CustomTypePackage (if applicable).
+func (a *ArgType) retypeNull(typ string) string {
+	r := a.retype(typ)
+	if !strings.Contains(r, "sql.Null") {
+		r = "*" + r
+	}
+	return r
 }
 
 // reniltype checks typ against known nil types (similar to retype), prefixing
@@ -492,6 +504,21 @@ var goReservedNames = map[string]string{
 	"float64":    "f",
 	"complex64":  "c",
 	"complex128": "c128",
+}
+
+func (a *ArgType) goparam(f Field) string {
+	s := ""
+	if len(f.Name) > 0 {
+		n := strings.Split(snaker.CamelToSnake(f.Name), "_")
+		s = strings.ToLower(n[0]) + f.Name[len(n[0]):]
+	}
+
+	// check go reserved names
+	if r, ok := goReservedNames[strings.ToLower(s)]; ok {
+		s = r
+	}
+
+	return s
 }
 
 // goparamlist converts a list of fields into their named Go parameters,

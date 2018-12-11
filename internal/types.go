@@ -10,6 +10,7 @@ const (
 	EnumTemplate TemplateType = iota
 	ProcTemplate
 	TypeTemplate
+	RepositoryTemplate
 	ForeignKeyTemplate
 	IndexTemplate
 	QueryTypeTemplate
@@ -31,6 +32,8 @@ func (tt TemplateType) String() string {
 		s = "proc"
 	case TypeTemplate:
 		s = "type"
+	case RepositoryTemplate:
+		s = "repository"
 	case ForeignKeyTemplate:
 		s = "foreignkey"
 	case IndexTemplate:
@@ -120,6 +123,7 @@ type Field struct {
 // Type is a template item for a type (ie, table/view/custom query).
 type Type struct {
 	Name             string
+	RepoName         string
 	Schema           string
 	RelType          RelType
 	PrimaryKey       *Field

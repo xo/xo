@@ -471,11 +471,12 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    SingularizeIdentifier(ti.TableName),
-			Schema:  args.Schema,
-			RelType: relType,
-			Fields:  []*Field{},
-			Table:   ti,
+			Name:     SingularizeIdentifier(ti.TableName),
+			RepoName: SingularizeIdentifier(ti.TableName) + "Repository",
+			Schema:   args.Schema,
+			RelType:  relType,
+			Fields:   []*Field{},
+			Table:    ti,
 		}
 
 		// process columns
@@ -490,6 +491,14 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	// generate table templates
 	for _, t := range tableMap {
 		err = args.ExecuteTemplate(TypeTemplate, t.Name, "", t)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// generate table templates
+	for _, t := range tableMap {
+		err = args.ExecuteTemplate(RepositoryTemplate, t.RepoName, "", t)
 		if err != nil {
 			return nil, err
 		}
@@ -569,7 +578,7 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type) (
 
 	// generate templates
 	for _, fk := range fkMap {
-		err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.Name, fk.ForeignKey.ForeignKeyName, fk)
+		err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.RepoName, fk.ForeignKey.ForeignKeyName, fk)
 		if err != nil {
 			return nil, err
 		}
@@ -664,7 +673,7 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 
 	// generate templates
 	for _, ix := range ixMap {
-		err = args.ExecuteTemplate(IndexTemplate, ix.Type.Name, ix.Index.IndexName, ix)
+		err = args.ExecuteTemplate(IndexTemplate, ix.Type.RepoName, ix.Index.IndexName, ix)
 		if err != nil {
 			return nil, err
 		}
