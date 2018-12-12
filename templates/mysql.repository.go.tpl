@@ -34,7 +34,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	qb := squirrel.Insert("{{ $table }}").Columns("{{ colnames .Fields }}").Values({{ fieldnames .Fields $short }})
+	qb := sq.Insert("{{ $table }}").Columns("{{ colnames .Fields }}").Values({{ fieldnames .Fields $short }})
     query, args, err := qb.ToSql()
 	if err != nil {
 	    return err
@@ -48,7 +48,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := squirrel.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
+	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
 	query, args, err := qb.ToSql()
 	if err != nil {
 	    return err
@@ -80,24 +80,24 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
 			// sql query with composite primary key
-			qb := squirrel.Update("{{ $table }}").SetMap(map[string]interface{}{
+			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
             {{- range .Fields }}
                 "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
             {{- end }}
-            }).Where(squirrel.Eq{
+            }).Where(sq.Eq{
             {{- range .PrimaryKeyFields }}
                 "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
             {{- end }}
             })
 		{{- else }}
 			// sql query
-			qb := squirrel.Update("{{ $table }}").SetMap(map[string]interface{}{
+			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
 			{{- range .Fields }}
 			    {{- if ne .Name $primaryKey.Name }}
 			    "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
 			    {{- end }}
             {{- end }}
-            }).Where(squirrel.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ $short }}.{{ .PrimaryKey.Name }}})
+            }).Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ $short }}.{{ .PrimaryKey.Name }}})
 		{{- end }}
 		query, args, err := qb.ToSql()
         if err != nil {
@@ -117,14 +117,14 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
-		qb := squirrel.Delete("{{ $table }}").Where(squirrel.Eq{
+		qb := sq.Delete("{{ $table }}").Where(sq.Eq{
         {{- range .PrimaryKeyFields }}
             "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
         {{- end }}
         })
 	{{- else }}
 		// sql query
-		qb := squirrel.Delete("{{ $table }}").Where("{{ colname .PrimaryKey.Col}}", {{ $short }}.{{ .PrimaryKey.Name }})
+		qb := sq.Delete("{{ $table }}").Where("{{ colname .PrimaryKey.Col}}", {{ $short }}.{{ .PrimaryKey.Name }})
 	{{- end }}
 
 	query, args, err := qb.ToSql()
@@ -142,15 +142,15 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error) {
-    qb := squirrel.Select("{{ $table }}")
+    qb := sq.Select("{{ $table }}")
     {{- range .Fields }}
         {{- if .Col.NotNull }}
         if ({{ $short }}Filter.{{ .Name }} != nil) {
-            qb = qb.Where(squirrel.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
+            qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
         }
         {{- else }}
         if {{ $short }}Filter.{{ .Name }}.Valid {
-            qb = qb.Where(squirrel.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+            qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
         }
         {{- end }}
     {{- end }}

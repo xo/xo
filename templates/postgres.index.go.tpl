@@ -8,9 +8,9 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}({{ gopara
 	var err error
 
 	// sql query
-	qb := squirrel.Select("{{ $table }}")
+	qb := sq.Select("{{ $table }}")
 	{{- range $k, $v := .Fields }}
-	    qb = qb.Where(squirrel.Eq{"{{ colname .Col }}": {{ goparam $v }}})
+	    qb = qb.Where(sq.Eq{"{{ colname .Col }}": {{ goparam $v }}})
 	{{- end }}
 
 	query, args, err := qb.ToSql()
