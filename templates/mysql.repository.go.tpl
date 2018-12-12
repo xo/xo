@@ -5,20 +5,31 @@
 {{- if .Comment -}}
 // {{ .Comment }}
 {{- else -}}
-// {{ .RepoName }} represents a row from '{{ $table }}'.
+
+type I{{ .RepoName }} interface {
+    Insert({{ $short }} entities.{{ .Name }}) error
+    Update({{ $short }} entities.{{ .Name }}) error
+    Delete({{ $short }} entities.{{ .Name }}) error
+    FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error)
+    {{- range .Indexes }}
+    {{ .FuncName }}({{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
+    {{- end }}
+}
+
+// {{ lowerfirst .RepoName }} represents a row from '{{ $table }}'.
 {{- end }}
-type {{ .RepoName }} struct {
+type {{ lowerfirst .RepoName }} struct {
     db *sqlx.DB
 }
 
-func New{{ .RepoName }}(db *sqlx.DB) *{{ .RepoName }} {
-    return &{{ .RepoName }}{db: db}
+func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
+    return &{{ lowerfirst .RepoName }}{db: db}
 }
 
 {{ if .PrimaryKey }}
 
-// Insert inserts the {{ .RepoName }} to the database.
-func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) error {
+// Insert inserts the {{ lowerfirst .RepoName }} to the database.
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) error {
 	var err error
 
 {{ if .Table.ManualPk  }}
@@ -63,8 +74,8 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} entities.{{ .Name }
 }
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
-	// Update updates the {{ .RepoName }} in the database.
-	func ({{ $shortRepo }} *{{ .RepoName }}) Update({{ $short }} entities.{{ .Name }}) error {
+	// Update updates the {{ lowerfirst .RepoName }} in the database.
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update({{ $short }} entities.{{ .Name }}) error {
 		var err error
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -101,8 +112,8 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} entities.{{ .Name }
 	// Update statements omitted due to lack of fields other than primary key
 {{ end }}
 
-// Delete deletes the {{ .RepoName }} from the database.
-func ({{ $shortRepo }} *{{ .RepoName }}) Delete({{ $short }} entities.{{ .Name }}) error {
+// Delete deletes the {{ lowerfirst .RepoName }} from the database.
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities.{{ .Name }}) error {
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
@@ -130,7 +141,7 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Delete({{ $short }} entities.{{ .Name }
 	return nil
 }
 
-func ({{ $shortRepo }} *{{ .RepoName }}) FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error) {
     qb := squirrel.Select("{{ $table }}")
     {{- range .Fields }}
         {{- if .Col.NotNull }}

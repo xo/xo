@@ -131,6 +131,7 @@ type Type struct {
 	Fields           []*Field
 	Table            *models.Table
 	Comment          string
+	Indexes          []*Index
 }
 
 // ForeignKey is a template item for a foreign relationship on a table.

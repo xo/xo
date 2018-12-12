@@ -13,6 +13,7 @@ import (
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
 func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 	return template.FuncMap{
+		"lowerfirst":         a.lowerfirst,
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
 		"colnameswrap":       a.colnameswrap,
@@ -37,6 +38,10 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
 	}
+}
+
+func (a *ArgType) lowerfirst(name string) string {
+	return strings.ToLower(name[0:1]) + name[1:]
 }
 
 // retype checks typ against known types, and prefixing

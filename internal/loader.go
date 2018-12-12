@@ -283,7 +283,12 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 	}
 
 	// load indexes
-	_, err = tl.LoadIndexes(args, tableMap)
+	indexes, err := tl.LoadIndexes(args, tableMap)
+	if err != nil {
+		return err
+	}
+
+	err = tl.LoadRepositories(args, tableMap, indexes)
 	if err != nil {
 		return err
 	}
@@ -496,15 +501,29 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 		}
 	}
 
+	return tableMap, nil
+}
+
+// LoadRelkind loads a schema table/view definition.
+func (tl TypeLoader) LoadRepositories(args *ArgType, tableMap map[string]*Type, indexes map[string]*Index) error {
+	var err error
 	// generate table templates
 	for _, t := range tableMap {
+		ixMap := map[string]*Index{}
+		err = tl.LoadTableIndexes(args, t, ixMap)
+		if err != nil {
+			return err
+		}
+		for _, ix := range ixMap {
+			t.Indexes = append(t.Indexes, ix)
+		}
 		err = args.ExecuteTemplate(RepositoryTemplate, t.RepoName, "", t)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
-	return tableMap, nil
+	return nil
 }
 
 // LoadColumns loads schema table/view columns.
