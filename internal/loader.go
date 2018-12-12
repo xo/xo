@@ -315,7 +315,7 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 	enumMap := map[string]*Enum{}
 	for _, e := range enumList {
 		enumTpl := &Enum{
-			Name:              SingularizeIdentifier(e.EnumName),
+			Name:              SingularizeIdentifier(e.TableName + "_" + e.EnumName),
 			Schema:            args.Schema,
 			Values:            []*EnumValue{},
 			Enum:              e,

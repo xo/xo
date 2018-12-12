@@ -1,6 +1,6 @@
 {{- $shortRepo := (shortname .RepoName "err" "res" "sqlstr" "db" "XOLog") -}}
 {{- $short := (shortname .Name "err" "res" "sqlstr" "db" "XOLog") -}}
-{{- $table := (schema .Schema .Table.TableName) -}}
+{{- $table := (schema .Table.TableName) -}}
 {{- $primaryKey := .PrimaryKey }}
 {{- if .Comment -}}
 // {{ .Comment }}

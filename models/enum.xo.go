@@ -6,6 +6,7 @@ package models
 // Enum represents a enum.
 type Enum struct {
 	EnumName string // enum_name
+	TableName string // table_name
 }
 
 // PgEnums runs a custom query, returning results as Enum.
@@ -51,7 +52,7 @@ func MyEnums(db XODB, schema string) ([]*Enum, error) {
 
 	// sql query
 	const sqlstr = `SELECT ` +
-		`DISTINCT column_name AS enum_name ` +
+		`DISTINCT column_name AS enum_name, table_name ` +
 		`FROM information_schema.columns ` +
 		`WHERE data_type = 'enum' AND table_schema = ?`
 
@@ -69,7 +70,7 @@ func MyEnums(db XODB, schema string) ([]*Enum, error) {
 		e := Enum{}
 
 		// scan
-		err = q.Scan(&e.EnumName)
+		err = q.Scan(&e.EnumName, &e.TableName)
 		if err != nil {
 			return nil, err
 		}
