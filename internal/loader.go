@@ -8,7 +8,7 @@ import (
 	"github.com/gedex/inflector"
 	"github.com/knq/snaker"
 
-	"xo/models"
+	"github.com/JLightning/xo/models"
 )
 
 // Loader is the common interface for database drivers that can generate code

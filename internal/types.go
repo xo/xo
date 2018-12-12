@@ -1,6 +1,6 @@
 package internal
 
-import "xo/models"
+import "github.com/JLightning/xo/models"
 
 // TemplateType represents a template type.
 type TemplateType uint

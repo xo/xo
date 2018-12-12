@@ -7,8 +7,8 @@ import (
 
 	"github.com/knq/snaker"
 
-	"xo/internal"
-	"xo/models"
+	"github.com/JLightning/xo/internal"
+	"github.com/JLightning/xo/models"
 )
 
 func init() {

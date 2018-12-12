@@ -7,7 +7,7 @@ import (
 
 	"github.com/knq/snaker"
 
-	"xo/models"
+	"github.com/JLightning/xo/models"
 )
 
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.

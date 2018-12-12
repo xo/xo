@@ -17,12 +17,12 @@ import (
 
 	"github.com/alexflint/go-arg"
 
+	"github.com/JLightning/xo/internal"
+	"github.com/JLightning/xo/models"
 	"github.com/xo/dburl"
-	"xo/internal"
-	"xo/models"
 
+	_ "github.com/JLightning/xo/loaders"
 	_ "github.com/xo/xoutil"
-	_ "xo/loaders"
 )
 
 func main() {

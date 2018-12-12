@@ -10,8 +10,8 @@ import (
 
 	_ "gopkg.in/rana/ora.v4"
 
-	"xo/internal"
-	"xo/models"
+	"github.com/JLightning/xo/internal"
+	"github.com/JLightning/xo/models"
 )
 
 func init() {

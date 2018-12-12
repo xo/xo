@@ -10,7 +10,7 @@ import (
 
 	"github.com/xo/dburl"
 
-	"xo/examples/booktest/oracle/models"
+	"github.com/JLightning/xo/examples/booktest/oracle/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")
