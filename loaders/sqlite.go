@@ -49,7 +49,7 @@ var uRE = regexp.MustCompile(`\s*unsigned\*`)
 
 // SqParseType parse a sqlite type into a Go type based on the column
 // definition.
-func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func SqParseType(args *internal.ArgType, tableName, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 	unsigned := false

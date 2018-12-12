@@ -9,9 +9,10 @@ import (
 
 // Column represents column info.
 type Column struct {
-	FieldOrdinal int            // field_ordinal
-	ColumnName   string         // column_name
-	DataType     string         // data_type
+	FieldOrdinal int    // field_ordinal
+	ColumnName   string // column_name
+	DataType     string // data_type
+	IsEnum       bool
 	NotNull      bool           // not_null
 	DefaultValue sql.NullString // default_value
 	IsPrimaryKey bool           // is_primary_key
@@ -71,6 +72,7 @@ func MyTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 		`ordinal_position AS field_ordinal, ` +
 		`column_name, ` +
 		`IF(data_type = 'enum', column_name, column_type) AS data_type, ` +
+		`data_type = 'enum' AS is_enum, ` +
 		`IF(is_nullable = 'YES', false, true) AS not_null, ` +
 		`column_default AS default_value, ` +
 		`IF(column_key = 'PRI', true, false) AS is_primary_key ` +
@@ -92,7 +94,7 @@ func MyTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 		c := Column{}
 
 		// scan
-		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey)
+		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.IsEnum,  &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey)
 		if err != nil {
 			return nil, err
 		}

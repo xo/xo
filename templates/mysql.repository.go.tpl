@@ -34,7 +34,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	qb := sq.Insert("{{ $table }}").Columns("{{ colnames .Fields }}").Values({{ fieldnames .Fields $short }})
+	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields }}).
+	    Values({{ fieldnames .Fields $short }})
     query, args, err := qb.ToSql()
 	if err != nil {
 	    return err
@@ -48,7 +49,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
+	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).
+	    Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
 	query, args, err := qb.ToSql()
 	if err != nil {
 	    return err
@@ -149,9 +151,15 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter ent
             qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
         }
         {{- else }}
-        if {{ $short }}Filter.{{ .Name }}.Valid {
-            qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
-        }
+            {{- if .Col.IsEnum }}
+            if ({{ $short }}Filter.{{ .Name }} != nil) {
+                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+            }
+            {{- else }}
+            if {{ $short }}Filter.{{ .Name }}.Valid {
+                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+            }
+            {{- end }}
         {{- end }}
     {{- end }}
 

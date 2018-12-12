@@ -51,14 +51,14 @@ func PgRelkind(relType internal.RelType) string {
 
 // PgParseType parse a postgres type into a Go type based on the column
 // definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func PgParseType(args *internal.ArgType, tableName, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 	asSlice := false
 
 	// handle SETOF
 	if strings.HasPrefix(dt, "SETOF ") {
-		_, _, t := PgParseType(args, dt[len("SETOF "):], false)
+		_, _, t := PgParseType(args, "", dt[len("SETOF "):], false)
 		return 0, "nil", "[]" + t
 	}
 

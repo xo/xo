@@ -213,7 +213,7 @@ func (a *ArgType) colnames(fields []*Field, ignoreNames ...string) string {
 }
 
 func (a *ArgType) colnameswrap(fields []*Field, ignoreNames ...string) string {
-	return `"` + strings.Replace(a.colnames(fields, ignoreNames...), ",", `", "`, -1) + `"`
+	return `"` + strings.Replace(a.colnames(fields, ignoreNames...), ", ", `", "`, -1) + `"`
 }
 
 // colnamesmulti creates a list of the column names found in fields, excluding any

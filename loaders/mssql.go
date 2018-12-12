@@ -65,7 +65,7 @@ func MsRelkind(relType internal.RelType) string {
 
 // MsParseType parse a mssql type into a Go type based on the column
 // definition.
-func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MsParseType(args *internal.ArgType, tableName, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 

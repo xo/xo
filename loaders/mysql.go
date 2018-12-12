@@ -66,7 +66,7 @@ func MyRelkind(relType internal.RelType) string {
 
 // MyParseType parse a mysql type into a Go type based on the column
 // definition.
-func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MyParseType(args *internal.ArgType, tableName, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 	unsigned := false
@@ -200,10 +200,10 @@ switchDT:
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
-			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(tableName + "_" + dt[len(args.Schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
-			typ = snaker.SnakeToCamelIdentifier(dt)
+			typ = snaker.SnakeToCamelIdentifier(tableName + "_" + dt)
 			nilVal = typ + "{}"
 		}
 	}
