@@ -244,11 +244,15 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	var f *os.File
 	var err error
 
+	oldArgPkg := args.Package
+
 	// determine filename
 	var filename = strings.ToLower(snaker.CamelToSnake(t.Name)) + args.Suffix
-	if t.TemplateType == internal.RepositoryTemplate || t.TemplateType == internal.IndexTemplate || t.TemplateType == internal.ForeignKeyTemplate{
+	if t.TemplateType == internal.RepositoryTemplate || t.TemplateType == internal.IndexTemplate || t.TemplateType == internal.ForeignKeyTemplate {
+		args.Package = "repositories"
 		filename = "repositories/" + filename
 	} else {
+		args.Package = "entities"
 		filename = "entities/" + filename
 	}
 	if args.SingleFile {
@@ -298,6 +302,8 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 			return nil, err
 		}
 	}
+
+	args.Package = oldArgPkg
 
 	// store file
 	files[filename] = f
