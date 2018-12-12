@@ -11,6 +11,10 @@ type {{ .RepoName }} struct {
     db *sqlx.DB
 }
 
+func New{{ .RepoName }}(db *sqlx.DB) *{{ .RepoName }} {
+    return &{{ .RepoName }}{db: db}
+}
+
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ .RepoName }} to the database.
