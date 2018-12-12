@@ -1,10 +1,10 @@
 type Pagination struct {
-	Page    *int
-	PerPage *int
+	Page    *uint64
+	PerPage *uint64
 	Sort    *Sort
 }
 
 type Sort struct {
-	Field *string
+	Field string
 	Order *string
 }

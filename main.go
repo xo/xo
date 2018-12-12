@@ -89,6 +89,12 @@ func main() {
 	//	os.Exit(1)
 	//}
 
+	err = args.ExecuteTemplate(internal.PaginationTemplate, "pagination", "", args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
 	// output
 	err = writeTypes(args)
 	if err != nil {

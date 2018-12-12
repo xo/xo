@@ -10,7 +10,7 @@ type I{{ .RepoName }} interface {
     Insert({{ $short }} entities.{{ .Name }}) error
     Update({{ $short }} entities.{{ .Name }}) error
     Delete({{ $short }} entities.{{ .Name }}) error
-    FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error)
+    FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
     {{- range .Indexes }}
     {{ .FuncName }}({{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
     {{- end }}
@@ -143,25 +143,41 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
 	return nil
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
     qb := sq.Select("{{ $table }}")
-    {{- range .Fields }}
-        {{- if .Col.NotNull }}
-        if ({{ $short }}Filter.{{ .Name }} != nil) {
-            qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
-        }
-        {{- else }}
-            {{- if .Col.IsEnum }}
+    if {{$short}}Filter != nil {
+        {{- range .Fields }}
+            {{- if .Col.NotNull }}
             if ({{ $short }}Filter.{{ .Name }} != nil) {
-                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
             }
             {{- else }}
-            if {{ $short }}Filter.{{ .Name }}.Valid {
-                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
-            }
+                {{- if .Col.IsEnum }}
+                if ({{ $short }}Filter.{{ .Name }} != nil) {
+                    qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+                }
+                {{- else }}
+                if {{ $short }}Filter.{{ .Name }}.Valid {
+                    qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+                }
+                {{- end }}
             {{- end }}
         {{- end }}
-    {{- end }}
+    }
+    if pagination != nil {
+        if pagination.Page != nil && pagination.PerPage != nil {
+            qb = qb.Offset((*pagination.Page - 1) * *pagination.PerPage).Limit(*pagination.PerPage)
+        }
+        if pagination.Sort != nil {
+            orderStr := pagination.Sort.Field + " "
+            if pagination.Sort.Order != nil {
+                orderStr += *pagination.Sort.Order
+            } else {
+                orderStr += "ASC"
+            }
+            qb = qb.OrderBy(orderStr)
+        }
+    }
 
     var list []entities.{{ .Name }}
     query, args, err := qb.ToSql()
