@@ -37,7 +37,7 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} entities.{{ .Name }
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := squirrel.Insert("{{ $table }}").Columns("{{ colnames .Fields .PrimaryKey.Name }}").Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
+	qb := squirrel.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
 	query, args, err := qb.ToSql()
 	if err != nil {
 	    return err

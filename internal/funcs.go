@@ -15,6 +15,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 	return template.FuncMap{
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
+		"colnameswrap":       a.colnameswrap,
 		"colnamesmulti":      a.colnamesmulti,
 		"colnamesquery":      a.colnamesquery,
 		"colnamesquerymulti": a.colnamesquerymulti,
@@ -204,6 +205,10 @@ func (a *ArgType) colnames(fields []*Field, ignoreNames ...string) string {
 	}
 
 	return str
+}
+
+func (a *ArgType) colnameswrap(fields []*Field, ignoreNames ...string) string {
+	return `"` + strings.Replace(a.colnames(fields, ignoreNames...), ",", `", "`, -1) + `"`
 }
 
 // colnamesmulti creates a list of the column names found in fields, excluding any
