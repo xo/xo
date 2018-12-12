@@ -14,7 +14,7 @@ type {{ .RepoName }} struct {
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ .RepoName }} to the database.
-func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} {{ .Name }}) error {
+func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) error {
 	var err error
 
 {{ if .Table.ManualPk  }}
@@ -60,19 +60,20 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} {{ .Name }}) error 
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ .RepoName }} in the database.
-	func ({{ $shortRepo }} *{{ .RepoName }}) Update({{ $short }} {{ .Name }}) error {
+	func ({{ $shortRepo }} *{{ .RepoName }}) Update({{ $short }} entities.{{ .Name }}) error {
 		var err error
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
 			// sql query with composite primary key
-			const sqlstr = `UPDATE {{ $table }} SET ` +
-				`{{ colnamesquerymulti .Fields ", " 0 .PrimaryKeyFields }}` +
-				` WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
-
-			// run query
-			XOLog(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
-			_, err = db.Exec(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
-			return err
+			qb := squirrel.Update("{{ $table }}").SetMap(map[string]interface{}{
+            {{- range .Fields }}
+                "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+            {{- end }}
+            }).Where(squirrel.Eq{
+            {{- range .PrimaryKeyFields }}
+                "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+            {{- end }}
+            })
 		{{- else }}
 			// sql query
 			qb := squirrel.Update("{{ $table }}").SetMap(map[string]interface{}{
@@ -82,49 +83,71 @@ func ({{ $shortRepo }} *{{ .RepoName }}) Insert({{ $short }} {{ .Name }}) error 
 			    {{- end }}
             {{- end }}
             }).Where(squirrel.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ $short }}.{{ .PrimaryKey.Name }}})
-            query, args, err := qb.ToSql()
-            if err != nil {
-                return err
-            }
-
-			// run query
-			_, err = {{ $shortRepo }}.db.Exec(query, args...)
-			return err
 		{{- end }}
+		query, args, err := qb.ToSql()
+        if err != nil {
+            return err
+        }
+
+        // run query
+        _, err = {{ $shortRepo }}.db.Exec(query, args...)
+        return err
 	}
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
 {{ end }}
 
 // Delete deletes the {{ .RepoName }} from the database.
-func ({{ $shortRepo }} *{{ .RepoName }}) Delete({{ $short }} {{ .Name }}) error {
+func ({{ $shortRepo }} *{{ .RepoName }}) Delete({{ $short }} entities.{{ .Name }}) error {
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
-		const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colnamesquery .PrimaryKeyFields " AND " }}`
-
-		// run query
-		XOLog(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
-		_, err = db.Exec(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
-		if err != nil {
-			return err
-		}
+		qb := squirrel.Delete("{{ $table }}").Where(squirrel.Eq{
+        {{- range .PrimaryKeyFields }}
+            "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+        {{- end }}
+        })
 	{{- else }}
 		// sql query
 		qb := squirrel.Delete("{{ $table }}").Where("{{ colname .PrimaryKey.Col}}", {{ $short }}.{{ .PrimaryKey.Name }})
-		query, args, err := qb.ToSql()
-        if err != nil {
-            return err
-        }
-
-		// run query
-		_, err = {{ $shortRepo }}.db.Exec(query, args...)
-		if err != nil {
-			return err
-		}
 	{{- end }}
 
+	query, args, err := qb.ToSql()
+    if err != nil {
+        return err
+    }
+
+    // run query
+    _, err = {{ $shortRepo }}.db.Exec(query, args...)
+    if err != nil {
+        return err
+    }
+
 	return nil
+}
+
+func ({{ $shortRepo }} *{{ .RepoName }}) FindAll({{$short}}Filter entities.{{ .Name }}Filter) ([]entities.{{ .Name }}, error) {
+    qb := squirrel.Select("{{ $table }}")
+    {{- range .Fields }}
+        {{- if .Col.NotNull }}
+        if ({{ $short }}Filter.{{ .Name }} != nil) {
+            qb = qb.Where(squirrel.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
+        }
+        {{- else }}
+        if {{ $short }}Filter.{{ .Name }}.Valid {
+            qb = qb.Where(squirrel.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+        }
+        {{- end }}
+    {{- end }}
+
+    var list []entities.{{ .Name }}
+    query, args, err := qb.ToSql()
+    if err != nil {
+        return []entities.{{ .Name }}{}, err
+    }
+    err = {{ $shortRepo }}.db.Select(&list, query, args...)
+
+    return list, err
 }
 {{- end }}
 

@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/knq/snaker"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -20,8 +21,8 @@ import (
 	"xo/internal"
 	"xo/models"
 
-	_ "xo/loaders"
 	_ "github.com/xo/xoutil"
+	_ "xo/loaders"
 )
 
 func main() {
@@ -82,11 +83,11 @@ func main() {
 	}
 
 	// add xo
-	err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", args)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
-	}
+	//err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", args)
+	//if err != nil {
+	//	fmt.Fprintf(os.Stderr, "error: %v\n", err)
+	//	os.Exit(1)
+	//}
 
 	// output
 	err = writeTypes(args)
@@ -240,11 +241,16 @@ var files = map[string]*os.File{}
 // file from files. If the built filename is not already defined, then it calls
 // the os.OpenFile with the correct parameters depending on the state of args.
 func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
-		var f *os.File
+	var f *os.File
 	var err error
 
 	// determine filename
-	var filename = strings.ToLower(t.Name) + args.Suffix
+	var filename = strings.ToLower(snaker.CamelToSnake(t.Name)) + args.Suffix
+	if t.TemplateType == internal.RepositoryTemplate || t.TemplateType == internal.IndexTemplate || t.TemplateType == internal.ForeignKeyTemplate{
+		filename = "repositories/" + filename
+	} else {
+		filename = "entities/" + filename
+	}
 	if args.SingleFile {
 		filename = args.Filename
 	}

@@ -4,7 +4,7 @@
 // {{ .FuncName }} retrieves a row from '{{ $table }}' as a {{ .Type.Name }}.
 //
 // Generated from index '{{ .Index.IndexName }}'.
-func ({{$shortRepo}} *{{.Type.RepoName}}) {{ .FuncName }}({{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*{{ .Type.Name }}, error) {
+func ({{$shortRepo}} *{{.Type.RepoName}}) {{ .FuncName }}({{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error) {
 	var err error
 
 	// sql query
@@ -20,9 +20,9 @@ func ({{$shortRepo}} *{{.Type.RepoName}}) {{ .FuncName }}({{ goparamlist .Fields
 
 	// run query
 {{- if .Index.IsUnique }}
-	{{ $short }} := {{ .Type.Name }}{}
+	{{ $short }} := entities.{{ .Type.Name }}{}
 {{- else }}
-    var {{ $short }} []*{{ .Type.Name }}
+    var {{ $short }} []*entities.{{ .Type.Name }}
 {{- end }}
 
 	err = {{ $shortRepo }}.db.Select(&{{ $short }}, query, args...)
