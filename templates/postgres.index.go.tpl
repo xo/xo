@@ -21,14 +21,17 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}({{ gopara
 	// run query
 {{- if .Index.IsUnique }}
 	{{ $short }} := entities.{{ .Type.Name }}{}
+	err = {{ $shortRepo }}.db.Get(&{{ $short }}, query, args...)
+    if err != nil {
+        return nil, err
+    }
 {{- else }}
     var {{ $short }} []*entities.{{ .Type.Name }}
+    err = {{ $shortRepo }}.db.Select(&{{ $short }}, query, args...)
+    if err != nil {
+        return nil, err
+    }
 {{- end }}
-
-	err = {{ $shortRepo }}.db.Select(&{{ $short }}, query, args...)
-	if err != nil {
-		return nil, err
-	}
 
 {{- if .Index.IsUnique }}
 	return &{{ $short }}, nil

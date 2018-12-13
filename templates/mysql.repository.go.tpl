@@ -34,8 +34,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields }}).
-	    Values({{ fieldnames .Fields $short }})
+	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields "CreatedAt" "UpdatedAt" }}).
+	    Values({{ fieldnames .Fields $short "CreatedAt" "UpdatedAt" }})
     query, args, err := qb.ToSql()
 	if err != nil {
 	    return nil, err
@@ -49,8 +49,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name }}).
-	    Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
+	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name "CreatedAt" "UpdatedAt" }}).
+	    Values({{ fieldnames .Fields $short .PrimaryKey.Name "CreatedAt" "UpdatedAt" }})
 	query, args, err := qb.ToSql()
 	if err != nil {
 	    return nil, err
@@ -83,7 +83,9 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 			// sql query with composite primary key
 			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
             {{- range .Fields }}
+                {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
                 "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+                {{- end }}
             {{- end }}
             }).Where(sq.Eq{
             {{- range .PrimaryKeyFields }}
@@ -95,7 +97,9 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
 			{{- range .Fields }}
 			    {{- if ne .Name $primaryKey.Name }}
+			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
 			    "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+			    {{- end }}
 			    {{- end }}
             {{- end }}
             }).Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ $short }}.{{ .PrimaryKey.Name }}})
@@ -135,11 +139,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
 
     // run query
     _, err = {{ $shortRepo }}.db.Exec(query, args...)
-    if err != nil {
-        return err
-    }
-
-	return nil
+    return err
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
