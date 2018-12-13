@@ -7,7 +7,7 @@
 {{- else -}}
 
 type I{{ .RepoName }} interface {
-    Insert({{ $short }} entities.{{ .Name }}) error
+    Insert({{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
     Update({{ $short }} entities.{{ .Name }}) error
     Delete({{ $short }} entities.{{ .Name }}) error
     FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
@@ -29,7 +29,7 @@ func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ lowerfirst .RepoName }} to the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) error {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
 	var err error
 
 {{ if .Table.ManualPk  }}
@@ -38,13 +38,13 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 	    Values({{ fieldnames .Fields $short }})
     query, args, err := qb.ToSql()
 	if err != nil {
-	    return err
+	    return nil, err
 	}
 
 	// run query
-	_, err = {{ $shortRepo }}.db.Exec(query, args...)
+	res, err = {{ $shortRepo }}.db.Exec(query, args...)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 {{ else }}
@@ -53,26 +53,25 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 	    Values({{ fieldnames .Fields $short .PrimaryKey.Name }})
 	query, args, err := qb.ToSql()
 	if err != nil {
-	    return err
+	    return nil, err
 	}
 
 	// run query
 	res, err := {{ $shortRepo }}.db.Exec(query, args...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	// retrieve id
-	id, err := res.LastInsertId()
-	if err != nil {
-		return err
-	}
-
-	// set primary key and existence
-	{{ $short }}.{{ .PrimaryKey.Name }} = {{ .PrimaryKey.Type }}(id)
 {{ end }}
 
-	return nil
+    // retrieve id
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	err = {{ $shortRepo }}.db.Select(&{{ $short }}, fmt.Sprintf("SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = %d", id))
+
+	return &{{ $short }}, err
 }
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}

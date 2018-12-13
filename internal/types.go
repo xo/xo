@@ -19,6 +19,7 @@ const (
 	// always last
 	XOTemplate
 	PaginationTemplate
+	ScalarTemplate
 )
 
 // String returns the name for the associated template type.
@@ -45,6 +46,8 @@ func (tt TemplateType) String() string {
 		s = "query"
 	case PaginationTemplate:
 		s = "pagination"
+	case ScalarTemplate:
+		s = "scalar"
 	default:
 		panic("unknown TemplateType")
 	}

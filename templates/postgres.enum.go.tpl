@@ -1,6 +1,15 @@
 {{- $type := .Name -}}
 {{- $short := (shortname $type "enumVal" "text" "buf" "ok" "src") -}}
 {{- $reverseNames := .ReverseConstNames -}}
+// GraphQL
+/**
+enum {{ $type }} {
+{{- range .Values }}
+    {{ .Val.EnumValue }}
+{{- end }}
+}
+*/
+
 // {{ $type }} is the '{{ .Enum.EnumName }}' enum type from schema '{{ .Schema  }}'.
 type {{ $type }} uint16
 
@@ -23,6 +32,19 @@ func ({{ $short }} {{ $type }}) String() string {
 	}
 
 	return enumVal
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+func ({{ $short }} {{ $type }}) MarshalGQL(w io.Writer) {
+	w.Write([]byte({{ $short }}.String()))
+}
+
+// UnmarshalGQL implements the graphql.Marshaler interface
+func ({{ $short }} *{{ $type }}) UnmarshalGQL(v interface{}) error {
+	if str, ok := v.(string); ok {
+		return {{ $short }}.UnmarshalText([]byte(str))
+	}
+	return fmt.Errorf("enum must be strings")
 }
 
 // MarshalText marshals {{ $type }} into text.

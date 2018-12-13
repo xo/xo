@@ -24,6 +24,7 @@ type {{ .Name }}Filter struct {
 // GraphQL
 /**
 scalar Datetime
+scalar IntBool
 
 type {{ .Name }} {
 {{- range .Fields }}

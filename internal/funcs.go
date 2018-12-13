@@ -82,7 +82,7 @@ func (a *ArgType) retypegraphql(typ string) string {
 	case "string":
 		typ = "String"
 	case "int8":
-		typ = "Boolean"
+		typ = "IntBool"
 	case "time.Time":
 		typ = "Datetime"
 	}
