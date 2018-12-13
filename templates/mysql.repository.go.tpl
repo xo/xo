@@ -143,7 +143,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
-    qb := sq.Select("{{ $table }}")
+    qb := sq.Select("*").From("{{ $table }}")
     if {{$short}}Filter != nil {
         {{- range .Fields }}
             {{- if .Col.NotNull }}
