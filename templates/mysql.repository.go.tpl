@@ -126,7 +126,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
         })
 	{{- else }}
 		// sql query
-		qb := sq.Delete("{{ $table }}").Where("{{ colname .PrimaryKey.Col}}", {{ $short }}.{{ .PrimaryKey.Name }})
+		qb := sq.Delete("{{ $table }}").Where(sq.Eq{"{{ colname .PrimaryKey.Col}}": {{ $short }}.{{ .PrimaryKey.Name }}})
 	{{- end }}
 
 	query, args, err := qb.ToSql()
@@ -170,8 +170,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *en
         }
         if pagination.Sort != nil {
             orderStr := pagination.Sort.Field + " "
-            if pagination.Sort.Order != nil {
-                orderStr += *pagination.Sort.Order
+            if pagination.Sort.Direction != nil {
+                orderStr += *pagination.Sort.Direction
             } else {
                 orderStr += "ASC"
             }

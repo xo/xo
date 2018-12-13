@@ -29,6 +29,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"goparamlist":        a.goparamlist,
 		"reniltype":          a.reniltype,
 		"retype":             a.retype,
+		"retypegraphql":      a.retypegraphql,
 		"retypeNull":         a.retypeNull,
 		"shortname":          a.shortname,
 		"convext":            a.convext,
@@ -67,6 +68,25 @@ func (a *ArgType) retype(typ string) string {
 	}
 
 	return prefix + typ
+}
+
+func (a *ArgType) retypegraphql(typ string) string {
+	typ = a.retype(typ)
+	switch typ {
+	case "int":
+		fallthrough
+	case "int64":
+		fallthrough
+	case "sql.NullInt64":
+		typ = "Int"
+	case "string":
+		typ = "String"
+	case "int8":
+		typ = "Boolean"
+	case "time.Time":
+		typ = "Datetime"
+	}
+	return typ
 }
 
 // retype checks typ against known types, and prefixing

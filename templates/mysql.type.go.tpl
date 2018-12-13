@@ -21,3 +21,35 @@ type {{ .Name }}Filter struct {
 {{- end }}
 }
 
+// GraphQL
+/**
+scalar Datetime
+
+type {{ .Name }} {
+{{- range .Fields }}
+    {{ .Name }}: {{ retypegraphql .Type }} {{- if .Col.NotNull }}!{{- end }}
+{{- end }}
+}
+
+type {{ .Name }}Filter {
+{{- range .Fields }}
+    {{ .Name }}: {{ retypegraphql .Type }}
+{{- end }}
+}
+
+input Sort {
+    field: String!
+    direction: String
+}
+
+input Pagination {
+    page:           Int
+    perPage:        Int
+    sort:           Sort
+}
+
+type Query {
+    all{{ .Name }}(filter: {{ .Name }}Filter, pagination: Pagination): [{{ .Name }}!]!
+}
+*/
+

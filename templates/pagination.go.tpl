@@ -5,6 +5,6 @@ type Pagination struct {
 }
 
 type Sort struct {
-	Field string
-	Order *string
+	Field   string
+	Direction *string
 }
