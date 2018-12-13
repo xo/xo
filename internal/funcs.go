@@ -76,8 +76,6 @@ func (a *ArgType) retypegraphql(typ string) string {
 	case "int":
 		fallthrough
 	case "int64":
-		fallthrough
-	case "sql.NullInt64":
 		typ = "Int"
 	case "string":
 		typ = "String"
@@ -85,6 +83,16 @@ func (a *ArgType) retypegraphql(typ string) string {
 		typ = "IntBool"
 	case "time.Time":
 		typ = "Datetime"
+	case "mysql.NullTime":
+		typ = "NullTime"
+	case "sql.NullInt64":
+		typ = "NullInt64"
+	case "sql.NullFloat64":
+		typ = "NullFloat64"
+	case "sql.NullString":
+		typ = "NullString"
+	case "sql.NullBool":
+		typ = "NullBool"
 	}
 	return typ
 }

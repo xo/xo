@@ -7,7 +7,7 @@
 {{- else -}}
 
 type I{{ .RepoName }} interface {
-    Insert({{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
+    Insert({{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     Update({{ $short }} entities.{{ .Name }}) error
     Delete({{ $short }} entities.{{ .Name }}) error
     FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
@@ -29,7 +29,7 @@ func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ lowerfirst .RepoName }} to the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
 {{ if .Table.ManualPk  }}
@@ -69,9 +69,11 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 		return nil, err
 	}
 
-	err = {{ $shortRepo }}.db.Get(&{{ $short }}, fmt.Sprintf("SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = %d", id))
+	new{{ $short }} := entities.{{ .Name }}{}
 
-	return &{{ $short }}, err
+	err = {{ $shortRepo }}.db.Get(&new{{ $short }}, fmt.Sprintf("SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = %d", id))
+
+	return &new{{ $short }}, err
 }
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}

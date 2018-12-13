@@ -36,7 +36,7 @@ func ({{ $short }} {{ $type }}) String() string {
 
 // MarshalGQL implements the graphql.Marshaler interface
 func ({{ $short }} {{ $type }}) MarshalGQL(w io.Writer) {
-	w.Write([]byte({{ $short }}.String()))
+	w.Write([]byte(`"` + {{ $short }}.String() + `"`))
 }
 
 // UnmarshalGQL implements the graphql.Marshaler interface
