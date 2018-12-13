@@ -69,7 +69,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 		return nil, err
 	}
 
-	err = {{ $shortRepo }}.db.Select(&{{ $short }}, fmt.Sprintf("SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = %d", id))
+	err = {{ $shortRepo }}.db.Get(&{{ $short }}, fmt.Sprintf("SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = %d", id))
 
 	return &{{ $short }}, err
 }
