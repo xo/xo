@@ -1,6 +1,6 @@
 type Pagination struct {
-	Page    *uint64
-	PerPage *uint64
+	Page    *int
+	PerPage *int
 	Sort    *Sort
 }
 

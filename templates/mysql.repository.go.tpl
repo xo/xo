@@ -166,7 +166,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *en
     }
     if pagination != nil {
         if pagination.Page != nil && pagination.PerPage != nil {
-            qb = qb.Offset((*pagination.Page - 1) * *pagination.PerPage).Limit(*pagination.PerPage)
+            offset := uint64((*pagination.Page - 1) * *pagination.PerPage)
+            qb = qb.Offset(offset).Limit(uint64(*pagination.PerPage))
         }
         if pagination.Sort != nil {
             orderStr := pagination.Sort.Field + " "

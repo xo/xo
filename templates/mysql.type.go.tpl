@@ -31,7 +31,7 @@ type {{ .Name }} {
 {{- end }}
 }
 
-type {{ .Name }}Filter {
+input {{ .Name }}Filter {
 {{- range .Fields }}
     {{ .Name }}: {{ retypegraphql .Type }}
 {{- end }}
@@ -43,9 +43,9 @@ input Sort {
 }
 
 input Pagination {
-    page:           Int
-    perPage:        Int
-    sort:           Sort
+    page: Int
+    perPage: Int
+    sort: Sort
 }
 
 type Query {
