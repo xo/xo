@@ -119,7 +119,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
             return nil, err
         }
 
-        selectQb := sq.Select("*").From("{{ $table }}")
+        selectQb := selectQb.Select("*").From("{{ $table }}")
         {{- if gt ( len .PrimaryKeyFields ) 1 }}
             selectQb = selectQb.Where(sq.Eq{
                 {{- range .PrimaryKeyFields }}
