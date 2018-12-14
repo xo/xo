@@ -8,7 +8,9 @@
 
 type I{{ .RepoName }} interface {
     Insert({{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
-    Update({{ $short }} entities.{{ .Name }}) error
+    {{- if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
+    Update({{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) error
+    {{- end }}
     Delete({{ $short }} entities.{{ .Name }}) error
     FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
     {{- range .Indexes }}
@@ -78,7 +80,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ lowerfirst .RepoName }} in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update({{ $short }} entities.{{ .Name }}) error {
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update({{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) error {
 		var err error
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -91,7 +93,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
             {{- end }}
             }).Where(sq.Eq{
             {{- range .PrimaryKeyFields }}
-                "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+                "{{ .Col.ColumnName }}": .{{ .Name }},
             {{- end }}
             })
 		{{- else }}
@@ -104,7 +106,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 			    {{- end }}
 			    {{- end }}
             {{- end }}
-            }).Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ $short }}.{{ .PrimaryKey.Name }}})
+            }).Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ .PrimaryKey.Name }}})
 		{{- end }}
 		query, args, err := qb.ToSql()
         if err != nil {
