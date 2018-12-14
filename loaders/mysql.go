@@ -116,7 +116,7 @@ switchDT:
 			typ = "sql.NullBool"
 		}
 
-	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
+	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext", "json":
 		nilVal = `""`
 		typ = "string"
 		if nullable {
@@ -195,8 +195,6 @@ switchDT:
 
 	case "time":
 		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
-		typ = "string"
-	case "json":
 		typ = "string"
 
 	default:
