@@ -106,7 +106,7 @@ func UnmarshalNullString(v interface{}) (sql.NullString, error) {
 func MarshalNullString(v sql.NullString) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
 		if v.Valid {
-			io.WriteString(w, v.String)
+			io.WriteString(w, `"`+v.String`+`)
 		} else {
 			io.WriteString(w, "null")
 		}
