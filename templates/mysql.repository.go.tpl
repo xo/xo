@@ -120,24 +120,24 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
         }
 
         selectQb := sq.Select("*").From("{{ $table }}")
-        {{ if gt ( len .PrimaryKeyFields ) 1 }}
+        {{- if gt ( len .PrimaryKeyFields ) 1 }}
             selectQb = selectQb.Where(sq.Eq{
                 {{- range .PrimaryKeyFields }}
                     "{{ .Col.ColumnName }}": .{{ .Name }},
                 {{- end }}
                 })
-        {{ else }}
+        {{- else }}
             selectQb = selectQb.Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ .PrimaryKey.Name }}})
-        {{ end }}
+        {{- end }}
 
-        query, args, err := qb.ToSql()
+        query, args, err = qb.ToSql()
         if err != nil {
             return nil, err
         }
 
         result := entities.{{ .Name }}{}
-        err := {{ $shortRepo }}.Get(&result, query, args...)
-        return result, err
+        err = {{ $shortRepo }}.db.Get(&result, query, args...)
+        return &result, err
 	}
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
