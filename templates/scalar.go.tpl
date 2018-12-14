@@ -7,6 +7,7 @@ scalar NullInt64
 scalar NullFloat64
 scalar NullString
 scalar NullBool
+scalar Map
 */
 
 func UnmarshalDatetime(v interface{}) (time.Time, error) {
@@ -157,4 +158,23 @@ func UnmarshalNullTime(v interface{}) (mysql.NullTime, error) {
 		return nt, err
 	}
 	return nt, errors.New("time should be a unix timestamp")
+}
+
+func MarshalMap(t map[string]interface{}) graphql.Marshaler {
+	return graphql.WriterFunc(func(w io.Writer) {
+		if bytes, err := json.Marshal(t); err == nil {
+			w.Write(bytes)
+		} else {
+			io.WriteString(w, "null")
+		}
+	})
+}
+
+func UnmarshalMap(v interface{}) (map[string]interface{}, error) {
+	var nt map[string]interface{}
+	if str, ok := v.(string); ok {
+		err := json.Unmarshal([]byte(str), &nt)
+		return nt, err
+	}
+	return nt, errors.New("map should be string")
 }
