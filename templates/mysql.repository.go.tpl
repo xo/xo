@@ -119,7 +119,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
             return nil, err
         }
 
-        selectQb := selectQb.Select("*").From("{{ $table }}")
+        selectQb := sq.Select("*").From("{{ $table }}")
         {{- if gt ( len .PrimaryKeyFields ) 1 }}
             selectQb = selectQb.Where(sq.Eq{
                 {{- range .PrimaryKeyFields }}
@@ -130,7 +130,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
             selectQb = selectQb.Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ .PrimaryKey.Name }}})
         {{- end }}
 
-        query, args, err = qb.ToSql()
+        query, args, err = selectQb.ToSql()
         if err != nil {
             return nil, err
         }
