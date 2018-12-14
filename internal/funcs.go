@@ -597,7 +597,11 @@ func (a *ArgType) goparamlist(fields []*Field, addPrefix bool, addType bool, ign
 
 		// add the go type
 		if addType {
-			s += " " + a.retype(f.Type)
+			typeStr := a.retype(f.Type)
+			if f.Col.IsEnum {
+				typeStr = "entities." + typeStr
+			}
+			s += " " + typeStr
 		}
 
 		// add to vals
