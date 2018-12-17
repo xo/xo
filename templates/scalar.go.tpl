@@ -55,7 +55,7 @@ func MarshalNullInt64(v sql.NullInt64) graphql.Marshaler {
 	})
 }
 
-func UnmarshalNullFloat(v interface{}) (sql.NullFloat64, error) {
+func UnmarshalNullFloat64(v interface{}) (sql.NullFloat64, error) {
 	nullFloat64 := sql.NullFloat64{}
 	if v == nil {
 		return nullFloat64, nil
@@ -68,7 +68,7 @@ func UnmarshalNullFloat(v interface{}) (sql.NullFloat64, error) {
 	return nullFloat64, errors.New("value is not float64")
 }
 
-func MarshalNullFloat(v sql.NullFloat64) graphql.Marshaler {
+func MarshalNullFloat64(v sql.NullFloat64) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
 		if v.Valid {
 			io.WriteString(w, fmt.Sprint(v.Float64))
