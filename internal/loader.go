@@ -337,6 +337,16 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		err = args.ExecuteTemplate(SchemaGraphQLEnumTemplate, "schema", "", e)
+		if err != nil {
+			return nil, err
+		}
+
+		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", "", e)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return enumMap, nil
@@ -477,7 +487,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 		// create template
 		typeTpl := &Type{
 			Name:     SingularizeIdentifier(ti.TableName),
-			RepoName: SingularizeIdentifier(ti.TableName+"_repository"),
+			RepoName: SingularizeIdentifier(ti.TableName + "_repository"),
 			Schema:   args.Schema,
 			RelType:  relType,
 			Fields:   []*Field{},
@@ -499,6 +509,28 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 		if err != nil {
 			return nil, err
 		}
+
+		err = args.ExecuteTemplate(SchemaGraphQLTemplate, "schema", "", t)
+		if err != nil {
+			return nil, err
+		}
+
+		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", "", t)
+		if err != nil {
+			return nil, err
+		}
+		tmpName := t.Name
+		t.Name += "Filter"
+		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", "", t)
+		if err != nil {
+			return nil, err
+		}
+		t.Name = tmpName + "Create"
+		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", "", t)
+		if err != nil {
+			return nil, err
+		}
+		t.Name = tmpName
 	}
 
 	return tableMap, nil

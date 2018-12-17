@@ -38,10 +38,14 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hascolumn":          a.hascolumn,
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
+		"entitiespkg":        func() string { return a.EntitiesPkg },
 	}
 }
 
 func (a *ArgType) lowerfirst(name string) string {
+	if len(name) == 0 || strings.HasPrefix(name, "ID") {
+		return name
+	}
 	return strings.ToLower(name[0:1]) + name[1:]
 }
 

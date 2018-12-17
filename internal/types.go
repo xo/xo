@@ -20,6 +20,9 @@ const (
 	XOTemplate
 	PaginationTemplate
 	ScalarTemplate
+	SchemaGraphQLTemplate
+	SchemaGraphQLEnumTemplate
+	GqlgenModelTemplate
 )
 
 // String returns the name for the associated template type.
@@ -48,6 +51,12 @@ func (tt TemplateType) String() string {
 		s = "pagination"
 	case ScalarTemplate:
 		s = "scalar"
+	case SchemaGraphQLTemplate:
+		s = "schema.graphql"
+	case SchemaGraphQLEnumTemplate:
+		s = "schema.graphql.enum"
+	case GqlgenModelTemplate:
+		s = "gqlgen.yml.model"
 	default:
 		panic("unknown TemplateType")
 	}

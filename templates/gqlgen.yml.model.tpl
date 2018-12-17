@@ -1,0 +1,2 @@
+  {{ .Name }}:
+    model: {{ entitiespkg }}.{{ .Name }}

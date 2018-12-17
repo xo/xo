@@ -64,6 +64,15 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)
+	if tt == SchemaGraphQLTemplate {
+		templateName = "schema.graphql.tpl"
+	}
+	if tt == SchemaGraphQLEnumTemplate {
+		templateName = "schema.graphql.enum.tpl"
+	}
+	if tt == GqlgenModelTemplate {
+		templateName = "gqlgen.yml.model.tpl"
+	}
 
 	// execute template
 	err = a.TemplateSet().Execute(v.Buf, templateName, obj)

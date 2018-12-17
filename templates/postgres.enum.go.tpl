@@ -1,15 +1,6 @@
 {{- $type := .Name -}}
 {{- $short := (shortname $type "enumVal" "text" "buf" "ok" "src") -}}
 {{- $reverseNames := .ReverseConstNames -}}
-// GraphQL
-/**
-enum {{ $type }} {
-{{- range .Values }}
-    {{ .Val.EnumValue }}
-{{- end }}
-}
-*/
-
 // {{ $type }} is the '{{ .Enum.EnumName }}' enum type from schema '{{ .Schema  }}'.
 type {{ $type }} uint16
 

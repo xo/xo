@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/knq/snaker"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -90,6 +91,12 @@ func main() {
 	//}
 
 	err = args.ExecuteTemplate(internal.PaginationTemplate, "pagination", "", args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	err = args.ExecuteTemplate(internal.ScalarTemplate, "scalar", "", args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -214,6 +221,10 @@ func processArgs(args *internal.ArgType) error {
 		}
 	}
 
+	if args.EntitiesPkg == "" {
+		log.Fatal("--entities-pkg: entities package is required")
+	}
+
 	return nil
 }
 
@@ -259,7 +270,14 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	oldArgPkg := args.Package
 
 	// determine filename
-	var filename = strings.ToLower(snaker.CamelToSnake(t.Name)) + args.Suffix
+	var filename = strings.ToLower(snaker.CamelToSnake(t.Name))
+	if t.TemplateType == internal.SchemaGraphQLTemplate || t.TemplateType == internal.SchemaGraphQLEnumTemplate {
+		filename += ".graphql"
+	} else if t.TemplateType == internal.GqlgenModelTemplate {
+		filename += ".yml"
+	} else {
+		filename += args.Suffix
+	}
 	if t.TemplateType == internal.RepositoryTemplate || t.TemplateType == internal.IndexTemplate || t.TemplateType == internal.ForeignKeyTemplate {
 		args.Package = "repositories"
 		filename = "repositories/" + filename
@@ -308,10 +326,22 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 			f.WriteString(`// +build ` + args.Tags + "\n\n")
 		}
 
-		// execute
-		err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
-		if err != nil {
-			return nil, err
+		if strings.HasSuffix(filename, ".go") {
+			// execute
+			err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
+			if err != nil {
+				return nil, err
+			}
+		} else if strings.HasSuffix(filename, ".graphql") {
+			err = args.TemplateSet().Execute(f, "schema.graphql.scalar.tpl", args)
+			if err != nil {
+				return nil, err
+			}
+		} else if strings.HasSuffix(filename, ".yml") {
+			err = args.TemplateSet().Execute(f, "gqlgen.yml.tpl", args)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -370,7 +400,9 @@ func writeTypes(args *internal.ArgType) error {
 	// build goimports parameters, closing files
 	params := []string{"-w"}
 	for k, f := range files {
-		params = append(params, k)
+		if strings.HasSuffix(f.Name(), ".go") {
+			params = append(params, k)
+		}
 
 		// close
 		err = f.Close()
