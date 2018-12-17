@@ -7,14 +7,14 @@
 {{- else -}}
 
 type I{{ .RepoName }} interface {
-    Insert({{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
+    Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     {{- if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
-    Update({{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
+    Update{{ .Name }}(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     {{- end }}
-    Delete({{ $short }} entities.{{ .Name }}) error
-    FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
+    Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
+    FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
     {{- range .Indexes }}
-    {{ .FuncName }}({{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
+    {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
     {{- end }}
 }
 
@@ -31,7 +31,7 @@ func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ lowerfirst .RepoName }} to the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
 {{ if .Table.ManualPk  }}
@@ -80,7 +80,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ lowerfirst .RepoName }} in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update({{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 		var err error
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -144,7 +144,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert({{ $short }} entities
 {{ end }}
 
 // Delete deletes the {{ lowerfirst .RepoName }} from the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities.{{ .Name }}) error {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
@@ -168,7 +168,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete({{ $short }} entities
     return err
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll({{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
     qb := sq.Select("*").From("{{ $table }}")
     if {{$short}}Filter != nil {
         {{- range .Fields }}
