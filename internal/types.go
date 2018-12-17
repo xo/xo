@@ -22,6 +22,7 @@ const (
 	ScalarTemplate
 	SchemaGraphQLTemplate
 	SchemaGraphQLEnumTemplate
+	SchemaGraphQLScalarTemplate
 	GqlgenModelTemplate
 )
 
@@ -55,6 +56,8 @@ func (tt TemplateType) String() string {
 		s = "schema.graphql"
 	case SchemaGraphQLEnumTemplate:
 		s = "schema.graphql.enum"
+	case SchemaGraphQLScalarTemplate:
+		s = "schema.graphql.scalar"
 	case GqlgenModelTemplate:
 		s = "gqlgen.yml.model"
 	default:

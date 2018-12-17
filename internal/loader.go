@@ -338,7 +338,7 @@ func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
 			return nil, err
 		}
 
-		err = args.ExecuteTemplate(SchemaGraphQLEnumTemplate, "schema", "", e)
+		err = args.ExecuteTemplate(SchemaGraphQLEnumTemplate, e.Name, "", e)
 		if err != nil {
 			return nil, err
 		}
@@ -510,7 +510,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 			return nil, err
 		}
 
-		err = args.ExecuteTemplate(SchemaGraphQLTemplate, "schema", "", t)
+		err = args.ExecuteTemplate(SchemaGraphQLTemplate, t.Name, "", t)
 		if err != nil {
 			return nil, err
 		}

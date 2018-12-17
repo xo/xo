@@ -39,6 +39,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
 		"entitiespkg":        func() string { return a.EntitiesPkg },
+		"allschemas":         func() []string { return schemas },
 	}
 }
 
