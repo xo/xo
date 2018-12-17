@@ -1,15 +1,3 @@
-// GraphQL
-/**
-scalar Datetime
-scalar IntBool
-scalar NullTime
-scalar NullInt64
-scalar NullFloat64
-scalar NullString
-scalar NullBool
-scalar Map
-*/
-
 func UnmarshalDatetime(v interface{}) (time.Time, error) {
 	if str, ok := v.(string); ok {
 		layout := "2006-01-02 15:04:05"
