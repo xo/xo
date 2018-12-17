@@ -86,6 +86,8 @@ func (a *ArgType) retypegraphql(typ string) string {
 		typ = "String"
 	case "int8":
 		typ = "IntBool"
+	case "bool":
+		typ = "Boolean"
 	case "time.Time":
 		typ = "Datetime"
 	case "mysql.NullTime":
