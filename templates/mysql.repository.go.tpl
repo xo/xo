@@ -36,7 +36,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields "CreatedAt" "UpdatedAt" }}).
+	qb := sq.Insert("`{{ $table }}`").Columns({{ colnameswrap .Fields "CreatedAt" "UpdatedAt" }}).
 	    Values({{ fieldnames .Fields $short "CreatedAt" "UpdatedAt" }})
     query, args, err := qb.ToSql()
 	if err != nil {
@@ -51,7 +51,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := sq.Insert("{{ $table }}").Columns({{ colnameswrap .Fields .PrimaryKey.Name "CreatedAt" "UpdatedAt" }}).
+	qb := sq.Insert("`{{ $table }}`").Columns({{ colnameswrap .Fields .PrimaryKey.Name "CreatedAt" "UpdatedAt" }}).
 	    Values({{ fieldnames .Fields $short .PrimaryKey.Name "CreatedAt" "UpdatedAt" }})
 	query, args, err := qb.ToSql()
 	if err != nil {
@@ -85,28 +85,28 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
 			// sql query with composite primary key
-			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
+			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
             {{- range .Fields }}
                 {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
-                "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+                "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
                 {{- end }}
             {{- end }}
             }).Where(sq.Eq{
             {{- range .PrimaryKeyFields }}
-                "{{ .Col.ColumnName }}": .{{ .Name }},
+                "`{{ .Col.ColumnName }}`": .{{ .Name }},
             {{- end }}
             })
 		{{- else }}
 			// sql query
-			qb := sq.Update("{{ $table }}").SetMap(map[string]interface{}{
+			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
 			{{- range .Fields }}
 			    {{- if ne .Name $primaryKey.Name }}
 			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
-			    "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+			    "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
 			    {{- end }}
 			    {{- end }}
             {{- end }}
-            }).Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ .PrimaryKey.Name }}})
+            }).Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ .PrimaryKey.Name }}})
 		{{- end }}
 		query, args, err := qb.ToSql()
         if err != nil {
@@ -119,15 +119,15 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
             return nil, err
         }
 
-        selectQb := sq.Select("*").From("{{ $table }}")
+        selectQb := sq.Select("*").From("`{{ $table }}`")
         {{- if gt ( len .PrimaryKeyFields ) 1 }}
             selectQb = selectQb.Where(sq.Eq{
                 {{- range .PrimaryKeyFields }}
-                    "{{ .Col.ColumnName }}": .{{ .Name }},
+                    "`{{ .Col.ColumnName }}`": .{{ .Name }},
                 {{- end }}
                 })
         {{- else }}
-            selectQb = selectQb.Where(sq.Eq{"{{ .PrimaryKey.Col.ColumnName }}": {{ .PrimaryKey.Name }}})
+            selectQb = selectQb.Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ .PrimaryKey.Name }}})
         {{- end }}
 
         query, args, err = selectQb.ToSql()
@@ -148,14 +148,14 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
-		qb := sq.Delete("{{ $table }}").Where(sq.Eq{
+		qb := sq.Delete("`{{ $table }}`").Where(sq.Eq{
         {{- range .PrimaryKeyFields }}
-            "{{ .Col.ColumnName }}": {{ $short }}.{{ .Name }},
+            "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
         {{- end }}
         })
 	{{- else }}
 		// sql query
-		qb := sq.Delete("{{ $table }}").Where(sq.Eq{"{{ colname .PrimaryKey.Col}}": {{ $short }}.{{ .PrimaryKey.Name }}})
+		qb := sq.Delete("`{{ $table }}`").Where(sq.Eq{"`{{ colname .PrimaryKey.Col}}`": {{ $short }}.{{ .PrimaryKey.Name }}})
 	{{- end }}
 
 	query, args, err := qb.ToSql()
@@ -169,21 +169,21 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
-    qb := sq.Select("*").From("{{ $table }}")
+    qb := sq.Select("*").From("`{{ $table }}`")
     if {{$short}}Filter != nil {
         {{- range .Fields }}
             {{- if .Col.NotNull }}
             if ({{ $short }}Filter.{{ .Name }} != nil) {
-                qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": &{{ $short }}Filter.{{ .Name }}})
+                qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": &{{ $short }}Filter.{{ .Name }}})
             }
             {{- else }}
                 {{- if .Col.IsEnum }}
                 if ({{ $short }}Filter.{{ .Name }} != nil) {
-                    qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+                    qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": {{ $short }}Filter.{{ .Name }}})
                 }
                 {{- else }}
                 if {{ $short }}Filter.{{ .Name }}.Valid {
-                    qb = qb.Where(sq.Eq{"{{ .Col.ColumnName }}": {{ $short }}Filter.{{ .Name }}})
+                    qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": {{ $short }}Filter.{{ .Name }}})
                 }
                 {{- end }}
             {{- end }}
