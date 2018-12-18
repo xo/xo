@@ -9,7 +9,8 @@
 type I{{ .RepoName }} interface {
     Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     {{- if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
-    Update{{ .Name }}(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
+    Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
+    Update{{ .Name }}By{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
     {{- end }}
     Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
     FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
@@ -80,7 +81,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ lowerfirst .RepoName }} in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 		var err error
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -139,6 +140,66 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         err = {{ $shortRepo }}.Db.Get(&result, query, args...)
         return &result, err
 	}
+
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
+    		var err error
+
+    		{{ if gt ( len .PrimaryKeyFields ) 1 }}
+    			// sql query with composite primary key
+    			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
+                {{- range .Fields }}
+                    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+                    "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
+                    {{- end }}
+                {{- end }}
+                }).Where(sq.Eq{
+                {{- range .PrimaryKeyFields }}
+                    "`{{ .Col.ColumnName }}`": {{ $short}}.{{ .Name }},
+                {{- end }}
+                })
+    		{{- else }}
+    			// sql query
+    			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
+    			{{- range .Fields }}
+    			    {{- if ne .Name $primaryKey.Name }}
+    			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+    			    "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
+    			    {{- end }}
+    			    {{- end }}
+                {{- end }}
+                }).Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ $short}}.{{ .PrimaryKey.Name }}})
+    		{{- end }}
+    		query, args, err := qb.ToSql()
+            if err != nil {
+                return nil, err
+            }
+
+            // run query
+            _, err = {{ $shortRepo }}.Db.Exec(query, args...)
+            if err != nil {
+                return nil, err
+            }
+
+            selectQb := sq.Select("*").From("`{{ $table }}`")
+            {{- if gt ( len .PrimaryKeyFields ) 1 }}
+                selectQb = selectQb.Where(sq.Eq{
+                    {{- range .PrimaryKeyFields }}
+                        "`{{ .Col.ColumnName }}`": {{ $short}}.{{ .Name }},
+                    {{- end }}
+                    })
+            {{- else }}
+                selectQb = selectQb.Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ $short}}.{{ .PrimaryKey.Name }}})
+            {{- end }}
+
+            query, args, err = selectQb.ToSql()
+            if err != nil {
+                return nil, err
+            }
+
+            result := entities.{{ .Name }}{}
+            err = {{ $shortRepo }}.Db.Get(&result, query, args...)
+            return &result, err
+    	}
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
 {{ end }}
