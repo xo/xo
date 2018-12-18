@@ -24,6 +24,7 @@ const (
 	SchemaGraphQLEnumTemplate
 	SchemaGraphQLScalarTemplate
 	GqlgenModelTemplate
+	WireTemplate
 )
 
 // String returns the name for the associated template type.
@@ -60,6 +61,8 @@ func (tt TemplateType) String() string {
 		s = "schema.graphql.scalar"
 	case GqlgenModelTemplate:
 		s = "gqlgen.yml.model"
+	case WireTemplate:
+		s = "wire"
 	default:
 		panic("unknown TemplateType")
 	}

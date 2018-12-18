@@ -21,13 +21,13 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 	// run query
 {{- if .Index.IsUnique }}
 	{{ $short }} := entities.{{ .Type.Name }}{}
-	err = {{ $shortRepo }}.db.Get(&{{ $short }}, query, args...)
+	err = {{ $shortRepo }}.Db.Get(&{{ $short }}, query, args...)
     if err != nil {
         return nil, err
     }
 {{- else }}
     var {{ $short }} []*entities.{{ .Type.Name }}
-    err = {{ $shortRepo }}.db.Select(&{{ $short }}, query, args...)
+    err = {{ $shortRepo }}.Db.Select(&{{ $short }}, query, args...)
     if err != nil {
         return nil, err
     }

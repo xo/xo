@@ -108,6 +108,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	err = args.ExecuteTemplate(internal.WireTemplate, "wire", "", args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
 	// output
 	err = writeTypes(args)
 	if err != nil {
@@ -275,6 +281,8 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 		filename += ".graphql"
 	} else if t.TemplateType == internal.GqlgenModelTemplate {
 		filename += ".yml"
+	} else if t.TemplateType == internal.WireTemplate {
+		filename += ".go"
 	} else {
 		filename += args.Suffix
 	}
@@ -286,6 +294,8 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 		filename = "graphql/schema/" + filename
 	} else if t.TemplateType == internal.GqlgenModelTemplate {
 		filename = "graphql/" + filename
+	} else if t.TemplateType == internal.WireTemplate {
+		args.Package = "main"
 	} else {
 		args.Package = "entities"
 		filename = "entities/" + filename
@@ -306,8 +316,13 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 
 	// stat file to determine if file already exists
 	fi, err := os.Stat(filename)
-	if err == nil && fi.IsDir() {
-		return nil, errors.New("filename cannot be directory")
+	if err == nil {
+		if fi.IsDir() {
+			return nil, errors.New("filename cannot be directory")
+		} else if strings.HasSuffix(filename, "wire.go") {
+			fmt.Println("skip wire.go")
+			return nil, nil
+		}
 	} else if _, ok = err.(*os.PathError); !ok && args.Append && t.TemplateType != internal.XOTemplate {
 		// file exists so append if append is set and not XO type
 		mode = os.O_APPEND | os.O_WRONLY
@@ -332,10 +347,16 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 		}
 
 		if strings.HasSuffix(filename, ".go") {
-			// execute
-			err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
-			if err != nil {
-				return nil, err
+			if strings.HasSuffix(filename, "wire.go") {
+				if _, err = f.WriteString("//+build wireinject\n\npackage main"); err != nil {
+					return nil, err
+				}
+			} else {
+				// execute
+				err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
+				if err != nil {
+					return nil, err
+				}
 			}
 		} else if strings.HasSuffix(filename, ".yml") {
 			err = args.TemplateSet().Execute(f, "gqlgen.yml.tpl", args)

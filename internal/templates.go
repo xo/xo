@@ -14,6 +14,7 @@ import (
 )
 
 var schemas []string
+var reponames []string
 
 // TemplateLoader loads templates from the specified name.
 func (a *ArgType) TemplateLoader(name string) ([]byte, error) {
@@ -68,6 +69,9 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)
+	if tt == RepositoryTemplate {
+		reponames = append(reponames, name)
+	}
 	if tt == SchemaGraphQLTemplate {
 		templateName = "schema.graphql.tpl"
 		schemas = append(schemas, strings.ToLower(snaker.CamelToSnake(name)))
@@ -82,6 +86,9 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 	}
 	if tt == GqlgenModelTemplate {
 		templateName = "gqlgen.yml.model.tpl"
+	}
+	if tt == WireTemplate {
+		templateName = "wire.go.tpl"
 	}
 
 	// execute template

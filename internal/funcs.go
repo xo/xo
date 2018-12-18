@@ -40,6 +40,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"getstartcount":      a.getstartcount,
 		"entitiespkg":        func() string { return a.EntitiesPkg },
 		"allschemas":         func() []string { return schemas },
+		"reponames":          func() []string { return reponames },
 	}
 }
 

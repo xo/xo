@@ -18,14 +18,14 @@ type I{{ .RepoName }} interface {
     {{- end }}
 }
 
+func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
+    return &{{ lowerfirst .RepoName }}{Db: db}
+}
+
 // {{ lowerfirst .RepoName }} represents a row from '{{ $table }}'.
 {{- end }}
 type {{ lowerfirst .RepoName }} struct {
-    db *sqlx.DB
-}
-
-func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
-    return &{{ lowerfirst .RepoName }}{db: db}
+    Db *sqlx.DB
 }
 
 {{ if .PrimaryKey }}
@@ -44,7 +44,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
 	// run query
-	res, err = {{ $shortRepo }}.db.Exec(query, args...)
+	res, err = {{ $shortRepo }}.Db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
 	// run query
-	res, err := {{ $shortRepo }}.db.Exec(query, args...)
+	res, err := {{ $shortRepo }}.Db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 	new{{ $short }} := entities.{{ .Name }}{}
 
-	err = {{ $shortRepo }}.db.Get(&new{{ $short }}, "SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = ?", id)
+	err = {{ $shortRepo }}.Db.Get(&new{{ $short }}, "SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = ?", id)
 
 	return &new{{ $short }}, err
 }
@@ -114,7 +114,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         }
 
         // run query
-        _, err = {{ $shortRepo }}.db.Exec(query, args...)
+        _, err = {{ $shortRepo }}.Db.Exec(query, args...)
         if err != nil {
             return nil, err
         }
@@ -136,7 +136,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         }
 
         result := entities.{{ .Name }}{}
-        err = {{ $shortRepo }}.db.Get(&result, query, args...)
+        err = {{ $shortRepo }}.Db.Get(&result, query, args...)
         return &result, err
 	}
 {{ else }}
@@ -164,7 +164,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     }
 
     // run query
-    _, err = {{ $shortRepo }}.db.Exec(query, args...)
+    _, err = {{ $shortRepo }}.Db.Exec(query, args...)
     return err
 }
 
@@ -210,7 +210,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     if err != nil {
         return []entities.{{ .Name }}{}, err
     }
-    err = {{ $shortRepo }}.db.Select(&list, query, args...)
+    err = {{ $shortRepo }}.Db.Select(&list, query, args...)
 
     return list, err
 }
