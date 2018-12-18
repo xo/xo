@@ -1,4 +1,4 @@
-// Sample code, dont use
+// You can customize this file, wont be replace
 type AllRepositories struct {
     {{- range $k, $v := reponames }}
     repositories.I{{ $v }}
