@@ -506,6 +506,9 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 
 	// generate table templates
 	for _, t := range tableMap {
+		if t.Table.TableName == "goose_db_version" {
+			continue
+		}
 		err = args.ExecuteTemplate(TypeTemplate, t.Name, "", t)
 		if err != nil {
 			return nil, err
@@ -542,6 +545,9 @@ func (tl TypeLoader) LoadRepositories(args *ArgType, tableMap map[string]*Type, 
 	var err error
 	// generate table templates
 	for _, t := range tableMap {
+		if t.Table.TableName == "goose_db_version" {
+			continue
+		}
 		ixMap := indexes[t]
 
 		var keys []string

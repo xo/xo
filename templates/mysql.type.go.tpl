@@ -1,5 +1,5 @@
 {{- $short := (shortname .Name "err" "res" "sqlstr" "db" "XOLog") -}}
-{{- $table := (schema .Schema .Table.TableName) -}}
+{{- $table := (schema .Table.TableName) -}}
 {{- $tableVar := .Table }}
 {{- $primaryKey := .PrimaryKey }}
 {{- if .Comment -}}

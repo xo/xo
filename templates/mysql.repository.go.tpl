@@ -31,7 +31,7 @@ type {{ lowerfirst .RepoName }} struct {
 
 {{ if .PrimaryKey }}
 
-// Insert inserts the {{ lowerfirst .RepoName }} to the database.
+// Insert inserts the {{ .Name }}Create to the database.
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
@@ -80,7 +80,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 }
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
-	// Update updates the {{ lowerfirst .RepoName }} in the database.
+	// Update updates the {{ .Name }}Create in the database.
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 		var err error
 
@@ -141,6 +141,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         return &result, err
 	}
 
+    // Update updates the {{ .Name }} in the database.
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
     		var err error
 
@@ -204,7 +205,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	// Update statements omitted due to lack of fields other than primary key
 {{ end }}
 
-// Delete deletes the {{ lowerfirst .RepoName }} from the database.
+// Delete deletes the {{ .Name }} from the database.
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
 	var err error
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
