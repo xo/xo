@@ -59,7 +59,7 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 
 	// build template name
 	loaderType := ""
-	if tt != XOTemplate && tt != PaginationTemplate && tt != ScalarTemplate {
+	if tt != XOTemplate && tt != PaginationTemplate && tt != PaginationSchemaTemplate && tt != ScalarTemplate {
 		if a.LoaderType == "oci8" || a.LoaderType == "ora" {
 			// force oracle for oci8 since the oracle driver doesn't recognize
 			// 'oracle' as valid protocol

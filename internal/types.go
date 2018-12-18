@@ -19,6 +19,7 @@ const (
 	// always last
 	XOTemplate
 	PaginationTemplate
+	PaginationSchemaTemplate
 	ScalarTemplate
 	SchemaGraphQLTemplate
 	SchemaGraphQLEnumTemplate
@@ -51,6 +52,8 @@ func (tt TemplateType) String() string {
 		s = "query"
 	case PaginationTemplate:
 		s = "pagination"
+	case PaginationSchemaTemplate:
+		s = "pagination.schema"
 	case ScalarTemplate:
 		s = "scalar"
 	case SchemaGraphQLTemplate:

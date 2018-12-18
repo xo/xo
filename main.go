@@ -96,6 +96,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	err = args.ExecuteTemplate(internal.PaginationSchemaTemplate, "pagination", "", args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
 	err = args.ExecuteTemplate(internal.ScalarTemplate, "scalar", "", args)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
@@ -277,7 +283,7 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 
 	// determine filename
 	var filename = strings.ToLower(snaker.CamelToSnake(t.Name))
-	if t.TemplateType == internal.SchemaGraphQLTemplate || t.TemplateType == internal.SchemaGraphQLEnumTemplate || t.TemplateType == internal.SchemaGraphQLScalarTemplate {
+	if t.TemplateType == internal.SchemaGraphQLTemplate || t.TemplateType == internal.SchemaGraphQLEnumTemplate || t.TemplateType == internal.SchemaGraphQLScalarTemplate || t.TemplateType == internal.PaginationSchemaTemplate {
 		filename += ".graphql"
 	} else if t.TemplateType == internal.GqlgenModelTemplate {
 		filename += ".yml"
@@ -289,7 +295,7 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	if t.TemplateType == internal.RepositoryTemplate || t.TemplateType == internal.IndexTemplate || t.TemplateType == internal.ForeignKeyTemplate {
 		args.Package = "repositories"
 		filename = "repositories/" + filename
-	} else if t.TemplateType == internal.SchemaGraphQLTemplate || t.TemplateType == internal.SchemaGraphQLEnumTemplate || t.TemplateType == internal.SchemaGraphQLScalarTemplate {
+	} else if t.TemplateType == internal.SchemaGraphQLTemplate || t.TemplateType == internal.SchemaGraphQLEnumTemplate || t.TemplateType == internal.SchemaGraphQLScalarTemplate || t.TemplateType == internal.PaginationSchemaTemplate {
 		args.Package = "schema"
 		filename = "graphql/schema/" + filename
 	} else if t.TemplateType == internal.GqlgenModelTemplate {
