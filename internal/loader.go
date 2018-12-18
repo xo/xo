@@ -727,6 +727,9 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 
 	ixMap := map[string]*Index{}
 	for _, t := range tableMap {
+		if t.Table.TableName == "goose_db_version" {
+			continue
+		}
 		// load table indexes
 		_ixMap := map[string]*Index{}
 		err = tl.LoadTableIndexes(args, t, _ixMap)
