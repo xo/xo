@@ -13,7 +13,7 @@ import (
 	templates "github.com/JLightning/xo/tplbin"
 )
 
-var schemas []string
+var schemas []string = []string{"pagination"}
 var reponames []string
 
 // TemplateLoader loads templates from the specified name.
