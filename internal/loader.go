@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -537,17 +538,21 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 }
 
 // LoadRelkind loads a schema table/view definition.
-func (tl TypeLoader) LoadRepositories(args *ArgType, tableMap map[string]*Type, indexes map[string]*Index) error {
+func (tl TypeLoader) LoadRepositories(args *ArgType, tableMap map[string]*Type, indexes map[*Type]map[string]*Index) error {
 	var err error
 	// generate table templates
 	for _, t := range tableMap {
-		ixMap := map[string]*Index{}
-		err = tl.LoadTableIndexes(args, t, ixMap)
-		if err != nil {
-			return err
+		ixMap := indexes[t]
+
+		var keys []string
+		for k := range ixMap {
+			keys = append(keys, k)
 		}
-		for _, ix := range ixMap {
-			t.Indexes = append(t.Indexes, ix)
+
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			t.Indexes = append(t.Indexes, ixMap[k])
 		}
 		err = args.ExecuteTemplate(RepositoryTemplate, t.RepoName, "", t)
 		if err != nil {
@@ -710,27 +715,41 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 }
 
 // LoadIndexes loads schema index definitions.
-func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[string]*Index, error) {
+func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[*Type]map[string]*Index, error) {
 	var err error
+	result := map[*Type]map[string]*Index{}
 
 	ixMap := map[string]*Index{}
 	for _, t := range tableMap {
 		// load table indexes
-		err = tl.LoadTableIndexes(args, t, ixMap)
+		_ixMap := map[string]*Index{}
+		err = tl.LoadTableIndexes(args, t, _ixMap)
 		if err != nil {
 			return nil, err
 		}
+		result[t] = _ixMap
+		for k, v := range _ixMap {
+			ixMap[k] = v
+		}
 	}
 
+	var keys []string
+	for k := range ixMap {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
 	// generate templates
-	for _, ix := range ixMap {
+	for _, k := range keys {
+		ix := ixMap[k]
 		err = args.ExecuteTemplate(IndexTemplate, ix.Type.RepoName, ix.Index.IndexName, ix)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return ixMap, nil
+	return result, nil
 }
 
 // LoadTableIndexes loads schema index definitions per table.
