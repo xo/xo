@@ -10,10 +10,11 @@ type I{{ .RepoName }} interface {
     Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     {{- if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
     Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
-    Update{{ .Name }}By{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
+    Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
     {{- end }}
     Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
     FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
+    FindAll{{ .Name }}Meta(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.ListMetadata, error)
     {{- range .Indexes }}
     {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
     {{- end }}
@@ -142,7 +143,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
     // Update updates the {{ .Name }} in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
     		var err error
 
     		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -230,8 +231,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     return err
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
-    qb := sq.Select("*").From("`{{ $table }}`")
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}Query(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination, fields string) (string, []interface{},  error) {
+    qb := sq.Select(fields).From("`{{ $table }}`")
     if {{$short}}Filter != nil {
         {{- range .Fields }}
             {{- if .Col.NotNull }}
@@ -267,14 +268,29 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
         }
     }
 
+    return qb.ToSql()
+}
+
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
     var list []entities.{{ .Name }}
-    query, args, err := qb.ToSql()
+    query, args, err := {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "*")
     if err != nil {
         return []entities.{{ .Name }}{}, err
     }
     err = {{ $shortRepo }}.Db.Select(&list, query, args...)
 
     return list, err
+}
+
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}Meta(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.ListMetadata, error) {
+    var listMeta entities.ListMetadata
+    query, args, err := {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "COUNT(*) AS count")
+    if err != nil {
+        return listMeta, err
+    }
+    err = {{ $shortRepo }}.Db.Get(&listMeta, query, args...)
+
+    return listMeta, err
 }
 {{- end }}
 

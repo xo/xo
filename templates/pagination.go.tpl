@@ -5,6 +5,10 @@ type Pagination struct {
 }
 
 type Sort struct {
-	Field   string
-	Direction *string
+	Field       string
+	Direction   *string
+}
+
+type ListMetadata struct {
+    Count int `db:"count"`
 }
