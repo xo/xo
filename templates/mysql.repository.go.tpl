@@ -35,10 +35,10 @@ type {{ lowerfirst .RepoName }} struct {
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
-	var db db_manager.DbInterface
-    db = db_manager.GetTransactionContext(ctx)
-    if db == nil {
-        db = {{ $shortRepo }}.Db
+	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    tx := db_manager.GetTransactionContext(ctx)
+    if tx != nil {
+        db = tx
     }
 
 {{ if .Table.ManualPk  }}
@@ -90,10 +90,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 		var err error
 
-		var db db_manager.DbInterface
-        db = db_manager.GetTransactionContext(ctx)
-        if db == nil {
-            db = {{ $shortRepo }}.Db
+		var db db_manager.DbInterface = {{ $shortRepo }}.Db
+        tx := db_manager.GetTransactionContext(ctx)
+        if tx != nil {
+            db = tx
         }
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -157,10 +157,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
     		var err error
 
-    		var db db_manager.DbInterface
-            db = db_manager.GetTransactionContext(ctx)
-            if db == nil {
-                db = {{ $shortRepo }}.Db
+    		var db db_manager.DbInterface = {{ $shortRepo }}.Db
+            tx := db_manager.GetTransactionContext(ctx)
+            if tx != nil {
+                db = tx
             }
 
     		{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -227,10 +227,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
 	var err error
 
-	var db db_manager.DbInterface
-    db = db_manager.GetTransactionContext(ctx)
-    if db == nil {
-        db = {{ $shortRepo }}.Db
+	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    tx := db_manager.GetTransactionContext(ctx)
+    if tx != nil {
+        db = tx
     }
 
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
@@ -292,10 +292,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
-    var db db_manager.DbInterface
-    db = db_manager.GetTransactionContext(ctx)
-    if db == nil {
-        db = {{ $shortRepo }}.Db
+    var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    tx := db_manager.GetTransactionContext(ctx)
+    if tx != nil {
+        db = tx
     }
 
     qb := {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "*")

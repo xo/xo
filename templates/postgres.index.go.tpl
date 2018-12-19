@@ -7,10 +7,10 @@
 func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error) {
 	var err error
 
-	var db db_manager.DbInterface
-    db = db_manager.GetTransactionContext(ctx)
-    if db == nil {
-        db = {{ $shortRepo }}.Db
+	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    tx := db_manager.GetTransactionContext(ctx)
+    if tx != nil {
+        db = tx
     }
 
 	// sql query
