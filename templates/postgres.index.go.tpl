@@ -7,6 +7,12 @@
 func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error) {
 	var err error
 
+	var db db_manager.DbInterface
+    db = db_manager.GetTransactionContext(ctx)
+    if db == nil {
+        db = {{ $shortRepo }}.Db
+    }
+
 	// sql query
 	qb := sq.Select("*").From("`{{ $table }}`")
 	{{- range $k, $v := .Fields }}
@@ -21,13 +27,13 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 	// run query
 {{- if .Index.IsUnique }}
 	{{ $short }} := entities.{{ .Type.Name }}{}
-	err = {{ $shortRepo }}.Db.Get(&{{ $short }}, query, args...)
+	err = db.Get(&{{ $short }}, query, args...)
     if err != nil {
         return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 {{- else }}
     var {{ $short }} []*entities.{{ .Type.Name }}
-    err = {{ $shortRepo }}.Db.Select(&{{ $short }}, query, args...)
+    err = db.Select(&{{ $short }}, query, args...)
     if err != nil {
         return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }

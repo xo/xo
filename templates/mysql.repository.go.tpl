@@ -35,6 +35,12 @@ type {{ lowerfirst .RepoName }} struct {
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
+	var db db_manager.DbInterface
+    db = db_manager.GetTransactionContext(ctx)
+    if db == nil {
+        db = {{ $shortRepo }}.Db
+    }
+
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
 	qb := sq.Insert("`{{ $table }}`").Columns({{ colnameswrap .Fields "CreatedAt" "UpdatedAt" }}).
@@ -45,7 +51,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
 	// run query
-	res, err = {{ $shortRepo }}.Db.Exec(query, args...)
+	res, err = db.Exec(query, args...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
@@ -60,7 +66,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
 	// run query
-	res, err := {{ $shortRepo }}.Db.Exec(query, args...)
+	res, err := db.Exec(query, args...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
@@ -74,7 +80,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 	new{{ $short }} := entities.{{ .Name }}{}
 
-	err = {{ $shortRepo }}.Db.Get(&new{{ $short }}, "SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = ?", id)
+	err = db.Get(&new{{ $short }}, "SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = ?", id)
 
 	return &new{{ $short }}, errors.Wrap(err, "error in {{ .RepoName }}")
 }
@@ -83,6 +89,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	// Update updates the {{ .Name }}Create in the database.
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 		var err error
+
+		var db db_manager.DbInterface
+        db = db_manager.GetTransactionContext(ctx)
+        if db == nil {
+            db = {{ $shortRepo }}.Db
+        }
 
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
 			// sql query with composite primary key
@@ -115,7 +127,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         }
 
         // run query
-        _, err = {{ $shortRepo }}.Db.Exec(query, args...)
+        _, err = db.Exec(query, args...)
         if err != nil {
             return nil, errors.Wrap(err, "error in {{ .RepoName }}")
         }
@@ -137,13 +149,19 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
         }
 
         result := entities.{{ .Name }}{}
-        err = {{ $shortRepo }}.Db.Get(&result, query, args...)
+        err = db.Get(&result, query, args...)
         return &result, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
     // Update updates the {{ .Name }} in the database.
 	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
     		var err error
+
+    		var db db_manager.DbInterface
+            db = db_manager.GetTransactionContext(ctx)
+            if db == nil {
+                db = {{ $shortRepo }}.Db
+            }
 
     		{{ if gt ( len .PrimaryKeyFields ) 1 }}
     			// sql query with composite primary key
@@ -176,7 +194,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
             }
 
             // run query
-            _, err = {{ $shortRepo }}.Db.Exec(query, args...)
+            _, err = db.Exec(query, args...)
             if err != nil {
                 return nil, errors.Wrap(err, "error in {{ .RepoName }}")
             }
@@ -198,7 +216,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
             }
 
             result := entities.{{ .Name }}{}
-            err = {{ $shortRepo }}.Db.Get(&result, query, args...)
+            err = db.Get(&result, query, args...)
             return &result, errors.Wrap(err, "error in {{ .RepoName }}")
     	}
 {{ else }}
@@ -208,6 +226,13 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 // Delete deletes the {{ .Name }} from the database.
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
 	var err error
+
+	var db db_manager.DbInterface
+    db = db_manager.GetTransactionContext(ctx)
+    if db == nil {
+        db = {{ $shortRepo }}.Db
+    }
+
 	{{ if gt ( len .PrimaryKeyFields ) 1 }}
 		// sql query with composite primary key
 		qb := sq.Delete("`{{ $table }}`").Where(sq.Eq{
@@ -226,7 +251,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     }
 
     // run query
-    _, err = {{ $shortRepo }}.Db.Exec(query, args...)
+    _, err = db.Exec(query, args...)
     return errors.Wrap(err, "error in {{ .RepoName }}")
 }
 
@@ -267,6 +292,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
+    var db db_manager.DbInterface
+    db = db_manager.GetTransactionContext(ctx)
+    if db == nil {
+        db = {{ $shortRepo }}.Db
+    }
+
     qb := {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "*")
     if pagination != nil {
         if pagination.Page != nil && pagination.PerPage != nil {
@@ -287,7 +318,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     if err != nil {
         return list, errors.Wrap(err, "error in {{ .RepoName }}")
     }
-    err = {{ $shortRepo }}.Db.Select(&list.Data, query, args...)
+    err = db.Select(&list.Data, query, args...)
 
     if err != nil {
         return list, errors.Wrap(err, "error in {{ .RepoName }}")
@@ -298,7 +329,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     if err != nil {
         return list, errors.Wrap(err, "error in {{ .RepoName }}")
     }
-    err = {{ $shortRepo }}.Db.Get(&listMeta, query, args...)
+    err = db.Get(&listMeta, query, args...)
 
     list.TotalCount = listMeta.Count
 
