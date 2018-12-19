@@ -41,13 +41,13 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	    Values({{ fieldnames .Fields $short "CreatedAt" "UpdatedAt" }})
     query, args, err := qb.ToSql()
 	if err != nil {
-	    return nil, err
+	    return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
 	// run query
 	res, err = {{ $shortRepo }}.Db.Exec(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
 {{ else }}
@@ -56,27 +56,27 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	    Values({{ fieldnames .Fields $short .PrimaryKey.Name "CreatedAt" "UpdatedAt" }})
 	query, args, err := qb.ToSql()
 	if err != nil {
-	    return nil, err
+	    return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
 	// run query
 	res, err := {{ $shortRepo }}.Db.Exec(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 {{ end }}
 
     // retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
 	new{{ $short }} := entities.{{ .Name }}{}
 
 	err = {{ $shortRepo }}.Db.Get(&new{{ $short }}, "SELECT * FROM `{{ $table }}` WHERE `{{ .PrimaryKey.Col.ColumnName }}` = ?", id)
 
-	return &new{{ $short }}, err
+	return &new{{ $short }}, errors.Wrap(err, "error in {{ .RepoName }}")
 }
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
@@ -111,13 +111,13 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 		{{- end }}
 		query, args, err := qb.ToSql()
         if err != nil {
-            return nil, err
+            return nil, errors.Wrap(err, "error in {{ .RepoName }}")
         }
 
         // run query
         _, err = {{ $shortRepo }}.Db.Exec(query, args...)
         if err != nil {
-            return nil, err
+            return nil, errors.Wrap(err, "error in {{ .RepoName }}")
         }
 
         selectQb := sq.Select("*").From("`{{ $table }}`")
@@ -133,12 +133,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
         query, args, err = selectQb.ToSql()
         if err != nil {
-            return nil, err
+            return nil, errors.Wrap(err, "error in {{ .RepoName }}")
         }
 
         result := entities.{{ .Name }}{}
         err = {{ $shortRepo }}.Db.Get(&result, query, args...)
-        return &result, err
+        return &result, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
 
     // Update updates the {{ .Name }} in the database.
@@ -172,13 +172,13 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
     		{{- end }}
     		query, args, err := qb.ToSql()
             if err != nil {
-                return nil, err
+                return nil, errors.Wrap(err, "error in {{ .RepoName }}")
             }
 
             // run query
             _, err = {{ $shortRepo }}.Db.Exec(query, args...)
             if err != nil {
-                return nil, err
+                return nil, errors.Wrap(err, "error in {{ .RepoName }}")
             }
 
             selectQb := sq.Select("*").From("`{{ $table }}`")
@@ -194,12 +194,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
             query, args, err = selectQb.ToSql()
             if err != nil {
-                return nil, err
+                return nil, errors.Wrap(err, "error in {{ .RepoName }}")
             }
 
             result := entities.{{ .Name }}{}
             err = {{ $shortRepo }}.Db.Get(&result, query, args...)
-            return &result, err
+            return &result, errors.Wrap(err, "error in {{ .RepoName }}")
     	}
 {{ else }}
 	// Update statements omitted due to lack of fields other than primary key
@@ -222,12 +222,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
 
 	query, args, err := qb.ToSql()
     if err != nil {
-        return err
+        return errors.Wrap(err, "error in {{ .RepoName }}")
     }
 
     // run query
     _, err = {{ $shortRepo }}.Db.Exec(query, args...)
-    return err
+    return errors.Wrap(err, "error in {{ .RepoName }}")
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
@@ -285,24 +285,24 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     }
     query, args, err := qb.ToSql()
     if err != nil {
-        return list, err
+        return list, errors.Wrap(err, "error in {{ .RepoName }}")
     }
     err = {{ $shortRepo }}.Db.Select(&list.Data, query, args...)
 
     if err != nil {
-        return list, err
+        return list, errors.Wrap(err, "error in {{ .RepoName }}")
     }
 
     var listMeta entities.ListMetadata
     query, args, err = {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "COUNT(*) AS count").ToSql()
     if err != nil {
-        return list, err
+        return list, errors.Wrap(err, "error in {{ .RepoName }}")
     }
     err = {{ $shortRepo }}.Db.Get(&listMeta, query, args...)
 
     list.TotalCount = listMeta.Count
 
-    return list, err
+    return list, errors.Wrap(err, "error in {{ .RepoName }}")
 }
 {{- end }}
 

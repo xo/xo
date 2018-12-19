@@ -15,7 +15,7 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 
 	query, args, err := qb.ToSql()
     if err != nil {
-        return nil, err
+        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 
 	// run query
@@ -23,13 +23,13 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 	{{ $short }} := entities.{{ .Type.Name }}{}
 	err = {{ $shortRepo }}.Db.Get(&{{ $short }}, query, args...)
     if err != nil {
-        return nil, err
+        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 {{- else }}
     var {{ $short }} []*entities.{{ .Type.Name }}
     err = {{ $shortRepo }}.Db.Select(&{{ $short }}, query, args...)
     if err != nil {
-        return nil, err
+        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 {{- end }}
 
