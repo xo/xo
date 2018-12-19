@@ -19,7 +19,7 @@ type {{ .Name }} struct {
 
 type {{ .Name }}Filter struct {
 {{- range .Fields }}
-	{{ .Name }} {{ retypeNull .Type }} `json:"{{ .Col.ColumnName }}" db:"{{ .Col.ColumnName }}"` // {{ .Col.ColumnName }}
+	{{ .Name }} FilterOnField
 {{- end }}
 }
 

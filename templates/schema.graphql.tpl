@@ -10,7 +10,7 @@ type {{ .Name }} {
 
 input {{ .Name }}Filter {
 {{- range .Fields }}
-    {{ lowerfirst .Name }}: {{ retypegraphql .Type }}
+    {{ lowerfirst .Name }}: FilterOnField
 {{- end }}
 }
 

@@ -166,3 +166,37 @@ func UnmarshalMap(v interface{}) (map[string]interface{}, error) {
 	}
 	return nt, errors.New("map should be string")
 }
+
+type FilterType string
+
+const (
+	Eq   FilterType = "eq"
+	Gt              = "gt"
+	Gte             = "gte"
+	Lt              = "lt"
+	Lte             = "lte"
+	Like            = "like"
+	Between         = "between"
+)
+
+type FilterOnField map[FilterType]interface{}
+
+func (f *FilterOnField) UnmarshalGQL(v interface{}) error {
+	var err error
+	vjson, _ := json.Marshal(v)
+	err = json.Unmarshal(vjson, f)
+	if err == nil {
+		return nil
+	}
+	*f = map[FilterType]interface{}{Eq: v}
+	return nil
+}
+
+func (f FilterOnField) MarshalGQL(w io.Writer) {
+	data, err := json.Marshal(f)
+	if err != nil {
+		w.Write([]byte(`null`))
+	} else {
+		w.Write([]byte(`"` + string(data) + `"`))
+	}
+}

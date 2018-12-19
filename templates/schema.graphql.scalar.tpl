@@ -6,3 +6,4 @@ scalar NullFloat64
 scalar NullString
 scalar NullBool
 scalar Map
+scalar FilterOnField

@@ -32,3 +32,5 @@ models:
     model: {{ entitiespkg }}.NullTime
   Map:
     model: {{ entitiespkg }}.Map
+  FilterOnField:
+    model: {{ entitiespkg }}.FilterOnField

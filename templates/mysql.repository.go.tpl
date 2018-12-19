@@ -230,25 +230,36 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     return err
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
     qb := sq.Select(fields).From("`{{ $table }}`")
-    if {{$short}}Filter != nil {
-        {{- range .Fields }}
-            {{- if .Col.NotNull }}
-            if ({{ $short }}Filter.{{ .Name }} != nil) {
-                qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": &{{ $short }}Filter.{{ .Name }}})
+    addFilter := func(qb *sq.SelectBuilder, columnName string, filterOnField entities.FilterOnField) *sq.SelectBuilder {
+        for filterType, v := range filterOnField {
+            if v != nil {
+                switch filterType {
+                    case entities.Eq:
+                        qb = qb.Where(sq.Eq{columnName: v})
+                    case entities.Gt:
+                        qb = qb.Where(sq.Gt{columnName: v})
+                    case entities.Gte:
+                        qb = qb.Where(sq.GtOrEq{columnName: v})
+                    case entities.Lt:
+                        qb = qb.Where(sq.Lt{columnName: v})
+                    case entities.Lte:
+                        qb = qb.Where(sq.LtOrEq{columnName: v})
+                    case entities.Like:
+                        qb = qb.Where(columnName + " LIKE ?", v)
+                    case entities.Between:
+                        if arrv, ok := v.([]interface{}); ok && len(arrv) == 2 {
+                            qb = qb.Where(columnName + " BETWEEN ? AND ?", arrv...)
+                        }
+                }
             }
-            {{- else }}
-                {{- if .Col.IsEnum }}
-                if ({{ $short }}Filter.{{ .Name }} != nil) {
-                    qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": {{ $short }}Filter.{{ .Name }}})
-                }
-                {{- else }}
-                if {{ $short }}Filter.{{ .Name }}.Valid {
-                    qb = qb.Where(sq.Eq{"`{{ .Col.ColumnName }}`": {{ $short }}Filter.{{ .Name }}})
-                }
-                {{- end }}
-            {{- end }}
+        }
+        return qb
+    }
+    if filter != nil {
+        {{- range .Fields }}
+            qb = addFilter(qb, "`{{ .Col.ColumnName }}`", filter.{{ .Name }})
         {{- end }}
     }
 
