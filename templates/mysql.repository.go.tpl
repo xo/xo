@@ -13,8 +13,7 @@ type I{{ .RepoName }} interface {
     Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
     {{- end }}
     Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
-    FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error)
-    FindAll{{ .Name }}Meta(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.ListMetadata, error)
+    FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Name }}, error)
     {{- range .Indexes }}
     {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
     {{- end }}
@@ -271,26 +270,27 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}Query(ctx 
     return qb.ToSql()
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) ([]entities.{{ .Name }}, error) {
-    var list []entities.{{ .Name }}
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
     query, args, err := {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "*")
     if err != nil {
-        return []entities.{{ .Name }}{}, err
+        return list, err
     }
-    err = {{ $shortRepo }}.Db.Select(&list, query, args...)
+    err = {{ $shortRepo }}.Db.Select(&list.Data, query, args...)
 
-    return list, err
-}
-
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}Meta(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.ListMetadata, error) {
-    var listMeta entities.ListMetadata
-    query, args, err := {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "COUNT(*) AS count")
     if err != nil {
-        return listMeta, err
+        return list, err
+    }
+
+    var listMeta entities.ListMetadata
+    query, args, err = {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "COUNT(*) AS count")
+    if err != nil {
+        return list, err
     }
     err = {{ $shortRepo }}.Db.Get(&listMeta, query, args...)
 
-    return listMeta, err
+    list.TotalCount = listMeta.Count
+
+    return list, err
 }
 {{- end }}
 

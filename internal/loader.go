@@ -534,6 +534,11 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 		if err != nil {
 			return nil, err
 		}
+		t.Name = "List" + tmpName
+		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", "", t)
+		if err != nil {
+			return nil, err
+		}
 		t.Name = tmpName
 	}
 

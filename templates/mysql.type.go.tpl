@@ -31,3 +31,8 @@ type {{ .Name }}Create struct {
 {{- end }}
 }
 
+type List{{ .Name }} struct {
+    TotalCount int
+    Data []{{ .Name }}
+}
+

@@ -8,7 +8,3 @@ input Pagination {
     perPage: Int
     sort: Sort
 }
-
-type ListMetadata {
-    count: Int!
-}

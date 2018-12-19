@@ -16,8 +16,6 @@ models:
     model: {{ entitiespkg }}.Pagination
   Sort:
     model: {{ entitiespkg }}.Sort
-  ListMetadata:
-    model: {{ entitiespkg }}.ListMetadata
   Datetime:
     model: {{ entitiespkg }}.Datetime
   IntBool:

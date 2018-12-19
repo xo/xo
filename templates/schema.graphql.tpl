@@ -21,3 +21,8 @@ input {{ .Name }}Create {
 	{{- end }}
 {{- end }}
 }
+
+type List{{ .Name }} {
+    totalCount: Int!
+    data: [{{ .Name }}!]!
+}
