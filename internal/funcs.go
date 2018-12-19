@@ -14,32 +14,33 @@ import (
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
 func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 	return template.FuncMap{
-		"lowerfirst":         a.lowerfirst,
-		"colcount":           a.colcount,
-		"colnames":           a.colnames,
-		"colnameswrap":       a.colnameswrap,
-		"colnamesmulti":      a.colnamesmulti,
-		"colnamesquery":      a.colnamesquery,
-		"colnamesquerymulti": a.colnamesquerymulti,
-		"colprefixnames":     a.colprefixnames,
-		"colvals":            a.colvals,
-		"colvalsmulti":       a.colvalsmulti,
-		"fieldnames":         a.fieldnames,
-		"fieldnamesmulti":    a.fieldnamesmulti,
-		"goparam":            a.goparam,
-		"goparamlist":        a.goparamlist,
-		"reniltype":          a.reniltype,
-		"retype":             a.retype,
-		"retypegraphql":      a.retypegraphql,
-		"retypeNull":         a.retypeNull,
-		"shortname":          a.shortname,
-		"convext":            a.convext,
-		"schema":             a.schemafn,
-		"colname":            a.colname,
-		"hascolumn":          a.hascolumn,
-		"hasfield":           a.hasfield,
-		"getstartcount":      a.getstartcount,
-		"entitiespkg":        func() string { return a.EntitiesPkg },
+		"lowerfirst":          a.lowerfirst,
+		"colcount":            a.colcount,
+		"colnames":            a.colnames,
+		"colnameswrap":        a.colnameswrap,
+		"colnamesmulti":       a.colnamesmulti,
+		"colnamesquery":       a.colnamesquery,
+		"colnamesquerymulti":  a.colnamesquerymulti,
+		"colprefixnames":      a.colprefixnames,
+		"colvals":             a.colvals,
+		"colvalsmulti":        a.colvalsmulti,
+		"fieldnames":          a.fieldnames,
+		"fieldnamesmulti":     a.fieldnamesmulti,
+		"goparam":             a.goparam,
+		"goparamlist":         a.goparamlist,
+		"reniltype":           a.reniltype,
+		"retype":              a.retype,
+		"retypegraphql":       a.retypegraphql,
+		"retypeNull":          a.retypeNull,
+		"shortname":           a.shortname,
+		"convext":             a.convext,
+		"schema":              a.schemafn,
+		"colname":             a.colname,
+		"hascolumn":           a.hascolumn,
+		"hasfield":            a.hasfield,
+		"getstartcount":       a.getstartcount,
+		"canhavecreatestruct": a.canhavecreatestruct,
+		"entitiespkg":         func() string { return a.EntitiesPkg },
 		"allschemas": func() []string {
 			sort.Strings(schemas)
 			return schemas
@@ -719,4 +720,14 @@ func (a *ArgType) hasfield(fields []*Field, name string) bool {
 // getstartcount returns a starting count for numbering columsn in queries
 func (a *ArgType) getstartcount(fields []*Field, pkFields []*Field) int {
 	return len(fields) - len(pkFields)
+}
+
+func (a *ArgType) canhavecreatestruct(fields []*Field, primaryKey *Field) bool {
+	for _, f := range fields {
+		colname := f.Col.ColumnName
+		if colname != primaryKey.Col.ColumnName && colname != "created_at" && colname != "updated_at" {
+			return true
+		}
+	}
+	return false
 }

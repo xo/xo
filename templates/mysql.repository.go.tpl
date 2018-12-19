@@ -230,7 +230,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     return err
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}Query(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination, fields string) (string, []interface{},  error) {
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
     qb := sq.Select(fields).From("`{{ $table }}`")
     if {{$short}}Filter != nil {
         {{- range .Fields }}
@@ -251,6 +251,12 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}Query(ctx 
             {{- end }}
         {{- end }}
     }
+
+    return qb
+}
+
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
+    qb := {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "*")
     if pagination != nil {
         if pagination.Page != nil && pagination.PerPage != nil {
             offset := uint64((*pagination.Page - 1) * *pagination.PerPage)
@@ -266,12 +272,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}Query(ctx 
             qb = qb.OrderBy(orderStr)
         }
     }
-
-    return qb.ToSql()
-}
-
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
-    query, args, err := {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "*")
+    query, args, err := qb.ToSql()
     if err != nil {
         return list, err
     }
@@ -282,7 +283,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     }
 
     var listMeta entities.ListMetadata
-    query, args, err = {{ $shortRepo }}.findAll{{ .Name }}Query(ctx, filter, pagination, "COUNT(*) AS count")
+    query, args, err = {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "COUNT(*) AS count").ToSql()
     if err != nil {
         return list, err
     }

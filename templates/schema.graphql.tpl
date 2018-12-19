@@ -14,6 +14,7 @@ input {{ .Name }}Filter {
 {{- end }}
 }
 
+{{- if canhavecreatestruct .Fields $primaryKey }}
 input {{ .Name }}Create {
 {{- range .Fields }}
     {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
@@ -21,6 +22,7 @@ input {{ .Name }}Create {
 	{{- end }}
 {{- end }}
 }
+{{- end }}
 
 type List{{ .Name }} {
     totalCount: Int!
