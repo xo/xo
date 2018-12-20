@@ -7,7 +7,7 @@ schema:
 exec:
   filename: generated.go
 model:
-  filename: models_gen.go
+  filename: ../entities/models_gen.go
 resolver:
   filename: tmp/resolver.go
   type: Resolver
