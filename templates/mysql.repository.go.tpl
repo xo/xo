@@ -7,9 +7,10 @@
 {{- else -}}
 
 type I{{ .RepoName }} interface {
+    {{ if .PrimaryKey }}
     Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
     {{- if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
-    Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error)
+    Update{{ .Name }}ByFields(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Update) (*entities.{{ .Name }}, error)
     Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error)
     {{- end }}
     Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
@@ -17,16 +18,17 @@ type I{{ .RepoName }} interface {
     {{- range .Indexes }}
     {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
     {{- end }}
-}
-
-func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
-    return &{{ lowerfirst .RepoName }}{Db: db}
+    {{ end }}
 }
 
 // {{ lowerfirst .RepoName }} represents a row from '{{ $table }}'.
 {{- end }}
 type {{ lowerfirst .RepoName }} struct {
     Db *sqlx.DB
+}
+
+func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
+    return &{{ lowerfirst .RepoName }}{Db: db}
 }
 
 {{ if .PrimaryKey }}
@@ -87,7 +89,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ .Name }}Create in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}By{{ .Name }}Create(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}ByFields(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Update) (*entities.{{ .Name }}, error) {
 		var err error
 
 		var db db_manager.DbInterface = {{ $shortRepo }}.Db
@@ -96,30 +98,25 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
             db = tx
         }
 
+        updateMap := map[string]interface{}{}
+        {{- range .Fields }}
+            {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) }}
+            if ({{ $short }}.{{ .Name }} != nil) {
+                updateMap["`{{ .Col.ColumnName }}`"] = *{{ $short }}.{{ .Name }}
+            }
+            {{- end }}
+        {{- end }}
+
 		{{ if gt ( len .PrimaryKeyFields ) 1 }}
 			// sql query with composite primary key
-			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
-            {{- range .Fields }}
-                {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
-                "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
-                {{- end }}
-            {{- end }}
-            }).Where(sq.Eq{
+			qb := sq.Update("`{{ $table }}`").SetMap(updateMap).Where(sq.Eq{
             {{- range .PrimaryKeyFields }}
                 "`{{ .Col.ColumnName }}`": .{{ .Name }},
             {{- end }}
             })
 		{{- else }}
 			// sql query
-			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
-			{{- range .Fields }}
-			    {{- if ne .Name $primaryKey.Name }}
-			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
-			    "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
-			    {{- end }}
-			    {{- end }}
-            {{- end }}
-            }).Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ .PrimaryKey.Name }}})
+			qb := sq.Update("`{{ $table }}`").SetMap(updateMap).Where(sq.Eq{"`{{ .PrimaryKey.Col.ColumnName }}`": {{ .PrimaryKey.Name }}})
 		{{- end }}
 		query, args, err := qb.ToSql()
         if err != nil {
@@ -305,7 +302,15 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
             qb = qb.Offset(offset).Limit(uint64(*pagination.PerPage))
         }
         if pagination.Sort != nil {
-            orderStr := pagination.Sort.Field + " "
+            orderStr := ""
+            switch pagination.Sort.Field {
+                {{- range .Fields }}
+                case "{{ .Name }}":
+                    orderStr = "{{ .Col.ColumnName }} "
+                {{- end}}
+                default:
+                    return entities.List{{ .Name }}{}, errors.New("field "+pagination.Sort.Field+" not found")
+            }
             if pagination.Sort.Direction != nil {
                 orderStr += *pagination.Sort.Direction
             } else {

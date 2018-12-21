@@ -31,6 +31,14 @@ type {{ .Name }}Create struct {
 {{- end }}
 }
 
+type {{ .Name }}Update struct {
+{{- range .Fields }}
+    {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+	{{ .Name }} *{{ retype .Type }} // {{ .Col.ColumnName }}
+	{{- end }}
+{{- end }}
+}
+
 type List{{ .Name }} struct {
     TotalCount int
     Data []{{ .Name }}
