@@ -171,6 +171,7 @@ type FilterType string
 
 const (
 	Eq   FilterType = "eq"
+	Neq             = "neq"
 	Gt              = "gt"
 	Gte             = "gte"
 	Lt              = "lt"

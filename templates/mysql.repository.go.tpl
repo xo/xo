@@ -259,25 +259,25 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
     qb := sq.Select(fields).From("`{{ $table }}`")
     addFilter := func(qb *sq.SelectBuilder, columnName string, filterOnField entities.FilterOnField) *sq.SelectBuilder {
         for filterType, v := range filterOnField {
-            if v != nil {
-                switch filterType {
-                    case entities.Eq:
-                        qb = qb.Where(sq.Eq{columnName: v})
-                    case entities.Gt:
-                        qb = qb.Where(sq.Gt{columnName: v})
-                    case entities.Gte:
-                        qb = qb.Where(sq.GtOrEq{columnName: v})
-                    case entities.Lt:
-                        qb = qb.Where(sq.Lt{columnName: v})
-                    case entities.Lte:
-                        qb = qb.Where(sq.LtOrEq{columnName: v})
-                    case entities.Like:
-                        qb = qb.Where(columnName + " LIKE ?", v)
-                    case entities.Between:
-                        if arrv, ok := v.([]interface{}); ok && len(arrv) == 2 {
-                            qb = qb.Where(columnName + " BETWEEN ? AND ?", arrv...)
-                        }
-                }
+            switch filterType {
+                case entities.Eq:
+                    qb = qb.Where(sq.Eq{columnName: v})
+                case entities.Neq:
+                    qb = qb.Where(sq.NotEq{columnName: v})
+                case entities.Gt:
+                    qb = qb.Where(sq.Gt{columnName: v})
+                case entities.Gte:
+                    qb = qb.Where(sq.GtOrEq{columnName: v})
+                case entities.Lt:
+                    qb = qb.Where(sq.Lt{columnName: v})
+                case entities.Lte:
+                    qb = qb.Where(sq.LtOrEq{columnName: v})
+                case entities.Like:
+                    qb = qb.Where(columnName + " LIKE ?", v)
+                case entities.Between:
+                    if arrv, ok := v.([]interface{}); ok && len(arrv) == 2 {
+                        qb = qb.Where(columnName + " BETWEEN ? AND ?", arrv...)
+                    }
             }
         }
         return qb
