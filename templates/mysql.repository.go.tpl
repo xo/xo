@@ -45,8 +45,19 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ if .Table.ManualPk  }}
 	// sql insert query, primary key must be provided
-	qb := sq.Insert("`{{ $table }}`").Columns({{ colnameswrap .Fields "CreatedAt" "UpdatedAt" }}).
-	    Values({{ fieldnames .Fields $short "CreatedAt" "UpdatedAt" }})
+	qb := sq.Insert("`{{ $table }}`").Columns(
+        {{- range .Fields }}
+        {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Col.IsGenerated true) }}
+            "`{{ .Col.ColumnName }}`",
+        {{- end }}
+        {{- end }}
+    ).Values(
+         {{- range .Fields }}
+         {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) (ne .Col.IsGenerated true) }}
+             {{ $short }}.{{ .Name }},
+         {{- end }}
+         {{- end }}
+    )
     query, args, err := qb.ToSql()
 	if err != nil {
 	    return nil, errors.Wrap(err, "error in {{ .RepoName }}")
@@ -60,8 +71,19 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ else }}
 	// sql insert query, primary key provided by autoincrement
-	qb := sq.Insert("`{{ $table }}`").Columns({{ colnameswrap .Fields .PrimaryKey.Name "CreatedAt" "UpdatedAt" }}).
-	    Values({{ fieldnames .Fields $short .PrimaryKey.Name "CreatedAt" "UpdatedAt" }})
+	qb := sq.Insert("`{{ $table }}`").Columns(
+	    {{- range .Fields }}
+	    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) (ne .Col.IsGenerated true) }}
+            "`{{ .Col.ColumnName }}`",
+        {{- end }}
+        {{- end }}
+	).Values(
+        {{- range .Fields }}
+        {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) (ne .Col.IsGenerated true) }}
+            {{ $short }}.{{ .Name }},
+        {{- end }}
+        {{- end }}
+	)
 	query, args, err := qb.ToSql()
 	if err != nil {
 	    return nil, errors.Wrap(err, "error in {{ .RepoName }}")
@@ -100,7 +122,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
         updateMap := map[string]interface{}{}
         {{- range .Fields }}
-            {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) }}
+            {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Name $primaryKey.Name) (ne .Col.IsGenerated true) }}
             if ({{ $short }}.{{ .Name }} != nil) {
                 updateMap["`{{ .Col.ColumnName }}`"] = *{{ $short }}.{{ .Name }}
             }
@@ -164,7 +186,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
     			// sql query with composite primary key
     			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
                 {{- range .Fields }}
-                    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+                    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Col.IsGenerated true) }}
                     "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
                     {{- end }}
                 {{- end }}
@@ -178,7 +200,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
     			qb := sq.Update("`{{ $table }}`").SetMap(map[string]interface{}{
     			{{- range .Fields }}
     			    {{- if ne .Name $primaryKey.Name }}
-    			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+    			    {{- if and (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") (ne .Col.IsGenerated true) }}
     			    "`{{ .Col.ColumnName }}`": {{ $short }}.{{ .Name }},
     			    {{- end }}
     			    {{- end }}
