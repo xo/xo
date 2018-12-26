@@ -16,8 +16,12 @@ type I{{ .RepoName }} interface {
     Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error
     FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Name }}, error)
     {{- range .Indexes }}
-    {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error)
-    {{- end }}
+        {{- if .Index.IsUnique }}
+        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.{{ .Type.Name }}, error)
+        {{- else }}
+        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.List{{ .Type.Name }}, error)
+        {{- end  }}
+        {{- end }}
     {{ end }}
 }
 
@@ -310,6 +314,39 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
     return qb
 }
 
+func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Context, qb *sq.SelectBuilder, pagination *entities.Pagination) (*sq.SelectBuilder, error) {
+    if pagination != nil {
+        if pagination.Page != nil && pagination.PerPage != nil {
+            offset := uint64((*pagination.Page - 1) * *pagination.PerPage)
+            qb = qb.Offset(offset).Limit(uint64(*pagination.PerPage))
+        }
+        if pagination.Sort != nil {
+            orderStrs := []string{}
+            for _, field := range pagination.Sort {
+                switch field {
+                    {{- range .Fields }}
+                    case "{{ .Name }}":
+                        fallthrough
+                    case "{{ .Col.ColumnName }}":
+                        orderStrs = append(orderStrs, "{{ .Col.ColumnName }} ASC ")
+                    case "-{{ .Name }}":
+                        fallthrough
+                    case "-{{ .Col.ColumnName }}":
+                        orderStrs = append(orderStrs, "{{ .Col.ColumnName }} DESC ")
+                    {{- end}}
+                    default:
+                        return nil, errors.New("field "+field+" not found")
+                }
+            }
+            orderBy := strings.Join(orderStrs, ", ")
+            if orderBy != "" {
+                qb = qb.OrderBy(strings.Join(orderStrs, ", "))
+            }
+        }
+    }
+    return qb, nil
+}
+
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
     var db db_manager.DbInterface = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
@@ -318,29 +355,11 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx conte
     }
 
     qb := {{ $shortRepo }}.findAll{{ .Name }}BaseQuery(ctx, filter, "*")
-    if pagination != nil {
-        if pagination.Page != nil && pagination.PerPage != nil {
-            offset := uint64((*pagination.Page - 1) * *pagination.PerPage)
-            qb = qb.Offset(offset).Limit(uint64(*pagination.PerPage))
-        }
-        if pagination.Sort != nil {
-            orderStr := ""
-            switch pagination.Sort.Field {
-                {{- range .Fields }}
-                case "{{ .Name }}":
-                    orderStr = "{{ .Col.ColumnName }} "
-                {{- end}}
-                default:
-                    return entities.List{{ .Name }}{}, errors.New("field "+pagination.Sort.Field+" not found")
-            }
-            if pagination.Sort.Direction != nil {
-                orderStr += *pagination.Sort.Direction
-            } else {
-                orderStr += "ASC"
-            }
-            qb = qb.OrderBy(orderStr)
-        }
+    qb, err = {{ $shortRepo }}.addPagination(ctx, qb, pagination)
+    if err != nil {
+        return entities.List{{ .Name }}{}, err
     }
+
     query, args, err := qb.ToSql()
     if err != nil {
         return list, errors.Wrap(err, "error in {{ .RepoName }}")

@@ -4,7 +4,8 @@
 // {{ .FuncName }} retrieves a row from '{{ $table }}' as a {{ .Type.Name }}.
 //
 // Generated from index '{{ .Index.IndexName }}'.
-func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) ({{ if not .Index.IsUnique }}[]{{ end }}*entities.{{ .Type.Name }}, error) {
+{{- if .Index.IsUnique }}
+func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.{{ .Type.Name }}, error) {
 	var err error
 
 	var db db_manager.DbInterface = {{ $shortRepo }}.Db
@@ -25,24 +26,48 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
     }
 
 	// run query
-{{- if .Index.IsUnique }}
 	{{ $short }} := entities.{{ .Type.Name }}{}
 	err = db.Get(&{{ $short }}, query, args...)
     if err != nil {
         return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
-{{- else }}
-    var {{ $short }} []*entities.{{ .Type.Name }}
-    err = db.Select(&{{ $short }}, query, args...)
-    if err != nil {
-        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
-    }
-{{- end }}
-
-{{- if .Index.IsUnique }}
 	return &{{ $short }}, nil
-{{- else }}
-    return {{ $short }}, nil
-{{- end }}
 }
+{{- else }}
+func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Type.Name }}, err error) {
+	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    tx := db_manager.GetTransactionContext(ctx)
+    if tx != nil {
+        db = tx
+    }
+
+    if filter == nil {
+        filter = &entities.{{ .Type.Name }}Filter{}
+    }
+    {{- range $k, $v := .Fields }}
+        filter.{{ .Name }} = entities.FilterOnField{entities.Eq: {{ goparam $v }}}
+    {{- end }}
+
+	// sql query
+	qb := {{$shortRepo}}.findAll{{ .Type.Name }}BaseQuery(ctx, filter, "*")
+	qb, err = {{$shortRepo}}.addPagination(ctx, qb, pagination)
+	if err != nil {
+	    return list, err
+	}
+
+	query, args, err := qb.ToSql()
+    if err != nil {
+        return list, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+    }
+
+	// run query
+    var {{ $short }} entities.List{{ .Type.Name }}
+    err = db.Select(&{{ $short }}.Data, query, args...)
+    if err != nil {
+        return list, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+    }
+
+    return {{ $short }}, nil
+}
+{{- end }}
 
