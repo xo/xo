@@ -22,16 +22,16 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 
 	query, args, err := qb.ToSql()
     if err != nil {
-        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+        return entities.{{ .Type.Name }}{}, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 
 	// run query
 	{{ $short }} := entities.{{ .Type.Name }}{}
 	err = db.Get(&{{ $short }}, query, args...)
     if err != nil {
-        return nil, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+        return entities.{{ .Type.Name }}{}, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
-	return &{{ $short }}, nil
+	return {{ $short }}, nil
 }
 {{- else }}
 func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Type.Name }}, err error) {

@@ -19,7 +19,7 @@ type I{{ .RepoName }} interface {
         {{- if .Index.IsUnique }}
         {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.{{ .Type.Name }}, error)
         {{- else }}
-        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.List{{ .Type.Name }}, error)
+        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error)
         {{- end  }}
         {{- end }}
     {{ end }}
