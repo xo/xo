@@ -41,15 +41,11 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
         db = tx
     }
 
-    if filter == nil {
-        filter = &entities.{{ .Type.Name }}Filter{}
-    }
-    {{- range $k, $v := .Fields }}
-        filter.{{ .Name }} = entities.FilterOnField{entities.Eq: {{ goparam $v }}}
-    {{- end }}
-
 	// sql query
 	qb := {{$shortRepo}}.findAll{{ .Type.Name }}BaseQuery(ctx, filter, "*")
+	{{- range $k, $v := .Fields }}
+	    qb = qb.Where(sq.Eq{"`{{ colname .Col }}`": {{ goparam $v }}})
+    {{- end }}
 	qb, err = {{$shortRepo}}.addPagination(ctx, qb, pagination)
 	if err != nil {
 	    return list, err
