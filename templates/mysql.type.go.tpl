@@ -23,6 +23,25 @@ type {{ .Name }}Filter struct {
 {{- end }}
 }
 
+{{- $typeName := .Name }}
+
+func (f *{{ $typeName }}Filter) New() interface{} {
+    if f == nil {
+        return &{{ $typeName }}Filter{}
+    }
+    return f
+}
+
+func (f *{{ $typeName}}Filter) IsNil() bool {
+    return f == nil
+}
+
+{{- range .Fields }}
+func (f *{{ $typeName }}Filter) Set{{ .Name }}(filterType FilterType, v interface{}) {
+    f.{{ .Name }} = FilterOnField{filterType: v}
+}
+{{- end }}
+
 type {{ .Name }}Create struct {
 {{- range .Fields }}
     {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
