@@ -188,6 +188,9 @@ func (f *FilterOnField) UnmarshalGQL(v interface{}) error {
 	vjson, _ := json.Marshal(v)
 	err = json.Unmarshal(vjson, f)
 	if err == nil {
+	    if _, ok := (*f)[Raw]; ok {
+	        return errors.New("raw is not supported")
+	    }
 		return nil
 	}
 	*f = map[FilterType]interface{}{Eq: v}
