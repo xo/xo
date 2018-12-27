@@ -17,7 +17,7 @@ type I{{ .RepoName }} interface {
     FindAll{{ .Name }}(ctx context.Context, {{$short}}Filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Name }}, error)
     {{- range .Indexes }}
         {{- if .Index.IsUnique }}
-        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.{{ .Type.Name }}, error)
+        {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error)
         {{- else }}
         {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error)
         {{- end  }}

@@ -5,7 +5,7 @@
 //
 // Generated from index '{{ .Index.IndexName }}'.
 {{- if .Index.IsUnique }}
-func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}) (entities.{{ .Type.Name }}, error) {
+func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
 	var err error
 
 	var db db_manager.DbInterface = {{ $shortRepo }}.Db
@@ -15,10 +15,10 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
     }
 
 	// sql query
-	qb := sq.Select("*").From("`{{ $table }}`")
-	{{- range $k, $v := .Fields }}
-	    qb = qb.Where(sq.Eq{"`{{ colname .Col }}`": {{ goparam $v }}})
-	{{- end }}
+    qb := {{$shortRepo}}.findAll{{ .Type.Name }}BaseQuery(ctx, filter, "*")
+    {{- range $k, $v := .Fields }}
+        qb = qb.Where(sq.Eq{"`{{ colname .Col }}`": {{ goparam $v }}})
+    {{- end }}
 
 	query, args, err := qb.ToSql()
     if err != nil {
@@ -46,8 +46,7 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 	{{- range $k, $v := .Fields }}
 	    qb = qb.Where(sq.Eq{"`{{ colname .Col }}`": {{ goparam $v }}})
     {{- end }}
-	qb, err = {{$shortRepo}}.addPagination(ctx, qb, pagination)
-	if err != nil {
+	if qb, err = {{$shortRepo}}.addPagination(ctx, qb, pagination); err != nil {
 	    return list, err
 	}
 
@@ -57,13 +56,25 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
     }
 
 	// run query
-    var {{ $short }} entities.List{{ .Type.Name }}
-    err = db.Select(&{{ $short }}.Data, query, args...)
-    if err != nil {
+    if err = db.Select(&list.Data, query, args...); err != nil {
         return list, errors.Wrap(err, "error in {{ .Type.RepoName }}")
     }
 
-    return {{ $short }}, nil
+    var listMeta entities.ListMetadata
+    qb = {{ $shortRepo }}.findAll{{ .Type.Name }}BaseQuery(ctx, filter, "COUNT(*) AS count")
+    {{- range $k, $v := .Fields }}
+        qb = qb.Where(sq.Eq{"`{{ colname .Col }}`": {{ goparam $v }}})
+    {{- end }}
+    if query, args, err = qb.ToSql(); err != nil {
+        return list, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+    }
+    if err = db.Get(&listMeta, query, args...); err != nil {
+        return list, errors.Wrap(err, "error in {{ .Type.RepoName }}")
+    }
+
+    list.TotalCount = listMeta.Count
+
+    return list, nil
 }
 {{- end }}
 
