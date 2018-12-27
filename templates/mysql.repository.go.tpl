@@ -303,7 +303,6 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
                     }
                 case entities.Raw:
                     qb.Where(columnName + " " + fmt.Sprint(v))
-                }
             }
         }
         return qb
