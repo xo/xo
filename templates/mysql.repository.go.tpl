@@ -281,8 +281,9 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
     qb := sq.Select(fields).From("`{{ $table }}`")
     addFilter := func(qb *sq.SelectBuilder, columnName string, filterOnField entities.FilterOnField) *sq.SelectBuilder {
-        for filterType, v := range filterOnField {
-            switch filterType {
+        for _, filterList := range filterOnField {
+            for filterType, v := range filterList {
+                switch filterType {
                 case entities.Eq:
                     qb = qb.Where(sq.Eq{columnName: v})
                 case entities.Neq:
@@ -303,6 +304,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
                     }
                 case entities.Raw:
                     qb.Where(columnName + " " + fmt.Sprint(v))
+                }
             }
         }
         return qb

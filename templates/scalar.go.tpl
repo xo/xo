@@ -181,19 +181,34 @@ const (
 	Raw             = "raw"
 )
 
-type FilterOnField map[FilterType]interface{}
+type FilterOnField []map[FilterType]interface{}
 
 func (f *FilterOnField) UnmarshalGQL(v interface{}) error {
 	var err error
 	vjson, _ := json.Marshal(v)
 	err = json.Unmarshal(vjson, f)
 	if err == nil {
-	    if _, ok := (*f)[Raw]; ok {
-	        return errors.New("raw is not supported")
+	    for _, filter:= range *f {
+            if _, ok := filter[Raw]; ok {
+                return errors.New("raw filter is not supported")
+            }
 	    }
 		return nil
 	}
-	*f = map[FilterType]interface{}{Eq: v}
+	singleMap := map[FilterType]interface{}{}
+	err = json.Unmarshal(vjson, singleMap)
+	if err == nil {
+	    if _, ok := singleMap[Raw]; ok {
+            return errors.New("raw filter is not supported")
+        }
+        *f = []map[FilterType]interface{}{
+            singleMap,
+        }
+        return nil
+	}
+	*f = []map[FilterType]interface{}{
+	    {Eq: v},
+	}
 	return nil
 }
 

@@ -37,8 +37,8 @@ func (f *{{ $typeName}}Filter) IsNil() bool {
 }
 
 {{- range .Fields }}
-func (f *{{ $typeName }}Filter) Set{{ .Name }}(filterType FilterType, v interface{}) {
-    f.{{ .Name }} = FilterOnField{filterType: v}
+func (f *{{ $typeName }}Filter) Add{{ .Name }}(filterType FilterType, v interface{}) {
+    f.{{ .Name }} = append(f.{{ .Name }}, map[FilterType]interface{}{filterType: v})
 }
 {{- end }}
 
