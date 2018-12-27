@@ -301,6 +301,9 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
                     if arrv, ok := v.([]interface{}); ok && len(arrv) == 2 {
                         qb = qb.Where(columnName + " BETWEEN ? AND ?", arrv...)
                     }
+                case entities.Raw:
+                    qb.Where(columnName + " " + fmt.Sprint(v))
+                }
             }
         }
         return qb
@@ -328,11 +331,11 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Co
                     case "{{ .Name }}":
                         fallthrough
                     case "{{ .Col.ColumnName }}":
-                        orderStrs = append(orderStrs, "{{ .Col.ColumnName }} ASC ")
+                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` ASC ")
                     case "-{{ .Name }}":
                         fallthrough
                     case "-{{ .Col.ColumnName }}":
-                        orderStrs = append(orderStrs, "{{ .Col.ColumnName }} DESC ")
+                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` DESC ")
                     {{- end}}
                     default:
                         return nil, errors.New("field "+field+" not found")

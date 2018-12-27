@@ -178,6 +178,7 @@ const (
 	Lte             = "lte"
 	Like            = "like"
 	Between         = "between"
+	Raw             = "raw"
 )
 
 type FilterOnField map[FilterType]interface{}
