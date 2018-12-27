@@ -329,14 +329,18 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Co
             for _, field := range pagination.Sort {
                 switch field {
                     {{- range .Fields }}
-                    case "{{ .Name }}":
+                    case "{{ lowerfirst .Name }}":
+                    {{- if ne .Col.ColumnName (lowerfirst .Name) }}
                         fallthrough
                     case "{{ .Col.ColumnName }}":
-                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` ASC ")
-                    case "-{{ .Name }}":
+                    {{- end }}
+                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` ASC")
+                    case "-{{ lowerfirst .Name }}":
+                    {{- if ne .Col.ColumnName (lowerfirst .Name) }}
                         fallthrough
                     case "-{{ .Col.ColumnName }}":
-                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` DESC ")
+                    {{- end }}
+                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` DESC")
                     {{- end}}
                     default:
                         return nil, errors.New("field "+field+" not found")
