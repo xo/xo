@@ -69,7 +69,7 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 		}
 	}
 	templateName := fmt.Sprintf("%s%s.go.tpl", loaderType, tt)
-	if tt == RepositoryTemplate {
+	if tt == RepositoryTemplate || tt == ForeignKeyTemplate {
 		reponames = append(reponames, name)
 	}
 	if tt == SchemaGraphQLTemplate {

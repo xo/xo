@@ -438,6 +438,11 @@ func writeTypes(args *internal.ArgType) error {
 		}
 	}
 
+	fmt.Println("--- Repositories: ")
+	for _, v := range args.NewTemplateFuncs()["reponames"].(func() []string)() {
+		fmt.Println(v)
+	}
+
 	// process written files with goimports
 	return exec.Command("goimports", params...).Run()
 }
