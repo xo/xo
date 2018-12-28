@@ -277,14 +277,14 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 		tableMap[k] = v
 	}
 
-	// load foreign keys
-	_, err = tl.LoadForeignKeys(args, tableMap)
+	// load indexes
+	indexes, err := tl.LoadIndexes(args, tableMap)
 	if err != nil {
 		return err
 	}
 
-	// load indexes
-	indexes, err := tl.LoadIndexes(args, tableMap)
+	// load foreign keys
+	_, err = tl.LoadForeignKeys(args, tableMap, indexes)
 	if err != nil {
 		return err
 	}
@@ -631,7 +631,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 }
 
 // LoadForeignKeys loads foreign keys.
-func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type) (map[string]*ForeignKey, error) {
+func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, indexes map[*Type]map[string]*Index) (map[string]*ForeignKey, error) {
 	var err error
 
 	fkMap := map[string]*ForeignKey{}
@@ -646,13 +646,108 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type) (
 	// determine foreign key names
 	for _, fk := range fkMap {
 		fk.Name = args.ForeignKeyName(fkMap, fk)
+
+		targetTableIndexes := indexes[fk.RefType]
+		for _, idx := range targetTableIndexes {
+			if len(idx.Fields) == 1 && idx.Fields[0].Name == fk.RefField.Name {
+				fk.CallFuncName = idx.FuncName
+			}
+		}
+
+		fk.FuncName = fk.Type.Name
+
+		thisTableIndexes := indexes[fk.Type]
+		for _, idx := range thisTableIndexes {
+			if len(idx.Fields) == 1 && idx.Fields[0].Name == fk.Field.Name {
+				fk.RevertCallFuncName = idx.FuncName
+				fk.IsUnique = idx.Index.IsUnique
+			}
+		}
+
+		if fk.IsUnique {
+			fk.RevertFuncName = fk.Type.Name
+		} else {
+			fk.RevertFuncName = inflector.Pluralize(fk.Type.Name)
+		}
+	}
+
+	// group foreign key by tables
+	fkGroupMap := map[string]*ForeignKeyGroup{}
+	for _, fk := range fkMap {
+		g := fkGroupMap[fk.Type.Name]
+		if g == nil {
+			g = &ForeignKeyGroup{}
+		}
+		g.ManyToOneKeys = append(g.ManyToOneKeys, fk)
+		if g.Name == "" {
+			g.Name = SingularizeIdentifier(fk.Type.Table.TableName + "_relation_repository")
+		}
+		g.TypeName = fk.Type.Name
+		fkGroupMap[fk.Type.Name] = g
+
+		g = fkGroupMap[fk.RefType.Name]
+		if g == nil {
+			g = &ForeignKeyGroup{}
+		}
+		g.OneToManyKeys = append(g.OneToManyKeys, fk)
+		if g.Name == "" {
+			g.Name = SingularizeIdentifier(fk.RefType.Table.TableName + "_relation_repository")
+		}
+		g.TypeName = fk.Type.Name
+		fkGroupMap[fk.RefType.Name] = g
+	}
+
+	for _, g := range fkGroupMap {
+		check := map[string]bool{}
+		for _, fk := range g.ManyToOneKeys {
+			if !check[fk.RefType.RepoName] {
+				check[fk.RefType.RepoName] = true
+				g.DependOnRepo = append(g.DependOnRepo, fk.RefType.RepoName)
+			}
+		}
+
+		for _, fk := range g.OneToManyKeys {
+			if !check[fk.Type.RepoName] {
+				check[fk.Type.RepoName] = true
+				g.DependOnRepo = append(g.DependOnRepo, fk.Type.RepoName)
+			}
+		}
 	}
 
 	// generate templates
-	for _, fk := range fkMap {
-		err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.RepoName, fk.ForeignKey.ForeignKeyName, fk)
-		if err != nil {
-			return nil, err
+	for _, g := range fkGroupMap {
+		good := false
+		for _, fk := range g.ManyToOneKeys {
+			if fk.Type.Name == g.TypeName {
+				if fk.RevertCallFuncName != "" {
+					good = true
+					break
+				}
+			} else {
+				if fk.CallFuncName != "" {
+					good = true
+					break
+				}
+			}
+		}
+		for _, fk := range g.OneToManyKeys {
+			if fk.Type.Name == g.TypeName {
+				if fk.RevertCallFuncName != "" {
+					good = true
+					break
+				}
+			} else {
+				if fk.CallFuncName != "" {
+					good = true
+					break
+				}
+			}
+		}
+		if good {
+			err = args.ExecuteTemplate(ForeignKeyTemplate, g.Name, "", g)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
