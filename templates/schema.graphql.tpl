@@ -11,14 +11,14 @@ type {{ .Name }} {
 {{- if $fkGroup }}
 
 {{- range $fkGroup.ManyToOneKeys }}
-    {{ lowerfirst .FuncName }}(filter: {{ .RefType.Name }}Filter): {{ .RefType.Name }}!
+    {{ lowerfirst .FuncName }}(filter: {{ .RefType.Name }}Filter): {{ .RefType.Name }}! @hasAccess(module: "{{ .RefType.Table.TableName }}", accessType: 1)
 {{- end }}
 
 {{- range $fkGroup.OneToManyKeys }}
     {{- if .IsUnique }}
-    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter): {{ .Type.Name }}!
+    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter): {{ .Type.Name }}! @hasAccess(module: "{{ .Type.Table.TableName }}", accessType: 1)
     {{- else }}
-    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter, pagination: Pagination): List{{ .Type.Name }}!
+    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter, pagination: Pagination): List{{ .Type.Name }}! @hasAccess(module: "{{ .Type.Table.TableName }}", accessType: 1)
     {{- end }}
 {{- end }}
 }
