@@ -284,7 +284,12 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 	}
 
 	// load foreign keys
-	_, err = tl.LoadForeignKeys(args, tableMap, indexes)
+	foreignKeys, err := tl.LoadForeignKeys(args, tableMap, indexes)
+	if err != nil {
+		return err
+	}
+
+	err = tl.LoadGraphqlSchema(args, tableMap, foreignKeys)
 	if err != nil {
 		return err
 	}
@@ -514,11 +519,6 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 			return nil, err
 		}
 
-		err = args.ExecuteTemplate(SchemaGraphQLTemplate, t.Name, "", t)
-		if err != nil {
-			return nil, err
-		}
-
 		tmpName := t.Name
 		err = args.ExecuteTemplate(GqlgenModelTemplate, "gqlgen", t.Name, t)
 		if err != nil {
@@ -548,6 +548,22 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	}
 
 	return tableMap, nil
+}
+
+// LoadRelkind loads a schema table/view definition.
+func (tl TypeLoader) LoadGraphqlSchema(args *ArgType, tableMap map[string]*Type, foreignKeys map[string]*ForeignKeyGroup) error {
+	// generate table templates
+	for _, t := range tableMap {
+		t.ForeignKeyGroup = foreignKeys[t.Name]
+		if t.Table.TableName == "goose_db_version" {
+			continue
+		}
+		err := args.ExecuteTemplate(SchemaGraphQLTemplate, t.Name, "", t)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // LoadRelkind loads a schema table/view definition.
@@ -631,7 +647,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 }
 
 // LoadForeignKeys loads foreign keys.
-func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, indexes map[*Type]map[string]*Index) (map[string]*ForeignKey, error) {
+func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, indexes map[*Type]map[string]*Index) (map[string]*ForeignKeyGroup, error) {
 	var err error
 
 	fkMap := map[string]*ForeignKey{}
@@ -654,7 +670,7 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 			}
 		}
 
-		fk.FuncName = fk.Type.Name
+		fk.FuncName = fk.RefType.Name
 
 		thisTableIndexes := indexes[fk.Type]
 		for _, idx := range thisTableIndexes {
@@ -751,7 +767,7 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 		}
 	}
 
-	return fkMap, nil
+	return fkGroupMap, nil
 }
 
 // LoadTableForeignKeys loads schema foreign key definitions per table.

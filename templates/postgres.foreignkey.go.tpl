@@ -14,7 +14,7 @@ type {{ lowerfirst .Name }} struct {
 
 {{- range .ManyToOneKeys }}
 {{- if ne .CallFuncName "" }}
-func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RefType.Name }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
+func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .RefType.Name }}{}, nil
     }
@@ -26,7 +26,7 @@ func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RefType.Name }}(ctx context.C
 {{- range .OneToManyKeys }}
 {{- if ne .RevertCallFuncName "" }}
 {{- if .IsUnique }}
-func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
+func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .Type.Name }}{}, nil
     }

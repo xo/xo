@@ -156,6 +156,7 @@ type Type struct {
 	Table            *models.Table
 	Comment          string
 	Indexes          []*Index
+	ForeignKeyGroup  *ForeignKeyGroup
 }
 
 // ForeignKey is a template item for a foreign relationship on a table.

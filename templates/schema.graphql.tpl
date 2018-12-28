@@ -2,9 +2,22 @@
 {{- $table := (schema .Schema .Table.TableName) -}}
 {{- $tableVar := .Table }}
 {{- $primaryKey := .PrimaryKey }}
+{{- $fkGroup := .ForeignKeyGroup }}
 type {{ .Name }} {
 {{- range .Fields }}
     {{ lowerfirst .Name }}: {{ retypegraphql .Type }} {{- if .Col.NotNull }}!{{- end }}
+{{- end }}
+
+{{- range $fkGroup.ManyToOneKeys }}
+    {{ lowerfirst .FuncName }}(filter: {{ .RefType.Name }}Filter): {{ .RefType.Name }}!
+{{- end }}
+
+{{- range $fkGroup.OneToManyKeys }}
+    {{- if .IsUnique }}
+    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter): {{ .Type.Name }}!
+    {{- else }}
+    {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter, pagination: Pagination): List{{ .Type.Name }}!
+    {{- end }}
 {{- end }}
 }
 
