@@ -767,29 +767,15 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 	for _, g := range fkGroupMap {
 		good := false
 		for _, fk := range g.ManyToOneKeys {
-			if fk.Type.Name == g.TypeName {
-				if fk.RevertCallFuncName != "" {
-					good = true
-					break
-				}
-			} else {
-				if fk.CallFuncName != "" {
-					good = true
-					break
-				}
+			if fk.CallFuncName != "" {
+				good = true
+				break
 			}
 		}
 		for _, fk := range g.OneToManyKeys {
-			if fk.Type.Name == g.TypeName {
-				if fk.RevertCallFuncName != "" {
-					good = true
-					break
-				}
-			} else {
-				if fk.CallFuncName != "" {
-					good = true
-					break
-				}
+			if fk.RevertCallFuncName != "" {
+				good = true
+				break
 			}
 		}
 		if good {
