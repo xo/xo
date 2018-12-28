@@ -8,6 +8,8 @@ type {{ .Name }} {
     {{ lowerfirst .Name }}: {{ retypegraphql .Type }} {{- if .Col.NotNull }}!{{- end }}
 {{- end }}
 
+{{- if $fkGroup }}
+
 {{- range $fkGroup.ManyToOneKeys }}
     {{ lowerfirst .FuncName }}(filter: {{ .RefType.Name }}Filter): {{ .RefType.Name }}!
 {{- end }}
@@ -20,6 +22,8 @@ type {{ .Name }} {
     {{- end }}
 {{- end }}
 }
+
+{{- end }}
 
 input {{ .Name }}Filter {
 {{- range .Fields }}

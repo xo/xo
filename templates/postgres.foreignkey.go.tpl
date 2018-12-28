@@ -38,7 +38,11 @@ func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Conte
     if obj ==  nil {
         return entities.{{ .RefType.Name }}{}, nil
     }
+    {{- if eq .Field.Type .RefField.Type }}
     return {{ $shortRepo}}.{{ lowerfirst .RefType.RepoName}}.{{ .CallFuncName }}(ctx, obj.{{ .Field.Name }}, filter)
+    {{- else }}
+    return {{ $shortRepo}}.{{ lowerfirst .RefType.RepoName}}.{{ .CallFuncName }}(ctx, {{ convertToNonNull (print "obj." .Field.Name) .Field.Type }}, filter)
+    {{- end }}
 }
 {{- end }}
 {{ end }}
@@ -50,14 +54,22 @@ func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context
     if obj ==  nil {
         return entities.{{ .Type.Name }}{}, nil
     }
+    {{- if eq .Field.Type .RefField.Type }}
     return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter)
+    {{- else }}
+    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter)
+    {{- end }}
 }
 {{- else }}
 func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.List{{ .Type.Name }}{}, nil
     }
+    {{- if eq .Field.Type .RefField.Type }}
     return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter, pagination)
+    {{- else }}
+    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter, pagination)
+    {{- end }}
 }
 {{- end }}
 {{- end }}

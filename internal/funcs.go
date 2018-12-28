@@ -49,7 +49,29 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 			sort.Strings(reponames)
 			return reponames
 		},
+		"convertToNonNull": a.convertToNonNull,
+		"convertToNull":    a.convertToNull,
 	}
+}
+
+func (a *ArgType) convertToNonNull(name string, typ string) string {
+	switch typ {
+	case "sql.NullInt64":
+		return "int(" + name + ".Int64)"
+	case "sql.NullString":
+		return name + ".String"
+	}
+	return name
+}
+
+func (a *ArgType) convertToNull(name string, typ string) string {
+	switch typ {
+	case "int":
+		return "sql.NullInt64{Valid: true, Int64: int64(" + name + ")}"
+	case "string":
+		return "sql.NullString{Valid: true, String: " + name + "}"
+	}
+	return name
 }
 
 func (a *ArgType) lowerfirst(name string) string {

@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -646,6 +647,12 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 	return nil
 }
 
+func fieldToRltsFuncName(name string) string {
+	var re = regexp.MustCompile(`^Fk(.*)`)
+	name = re.ReplaceAllString(name, `$1`)
+	return SingularizeIdentifier(name)
+}
+
 // LoadForeignKeys loads foreign keys.
 func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, indexes map[*Type]map[string]*Index) (map[string]*ForeignKeyGroup, error) {
 	var err error
@@ -696,7 +703,7 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 		}
 		g.ManyToOneKeys = append(g.ManyToOneKeys, fk)
 		if g.Name == "" {
-			g.Name = SingularizeIdentifier(fk.Type.Table.TableName + "_relation_repository")
+			g.Name = SingularizeIdentifier(fk.Type.Table.TableName + "_rlts_repository")
 		}
 		g.TypeName = fk.Type.Name
 		fkGroupMap[fk.Type.Name] = g
@@ -707,25 +714,51 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 		}
 		g.OneToManyKeys = append(g.OneToManyKeys, fk)
 		if g.Name == "" {
-			g.Name = SingularizeIdentifier(fk.RefType.Table.TableName + "_relation_repository")
+			g.Name = SingularizeIdentifier(fk.RefType.Table.TableName + "_rlts_repository")
 		}
 		g.TypeName = fk.Type.Name
 		fkGroupMap[fk.RefType.Name] = g
 	}
 
 	for _, g := range fkGroupMap {
+		if g.OneToManyKeys == nil {
+			g.OneToManyKeys = []*ForeignKey{}
+		}
+		if g.ManyToOneKeys == nil {
+			g.ManyToOneKeys = []*ForeignKey{}
+		}
 		check := map[string]bool{}
+		duplicatedCheck := map[string][]*ForeignKey{}
 		for _, fk := range g.ManyToOneKeys {
 			if !check[fk.RefType.RepoName] {
 				check[fk.RefType.RepoName] = true
 				g.DependOnRepo = append(g.DependOnRepo, fk.RefType.RepoName)
 			}
+			duplicatedCheck[fk.FuncName] = append(duplicatedCheck[fk.FuncName], fk)
 		}
 
+		for _, fks := range duplicatedCheck {
+			if len(fks) > 1 {
+				for _, fk := range fks {
+					fk.FuncName = fk.FuncName + "By" + fk.Field.Name
+				}
+			}
+		}
+
+		duplicatedCheck = map[string][]*ForeignKey{}
 		for _, fk := range g.OneToManyKeys {
 			if !check[fk.Type.RepoName] {
 				check[fk.Type.RepoName] = true
 				g.DependOnRepo = append(g.DependOnRepo, fk.Type.RepoName)
+			}
+			duplicatedCheck[fk.RevertFuncName] = append(duplicatedCheck[fk.RevertFuncName], fk)
+		}
+
+		for _, fks := range duplicatedCheck {
+			if len(fks) > 1 {
+				for _, fk := range fks {
+					fk.RevertFuncName = fk.RevertFuncName + "By" + fk.Field.Name
+				}
 			}
 		}
 	}
