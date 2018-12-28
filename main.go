@@ -440,7 +440,16 @@ func writeTypes(args *internal.ArgType) error {
 
 	fmt.Println("--- Repositories: ")
 	for _, v := range args.NewTemplateFuncs()["reponames"].(func() []string)() {
-		fmt.Println(v)
+		if !strings.Contains(v,"Rlts") {
+			fmt.Println(v)
+		}
+	}
+
+	fmt.Println("--- Rlts Repositories: ")
+	for _, v := range args.NewTemplateFuncs()["reponames"].(func() []string)() {
+		if strings.Contains(v,"Rlts") {
+			fmt.Println(v)
+		}
 	}
 
 	// process written files with goimports
