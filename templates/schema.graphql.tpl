@@ -21,10 +21,8 @@ type {{ .Name }} {
     {{ lowerfirst .RevertFuncName }}(filter: {{ .Type.Name }}Filter, pagination: Pagination): List{{ .Type.Name }}! @hasAccess(module: "{{ .Type.Table.TableName }}", accessType: 1)
     {{- end }}
 {{- end }}
-}
-
 {{- end }}
-
+}
 input {{ .Name }}Filter {
 {{- range .Fields }}
     {{ lowerfirst .Name }}: FilterOnField
