@@ -321,13 +321,11 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Context, qb *sq.SelectBuilder, pagination *entities.Pagination) (*sq.SelectBuilder, error) {
     sortFieldMap := map[string]string{
         {{- range .Fields }}
-        {{- if .HasIndex }}
         "{{ lowerfirst .Name }}": "`{{ .Col.ColumnName }}` ASC",
         "-{{ lowerfirst .Name }}": "`{{ .Col.ColumnName }}` DESC",
         {{- if ne .Col.ColumnName (lowerfirst .Name) }}
         "{{ .Col.ColumnName }}": "`{{ .Col.ColumnName }}` ASC",
         "-{{ .Col.ColumnName }}": "`{{ .Col.ColumnName }}` DESC",
-        {{- end }}
         {{- end }}
         {{- end }}
     }
