@@ -25,7 +25,7 @@ type {{ .Name }}Filter struct {
 
 {{- $typeName := .Name }}
 
-func (f *{{ $typeName }}Filter) New() interface{} {
+func (f *{{ $typeName }}Filter) NewFilter() interface{} {
     if f == nil {
         return &{{ $typeName }}Filter{}
     }
