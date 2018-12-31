@@ -34,7 +34,7 @@ func New{{ .Name }}({{- range $k, $v := .DependOnRepo }}{{ lowerfirst $v}} I{{ $
 
 {{- range .ManyToOneKeys }}
 {{- if ne .CallFuncName "" }}
-func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .RefType.Name }}{}, nil
     }
@@ -50,7 +50,7 @@ func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Conte
 {{- range .OneToManyKeys }}
 {{- if ne .RevertCallFuncName "" }}
 {{- if .IsUnique }}
-func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .Type.Name }}{}, nil
     }
@@ -61,7 +61,7 @@ func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context
     {{- end }}
 }
 {{- else }}
-func ({{ $shortRepo }} {{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error) {
+func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.List{{ .Type.Name }}{}, nil
     }

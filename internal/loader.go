@@ -765,6 +765,13 @@ func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type, i
 
 	// generate templates
 	for _, g := range fkGroupMap {
+		sort.Strings(g.DependOnRepo)
+		sort.Slice(g.ManyToOneKeys, func(i, j int) bool {
+			return g.ManyToOneKeys[i].FuncName < g.ManyToOneKeys[j].FuncName
+		})
+		sort.Slice(g.OneToManyKeys, func(i, j int) bool {
+			return g.OneToManyKeys[i].RevertFuncName < g.OneToManyKeys[j].RevertFuncName
+		})
 		good := false
 		for _, fk := range g.ManyToOneKeys {
 			if fk.CallFuncName != "" {
