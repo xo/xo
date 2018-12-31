@@ -319,31 +319,30 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
 }
 
 func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Context, qb *sq.SelectBuilder, pagination *entities.Pagination) (*sq.SelectBuilder, error) {
+    sortFieldMap := map[string]string{
+        {{- range .Fields }}
+        {{- if .HasIndex }}
+        "{{ lowerfirst .Name }}": "`{{ .Col.ColumnName }}` ASC",
+        "-{{ lowerfirst .Name }}": "`{{ .Col.ColumnName }}` DESC",
+        {{- if ne .Col.ColumnName (lowerfirst .Name) }}
+        "{{ .Col.ColumnName }}": "`{{ .Col.ColumnName }}` ASC",
+        "-{{ .Col.ColumnName }}": "`{{ .Col.ColumnName }}` DESC",
+        {{- end }}
+        {{- end }}
+        {{- end }}
+    }
     if pagination != nil {
         if pagination.Page != nil && pagination.PerPage != nil {
             offset := uint64((*pagination.Page - 1) * *pagination.PerPage)
             qb = qb.Offset(offset).Limit(uint64(*pagination.PerPage))
         }
         if pagination.Sort != nil {
-            orderStrs := []string{}
+            var orderStrs []string
             for _, field := range pagination.Sort {
-                switch field {
-                    {{- range .Fields }}
-                    case "{{ lowerfirst .Name }}":
-                    {{- if ne .Col.ColumnName (lowerfirst .Name) }}
-                        fallthrough
-                    case "{{ .Col.ColumnName }}":
-                    {{- end }}
-                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` ASC")
-                    case "-{{ lowerfirst .Name }}":
-                    {{- if ne .Col.ColumnName (lowerfirst .Name) }}
-                        fallthrough
-                    case "-{{ .Col.ColumnName }}":
-                    {{- end }}
-                        orderStrs = append(orderStrs, "`{{ .Col.ColumnName }}` DESC")
-                    {{- end}}
-                    default:
-                        return nil, errors.New("field "+field+" not found")
+                if orderStr, ok := sortFieldMap[field]; ok {
+                    orderStrs = append(orderStrs, orderStr)
+                } else {
+                    return nil, errors.New("doesnt allow sorting on field `" + field + "` not found")
                 }
             }
             orderBy := strings.Join(orderStrs, ", ")

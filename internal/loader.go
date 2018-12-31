@@ -587,6 +587,15 @@ func (tl TypeLoader) LoadRepositories(args *ArgType, tableMap map[string]*Type, 
 		for _, k := range keys {
 			t.Indexes = append(t.Indexes, ixMap[k])
 		}
+
+		for _, field := range t.Fields {
+			for _, k := range t.Indexes {
+				if field.Col.ColumnName == k.Fields[0].Col.ColumnName {
+					field.HasIndex = true
+				}
+			}
+		}
+
 		err = args.ExecuteTemplate(RepositoryTemplate, t.RepoName, "", t)
 		if err != nil {
 			return err

@@ -136,12 +136,13 @@ type Proc struct {
 
 // Field contains field information.
 type Field struct {
-	Name    string
-	Type    string
-	NilType string
-	Len     int
-	Col     *models.Column
-	Comment string
+	Name     string
+	Type     string
+	NilType  string
+	Len      int
+	Col      *models.Column
+	Comment  string
+	HasIndex bool
 }
 
 // Type is a template item for a type (ie, table/view/custom query).
