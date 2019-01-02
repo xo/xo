@@ -20,28 +20,24 @@ type I{{ .Name }} interface {
 {{- end }}
 }
 
-type {{ lowerfirst .Name }} struct {
+type {{ .Name }} struct {
     {{- range $k, $v := .DependOnRepo }}
-    {{ lowerfirst $v}} I{{ $v }}
+    {{ $v}} I{{ $v }}
     {{- end }}
 }
 
-func New{{ .Name }}({{- range $k, $v := .DependOnRepo }}{{ lowerfirst $v}} I{{ $v }},{{- end }}) I{{ .Name }} {
-    return &{{ lowerfirst .Name }}{
-    {{- range $k, $v := .DependOnRepo }}{{ lowerfirst $v}}: {{ lowerfirst $v}},{{- end }}
-    }
-}
+var New{{ .Name }} = wire.NewSet({{ .Name }}{}, wire.Bind(new(I{{ .Name }}), new({{ .Name }})))
 
 {{- range .ManyToOneKeys }}
 {{- if ne .CallFuncName "" }}
-func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
+func ({{ $shortRepo }} *{{ $name }}) {{ .FuncName }}(ctx context.Context, obj *entities.{{ .Type.Name }}, filter *entities.{{ .RefType.Name }}Filter) (entities.{{ .RefType.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .RefType.Name }}{}, nil
     }
     {{- if eq .Field.Type .RefField.Type }}
-    return {{ $shortRepo}}.{{ lowerfirst .RefType.RepoName}}.{{ .CallFuncName }}(ctx, obj.{{ .Field.Name }}, filter)
+    return {{ $shortRepo}}.{{ .RefType.RepoName}}.{{ .CallFuncName }}(ctx, obj.{{ .Field.Name }}, filter)
     {{- else }}
-    return {{ $shortRepo}}.{{ lowerfirst .RefType.RepoName}}.{{ .CallFuncName }}(ctx, {{ convertToNonNull (print "obj." .Field.Name) .Field.Type }}, filter)
+    return {{ $shortRepo}}.{{ .RefType.RepoName}}.{{ .CallFuncName }}(ctx, {{ convertToNonNull (print "obj." .Field.Name) .Field.Type }}, filter)
     {{- end }}
 }
 {{- end }}
@@ -50,25 +46,25 @@ func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .FuncName }}(ctx context.Cont
 {{- range .OneToManyKeys }}
 {{- if ne .RevertCallFuncName "" }}
 {{- if .IsUnique }}
-func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
+func ({{ $shortRepo }} *{{ $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.{{ .Type.Name }}{}, nil
     }
     {{- if eq .Field.Type .RefField.Type }}
-    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter)
+    return {{ $shortRepo }}.{{ .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter)
     {{- else }}
-    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter)
+    return {{ $shortRepo }}.{{ .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter)
     {{- end }}
 }
 {{- else }}
-func ({{ $shortRepo }} *{{ lowerfirst $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error) {
+func ({{ $shortRepo }} *{{ $name }}) {{ .RevertFuncName }}(ctx context.Context, obj *entities.{{ .RefType.Name }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (entities.List{{ .Type.Name }}, error) {
     if obj ==  nil {
         return entities.List{{ .Type.Name }}{}, nil
     }
     {{- if eq .Field.Type .RefField.Type }}
-    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter, pagination)
+    return {{ $shortRepo }}.{{ .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, obj.{{ .RefField.Name }}, filter, pagination)
     {{- else }}
-    return {{ $shortRepo }}.{{ lowerfirst .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter, pagination)
+    return {{ $shortRepo }}.{{ .Type.RepoName}}.{{ .RevertCallFuncName }}(ctx, {{convertToNull (print "obj." .RefField.Name) .RefField.Type}}, filter, pagination)
     {{- end }}
 }
 {{- end }}

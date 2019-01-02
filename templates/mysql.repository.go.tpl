@@ -27,21 +27,19 @@ type I{{ .RepoName }} interface {
 
 // {{ lowerfirst .RepoName }} represents a row from '{{ $table }}'.
 {{- end }}
-type {{ lowerfirst .RepoName }} struct {
-    Db *sqlx.DB
+type {{ .RepoName }} struct {
+    Db db_manager.IDb
 }
 
-func New{{ .RepoName }}(db *sqlx.DB) I{{ .RepoName }} {
-    return &{{ lowerfirst .RepoName }}{Db: db}
-}
+var  New{{ .RepoName }} = wire.NewSet({{ .RepoName }}{}, wire.Bind(new(I{{ .RepoName }}), new({{ .RepoName }})))
 
 {{ if .PrimaryKey }}
 
 // Insert inserts the {{ .Name }}Create to the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
+func ({{ $shortRepo }} *{{ .RepoName }}) Insert{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}Create) (*entities.{{ .Name }}, error) {
 	var err error
 
-	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+	var db = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
     if tx != nil {
         db = tx
@@ -68,7 +66,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
 	// run query
-	res, err = db.Exec(query, args...)
+	res, err := db.Exec(query, args...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error in {{ .RepoName }}")
 	}
@@ -115,10 +113,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 
 {{ if ne (fieldnamesmulti .Fields $short .PrimaryKeyFields) "" }}
 	// Update updates the {{ .Name }}Create in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}ByFields(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Update) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ .RepoName }}) Update{{ .Name }}ByFields(ctx context.Context, {{- range .PrimaryKeyFields }}{{ .Name }} {{ retype .Type }}{{- end }}, {{ $short }} entities.{{ .Name }}Update) (*entities.{{ .Name }}, error) {
 		var err error
 
-		var db db_manager.DbInterface = {{ $shortRepo }}.Db
+		var db = {{ $shortRepo }}.Db
         tx := db_manager.GetTransactionContext(ctx)
         if tx != nil {
             db = tx
@@ -177,10 +175,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 	}
 
     // Update updates the {{ .Name }} in the database.
-	func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
+	func ({{ $shortRepo }} *{{ .RepoName }}) Update{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) (*entities.{{ .Name }}, error) {
     		var err error
 
-    		var db db_manager.DbInterface = {{ $shortRepo }}.Db
+    		var db = {{ $shortRepo }}.Db
             tx := db_manager.GetTransactionContext(ctx)
             if tx != nil {
                 db = tx
@@ -247,10 +245,10 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Insert{{ .Name }}(ctx contex
 {{ end }}
 
 // Delete deletes the {{ .Name }} from the database.
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
+func ({{ $shortRepo }} *{{ .RepoName }}) Delete{{ .Name }}(ctx context.Context, {{ $short }} entities.{{ .Name }}) error {
 	var err error
 
-	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+	var db = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
     if tx != nil {
         db = tx
@@ -278,7 +276,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) Delete{{ .Name }}(ctx contex
     return errors.Wrap(err, "error in {{ .RepoName }}")
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
+func ({{ $shortRepo }} *{{ .RepoName }}) findAll{{ .Name }}BaseQuery(ctx context.Context, filter *entities.{{ .Name }}Filter, fields string) *sq.SelectBuilder {
     qb := sq.Select(fields).From("`{{ $table }}`")
     addFilter := func(qb *sq.SelectBuilder, columnName string, filterOnField entities.FilterOnField) *sq.SelectBuilder {
         for _, filterList := range filterOnField {
@@ -318,7 +316,7 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) findAll{{ .Name }}BaseQuery(
     return qb
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Context, qb *sq.SelectBuilder, pagination *entities.Pagination) (*sq.SelectBuilder, error) {
+func ({{ $shortRepo }} *{{ .RepoName }}) addPagination(ctx context.Context, qb *sq.SelectBuilder, pagination *entities.Pagination) (*sq.SelectBuilder, error) {
     sortFieldMap := map[string]string{
         {{- range .Fields }}
         "{{ lowerfirst .Name }}": "`{{ .Col.ColumnName }}` ASC",
@@ -352,8 +350,8 @@ func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) addPagination(ctx context.Co
     return qb, nil
 }
 
-func ({{ $shortRepo }} *{{ lowerfirst .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
-    var db db_manager.DbInterface = {{ $shortRepo }}.Db
+func ({{ $shortRepo }} *{{ .RepoName }}) FindAll{{ .Name }}(ctx context.Context, filter *entities.{{ .Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Name }}, err error) {
+    var db = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
     if tx != nil {
         db = tx

@@ -5,10 +5,10 @@
 //
 // Generated from index '{{ .Index.IndexName }}'.
 {{- if .Index.IsUnique }}
-func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
+func ({{$shortRepo}} *{{ .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter) (entities.{{ .Type.Name }}, error) {
 	var err error
 
-	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+	var db = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
     if tx != nil {
         db = tx
@@ -34,8 +34,8 @@ func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx conte
 	return {{ $short }}, nil
 }
 {{- else }}
-func ({{$shortRepo}} *{{ lowerfirst .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Type.Name }}, err error) {
-	var db db_manager.DbInterface = {{ $shortRepo }}.Db
+func ({{$shortRepo}} *{{ .Type.RepoName }}) {{ .FuncName }}(ctx context.Context, {{ goparamlist .Fields false true }}, filter *entities.{{ .Type.Name }}Filter, pagination *entities.Pagination) (list entities.List{{ .Type.Name }}, err error) {
+	var db = {{ $shortRepo }}.Db
     tx := db_manager.GetTransactionContext(ctx)
     if tx != nil {
         db = tx
