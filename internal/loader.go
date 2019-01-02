@@ -902,8 +902,15 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 						Schema:   ix.Schema,
 						Type:     ix.Type,
 						Fields:   ix.Fields[0:i],
-						Index:    ix.Index,
-						Comment:  ix.Comment,
+						Index: &models.Index{
+							IndexName: ix.Index.IndexName,
+							IsUnique:  false,
+							IsPrimary: ix.Index.IsPrimary,
+							SeqNo:     ix.Index.SeqNo,
+							Origin:    ix.Index.Origin,
+							IsPartial: ix.Index.IsPartial,
+						},
+						Comment: ix.Comment,
 					}
 					args.BuildIndexFuncName(newIx)
 					for _, _ix := range _ixMap {
