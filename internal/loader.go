@@ -892,6 +892,31 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 		if err != nil {
 			return nil, err
 		}
+
+		for k, ix := range _ixMap {
+			if len(ix.Fields) > 1 {
+			outerLoop:
+				for i := 1; i < len(ix.Fields); i++ {
+					newIx := &Index{
+						FuncName: ix.FuncName,
+						Schema:   ix.Schema,
+						Type:     ix.Type,
+						Fields:   ix.Fields[0:i],
+						Index:    ix.Index,
+						Comment:  ix.Comment,
+					}
+					args.BuildIndexFuncName(newIx)
+					for _, _ix := range _ixMap {
+						if _ix.FuncName == newIx.FuncName {
+							continue outerLoop
+						}
+					}
+					_ixMap[fmt.Sprintf("%s_%d", k, i)] = newIx
+					ixMap[fmt.Sprintf("%s_%d", k, i)] = newIx
+				}
+			}
+		}
+
 		result[t] = _ixMap
 		for k, v := range _ixMap {
 			ixMap[k] = v
@@ -908,6 +933,7 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 	// generate templates
 	for _, k := range keys {
 		ix := ixMap[k]
+
 		err = args.ExecuteTemplate(IndexTemplate, ix.Type.RepoName, ix.Index.IndexName, ix)
 		if err != nil {
 			return nil, err
