@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -893,7 +894,15 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 			return nil, err
 		}
 
-		for k, ix := range _ixMap {
+		var keys []string
+		for k := range _ixMap {
+			keys = append(keys, k)
+		}
+
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			ix := _ixMap[k]
 			if len(ix.Fields) > 1 {
 			outerLoop:
 				for i := 1; i < len(ix.Fields); i++ {
@@ -903,7 +912,7 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 						Type:     ix.Type,
 						Fields:   ix.Fields[0:i],
 						Index: &models.Index{
-							IndexName: ix.Index.IndexName,
+							IndexName: ix.Index.IndexName + "_" + strconv.Itoa(i),
 							IsUnique:  false,
 							IsPrimary: ix.Index.IsPrimary,
 							SeqNo:     ix.Index.SeqNo,
@@ -919,7 +928,6 @@ func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[
 						}
 					}
 					_ixMap[fmt.Sprintf("%s_%d", k, i)] = newIx
-					ixMap[fmt.Sprintf("%s_%d", k, i)] = newIx
 				}
 			}
 		}
