@@ -356,5 +356,10 @@ func writeTypes(args *internal.ArgType) error {
 	}
 
 	// process written files with goimports
-	return exec.Command("goimports", params...).Run()
+	output, err := exec.Command("goimports", params...).CombinedOutput()
+	if err != nil {
+		return errors.New(string(output))
+	}
+
+	return nil
 }
