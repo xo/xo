@@ -42,6 +42,32 @@ func (f *{{ $typeName }}Filter) Add{{ .Name }}(filterType FilterType, v interfac
 }
 {{- end }}
 
+func (f *{{ $typeName }}Filter) Hash() (string, error) {
+    var err error
+    var hash string
+    if f == nil {
+        return "", nil
+    }
+    h := md5.New()
+    list := []struct{
+        filter FilterOnField
+        name string
+    }{
+        {{- range .Fields }}{ filter: f.{{.Name}}, name: "{{ .Name }}" },{{- end}}
+    }
+    for _, item := range list {
+        hash, err = item.filter.Hash()
+        if err != nil {
+            return "", err
+        }
+        _,err = io.WriteString(h, item.name+" -> "+hash)
+        if err != nil {
+            return "", err
+        }
+    }
+    return fmt.Sprintf("%x", h.Sum(nil)), nil
+}
+
 type {{ .Name }}Create struct {
 {{- range .Fields }}
     {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
@@ -61,5 +87,13 @@ type {{ .Name }}Update struct {
 type List{{ .Name }} struct {
     TotalCount int
     Data []{{ .Name }}
+}
+
+func (l *List{{ .Name }}) GetInterfaceItems() []interface{} {
+    var arr []interface{}
+	for _, item := range l.Data {
+		arr = append(arr, item)
+	}
+	return arr
 }
 

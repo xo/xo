@@ -220,3 +220,31 @@ func (f FilterOnField) MarshalGQL(w io.Writer) {
 		w.Write([]byte(`"` + string(data) + `"`))
 	}
 }
+
+func (f *FilterOnField) Hash() (string, error) {
+	if f == nil {
+		return "", nil
+	}
+	var arr []string
+	for _, _f := range *f {
+		var filterTypes []string
+		for k := range _f {
+			filterTypes = append(filterTypes, string(k))
+		}
+		sort.Strings(filterTypes)
+
+		for _, ft := range filterTypes {
+			arr = append(arr, fmt.Sprintf("%s -> %v", ft, _f[FilterType(ft)]))
+		}
+	}
+	sort.Strings(arr)
+
+	h := md5.New()
+	for _, item := range arr {
+		_, err := io.WriteString(h, item)
+		if err != nil {
+			return "", err
+		}
+	}
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
+}
