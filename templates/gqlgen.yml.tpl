@@ -35,4 +35,4 @@ models:
   FilterOnField:
     model: {{ entitiespkg }}.FilterOnField
   Point:
-    model github.com/paulmach/go.geo.Point
+    model: github.com/paulmach/go.geo.Point
