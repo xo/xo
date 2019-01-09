@@ -196,6 +196,9 @@ switchDT:
 	case "time":
 		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
 		typ = "string"
+	case "point":
+		typ = "geo.Point"
+		nilVal = "geo.Point{}"
 
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {

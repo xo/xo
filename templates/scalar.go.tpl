@@ -167,6 +167,28 @@ func UnmarshalMap(v interface{}) (map[string]interface{}, error) {
 	return nt, errors.New("map should be string")
 }
 
+func UnmarshalPoint(v interface{}) (geo.Point, error) {
+	point := geo.Point{}
+	if v == nil {
+		return point, nil
+	}
+	if value, ok := v.([]interface{}); ok {
+		if len(value) != 2 {
+			return point, errors.New("invalid location")
+		}
+		point.SetLat(value[0].(float64))
+		point.SetLng(value[1].(float64))
+		return point, nil
+	}
+	return point, errors.New("value is not location")
+}
+
+func MarshalPnit(v geo.Point) graphql.Marshaler {
+	return graphql.WriterFunc(func(w io.Writer) {
+		io.WriteString(w, fmt.Sprintf("[%f, %f]", v.Lat(), v.Lng()))
+	})
+}
+
 type FilterType string
 
 const (
@@ -227,14 +249,11 @@ func (f *FilterOnField) Hash() (string, error) {
 	}
 	var arr []string
 	for _, _f := range *f {
-		var filterTypes []string
-		for k := range _f {
-			filterTypes = append(filterTypes, string(k))
-		}
-		sort.Strings(filterTypes)
+		filterTypes := []FilterType{Eq, Neq, Gt, Gte, Lt, Lte, Like, Between, Raw}
 
 		for _, ft := range filterTypes {
-			arr = append(arr, fmt.Sprintf("%s -> %v", ft, _f[FilterType(ft)]))
+			value := _f[ft]
+			arr = append(arr, fmt.Sprintf("%s -> %v", ft, value))
 		}
 	}
 	sort.Strings(arr)

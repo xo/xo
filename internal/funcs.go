@@ -131,6 +131,8 @@ func (a *ArgType) retypegraphql(typ string) string {
 		typ = "NullString"
 	case "sql.NullBool":
 		typ = "NullBool"
+	case "geo.Point":
+		typ = "Point"
 	}
 	return typ
 }
