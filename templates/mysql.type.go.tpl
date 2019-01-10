@@ -12,14 +12,16 @@ type {{ .Name }} struct {
     {{- if and .Col.IsEnum (ne .Col.NotNull true) }}
         {{ .Name }} *{{ retype .Type }} `json:"{{ .Col.ColumnName }}" db:"{{ .Col.ColumnName }}"` // {{ .Col.ColumnName }}
     {{- else }}
-	    {{ .Name }} {{ retype .Type }} `json:"{{ .Col.ColumnName }}" {{- if ne .Col.IsVirtualFromConfig true}}db:"{{ .Col.ColumnName }}"{{- end}}` // {{ .Col.ColumnName }}
+	    {{ .Name }} {{ retype .Type }} `json:"{{ .Col.ColumnName }}" {{ if ne .Col.IsVirtualFromConfig true }}db:"{{ .Col.ColumnName }}"{{ end }}` // {{ .Col.ColumnName }}
     {{- end }}
 {{- end }}
 }
 
 type {{ .Name }}Filter struct {
 {{- range .Fields }}
+    {{- if ne .Col.IsVirtualFromConfig true }}
 	{{ .Name }} FilterOnField
+	{{- end }}
 {{- end }}
 }
 
@@ -37,9 +39,11 @@ func (f *{{ $typeName}}Filter) IsNil() bool {
 }
 
 {{- range .Fields }}
+{{- if ne .Col.IsVirtualFromConfig true }}
 func (f *{{ $typeName }}Filter) Add{{ .Name }}(filterType FilterType, v interface{}) {
     f.{{ .Name }} = append(f.{{ .Name }}, map[FilterType]interface{}{filterType: v})
 }
+{{- end }}
 {{- end }}
 
 func (f *{{ $typeName }}Filter) Hash() (string, error) {
@@ -53,7 +57,7 @@ func (f *{{ $typeName }}Filter) Hash() (string, error) {
         filter FilterOnField
         name string
     }{
-        {{- range .Fields }}{ filter: f.{{.Name}}, name: "{{ .Name }}" },{{- end}}
+        {{- range .Fields }}{{ if ne .Col.IsVirtualFromConfig true }}{ filter: f.{{.Name}}, name: "{{ .Name }}" },{{end}}{{- end}}
     }
     for _, item := range list {
         hash, err = item.filter.Hash()
@@ -71,16 +75,20 @@ func (f *{{ $typeName }}Filter) Hash() (string, error) {
 type {{ .Name }}Create struct {
 {{- range .Fields }}
     {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
+    {{- if ne .Col.IsVirtualFromConfig true }}
 	{{ .Name }} {{- if .Col.NotNull}} {{ retype .Type }}{{ else }} {{retypeNull .Type}}{{- end}} `json:"{{ .Col.ColumnName }}" db:"{{ .Col.ColumnName }}"` // {{ .Col.ColumnName }}
+	{{- end}}
 	{{- end }}
 {{- end }}
 }
 
 type {{ .Name }}Update struct {
 {{- range .Fields }}
+{{- if ne .Col.IsVirtualFromConfig true }}
     {{- if and (or (ne .Col.ColumnName $primaryKey.Col.ColumnName) $tableVar.ManualPk) (ne .Col.ColumnName "created_at") (ne .Col.ColumnName "updated_at") }}
 	{{ .Name }} *{{ retype .Type }} // {{ .Col.ColumnName }}
 	{{- end }}
+{{- end }}
 {{- end }}
 }
 
