@@ -17,12 +17,12 @@ import (
 	"strings"
 
 	"github.com/alexflint/go-arg"
+	"gopkg.in/yaml.v2"
 
 	"github.com/JLightning/xo/internal"
+	_ "github.com/JLightning/xo/loaders"
 	"github.com/JLightning/xo/models"
 	"github.com/xo/dburl"
-
-	_ "github.com/JLightning/xo/loaders"
 	_ "github.com/xo/xoutil"
 )
 
@@ -440,18 +440,61 @@ func writeTypes(args *internal.ArgType) error {
 
 	fmt.Println("--- Repositories: ")
 	for _, v := range args.NewTemplateFuncs()["reponames"].(func() []string)() {
-		if !strings.Contains(v,"Rlts") {
+		if !strings.Contains(v, "Rlts") {
 			fmt.Println(v)
 		}
 	}
 
 	fmt.Println("--- Rlts Repositories: ")
 	for _, v := range args.NewTemplateFuncs()["reponames"].(func() []string)() {
-		if strings.Contains(v,"Rlts") {
+		if strings.Contains(v, "Rlts") {
 			fmt.Println(v)
 		}
 	}
 
+	err = tryMergeGqlgenYml(args)
+	if err != nil {
+		return err
+	}
+
 	// process written files with goimports
 	return exec.Command("goimports", params...).Run()
+}
+
+func tryMergeGqlgenYml(args *internal.ArgType) error {
+	importFile := args.Path + "/graphql/gqlgen_import.yml"
+	mainFile := args.Path + "/graphql/gqlgen.yml"
+	if _, err := os.Stat(importFile); err == nil {
+		data, err := ioutil.ReadFile(importFile)
+		if err != nil {
+			return err
+		}
+		var value struct {
+			Models map[string]struct {
+				Model string
+			}
+		}
+		err = yaml.Unmarshal(data, &value)
+
+		// open file
+		f, err := os.OpenFile(mainFile, os.O_APPEND|os.O_WRONLY, 0666)
+		if err != nil {
+			return err
+		}
+
+		var keys []string
+		for k := range value.Models {
+			keys = append(keys, k)
+		}
+
+		sort.Strings(keys)
+		for _, k := range keys {
+			v := value.Models[k]
+			_, err = f.WriteString(fmt.Sprintf("  %s:\n    model: %s\n", k, v.Model))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
