@@ -452,7 +452,7 @@ func writeTypes(args *internal.ArgType) error {
 		}
 	}
 
-	err = tryMergeGqlgenYml(args)
+	//err = tryMergeGqlgenYml(args)
 	if err != nil {
 		return err
 	}
