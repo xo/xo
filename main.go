@@ -48,6 +48,8 @@ func main() {
 	// parse args
 	arg.MustParse(args)
 
+	parseXoConfigFile(args)
+
 	// process args
 	err = processArgs(args)
 	if err != nil {
@@ -125,6 +127,17 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
+	}
+}
+
+func parseXoConfigFile(args *internal.ArgType) {
+	data, err := ioutil.ReadFile("xo_config.yml")
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(data, &internal.XoConfig)
+	if err != nil {
+		return
 	}
 }
 

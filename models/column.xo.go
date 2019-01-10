@@ -9,14 +9,15 @@ import (
 
 // Column represents column info.
 type Column struct {
-	FieldOrdinal int    // field_ordinal
-	ColumnName   string // column_name
-	DataType     string // data_type
-	IsEnum       bool
-	NotNull      bool           // not_null
-	DefaultValue sql.NullString // default_value
-	IsPrimaryKey bool           // is_primary_key
-	IsGenerated  bool
+	FieldOrdinal        int    // field_ordinal
+	ColumnName          string // column_name
+	DataType            string // data_type
+	IsEnum              bool
+	NotNull             bool           // not_null
+	DefaultValue        sql.NullString // default_value
+	IsPrimaryKey        bool           // is_primary_key
+	IsGenerated         bool
+	IsVirtualFromConfig bool
 }
 
 // PgTableColumns runs a custom query, returning results as Column.

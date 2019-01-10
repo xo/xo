@@ -1,0 +1,6 @@
+custom_field:
+  teacher:
+    - column_name: test
+      data_type: int
+    - column_name: test2
+      data_type: varchar(255)

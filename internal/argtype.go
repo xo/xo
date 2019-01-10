@@ -1,6 +1,8 @@
 package internal
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // ArgType is the type that specifies the command line arguments.
 type ArgType struct {
@@ -153,6 +155,15 @@ type ArgType struct {
 	// used for use with declaring a func receiver on a type.
 	ShortNameTypeMap map[string]string `arg:"-"`
 }
+
+type xoConfigType struct {
+	CustomField map[string][]struct {
+		ColumnName string `yaml:"column_name"`
+		DataType   string `yaml:"data_type"`
+	} `yaml:"custom_field"`
+}
+
+var XoConfig xoConfigType
 
 // NewDefaultArgs returns the default arguments.
 func NewDefaultArgs() *ArgType {

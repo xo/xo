@@ -1,6 +1,7 @@
 package loaders
 
 import (
+	"database/sql"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -23,12 +24,32 @@ func init() {
 		ProcList:        models.MyProcs,
 		ProcParamList:   models.MyProcParams,
 		TableList:       MyTables,
-		ColumnList:      models.MyTableColumns,
+		ColumnList:      MyTableColumns,
 		ForeignKeyList:  models.MyTableForeignKeys,
 		IndexList:       models.MyTableIndexes,
 		IndexColumnList: models.MyIndexColumns,
 		QueryColumnList: MyQueryColumns,
 	}
+}
+
+func MyTableColumns(db models.XODB, schema string, table string) ([]*models.Column, error) {
+	columns, err := models.MyTableColumns(db, schema, table)
+	if customFields, ok := internal.XoConfig.CustomField[table]; ok {
+		for _, field := range customFields {
+			columns = append(columns, &models.Column{
+				FieldOrdinal:        columns[len(columns)-1].FieldOrdinal + 1,
+				ColumnName:          field.ColumnName,
+				DataType:            field.DataType,
+				IsEnum:              false,
+				NotNull:             true,
+				DefaultValue:        sql.NullString{},
+				IsPrimaryKey:        false,
+				IsGenerated:         true,
+				IsVirtualFromConfig: true,
+			})
+		}
+	}
+	return columns, err
 }
 
 // MySchema retrieves the name of the current schema.
