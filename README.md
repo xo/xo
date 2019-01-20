@@ -408,6 +408,10 @@ func GetMostRecent{{ .Name }}(db XODB, n int) ([]*{{ .Name }}, error) {
         res = append(res, &{{ $short }})
     }
 
+    if err := q.Err(); err != nil {
+        return nil, err
+    }
+
     return res, nil
 }
 ```

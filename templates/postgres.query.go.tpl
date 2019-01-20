@@ -43,7 +43,11 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 		res = append(res, &{{ $short }})
 	}
 
+
+	if err := q.Err(); err != nil {
+		return nil, err
+	}
+
 	return res, nil
 {{- end }}
 }
-
