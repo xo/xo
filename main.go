@@ -361,7 +361,7 @@ func writeTypes(args *internal.ArgType) error {
 		return err
 	}
 
-	output, err := exec.Command("gorimports", params...).CombinedOutput()
+	output, err := exec.Command("goimports", params...).CombinedOutput()
 	if err != nil {
 		return errors.New(string(output))
 	}
