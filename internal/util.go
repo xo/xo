@@ -184,7 +184,7 @@ func (a *ArgType) BuildIndexFuncName(ixTpl *Index) {
 // letters for GenRandomID
 var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 
-// GenRandomID generates a 8 character random string.
+// GenRandomID generates an 8 character random string.
 func GenRandomID() string {
 	rand.Seed(time.Now().UTC().UnixNano())
 	b := make([]rune, 8)
@@ -210,7 +210,7 @@ func reverseIndexRune(s string, r rune) int {
 	return -1
 }
 
-// SinguralizeIdentifier will singularize a identifier, returning it in
+// SinguralizeIdentifier will singularize an identifier, returning it in
 // CamelCase.
 func SingularizeIdentifier(s string) string {
 	if i := reverseIndexRune(s, '_'); i != -1 {
