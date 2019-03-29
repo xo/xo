@@ -703,10 +703,20 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 			return err
 		}
 
-		// build func name
-		args.BuildIndexFuncName(ixTpl)
-
-		ixMap[typeTpl.Table.TableName+"_"+ix.IndexName] = ixTpl
+		l := len(ixTpl.Fields)
+		for i := 0; i < l; i++ {
+			// fake index according to Leftmost Prefixing for generating query func
+			ixTplNew := &Index{
+				Schema: args.Schema,
+				Type:   typeTpl,
+				Fields: ixTpl.Fields[:l-i],
+				Index:  ix,
+			}
+			// build func name
+			args.BuildIndexFuncName(ixTplNew)
+			// distinct func name
+			ixMap[ixTplNew.FuncName] = ixTplNew
+		}
 	}
 
 	// search for primary key if it was skipped being set in the type
