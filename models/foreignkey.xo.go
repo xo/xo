@@ -151,7 +151,8 @@ func MsTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		`f.name AS foreign_key_name, ` +
 		`c.name AS column_name, ` +
 		`o.name AS ref_table_name, ` +
-		`x.name AS ref_column_name ` +
+		`x.name AS ref_column_name, ` +
+		`object_schema_name(o.id) AS ref_schema_name ` +
 		`FROM sysobjects f ` +
 		`INNER JOIN sysobjects t ON f.parent_obj = t.id ` +
 		`INNER JOIN sysreferences r ON f.id = r.constid ` +
@@ -174,7 +175,7 @@ func MsTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		fk := ForeignKey{}
 
 		// scan
-		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName)
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName, &fk.RefTableSchema)
 		if err != nil {
 			return nil, err
 		}
