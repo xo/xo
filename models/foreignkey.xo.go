@@ -9,6 +9,7 @@ type ForeignKey struct {
 	ColumnName     string // column_name
 	RefIndexName   string // ref_index_name
 	RefTableName   string // ref_table_name
+	RefTableSchema string // ref_table_schema
 	RefColumnName  string // ref_column_name
 	KeyID          int    // key_id
 	SeqNo          int    // seq_no
@@ -27,6 +28,7 @@ func PgTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		`b.attname, ` + // ::varchar AS column_name
 		`i.relname, ` + // ::varchar AS ref_index_name
 		`c.relname, ` + // ::varchar AS ref_table_name
+		`s.nspname, ` + // ::varchar AS ref_table_schema
 		`d.attname, ` + // ::varchar AS ref_column_name
 		`0, ` + // ::integer AS key_id
 		`0, ` + // ::integer AS seq_no
@@ -40,6 +42,7 @@ func PgTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		`JOIN ONLY pg_class c on c.oid = r.confrelid ` +
 		`JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = r.connamespace ` +
+		`JOIN ONLY pg_namespace s ON s.oid = c.relnamespace ` +
 		`WHERE r.contype = 'f' AND n.nspname = $1 AND a.relname = $2 ` +
 		`ORDER BY r.conname, b.attname`
 
@@ -57,7 +60,7 @@ func PgTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		fk := ForeignKey{}
 
 		// scan
-		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo, &fk.OnUpdate, &fk.OnDelete, &fk.Match)
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefTableSchema, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo, &fk.OnUpdate, &fk.OnDelete, &fk.Match)
 		if err != nil {
 			return nil, err
 		}
