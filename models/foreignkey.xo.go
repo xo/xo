@@ -80,6 +80,7 @@ func MyTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		`constraint_name AS foreign_key_name, ` +
 		`column_name AS column_name, ` +
 		`referenced_table_name AS ref_table_name, ` +
+		`referenced_table_schema as ref_table_schema, ` +
 		`referenced_column_name AS ref_column_name ` +
 		`FROM information_schema.key_column_usage ` +
 		`WHERE referenced_table_name IS NOT NULL AND table_schema = ? AND table_name = ?`
@@ -98,7 +99,7 @@ func MyTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 		fk := ForeignKey{}
 
 		// scan
-		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName)
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefTableSchema, &fk.RefColumnName)
 		if err != nil {
 			return nil, err
 		}
