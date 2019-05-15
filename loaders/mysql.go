@@ -1,5 +1,3 @@
-// +build mysql
-
 package loaders
 
 import (
@@ -68,7 +66,7 @@ func MyRelkind(relType internal.RelType) string {
 
 // MyParseType parse a mysql type into a Go type based on the column
 // definition.
-func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MyParseType(args *internal.ArgType, schema string, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 	unsigned := false
@@ -200,9 +198,9 @@ switchDT:
 		typ = "string"
 
 	default:
-		if strings.HasPrefix(dt, args.Schema+".") {
+		if strings.HasPrefix(dt, schema+".") {
 			// in the same schema, so chop off
-			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(dt[len(schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
 			typ = snaker.SnakeToCamelIdentifier(dt)
@@ -292,8 +290,20 @@ func MyQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 		return nil, err
 	}
 
+	// load view schema
+	res, err := args.DB.Query(`SELECT table_schema FROM information_schema.tables WHERE table_name = ?;`, xoid)
+	if err != nil {
+		return nil, err
+	}
+
+	var viewSchema string
+	res.Next()
+	if err = res.Scan(&viewSchema); err != nil {
+		return nil, err
+	}
+
 	// load columns
-	cols, err := models.MyTableColumns(args.DB, args.Schema, xoid)
+	cols, err := models.MyTableColumns(args.DB, viewSchema, xoid)
 
 	// drop inspect view
 	dropq := `DROP VIEW ` + xoid
