@@ -3,7 +3,6 @@ package internal
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -598,7 +597,7 @@ func (tl TypeLoader) loadForeignKeys(args *ArgType, allTableMap schemaTypeMap) (
 		fkMap := map[string]*ForeignKey{}
 		for _, t := range tableMap {
 			// load keys per table
-			err = tl.loadTableForeignKeys(args, schema, tableMap, t, fkMap)
+			err = tl.loadTableForeignKeys(args, schema, allTableMap, t, fkMap)
 			if err != nil {
 				return nil, err
 			}
@@ -623,7 +622,7 @@ func (tl TypeLoader) loadForeignKeys(args *ArgType, allTableMap schemaTypeMap) (
 }
 
 // LoadTableForeignKeys loads schema foreign key definitions per table.
-func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, tableMap map[string]*Type, typeTpl *Type, fkMap map[string]*ForeignKey) error {
+func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, allTableMap schemaTypeMap, typeTpl *Type, fkMap map[string]*ForeignKey) error {
 	var err error
 
 	// load foreign keys
@@ -646,6 +645,11 @@ func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, tableMap
 			}
 		}
 
+		tableMap, exist := allTableMap[fk.RefTableSchema]
+		if !exist {
+			continue
+		}
+
 	refTplLoop:
 		// find ref table
 		for _, t := range tableMap {
@@ -656,8 +660,6 @@ func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, tableMap
 		}
 
 		if refTpl == nil {
-			log.Printf("can't create foreign key template for '%v' reference to table '%v', skipping it",
-				fk.ForeignKeyName, fk.RefTableSchema+"."+fk.RefTableName)
 			continue
 		}
 

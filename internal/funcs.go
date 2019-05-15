@@ -33,6 +33,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hascolumn":          a.hascolumn,
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
+		"reftab":             a.reftab,
 	}
 }
 
@@ -635,4 +636,22 @@ func (a *ArgType) hasfield(fields []*Field, name string) bool {
 // getstartcount returns a starting count for numbering columsn in queries
 func (a *ArgType) getstartcount(fields []*Field, pkFields []*Field) int {
 	return len(fields) - len(pkFields)
+}
+
+// reftab returns the foreign table name.
+// If that table is not in the same schema with the current table, the return
+// value will contains the reference schema follow by a dot.
+func (a *ArgType) reftab(fk *ForeignKey) string {
+	refSchema := fk.ForeignKey.RefTableSchema
+	refTab := fk.ForeignKey.RefTableName
+	if refSchema == fk.Type.Schema {
+		return fk.RefType.Name
+	}
+	for _, sch := range a.Schemas {
+		if sch.Name == refSchema {
+			return sch.Package + "." + fk.RefType.Name
+		}
+	}
+
+	return refTab
 }
