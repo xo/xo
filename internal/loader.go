@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -655,6 +656,8 @@ func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, tableMap
 		}
 
 		if refTpl == nil {
+			log.Printf("can't create foreign key template for '%v' reference to table '%v', skipping it",
+				fk.ForeignKeyName, fk.RefTableSchema+"."+fk.RefTableName)
 			continue
 		}
 
