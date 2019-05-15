@@ -1,5 +1,5 @@
 // XODB is the common interface for database operations that can be used with
-// types from schema '{{ schema .Schema }}'.
+// types from schema '{{ schema .Name }}'.
 //
 // This should work with database/sql.DB and database/sql.Tx.
 type XODB interface {

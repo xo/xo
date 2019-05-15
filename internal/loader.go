@@ -41,6 +41,21 @@ type Loader interface {
 // SchemaLoaders are the available schema loaders.
 var SchemaLoaders = map[string]Loader{}
 
+// schema_name -> { enum_name -> Enum }
+type schemaEnumMap map[string]map[string]*Enum
+
+// schema_name -> { proc_name -> Proc }
+type schemaProcMap map[string]map[string]*Proc
+
+// schema_name -> { type_name -> Type }
+type schemaTypeMap map[string]map[string]*Type
+
+// schema_name -> { foreign_key_name -> ForeignKey }
+type schemaFkMap map[string]map[string]*ForeignKey
+
+// schema_name -> { index_name -> Index }
+type schemaIndexMap map[string]map[string]*Index
+
 // TypeLoader provides a common Loader implementation used by the built in
 // schema/query loaders.
 type TypeLoader struct {
@@ -49,7 +64,7 @@ type TypeLoader struct {
 	Esc             map[EscType]func(string) string
 	ProcessRelkind  func(RelType) string
 	Schema          func(*ArgType) (string, error)
-	ParseType       func(*ArgType, string, bool) (int, string, string)
+	ParseType       func(*ArgType, string, string, bool) (int, string, string)
 	EnumList        func(models.XODB, string) ([]*models.Enum, error)
 	EnumValueList   func(models.XODB, string, string) ([]*models.EnumValue, error)
 	ProcList        func(models.XODB, string) ([]*models.Proc, error)
@@ -104,7 +119,6 @@ func (tl TypeLoader) SchemaName(args *ArgType) (string, error) {
 	if tl.Schema != nil {
 		return tl.Schema(args)
 	}
-
 	return "", nil
 }
 
@@ -169,7 +183,9 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 				Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 				Col:  c,
 			}
-			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, args.QueryAllowNulls && !c.NotNull)
+			// FIXME
+			schema := args.Schemas[0]
+			f.Len, f.NilType, f.Type = tl.ParseType(args, schema.Name, c.DataType, args.QueryAllowNulls && !c.NotNull)
 			typeTpl.Fields = append(typeTpl.Fields, f)
 		}
 	} else {
@@ -248,42 +264,50 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 	var err error
 
 	// load enums
-	_, err = tl.LoadEnums(args)
+	_, err = tl.loadEnums(args)
 	if err != nil {
 		return err
 	}
 
 	// load procs
-	_, err = tl.LoadProcs(args)
+	_, err = tl.loadProcs(args)
 	if err != nil {
 		return err
 	}
 
 	// load tables
-	tableMap, err := tl.LoadRelkind(args, Table)
+	allTableMap, err := tl.loadRelkind(args, Table)
 	if err != nil {
 		return err
 	}
 
 	// load views
-	viewMap, err := tl.LoadRelkind(args, View)
+	allViewMap, err := tl.loadRelkind(args, View)
 	if err != nil {
 		return err
 	}
 
 	// merge views with the tableMap
-	for k, v := range viewMap {
-		tableMap[k] = v
+	for schema, viewMap := range allViewMap {
+		tableMap, exists := allTableMap[schema]
+		if !exists {
+			allTableMap[schema] = viewMap
+			continue
+		}
+
+		for k, v := range viewMap {
+			tableMap[k] = v
+		}
 	}
 
 	// load foreign keys
-	_, err = tl.LoadForeignKeys(args, tableMap)
+	_, err = tl.loadForeignKeys(args, allTableMap)
 	if err != nil {
 		return err
 	}
 
 	// load indexes
-	_, err = tl.LoadIndexes(args, tableMap)
+	_, err = tl.loadIndexes(args, allTableMap)
 	if err != nil {
 		return err
 	}
@@ -292,57 +316,63 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 }
 
 // LoadEnums loads schema enums.
-func (tl TypeLoader) LoadEnums(args *ArgType) (map[string]*Enum, error) {
-	var err error
-
+func (tl TypeLoader) loadEnums(args *ArgType) (schemaEnumMap, error) {
 	// not supplied, so bail
 	if tl.EnumList == nil {
 		return nil, nil
 	}
 
-	// load enums
-	enumList, err := tl.EnumList(args.DB, args.Schema)
-	if err != nil {
-		return nil, err
-	}
+	// map of schema_name -> {enum_name -> Enum}
+	allEnumMap := make(map[string]map[string]*Enum)
 
-	// process enums
-	enumMap := map[string]*Enum{}
-	for _, e := range enumList {
-		enumTpl := &Enum{
-			Name:              SingularizeIdentifier(e.EnumName),
-			Schema:            args.Schema,
-			Values:            []*EnumValue{},
-			Enum:              e,
-			ReverseConstNames: args.UseReversedEnumConstNames,
-		}
-
-		err = tl.LoadEnumValues(args, enumTpl)
+	// load enums for each schema
+	for _, dbSchema := range args.Schemas {
+		schema := dbSchema.Name
+		enumList, err := tl.EnumList(args.DB, schema)
 		if err != nil {
 			return nil, err
 		}
 
-		enumMap[enumTpl.Name] = enumTpl
-		args.KnownTypeMap[enumTpl.Name] = true
-	}
+		// process enums
+		enumMap := map[string]*Enum{}
+		for _, e := range enumList {
+			enumTpl := &Enum{
+				Name:              SingularizeIdentifier(e.EnumName),
+				Schema:            schema,
+				Values:            []*EnumValue{},
+				Enum:              e,
+				ReverseConstNames: args.UseReversedEnumConstNames,
+			}
 
-	// generate enum templates
-	for _, e := range enumMap {
-		err = args.ExecuteTemplate(EnumTemplate, e.Name, "", e)
-		if err != nil {
-			return nil, err
+			err = tl.loadEnumValues(args, schema, enumTpl)
+			if err != nil {
+				return nil, err
+			}
+
+			enumMap[enumTpl.Name] = enumTpl
+			args.KnownTypeMap[enumTpl.Name] = true
+
 		}
+
+		// generate enum templates
+		for _, e := range enumMap {
+			err = args.ExecuteTemplate(EnumTemplate, e.Name, "", e)
+			if err != nil {
+				return nil, err
+			}
+		}
+		allEnumMap[schema] = enumMap
 	}
 
-	return enumMap, nil
+	return allEnumMap, nil
 }
 
-// LoadEnumValues loads schema enum values.
-func (tl TypeLoader) LoadEnumValues(args *ArgType, enumTpl *Enum) error {
+// loadEnumValues loads schema enum values.
+func (tl TypeLoader) loadEnumValues(args *ArgType, schema string, enumTpl *Enum) error {
 	var err error
 
 	// load enum values
-	enumValues, err := tl.EnumValueList(args.DB, args.Schema, enumTpl.Enum.EnumName)
+	enumValues, err := tl.EnumValueList(args.DB, schema, enumTpl.Enum.EnumName)
 	if err != nil {
 		return err
 	}
@@ -368,68 +398,73 @@ func (tl TypeLoader) LoadEnumValues(args *ArgType, enumTpl *Enum) error {
 }
 
 // LoadProcs loads schema stored procedures definitions.
-func (tl TypeLoader) LoadProcs(args *ArgType) (map[string]*Proc, error) {
-	var err error
-
+func (tl TypeLoader) loadProcs(args *ArgType) (schemaProcMap, error) {
 	// not supplied, so bail
 	if tl.ProcList == nil {
 		return nil, nil
 	}
 
-	// load procs
-	procList, err := tl.ProcList(args.DB, args.Schema)
-	if err != nil {
-		return nil, err
-	}
+	allProcMap := make(map[string]map[string]*Proc)
 
-	// process procs
-	procMap := map[string]*Proc{}
-	for _, p := range procList {
-		// fix the name if it starts with one or more underscores
-		name := p.ProcName
-		for strings.HasPrefix(name, "_") {
-			name = name[1:]
-		}
-
-		// create template
-		procTpl := &Proc{
-			Name:   snaker.SnakeToCamelIdentifier(name),
-			Schema: args.Schema,
-			Params: []*Field{},
-			Return: &Field{},
-			Proc:   p,
-		}
-
-		// parse return type into template
-		// TODO: fix this so that nullable types can be returned
-		_, procTpl.Return.NilType, procTpl.Return.Type = tl.ParseType(args, p.ReturnType, false)
-
-		// load proc parameters
-		err = tl.LoadProcParams(args, procTpl)
+	for _, dbSchema := range args.Schemas {
+		schema := dbSchema.Name
+		// load procs
+		procList, err := tl.ProcList(args.DB, schema)
 		if err != nil {
 			return nil, err
 		}
 
-		procMap[p.ProcName] = procTpl
-	}
+		// process procs
+		procMap := map[string]*Proc{}
+		for _, p := range procList {
+			// fix the name if it starts with one or more underscores
+			name := p.ProcName
+			for strings.HasPrefix(name, "_") {
+				name = name[1:]
+			}
 
-	// generate proc templates
-	for _, p := range procMap {
-		err = args.ExecuteTemplate(ProcTemplate, "sp_"+p.Name, "", p)
-		if err != nil {
-			return nil, err
+			// create template
+			procTpl := &Proc{
+				Name:   snaker.SnakeToCamelIdentifier(name),
+				Schema: schema,
+				Params: []*Field{},
+				Return: &Field{},
+				Proc:   p,
+			}
+
+			// parse return type into template
+			// TODO: fix this so that nullable types can be returned
+			_, procTpl.Return.NilType, procTpl.Return.Type = tl.ParseType(args, schema, p.ReturnType, false)
+
+			// load proc parameters
+			err = tl.loadProcParams(args, schema, procTpl)
+			if err != nil {
+				return nil, err
+			}
+
+			procMap[p.ProcName] = procTpl
 		}
+
+		// generate proc templates
+		for _, p := range procMap {
+			err = args.ExecuteTemplate(ProcTemplate, "sp_"+p.Name, "", p)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		allProcMap[schema] = procMap
 	}
 
-	return procMap, nil
+	return allProcMap, nil
 }
 
-// LoadProcParams loads schema stored procedure parameters.
-func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
+// loadProcParams loads schema stored procedure parameters.
+func (tl TypeLoader) loadProcParams(args *ArgType, schema string, procTpl *Proc) error {
 	var err error
 
 	// load proc params
-	paramList, err := tl.ProcParamList(args.DB, args.Schema, procTpl.Proc.ProcName)
+	paramList, err := tl.ProcParamList(args.DB, schema, procTpl.Proc.ProcName)
 	if err != nil {
 		return err
 	}
@@ -442,7 +477,7 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 		}
 
 		// TODO: fix this so that nullable types can be used as parameters
-		_, _, paramTpl.Type = tl.ParseType(args, strings.TrimSpace(p.ParamType), false)
+		_, _, paramTpl.Type = tl.ParseType(args, schema, strings.TrimSpace(p.ParamType), false)
 
 		// add to proc params
 		if procTpl.ProcParams != "" {
@@ -457,53 +492,57 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 }
 
 // LoadRelkind loads a schema table/view definition.
-func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Type, error) {
-	var err error
+func (tl TypeLoader) loadRelkind(args *ArgType, relType RelType) (schemaTypeMap, error) {
+	allTableMap := make(map[string]map[string]*Type)
 
-	// load tables
-	tableList, err := tl.TableList(args.DB, args.Schema, tl.Relkind(relType))
-	if err != nil {
-		return nil, err
-	}
-
-	// tables
-	tableMap := make(map[string]*Type)
-	for _, ti := range tableList {
-		// create template
-		typeTpl := &Type{
-			Name:    SingularizeIdentifier(ti.TableName),
-			Schema:  args.Schema,
-			RelType: relType,
-			Fields:  []*Field{},
-			Table:   ti,
-		}
-
-		// process columns
-		err = tl.LoadColumns(args, typeTpl)
+	for _, dbSchema := range args.Schemas {
+		schema := dbSchema.Name
+		// load tables
+		tableList, err := tl.TableList(args.DB, schema, tl.Relkind(relType))
 		if err != nil {
 			return nil, err
 		}
 
-		tableMap[ti.TableName] = typeTpl
-	}
+		// tables
+		tableMap := make(map[string]*Type)
+		for _, ti := range tableList {
+			// create template
+			typeTpl := &Type{
+				Name:    SingularizeIdentifier(ti.TableName),
+				Schema:  schema,
+				RelType: relType,
+				Fields:  []*Field{},
+				Table:   ti,
+			}
 
-	// generate table templates
-	for _, t := range tableMap {
-		err = args.ExecuteTemplate(TypeTemplate, t.Name, "", t)
-		if err != nil {
-			return nil, err
+			// process columns
+			if err = tl.loadColumns(args, schema, typeTpl); err != nil {
+				return nil, err
+			}
+
+			tableMap[ti.TableName] = typeTpl
 		}
+
+		// generate table templates
+		for _, t := range tableMap {
+			err = args.ExecuteTemplate(TypeTemplate, t.Name, "", t)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		allTableMap[schema] = tableMap
 	}
 
-	return tableMap, nil
+	return allTableMap, nil
 }
 
-// LoadColumns loads schema table/view columns.
-func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
+// loadColumns loads schema table/view columns.
+func (tl TypeLoader) loadColumns(args *ArgType, schema string, typeTpl *Type) error {
 	var err error
 
 	// load columns
-	columnList, err := tl.ColumnList(args.DB, args.Schema, typeTpl.Table.TableName)
+	columnList, err := tl.ColumnList(args.DB, schema, typeTpl.Table.TableName)
 	if err != nil {
 		return err
 	}
@@ -533,7 +572,7 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 			Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 			Col:  c,
 		}
-		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)
+		f.Len, f.NilType, f.Type = tl.ParseType(args, schema, c.DataType, !c.NotNull)
 
 		// set primary key
 		if c.IsPrimaryKey {
@@ -550,40 +589,44 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 }
 
 // LoadForeignKeys loads foreign keys.
-func (tl TypeLoader) LoadForeignKeys(args *ArgType, tableMap map[string]*Type) (map[string]*ForeignKey, error) {
+func (tl TypeLoader) loadForeignKeys(args *ArgType, allTableMap schemaTypeMap) (schemaFkMap, error) {
 	var err error
 
-	fkMap := map[string]*ForeignKey{}
-	for _, t := range tableMap {
-		// load keys per table
-		err = tl.LoadTableForeignKeys(args, tableMap, t, fkMap)
-		if err != nil {
-			return nil, err
+	allFkMap := make(schemaFkMap)
+	for schema, tableMap := range allTableMap {
+		fkMap := map[string]*ForeignKey{}
+		for _, t := range tableMap {
+			// load keys per table
+			err = tl.loadTableForeignKeys(args, schema, tableMap, t, fkMap)
+			if err != nil {
+				return nil, err
+			}
 		}
-	}
 
-	// determine foreign key names
-	for _, fk := range fkMap {
-		fk.Name = args.ForeignKeyName(fkMap, fk)
-	}
-
-	// generate templates
-	for _, fk := range fkMap {
-		err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.Name, fk.ForeignKey.ForeignKeyName, fk)
-		if err != nil {
-			return nil, err
+		// determine foreign key names
+		for _, fk := range fkMap {
+			fk.Name = args.ForeignKeyName(fkMap, fk)
 		}
+
+		// generate templates
+		for _, fk := range fkMap {
+			err = args.ExecuteTemplate(ForeignKeyTemplate, fk.Type.Name, fk.ForeignKey.ForeignKeyName, fk)
+			if err != nil {
+				return nil, err
+			}
+		}
+		allFkMap[schema] = fkMap
 	}
 
-	return fkMap, nil
+	return allFkMap, nil
 }
 
 // LoadTableForeignKeys loads schema foreign key definitions per table.
-func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Type, typeTpl *Type, fkMap map[string]*ForeignKey) error {
+func (tl TypeLoader) loadTableForeignKeys(args *ArgType, schema string, tableMap map[string]*Type, typeTpl *Type, fkMap map[string]*ForeignKey) error {
 	var err error
 
 	// load foreign keys
-	foreignKeyList, err := tl.ForeignKeyList(args.DB, args.Schema, typeTpl.Table.TableName)
+	foreignKeyList, err := tl.ForeignKeyList(args.DB, schema, typeTpl.Table.TableName)
 	if err != nil {
 		return err
 	}
@@ -611,8 +654,12 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 			}
 		}
 
-	refColLoop:
+		if refTpl == nil {
+			continue
+		}
+
 		// find ref column
+	refColLoop:
 		for _, f := range refTpl.Fields {
 			if f.Col.ColumnName == fk.RefColumnName {
 				refCol = f
@@ -621,12 +668,12 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 		}
 
 		// no ref col, but have ref tpl, so use primary key
-		if refTpl != nil && refCol == nil {
+		if refCol == nil {
 			refCol = refTpl.PrimaryKey
 		}
 
 		// check everything was found
-		if col == nil || refTpl == nil || refCol == nil {
+		if col == nil || refCol == nil {
 			return errors.New("could not find col, refTpl, or refCol")
 		}
 
@@ -637,7 +684,7 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 
 		// create foreign key template
 		fkMap[fk.ForeignKeyName] = &ForeignKey{
-			Schema:     args.Schema,
+			Schema:     schema,
 			Type:       typeTpl,
 			Field:      col,
 			RefType:    refTpl,
@@ -650,36 +697,40 @@ func (tl TypeLoader) LoadTableForeignKeys(args *ArgType, tableMap map[string]*Ty
 }
 
 // LoadIndexes loads schema index definitions.
-func (tl TypeLoader) LoadIndexes(args *ArgType, tableMap map[string]*Type) (map[string]*Index, error) {
+func (tl TypeLoader) loadIndexes(args *ArgType, allTableMap schemaTypeMap) (schemaIndexMap, error) {
 	var err error
 
-	ixMap := map[string]*Index{}
-	for _, t := range tableMap {
-		// load table indexes
-		err = tl.LoadTableIndexes(args, t, ixMap)
-		if err != nil {
-			return nil, err
+	allIxMap := make(schemaIndexMap)
+	for schema, tableMap := range allTableMap {
+		ixMap := map[string]*Index{}
+		for _, t := range tableMap {
+			// load table indexes
+			err = tl.LoadTableIndexes(args, schema, t, ixMap)
+			if err != nil {
+				return nil, err
+			}
 		}
+
+		// generate templates
+		for _, ix := range ixMap {
+			err = args.ExecuteTemplate(IndexTemplate, ix.Type.Name, ix.Index.IndexName, ix)
+			if err != nil {
+				return nil, err
+			}
+		}
+		allIxMap[schema] = ixMap
 	}
 
-	// generate templates
-	for _, ix := range ixMap {
-		err = args.ExecuteTemplate(IndexTemplate, ix.Type.Name, ix.Index.IndexName, ix)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return ixMap, nil
+	return allIxMap, nil
 }
 
 // LoadTableIndexes loads schema index definitions per table.
-func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[string]*Index) error {
+func (tl TypeLoader) LoadTableIndexes(args *ArgType, schema string, typeTpl *Type, ixMap map[string]*Index) error {
 	var err error
 	var priIxLoaded bool
 
 	// load indexes
-	indexList, err := tl.IndexList(args.DB, args.Schema, typeTpl.Table.TableName)
+	indexList, err := tl.IndexList(args.DB, schema, typeTpl.Table.TableName)
 	if err != nil {
 		return err
 	}
@@ -691,14 +742,14 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 
 		// create index template
 		ixTpl := &Index{
-			Schema: args.Schema,
+			Schema: schema,
 			Type:   typeTpl,
 			Fields: []*Field{},
 			Index:  ix,
 		}
 
 		// load index columns
-		err = tl.LoadIndexColumns(args, ixTpl)
+		err = tl.loadIndexColumns(args, schema, ixTpl)
 		if err != nil {
 			return err
 		}
@@ -727,7 +778,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 		ixName := typeTpl.Table.TableName + "_" + pk.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
 			FuncName: typeTpl.Name + "By" + pk.Name,
-			Schema:   args.Schema,
+			Schema:   schema,
 			Type:     typeTpl,
 			Fields:   []*Field{pk},
 			Index: &models.Index{
@@ -742,11 +793,11 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 }
 
 // LoadIndexColumns loads the index column information.
-func (tl TypeLoader) LoadIndexColumns(args *ArgType, ixTpl *Index) error {
+func (tl TypeLoader) loadIndexColumns(args *ArgType, schema string, ixTpl *Index) error {
 	var err error
 
 	// load index columns
-	indexCols, err := tl.IndexColumnList(args.DB, args.Schema, ixTpl.Type.Table.TableName, ixTpl.Index.IndexName)
+	indexCols, err := tl.IndexColumnList(args.DB, schema, ixTpl.Type.Table.TableName, ixTpl.Index.IndexName)
 	if err != nil {
 		return err
 	}

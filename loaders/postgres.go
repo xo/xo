@@ -51,14 +51,14 @@ func PgRelkind(relType internal.RelType) string {
 
 // PgParseType parse a postgres type into a Go type based on the column
 // definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func PgParseType(args *internal.ArgType, schema string, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 	asSlice := false
 
 	// handle SETOF
 	if strings.HasPrefix(dt, "SETOF ") {
-		_, _, t := PgParseType(args, dt[len("SETOF "):], false)
+		_, _, t := PgParseType(args, schema, dt[len("SETOF "):], false)
 		return 0, "nil", "[]" + t
 	}
 
@@ -186,9 +186,9 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		typ = "uuid.UUID"
 
 	default:
-		if strings.HasPrefix(dt, args.Schema+".") {
+		if strings.HasPrefix(dt, schema+".") {
 			// in the same schema, so chop off
-			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(dt[len(schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
 			typ = snaker.SnakeToCamelIdentifier(dt)

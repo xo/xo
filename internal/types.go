@@ -1,6 +1,11 @@
 package internal
 
-import "github.com/xo/xo/models"
+import (
+	"strings"
+
+	"github.com/knq/snaker"
+	"github.com/xo/xo/models"
+)
 
 // TemplateType represents a template type.
 type TemplateType uint
@@ -77,6 +82,39 @@ func (rt RelType) String() string {
 		panic("unknown RelType")
 	}
 	return s
+}
+
+// EnumValue holds data for a single enum value.
+type Schema struct {
+	Name    string
+	Package string
+	Comment string
+}
+
+func (s Schema) PackageName() string {
+	p := strings.TrimSpace(s.Package)
+	if len(p) != 0 {
+		return p
+	}
+
+	// Any sane db developer should name their db schema in 2 way:
+	// CamelCaseDB or snake_case_db, which is well supported by the snaker lib.
+	// If the schema is named like "student records" or "users' payment", then
+	// they are insane! And sorry, we can't help them.
+	return snaker.CamelToSnake(s.Name)
+}
+
+func (s *Schema) UnmarshalText(b []byte) error {
+	text := string(b)
+	index := strings.LastIndex(text, ":")
+	if index > 0 {
+		s.Name = text[:index]
+		s.Package = text[index+1:]
+		return nil
+	}
+
+	s.Name = text
+	return nil
 }
 
 // EnumValue holds data for a single enum value.

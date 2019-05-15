@@ -11,7 +11,7 @@ type ArgType struct {
 	DSN string `arg:"positional,required,help:data source name"`
 
 	// Schema is the name of the schema to query.
-	Schema string `arg:"-s,help:schema name to generate Go types for"`
+	Schemas []Schema `arg:"-s,separate,help:schema names to generate Go types for"`
 
 	// Out is the output path. If Out is a file, then that will be used as the
 	// path. If Out is a directory, then the output file will be

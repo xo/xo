@@ -1,3 +1,5 @@
+// +build mssql
+
 package loaders
 
 import (

@@ -62,11 +62,14 @@ func main() {
 	defer args.DB.Close()
 
 	// load schema name
-	if args.Schema == "" {
-		args.Schema, err = args.Loader.SchemaName(args)
+	if len(args.Schemas) == 0 {
+		schema, err := args.Loader.SchemaName(args)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
+		}
+		args.Schemas = []internal.Schema{
+			{Name: schema},
 		}
 	}
 
@@ -82,7 +85,9 @@ func main() {
 	}
 
 	// add xo
-	err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", args)
+	// FIXME: support multiple schemas
+	schema := args.Schemas[0]
+	err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", schema)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -287,7 +292,9 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 		}
 
 		// execute
-		err = args.TemplateSet().Execute(f, "xo_package.go.tpl", args)
+		// FIXME: support multiple schemas
+		schema := args.Schemas[0]
+		err = args.TemplateSet().Execute(f, "xo_package.go.tpl", schema)
 		if err != nil {
 			return nil, err
 		}
