@@ -141,8 +141,8 @@ type ArgType struct {
 	// templateSet is the set of templates to use for generating data.
 	templateSet *TemplateSet `arg:"-"`
 
-	// Generated is the generated templates after a run.
-	Generated []TBuf `arg:"-"`
+	// Generated contains map of schema_name -> processed templates of a schema
+	Generated map[string][]TBuf `arg:"-"`
 
 	// KnownTypeMap is the collection of known Go types.
 	KnownTypeMap map[string]bool `arg:"-"`

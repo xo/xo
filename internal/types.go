@@ -88,20 +88,6 @@ func (rt RelType) String() string {
 type Schema struct {
 	Name    string
 	Package string
-	Comment string
-}
-
-func (s Schema) PackageName() string {
-	p := strings.TrimSpace(s.Package)
-	if len(p) != 0 {
-		return p
-	}
-
-	// Any sane db developer should name their db schema in 2 way:
-	// CamelCaseDB or snake_case_db, which is well supported by the snaker lib.
-	// If the schema is named like "student records" or "users' payment", then
-	// they are insane! And sorry, we can't help them.
-	return snaker.CamelToSnake(s.Name)
 }
 
 func (s *Schema) UnmarshalText(b []byte) error {
@@ -114,6 +100,7 @@ func (s *Schema) UnmarshalText(b []byte) error {
 	}
 
 	s.Name = text
+	s.Package = snaker.CamelToSnake(s.Name)
 	return nil
 }
 

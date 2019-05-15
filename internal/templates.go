@@ -36,12 +36,12 @@ func (a *ArgType) TemplateSet() *TemplateSet {
 
 // ExecuteTemplate loads and parses the supplied template with name and
 // executes it with obj as the context.
-func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj interface{}) error {
+func (a *ArgType) ExecuteTemplate(tt TemplateType, schema string, name string, sub string, obj interface{}) error {
 	var err error
 
 	// setup generated
 	if a.Generated == nil {
-		a.Generated = []TBuf{}
+		a.Generated = make(map[string][]TBuf)
 	}
 
 	// create store
@@ -71,7 +71,9 @@ func (a *ArgType) ExecuteTemplate(tt TemplateType, name string, sub string, obj 
 		return err
 	}
 
-	a.Generated = append(a.Generated, v)
+	schemaTemplates := a.Generated[schema]
+	schemaTemplates = append(schemaTemplates, v)
+	a.Generated[schema] = schemaTemplates
 	return nil
 }
 

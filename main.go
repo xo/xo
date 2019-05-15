@@ -85,9 +85,10 @@ func main() {
 	}
 
 	// add xo
-	// FIXME: support multiple schemas
-	schema := args.Schemas[0]
-	err = args.ExecuteTemplate(internal.XOTemplate, "xo_db", "", schema)
+	for _, schema := range args.Schemas {
+		err = args.ExecuteTemplate(internal.XOTemplate, schema.Name, "xo_db", "", schema)
+	}
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -244,16 +245,23 @@ var files = map[string]*os.File{}
 // getFile builds the filepath from the TBuf information, and retrieves the
 // file from files. If the built filename is not already defined, then it calls
 // the os.OpenFile with the correct parameters depending on the state of args.
-func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
+func getFile(args *internal.ArgType, t *internal.TBuf, schema internal.Schema) (*os.File, error) {
 	var f *os.File
 	var err error
 
 	// determine filename
 	var filename = strings.ToLower(t.Name) + args.Suffix
+	filePath := path.Join(args.Path, schema.Package)
 	if args.SingleFile {
 		filename = args.Filename
+	} else {
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			if err := os.MkdirAll(filePath, os.ModePerm); err != nil {
+				return nil, err
+			}
+		}
 	}
-	filename = path.Join(args.Path, filename)
+	filename = path.Join(filePath, filename)
 
 	// lookup file
 	f, ok := files[filename]
@@ -292,8 +300,6 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 		}
 
 		// execute
-		// FIXME: support multiple schemas
-		schema := args.Schemas[0]
 		err = args.TemplateSet().Execute(f, "xo_package.go.tpl", schema)
 		if err != nil {
 			return nil, err
@@ -308,12 +314,47 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 
 // writeTypes writes the generated definitions.
 func writeTypes(args *internal.ArgType) error {
+	// build a map of schema to package name
+	schemas := make(map[string]internal.Schema)
+	for _, sch := range args.Schemas {
+		schemas[sch.Name] = sch
+	}
+
+	for name, processedTemplates := range args.Generated {
+		sch, exist := schemas[name]
+		if !exist {
+			continue
+		}
+
+		out := internal.TBufSlice(processedTemplates)
+		sort.Sort(out)
+		if err := writeTypesForSchema(args, out, sch); err != nil {
+			return err
+		}
+	}
+
+	// build goimports parameters, closing files
+	params := []string{"-w"}
+	for k, f := range files {
+		params = append(params, k)
+
+		// close
+		if err := f.Close(); err != nil {
+			return err
+		}
+	}
+
+	// process written files with goimports
+	output, err := exec.Command("goimports", params...).CombinedOutput()
+	if err != nil {
+		return errors.New(string(output))
+	}
+
+	return nil
+}
+
+func writeTypesForSchema(args *internal.ArgType, out internal.TBufSlice, schema internal.Schema) error {
 	var err error
-
-	out := internal.TBufSlice(args.Generated)
-
-	// sort segments
-	sort.Sort(out)
 
 	// loop, writing in order
 	for _, t := range out {
@@ -331,7 +372,7 @@ func writeTypes(args *internal.ArgType) error {
 		}
 
 		// get file and filename
-		f, err = getFile(args, &t)
+		f, err = getFile(args, &t, schema)
 		if err != nil {
 			return err
 		}
@@ -348,24 +389,6 @@ func writeTypes(args *internal.ArgType) error {
 				return err
 			}
 		}
-	}
-
-	// build goimports parameters, closing files
-	params := []string{"-w"}
-	for k, f := range files {
-		params = append(params, k)
-
-		// close
-		err = f.Close()
-		if err != nil {
-			return err
-		}
-	}
-
-	// process written files with goimports
-	output, err := exec.Command("goimports", params...).CombinedOutput()
-	if err != nil {
-		return errors.New(string(output))
 	}
 
 	return nil
