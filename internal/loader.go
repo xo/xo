@@ -170,6 +170,17 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 		Comment: args.QueryTypeComment,
 	}
 
+	// FIXME: can't be sure which schema is used for custom query, temporarily pick the first one
+	var schema Schema
+	if len(args.Schemas) != 0 {
+		schema = args.Schemas[0]
+	} else {
+		schema = Schema{
+			Name:    "",
+			Package: args.Package,
+		}
+	}
+
 	if args.QueryFields == "" {
 		// if no query fields specified, then pass to inspector
 		colList, err := tl.QueryColumnList(args, inspect)
@@ -183,8 +194,6 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 				Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 				Col:  c,
 			}
-			// FIXME
-			schema := args.Schemas[0]
 			f.Len, f.NilType, f.Type = tl.ParseType(args, schema.Name, c.DataType, args.QueryAllowNulls && !c.NotNull)
 			typeTpl.Fields = append(typeTpl.Fields, f)
 		}
@@ -212,7 +221,7 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 	}
 
 	// generate query type template
-	err = args.ExecuteTemplate(QueryTypeTemplate, args.Package, args.QueryType, "", typeTpl)
+	err = args.ExecuteTemplate(QueryTypeTemplate, schema.Name, args.QueryType, "", typeTpl)
 	if err != nil {
 		return err
 	}
@@ -251,7 +260,7 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 	}
 
 	// generate template
-	err = args.ExecuteTemplate(QueryTemplate, args.Package, args.QueryType, "", queryTpl)
+	err = args.ExecuteTemplate(QueryTemplate, schema.Name, args.QueryType, "", queryTpl)
 	if err != nil {
 		return err
 	}

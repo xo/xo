@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/alexflint/go-arg"
+	"github.com/knq/snaker"
 
 	"github.com/xo/dburl"
 	"github.com/xo/xo/internal"
@@ -69,7 +70,7 @@ func main() {
 			os.Exit(1)
 		}
 		args.Schemas = []internal.Schema{
-			{Name: schema},
+			{Name: schema, Package: snaker.CamelToSnake(schema)},
 		}
 	}
 
