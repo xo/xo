@@ -72,7 +72,7 @@ var OrLenRE = regexp.MustCompile(`\([0-9]+\)`)
 
 // OrParseType parse a oracle type into a Go type based on the column
 // definition.
-func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func OrParseType(args *internal.ArgType, schema string, dt string, nullable bool) (int, string, string) {
 	nilVal := "nil"
 
 	dt = strings.ToLower(dt)
@@ -139,7 +139,7 @@ func OrParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			typ = "string"
 		}
 
-	case "blob", "long raw", "raw":
+	case "blob", "long raw", "raw", "anydata":
 		typ = "[]byte"
 
 	case "date", "timestamp", "timestamp with time zone":
@@ -180,8 +180,20 @@ func OrQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 		return nil, err
 	}
 
+	// load view schema
+	res, err := args.DB.Query(`select owner from all_tables where TEMPORARY = 'Y' AND table_name=upper(:1)`, xoid)
+	if err != nil {
+		return nil, err
+	}
+
+	var viewSchema string
+	res.Next()
+	if err = res.Scan(&viewSchema); err != nil {
+		return nil, err
+	}
+
 	// load columns
-	cols, err := models.OrTableColumns(args.DB, args.Schema, xoid)
+	cols, err := models.OrTableColumns(args.DB, viewSchema, xoid)
 
 	// drop inspect view
 	dropq := `DROP TABLE ` + xoid

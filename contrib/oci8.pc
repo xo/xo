@@ -2,7 +2,7 @@
 # oracle-instantclient-{basic,devel,sqlplus}-*.rpm
 prefix=/usr
 
-version=12.1
+version=19.3
 build=client64
 
 libdir=${prefix}/lib/oracle/${version}/${build}/lib

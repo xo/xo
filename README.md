@@ -27,8 +27,8 @@ The following is a matrix of the feature support for each database:
 | Indexes          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   | :white_check_mark: |
 | Stored Procs     | :white_check_mark: | :white_check_mark: |                    |                      |                    |
 | ENUM types       | :white_check_mark: | :white_check_mark: |                    |                      |                    |
+| Multiple schemas | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   |                    |
 | Custom types     | :white_check_mark: |                    |                    |                      |                    |
-| Multiple schemas | :white_check_mark: | :white_check_mark: |                    | :white_check_mark:   |                    |
 
 ## Installation
 
