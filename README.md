@@ -19,15 +19,16 @@ eliminate the manual authoring of SQL / Go code.
 
 The following is a matrix of the feature support for each database:
 
-|              | PostgreSQL       | MySQL            | Oracle           | Microsoft SQL Server| SQLite           |
-| ------------ |:----------------:|:----------------:|:----------------:|:-------------------:|:----------------:|
-| Models       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Stored Procs |:white_check_mark:|:white_check_mark:|                  |                     |                  |
-| ENUM types   |:white_check_mark:|:white_check_mark:|                  |                     |                  |
-| Custom types |:white_check_mark:|                  |                  |                     |                  |
+|                  | PostgreSQL         | MySQL              | Oracle             | Microsoft SQL Server | SQLite             |
+|------------------|:------------------:|:------------------:|:------------------:|:--------------------:|:------------------:|
+| Models           | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   | :white_check_mark: |
+| Primary Keys     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   | :white_check_mark: |
+| Foreign Keys     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   | :white_check_mark: |
+| Indexes          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:   | :white_check_mark: |
+| Stored Procs     | :white_check_mark: | :white_check_mark: |                    |                      |                    |
+| ENUM types       | :white_check_mark: | :white_check_mark: |                    |                      |                    |
+| Custom types     | :white_check_mark: |                    |                    |                      |                    |
+| Multiple schemas | :white_check_mark: | :white_check_mark: |                    | :white_check_mark:   |                    |
 
 ## Installation
 
@@ -591,6 +592,80 @@ link table:
 There is currently no method provided for Oracle as there is no programmatic way to query
 for which sequences are associated with tables. All PK's will be assumed to be provided
 by the database.
+
+## About multiple schemas support
+
+You can generate models for mulitple schemas, each schema will become a package.
+
+Take this schema for example:
+
+```sql
+CREATE SCHEMA org;
+CREATE TABLE org.authors (
+  author_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  name varchar(255) NOT NULL DEFAULT ''
+);
+
+CREATE SCHEMA shelf;
+CREATE TABLE shelf.books (
+  book_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  author_id integer NOT NULL FOREIGN KEY REFERENCES org.authors(author_id),
+  isbn varchar(255) NOT NULL DEFAULT '' UNIQUE,
+  title varchar(255) NOT NULL DEFAULT '',
+  year integer NOT NULL DEFAULT 2000,
+  available datetime2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  tags varchar(255) NOT NULL DEFAULT ''
+);
+```
+
+To genereate model for both `org` and `shelf` schemas:
+
+```sh
+$ xo mysql://user:pass@host/dbname -o gen -s org -s shelf
+$ tree gen/
+.
+├── org
+│   ├── author.xo.go
+│   └── xo_db.xo.go
+└── shelf
+    ├── book.xo.go
+    └── xo_db.xo.go
+
+2 directories, 4 files
+```
+
+The flag `--schemas` (shorthand `-s`) can also be used like `-s
+<schema>:<package>` to give a custom package name for the given scheme, for
+example:
+
+```sh
+$ xo mysql://user:pass@host/dbname -o gen -s org:organizations -s shelf:bookshelf
+
+$ tree gen/
+.
+├── bookshelf
+│   ├── book.xo.go
+│   └── xo_db.xo.go
+└── organizations
+    ├── author.xo.go
+    └── xo_db.xo.go
+
+2 directories, 4 files
+
+$ head gen/organizations/author.xo.go -n 2
+// Package organizations contains the types for schema 'org'.
+package organizations
+```
+
+Caveats:
+
+* sqlite don't have the concept of multiple schemas, so it's not supported.
+* This feature won't work with `--single-file` flags.
+* When generate with custom query, if `--schemas` is used multiple time, `xo`
+  won't be able to know which package should it uses for the code gen. So it
+  will pick the first one. If you don't provide schemas, `xo` will take the
+  schema from DB URL. So, to not be surprise, **don't use `--schemas` for custom
+  query generation**.
 
 ## About xo: Design, Origin, Philosophy, and History
 
