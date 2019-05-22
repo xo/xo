@@ -1,5 +1,3 @@
-// +build mssql
-
 package loaders
 
 import (
@@ -67,7 +65,7 @@ func MsRelkind(relType internal.RelType) string {
 
 // MsParseType parse a mssql type into a Go type based on the column
 // definition.
-func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MsParseType(args *internal.ArgType, schema string, dt string, nullable bool) (int, string, string) {
 	precision := 0
 	nilVal := "nil"
 
@@ -170,9 +168,9 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		typ = "*time.Duration"
 
 	default:
-		if strings.HasPrefix(dt, args.Schema+".") {
+		if strings.HasPrefix(dt, schema+".") {
 			// in the same schema, so chop off
-			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
+			typ = snaker.SnakeToCamelIdentifier(dt[len(schema)+1:])
 			nilVal = typ + "(0)"
 		} else {
 			typ = snaker.SnakeToCamelIdentifier(dt)
@@ -188,7 +186,7 @@ func MsQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	var err error
 
 	// process inspect -- cannot have 'order by' in a CREATE VIEW
-	ins := []string{}
+	var ins []string
 	for _, l := range inspect {
 		if !strings.HasPrefix(strings.ToUpper(l), "ORDER BY ") {
 			ins = append(ins, l)
@@ -204,8 +202,20 @@ func MsQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 		return nil, err
 	}
 
+	// load view schema
+	res, err := args.DB.Query(`SELECT TABLE_SCHEMA FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;`, xoid)
+	if err != nil {
+		return nil, err
+	}
+
+	var viewSchema string
+	res.Next()
+	if err = res.Scan(&viewSchema); err != nil {
+		return nil, err
+	}
+
 	// load columns
-	cols, err := models.MsTableColumns(args.DB, args.Schema, xoid)
+	cols, err := models.MsTableColumns(args.DB, viewSchema, xoid)
 
 	// drop inspect view
 	dropq := `DROP VIEW ` + xoid
