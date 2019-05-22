@@ -657,7 +657,7 @@ $ head gen/organizations/author.xo.go -n 2
 package organizations
 ```
 
-Caveats:
+### Caveats
 
 * sqlite don't have the concept of multiple schemas, so it's not supported.
 * This feature won't work with `--single-file` flags.
