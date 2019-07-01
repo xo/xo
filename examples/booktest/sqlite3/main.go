@@ -11,7 +11,7 @@ import (
 	"github.com/xo/dburl"
 	"github.com/xo/xoutil"
 
-	"github.com/xo/xo/examples/booktest/sqlite3/models"
+	"github.com/bannzai/xox/examples/booktest/sqlite3/models"
 )
 
 var flagVerbose = flag.Bool("v", false, "verbose")

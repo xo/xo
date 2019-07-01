@@ -8,7 +8,7 @@ import (
 	"path"
 	"text/template"
 
-	templates "github.com/xo/xo/tplbin"
+	templates "github.com/bannzai/xox/tplbin"
 )
 
 // TemplateLoader loads templates from the specified name.
