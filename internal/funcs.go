@@ -13,6 +13,7 @@ import (
 // NewTemplateFuncs returns a set of template funcs bound to the supplied args.
 func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 	return template.FuncMap{
+		"add":                func(a, b int) int { return a + b },
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
 		"colnamesmulti":      a.colnamesmulti,
