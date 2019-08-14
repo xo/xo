@@ -1,12 +1,13 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/gedex/inflector"
 	"github.com/knq/snaker"
+	"github.com/pkg/errors"
 
 	"github.com/xo/xo/models"
 )
@@ -458,7 +459,14 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 
 // LoadRelkind loads a schema table/view definition.
 func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Type, error) {
-	var err error
+	includeTables, err := compileREs(args.IncludeTables)
+	if err != nil {
+		return nil, errors.Wrap(err, "--include-tables")
+	}
+	excludeTables, err := compileREs(args.ExcludeTables)
+	if err != nil {
+		return nil, errors.Wrap(err, "--exclude-tables")
+	}
 
 	// load tables
 	tableList, err := tl.TableList(args.DB, args.Schema, tl.Relkind(relType))
@@ -468,7 +476,19 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 
 	// tables
 	tableMap := make(map[string]*Type)
+loop:
 	for _, ti := range tableList {
+		for _, re := range includeTables {
+			if !re.MatchString(ti.TableName) {
+				continue loop
+			}
+		}
+		for _, re := range excludeTables {
+			if re.MatchString(ti.TableName) {
+				continue loop
+			}
+		}
+
 		// create template
 		typeTpl := &Type{
 			Name:    SingularizeIdentifier(ti.TableName),
@@ -496,6 +516,18 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	}
 
 	return tableMap, nil
+}
+
+func compileREs(patterns []string) ([]*regexp.Regexp, error) {
+	var res []*regexp.Regexp
+	for _, p := range patterns {
+		re, err := regexp.Compile(p)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, re)
+	}
+	return res, nil
 }
 
 // LoadColumns loads schema table/view columns.

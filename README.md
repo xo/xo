@@ -120,6 +120,10 @@ options:
                          Go type to assign to unsigned integers [default: uint]
   --ignore-fields IGNORE-FIELDS
                          fields to exclude from the generated Go code types
+  --include-tables INCLUDE-TABLES
+                         only generate code for tables matching all of these regular expressions
+  --exclude-tables EXCLUDE-TABLES
+                         don't generate code for tables matching any of these regular expressions
   --fk-mode FK-MODE, -k FK-MODE
                          sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]
   --use-index-names, -j
