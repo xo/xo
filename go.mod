@@ -11,7 +11,7 @@ require (
 	github.com/knq/snaker v0.0.0-20180306023312-d9ad1e7f342a
 	github.com/lib/pq v1.0.0
 	github.com/mattn/go-sqlite3 v1.10.0
-	github.com/pkg/errors v0.8.0 // indirect
+	github.com/pkg/errors v0.8.0
 	github.com/xo/dburl v0.0.0-20181118001949-f3ca07bd6afc
 	github.com/xo/xoutil v0.0.0-20171112033149-46189f4026a5
 	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 // indirect

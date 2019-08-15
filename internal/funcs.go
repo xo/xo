@@ -4,7 +4,9 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"unicode"
 
+	"github.com/gedex/inflector"
 	"github.com/knq/snaker"
 
 	"github.com/xo/xo/models"
@@ -14,6 +16,8 @@ import (
 func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 	return template.FuncMap{
 		"add":                func(a, b int) int { return a + b },
+		"pluralize":          inflector.Pluralize,
+		"unexport":           a.unexport,
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
 		"colnamesmulti":      a.colnamesmulti,
@@ -35,6 +39,15 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
 	}
+}
+
+func (a *ArgType) unexport(name string) string {
+	if name == "" {
+		return name
+	}
+	rs := []rune(name)
+	rs[0] = unicode.ToLower(rs[0])
+	return string(rs)
 }
 
 // retype checks typ against known types, and prefixing
