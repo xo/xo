@@ -114,6 +114,8 @@ options:
                          package name used in generated Go code
   --custom-type-package CUSTOM-TYPE-PACKAGE, -C CUSTOM-TYPE-PACKAGE
                          Go package name to use for custom or unknown types
+  --custom-tags CUSTOM-TAGS
+                         custom tag to fields of table struct
   --int32-type INT32-TYPE, -i INT32-TYPE
                          Go type to assign to integers [default: int]
   --uint32-type UINT32-TYPE, -u UINT32-TYPE
@@ -433,6 +435,24 @@ for _, user := range users {
     log.Printf("got user: %+v", user)
 }
 ```
+
+### Example: Custom Tags -- adding multiple custom tags to fields of table struct
+Sometime you want to add one (or many) custom tag(s) to fields of table struct (for compatible with other lib, [sqlx](https://github.com/jmoiron/sqlx) for instance),
+and this option can help you to do that.
+```bash
+# usage example
+$ xo pgsql://user:pass@host/db -o models --custom-tags db abc
+```
+Then in `user.xo.go`, you will get:
+```go
+type User struct {
+    ID uint64 `json:"id" db:"id" abc:"id"` // id
+    LastName string `json:"last_name" db:"last_name" abc:"last_name"` // last_name
+}
+// other source code
+```
+
+********
 
 ## Using SQL Drivers
 

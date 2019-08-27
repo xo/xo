@@ -123,6 +123,9 @@ type ArgType struct {
 	// Tags is the list of build tags to add to generated Go files.
 	Tags string `arg:"--tags,help:build tags to add to package header"`
 
+	// CustomTags is the custom tags that will be add to model struct fields with column name
+	CustomTags []string `arg:"--custom-tags,help:custom tag to table column"`
+
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`
 

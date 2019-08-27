@@ -33,7 +33,29 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hascolumn":          a.hascolumn,
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
+		"customtags":         a.customtags,
 	}
+}
+
+// customtags add custom tags (given from cli)
+// to struct fields of column struct definition
+// returns: custom_tag1:"column", custom_tag2:"column"
+func (a *ArgType) customtags(column string) string {
+	if len(a.CustomTags) == 0 {
+		return ""
+	}
+
+	var r strings.Builder
+	r.WriteString(" ") // first space after json tag
+	for _, t := range a.CustomTags {
+		_, _ = r.WriteString(t)
+		_, _ = r.WriteString(":\"")
+		_, _ = r.WriteString(column)
+		_, _ = r.WriteString("\" ")
+	}
+
+	s := r.String()
+	return s[0:len(s)-1] // remove last space char
 }
 
 // retype checks typ against known types, and prefixing
