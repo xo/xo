@@ -124,7 +124,7 @@ type ArgType struct {
 	Tags string `arg:"--tags,help:build tags to add to package header"`
 
 	// CustomTags is the custom tags that will be add to model struct fields with column name
-	CustomTags []string `arg:"--custom-tags,help:custom tag to table column"`
+	CustomTags []string `arg:"--custom-tags,help:custom tag to fields of table struct"`
 
 	// Path is the output path, as derived from Out.
 	Path string `arg:"-"`
