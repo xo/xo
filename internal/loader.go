@@ -471,7 +471,7 @@ func (tl TypeLoader) LoadRelkind(args *ArgType, relType RelType) (map[string]*Ty
 	for _, ti := range tableList {
 		// create template
 		typeTpl := &Type{
-			Name:    SingularizeIdentifier(ti.TableName),
+			Name:    NormalizeIdentifier(ti.TableName, args.DisableSingularizeTableName),
 			Schema:  args.Schema,
 			RelType: relType,
 			Fields:  []*Field{},

@@ -154,6 +154,8 @@ options:
                          enable postgres oids
   --name-conflict-suffix NAME-CONFLICT-SUFFIX, -w NAME-CONFLICT-SUFFIX
                          suffix to append when a name conflicts with a Go variable [default: Val]
+  --disable-singularize
+                         singularization table name or not
   --template-path TEMPLATE-PATH
                          user supplied template path
   --help, -h             display this help and exit

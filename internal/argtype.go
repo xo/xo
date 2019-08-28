@@ -116,6 +116,9 @@ type ArgType struct {
 	// NameConflictSuffix is the suffix used when a name conflicts with a scoped Go variable.
 	NameConflictSuffix string `arg:"--name-conflict-suffix,-w,help:suffix to append when a name conflicts with a Go variable"`
 
+	// DisableSingularizeTableName toggles singularization table name when normalization it
+	DisableSingularizeTableName bool `arg:"--disable-singularize,help:singularization table name or not"`
+
 	// TemplatePath is the path to use the user supplied templates instead of
 	// the built in versions.
 	TemplatePath string `arg:"--template-path,help:user supplied template path"`
