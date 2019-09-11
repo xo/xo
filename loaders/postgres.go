@@ -140,14 +140,20 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
-	case "numeric", "double precision":
+	case "double precision":
 		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
-
+	case "numeric":
+		nilVal = "XoBigFloat{}"
+		typ = "XoBigFloat"
+		if nullable {
+			nilVal = "NullableXoBigFloat{}"
+			typ = "NullableXoBigFloat"
+		}
 	case "bytea":
 		asSlice = true
 		typ = "byte"

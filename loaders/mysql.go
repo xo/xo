@@ -174,12 +174,20 @@ switchDT:
 			typ = "sql.NullFloat64"
 		}
 
-	case "decimal", "double":
+	case "double":
 		nilVal = "0.0"
 		typ = "float64"
 		if nullable {
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
+		}
+
+	case "decimal":
+		nilVal = "XoBigFloat{}"
+		typ = "XoBigFloat"
+		if nullable {
+			nilVal = "NullableXoBigFloat{}"
+			typ = "NullableXoBigFloat"
 		}
 
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
