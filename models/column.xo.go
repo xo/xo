@@ -15,6 +15,7 @@ type Column struct {
 	NotNull      bool           // not_null
 	DefaultValue sql.NullString // default_value
 	IsPrimaryKey bool           // is_primary_key
+	IsForeignKey bool	    // is_foreign_key
 }
 
 // PgTableColumns runs a custom query, returning results as Column.
@@ -29,10 +30,11 @@ func PgTableColumns(db XODB, schema string, table string, sys bool) ([]*Column, 
 		`a.attnotnull, ` + // ::boolean AS not_null
 		`COALESCE(pg_get_expr(ad.adbin, ad.adrelid), ''), ` + // ::varchar AS default_value
 		`COALESCE(ct.contype = 'p', false) ` + // ::boolean AS is_primary_key
+		`COALESCE(ct.contype = 'f', false) ` + // ::boolean AS is_primary_key
 		`FROM pg_attribute a ` +
 		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
-		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype = 'p' ` +
+		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND (ct.contype = 'p' OR ct.contype = 'f')` +
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
 		`WHERE a.attisdropped = false AND n.nspname = $1 AND c.relname = $2 AND ($3 OR a.attnum > 0) ` +
 		`ORDER BY a.attnum`
@@ -51,7 +53,7 @@ func PgTableColumns(db XODB, schema string, table string, sys bool) ([]*Column, 
 		c := Column{}
 
 		// scan
-		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey)
+		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.IsForeignKey)
 		if err != nil {
 			return nil, err
 		}
