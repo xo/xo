@@ -29,7 +29,7 @@ func PgTableColumns(db XODB, schema string, table string, sys bool) ([]*Column, 
 		`format_type(a.atttypid, a.atttypmod), ` + // ::varchar AS data_type
 		`a.attnotnull, ` + // ::boolean AS not_null
 		`COALESCE(pg_get_expr(ad.adbin, ad.adrelid), ''), ` + // ::varchar AS default_value
-		`COALESCE(ct.contype = 'p', false) ` + // ::boolean AS is_primary_key
+		`COALESCE(ct.contype = 'p', false), ` + // ::boolean AS is_primary_key
 		`COALESCE(ct.contype = 'f', false) ` + // ::boolean AS is_primary_key
 		`FROM pg_attribute a ` +
 		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
