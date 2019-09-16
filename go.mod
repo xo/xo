@@ -1,4 +1,4 @@
-module github.com/xo/xo
+module github.com/ashneverdawn/xo
 
 require (
 	cloud.google.com/go v0.34.0 // indirect
