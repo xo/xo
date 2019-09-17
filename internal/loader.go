@@ -560,9 +560,14 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 			continue
 		}
 
+		nameSegments := strings.Split(c.ColumnName, ".")
+		for i, s := range nameSegments {
+			nameSegments[i] = snaker.SnakeToCamelIdentifier(s)
+		}
+
 		// set col info
 		f := &Field{
-			Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
+			Name: strings.Join(nameSegments, "."),
 			Col:  c,
 		}
 		f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, !c.NotNull)

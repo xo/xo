@@ -170,10 +170,10 @@ func (a *ArgType) BuildIndexFuncName(ixTpl *Index) {
 
 	ixName := fmtIndexName(ixTpl.Index.IndexName, ixTpl.Type.Table.TableName)
 	if a.UseIndexNames && ixName != "" {
-		paramNames = append(paramNames, ixName)
+		paramNames = append(paramNames, strings.Replace(ixName, ".", "", -1))
 	} else {
 		for _, f := range ixTpl.Fields {
-			paramNames = append(paramNames, f.Name)
+			paramNames = append(paramNames, strings.Replace(f.Name, ".", "", -1))
 		}
 	}
 
