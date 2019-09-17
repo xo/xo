@@ -18,6 +18,7 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"add":                func(a, b int) int { return a + b },
 		"pluralize":          inflector.Pluralize,
 		"unexport":           a.unexport,
+		"hasprefix":          strings.HasPrefix,
 		"colcount":           a.colcount,
 		"colnames":           a.colnames,
 		"colnamesmulti":      a.colnamesmulti,

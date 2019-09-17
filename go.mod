@@ -1,5 +1,7 @@
 module github.com/xo/xo
 
+go 1.13
+
 require (
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/alexflint/go-arg v0.0.0-20181120184500-fb7d95b61ba8
