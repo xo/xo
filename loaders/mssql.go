@@ -155,7 +155,10 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	case "datetime", "datetime2", "timestamp":
 		nilVal = "time.Time{}"
 		typ = "time.Time"
-
+		if nullable {
+			nilVal = "sql.NullTime{}"
+			typ = "sql.NullTime"
+		}
 	case "time with time zone", "time without time zone", "timestamp without time zone":
 		nilVal = "0"
 		typ = "int64"
