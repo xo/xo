@@ -581,6 +581,13 @@ func (tl TypeLoader) LoadColumns(args *ArgType, typeTpl *Type) error {
 
 		// append col to template fields
 		typeTpl.Fields = append(typeTpl.Fields, f)
+
+		for _, name := range args.Extra {
+			if name == typeTpl.Name {
+				typeTpl.HasExtra = true
+				break
+			}
+		}
 	}
 
 	return nil

@@ -124,6 +124,8 @@ options:
                          only generate code for tables matching all of these regular expressions
   --exclude-tables EXCLUDE-TABLES
                          don't generate code for tables matching any of these regular expressions
+  --extra TYPES
+                         generate *Extra fields for all given types
   --fk-mode FK-MODE, -k FK-MODE
                          sets mode for naming foreign key funcs in generated Go code [values: <smart|parent|field|key>] [default: smart]
   --use-index-names, -j
