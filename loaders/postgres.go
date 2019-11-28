@@ -118,6 +118,9 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
+	case "json", "jsonb":
+		nilVal = "null"
+		typ = "json.RawMessage"
 	case "serial":
 		nilVal = "0"
 		typ = args.Uint32Type
