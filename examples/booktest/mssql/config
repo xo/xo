@@ -1,1 +1,0 @@
-DB="mssql://booktest:booktest@localhost/booktest"

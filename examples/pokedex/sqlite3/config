@@ -1,2 +1,0 @@
-ENGINE="sqlite:///pokedex.sqlite3"
-DB="file:pokedex.sqlite3?loc=auto"

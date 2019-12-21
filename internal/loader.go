@@ -435,10 +435,11 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 	}
 
 	// process params
-	for i, p := range paramList {
+	for _, p := range paramList {
 		// TODO: some databases support named parameters in procs (MySQL)
 		paramTpl := &Field{
-			Name: fmt.Sprintf("v%d", i),
+			Name: p.ParamName,
+			Type: p.ParamType,
 		}
 
 		// TODO: fix this so that nullable types can be used as parameters

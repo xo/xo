@@ -44,38 +44,3 @@ func PgEnums(db XODB, schema string) ([]*Enum, error) {
 
 	return res, nil
 }
-
-// MyEnums runs a custom query, returning results as Enum.
-func MyEnums(db XODB, schema string) ([]*Enum, error) {
-	var err error
-
-	// sql query
-	const sqlstr = `SELECT ` +
-		`DISTINCT column_name AS enum_name ` +
-		`FROM information_schema.columns ` +
-		`WHERE data_type = 'enum' AND table_schema = ?`
-
-	// run query
-	XOLog(sqlstr, schema)
-	q, err := db.Query(sqlstr, schema)
-	if err != nil {
-		return nil, err
-	}
-	defer q.Close()
-
-	// load results
-	res := []*Enum{}
-	for q.Next() {
-		e := Enum{}
-
-		// scan
-		err = q.Scan(&e.EnumName)
-		if err != nil {
-			return nil, err
-		}
-
-		res = append(res, &e)
-	}
-
-	return res, nil
-}

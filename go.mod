@@ -20,3 +20,5 @@ require (
 	google.golang.org/appengine v1.3.0 // indirect
 	gopkg.in/rana/ora.v4 v4.1.15
 )
+
+go 1.13

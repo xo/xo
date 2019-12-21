@@ -1,1 +1,0 @@
-DB="mysql://booktest:booktest@localhost/booktest?parseTime=true&sql_mode=ansi"
