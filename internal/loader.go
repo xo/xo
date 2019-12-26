@@ -438,7 +438,9 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 	for _, p := range paramList {
 		// DJG: support named parameters
 		paramTpl := &Field{
-			Name: p.ParamName,
+			// DJG: our parameter names currently have an 'i_' prefix to make functions sane.
+			// remove it for the benefit of go.
+			Name: snaker.SnakeToCamelIdentifier(p.ParamName[2:]),
 			Type: p.ParamType,
 		}
 

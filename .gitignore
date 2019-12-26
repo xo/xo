@@ -1,6 +1,7 @@
 /xo
 /x
 /out
+/examples
 
 *.sqlite3
 *.sqlite3-journal

@@ -521,8 +521,7 @@ func (a *ArgType) goparamlist(fields []*Field, addPrefix bool, addType bool, ign
 
 		s := "v" + strconv.Itoa(i)
 		if len(f.Name) > 0 {
-			n := strings.Split(snaker.CamelToSnake(f.Name), "_")
-			s = strings.ToLower(n[0]) + f.Name[len(n[0]):]
+			s = f.Name
 		}
 
 		// check go reserved names
