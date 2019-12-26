@@ -436,7 +436,7 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 
 	// process params
 	for _, p := range paramList {
-		// TODO: some databases support named parameters in procs (MySQL)
+		// DJG: support named parameters
 		paramTpl := &Field{
 			Name: p.ParamName,
 			Type: p.ParamType,
