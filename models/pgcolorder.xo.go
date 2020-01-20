@@ -9,7 +9,7 @@ type PgColOrder struct {
 }
 
 // PgGetColOrder runs a custom query, returning results as PgColOrder.
-func PgGetColOrder(db XODB, schema string, index string) (*PgColOrder, error) {
+func PgGetColOrder(db XODB, index string) (*PgColOrder, error) {
 	var err error
 
 	// sql query
@@ -19,12 +19,12 @@ func PgGetColOrder(db XODB, schema string, index string) (*PgColOrder, error) {
 		`JOIN ONLY pg_class c ON c.oid = i.indrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`JOIN ONLY pg_class ic ON ic.oid = i.indexrelid ` +
-		`WHERE n.nspname = $1 AND ic.relname = $2`
+		`WHERE  ic.relname = $1`
 
 	// run query
-	XOLog(sqlstr, schema, index)
+	XOLog(sqlstr, index)
 	var pco PgColOrder
-	err = db.QueryRow(sqlstr, schema, index).Scan(&pco.Ord)
+	err = db.QueryRow(sqlstr, index).Scan(&pco.Ord)
 	if err != nil {
 		return nil, err
 	}

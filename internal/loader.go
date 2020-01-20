@@ -61,6 +61,7 @@ type TypeLoader struct {
 	IndexColumnList func(models.XODB, string, string, string) ([]*models.IndexColumn, error)
 	QueryStrip      func([]string, []string)
 	QueryColumnList func(*ArgType, []string) ([]*models.Column, error)
+	TypeList 		func(models.XODB, string) ([]*models.Type, error)
 }
 
 // NthParam satisifies Loader's NthParam.

@@ -176,5 +176,33 @@ FROM pg_index i
   JOIN ONLY pg_class c ON c.oid = i.indrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
   JOIN ONLY pg_class ic ON ic.oid = i.indexrelid
-WHERE n.nspname = %%schema string%% AND ic.relname = %%index string%%
+WHERE  ic.relname = %%index string%%
+ENDSQL
+
+# postgres struct list query
+COMMENT='Type represents a Postgres struct type.'
+$XOBIN $PGDB -N -M -B -T Type -F PgTypes --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+    pg_catalog.format_type(t.oid, NULL) AS type_name
+FROM pg_catalog.pg_type t
+    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+    JOIN pg_catalog.pg_class c on t.typrelid = c.oid
+WHERE n.nspname = %%schema string%% AND c.relkind = 'c'
+ENDSQL
+
+# postgres struct field list query
+COMMENT='TypeField represents Field info.'
+$XOBIN $PGDB -N -M -B -T TypeField -F PgTypeFields --query-type-comment "$COMMENT" -o $DEST $EXTRA << ENDSQL
+SELECT
+       a.attnum                                         AS field_ordinal,
+       a.attname::text                                  AS column_name,
+       pg_catalog.format_type(a.atttypid, a.atttypmod)  AS data_type,
+       a.attnotnull                                     AS not_null
+FROM pg_catalog.pg_attribute a
+         JOIN pg_catalog.pg_type t
+              ON a.attrelid = t.typrelid
+         JOIN pg_catalog.pg_namespace n
+              ON (n.oid = t.typnamespace)
+WHERE a.attnum > 0 AND NOT a.attisdropped AND n.nspname = %%schema string%% AND pg_catalog.format_type(t.oid, NULL) = %%table string%%
+ORDER BY a.attnum
 ENDSQL
