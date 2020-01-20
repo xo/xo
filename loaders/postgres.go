@@ -32,6 +32,8 @@ func init() {
 		IndexColumnList: PgIndexColumns,
 		QueryStrip:      PgQueryStrip,
 		QueryColumnList: PgQueryColumns,
+		TupleList: models.PgTuples,
+		TupleFields: models.PgTupleFields,
 
 	}
 }

@@ -6,6 +6,7 @@
 // templates/postgres.proc.go.tpl
 // templates/postgres.query.go.tpl
 // templates/postgres.querytype.go.tpl
+// templates/postgres.tuple.go.tpl
 // templates/postgres.type.go.tpl
 // templates/xo_db.go.tpl
 // templates/xo_package.go.tpl
@@ -362,6 +363,41 @@ func bindataPostgresquerytypegotpl() (*asset, error) {
 	return a, nil
 }
 
+var _bindataPostgrestuplegotpl = "" +
+	"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x2a\xa9\x2c\x48\x55\xa8\xae\x56\xd0\xf3\x4b\xcc\x4d\x55\xa8\xad\x55\x28" +
+	"\x2e\x29\x2a\x4d\x2e\x51\xa8\xe6\xaa\xae\xd6\x55\x28\x4a\xcc\x4b\x4f\x55\xd0\x73\xcb\x4c\xcd\x49\x29\x56\xa8\xad" +
+	"\xe5\xe2\x44\x56\x5a\x5d\xad\x50\x94\x0a\x36\x40\x2f\x04\x44\xd6\xd6\x2a\x24\x64\x15\xe7\xe7\x59\x29\x21\xa9\x52" +
+	"\x4a\x50\xd0\xd7\x47\xb6\x01\x6c\x70\x6a\x5e\x0a\x88\x59\xcb\x05\x08\x00\x00\xff\xff\x1b\xce\xee\x21\x80\x00\x00" +
+	"\x00"
+
+func bindataPostgrestuplegotplBytes() ([]byte, error) {
+	return bindataRead(
+		_bindataPostgrestuplegotpl,
+		"postgres.tuple.go.tpl",
+	)
+}
+
+
+
+func bindataPostgrestuplegotpl() (*asset, error) {
+	bytes, err := bindataPostgrestuplegotplBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{
+		name: "postgres.tuple.go.tpl",
+		size: 0,
+		md5checksum: "",
+		mode: os.FileMode(0),
+		modTime: time.Unix(0, 0),
+	}
+
+	a := &asset{bytes: bytes, info: info}
+
+	return a, nil
+}
+
 var _bindataPostgrestypegotpl = "" +
 	"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xbc\x58\x4d\x73\xda\x48\x13\x3e\x4b\xbf\xa2\xa3\x4a\xbd\x81\x37\x8e\xa8" +
 	"\x1c\xf6\xb0\xae\xe2\x90\x35\xca\xae\x6b\x1d\x70\x0c\xec\xe6\x16\x06\xd4\x18\xad\xa5\x19\x3c\x33\xb2\x4d\xa9\xf4" +
@@ -610,6 +646,7 @@ var _bindata = map[string]func() (*asset, error){
 	"postgres.proc.go.tpl":       bindataPostgresprocgotpl,
 	"postgres.query.go.tpl":      bindataPostgresquerygotpl,
 	"postgres.querytype.go.tpl":  bindataPostgresquerytypegotpl,
+	"postgres.tuple.go.tpl":      bindataPostgrestuplegotpl,
 	"postgres.type.go.tpl":       bindataPostgrestypegotpl,
 	"xo_db.go.tpl":               bindataXodbgotpl,
 	"xo_package.go.tpl":          bindataXopackagegotpl,
@@ -673,6 +710,7 @@ var _bintree = &bintree{Func: nil, Children: map[string]*bintree{
 	"postgres.proc.go.tpl": {Func: bindataPostgresprocgotpl, Children: map[string]*bintree{}},
 	"postgres.query.go.tpl": {Func: bindataPostgresquerygotpl, Children: map[string]*bintree{}},
 	"postgres.querytype.go.tpl": {Func: bindataPostgresquerytypegotpl, Children: map[string]*bintree{}},
+	"postgres.tuple.go.tpl": {Func: bindataPostgrestuplegotpl, Children: map[string]*bintree{}},
 	"postgres.type.go.tpl": {Func: bindataPostgrestypegotpl, Children: map[string]*bintree{}},
 	"xo_db.go.tpl": {Func: bindataXodbgotpl, Children: map[string]*bintree{}},
 	"xo_package.go.tpl": {Func: bindataXopackagegotpl, Children: map[string]*bintree{}},

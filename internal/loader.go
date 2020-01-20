@@ -790,7 +790,7 @@ func (tl TypeLoader) LoadTuples(args *ArgType) (interface{}, error) {
 	}
 
 	tupleList, err := tl.TupleList(args.DB, args.Schema)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -840,4 +840,6 @@ func (tl TypeLoader) LoadTupleFields(args *ArgType, tpl *Tuple) error {
 		tpl.Fields = append(tpl.Fields, f)
 
 	}
+
+	return nil
 }
