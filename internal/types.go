@@ -112,12 +112,13 @@ type Proc struct {
 
 // Field contains field information.
 type Field struct {
-	Name    string
-	Type    string
-	NilType string
-	Len     int
-	Col     *models.Column
-	Comment string
+	Name      string
+	Type      string
+	NilType   string
+	Len       int
+	Col       *models.Column
+	Comment   string
+	FieldName string
 }
 
 type Tuple struct {

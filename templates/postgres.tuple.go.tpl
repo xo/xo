@@ -1,5 +1,5 @@
 type {{ .Name }} struct {
 {{- range .Fields }}
-	{{ .Name }} {{ retype .Type }} `json:"{{ .Name }}"` // {{ .Name }}
+	{{ .Name }} {{ retype .Type }} `json:"{{ .FieldName }}"` // {{ .FieldName }}
 {{- end }}
 }

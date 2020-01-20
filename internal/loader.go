@@ -837,6 +837,7 @@ func (tl TypeLoader) LoadTupleFields(args *ArgType, tpl *Tuple) error {
 			Name: snaker.ForceLowerCamelIdentifier(field.FieldName),
 		}
 		f.Len, f.NilType, f.Type = tl.ParseType(args, field.DataType, !field.NotNull)
+		f.FieldName = field.FieldName
 
 		tpl.Fields = append(tpl.Fields, f)
 
