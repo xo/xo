@@ -799,7 +799,8 @@ func (tl TypeLoader) LoadTuples(args *ArgType) (interface{}, error) {
 
 		// create template
 		tupleTpl := &Tuple {
-			Name: tuple.TupleName,
+			Name: snaker.ForceCamelIdentifier(tuple.TupleName),
+			TupleName: tuple.TupleName,
 			Fields: []*Field{},
 		}
 
@@ -826,7 +827,7 @@ func (tl TypeLoader) LoadTuples(args *ArgType) (interface{}, error) {
 func (tl TypeLoader) LoadTupleFields(args *ArgType, tpl *Tuple) error {
 	var err error
 
-	fieldList, err := tl.TupleFields(args.DB, args.Schema, tpl.Name)
+	fieldList, err := tl.TupleFields(args.DB, args.Schema, tpl.TupleName)
 	if err != nil {
 		return err
 	}

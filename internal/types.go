@@ -121,8 +121,9 @@ type Field struct {
 }
 
 type Tuple struct {
-	Name string
-	Fields []*Field
+	Name      string
+	TupleName string
+	Fields    []*Field
 }
 
 // Type is a template item for a type (ie, table/view/custom query).
