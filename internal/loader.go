@@ -61,7 +61,8 @@ type TypeLoader struct {
 	IndexColumnList func(models.XODB, string, string, string) ([]*models.IndexColumn, error)
 	QueryStrip      func([]string, []string)
 	QueryColumnList func(*ArgType, []string) ([]*models.Column, error)
-	TypeList 		func(models.XODB, string) ([]*models.Type, error)
+	TupleList 		func(models.XODB, string) ([]*models.Tuple, error)
+	TupleFields		func(models.XODB, string, string) ([]*models.TupleField, error)
 }
 
 // NthParam satisifies Loader's NthParam.
@@ -285,6 +286,12 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 
 	// load indexes
 	_, err = tl.LoadIndexes(args, tableMap)
+	if err != nil {
+		return err
+	}
+	
+	// load types
+	_, err = tl.LoadTuples(args)
 	if err != nil {
 		return err
 	}
@@ -774,4 +781,63 @@ func (tl TypeLoader) LoadIndexColumns(args *ArgType, ixTpl *Index) error {
 	}
 
 	return nil
+}
+
+func (tl TypeLoader) LoadTuples(args *ArgType) (interface{}, error) {
+	var err error
+	if tl.TupleList == nil {
+		return nil, nil
+	}
+
+	tupleList, err := tl.TupleList(args.DB, args.Schema)
+	if err == nil {
+		return nil, err
+	}
+
+	tupleMap := map[string]*Tuple{}
+	for _, tuple := range tupleList {
+
+		// create template
+		tupleTpl := &Tuple {
+			Name: tuple.TupleName,
+			Fields: []*Field{},
+		}
+
+		// load tuple fields
+		err = tl.LoadTupleFields(args, tupleTpl)
+		if err != nil {
+			return nil, err
+		}
+
+		tupleMap[tuple.TupleName] = tupleTpl
+	}
+
+	for _, tuple := range tupleMap {
+		err = args.ExecuteTemplate(TupleTemplate, tuple.Name, "", tuple)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return tupleMap, nil
+
+}
+
+func (tl TypeLoader) LoadTupleFields(args *ArgType, tpl *Tuple) error {
+	var err error
+
+	fieldList, err := tl.TupleFields(args.DB, args.Schema, tpl.Name)
+	if err != nil {
+		return err
+	}
+
+	for _, field := range fieldList {
+		f := &Field{
+			Name: snaker.ForceLowerCamelIdentifier(field.FieldName),
+		}
+		f.Len, f.NilType, f.Type = tl.ParseType(args, field.DataType, !field.NotNull)
+
+		tpl.Fields = append(tpl.Fields, f)
+
+	}
 }

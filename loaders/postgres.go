@@ -32,6 +32,7 @@ func init() {
 		IndexColumnList: PgIndexColumns,
 		QueryStrip:      PgQueryStrip,
 		QueryColumnList: PgQueryColumns,
+
 	}
 }
 
@@ -308,7 +309,7 @@ func PgIndexColumns(db models.XODB, schema string, table string, index string) (
 	}
 
 	// load col order
-	colOrd, err := models.PgGetColOrder(db, schema, index)
+	colOrd, err := models.PgGetColOrder(db, index)
 	if err != nil {
 		return nil, err
 	}
