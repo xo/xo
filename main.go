@@ -25,7 +25,7 @@ import (
 )
 
 func main() {
-	// circumvent all logic to just determine if xo was built with oracle
+	// circumvent all logic to just determine if xo was buigo lt with oracle
 	// support
 	if len(os.Args) == 2 && os.Args[1] == "--has-oracle-support" {
 		var out int
