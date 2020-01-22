@@ -62,7 +62,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// handle SETOF
 	if strings.HasPrefix(dt, "SETOF ") {
 		_, _, t := PgParseType(args, dt[len("SETOF "):], false)
-		return 0, "nil", "[]" + t
+		return 0, "nil", "[]*" + t
 	}
 
 	// determine if it's a slice
