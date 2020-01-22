@@ -10,7 +10,7 @@ func {{ .Name }}({{- if $tupleReturn}}db *sqlx.DB{{- else}}db XODB{{- end }}{{ g
 	var err error
 
 	// sql query
-	const sqlstr = `SELECT{{- if $tupleReturn}} * from {{ end }}{{ $proc }}({{ colvals .Params }})`
+	const sqlstr = `SELECT {{ if $tupleReturn}}* from {{ end }}{{ $proc }}({{ colvals .Params }})`
 
 	// run query
 {{- if $tupleReturn }}
