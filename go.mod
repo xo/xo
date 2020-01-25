@@ -4,6 +4,8 @@ require (
 	github.com/alexflint/go-arg v0.0.0-20181120184500-fb7d95b61ba8
 	github.com/alexflint/go-scalar v1.0.0 // indirect
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
+	github.com/google/uuid v1.1.1
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/knq/snaker v0.0.0-20180306023312-d9ad1e7f342a
 	github.com/lib/pq v1.0.0
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect

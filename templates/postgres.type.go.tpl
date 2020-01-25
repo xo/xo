@@ -7,7 +7,7 @@
 {{- end }}
 type {{ .Name }} struct {
 {{- range .Fields }}
-	{{ .Name }} {{ retype .Type }} `json:"{{ .Col.ColumnName }}"` // {{ .Col.ColumnName }}
+	{{ .Name }} {{ retype .Type }} `json:"{{ camelJSON .Col.ColumnName }}"` // {{ .Col.ColumnName }} Andy was here!
 {{- end }}
 {{- if .PrimaryKey }}
 
@@ -203,4 +203,3 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 	return nil
 }
 {{- end }}
-

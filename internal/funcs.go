@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/knq/snaker"
 
@@ -33,6 +35,12 @@ func (a *ArgType) NewTemplateFuncs() template.FuncMap {
 		"hascolumn":          a.hascolumn,
 		"hasfield":           a.hasfield,
 		"getstartcount":      a.getstartcount,
+		"camelJSON": func(colName string) string {
+			jsonFriendly := snaker.SnakeToCamel(colName) // this doesn't work -- it returns TitleCase
+			r, n := utf8.DecodeRuneInString(jsonFriendly)
+			jsonFriendly = string(unicode.ToLower(r)) + jsonFriendly[n:]
+			return jsonFriendly
+		},
 	}
 }
 

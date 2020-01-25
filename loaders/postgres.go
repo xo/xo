@@ -32,9 +32,8 @@ func init() {
 		IndexColumnList: PgIndexColumns,
 		QueryStrip:      PgQueryStrip,
 		QueryColumnList: PgQueryColumns,
-		TupleList: models.PgTuples,
-		TupleFields: models.PgTupleFields,
-
+		TupleList:       models.PgTuples,
+		TupleFields:     models.PgTupleFields,
 	}
 }
 
@@ -75,6 +74,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	dt, precision, _ = args.ParsePrecision(dt)
 
 	var typ string
+
 	switch dt {
 	case "boolean":
 		nilVal = "false"
@@ -88,8 +88,8 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		nilVal = `""`
 		typ = "string"
 		if nullable {
-			nilVal = "sql.NullString{}"
-			typ = "sql.NullString"
+			nilVal = "nil"
+			typ = "*string"
 		}
 
 	case "smallint":
@@ -159,8 +159,8 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		nilVal = "time.Time{}"
 		typ = "time.Time"
 		if nullable {
-			nilVal = "pq.NullTime{}"
-			typ = "pq.NullTime"
+			nilVal = "nil"
+			typ = "*time.Time"
 		}
 
 	case "interval":
@@ -185,8 +185,13 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		typ = "hstore.Hstore"
 
 	case "uuid":
-		nilVal = "uuid.New()"
+		nilVal = "uuid.Nil"
 		typ = "uuid.UUID"
+
+		if nullable {
+			nilVal = "nil"
+			typ = "*uuid.UUID"
+		}
 
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
@@ -199,14 +204,14 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		}
 	}
 
-	// special case for []slice
-	if typ == "string" && asSlice {
-		return precision, "StringSlice{}", "StringSlice"
-	}
+	// // special case for []slice
+	// if typ == "string" && asSlice {
+	// 	return precision, "nil", "[]string"
+	// }
 
-	// correct type if slice
+	// // correct type if slice
 	if asSlice {
-		typ = "[]" + typ
+		typ = "[]" + strings.TrimPrefix(typ, "*")
 		nilVal = "nil"
 	}
 

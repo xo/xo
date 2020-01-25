@@ -6,6 +6,10 @@ type XODB interface {
 	Exec(string, ...interface{}) (sql.Result, error)
 	Query(string, ...interface{}) (*sql.Rows, error)
 	QueryRow(string, ...interface{}) *sql.Row
+
+	ExecContext(string, ...interface{}) (sql.Result, error)
+	QueryContext(string, ...interface{}) (*sql.Rows, error)
+	QueryRowContext(string, ...interface{}) *sql.Row
 }
 
 // XOLog provides the log func used by generated queries.
@@ -68,4 +72,3 @@ func (ss StringSlice) Value() (driver.Value, error) {
 
 // Slice is a slice of ScannerValuers.
 type Slice []ScannerValuer
-

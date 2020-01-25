@@ -13,7 +13,6 @@
 
 package tplbin
 
-
 import (
 	"bytes"
 	"compress/gzip"
@@ -45,7 +44,6 @@ func bindataRead(data, name string) ([]byte, error) {
 
 	return buf.Bytes(), nil
 }
-
 
 type asset struct {
 	bytes []byte
@@ -118,8 +116,6 @@ func bindataPostgresenumgotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresenumgotpl() (*asset, error) {
 	bytes, err := bindataPostgresenumgotplBytes()
 	if err != nil {
@@ -127,11 +123,11 @@ func bindataPostgresenumgotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.enum.go.tpl",
-		size: 0,
+		name:        "postgres.enum.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -157,8 +153,6 @@ func bindataPostgresforeignkeygotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresforeignkeygotpl() (*asset, error) {
 	bytes, err := bindataPostgresforeignkeygotplBytes()
 	if err != nil {
@@ -166,11 +160,11 @@ func bindataPostgresforeignkeygotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.foreignkey.go.tpl",
-		size: 0,
+		name:        "postgres.foreignkey.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -209,8 +203,6 @@ func bindataPostgresindexgotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresindexgotpl() (*asset, error) {
 	bytes, err := bindataPostgresindexgotplBytes()
 	if err != nil {
@@ -218,11 +210,11 @@ func bindataPostgresindexgotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.index.go.tpl",
-		size: 0,
+		name:        "postgres.index.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -259,8 +251,6 @@ func bindataPostgresprocgotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresprocgotpl() (*asset, error) {
 	bytes, err := bindataPostgresprocgotplBytes()
 	if err != nil {
@@ -268,11 +258,11 @@ func bindataPostgresprocgotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.proc.go.tpl",
-		size: 0,
+		name:        "postgres.proc.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -310,8 +300,6 @@ func bindataPostgresquerygotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresquerygotpl() (*asset, error) {
 	bytes, err := bindataPostgresquerygotplBytes()
 	if err != nil {
@@ -319,11 +307,11 @@ func bindataPostgresquerygotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.query.go.tpl",
-		size: 0,
+		name:        "postgres.query.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -347,8 +335,6 @@ func bindataPostgresquerytypegotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgresquerytypegotpl() (*asset, error) {
 	bytes, err := bindataPostgresquerytypegotplBytes()
 	if err != nil {
@@ -356,11 +342,11 @@ func bindataPostgresquerytypegotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.querytype.go.tpl",
-		size: 0,
+		name:        "postgres.querytype.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -382,8 +368,6 @@ func bindataPostgrestuplegotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgrestuplegotpl() (*asset, error) {
 	bytes, err := bindataPostgrestuplegotplBytes()
 	if err != nil {
@@ -391,11 +375,11 @@ func bindataPostgrestuplegotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.tuple.go.tpl",
-		size: 0,
+		name:        "postgres.tuple.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -461,8 +445,6 @@ func bindataPostgrestypegotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataPostgrestypegotpl() (*asset, error) {
 	bytes, err := bindataPostgrestypegotplBytes()
 	if err != nil {
@@ -470,11 +452,11 @@ func bindataPostgrestypegotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "postgres.type.go.tpl",
-		size: 0,
+		name:        "postgres.type.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -522,8 +504,6 @@ func bindataXodbgotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataXodbgotpl() (*asset, error) {
 	bytes, err := bindataXodbgotplBytes()
 	if err != nil {
@@ -531,11 +511,11 @@ func bindataXodbgotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "xo_db.go.tpl",
-		size: 0,
+		name:        "xo_db.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -560,8 +540,6 @@ func bindataXopackagegotplBytes() ([]byte, error) {
 	)
 }
 
-
-
 func bindataXopackagegotpl() (*asset, error) {
 	bytes, err := bindataXopackagegotplBytes()
 	if err != nil {
@@ -569,18 +547,17 @@ func bindataXopackagegotpl() (*asset, error) {
 	}
 
 	info := bindataFileInfo{
-		name: "xo_package.go.tpl",
-		size: 0,
+		name:        "xo_package.go.tpl",
+		size:        0,
 		md5checksum: "",
-		mode: os.FileMode(0),
-		modTime: time.Unix(0, 0),
+		mode:        os.FileMode(0),
+		modTime:     time.Unix(0, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
 
 	return a, nil
 }
-
 
 //
 // Asset loads and returns the asset for the given name.
@@ -653,8 +630,8 @@ var _bindata = map[string]func() (*asset, error){
 	"postgres.querytype.go.tpl":  bindataPostgresquerytypegotpl,
 	"postgres.tuple.go.tpl":      bindataPostgrestuplegotpl,
 	"postgres.type.go.tpl":       bindataPostgrestypegotpl,
-	"xo_db.go.tpl":               bindataXodbgotpl,
-	"xo_package.go.tpl":          bindataXopackagegotpl,
+	// "xo_db.go.tpl":               bindataXodbgotpl,
+	// "xo_package.go.tpl":          bindataXopackagegotpl,
 }
 
 //
@@ -681,18 +658,18 @@ func AssetDir(name string) ([]string, error) {
 			node = node.Children[p]
 			if node == nil {
 				return nil, &os.PathError{
-					Op: "open",
+					Op:   "open",
 					Path: name,
-					Err: os.ErrNotExist,
+					Err:  os.ErrNotExist,
 				}
 			}
 		}
 	}
 	if node.Func != nil {
 		return nil, &os.PathError{
-			Op: "open",
+			Op:   "open",
 			Path: name,
-			Err: os.ErrNotExist,
+			Err:  os.ErrNotExist,
 		}
 	}
 	rv := make([]string, 0, len(node.Children))
@@ -702,23 +679,22 @@ func AssetDir(name string) ([]string, error) {
 	return rv, nil
 }
 
-
 type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
 
 var _bintree = &bintree{Func: nil, Children: map[string]*bintree{
-	"postgres.enum.go.tpl": {Func: bindataPostgresenumgotpl, Children: map[string]*bintree{}},
+	"postgres.enum.go.tpl":       {Func: bindataPostgresenumgotpl, Children: map[string]*bintree{}},
 	"postgres.foreignkey.go.tpl": {Func: bindataPostgresforeignkeygotpl, Children: map[string]*bintree{}},
-	"postgres.index.go.tpl": {Func: bindataPostgresindexgotpl, Children: map[string]*bintree{}},
-	"postgres.proc.go.tpl": {Func: bindataPostgresprocgotpl, Children: map[string]*bintree{}},
-	"postgres.query.go.tpl": {Func: bindataPostgresquerygotpl, Children: map[string]*bintree{}},
-	"postgres.querytype.go.tpl": {Func: bindataPostgresquerytypegotpl, Children: map[string]*bintree{}},
-	"postgres.tuple.go.tpl": {Func: bindataPostgrestuplegotpl, Children: map[string]*bintree{}},
-	"postgres.type.go.tpl": {Func: bindataPostgrestypegotpl, Children: map[string]*bintree{}},
-	"xo_db.go.tpl": {Func: bindataXodbgotpl, Children: map[string]*bintree{}},
-	"xo_package.go.tpl": {Func: bindataXopackagegotpl, Children: map[string]*bintree{}},
+	"postgres.index.go.tpl":      {Func: bindataPostgresindexgotpl, Children: map[string]*bintree{}},
+	"postgres.proc.go.tpl":       {Func: bindataPostgresprocgotpl, Children: map[string]*bintree{}},
+	"postgres.query.go.tpl":      {Func: bindataPostgresquerygotpl, Children: map[string]*bintree{}},
+	"postgres.querytype.go.tpl":  {Func: bindataPostgresquerytypegotpl, Children: map[string]*bintree{}},
+	"postgres.tuple.go.tpl":      {Func: bindataPostgrestuplegotpl, Children: map[string]*bintree{}},
+	"postgres.type.go.tpl":       {Func: bindataPostgrestypegotpl, Children: map[string]*bintree{}},
+	// "xo_db.go.tpl":               {Func: bindataXodbgotpl, Children: map[string]*bintree{}},
+	// "xo_package.go.tpl":          {Func: bindataXopackagegotpl, Children: map[string]*bintree{}},
 }}
 
 // RestoreAsset restores an asset under the given directory

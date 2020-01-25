@@ -210,8 +210,7 @@ func reverseIndexRune(s string, r rune) int {
 	return -1
 }
 
-// SinguralizeIdentifier will singularize a identifier, returning it in
-// CamelCase.
+// SingularizeIdentifier will singularize a identifier, returning it in CamelCase.
 func SingularizeIdentifier(s string) string {
 	if i := reverseIndexRune(s, '_'); i != -1 {
 		s = s[:i] + "_" + inflector.Singularize(s[i+1:])
