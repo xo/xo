@@ -61,8 +61,8 @@ type TypeLoader struct {
 	IndexColumnList func(models.XODB, string, string, string) ([]*models.IndexColumn, error)
 	QueryStrip      func([]string, []string)
 	QueryColumnList func(*ArgType, []string) ([]*models.Column, error)
-	TupleList 		func(models.XODB, string) ([]*models.Tuple, error)
-	TupleFields		func(models.XODB, string, string) ([]*models.TupleField, error)
+	TupleList       func(models.XODB, string) ([]*models.Tuple, error)
+	TupleFields     func(models.XODB, string, string) ([]*models.TupleField, error)
 }
 
 // NthParam satisifies Loader's NthParam.
@@ -289,7 +289,7 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 	if err != nil {
 		return err
 	}
-	
+
 	// load types
 	_, err = tl.LoadTuples(args)
 	if err != nil {
@@ -444,19 +444,29 @@ func (tl TypeLoader) LoadProcParams(args *ArgType, procTpl *Proc) error {
 
 	// process params
 	for _, p := range paramList {
+
 		// DJG: support named parameters
 		paramTpl := &Field{
 			Name: snaker.ForceLowerCamelIdentifier(p.ParamName[2:]),
 			Type: p.ParamType,
 		}
 
+		// if p.ParamNullable {
+		// 	paramTpl.Type = fmt.Sprintf("*%s", p.ParamType)
+		// } else {
+		// 	paramTpl.Type = p.ParamType
+		// }
+
+		// log.Println(p.ParamType, p.ParamNullable)
+
 		// TODO: fix this so that nullable types can be used as parameters
-		_, _, paramTpl.Type = tl.ParseType(args, strings.TrimSpace(p.ParamType), false)
+		_, _, paramTpl.Type = tl.ParseType(args, strings.TrimSpace(p.ParamType), p.ParamNullable)
 
 		// add to proc params
 		if procTpl.ProcParams != "" {
 			procTpl.ProcParams = procTpl.ProcParams + ", "
 		}
+
 		procTpl.ProcParams = procTpl.ProcParams + p.ParamType
 
 		procTpl.Params = append(procTpl.Params, paramTpl)
@@ -798,10 +808,10 @@ func (tl TypeLoader) LoadTuples(args *ArgType) (interface{}, error) {
 	for _, tuple := range tupleList {
 
 		// create template
-		tupleTpl := &Tuple {
-			Name: snaker.ForceCamelIdentifier(tuple.TupleName),
+		tupleTpl := &Tuple{
+			Name:      snaker.ForceCamelIdentifier(tuple.TupleName),
 			TupleName: tuple.TupleName,
-			Fields: []*Field{},
+			Fields:    []*Field{},
 		}
 
 		// load tuple fields

@@ -36,4 +36,3 @@ func {{ .Name }}({{- if $tupleReturn}}db *sqlx.DB{{- else}}db XODB{{- end }}{{ g
 {{- end }}
 }
 {{- end }}
-
