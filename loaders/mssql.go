@@ -112,7 +112,7 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		nilVal = "0"
 		underlying, typ = "int64", "int64"
 		if nullable {
-			underlying = "int64"
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
@@ -167,6 +167,8 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		underlying, typ = "time.Time", "time.Time"
 		if nullable {
 			underlying = "*time.Time"
+			nilVal = "sql.NullTime{}"
+			typ = "sql.NullTime"
 		}
 
 	case "time with time zone", "time without time zone", "timestamp without time zone":
