@@ -65,86 +65,96 @@ func MsRelkind(relType internal.RelType) string {
 
 // MsParseType parse a mssql type into a Go type based on the column
 // definition.
-func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string, string) {
 	precision := 0
 	nilVal := "nil"
 
 	// extract precision
 	dt, precision, _ = args.ParsePrecision(dt)
 
-	var typ string
+	var underlying, typ string
 	switch dt {
 	case "tinyint", "bit":
 		nilVal = "false"
-		typ = "bool"
+		underlying, typ = "bool", "bool"
 		if nullable {
+			underlying = "*bool"
 			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "char", "varchar", "text", "nchar", "nvarchar", "ntext", "smallmoney", "money":
 		nilVal = `""`
-		typ = "string"
+		underlying, typ = "string", "string"
 		if nullable {
+			underlying = "*string"
 			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
 
 	case "smallint":
 		nilVal = "0"
-		typ = "int16"
+		underlying, typ = "int16", "int16"
 		if nullable {
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "int":
 		nilVal = "0"
-		typ = args.Int32Type
+		underlying, typ = args.Int32Type, args.Int32Type
 		if nullable {
+			underlying = "*int32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigint":
 		nilVal = "0"
-		typ = "int64"
+		underlying, typ = "int64", "int64"
 		if nullable {
+			underlying = "int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "smallserial":
 		nilVal = "0"
-		typ = "uint16"
+		underlying, typ = "uint16", "uint16"
 		if nullable {
+			underlying = "*uint16"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "serial":
 		nilVal = "0"
-		typ = args.Uint32Type
+		underlying, typ = args.Uint32Type, args.Uint32Type
 		if nullable {
+			underlying = "*uint32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigserial":
 		nilVal = "0"
-		typ = "uint64"
+		underlying, typ = "uint64", "uint64"
 		if nullable {
+			underlying = "*uint64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "real":
 		nilVal = "0.0"
-		typ = "float32"
+		underlying, typ = "float32", "float32"
 		if nullable {
+			underlying = "*float32"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 	case "numeric", "decimal":
 		nilVal = "0.0"
-		typ = "float64"
+		underlying, typ = "float64", "float64"
 		if nullable {
+			underlying = "*float64"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
@@ -154,12 +164,16 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	case "datetime", "datetime2", "timestamp":
 		nilVal = "time.Time{}"
-		typ = "time.Time"
+		underlying, typ = "time.Time", "time.Time"
+		if nullable {
+			underlying = "*time.Time"
+		}
 
 	case "time with time zone", "time without time zone", "timestamp without time zone":
 		nilVal = "0"
-		typ = "int64"
+		underlying, typ = "int64", "int64"
 		if nullable {
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
@@ -178,7 +192,7 @@ func MsParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		}
 	}
 
-	return precision, nilVal, typ
+	return precision, nilVal, typ, underlying
 }
 
 // MsQueryColumns parses the query and generates a type for it.

@@ -66,7 +66,7 @@ func MyRelkind(relType internal.RelType) string {
 
 // MyParseType parse a mysql type into a Go type based on the column
 // definition.
-func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string, string) {
 	precision := 0
 	nilVal := "nil"
 	unsigned := false
@@ -80,7 +80,7 @@ func MyParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// extract precision
 	dt, precision, _ = args.ParsePrecision(dt)
 
-	var typ string
+	var underlying, typ string
 
 switchDT:
 	switch dt {
@@ -88,38 +88,42 @@ switchDT:
 		nilVal = "0"
 		if precision == 1 {
 			nilVal = "false"
-			typ = "bool"
+			underlying, typ = "bool", "bool"
 			if nullable {
+				underlying = "*bool"
 				nilVal = "sql.NullBool{}"
 				typ = "sql.NullBool"
 			}
 			break switchDT
 		} else if precision <= 8 {
-			typ = "uint8"
+			underlying, typ = "uint8", "uint8"
 		} else if precision <= 16 {
-			typ = "uint16"
+			underlying, typ = "uint16", "uint16"
 		} else if precision <= 32 {
-			typ = "uint32"
+			underlying, typ = "uint32", "uint32"
 		} else {
-			typ = "uint64"
+			underlying, typ = "uint64", "uint64"
 		}
 		if nullable {
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "bool", "boolean":
 		nilVal = "false"
-		typ = "bool"
+		underlying, typ = "bool", "bool"
 		if nullable {
+			underlying = "*bool"
 			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
 		nilVal = `""`
-		typ = "string"
+		underlying, typ = "string", "string"
 		if nullable {
+			underlying = "*string"
 			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
@@ -128,56 +132,62 @@ switchDT:
 		//people using tinyint(1) really want a bool
 		if precision == 1 {
 			nilVal = "false"
-			typ = "bool"
+			underlying, typ = "bool", "bool"
 			if nullable {
+				underlying = "*bool"
 				nilVal = "sql.NullBool{}"
 				typ = "sql.NullBool"
 			}
 			break
 		}
 		nilVal = "0"
-		typ = "int8"
+		underlying, typ = "int8", "int8"
 		if nullable {
+			underlying = "*int8"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
-
 	case "smallint":
 		nilVal = "0"
-		typ = "int16"
+		underlying, typ = "int16", "int16"
 		if nullable {
+			underlying = "*int16"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "mediumint", "int", "integer":
 		nilVal = "0"
-		typ = args.Int32Type
+		underlying, typ = args.Int32Type, args.Int32Type
 		if nullable {
+			underlying = "*int32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "bigint":
 		nilVal = "0"
-		typ = "int64"
+		underlying, typ = "int64", "int64"
 		if nullable {
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "float":
 		nilVal = "0.0"
-		typ = "float32"
+		underlying, typ = "float32", "float32"
 		if nullable {
+			underlying = "*float32"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 
 	case "decimal", "double":
 		nilVal = "0.0"
-		typ = "float64"
+		underlying, typ = "float64", "float64"
 		if nullable {
+			underlying = "*float64"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
@@ -187,23 +197,26 @@ switchDT:
 
 	case "timestamp", "datetime", "date":
 		nilVal = "time.Time{}"
-		typ = "time.Time"
+		underlying, typ = "time.Time", "time.Time"
 		if nullable {
-			nilVal = "mysql.NullTime{}"
-			typ = "mysql.NullTime"
+			underlying = "*time.Time"
+			nilVal = "sql.NullTime{}"
+			typ = "sql.NullTime"
 		}
 
 	case "time":
 		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
-		typ = "string"
+		underlying, typ = "string", "string"
 
 	default:
 		if strings.HasPrefix(dt, args.Schema+".") {
 			// in the same schema, so chop off
 			typ = snaker.SnakeToCamelIdentifier(dt[len(args.Schema)+1:])
+			underlying = typ
 			nilVal = typ + "(0)"
 		} else {
 			typ = snaker.SnakeToCamelIdentifier(dt)
+			underlying = typ
 			nilVal = typ + "{}"
 		}
 	}
@@ -214,7 +227,7 @@ switchDT:
 		typ = "u" + typ
 	}
 
-	return precision, nilVal, typ
+	return precision, nilVal, typ, underlying
 }
 
 // MyEnumValues loads the enum values.

@@ -51,15 +51,15 @@ func PgRelkind(relType internal.RelType) string {
 
 // PgParseType parse a postgres type into a Go type based on the column
 // definition.
-func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string, string) {
 	precision := 0
 	nilVal := "nil"
 	asSlice := false
 
 	// handle SETOF
 	if strings.HasPrefix(dt, "SETOF ") {
-		_, _, t := PgParseType(args, dt[len("SETOF "):], false)
-		return 0, "nil", "[]" + t
+		_, _, t, underlying := PgParseType(args, dt[len("SETOF "):], false)
+		return 0, "nil", "[]" + t, underlying
 	}
 
 	// determine if it's a slice
@@ -71,79 +71,89 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// extract precision
 	dt, precision, _ = args.ParsePrecision(dt)
 
-	var typ string
+	var underlying, typ string
 	switch dt {
 	case "boolean":
 		nilVal = "false"
-		typ = "bool"
+		underlying, typ = "bool", "bool"
 		if nullable {
+			underlying = "*bool"
 			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "character", "character varying", "text", "money", "inet":
 		nilVal = `""`
-		typ = "string"
+		underlying, typ = "string", "string"
 		if nullable {
+			underlying = "*string"
 			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
 
 	case "smallint":
 		nilVal = "0"
-		typ = "int16"
+		underlying, typ = "int16", "int16"
 		if nullable {
+			underlying = "*int16"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "integer":
 		nilVal = "0"
-		typ = args.Int32Type
+		underlying, typ = args.Int32Type, args.Int32Type
 		if nullable {
+			underlying = "*int32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigint":
 		nilVal = "0"
-		typ = "int64"
+		underlying, typ = "int64", "int64"
 		if nullable {
+			underlying = "*int64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "smallserial":
 		nilVal = "0"
-		typ = "uint16"
+		underlying, typ = "uint16", "uint16"
 		if nullable {
+			underlying = "*uint16"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "serial":
 		nilVal = "0"
-		typ = args.Uint32Type
+		underlying, typ = args.Uint32Type, args.Uint32Type
 		if nullable {
+			underlying = "*uint32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 	case "bigserial":
 		nilVal = "0"
-		typ = "uint64"
+		underlying, typ = "uint64", "uint64"
 		if nullable {
+			underlying = "*uint64"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "real":
 		nilVal = "0.0"
-		typ = "float32"
+		underlying, typ = "float32", "float32"
 		if nullable {
+			underlying = "*float32"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
 	case "numeric", "double precision":
 		nilVal = "0.0"
-		typ = "float64"
+		underlying, typ = "float64", "float64"
 		if nullable {
+			underlying = "*float64"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
@@ -154,8 +164,9 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	case "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
 		nilVal = "time.Time{}"
-		typ = "time.Time"
+		underlying, typ = "time.Time", "time.Time"
 		if nullable {
+			underlying = "*time.Time"
 			nilVal = "pq.NullTime{}"
 			typ = "pq.NullTime"
 		}
@@ -198,7 +209,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 
 	// special case for []slice
 	if typ == "string" && asSlice {
-		return precision, "StringSlice{}", "StringSlice"
+		return precision, "StringSlice{}", "StringSlice", "StringSlice"
 	}
 
 	// correct type if slice
@@ -207,7 +218,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		nilVal = "nil"
 	}
 
-	return precision, nilVal, typ
+	return precision, nilVal, typ, underlying
 }
 
 // pgQueryStripRE is the regexp to match the '::type AS name' portion in a query,

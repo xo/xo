@@ -49,7 +49,7 @@ var uRE = regexp.MustCompile(`\s*unsigned\*`)
 
 // SqParseType parse a sqlite type into a Go type based on the column
 // definition.
-func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string) {
+func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string, string, string) {
 	precision := 0
 	nilVal := "nil"
 	unsigned := false
@@ -64,28 +64,31 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		uRE.ReplaceAllString(dt, "")
 	}
 
-	var typ string
+	var underlying, typ string
 	switch dt {
 	case "bool", "boolean":
 		nilVal = "false"
-		typ = "bool"
+		underlying, typ = "bool", "bool"
 		if nullable {
+			underlying = "*bool"
 			nilVal = "sql.NullBool{}"
 			typ = "sql.NullBool"
 		}
 
 	case "int", "integer", "tinyint", "smallint", "mediumint", "bigint":
 		nilVal = "0"
-		typ = args.Int32Type
+		underlying, typ = args.Int32Type, args.Int32Type
 		if nullable {
+			underlying = "*int32"
 			nilVal = "sql.NullInt64{}"
 			typ = "sql.NullInt64"
 		}
 
 	case "numeric", "real", "double", "float", "decimal":
 		nilVal = "0.0"
-		typ = "float64"
+		underlying, typ = "float64", "float64"
 		if nullable {
+			underlying = "*float64"
 			nilVal = "sql.NullFloat64{}"
 			typ = "sql.NullFloat64"
 		}
@@ -100,8 +103,9 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "datetime", "date", "time":
 		nilVal = `""`
-		typ = "string"
+		underlying, typ = "string", "string"
 		if nullable {
+			underlying = "*string"
 			nilVal = "sql.NullString{}"
 			typ = "sql.NullString"
 		}
@@ -110,9 +114,10 @@ func SqParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 	// if unsigned ...
 	if internal.IntRE.MatchString(typ) && unsigned {
 		typ = "u" + typ
+
 	}
 
-	return precision, nilVal, typ
+	return precision, nilVal, typ, underlying
 }
 
 // SqTables returns the sqlite tables with the manual PK information added.
