@@ -108,13 +108,18 @@ func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 	if v, ok = a.ShortNameTypeMap[typ]; !ok {
 		// calc the short name
 		u := []string{}
-		for _, s := range strings.Split(strings.ToLower(snaker.CamelToSnake(typ)), "_") {
-			if len(s) > 0 && s != "id" {
-				u = append(u, s[:1])
-			} else if s == "id" {
-				u = append(u, "i")
+
+		receiverElements := strings.Split(strings.ToLower(snaker.CamelToSnake(typ)), "_")
+		if len(receiverElements) == 1 && receiverElements[0] == "id" {
+			u = append(u, "i")
+		} else {
+			for _, s := range receiverElements {
+				if len(s) > 0 && s != "id" {
+					u = append(u, s[:1])
+				}
 			}
 		}
+
 		v = strings.Join(u, "")
 
 		// check go reserved names
