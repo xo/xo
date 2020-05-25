@@ -111,6 +111,8 @@ func (a *ArgType) shortname(typ string, scopeConflicts ...interface{}) string {
 		for _, s := range strings.Split(strings.ToLower(snaker.CamelToSnake(typ)), "_") {
 			if len(s) > 0 && s != "id" {
 				u = append(u, s[:1])
+			} else if s == "id" {
+				u = append(u, "i")
 			}
 		}
 		v = strings.Join(u, "")
