@@ -98,6 +98,9 @@ type ArgType struct {
 	// QueryAllowNulls indicates that custom query results can contain null types.
 	QueryAllowNulls bool `arg:"--query-allow-nulls,-U,help:use query column NULL state"`
 
+	// QueryNullFields is the list of query null fields.
+	QueryNullFields string `arg:"--query-null-fields,-O,help:comma separated list of fields names which are nullable"`
+
 	// EscapeAll toggles escaping schema, table, and column names in SQL queries.
 	EscapeAll bool `arg:"--escape-all,-X,help:escape all names in SQL queries"`
 

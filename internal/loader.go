@@ -163,13 +163,19 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 			return err
 		}
 
+		nullableFields := map[string]bool{}
+
+		for _, nf := range strings.Split(args.QueryNullFields, ",") {
+			nullableFields[strings.TrimSpace(nf)] = true
+		}
+
 		// process columns
 		for _, c := range colList {
 			f := &Field{
 				Name: snaker.SnakeToCamelIdentifier(c.ColumnName),
 				Col:  c,
 			}
-			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, args.QueryAllowNulls && !c.NotNull)
+			f.Len, f.NilType, f.Type = tl.ParseType(args, c.DataType, (args.QueryAllowNulls && !c.NotNull) || nullableFields[f.Name])
 			typeTpl.Fields = append(typeTpl.Fields, f)
 		}
 	} else {
