@@ -489,9 +489,21 @@ loop:
 			}
 		}
 
+		typeName := SingularizeIdentifier(ti.TableName)
+		for _, types := range args.TypeNames {
+			for _, typ := range strings.Split(types, " ") {
+				x := strings.Split(typ, "=")
+				if len(x) == 2 && x[1] != "" {
+					if x[0] == ti.TableName {
+						typeName = x[1]
+					}
+				}
+			}
+		}
+
 		// create template
 		typeTpl := &Type{
-			Name:    SingularizeIdentifier(ti.TableName),
+			Name:    typeName,
 			Schema:  args.Schema,
 			RelType: relType,
 			Fields:  []*Field{},

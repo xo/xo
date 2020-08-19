@@ -46,6 +46,7 @@ type ArgType struct {
 
 	IncludeTables []string `arg:"--include-tables,help:only generate code for tables matching all of these regular expressions"`
 	ExcludeTables []string `arg:"--exclude-tables,help:don't generate code for tables matching any of these regular expressions"`
+	TypeNames   []string `arg:"--type-names,help:use specified type names instead of deriving them from the table names. --type-names \"table_1=FooType table_2=BarType\""`
 
 	Extra []string `arg:"--extra,help:generate *Extra fields for all given types"`
 

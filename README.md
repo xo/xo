@@ -124,6 +124,8 @@ options:
                          only generate code for tables matching all of these regular expressions
   --exclude-tables EXCLUDE-TABLES
                          don't generate code for tables matching any of these regular expressions
+  --type-names NAMES
+                         use specified type names instead of deriving them from the table names. --type-names "table_1=FooType table_2=BarType"
   --extra TYPES
                          generate *Extra fields for all given types
   --fk-mode FK-MODE, -k FK-MODE
