@@ -152,6 +152,55 @@ func MsTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 	return res, nil
 }
 
+// SSTableColumns runs a custom query, returning results as Column.
+func SSTableColumns(db XODB, schema string, table string) ([]*Column, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`c.colid AS field_ordinal, ` +
+		`c.name AS column_name, ` +
+		`TYPE_NAME(c.xtype)+IIF(c.prec > 0, '('+CAST(c.prec AS varchar)+IIF(c.scale > 0,','+CAST(c.scale AS varchar),'')+')', '') as data_type, ` +
+		`IIF(c.isnullable=1, 0, 1) AS not_null, ` +
+		`x.text AS default_value, ` +
+		`IIF(COALESCE(( ` +
+		`SELECT count(z.colid) ` +
+		`FROM sysindexes i ` +
+		`INNER JOIN sysindexkeys z ON i.id = z.id AND i.indid = z.indid AND z.colid = c.colid ` +
+		`WHERE i.id = o.id AND i.name = k.name ` +
+		`), 0) > 0, 1, 0) AS is_primary_key ` +
+		`FROM syscolumns c ` +
+		`JOIN sysobjects o ON o.id = c.id ` +
+		`LEFT JOIN sysobjects k ON k.xtype='PK' AND k.parent_obj = o.id ` +
+		`LEFT JOIN syscomments x ON x.id = c.cdefault ` +
+		`WHERE o.type IN('U', 'V') AND SCHEMA_NAME(o.uid) = @p1 AND o.name = @p2 ` +
+		`ORDER BY c.colid`
+
+	// run query
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Column{}
+	for q.Next() {
+		c := Column{}
+
+		// scan
+		err = q.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &c)
+	}
+
+	return res, nil
+}
+
 // OrTableColumns runs a custom query, returning results as Column.
 func OrTableColumns(db XODB, schema string, table string) ([]*Column, error) {
 	var err error

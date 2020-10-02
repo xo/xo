@@ -181,6 +181,49 @@ func MsTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, er
 	return res, nil
 }
 
+// SSTableForeignKeys runs a custom query, returning results as ForeignKey.
+func SSTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`f.name AS foreign_key_name, ` +
+		`c.name AS column_name, ` +
+		`o.name AS ref_table_name, ` +
+		`x.name AS ref_column_name ` +
+		`FROM sysobjects f ` +
+		`INNER JOIN sysobjects t ON f.parent_obj = t.id ` +
+		`INNER JOIN sysreferences r ON f.id = r.constid ` +
+		`INNER JOIN sysobjects o ON r.rkeyid = o.id ` +
+		`INNER JOIN syscolumns c ON r.rkeyid = c.id AND r.rkey1 = c.colid ` +
+		`INNER JOIN syscolumns x ON r.fkeyid = x.id AND r.fkey1 = x.colid ` +
+		`WHERE f.type = 'F' AND t.type = 'U' AND SCHEMA_NAME(t.uid) = @p1 AND t.name = @p2`
+
+	// run query
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*ForeignKey{}
+	for q.Next() {
+		fk := ForeignKey{}
+
+		// scan
+		err = q.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &fk)
+	}
+
+	return res, nil
+}
+
 // OrTableForeignKeys runs a custom query, returning results as ForeignKey.
 func OrTableForeignKeys(db XODB, schema string, table string) ([]*ForeignKey, error) {
 	var err error

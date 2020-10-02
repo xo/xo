@@ -154,6 +154,42 @@ func MsTables(db XODB, schema string, relkind string) ([]*Table, error) {
 	return res, nil
 }
 
+// SSTables runs a custom query, returning results as Table.
+func SSTables(db XODB, schema string, relkind string) ([]*Table, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`xtype AS type, ` +
+		`name AS table_name ` +
+		`FROM sysobjects ` +
+		`WHERE SCHEMA_NAME(uid) = @p1 AND xtype = @p2`
+
+	// run query
+	XOLog(sqlstr, schema, relkind)
+	q, err := db.Query(sqlstr, schema, relkind)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Table{}
+	for q.Next() {
+		t := Table{}
+
+		// scan
+		err = q.Scan(&t.Type, &t.TableName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &t)
+	}
+
+	return res, nil
+}
+
 // OrTables runs a custom query, returning results as Table.
 func OrTables(db XODB, schema string, relkind string) ([]*Table, error) {
 	var err error

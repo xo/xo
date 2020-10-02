@@ -161,6 +161,47 @@ func MsIndexColumns(db XODB, schema string, table string, index string) ([]*Inde
 	return res, nil
 }
 
+// SSIndexColumns runs a custom query, returning results as IndexColumn.
+func SSIndexColumns(db XODB, schema string, table string, index string) ([]*IndexColumn, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`k.keyno AS seq_no, ` +
+		`k.colid AS cid, ` +
+		`c.name AS column_name ` +
+		`FROM sysindexes i ` +
+		`INNER JOIN sysobjects o ON i.id = o.id ` +
+		`INNER JOIN sysindexkeys k ON k.id = o.id AND k.indid = i.indid ` +
+		`INNER JOIN syscolumns c ON c.id = o.id AND c.colid = k.colid ` +
+		`WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = @p1 AND o.name = @p2 AND i.name = @p3 ` +
+		`ORDER BY k.keyno`
+
+	// run query
+	XOLog(sqlstr, schema, table, index)
+	q, err := db.Query(sqlstr, schema, table, index)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*IndexColumn{}
+	for q.Next() {
+		ic := IndexColumn{}
+
+		// scan
+		err = q.Scan(&ic.SeqNo, &ic.Cid, &ic.ColumnName)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &ic)
+	}
+
+	return res, nil
+}
+
 // OrIndexColumns runs a custom query, returning results as IndexColumn.
 func OrIndexColumns(db XODB, schema string, table string, index string) ([]*IndexColumn, error) {
 	var err error

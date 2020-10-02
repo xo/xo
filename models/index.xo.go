@@ -162,6 +162,44 @@ func MsTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
 	return res, nil
 }
 
+// SSTableIndexes runs a custom query, returning results as Index.
+func SSTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
+	var err error
+
+	// sql query
+	const sqlstr = `SELECT ` +
+		`i.name AS index_name, ` +
+		`i.is_primary_key AS is_primary, ` +
+		`i.is_unique ` +
+		`FROM sys.indexes i ` +
+		`INNER JOIN sysobjects o ON i.object_id = o.id ` +
+		`WHERE i.name IS NOT NULL AND o.type = 'U' AND SCHEMA_NAME(o.uid) = @p1 AND o.name = @p2`
+
+	// run query
+	XOLog(sqlstr, schema, table)
+	q, err := db.Query(sqlstr, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+	res := []*Index{}
+	for q.Next() {
+		i := Index{}
+
+		// scan
+		err = q.Scan(&i.IndexName, &i.IsPrimary, &i.IsUnique)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &i)
+	}
+
+	return res, nil
+}
+
 // OrTableIndexes runs a custom query, returning results as Index.
 func OrTableIndexes(db XODB, schema string, table string) ([]*Index, error) {
 	var err error
