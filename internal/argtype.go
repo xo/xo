@@ -129,6 +129,11 @@ type ArgType struct {
 	// Filename is the output filename, as derived from Out.
 	Filename string `arg:"-"`
 
+	// Driver is the database driver.
+	// Driver is derived from the DSN by default.
+	// User can override the driver through command line argument.
+	Driver string `arg:"--driver,help:use this database driver rather than the driver identified from the DSN"`
+
 	// LoaderType is the loader type.
 	LoaderType string `arg:"-"`
 

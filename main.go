@@ -208,24 +208,32 @@ func processArgs(args *internal.ArgType) error {
 func openDB(args *internal.ArgType) error {
 	var err error
 
-	// parse dsn
-	u, err := dburl.Parse(args.DSN)
-	if err != nil {
-		return err
+	// if user has specified the driver, use it
+	driver := args.Driver
+	dsn := args.DSN
+	if len(driver) == 0 {
+		// parse dsn
+		u, err := dburl.Parse(args.DSN)
+		if err != nil {
+			return err
+		}
+
+		driver = u.Driver
+		dsn = u.DSN
 	}
 
 	// save driver type
-	args.LoaderType = u.Driver
+	args.LoaderType = driver
 
 	// grab loader
 	var ok bool
-	args.Loader, ok = internal.SchemaLoaders[u.Driver]
+	args.Loader, ok = internal.SchemaLoaders[driver]
 	if !ok {
 		return errors.New("unsupported database type")
 	}
 
 	// open database connection
-	args.DB, err = sql.Open(u.Driver, u.DSN)
+	args.DB, err = sql.Open(driver, dsn)
 	if err != nil {
 		return err
 	}
