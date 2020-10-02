@@ -5,6 +5,7 @@ MYDB=my://xodb:xodb@localhost/xodb
 MSDB=ms://xodb:xodb@localhost/xodb
 SQDB=sq:xodb.sqlite3
 ORDB=or://xodb:xodb@localhost/xe
+SSDB=sqlserver://xodb:xodb@localhost/xodb
 
 DEST=$1
 
@@ -476,4 +477,84 @@ SELECT
 FROM all_ind_columns
 WHERE index_owner = UPPER(%%schema string%%) AND table_name = UPPER(%%table string%%) AND index_name = UPPER(%%index string%%)
 ORDER BY column_position
+ENDSQL
+
+# sqlserver identity table list query
+$XOBIN $SSDB -N -M -B -T SSIdentity -F SSIdentities -o $DEST $EXTRA << ENDSQL
+SELECT o.name as table_name
+FROM sys.objects o inner join sys.columns c on o.object_id = c.object_id
+WHERE c.is_identity = 1
+AND schema_name(o.schema_id) = %%schema string%% AND o.type = 'U'
+ENDSQL
+
+# sqlserver table list query
+$XOBIN $SSDB -a -N -M -B -T Table -F SSTables -o $DEST $EXTRA << ENDSQL
+SELECT
+  xtype AS type,
+  name AS table_name
+FROM sysobjects
+WHERE SCHEMA_NAME(uid) = %%schema string%% AND xtype = %%relkind string%%
+ENDSQL
+
+# sqlserver table column list query
+$XOBIN $SSDB -a -N -M -B -T Column -F SSTableColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  c.colid AS field_ordinal,
+  c.name AS column_name,
+  TYPE_NAME(c.xtype)+IIF(c.prec > 0, '('+CAST(c.prec AS varchar)+IIF(c.scale > 0,','+CAST(c.scale AS varchar),'')+')', '') as data_type,
+  IIF(c.isnullable=1, 0, 1) AS not_null,
+  x.text AS default_value,
+  IIF(COALESCE((
+    SELECT count(z.colid)
+    FROM sysindexes i
+      INNER JOIN sysindexkeys z ON i.id = z.id AND i.indid = z.indid AND z.colid = c.colid
+    WHERE i.id = o.id AND i.name = k.name
+  ), 0) > 0, 1, 0) AS is_primary_key
+FROM syscolumns c
+  JOIN sysobjects o ON o.id = c.id
+  LEFT JOIN sysobjects k ON k.xtype='PK' AND k.parent_obj = o.id
+  LEFT JOIN syscomments x ON x.id = c.cdefault
+WHERE o.type IN('U', 'V') AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%%
+ORDER BY c.colid
+ENDSQL
+
+# sqlserver table foreign key list query
+$XOBIN $SSDB -a -N -M -B -T ForeignKey -F SSTableForeignKeys -o $DEST $EXTRA << ENDSQL
+SELECT
+  f.name AS foreign_key_name,
+  c.name AS column_name,
+  o.name AS ref_table_name,
+  x.name AS ref_column_name
+FROM sysobjects f
+  INNER JOIN sysobjects t ON f.parent_obj = t.id
+  INNER JOIN sysreferences r ON f.id = r.constid
+  INNER JOIN sysobjects o ON r.rkeyid = o.id
+  INNER JOIN syscolumns c ON r.rkeyid = c.id AND r.rkey1 = c.colid
+  INNER JOIN syscolumns x ON r.fkeyid = x.id AND r.fkey1 = x.colid
+WHERE f.type = 'F' AND t.type = 'U' AND SCHEMA_NAME(t.uid) = %%schema string%% AND t.name = %%table string%%
+ENDSQL
+
+# sqlserver table index list query
+$XOBIN $SSDB -a -N -M -B -T Index -F SSTableIndexes -o $DEST $EXTRA << ENDSQL
+SELECT
+  i.name AS index_name,
+  i.is_primary_key AS is_primary,
+  i.is_unique
+FROM sys.indexes i
+  INNER JOIN sysobjects o ON i.object_id = o.id
+WHERE i.name IS NOT NULL AND o.type = 'U' AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%%
+ENDSQL
+
+# sqlserver index column list query
+$XOBIN $SSDB -a -N -M -B -T IndexColumn -F SSIndexColumns -o $DEST $EXTRA << ENDSQL
+SELECT
+  k.keyno AS seq_no,
+  k.colid AS cid,
+  c.name AS column_name
+FROM sysindexes i
+  INNER JOIN sysobjects o ON i.id = o.id
+  INNER JOIN sysindexkeys k ON k.id = o.id AND k.indid = i.indid
+  INNER JOIN syscolumns c ON c.id = o.id AND c.colid = k.colid
+WHERE o.type = 'U' AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%% AND i.name = %%index string%%
+ORDER BY k.keyno
 ENDSQL
