@@ -67,7 +67,10 @@ $ xo pgsql://user:pass@host/dbname -o models
 
 # generate code for a Microsoft SQL schema using a custom template directory (see notes below)
 $ mkdir -p mssqlmodels
-$ xo mysql://user:pass@host/dbname -o mssqlmodels --template-path /path/to/custom/templates
+$ xo mssql://user:pass@host/dbname -o mssqlmodels --template-path /path/to/custom/templates
+
+# To force 'sqlserver' driver for Microsoft SQL server rather than the default 'mssql'
+$ xo --driver sqlserver sqlserver://user:pass@host/dbname -o mssqlmodels --template-path /path/to/custom/templates
 
 # generate code for a custom SQL query for postgres
 $ xo pgsql://user:pass@host/dbname -N -M -B -T AuthorResult -o models/ << ENDSQL
@@ -156,6 +159,8 @@ options:
                          suffix to append when a name conflicts with a Go variable [default: Val]
   --template-path TEMPLATE-PATH
                          user supplied template path
+  --driver DRIVER        use this database driver rather than the driver identified
+                         from the DSN
   --help, -h             display this help and exit
 ```
 
