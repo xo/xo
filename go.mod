@@ -5,7 +5,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/knq/snaker v0.0.0-20181215144011-2bc8a4db4687
+	github.com/kenshaw/snaker v0.1.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v1.4.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible

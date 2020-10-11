@@ -13,8 +13,8 @@ github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gG
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe h1:lXe2qZdvpiX5WZkZR4hgp4KJVfY3nMkvmwbVkpv1rVY=
 github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe/go.mod h1:8vg3r2VgvsThLBIFL93Qb5yWzgyZWhEmBwUJWevAkK0=
-github.com/knq/snaker v0.0.0-20181215144011-2bc8a4db4687 h1:ZrOZbqW7T2EgLd4soRATeSZrP3ijy2CgNFXG44cUuS8=
-github.com/knq/snaker v0.0.0-20181215144011-2bc8a4db4687/go.mod h1:f0Dmq8fkddh8nOsVabYmtOHHdxlq2q4X+LQ1xWQEdUU=
+github.com/kenshaw/snaker v0.1.0 h1:h6dvdkBw6Qe1ya/LE9kMa9Y8M3RSAhbELfirZHIFobU=
+github.com/kenshaw/snaker v0.1.0/go.mod h1:0xAAdPB2IwUAxxUZj5ZvPclku2HJBSB7TRcJxvhVwM8=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
