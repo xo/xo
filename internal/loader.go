@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/gedex/inflector"
@@ -514,6 +515,18 @@ loop:
 		err = tl.LoadColumns(args, typeTpl)
 		if err != nil {
 			return nil, err
+		}
+
+		ixMap := map[string]*Index{}
+		err = tl.LoadTableIndexes(args, typeTpl, ixMap)
+		if err != nil {
+			return nil, err
+		}
+		for _, ix := range ixMap {
+			typeTpl.Indexes = append(typeTpl.Indexes, ix)
+			sort.Slice(typeTpl.Indexes, func(i, j int) bool {
+				return typeTpl.Indexes[i].Index.IndexName < typeTpl.Indexes[j].Index.IndexName
+			})
 		}
 
 		tableMap[ti.TableName] = typeTpl

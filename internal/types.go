@@ -125,6 +125,7 @@ type Type struct {
 	PrimaryKey       *Field
 	PrimaryKeyFields []*Field
 	Fields           []*Field
+	Indexes          []*Index
 	Table            *models.Table
 	HasExtra         bool
 	Comment          string

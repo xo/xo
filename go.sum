@@ -40,4 +40,5 @@ golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJ
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 google.golang.org/appengine v1.3.0 h1:FBSsiFRMz3LBeXIomRnVzrQwSDj4ibvcRexLG0LZGQk=
 google.golang.org/appengine v1.3.0/go.mod h1:xpcJRLb0r/rnEns0DIKYYv+WjYCduHsrkT7/EB5XEv4=
+gopkg.in/rana/ora.v4 v4.1.15 h1:2Htj9lqo8iF48vkb/oTDd2a/vlxTnSIUsRaIh0LpZZ8=
 gopkg.in/rana/ora.v4 v4.1.15/go.mod h1:xT5RjI4P4KAOzMyDWeyleSX0ebU2+QXiQaoarWWy8Tw=
