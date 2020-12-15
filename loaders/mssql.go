@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 
-	"github.com/knq/snaker"
+	"github.com/kenshaw/snaker"
 
 	"github.com/xo/xo/internal"
 	"github.com/xo/xo/models"
@@ -17,10 +17,10 @@ func init() {
 		ProcessRelkind: MsRelkind,
 		Schema:         MsSchema,
 		ParseType:      MsParseType,
-		//EnumList:       models.MsEnums,
-		//EnumValueList:  models.MsEnumValues,
-		//ProcList:       models.MsProcs,
-		//ProcParamList:  models.MsProcParams,
+		// EnumList:       models.MsEnums,
+		// EnumValueList:  models.MsEnumValues,
+		// ProcList:       models.MsProcs,
+		// ProcParamList:  models.MsProcParams,
 		TableList:       MsTables,
 		ColumnList:      models.MsTableColumns,
 		ForeignKeyList:  models.MsTableForeignKeys,

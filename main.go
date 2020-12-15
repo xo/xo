@@ -29,10 +29,9 @@ func main() {
 	// support
 	if len(os.Args) == 2 && os.Args[1] == "--has-oracle-support" {
 		var out int
-		if _, ok := internal.SchemaLoaders["ora"]; ok {
+		if _, ok := internal.SchemaLoaders["godror"]; ok {
 			out = 1
 		}
-
 		fmt.Fprintf(os.Stdout, "%d", out)
 		return
 	}
@@ -244,7 +243,7 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	var err error
 
 	// determine filename
-	var filename = strings.ToLower(t.Name) + args.Suffix
+	filename := strings.ToLower(t.Name) + args.Suffix
 	if args.SingleFile {
 		filename = args.Filename
 	}

@@ -8,7 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/knq/snaker"
+	"github.com/kenshaw/snaker"
 
 	"github.com/xo/xo/internal"
 	"github.com/xo/xo/models"
@@ -170,7 +170,7 @@ func PgParseType(args *internal.ArgType, dt string, nullable bool) (int, string,
 		//
 		// this is mainly here because postgres's pg_catalog.* meta tables have
 		// this as a type.
-		//typ = "rune"
+		// typ = "rune"
 		nilVal = `uint8(0)`
 		typ = "uint8"
 
@@ -280,7 +280,7 @@ func PgQueryColumns(args *internal.ArgType, inspect []string) ([]*models.Column,
 	}
 
 	// query to determine schema name where temporary view was created
-	var nspq = `SELECT n.nspname ` +
+	nspq := `SELECT n.nspname ` +
 		`FROM pg_class c ` +
 		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
 		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`

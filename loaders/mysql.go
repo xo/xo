@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/knq/snaker"
+	"github.com/kenshaw/snaker"
 
 	"github.com/xo/xo/internal"
 	"github.com/xo/xo/models"
@@ -125,7 +125,7 @@ switchDT:
 		}
 
 	case "tinyint":
-		//people using tinyint(1) really want a bool
+		// people using tinyint(1) really want a bool
 		if precision == 1 {
 			nilVal = "false"
 			typ = "bool"

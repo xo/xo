@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gedex/inflector"
-	"github.com/knq/snaker"
+	"github.com/kenshaw/snaker"
 
 	"github.com/xo/xo/models"
 )
@@ -723,7 +723,7 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 	// if no primary key index loaded, but a primary key column was defined in
 	// the type, then create the definition here. this is needed for sqlite, as
 	// sqlite doesn't define primary keys in its index list
-	if args.LoaderType != "ora" && !priIxLoaded && pk != nil {
+	if args.LoaderType != "godror" && !priIxLoaded && pk != nil {
 		ixName := typeTpl.Table.TableName + "_" + pk.Col.ColumnName + "_pkey"
 		ixMap[ixName] = &Index{
 			FuncName: typeTpl.Name + "By" + pk.Name,
