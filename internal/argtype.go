@@ -44,9 +44,11 @@ type ArgType struct {
 	// handled by xo in the generated code.
 	IgnoreFields []string `arg:"--ignore-fields,help:fields to exclude from the generated Go code types"`
 
-	IncludeTables []string `arg:"--include-tables,help:only generate code for tables matching all of these regular expressions"`
-	ExcludeTables []string `arg:"--exclude-tables,help:don't generate code for tables matching any of these regular expressions"`
-	TypeNames   []string `arg:"--type-names,help:use specified type names instead of deriving them from the table names. --type-names \"table_1=FooType table_2=BarType\""`
+	IncludeTables       []string `arg:"--include-tables,help:only generate code for tables matching all of these regular expressions"`
+	ExcludeTables       []string `arg:"--exclude-tables,help:don't generate code for tables matching any of these regular expressions"`
+	ExcludeIndices      []string `arg:"--exclude-indices,help:don't generate code for indices matching any of these regular expressions"`
+	AliasExcludeIndexes []string `arg:"--exclude-indexes,help:alias for --exclude-indices"`
+	TypeNames           []string `arg:"--type-names,help:use specified type names instead of deriving them from the table names. --type-names \"table_1=FooType table_2=BarType\""`
 
 	Extra []string `arg:"--extra,help:generate *Extra fields for all given types"`
 

@@ -201,6 +201,8 @@ func processArgs(args *internal.ArgType) error {
 		}
 	}
 
+	args.ExcludeIndices = append(args.ExcludeIndices, args.AliasExcludeIndexes...)
+
 	return nil
 }
 

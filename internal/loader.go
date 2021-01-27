@@ -753,8 +753,20 @@ func (tl TypeLoader) LoadTableIndexes(args *ArgType, typeTpl *Type, ixMap map[st
 		return err
 	}
 
+	excludeIndices, err := compileREs(args.ExcludeIndices)
+	if err != nil {
+		return errors.Wrap(err, "--exclude-indices")
+	}
+
 	// process indexes
+loop:
 	for _, ix := range indexList {
+		for _, re := range excludeIndices {
+			if re.MatchString(ix.IndexName) {
+				continue loop
+			}
+		}
+
 		// save whether or not the primary key index was processed
 		priIxLoaded = priIxLoaded || ix.IsPrimary || (ix.Origin == "pk")
 
