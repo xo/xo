@@ -334,7 +334,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_users_modtime BEFORE UPDATE ON users FROM EACH ROW EXECUTE PROCEDURE update_modified_column();
+CREATE TRIGGER update_users_modtime BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 ```
 
 We can ensure that these columns are managed by PostgreSQL and not by the Go
