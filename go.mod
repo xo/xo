@@ -4,7 +4,7 @@ require (
 	github.com/alexflint/go-arg v1.3.0
 	github.com/denisenkom/go-mssqldb v0.9.0
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
-	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/godror/godror v0.22.0
 	github.com/kenshaw/snaker v0.1.0
 	github.com/kr/pretty v0.1.0 // indirect

@@ -189,8 +189,8 @@ switchDT:
 		nilVal = "time.Time{}"
 		typ = "time.Time"
 		if nullable {
-			nilVal = "mysql.NullTime{}"
-			typ = "mysql.NullTime"
+			nilVal = "sql.NullTime{}"
+			typ = "sql.NullTime"
 		}
 
 	case "time":
