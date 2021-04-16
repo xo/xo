@@ -4,7 +4,7 @@ PGDB=pg://xodb:xodb@localhost/xodb
 MYDB=my://xodb:xodb@localhost/xodb
 MSDB=ms://xodb:xodb@localhost/xodb
 SQDB=sq:xodb.sqlite3
-ORDB=or://xodb:xodb@localhost/xe
+ORDB=or://system:P4ssw0rd@localhost/orasid
 
 DEST=$1
 

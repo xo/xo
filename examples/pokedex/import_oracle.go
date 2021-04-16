@@ -3,5 +3,5 @@
 package main
 
 import (
-	_ "gopkg.in/rana/ora.v4"
+	_ "github.com/sijms/go-ora"
 )

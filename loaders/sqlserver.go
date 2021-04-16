@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	internal.SchemaLoaders["mssql"] = internal.TypeLoader{
+	internal.SchemaLoaders["sqlserver"] = internal.TypeLoader{
 		MaskFunc:       func() string { return "$%d" },
 		ProcessRelkind: MsRelkind,
 		Schema:         MsSchema,

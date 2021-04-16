@@ -1,4 +1,4 @@
-ADMIN="mssql://sa:changeit@localhost"
+ADMIN="sqlserver://sa:changeit@localhost"
 DBNAME="pokedex"
 
 set +e

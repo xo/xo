@@ -1,5 +1,3 @@
-// +build oracle
-
 package loaders
 
 import (
@@ -8,14 +6,14 @@ import (
 	"regexp"
 	"strings"
 
-	_ "github.com/godror/godror"
+	_ "github.com/sijms/go-ora"
 
 	"github.com/xo/xo/internal"
 	"github.com/xo/xo/models"
 )
 
 func init() {
-	internal.SchemaLoaders["godror"] = internal.TypeLoader{
+	internal.SchemaLoaders["oracle"] = internal.TypeLoader{
 		ParamN:         func(i int) string { return fmt.Sprintf(":%d", i+1) },
 		MaskFunc:       func() string { return ":%d" },
 		ProcessRelkind: OrRelkind,
