@@ -6,18 +6,18 @@ package models
 import (
 	"errors"
 
-	"github.com/xo/xoutil"
+	"github.com/xo/xo/loaders"
 )
 
 // Book represents a row from 'books'.
 type Book struct {
-	BookID    int           `json:"book_id"`   // book_id
-	AuthorID  int           `json:"author_id"` // author_id
-	Isbn      string        `json:"isbn"`      // isbn
-	Title     string        `json:"title"`     // title
-	Year      int           `json:"year"`      // year
-	Available xoutil.SqTime `json:"available"` // available
-	Tags      string        `json:"tags"`      // tags
+	BookID    int            `json:"book_id"`   // book_id
+	AuthorID  int            `json:"author_id"` // author_id
+	Isbn      string         `json:"isbn"`      // isbn
+	Title     string         `json:"title"`     // title
+	Year      int            `json:"year"`      // year
+	Available loaders.SqTime `json:"available"` // available
+	Tags      string         `json:"tags"`      // tags
 
 	// xo fields
 	_exists, _deleted bool

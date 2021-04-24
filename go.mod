@@ -13,7 +13,6 @@ require (
 	github.com/sijms/go-ora v0.0.0-20210409183318-9a2e22fa22b0
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/xo/dburl v0.6.0
-	github.com/xo/xoutil v0.0.0-20171112033149-46189f4026a5
 	golang.org/x/crypto v0.0.0-20210415154028-4f45737414dc // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
