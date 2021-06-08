@@ -287,6 +287,12 @@ WHERE index_schema = %%schema string%% AND table_name = %%table string%% AND ind
 ORDER BY seq_in_index
 ENDSQL
 
+# sqlite3 schema query
+COMMENT='Sqlite3Schema retrieves the current schema.'
+$XOBIN query $SQDB -M -B -l -F Sqlite3Schema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
+SELECT REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name FROM pragma_database_list()
+ENDSQL
+
 # sqlite3 sequence list query
 $XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3Sequences -a -o $DEST $@ << ENDSQL
 SELECT

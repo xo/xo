@@ -229,6 +229,19 @@ func MysqlSchema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
+// Sqlite3Schema retrieves the current schema.
+func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
+	// query
+	const sqlstr = `SELECT REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name FROM pragma_database_list()`
+	// run
+	logf(sqlstr)
+	var schemaName string
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&schemaName); err != nil {
+		return "", logerror(err)
+	}
+	return schemaName, nil
+}
+
 // SqlserverSchema retrieves the current schema.
 func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 	// query

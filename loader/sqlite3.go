@@ -22,6 +22,7 @@ func init() {
 		MaskFunc: func() string {
 			return "?"
 		},
+		Schema:           models.Sqlite3Schema,
 		GoType:           Sqlite3GoType,
 		Tables:           Sqlite3Tables,
 		TableColumns:     Sqlite3TableColumns,

@@ -113,10 +113,14 @@ func (f *Funcs) schemafn(names ...string) string {
 		}
 	}
 	n := strings.Join(names, ".")
-	if s == "" && n == "" {
+	switch {
+	case s == "" && n == "":
 		return ""
-	}
-	if s != "" && n != "" {
+	case f.driver == "sqlite3" && n == "":
+		return f.schema
+	case f.driver == "sqlite3":
+		return n
+	case s != "" && n != "":
 		if f.escSchema {
 			s = f.esc(s, "schema")
 		}
