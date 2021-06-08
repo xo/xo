@@ -18,11 +18,12 @@ func init() {
 			KindTable: "r",
 			KindView:  "v",
 		},
-		Flags: map[ContextKey]Flag{
-			OIDsKey: {
-				Desc:    "enable postgres OIDs",
-				Default: "false",
-				Value:   false,
+		Flags: []Flag{
+			{
+				ContextKey: OidsKey,
+				Desc:       "enable postgres OIDs",
+				Default:    "false",
+				Value:      false,
 			},
 		},
 		Schema:           models.PostgresSchema,
@@ -186,7 +187,7 @@ func PostgresTables(ctx context.Context, db models.DB, schema string, relkind st
 
 // PostgresTableColumns returns the columns for a table.
 func PostgresTableColumns(ctx context.Context, db models.DB, schema string, table string) ([]*models.Column, error) {
-	return models.PostgresTableColumns(ctx, db, schema, table, EnableOIDs(ctx))
+	return models.PostgresTableColumns(ctx, db, schema, table, EnableOids(ctx))
 }
 
 // PostgresIndexColumns returns the column list for an index.
@@ -274,11 +275,11 @@ func PostgresQueryColumns(ctx context.Context, db models.DB, _ string, inspect [
 	return models.PostgresTableColumns(ctx, db, schema, xoid, false)
 }
 
-// OIDsKey is the oids context key.
-const OIDsKey ContextKey = "oids"
+// OidsKey is the oids context key.
+const OidsKey ContextKey = "oids"
 
-// EnableOIDs returns the EnableOIDs value from the context.
-func EnableOIDs(ctx context.Context) bool {
-	b, _ := ctx.Value(OIDsKey).(bool)
+// EnableOids returns the EnableOids value from the context.
+func EnableOids(ctx context.Context) bool {
+	b, _ := ctx.Value(OidsKey).(bool)
 	return b
 }

@@ -116,13 +116,12 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 		types := templates.Types()
 		desc := strings.Join(types, ", ")
 		cmd.Flag("template", "template type ("+desc+"; default: go)").Short('t').Default("go").EnumVar(&args.TemplateParams.Type, types...)
-		cmd.Flag("esc", "escape names (none, schema, table, column, all; default: none)").PlaceHolder("none").EnumsVar(&args.TemplateParams.Esc, "none", "schema", "table", "column", "all")
 	}
 	// out
 	oc := func(cmd *kingpin.CmdClause) {
 		cmd.Flag("out", "out path (default: models)").Short('o').Default("models").PlaceHolder("models").StringVar(&args.OutParams.Out)
 		cmd.Flag("append", "enable append mode").Short('a').BoolVar(&args.OutParams.Append)
-		cmd.Flag("single", "enable single file output").Short('S').StringVar(&args.OutParams.Single)
+		cmd.Flag("single", "enable single file output").Short('S').PlaceHolder("<file>").StringVar(&args.OutParams.Single)
 		cmd.Flag("debug", "disable post processing of generated code (immediately writes to disk)").Short('D').BoolVar(&args.OutParams.Debug)
 	}
 	// additonal loader flags
@@ -134,9 +133,11 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 				Default(flag.Flag.Default)
 			switch flag.Flag.Value.(type) {
 			case bool:
-				args.DbParams.Flags[flag.ContextKey] = newBool(f, args.DbParams.Flags[flag.ContextKey])
+				args.DbParams.Flags[flag.Flag.ContextKey] = newBool(f, args.DbParams.Flags[flag.Flag.ContextKey])
 			case string:
-				args.DbParams.Flags[flag.ContextKey] = newString(f, args.DbParams.Flags[flag.ContextKey])
+				args.DbParams.Flags[flag.Flag.ContextKey] = newString(f, args.DbParams.Flags[flag.Flag.ContextKey])
+			case []string:
+				args.DbParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.DbParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			}
 		}
 	}
@@ -150,9 +151,11 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 				Default(flag.Flag.Default)
 			switch flag.Flag.Value.(type) {
 			case bool:
-				args.TemplateParams.Flags[flag.ContextKey] = newBool(f, args.TemplateParams.Flags[flag.ContextKey])
+				args.TemplateParams.Flags[flag.Flag.ContextKey] = newBool(f, args.TemplateParams.Flags[flag.Flag.ContextKey])
 			case string:
-				args.TemplateParams.Flags[flag.ContextKey] = newString(f, args.TemplateParams.Flags[flag.ContextKey])
+				args.TemplateParams.Flags[flag.Flag.ContextKey] = newString(f, args.TemplateParams.Flags[flag.Flag.ContextKey])
+			case []string:
+				args.TemplateParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.TemplateParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			}
 		}
 	}
@@ -182,7 +185,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	oc(schemaCmd)
 	schemaCmd.Flag("fk-mode", "foreign key resolution mode (smart, parent, field, key; default: smart)").Short('k').Default("smart").EnumVar(&args.SchemaParams.FkMode, "smart", "parent", "field", "key")
 	schemaCmd.Flag("ignore", "fields to exclude from generated code").Short('I').PlaceHolder("<field>").StringsVar(&args.SchemaParams.Ignore)
-	schemaCmd.Flag("use-index-names", "use index names as defined in schema for generated Go code").Short('j').BoolVar(&args.SchemaParams.UseIndexNames)
+	schemaCmd.Flag("use-index-names", "use index names as defined in schema for generated code").Short('j').BoolVar(&args.SchemaParams.UseIndexNames)
 	tf(schemaCmd)
 	lf(schemaCmd)
 	// dump command
@@ -205,10 +208,6 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	ctx = context.WithValue(ctx, templates.GenTypeKey, cmd)
 	// add template type
 	ctx = context.WithValue(ctx, templates.TemplateTypeKey, args.TemplateParams.Type)
-	// add esc flags
-	ctx = context.WithValue(ctx, templates.EscSchemaKey, contains(args.TemplateParams.Esc, "all", "schema"))
-	ctx = context.WithValue(ctx, templates.EscTablesKey, contains(args.TemplateParams.Esc, "all", "table"))
-	ctx = context.WithValue(ctx, templates.EscColumnsKey, contains(args.TemplateParams.Esc, "all", "column"))
 	// add template flags
 	for key, v := range args.TemplateParams.Flags {
 		// deref the interface (should always be a pointer to a type)
@@ -447,5 +446,26 @@ func newString(f *kingpin.FlagClause, v interface{}) *string {
 	}
 	s := v.(*string)
 	f.StringVar(s)
+	return s
+}
+
+// newStrings creates a new string when v is nil, otherwise it converts v and returns.
+func newStrings(f *kingpin.FlagClause, v interface{}, enums []string) *[]string {
+	switch {
+	case v == nil && enums == nil:
+		var s []string
+		f.StringsVar(&s)
+		return &s
+	case v != nil && enums == nil:
+		s := v.(*[]string)
+		f.StringsVar(s)
+		return s
+	case v == nil:
+		var s []string
+		f.EnumsVar(&s, enums...)
+		return &s
+	}
+	s := v.(*[]string)
+	f.EnumsVar(s, enums...)
 	return s
 }

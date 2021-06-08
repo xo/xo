@@ -14,16 +14,16 @@ import (
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	driver     string
-	schema     string
-	first      *bool
-	escSchema  bool
-	escTables  bool
-	escColumns bool
-	nth        func(int) string
-	pkg        string
-	conflict   string
-	custom     string
+	driver    string
+	schema    string
+	first     *bool
+	nth       func(int) string
+	pkg       string
+	conflict  string
+	custom    string
+	escSchema bool
+	escTable  bool
+	escColumn bool
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shortNames is the collection of Go style short names for types, mainly
@@ -38,17 +38,18 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		b := false
 		first = &b
 	}
+	esc := Esc(ctx)
 	return &Funcs{
 		driver:     templates.Driver(ctx),
 		schema:     templates.Schema(ctx),
 		first:      first,
-		escSchema:  templates.EscSchema(ctx),
-		escTables:  templates.EscTables(ctx),
-		escColumns: templates.EscColumns(ctx),
 		nth:        templates.NthParam(ctx),
 		pkg:        Pkg(ctx),
 		conflict:   Conflict(ctx),
 		custom:     Custom(ctx),
+		escSchema:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "schema")),
+		escTable:   !contains(esc, "none") && (contains(esc, "all") || contains(esc, "table")),
+		escColumn:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "column")),
 		knownTypes: knownTypes,
 		shortNames: shortNames,
 	}
@@ -107,7 +108,7 @@ func (f *Funcs) driverfn(drivers ...string) bool {
 func (f *Funcs) schemafn(names ...string) string {
 	s := f.schema
 	// escape table names
-	if f.escTables {
+	if f.escTable {
 		for i, name := range names {
 			names[i] = f.esc(name, "table")
 		}
@@ -572,7 +573,7 @@ func (*Funcs) convext(prefix string, a, b *templates.Field) string {
 // colname returns the ColumnName of col, optionally escaping it if
 // escapeColumnNames is toggled.
 func (f *Funcs) colname(col *models.Column) string {
-	if f.escColumns {
+	if f.escColumn {
 		return f.esc(col.ColumnName, "column")
 	}
 	return col.ColumnName

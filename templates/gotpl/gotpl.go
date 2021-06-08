@@ -59,45 +59,60 @@ func init() {
 		AddType: func(typ string) {
 			knownTypes[typ] = true
 		},
-		Flags: map[templates.ContextKey]templates.Flag{
-			Int32Key: {
+		Flags: []templates.Flag{
+			{
+				ContextKey: NotFirstKey,
+				Desc:       "disable package comment (ie, not first generated file)",
+				Short:      '2',
+				Default:    "false",
+				Value:      false,
+			},
+			{
+				ContextKey:  Int32Key,
 				Desc:        "int32 type (default: int)",
 				PlaceHolder: "int",
 				Default:     "int",
 				Value:       "",
 			},
-			Uint32Key: {
+			{
+				ContextKey:  Uint32Key,
 				Desc:        "uint32 type (default: uint)",
 				PlaceHolder: "uint",
 				Default:     "uint",
 				Value:       "",
 			},
-			PkgKey: {
+			{
+				ContextKey:  PkgKey,
 				Desc:        "package name",
 				PlaceHolder: "<name>",
 				Value:       "",
 			},
-			TagsKey: {
+			{
+				ContextKey:  TagsKey,
 				Desc:        "build tags",
 				PlaceHolder: "<tags>",
 				Value:       "",
 			},
-			CustomKey: {
+			{
+				ContextKey:  CustomKey,
 				Desc:        "package name for custom types",
 				PlaceHolder: "<name>",
 				Value:       "",
 			},
-			ConflictKey: {
+			{
+				ContextKey:  ConflictKey,
 				Desc:        "name conflict suffix (default: Val)",
 				PlaceHolder: "Val",
 				Default:     "Val",
 				Value:       "",
 			},
-			NotFirstKey: {
-				Desc:    "force disable package comment (ie, not first file)",
-				Short:   '2',
-				Default: "false",
-				Value:   false,
+			{
+				ContextKey:  EscKey,
+				Desc:        "escape fields (none, schema, table, column, all; default: none)",
+				PlaceHolder: "none",
+				Default:     "none",
+				Value:       []string{},
+				Enums:       []string{"none", "schema", "table", "column", "all"},
 			},
 		},
 		Funcs: func(ctx context.Context) template.FuncMap {
@@ -148,14 +163,21 @@ func init() {
 
 // Context keys.
 const (
+	NotFirstKey templates.ContextKey = "not-first"
 	Int32Key    templates.ContextKey = "int32"
 	Uint32Key   templates.ContextKey = "uint32"
 	PkgKey      templates.ContextKey = "pkg"
 	TagsKey     templates.ContextKey = "tags"
 	CustomKey   templates.ContextKey = "custom"
 	ConflictKey templates.ContextKey = "conflict"
-	NotFirstKey templates.ContextKey = "not-first"
+	EscKey      templates.ContextKey = "esc"
 )
+
+// NotFirst returns not-first from the context.
+func NotFirst(ctx context.Context) bool {
+	b, _ := ctx.Value(NotFirstKey).(bool)
+	return b
+}
 
 // Int32 returns int32 from the context.
 func Int32(ctx context.Context) string {
@@ -196,10 +218,20 @@ func Conflict(ctx context.Context) string {
 	return s
 }
 
-// NotFirst returns not-first from the context.
-func NotFirst(ctx context.Context) bool {
-	b, _ := ctx.Value(NotFirstKey).(bool)
-	return b
+// Esc returns esc from the context.
+func Esc(ctx context.Context) []string {
+	v, _ := ctx.Value(EscKey).([]string)
+	return v
+}
+
+// contains returns true when s is in v.
+func contains(v []string, s string) bool {
+	for _, z := range v {
+		if z == s {
+			return true
+		}
+	}
+	return false
 }
 
 // Files are the embedded Go templates.

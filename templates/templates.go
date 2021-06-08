@@ -37,40 +37,35 @@ func Types() []string {
 // set func.
 func Flags() []FlagSet {
 	var flags []FlagSet
-	for typ, set := range templates {
-		for key, flag := range set.Flags {
+	for _, typ := range Types() {
+		set := templates[typ]
+		for _, flag := range set.Flags {
 			flags = append(flags, FlagSet{
-				Type:       typ,
-				ContextKey: key,
-				Name:       string(key),
-				Flag:       flag,
+				Type: typ,
+				Name: string(flag.ContextKey),
+				Flag: flag,
 			})
 		}
 	}
-	sort.Slice(flags, func(i, j int) bool {
-		if flags[i].Type != flags[j].Type {
-			return flags[i].Type < flags[j].Type
-		}
-		return flags[i].Name < flags[j].Name
-	})
 	return flags
 }
 
 // FlagSet wraps a option flag with context information.
 type FlagSet struct {
-	Type       string
-	ContextKey ContextKey
-	Name       string
-	Flag       Flag
+	Type string
+	Name string
+	Flag Flag
 }
 
 // Flag is a option flag.
 type Flag struct {
+	ContextKey  ContextKey
 	Desc        string
 	PlaceHolder string
 	Default     string
 	Short       rune
 	Value       interface{}
+	Enums       []string
 }
 
 // AddKnownType adds a known type name to a template set.
@@ -244,7 +239,7 @@ type TemplateSet struct {
 	// AddType will be called when a new type is encountered.
 	AddType func(string)
 	// Flags are additional template flags.
-	Flags map[ContextKey]Flag
+	Flags []Flag
 	// HeaderTemplate is the name of the header template.
 	HeaderTemplate func(context.Context) *Template
 	// PackageTemplates returns package templates.
@@ -360,9 +355,6 @@ const (
 	SchemaKey       ContextKey = "schema"
 	SrcKey          ContextKey = "src"
 	NthParamKey     ContextKey = "nth-param"
-	EscSchemaKey    ContextKey = "esc-schema"
-	EscTablesKey    ContextKey = "esc-tables"
-	EscColumnsKey   ContextKey = "esc-columns"
 	OutKey          ContextKey = "out"
 )
 
@@ -400,24 +392,6 @@ func Src(ctx context.Context) fs.FS {
 func NthParam(ctx context.Context) func(int) string {
 	f, _ := ctx.Value(NthParamKey).(func(int) string)
 	return f
-}
-
-// EscSchema returns esc-schema option from the context.
-func EscSchema(ctx context.Context) bool {
-	b, _ := ctx.Value(EscSchemaKey).(bool)
-	return b
-}
-
-// EscTables returns esc-tables option from the context.
-func EscTables(ctx context.Context) bool {
-	b, _ := ctx.Value(EscTablesKey).(bool)
-	return b
-}
-
-// EscColumns returns esc-columns option from the context.
-func EscColumns(ctx context.Context) bool {
-	b, _ := ctx.Value(EscColumnsKey).(bool)
-	return b
 }
 
 // Out returns out option from the context.

@@ -34,41 +34,41 @@ func Get(driver string) *Loader {
 // These should be added to the invocation context for any call to a loader
 // func.
 func Flags() []FlagSet {
+	var drivers []string
+	for driver := range loaders {
+		drivers = append(drivers, driver)
+	}
+	sort.Strings(drivers)
 	var flags []FlagSet
-	for driver, l := range loaders {
-		for key, flag := range l.Flags {
+	for _, driver := range drivers {
+		l := loaders[driver]
+		for _, flag := range l.Flags {
 			flags = append(flags, FlagSet{
-				Driver:     driver,
-				ContextKey: key,
-				Name:       string(key),
-				Flag:       flag,
+				Driver: driver,
+				Name:   string(flag.ContextKey),
+				Flag:   flag,
 			})
 		}
 	}
-	sort.Slice(flags, func(i, j int) bool {
-		if flags[i].Driver != flags[j].Driver {
-			return flags[i].Driver < flags[j].Driver
-		}
-		return flags[i].Name < flags[j].Name
-	})
 	return flags
 }
 
 // FlagSet is a set of flags for a driver.
 type FlagSet struct {
-	Driver     string
-	ContextKey ContextKey
-	Name       string
-	Flag       Flag
+	Driver string
+	Name   string
+	Flag   Flag
 }
 
 // Flag is a option flag.
 type Flag struct {
+	ContextKey  ContextKey
 	Desc        string
 	PlaceHolder string
 	Default     string
 	Short       rune
 	Value       interface{}
+	Enums       []string
 }
 
 // ContextKey is a context key.
@@ -77,7 +77,7 @@ type ContextKey string
 // Loader loads type information from a database.
 type Loader struct {
 	Driver           string
-	Flags            map[ContextKey]Flag
+	Flags            []Flag
 	ParamN           func(int) string
 	MaskFunc         func() string
 	Kind             map[Kind]string
