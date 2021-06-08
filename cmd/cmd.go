@@ -413,18 +413,6 @@ func (*NoopGenerator) Process(ctx context.Context, args *Args) error {
 	return nil
 }
 
-// contains returns true when any of s is in z.
-func contains(z []string, s ...string) bool {
-	for _, v := range z {
-		for _, x := range s {
-			if v == x {
-				return true
-			}
-		}
-	}
-	return false
-}
-
 // newBool creates a new bool when v is nil, otherwise it converts v and returns.
 func newBool(f *kingpin.FlagClause, v interface{}) *bool {
 	if v == nil {
