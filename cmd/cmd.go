@@ -122,7 +122,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 		cmd.Flag("out", "out path (default: models)").Short('o').Default("models").PlaceHolder("models").StringVar(&args.OutParams.Out)
 		cmd.Flag("append", "enable append mode").Short('a').BoolVar(&args.OutParams.Append)
 		cmd.Flag("single", "enable single file output").Short('S').PlaceHolder("<file>").StringVar(&args.OutParams.Single)
-		cmd.Flag("debug", "disable post processing of generated code (immediately writes to disk)").Short('D').BoolVar(&args.OutParams.Debug)
+		cmd.Flag("debug", "debug generated code (writes generated code to disk without post processing)").Short('D').BoolVar(&args.OutParams.Debug)
 	}
 	// additonal loader flags
 	lf := func(cmd *kingpin.CmdClause) {
