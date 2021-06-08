@@ -19,6 +19,8 @@ type Funcs struct {
 	first     *bool
 	nth       func(int) string
 	pkg       string
+	tags      []string
+	imports   []string
 	conflict  string
 	custom    string
 	escSchema bool
@@ -39,12 +41,26 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		first = &b
 	}
 	esc := Esc(ctx)
+	var tags []string
+	for _, tag := range Tag(ctx) {
+		if tag != "" {
+			tags = append(tags, tag)
+		}
+	}
+	var imports []string
+	for _, s := range Import(ctx) {
+		if s != "" {
+			imports = append(imports, s)
+		}
+	}
 	return &Funcs{
 		driver:     templates.Driver(ctx),
 		schema:     templates.Schema(ctx),
 		first:      first,
 		nth:        templates.NthParam(ctx),
 		pkg:        Pkg(ctx),
+		tags:       tags,
+		imports:    imports,
 		conflict:   Conflict(ctx),
 		custom:     Custom(ctx),
 		escSchema:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "schema")),
@@ -68,6 +84,8 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"schema":   f.schemafn,
 		"first":    f.firstfn,
 		"pkg":      f.pkgfn,
+		"tags":     f.tagsfn,
+		"imports":  f.importsfn,
 		"nthparam": f.nthparam,
 
 		// general
@@ -140,6 +158,27 @@ func (f *Funcs) firstfn() bool {
 // pkgfn returns the package name.
 func (f *Funcs) pkgfn() string {
 	return f.pkg
+}
+
+// tagsfn returns the tags.
+func (f *Funcs) tagsfn() []string {
+	return f.tags
+}
+
+// importsfn returns the imports.
+func (f *Funcs) importsfn() []PackageImport {
+	var imports []PackageImport
+	for _, s := range f.imports {
+		alias, pkg := "", s
+		if i := strings.Index(pkg, " "); i != -1 {
+			alias, pkg = pkg[:i], strings.TrimSpace(pkg[i:])
+		}
+		imports = append(imports, PackageImport{
+			Alias: alias,
+			Pkg:   pkg,
+		})
+	}
+	return imports
 }
 
 // nthparam returns the nth param placeholder
@@ -614,6 +653,20 @@ func (f *Funcs) esc(s string, typ string) string {
 // fieldtag returns the field tag for the field.
 func (f *Funcs) fieldtag(field *templates.Field) string {
 	return fmt.Sprintf("`json:\"%s\"`", field.Col.ColumnName)
+}
+
+// PackageImport holds information about a Go package import.
+type PackageImport struct {
+	Alias string
+	Pkg   string
+}
+
+// String satisfies the fmt.Stringer interface.
+func (v PackageImport) String() string {
+	if v.Alias != "" {
+		return fmt.Sprintf("%s %q", v.Alias, v.Pkg)
+	}
+	return fmt.Sprintf("%q", v.Pkg)
 }
 
 // goReservedNames is a map of of go reserved names to "safe" names.

@@ -1,3 +1,8 @@
+{{- $tags := tags -}}
+{{- if $tags -}}
+// +build{{ range $tags }} {{ . }}{{ end }}
+
+{{ end -}}
 {{- if first -}}
 // Package {{ pkg }} contains generated code for schema '{{ schema }}'.
 {{ end -}}
@@ -17,5 +22,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+{{ range imports }}
+	{{ . }}
+{{- end }}
 )
 

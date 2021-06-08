@@ -88,10 +88,16 @@ func init() {
 				Value:       "",
 			},
 			{
-				ContextKey:  TagsKey,
+				ContextKey:  TagKey,
 				Desc:        "build tags",
-				PlaceHolder: "<tags>",
-				Value:       "",
+				PlaceHolder: `""`,
+				Value:       []string{},
+			},
+			{
+				ContextKey:  ImportKey,
+				Desc:        "package imports",
+				PlaceHolder: `""`,
+				Value:       []string{},
 			},
 			{
 				ContextKey:  CustomKey,
@@ -167,7 +173,8 @@ const (
 	Int32Key    templates.ContextKey = "int32"
 	Uint32Key   templates.ContextKey = "uint32"
 	PkgKey      templates.ContextKey = "pkg"
-	TagsKey     templates.ContextKey = "tags"
+	TagKey      templates.ContextKey = "tag"
+	ImportKey   templates.ContextKey = "import"
 	CustomKey   templates.ContextKey = "custom"
 	ConflictKey templates.ContextKey = "conflict"
 	EscKey      templates.ContextKey = "esc"
@@ -200,10 +207,16 @@ func Pkg(ctx context.Context) string {
 	return strings.ToLower(s)
 }
 
-// Tags returns tags from the context.
-func Tags(ctx context.Context) string {
-	s, _ := ctx.Value(TagsKey).(string)
-	return s
+// Tag returns tag from the context.
+func Tag(ctx context.Context) []string {
+	v, _ := ctx.Value(TagKey).([]string)
+	return v
+}
+
+// Import returns import from the context.
+func Import(ctx context.Context) []string {
+	v, _ := ctx.Value(ImportKey).([]string)
+	return v
 }
 
 // Custom returns custom-pkg from the context.
