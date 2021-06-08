@@ -13,9 +13,15 @@ XOBIN=$(realpath $XOBIN)
 pushd $SRC &> /dev/null
 mkdir -p pgcatalog ischema
 rm -f pgcatalog/*.xo.go ischema/*.xo.go
+FLAGS=(
+  --postgres-oids
+  --go-custom=pgtypes
+  --go-import github.com/xo/xo/_examples/pgcatalog/pgtypes
+  --go-import github.com/google/uuid
+)
 (set -ex;
-  $XOBIN schema --postgres-oids --go-custom=pgtypes -o pgcatalog -s pg_catalog         -S pgcatalog.xo.go $DB $@
-  $XOBIN schema --postgres-oids --go-custom=pgtypes -o ischema   -s information_schema                    $DB $@
+  $XOBIN schema ${FLAGS[@]} -o pgcatalog -s pg_catalog         -S pgcatalog.xo.go $DB $@
+  $XOBIN schema ${FLAGS[@]} -o ischema   -s information_schema                    $DB $@
   go build ./pgcatalog/
   go build ./ischema/
 )
