@@ -1,2 +1,0 @@
-ENGINE="oracle://pokedex:pokedex@localhost:1521/?service_name=xe&auto_setinputsizes=False"
-DB="oracle://pokedex:pokedex@localhost/xe"

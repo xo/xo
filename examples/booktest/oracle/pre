@@ -1,8 +1,0 @@
-set +e
-
-usql $EXTRA $DB -c 'DROP INDEX books_title_idx;'
-usql $EXTRA $DB -c 'DROP INDEX authors_name_idx;'
-usql $EXTRA $DB -c 'DROP TABLE books CASCADE CONSTRAINTS;'
-usql $EXTRA $DB -c 'DROP TABLE authors CASCADE CONSTRAINTS;'
-
-set -e

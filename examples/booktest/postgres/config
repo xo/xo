@@ -1,1 +1,0 @@
-DB="postgres://booktest:booktest@localhost/booktest"

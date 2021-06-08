@@ -1,6 +1,9 @@
 /xo
-/x
-/out
+/xo.exe
+/*.txt
+/build/
+/x/
 
+*.db
 *.sqlite3
 *.sqlite3-journal

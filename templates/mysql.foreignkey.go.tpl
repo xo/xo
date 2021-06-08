@@ -1,1 +1,0 @@
-postgres.foreignkey.go.tpl

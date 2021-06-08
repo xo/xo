@@ -1,1 +1,0 @@
-postgres.index.go.tpl
