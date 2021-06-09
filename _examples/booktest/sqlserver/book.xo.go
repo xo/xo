@@ -116,29 +116,9 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// BookByBookID retrieves a row from 'booktest.books' as a Book.
-//
-// Generated from index 'PK__books__490D1AE174DD9774'.
-func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
-		`FROM booktest.books ` +
-		`WHERE book_id = @p1`
-	// run
-	logf(sqlstr, bookID)
-	b := Book{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
-		return nil, logerror(err)
-	}
-	return &b, nil
-}
-
 // BookByIsbn retrieves a row from 'booktest.books' as a Book.
 //
-// Generated from index 'UQ__books__99F9D0A48462747F'.
+// Generated from index 'books_isbn_key'.
 func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -151,6 +131,26 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+		return nil, logerror(err)
+	}
+	return &b, nil
+}
+
+// BookByBookID retrieves a row from 'booktest.books' as a Book.
+//
+// Generated from index 'books_pkey'.
+func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
+		`FROM booktest.books ` +
+		`WHERE book_id = @p1`
+	// run
+	logf(sqlstr, bookID)
+	b := Book{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -192,7 +192,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'FK__books__author_id__286302EC'.
+// Generated from foreign key 'books_author_id_fkey'.
 func (b *Book) Author(ctx context.Context, db DB) (*Author, error) {
 	return AuthorByAuthorID(ctx, db, b.AuthorID)
 }

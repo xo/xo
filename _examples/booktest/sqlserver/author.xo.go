@@ -110,26 +110,6 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
-//
-// Generated from index 'PK__authors__86516BCF4B34F57A'.
-func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`author_id, name ` +
-		`FROM booktest.authors ` +
-		`WHERE author_id = @p1`
-	// run
-	logf(sqlstr, authorID)
-	a := Author{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, authorID).Scan(&a.AuthorID, &a.Name); err != nil {
-		return nil, logerror(err)
-	}
-	return &a, nil
-}
-
 // AuthorsByName retrieves a row from 'booktest.authors' as a Author.
 //
 // Generated from index 'authors_name_idx'.
@@ -162,4 +142,24 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 		return nil, logerror(err)
 	}
 	return res, nil
+}
+
+// AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
+//
+// Generated from index 'authors_pkey'.
+func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`author_id, name ` +
+		`FROM booktest.authors ` +
+		`WHERE author_id = @p1`
+	// run
+	logf(sqlstr, authorID)
+	a := Author{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, authorID).Scan(&a.AuthorID, &a.Name); err != nil {
+		return nil, logerror(err)
+	}
+	return &a, nil
 }

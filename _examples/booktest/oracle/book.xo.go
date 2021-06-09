@@ -106,6 +106,46 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
+// BookByIsbn retrieves a row from 'booktest.books' as a Book.
+//
+// Generated from index 'books_isbn_key'.
+func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
+		`FROM booktest.books ` +
+		`WHERE isbn = :1`
+	// run
+	logf(sqlstr, isbn)
+	b := Book{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+		return nil, logerror(err)
+	}
+	return &b, nil
+}
+
+// BookByBookID retrieves a row from 'booktest.books' as a Book.
+//
+// Generated from index 'books_pkey'.
+func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`book_id, author_id, isbn, title, year, available, tags ` +
+		`FROM booktest.books ` +
+		`WHERE book_id = :1`
+	// run
+	logf(sqlstr, bookID)
+	b := Book{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+		return nil, logerror(err)
+	}
+	return &b, nil
+}
+
 // BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
@@ -140,49 +180,9 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int64) ([]*
 	return res, nil
 }
 
-// BookByBookID retrieves a row from 'booktest.books' as a Book.
-//
-// Generated from index 'sys_c007555'.
-func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
-		`FROM booktest.books ` +
-		`WHERE book_id = :1`
-	// run
-	logf(sqlstr, bookID)
-	b := Book{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
-		return nil, logerror(err)
-	}
-	return &b, nil
-}
-
-// BookByIsbn retrieves a row from 'booktest.books' as a Book.
-//
-// Generated from index 'sys_c007556'.
-func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
-		`FROM booktest.books ` +
-		`WHERE isbn = :1`
-	// run
-	logf(sqlstr, isbn)
-	b := Book{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
-		return nil, logerror(err)
-	}
-	return &b, nil
-}
-
 // Author returns the Author associated with the Book's AuthorID (author_id).
 //
-// Generated from foreign key 'sys_c007557'.
+// Generated from foreign key 'books_author_id_fkey'.
 func (b *Book) Author(ctx context.Context, db DB) (*Author, error) {
 	return AuthorByAuthorID(ctx, db, b.AuthorID)
 }

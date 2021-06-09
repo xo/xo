@@ -136,7 +136,7 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
-// Generated from index 'sys_c007548'.
+// Generated from index 'authors_pkey'.
 func AuthorByAuthorID(ctx context.Context, db DB, authorID int64) (*Author, error) {
 	// query
 	const sqlstr = `SELECT ` +

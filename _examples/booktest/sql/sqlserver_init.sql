@@ -8,21 +8,21 @@ DROP LOGIN booktest;
 DROP DATABASE booktest;
 
 CREATE DATABASE booktest
-  containment=partial;
+  CONTAINMENT=PARTIAL;
 
 \connect ms://localhost/booktest
 
 CREATE LOGIN booktest
   WITH
-    password='booktest',
-    check_policy=off,
-    default_database=booktest;
+    PASSWORD='booktest',
+    CHECK_POLICY=OFF,
+    DEFAULT_DATABASE=booktest;
 
 CREATE USER booktest
-  FOR login booktest
-  WITH default_schema=booktest;
+  FOR LOGIN booktest
+  WITH DEFAULT_SCHEMA=booktest;
 
-CREATE SCHEMA booktest authorization booktest;
+CREATE SCHEMA booktest AUTHORIZATION booktest;
 
 EXEC sp_addrolemember
   'db_owner', 'booktest';
