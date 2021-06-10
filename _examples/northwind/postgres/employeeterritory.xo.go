@@ -8,7 +8,7 @@ import (
 
 // EmployeeTerritory represents a row from 'public.employee_territories'.
 type EmployeeTerritory struct {
-	EmployeeID  int16  `json:"employee_id"`  // employee_id
+	EmployeeID  int    `json:"employee_id"`  // employee_id
 	TerritoryID string `json:"territory_id"` // territory_id
 	// xo fields
 	_exists, _deleted bool
@@ -74,7 +74,7 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 // EmployeeTerritoryByEmployeeIDTerritoryID retrieves a row from 'public.employee_territories' as a EmployeeTerritory.
 //
 // Generated from index 'employee_territories_pkey'.
-func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employeeID int16, territoryID string) (*EmployeeTerritory, error) {
+func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employeeID int, territoryID string) (*EmployeeTerritory, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +

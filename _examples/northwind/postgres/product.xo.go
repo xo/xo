@@ -9,7 +9,7 @@ import (
 
 // Product represents a row from 'public.products'.
 type Product struct {
-	ProductID       int16           `json:"product_id"`        // product_id
+	ProductID       int             `json:"product_id"`        // product_id
 	ProductName     string          `json:"product_name"`      // product_name
 	SupplierID      sql.NullInt64   `json:"supplier_id"`       // supplier_id
 	CategoryID      sql.NullInt64   `json:"category_id"`       // category_id
@@ -139,7 +139,7 @@ func (p *Product) Delete(ctx context.Context, db DB) error {
 // ProductByProductID retrieves a row from 'public.products' as a Product.
 //
 // Generated from index 'products_pkey'.
-func ProductByProductID(ctx context.Context, db DB, productID int16) (*Product, error) {
+func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
@@ -160,12 +160,12 @@ func ProductByProductID(ctx context.Context, db DB, productID int16) (*Product, 
 //
 // Generated from foreign key 'products_category_id_fkey'.
 func (p *Product) Category(ctx context.Context, db DB) (*Category, error) {
-	return CategoryByCategoryID(ctx, db, int16(p.CategoryID.Int64))
+	return CategoryByCategoryID(ctx, db, int(p.CategoryID.Int64))
 }
 
 // Supplier returns the Supplier associated with the Product's SupplierID (supplier_id).
 //
 // Generated from foreign key 'products_supplier_id_fkey'.
 func (p *Product) Supplier(ctx context.Context, db DB) (*Supplier, error) {
-	return SupplierBySupplierID(ctx, db, int16(p.SupplierID.Int64))
+	return SupplierBySupplierID(ctx, db, int(p.SupplierID.Int64))
 }

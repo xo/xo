@@ -9,7 +9,7 @@ import (
 
 // Employee represents a row from 'public.employees'.
 type Employee struct {
-	EmployeeID      int16          `json:"employee_id"`       // employee_id
+	EmployeeID      int            `json:"employee_id"`       // employee_id
 	LastName        string         `json:"last_name"`         // last_name
 	FirstName       string         `json:"first_name"`        // first_name
 	Title           sql.NullString `json:"title"`             // title
@@ -147,7 +147,7 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 // EmployeeByEmployeeID retrieves a row from 'public.employees' as a Employee.
 //
 // Generated from index 'employees_pkey'.
-func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employee, error) {
+func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int) (*Employee, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
@@ -168,5 +168,5 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 //
 // Generated from foreign key 'employees_reports_to_fkey'.
 func (e *Employee) Employee(ctx context.Context, db DB) (*Employee, error) {
-	return EmployeeByEmployeeID(ctx, db, int16(e.ReportsTo.Int64))
+	return EmployeeByEmployeeID(ctx, db, int(e.ReportsTo.Int64))
 }

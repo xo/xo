@@ -8,7 +8,7 @@ import (
 
 // Region represents a row from 'public.region'.
 type Region struct {
-	RegionID          int16  `json:"region_id"`          // region_id
+	RegionID          int    `json:"region_id"`          // region_id
 	RegionDescription string `json:"region_description"` // region_description
 	// xo fields
 	_exists, _deleted bool
@@ -130,7 +130,7 @@ func (r *Region) Delete(ctx context.Context, db DB) error {
 // RegionByRegionID retrieves a row from 'public.region' as a Region.
 //
 // Generated from index 'region_pkey'.
-func RegionByRegionID(ctx context.Context, db DB, regionID int16) (*Region, error) {
+func RegionByRegionID(ctx context.Context, db DB, regionID int) (*Region, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`region_id, region_description ` +

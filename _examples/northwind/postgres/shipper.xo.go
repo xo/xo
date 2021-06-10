@@ -9,7 +9,7 @@ import (
 
 // Shipper represents a row from 'public.shippers'.
 type Shipper struct {
-	ShipperID   int16          `json:"shipper_id"`   // shipper_id
+	ShipperID   int            `json:"shipper_id"`   // shipper_id
 	CompanyName string         `json:"company_name"` // company_name
 	Phone       sql.NullString `json:"phone"`        // phone
 	// xo fields
@@ -132,7 +132,7 @@ func (s *Shipper) Delete(ctx context.Context, db DB) error {
 // ShipperByShipperID retrieves a row from 'public.shippers' as a Shipper.
 //
 // Generated from index 'shippers_pkey'.
-func ShipperByShipperID(ctx context.Context, db DB, shipperID int16) (*Shipper, error) {
+func ShipperByShipperID(ctx context.Context, db DB, shipperID int) (*Shipper, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`shipper_id, company_name, phone ` +

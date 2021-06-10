@@ -10,7 +10,7 @@ import (
 type Territory struct {
 	TerritoryID          string `json:"territory_id"`          // territory_id
 	TerritoryDescription string `json:"territory_description"` // territory_description
-	RegionID             int16  `json:"region_id"`             // region_id
+	RegionID             int    `json:"region_id"`             // region_id
 	// xo fields
 	_exists, _deleted bool
 }

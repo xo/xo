@@ -9,7 +9,7 @@ import (
 
 // Supplier represents a row from 'public.suppliers'.
 type Supplier struct {
-	SupplierID   int16          `json:"supplier_id"`   // supplier_id
+	SupplierID   int            `json:"supplier_id"`   // supplier_id
 	CompanyName  string         `json:"company_name"`  // company_name
 	ContactName  sql.NullString `json:"contact_name"`  // contact_name
 	ContactTitle sql.NullString `json:"contact_title"` // contact_title
@@ -141,7 +141,7 @@ func (s *Supplier) Delete(ctx context.Context, db DB) error {
 // SupplierBySupplierID retrieves a row from 'public.suppliers' as a Supplier.
 //
 // Generated from index 'suppliers_pkey'.
-func SupplierBySupplierID(ctx context.Context, db DB, supplierID int16) (*Supplier, error) {
+func SupplierBySupplierID(ctx context.Context, db DB, supplierID int) (*Supplier, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage ` +

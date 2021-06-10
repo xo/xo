@@ -8,10 +8,10 @@ import (
 
 // OrderDetail represents a row from 'public.order_details'.
 type OrderDetail struct {
-	OrderID   int16   `json:"order_id"`   // order_id
-	ProductID int16   `json:"product_id"` // product_id
+	OrderID   int     `json:"order_id"`   // order_id
+	ProductID int     `json:"product_id"` // product_id
 	UnitPrice float32 `json:"unit_price"` // unit_price
-	Quantity  int16   `json:"quantity"`   // quantity
+	Quantity  int     `json:"quantity"`   // quantity
 	Discount  float32 `json:"discount"`   // discount
 	// xo fields
 	_exists, _deleted bool
@@ -133,7 +133,7 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 // OrderDetailByOrderIDProductID retrieves a row from 'public.order_details' as a OrderDetail.
 //
 // Generated from index 'order_details_pkey'.
-func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productID int16) (*OrderDetail, error) {
+func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productID int) (*OrderDetail, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +

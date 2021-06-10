@@ -9,7 +9,7 @@ import (
 
 // UsState represents a row from 'public.us_states'.
 type UsState struct {
-	StateID     int16          `json:"state_id"`     // state_id
+	StateID     int            `json:"state_id"`     // state_id
 	StateName   sql.NullString `json:"state_name"`   // state_name
 	StateAbbr   sql.NullString `json:"state_abbr"`   // state_abbr
 	StateRegion sql.NullString `json:"state_region"` // state_region
@@ -133,7 +133,7 @@ func (us *UsState) Delete(ctx context.Context, db DB) error {
 // UsStateByStateID retrieves a row from 'public.us_states' as a UsState.
 //
 // Generated from index 'us_states_pkey'.
-func UsStateByStateID(ctx context.Context, db DB, stateID int16) (*UsState, error) {
+func UsStateByStateID(ctx context.Context, db DB, stateID int) (*UsState, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +

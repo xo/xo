@@ -9,7 +9,7 @@ import (
 
 // Order represents a row from 'public.orders'.
 type Order struct {
-	OrderID        int16           `json:"order_id"`         // order_id
+	OrderID        int             `json:"order_id"`         // order_id
 	CustomerID     sql.NullString  `json:"customer_id"`      // customer_id
 	EmployeeID     sql.NullInt64   `json:"employee_id"`      // employee_id
 	OrderDate      sql.NullTime    `json:"order_date"`       // order_date
@@ -143,7 +143,7 @@ func (o *Order) Delete(ctx context.Context, db DB) error {
 // OrderByOrderID retrieves a row from 'public.orders' as a Order.
 //
 // Generated from index 'orders_pkey'.
-func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
+func OrderByOrderID(ctx context.Context, db DB, orderID int) (*Order, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
@@ -171,12 +171,12 @@ func (o *Order) Customer(ctx context.Context, db DB) (*Customer, error) {
 //
 // Generated from foreign key 'orders_employee_id_fkey'.
 func (o *Order) Employee(ctx context.Context, db DB) (*Employee, error) {
-	return EmployeeByEmployeeID(ctx, db, int16(o.EmployeeID.Int64))
+	return EmployeeByEmployeeID(ctx, db, int(o.EmployeeID.Int64))
 }
 
 // Shipper returns the Shipper associated with the Order's ShipVia (ship_via).
 //
 // Generated from foreign key 'orders_ship_via_fkey'.
 func (o *Order) Shipper(ctx context.Context, db DB) (*Shipper, error) {
-	return ShipperByShipperID(ctx, db, int16(o.ShipVia.Int64))
+	return ShipperByShipperID(ctx, db, int(o.ShipVia.Int64))
 }

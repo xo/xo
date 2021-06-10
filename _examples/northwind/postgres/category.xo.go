@@ -9,7 +9,7 @@ import (
 
 // Category represents a row from 'public.categories'.
 type Category struct {
-	CategoryID   int16          `json:"category_id"`   // category_id
+	CategoryID   int            `json:"category_id"`   // category_id
 	CategoryName string         `json:"category_name"` // category_name
 	Description  sql.NullString `json:"description"`   // description
 	Picture      []byte         `json:"picture"`       // picture
@@ -133,7 +133,7 @@ func (c *Category) Delete(ctx context.Context, db DB) error {
 // CategoryByCategoryID retrieves a row from 'public.categories' as a Category.
 //
 // Generated from index 'categories_pkey'.
-func CategoryByCategoryID(ctx context.Context, db DB, categoryID int16) (*Category, error) {
+func CategoryByCategoryID(ctx context.Context, db DB, categoryID int) (*Category, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`category_id, category_name, description, picture ` +

@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS region;
 DROP TABLE IF EXISTS employees;
 
 CREATE TABLE categories (
-  category_id SMALLINT NOT NULL PRIMARY KEY,
+  category_id INTEGER NOT NULL PRIMARY KEY,
   category_name VARCHAR(15) NOT NULL,
   description TEXT,
   picture BYTEA
@@ -46,7 +46,7 @@ CREATE TABLE customer_customer_demo (
 );
 
 CREATE TABLE employees (
-  employee_id SMALLINT NOT NULL PRIMARY KEY,
+  employee_id INTEGER NOT NULL PRIMARY KEY,
   last_name VARCHAR(20) NOT NULL,
   first_name VARCHAR(10) NOT NULL,
   title VARCHAR(30),
@@ -62,12 +62,12 @@ CREATE TABLE employees (
   extension VARCHAR(4),
   photo BYTEA,
   notes TEXT,
-  reports_to SMALLINT REFERENCES employees,
+  reports_to INTEGER REFERENCES employees,
   photo_path VARCHAR(255)
 );
 
 CREATE TABLE suppliers (
-  supplier_id SMALLINT NOT NULL PRIMARY KEY,
+  supplier_id INTEGER NOT NULL PRIMARY KEY,
   company_name VARCHAR(40) NOT NULL,
   contact_name VARCHAR(30),
   contact_title VARCHAR(30),
@@ -82,37 +82,37 @@ CREATE TABLE suppliers (
 );
 
 CREATE TABLE products (
-  product_id SMALLINT NOT NULL PRIMARY KEY,
+  product_id INTEGER NOT NULL PRIMARY KEY,
   product_name VARCHAR(40) NOT NULL,
-  supplier_id SMALLINT REFERENCES suppliers,
-  category_id SMALLINT REFERENCES categories,
+  supplier_id INTEGER REFERENCES suppliers,
+  category_id INTEGER REFERENCES categories,
   quantity_per_unit VARCHAR(20),
   unit_price REAL,
-  units_in_stock SMALLINT,
-  units_on_order SMALLINT,
-  reorder_level SMALLINT,
+  units_in_stock INTEGER,
+  units_on_order INTEGER,
+  reorder_level INTEGER,
   discontinued integer NOT NULL
 );
 
 CREATE TABLE region (
-  region_id SMALLINT NOT NULL PRIMARY KEY,
+  region_id INTEGER NOT NULL PRIMARY KEY,
   region_description BPCHAR NOT NULL
 );
 
 CREATE TABLE shippers (
-  shipper_id SMALLINT NOT NULL PRIMARY KEY,
+  shipper_id INTEGER NOT NULL PRIMARY KEY,
   company_name VARCHAR(40) NOT NULL,
   phone VARCHAR(24)
 );
 
 CREATE TABLE orders (
-  order_id SMALLINT NOT NULL PRIMARY KEY,
+  order_id INTEGER NOT NULL PRIMARY KEY,
   customer_id BPCHAR REFERENCES customers,
-  employee_id SMALLINT REFERENCES employees,
+  employee_id INTEGER REFERENCES employees,
   order_date DATE,
   required_date DATE,
   shipped_date DATE,
-  ship_via SMALLINT REFERENCES shippers,
+  ship_via INTEGER REFERENCES shippers,
   freight REAL,
   ship_name VARCHAR(40),
   ship_address VARCHAR(60),
@@ -125,26 +125,26 @@ CREATE TABLE orders (
 CREATE TABLE territories (
   territory_id VARCHAR(20) NOT NULL PRIMARY KEY,
   territory_description BPCHAR NOT NULL,
-  region_id SMALLINT NOT NULL REFERENCES region
+  region_id INTEGER NOT NULL REFERENCES region
 );
 
 CREATE TABLE employee_territories (
-  employee_id SMALLINT NOT NULL REFERENCES employees,
+  employee_id INTEGER NOT NULL REFERENCES employees,
   territory_id VARCHAR(20) NOT NULL REFERENCES territories,
   PRIMARY KEY (employee_id, territory_id)
 );
 
 CREATE TABLE order_details (
-  order_id SMALLINT NOT NULL REFERENCES orders,
-  product_id SMALLINT NOT NULL REFERENCES products,
+  order_id INTEGER NOT NULL REFERENCES orders,
+  product_id INTEGER NOT NULL REFERENCES products,
   unit_price REAL NOT NULL,
-  quantity SMALLINT NOT NULL,
+  quantity INTEGER NOT NULL,
   discount REAL NOT NULL,
   PRIMARY KEY (order_id, product_id)
 );
 
 CREATE TABLE us_states (
-  state_id SMALLINT NOT NULL PRIMARY KEY,
+  state_id INTEGER NOT NULL PRIMARY KEY,
   state_name VARCHAR(100),
   state_abbr VARCHAR(2),
   state_region VARCHAR(50)
