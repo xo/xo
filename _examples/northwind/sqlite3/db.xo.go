@@ -216,7 +216,3 @@ var TimestampFormats = []string{
 	"2006-01-02T15:04",
 	"2006-01-02",
 }
-
-func Run() error {
-	return nil
-}
