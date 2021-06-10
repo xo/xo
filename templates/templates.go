@@ -117,11 +117,15 @@ func Process(ctx context.Context, doAppend bool, single string, order ...string)
 			if tpl.Template.Template != n {
 				continue
 			}
+			fileExt := set.FileExt
+			if s := Suffix(ctx); s != "" {
+				fileExt = s
+			}
 			// determine filename
 			if single != "" {
 				tpl.File = single
 			} else {
-				tpl.File = set.FileName(ctx, tpl.Template) + set.FileExt
+				tpl.File = set.FileName(ctx, tpl.Template) + fileExt
 			}
 			// load
 			file, ok := set.files[tpl.File]
@@ -351,6 +355,7 @@ type ContextKey string
 const (
 	GenTypeKey      ContextKey = "gen-type"
 	TemplateTypeKey ContextKey = "template-type"
+	SuffixKey       ContextKey = "suffix"
 	DriverKey       ContextKey = "driver"
 	SchemaKey       ContextKey = "schema"
 	SrcKey          ContextKey = "src"
@@ -367,6 +372,12 @@ func GenType(ctx context.Context) string {
 // TemplateType returns type option from the context.
 func TemplateType(ctx context.Context) string {
 	s, _ := ctx.Value(TemplateTypeKey).(string)
+	return s
+}
+
+// Suffix returns suffix option from the context.
+func Suffix(ctx context.Context) string {
+	s, _ := ctx.Value(SuffixKey).(string)
 	return s
 }
 
