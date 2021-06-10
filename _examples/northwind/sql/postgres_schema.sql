@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS employees;
 
 CREATE TABLE categories (
   category_id SMALLINT NOT NULL PRIMARY KEY,
-  category_name CHARACTER VARYING(15) NOT NULL,
+  category_name VARCHAR(15) NOT NULL,
   description TEXT,
   picture BYTEA
 );
@@ -27,16 +27,16 @@ CREATE TABLE customer_demographics (
 
 CREATE TABLE customers (
   customer_id BPCHAR NOT NULL PRIMARY KEY,
-  company_name CHARACTER VARYING(40) NOT NULL,
-  contact_name CHARACTER VARYING(30),
-  contact_title CHARACTER VARYING(30),
-  address CHARACTER VARYING(60),
-  city CHARACTER VARYING(15),
-  region CHARACTER VARYING(15),
-  postal_code CHARACTER VARYING(10),
-  country CHARACTER VARYING(15),
-  phone CHARACTER VARYING(24),
-  fax CHARACTER VARYING(24)
+  company_name VARCHAR(40) NOT NULL,
+  contact_name VARCHAR(30),
+  contact_title VARCHAR(30),
+  address VARCHAR(60),
+  city VARCHAR(15),
+  region VARCHAR(15),
+  postal_code VARCHAR(10),
+  country VARCHAR(15),
+  phone VARCHAR(24),
+  fax VARCHAR(24)
 );
 
 CREATE TABLE customer_customer_demo (
@@ -47,46 +47,46 @@ CREATE TABLE customer_customer_demo (
 
 CREATE TABLE employees (
   employee_id SMALLINT NOT NULL PRIMARY KEY,
-  last_name CHARACTER VARYING(20) NOT NULL,
-  first_name CHARACTER VARYING(10) NOT NULL,
-  title CHARACTER VARYING(30),
-  title_of_courtesy CHARACTER VARYING(25),
+  last_name VARCHAR(20) NOT NULL,
+  first_name VARCHAR(10) NOT NULL,
+  title VARCHAR(30),
+  title_of_courtesy VARCHAR(25),
   birth_date DATE,
   hire_date DATE,
-  address CHARACTER VARYING(60),
-  city CHARACTER VARYING(15),
-  region CHARACTER VARYING(15),
-  postal_code CHARACTER VARYING(10),
-  country CHARACTER VARYING(15),
-  home_phone CHARACTER VARYING(24),
-  extension CHARACTER VARYING(4),
+  address VARCHAR(60),
+  city VARCHAR(15),
+  region VARCHAR(15),
+  postal_code VARCHAR(10),
+  country VARCHAR(15),
+  home_phone VARCHAR(24),
+  extension VARCHAR(4),
   photo BYTEA,
   notes TEXT,
   reports_to SMALLINT REFERENCES employees,
-  photo_path CHARACTER VARYING(255)
+  photo_path VARCHAR(255)
 );
 
 CREATE TABLE suppliers (
   supplier_id SMALLINT NOT NULL PRIMARY KEY,
-  company_name CHARACTER VARYING(40) NOT NULL,
-  contact_name CHARACTER VARYING(30),
-  contact_title CHARACTER VARYING(30),
-  address CHARACTER VARYING(60),
-  city CHARACTER VARYING(15),
-  region CHARACTER VARYING(15),
-  postal_code CHARACTER VARYING(10),
-  country CHARACTER VARYING(15),
-  phone CHARACTER VARYING(24),
-  fax CHARACTER VARYING(24),
+  company_name VARCHAR(40) NOT NULL,
+  contact_name VARCHAR(30),
+  contact_title VARCHAR(30),
+  address VARCHAR(60),
+  city VARCHAR(15),
+  region VARCHAR(15),
+  postal_code VARCHAR(10),
+  country VARCHAR(15),
+  phone VARCHAR(24),
+  fax VARCHAR(24),
   homepage TEXT
 );
 
 CREATE TABLE products (
   product_id SMALLINT NOT NULL PRIMARY KEY,
-  product_name CHARACTER VARYING(40) NOT NULL,
+  product_name VARCHAR(40) NOT NULL,
   supplier_id SMALLINT REFERENCES suppliers,
   category_id SMALLINT REFERENCES categories,
-  quantity_per_unit CHARACTER VARYING(20),
+  quantity_per_unit VARCHAR(20),
   unit_price REAL,
   units_in_stock SMALLINT,
   units_on_order SMALLINT,
@@ -101,8 +101,8 @@ CREATE TABLE region (
 
 CREATE TABLE shippers (
   shipper_id SMALLINT NOT NULL PRIMARY KEY,
-  company_name CHARACTER VARYING(40) NOT NULL,
-  phone CHARACTER VARYING(24)
+  company_name VARCHAR(40) NOT NULL,
+  phone VARCHAR(24)
 );
 
 CREATE TABLE orders (
@@ -114,23 +114,23 @@ CREATE TABLE orders (
   shipped_date DATE,
   ship_via SMALLINT REFERENCES shippers,
   freight REAL,
-  ship_name CHARACTER VARYING(40),
-  ship_address CHARACTER VARYING(60),
-  ship_city CHARACTER VARYING(15),
-  ship_region CHARACTER VARYING(15),
-  ship_postal_code CHARACTER VARYING(10),
-  ship_country CHARACTER VARYING(15)
+  ship_name VARCHAR(40),
+  ship_address VARCHAR(60),
+  ship_city VARCHAR(15),
+  ship_region VARCHAR(15),
+  ship_postal_code VARCHAR(10),
+  ship_country VARCHAR(15)
 );
 
 CREATE TABLE territories (
-  territory_id CHARACTER VARYING(20) NOT NULL PRIMARY KEY,
+  territory_id VARCHAR(20) NOT NULL PRIMARY KEY,
   territory_description BPCHAR NOT NULL,
   region_id SMALLINT NOT NULL REFERENCES region
 );
 
 CREATE TABLE employee_territories (
   employee_id SMALLINT NOT NULL REFERENCES employees,
-  territory_id CHARACTER VARYING(20) NOT NULL REFERENCES territories,
+  territory_id VARCHAR(20) NOT NULL REFERENCES territories,
   PRIMARY KEY (employee_id, territory_id)
 );
 
@@ -145,7 +145,7 @@ CREATE TABLE order_details (
 
 CREATE TABLE us_states (
   state_id SMALLINT NOT NULL PRIMARY KEY,
-  state_name CHARACTER VARYING(100),
-  state_abbr CHARACTER VARYING(2),
-  state_region CHARACTER VARYING(50)
+  state_name VARCHAR(100),
+  state_abbr VARCHAR(2),
+  state_region VARCHAR(50)
 );
