@@ -480,9 +480,7 @@ SELECT
   LOWER(CASE c.data_type
     WHEN 'CHAR' THEN 'CHAR(' || c.data_length || ')'
     WHEN 'VARCHAR2' THEN 'VARCHAR2(' || data_length || ')'
-    WHEN 'NUMBER' THEN
-      (CASE WHEN c.data_precision IS NULL AND c.data_scale IS NULL THEN 'NUMBER'
-        ELSE 'NUMBER(' || NVL(c.data_precision, 38) || ',' || NVL(c.data_scale, 0) || ')' END)
+    WHEN 'NUMBER' THEN 'NUMBER(' || NVL(c.data_precision, 0) || ',' || NVL(c.data_scale, 0) || ')'
     ELSE c.data_type END) AS data_type,
   CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null,
   COALESCE((

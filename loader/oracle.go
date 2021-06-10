@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
 )
 
 func init() {
@@ -48,45 +47,36 @@ func OracleGoType(ctx context.Context, typ string, nullable bool) (string, strin
 	var goType, zero string
 	// strip remaining length (on things like timestamp)
 	switch orLenRE.ReplaceAllString(typ, "") {
-	case "char", "nchar", "varchar", "varchar2", "nvarchar2", "long", "clob", "nclob", "rowid":
+	case "char", "nchar", "varchar", "varchar2", "nvarchar2", "clob", "nclob", "rowid":
 		goType, zero = "string", `""`
-	case "shortint":
-		goType, zero = "int16", "0"
 		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
-	case "integer":
-		goType, zero = gotpl.Int32(ctx), "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "longinteger":
-		goType, zero = "int64", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "float", "shortdecimal":
-		goType, zero = "float32", "0.0"
-		if nullable {
-			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
-		}
-	case "number", "decimal":
+	case "number":
 		switch {
-		case 0 < prec && prec < 18 && scale != 0 && !nullable:
+		case prec == 0 && scale == 0 && !nullable:
+			goType, zero = "int", "0"
+		case scale != 0 && !nullable:
 			goType, zero = "float64", "0.0"
-		case 0 < prec && prec < 18 && scale != 0 && nullable:
+		case scale != 0 && nullable:
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
-		case 0 < prec && prec <= 19 && scale == 0 && !nullable:
+		case !nullable:
 			goType, zero = "int64", "0"
-		case 0 < prec && prec <= 19 && scale == 0 && nullable:
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		default:
-			goType, zero = "string", `""`
+			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+		}
+	case "float":
+		goType, zero = "float64", "0.0"
+		if nullable {
+			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
+		}
+	case "date", "timestamp", "timestamp with time zone":
+		goType, zero = "time.Time", "time.Time{}"
+		if nullable {
+			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	case "blob", "long raw", "raw":
 		goType, zero = "[]byte", "nil"
-	case "date", "timestamp", "timestamp with time zone":
-		goType, zero = "time.Time", "time.Time{}"
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}

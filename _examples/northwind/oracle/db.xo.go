@@ -127,7 +127,3 @@ func (err *ErrUpdateFailed) Error() string {
 func (err *ErrUpdateFailed) Unwrap() error {
 	return err.Err
 }
-
-func Run() error {
-	return nil
-}
