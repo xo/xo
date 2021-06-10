@@ -12,7 +12,7 @@ CREATE TABLE books (
   title VARCHAR2(255) NOT NULL,
   year NUMBER(4) DEFAULT 2000 NOT NULL,
   available TIMESTAMP WITH TIME ZONE NOT NULL,
-  tags VARCHAR2(255)
+  tags VARCHAR2(255) DEFAULT '' NOT NULL
 );
 
 CREATE INDEX books_title_idx ON books(title, year);
