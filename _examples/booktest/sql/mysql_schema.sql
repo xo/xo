@@ -13,14 +13,13 @@ CREATE INDEX authors_name_idx ON authors(name(255));
 
 CREATE TABLE books (
   book_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  author_id INTEGER NOT NULL,
+  author_id INTEGER NOT NULL REFERENCES authors(author_id),
   isbn VARCHAR(255) NOT NULL DEFAULT '' UNIQUE,
   book_type ENUM('FICTION', 'NONFICTION') NOT NULL DEFAULT 'FICTION',
   title TEXT NOT NULL DEFAULT '',
   year INTEGER NOT NULL DEFAULT 2000,
   available DATETIME NOT NULL DEFAULT NOW(),
-  tags TEXT NOT NULL DEFAULT '',
-  CONSTRAINT FOREIGN KEY (author_id) REFERENCES authors(author_id)
+  tags TEXT NOT NULL DEFAULT ''
 ) ENGINE=InnoDB;
 
 CREATE INDEX books_title_idx ON books(title(255), year);
