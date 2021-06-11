@@ -128,6 +128,14 @@ func init() {
 				Default:     "`json:\"{{ .Col.ColumnName }}\"`",
 				Value:       "",
 			},
+			{
+				ContextKey:  ContextKey,
+				Desc:        "context mode (disable, both, only; default: only)",
+				PlaceHolder: "only",
+				Default:     "only",
+				Value:       "",
+				Enums:       []string{"disable", "both", "only"},
+			},
 		},
 		Funcs: func(ctx context.Context) (template.FuncMap, error) {
 			f, err := NewFuncs(ctx, knownTypes, shortNames, &first)
@@ -191,6 +199,7 @@ const (
 	ConflictKey templates.ContextKey = "conflict"
 	EscKey      templates.ContextKey = "esc"
 	FieldTagKey templates.ContextKey = "field-tag"
+	ContextKey  templates.ContextKey = "context"
 )
 
 // NotFirst returns not-first from the context.
@@ -253,6 +262,12 @@ func Esc(ctx context.Context) []string {
 // FieldTag returns field-tag from the context.
 func FieldTag(ctx context.Context) string {
 	s, _ := ctx.Value(FieldTagKey).(string)
+	return s
+}
+
+// Context returns context from the context.
+func Context(ctx context.Context) string {
+	s, _ := ctx.Value(ContextKey).(string)
 	return s
 }
 

@@ -63,9 +63,15 @@ func convLogger(logger interface{}) func(string, ...interface{}) {
 //
 // This works with both database/sql.DB and database/sql.Tx.
 type DB interface {
+{{ if context -}}
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
+{{- end -}}{{- if or context_both context_disable }}
+	Exec(string, ...interface{}) (sql.Result, error)
+	Query(string, ...interface{}) (*sql.Rows, error)
+	QueryRow(string, ...interface{}) *sql.Row
+{{- end }}
 }
 
 // Error is an error.

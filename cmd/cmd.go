@@ -136,7 +136,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 			case bool:
 				args.DbParams.Flags[flag.Flag.ContextKey] = newBool(f, args.DbParams.Flags[flag.Flag.ContextKey])
 			case string:
-				args.DbParams.Flags[flag.Flag.ContextKey] = newString(f, args.DbParams.Flags[flag.Flag.ContextKey])
+				args.DbParams.Flags[flag.Flag.ContextKey] = newString(f, args.DbParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			case []string:
 				args.DbParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.DbParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			}
@@ -154,7 +154,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 			case bool:
 				args.TemplateParams.Flags[flag.Flag.ContextKey] = newBool(f, args.TemplateParams.Flags[flag.Flag.ContextKey])
 			case string:
-				args.TemplateParams.Flags[flag.Flag.ContextKey] = newString(f, args.TemplateParams.Flags[flag.Flag.ContextKey])
+				args.TemplateParams.Flags[flag.Flag.ContextKey] = newString(f, args.TemplateParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			case []string:
 				args.TemplateParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.TemplateParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
 			}
@@ -431,14 +431,22 @@ func newBool(f *kingpin.FlagClause, v interface{}) *bool {
 }
 
 // newString creates a new string when v is nil, otherwise it converts v and returns.
-func newString(f *kingpin.FlagClause, v interface{}) *string {
+func newString(f *kingpin.FlagClause, v interface{}, enums []string) *string {
 	if v == nil {
 		s := ""
-		f.StringVar(&s)
+		if len(enums) != 0 {
+			f.EnumVar(&s, enums...)
+		} else {
+			f.StringVar(&s)
+		}
 		return &s
 	}
 	s := v.(*string)
-	f.StringVar(s)
+	if len(enums) != 0 {
+		f.EnumVar(s, enums...)
+	} else {
+		f.StringVar(s)
+	}
 	return s
 }
 

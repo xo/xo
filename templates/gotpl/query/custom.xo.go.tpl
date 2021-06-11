@@ -4,9 +4,9 @@
 {{- if $query.Comment -}}
 // {{ $query.Comment }}
 {{- else -}}
-// {{ $query.Name }} runs a custom query{{ if (not $query.Flat) }}, returning results as {{ $query.Type.Name }}{{ end }}.
+// {{ $query.Name }}{{ if context_both }}Context{{ end }} runs a custom query{{ if not $query.Flat }}, returning results as {{ $query.Type.Name }}{{ end }}.
 {{- end }}
-func {{ $query.Name }}(ctx context.Context, db DB{{ range $query.Params }}, {{ .Name }} {{ .Type }}{{ end }}) ({{ if not $query.One }}[]{{ end }}{{ if $query.Flat }}{{ range $query.Type.Fields }}{{ retype .Type }}, {{ end }}{{ else }}*{{ $query.Type.Name }}, {{ end }}error) {
+func {{ $query.Name }}{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB{{ range $query.Params }}, {{ .Name }} {{ .Type }}{{ end }}) ({{ if not $query.One }}[]{{ end }}{{ if $query.Flat }}{{ range $query.Type.Fields }}{{ retype .Type }}, {{ end }}{{ else }}*{{ $query.Type.Name }}, {{ end }}error) {
 	// query
 	{{ if $query.Interpolate }}var{{ else }}const{{ end }} sqlstr = {{ range $i, $l := $query.Query }}{{ if $i }} +{{ end }}{{ if (index $queryComments $i) }} // {{ index $queryComments $i }}{{ end }}{{ if $i }}
 	{{end -}}`{{ $l }}`{{ end }}
@@ -17,19 +17,19 @@ func {{ $query.Name }}(ctx context.Context, db DB{{ range $query.Params }}, {{ .
 {{ range $query.Type.Fields -}}
 	var {{ .Name }} {{ retype .Type }}
 {{- end }}
-	if err := db.QueryRowContext(ctx, sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }}).Scan({{ fieldnames $query.Type.Fields "" }}); err != nil {
+	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }}).Scan({{ fieldnames $query.Type.Fields "" }}); err != nil {
 		return {{ range $query.Type.Fields }}{{ reniltype .Zero }}, {{ end }}logerror(err)
 	}
 	return {{ range $query.Type.Fields }}{{ .Name }}, {{ end }}nil
 {{- else -}}
 	var {{ $short }} {{ $query.Type.Name }}
-	if err := db.QueryRowContext(ctx, sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }}).Scan({{ fieldnames $query.Type.Fields (print "&" $short) }}); err != nil {
+	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }}).Scan({{ fieldnames $query.Type.Fields (print "&" $short) }}); err != nil {
 		return nil, logerror(err)
 	}
 	return &{{ $short }}, nil
 {{- end }}
 {{- else -}}
-	rows, err := db.QueryContext(ctx, sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }})
+	rows, err := db.Query{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ range $query.Params }}, {{ .Name }}{{ end }})
 	if err != nil {
 		return nil, logerror(err)
 	}
@@ -50,4 +50,15 @@ func {{ $query.Name }}(ctx context.Context, db DB{{ range $query.Params }}, {{ .
 	return res, nil
 {{- end }}
 }
+{{- if context_both }}
+
+{{ if $query.Comment -}}
+// {{ $query.Comment }}
+{{- else -}}
+// {{ $query.Name }} runs a custom query{{ if not $query.Flat }}, returning results as {{ $query.Type.Name }}{{ end }}.
+{{- end }}
+func {{ $query.Name }}(db DB{{ range $query.Params }}, {{ .Name }} {{ .Type }}{{ end }}) ({{ if not $query.One }}[]{{ end }}{{ if $query.Flat }}{{ range $query.Type.Fields }}{{ retype .Type }}, {{ end }}{{ else }}*{{ $query.Type.Name }}, {{ end }}error) {
+	return {{ $query.Name }}Context(context.Background(), db{{ range $query.Params }}, {{ .Name }}{{ end }})
+}
+{{- end }}
 

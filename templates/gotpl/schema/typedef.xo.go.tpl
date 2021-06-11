@@ -28,8 +28,8 @@ func ({{ $short }} *{{ $type.Name }}) Deleted() bool {
 	return {{ $short }}._deleted
 }
 
-// Insert inserts the {{ $type.Name }} to the database.
-func ({{ $short }} *{{ $type.Name }}) Insert(ctx context.Context, db DB) error {
+// Insert{{ if context_both }}Context{{ end }} inserts the {{ $type.Name }} to the database.
+func ({{ $short }} *{{ $type.Name }}) Insert{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB) error {
 	switch {
 	case {{ $short }}._exists: // already exists
 		return logerror(&ErrInsertFailed{ErrAlreadyExists})
@@ -45,7 +45,7 @@ func ({{ $short }} *{{ $type.Name }}) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, {{ fieldnames $type.Fields $short }})
-	if err := db.QueryRowContext(ctx, sqlstr, {{ fieldnames $type.Fields $short }}).Scan(&{{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
+	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short }}).Scan(&{{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
 		return logerror(err)
 	}
 {{- else -}}
@@ -58,11 +58,11 @@ func ({{ $short }} *{{ $type.Name }}) Insert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }}{{ if (driver "oracle") }}, nil{{ end }})
 {{ if (driver "postgres") -}}
-	if err := db.QueryRowContext(ctx, sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }}).Scan(&{{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
+	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }}).Scan(&{{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
 		return logerror(err)
 	}
 {{- else if (driver "sqlserver") -}}
-	rows, err := db.QueryContext(ctx, sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }})
+	rows, err := db.Query{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }})
 	if err != nil {
 		return logerror(err)
 	}
@@ -79,11 +79,11 @@ func ({{ $short }} *{{ $type.Name }}) Insert(ctx context.Context, db DB) error {
 	}
 {{- else if (driver "oracle") -}}
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }}, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }}, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err
 	}
 {{- else -}}
-	res, err := db.ExecContext(ctx, sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }})
+	res, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short $type.PrimaryKey.Name }})
 	if err != nil {
 		return err
 	}
@@ -103,11 +103,18 @@ func ({{ $short }} *{{ $type.Name }}) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
+{{ if context_both -}}
+// Insert inserts the {{ $type.Name }} to the database.
+func ({{ $short }} *{{ $type.Name }}) Insert(db DB) error {
+	return {{ $short }}.InsertContext(context.Background(), db)
+}
+{{- end }}
+
 {{ if eq (fieldnamesmulti $type.Fields $short $type.PrimaryKeyFields) "" -}}
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------ 
 {{- else -}}
-// Update updates a {{ $type.Name }} in the database.
-func ({{ $short }} *{{ $type.Name }}) Update(ctx context.Context, db DB) error {
+// Update{{ if context_both }}Context{{ end }} updates a {{ $type.Name }} in the database.
+func ({{ $short }} *{{ $type.Name }}) Update{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB) error {
 	switch {
 	case !{{ $short }}._exists: // doesn't exist
 		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
@@ -129,25 +136,39 @@ func ({{ $short }} *{{ $type.Name }}) Update(ctx context.Context, db DB) error {
 {{- end }}
 	// run
 	logf(sqlstr, {{ fieldnamesmulti $type.Fields $short $type.PrimaryKeyFields }}, {{ fieldnames $type.PrimaryKeyFields $short}})
-	if _, err := db.ExecContext(ctx, sqlstr, {{ fieldnamesmulti $type.Fields $short $type.PrimaryKeyFields }}, {{ fieldnames $type.PrimaryKeyFields $short}}); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnamesmulti $type.Fields $short $type.PrimaryKeyFields }}, {{ fieldnames $type.PrimaryKeyFields $short}}); err != nil {
 		return logerror(err)
 	}
 	return nil
 }
 
-// Save saves the {{ $type.Name }} to the database.
-func ({{ $short }} *{{ $type.Name }}) Save(ctx context.Context, db DB) error {
+{{ if context_both -}}
+// Update updates a {{ $type.Name }} in the database.
+func ({{ $short }} *{{ $type.Name }}) Update(db DB) error {
+	return {{ $short }}.UpdateContext(context.Background(), db)
+}
+{{- end }}
+
+// Save{{ if context_both }}Context{{ end }} saves the {{ $type.Name }} to the database.
+func ({{ $short }} *{{ $type.Name }}) Save{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB) error {
 	if {{ $short }}.Exists() {
-		return {{ $short }}.Update(ctx, db)
+		return {{ $short }}.Update{{ if context_both }}Context{{ end }}({{ if context }}ctx, {{ end }}db)
 	}
-	return {{ $short }}.Insert(ctx, db)
+	return {{ $short }}.Insert{{ if context_both }}Context{{ end }}({{ if context}}ctx, {{ end }}db)
 }
 
+{{ if context_both -}}
+// Save saves the {{ $type.Name }} to the database.
+func ({{ $short }} *{{ $type.Name }}) Save(db DB) error {
+	return {{ $short }}.SaveContext(context.Background(), db)
+}
+{{- end }}
+
 {{ if (driver "postgres") -}}
-// Upsert performs an upsert for {{ $type.Name }}.
+// Upsert{{ if context_both }}Context{{ end }} performs an upsert for {{ $type.Name }}.
 //
 // NOTE: PostgreSQL 9.5+ only
-func ({{ $short }} *{{ $type.Name }}) Upsert(ctx context.Context, db DB) error {
+func ({{ $short }} *{{ $type.Name }}) Upsert{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB) error {
 	switch {
 	case {{ $short }}._deleted: // deleted
 		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
@@ -164,7 +185,7 @@ func ({{ $short }} *{{ $type.Name }}) Upsert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, {{ fieldnames $type.Fields $short }})
-	if _, err := db.ExecContext(ctx, sqlstr, {{ fieldnames $type.Fields $short }}); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short }}); err != nil {
 		return err
 	}
 	// set exists
@@ -172,10 +193,17 @@ func ({{ $short }} *{{ $type.Name }}) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 {{- end -}}
+
+{{ if context_both -}}
+// Upsert performs an upsert for {{ $type.Name }}.
+func ({{ $short }} *{{ $type.Name }}) Upsert(db DB) error {
+	return {{ $short }}.UpsertContext(context.Background(), db)
+}
+{{- end }}
 {{- end }}
 
-// Delete deletes the {{ $type.Name }} from the database.
-func ({{ $short }} *{{ $type.Name }}) Delete(ctx context.Context, db DB) error {
+// Delete{{ if context_both }}Context{{ end }} deletes the {{ $type.Name }} from the database.
+func ({{ $short }} *{{ $type.Name }}) Delete{{ if context_both }}Context{{ end }}({{ if context }} ctx context.Context, {{ end }}db DB) error {
 	switch {
 	case !{{ $short }}._exists: // doesn't exist
 		return nil
@@ -187,7 +215,7 @@ func ({{ $short }} *{{ $type.Name }}) Delete(ctx context.Context, db DB) error {
 	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colnamesquery $type.PrimaryKeyFields " AND " }}`
 	// run
 	logf(sqlstr, {{ fieldnames $type.PrimaryKeyFields $short }})
-	if _, err := db.ExecContext(ctx, sqlstr, {{ fieldnames $type.PrimaryKeyFields $short }}); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.PrimaryKeyFields $short }}); err != nil {
 		return logerror(err)
 	}
 {{- else -}}
@@ -195,7 +223,7 @@ func ({{ $short }} *{{ $type.Name }}) Delete(ctx context.Context, db DB) error {
 	const sqlstr = `DELETE FROM {{ $table }} WHERE {{ colname $type.PrimaryKey.Col }} = {{ nthparam 0 }}`
 	// run
 	logf(sqlstr, {{ $short }}.{{ $type.PrimaryKey.Name }})
-	if _, err := db.ExecContext(ctx, sqlstr, {{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
 		return logerror(err)
 	}
 {{- end }}
@@ -205,3 +233,9 @@ func ({{ $short }} *{{ $type.Name }}) Delete(ctx context.Context, db DB) error {
 }
 {{- end }}
 
+{{ if context_both -}}
+// Delete deletes the {{ $type.Name }} from the database.
+func ({{ $short }} *{{ $type.Name }}) Delete(db DB) error {
+	return {{ $short }}.DeleteContext(context.Background(), db)
+}
+{{- end }}

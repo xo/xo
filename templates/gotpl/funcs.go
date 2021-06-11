@@ -28,6 +28,7 @@ type Funcs struct {
 	escTable  bool
 	escColumn bool
 	fieldtag  *template.Template
+	context   string
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shortNames is the collection of Go style short names for types, mainly
@@ -74,6 +75,7 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		escTable:   !contains(esc, "none") && (contains(esc, "all") || contains(esc, "table")),
 		escColumn:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "column")),
 		fieldtag:   fieldtag,
+		context:    Context(ctx),
 		knownTypes: knownTypes,
 		shortNames: shortNames,
 	}, nil
@@ -88,13 +90,17 @@ func (f *Funcs) AddKnownType(name string) {
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
 		// context
-		"driver":   f.driverfn,
-		"schema":   f.schemafn,
-		"first":    f.firstfn,
-		"pkg":      f.pkgfn,
-		"tags":     f.tagsfn,
-		"imports":  f.importsfn,
-		"nthparam": f.nthparam,
+		"driver":          f.driverfn,
+		"schema":          f.schemafn,
+		"first":           f.firstfn,
+		"pkg":             f.pkgfn,
+		"tags":            f.tagsfn,
+		"imports":         f.importsfn,
+		"nthparam":        f.nthparam,
+		"fieldtag":        f.fieldtagfn,
+		"context":         f.contextfn,
+		"context_both":    f.context_both,
+		"context_disable": f.context_disable,
 
 		// general
 		"colcount":           f.colcount,
@@ -109,7 +115,6 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"convext":            f.convext,
 		"fieldnames":         f.fieldnames,
 		"fieldnamesmulti":    f.fieldnamesmulti,
-		"fieldtag":           f.fieldtagfn,
 		"startcount":         f.startcount,
 		"hascolumn":          f.hascolumn,
 		"hasfield":           f.hasfield,
@@ -192,6 +197,30 @@ func (f *Funcs) importsfn() []PackageImport {
 // nthparam returns the nth param placeholder
 func (f *Funcs) nthparam(i int) string {
 	return f.nth(i)
+}
+
+// fieldtagfn returns the field tag for the field.
+func (f *Funcs) fieldtagfn(field *templates.Field) (string, error) {
+	buf := new(bytes.Buffer)
+	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+// contextfn returns true when the context mode is both or only.
+func (f *Funcs) contextfn() bool {
+	return f.context == "both" || f.context == "only"
+}
+
+// context_both returns true with the context mode is both.
+func (f *Funcs) context_both() bool {
+	return f.context == "both"
+}
+
+// context_disable returns true with the context mode is both.
+func (f *Funcs) context_disable() bool {
+	return f.context == "disable"
 }
 
 // retype checks typ against known types, and prefixing custom (if applicable).
@@ -656,15 +685,6 @@ func (f *Funcs) startcount(fields []*templates.Field, pkFields []*templates.Fiel
 // esc escapes s.
 func (f *Funcs) esc(s string, typ string) string {
 	return `"` + s + `"`
-}
-
-// fieldtagfn returns the field tag for the field.
-func (f *Funcs) fieldtagfn(field *templates.Field) (string, error) {
-	buf := new(bytes.Buffer)
-	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
-		return "", err
-	}
-	return buf.String(), nil
 }
 
 // PackageImport holds information about a Go package import.
