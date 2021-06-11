@@ -95,8 +95,11 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		}
 	case "binary", "varbinary":
 		goType, zero = "[]byte", "nil"
-	case "datetime", "datetime2", "timestamp":
+	case "date", "time", "smalldatetime", "datetime", "datetime2", "datetimeoffset":
 		goType, zero = "time.Time", "time.Time{}"
+		if nullable {
+			goType, zero = "sql.NullTime", "sql.NullTime{}"
+		}
 	case "time with time zone", "time without time zone", "timestamp without time zone":
 		goType, zero = "int64", "0"
 		if nullable {

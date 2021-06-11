@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -379,7 +378,7 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables map[string]*te
 		}
 		// check everything was found
 		if field == nil || refType == nil || refField == nil {
-			return errors.New("could not find field, refType, or refField")
+			return fmt.Errorf("table %q %q could not find field, refType, or refField for foreign key: %q", schema, typ.Table.TableName, fkey.ForeignKeyName)
 		}
 		// foreign key name
 		if fkey.ForeignKeyName == "" {
