@@ -1,6 +1,7 @@
 package gotpl
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"strconv"
@@ -26,6 +27,7 @@ type Funcs struct {
 	escSchema bool
 	escTable  bool
 	escColumn bool
+	fieldtag  *template.Template
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shortNames is the collection of Go style short names for types, mainly
@@ -34,7 +36,7 @@ type Funcs struct {
 }
 
 // NewFuncs returns a set of template funcs.
-func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[string]string, first *bool) *Funcs {
+func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[string]string, first *bool) (*Funcs, error) {
 	// force not first
 	if NotFirst(ctx) {
 		b := false
@@ -53,6 +55,11 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 			imports = append(imports, s)
 		}
 	}
+	// parse field tag template
+	fieldtag, err := template.New("fieldtag").Parse(FieldTag(ctx))
+	if err != nil {
+		return nil, err
+	}
 	return &Funcs{
 		driver:     templates.Driver(ctx),
 		schema:     templates.Schema(ctx),
@@ -66,9 +73,10 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		escSchema:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "schema")),
 		escTable:   !contains(esc, "none") && (contains(esc, "all") || contains(esc, "table")),
 		escColumn:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "column")),
+		fieldtag:   fieldtag,
 		knownTypes: knownTypes,
 		shortNames: shortNames,
-	}
+	}, nil
 }
 
 // AddKnownType adds a known type.
@@ -101,7 +109,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"convext":            f.convext,
 		"fieldnames":         f.fieldnames,
 		"fieldnamesmulti":    f.fieldnamesmulti,
-		"fieldtag":           f.fieldtag,
+		"fieldtag":           f.fieldtagfn,
 		"startcount":         f.startcount,
 		"hascolumn":          f.hascolumn,
 		"hasfield":           f.hasfield,
@@ -650,9 +658,13 @@ func (f *Funcs) esc(s string, typ string) string {
 	return `"` + s + `"`
 }
 
-// fieldtag returns the field tag for the field.
-func (f *Funcs) fieldtag(field *templates.Field) string {
-	return fmt.Sprintf("`json:\"%s\"`", field.Col.ColumnName)
+// fieldtagfn returns the field tag for the field.
+func (f *Funcs) fieldtagfn(field *templates.Field) (string, error) {
+	buf := new(bytes.Buffer)
+	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
 
 // PackageImport holds information about a Go package import.

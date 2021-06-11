@@ -120,9 +120,21 @@ func init() {
 				Value:       []string{},
 				Enums:       []string{"none", "schema", "table", "column", "all"},
 			},
+			{
+				ContextKey:  FieldTagKey,
+				Desc:        "field tag",
+				PlaceHolder: `<tag>`,
+				Short:       'g',
+				Default:     "`json:\"{{ .Col.ColumnName }}\"`",
+				Value:       "",
+			},
 		},
-		Funcs: func(ctx context.Context) template.FuncMap {
-			return NewFuncs(ctx, knownTypes, shortNames, &first).FuncMap()
+		Funcs: func(ctx context.Context) (template.FuncMap, error) {
+			f, err := NewFuncs(ctx, knownTypes, shortNames, &first)
+			if err != nil {
+				return nil, err
+			}
+			return f.FuncMap(), nil
 		},
 		HeaderTemplate: func(ctx context.Context) *templates.Template {
 			return &templates.Template{
@@ -178,6 +190,7 @@ const (
 	CustomKey   templates.ContextKey = "custom"
 	ConflictKey templates.ContextKey = "conflict"
 	EscKey      templates.ContextKey = "esc"
+	FieldTagKey templates.ContextKey = "field-tag"
 )
 
 // NotFirst returns not-first from the context.
@@ -235,6 +248,12 @@ func Conflict(ctx context.Context) string {
 func Esc(ctx context.Context) []string {
 	v, _ := ctx.Value(EscKey).([]string)
 	return v
+}
+
+// FieldTag returns field-tag from the context.
+func FieldTag(ctx context.Context) string {
+	s, _ := ctx.Value(FieldTagKey).(string)
+	return s
 }
 
 // contains returns true when s is in v.

@@ -249,7 +249,7 @@ type TemplateSet struct {
 	// PackageTemplates returns package templates.
 	PackageTemplates func(context.Context) []*Template
 	// Funcs provides template funcs for use by templates.
-	Funcs func(context.Context) template.FuncMap
+	Funcs func(context.Context) (template.FuncMap, error)
 	// FileName determines the out file name templates.
 	FileName func(context.Context, *Template) string
 	// Post performs post processing of generated content.
@@ -297,12 +297,18 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 		return nil, fmt.Errorf("unable to open template %s: %w", name, err)
 	}
 	defer f.Close()
+	// read template
 	buf, err := ioutil.ReadAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read template %s: %w", name, err)
 	}
+	// build funcs
+	funcs, err := set.Funcs(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to build funcs %s: %v", name, err)
+	}
 	// parse content
-	t, err := template.New("").Funcs(set.Funcs(ctx)).Parse(string(buf))
+	t, err := template.New(name).Funcs(funcs).Parse(string(buf))
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse template %s: %w", name, err)
 	}
