@@ -136,6 +136,20 @@ func init() {
 				Value:       "",
 				Enums:       []string{"disable", "both", "only"},
 			},
+			{
+				ContextKey:  InjectKey,
+				Desc:        "insert code into generated file headers",
+				PlaceHolder: `""`,
+				Default:     "",
+				Value:       "",
+			},
+			{
+				ContextKey:  InjectFileKey,
+				Desc:        "insert code into generated file headers from a file",
+				PlaceHolder: `<file>`,
+				Default:     "",
+				Value:       "",
+			},
 		},
 		Funcs: func(ctx context.Context) (template.FuncMap, error) {
 			f, err := NewFuncs(ctx, knownTypes, shortNames, &first)
@@ -189,17 +203,19 @@ func init() {
 
 // Context keys.
 const (
-	NotFirstKey templates.ContextKey = "not-first"
-	Int32Key    templates.ContextKey = "int32"
-	Uint32Key   templates.ContextKey = "uint32"
-	PkgKey      templates.ContextKey = "pkg"
-	TagKey      templates.ContextKey = "tag"
-	ImportKey   templates.ContextKey = "import"
-	CustomKey   templates.ContextKey = "custom"
-	ConflictKey templates.ContextKey = "conflict"
-	EscKey      templates.ContextKey = "esc"
-	FieldTagKey templates.ContextKey = "field-tag"
-	ContextKey  templates.ContextKey = "context"
+	NotFirstKey   templates.ContextKey = "not-first"
+	Int32Key      templates.ContextKey = "int32"
+	Uint32Key     templates.ContextKey = "uint32"
+	PkgKey        templates.ContextKey = "pkg"
+	TagKey        templates.ContextKey = "tag"
+	ImportKey     templates.ContextKey = "import"
+	CustomKey     templates.ContextKey = "custom"
+	ConflictKey   templates.ContextKey = "conflict"
+	EscKey        templates.ContextKey = "esc"
+	FieldTagKey   templates.ContextKey = "field-tag"
+	ContextKey    templates.ContextKey = "context"
+	InjectKey     templates.ContextKey = "inject"
+	InjectFileKey templates.ContextKey = "inject-file"
 )
 
 // NotFirst returns not-first from the context.
@@ -268,6 +284,18 @@ func FieldTag(ctx context.Context) string {
 // Context returns context from the context.
 func Context(ctx context.Context) string {
 	s, _ := ctx.Value(ContextKey).(string)
+	return s
+}
+
+// Inject returns inject from the context.
+func Inject(ctx context.Context) string {
+	s, _ := ctx.Value(InjectKey).(string)
+	return s
+}
+
+// InjectFile returns inject-file from the context.
+func InjectFile(ctx context.Context) string {
+	s, _ := ctx.Value(InjectFileKey).(string)
 	return s
 }
 

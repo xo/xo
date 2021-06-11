@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 	"text/template"
@@ -29,6 +30,7 @@ type Funcs struct {
 	escColumn bool
 	fieldtag  *template.Template
 	context   string
+	inject    string
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shortNames is the collection of Go style short names for types, mainly
@@ -61,6 +63,15 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 	if err != nil {
 		return nil, err
 	}
+	// load inject
+	inject := Inject(ctx)
+	if s := InjectFile(ctx); s != "" {
+		buf, err := ioutil.ReadFile(s)
+		if err != nil {
+			return nil, fmt.Errorf("unable to read file: %v", err)
+		}
+		inject = string(buf)
+	}
 	return &Funcs{
 		driver:     templates.Driver(ctx),
 		schema:     templates.Schema(ctx),
@@ -76,6 +87,7 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		escColumn:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "column")),
 		fieldtag:   fieldtag,
 		context:    Context(ctx),
+		inject:     inject,
 		knownTypes: knownTypes,
 		shortNames: shortNames,
 	}, nil
@@ -101,6 +113,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"context":         f.contextfn,
 		"context_both":    f.context_both,
 		"context_disable": f.context_disable,
+		"inject":          f.injectfn,
 
 		// general
 		"colcount":           f.colcount,
@@ -221,6 +234,11 @@ func (f *Funcs) context_both() bool {
 // context_disable returns true with the context mode is both.
 func (f *Funcs) context_disable() bool {
 	return f.context == "disable"
+}
+
+// injectfn returns the injected content provided from args.
+func (f *Funcs) injectfn() string {
+	return f.inject
 }
 
 // retype checks typ against known types, and prefixing custom (if applicable).

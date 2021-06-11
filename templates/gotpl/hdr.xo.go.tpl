@@ -1,4 +1,5 @@
 {{- $tags := tags -}}
+{{- $inject := inject -}}
 {{- if $tags -}}
 // +build{{ range $tags }} {{ . }}{{ end }}
 
@@ -26,4 +27,8 @@ import (
 	{{ . }}
 {{- end }}
 )
+
+{{- if $inject }}
+{{ $inject }}
+{{- end }}
 
