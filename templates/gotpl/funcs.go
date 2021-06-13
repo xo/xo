@@ -174,7 +174,7 @@ func (f *Funcs) schemafn(names ...string) string {
 	return s + n
 }
 
-// first returns true if it is the template was the first template generated.
+// firstfn returns true if it is the template was the first template generated.
 func (f *Funcs) firstfn() bool {
 	b := *f.first
 	*f.first = false

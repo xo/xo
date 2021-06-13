@@ -1,0 +1,27 @@
+EXEC sp_configure
+  'contained database authentication', 1;
+
+RECONFIGURE;
+
+DROP LOGIN :NAME;
+
+DROP DATABASE :NAME;
+
+CREATE DATABASE :NAME
+  CONTAINMENT=PARTIAL;
+
+\connect 'ms://localhost/':NAME
+
+CREATE LOGIN :NAME
+  WITH
+    PASSWORD=:'PASS',
+    CHECK_POLICY=OFF,
+    DEFAULT_DATABASE=:NAME;
+
+CREATE USER :NAME
+  FOR LOGIN :NAME
+  WITH DEFAULT_SCHEMA=:NAME;
+
+CREATE SCHEMA :NAME AUTHORIZATION :NAME;
+
+EXEC sp_addrolemember 'db_owner', :'NAME';

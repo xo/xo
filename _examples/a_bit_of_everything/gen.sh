@@ -4,11 +4,11 @@ SRC=$(realpath $(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd))
 
 declare -A DSNS
 DSNS+=(
-  [mysql]=my://northwind:northwind@localhost/northwind
-  [oracle]=or://northwind:northwind@localhost/db1
-  [postgres]=pg://northwind:northwind@localhost/northwind
-  [sqlite3]=sq:northwind.db
-  [sqlserver]=ms://northwind:northwind@localhost/northwind
+  [mysql]=my://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
+  [oracle]=or://a_bit_of_everything:a_bit_of_everything@localhost/db1
+  [postgres]=pg://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
+  [sqlite3]=sq:a_bit_of_everything.db
+  [sqlserver]=ms://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
 )
 
 APPLY=0
@@ -39,12 +39,15 @@ for TYPE in $DATABASES; do
   echo ""
   if [ "$APPLY" = "1" ]; then
     (set -ex;
-      $SRC/../createdb.sh -d $TYPE -n northwind
+      $SRC/../createdb.sh -d $TYPE -n a_bit_of_everything
       usql -f sql/${TYPE}_schema.sql $DB
     )
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE
+    go build ./$TYPE
+    go build
+    ./a_bit_of_everything -v -dsn $DB
   )
 done
 
