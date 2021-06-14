@@ -3,12 +3,13 @@
 SRC=$(realpath $(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd))
 
 declare -A DSNS
+TEST=$(basename $SRC)
 DSNS+=(
-  [mysql]=my://booktest:booktest@localhost/booktest
-  [oracle]=or://booktest:booktest@localhost/db1
-  [postgres]=pg://booktest:booktest@localhost/booktest
-  [sqlite3]=sq:booktest.db
-  [sqlserver]=ms://booktest:booktest@localhost/booktest
+  [mysql]=my://$TEST:$TEST@localhost/$TEST
+  [oracle]=or://$TEST:$TEST@localhost/db1
+  [postgres]=pg://$TEST:$TEST@localhost/$TEST
+  [sqlite3]=sq:$TEST.db
+  [sqlserver]=ms://$TEST:$TEST@localhost/$TEST
 )
 
 APPLY=0
@@ -30,6 +31,8 @@ XOBIN=$(realpath $XOBIN)
 
 pushd $SRC &> /dev/null
 
+rm *.db
+
 for TYPE in $DATABASES; do
   DB=${DSNS[$TYPE]}
   mkdir -p $TYPE
@@ -39,9 +42,14 @@ for TYPE in $DATABASES; do
   echo ""
   if [ "$APPLY" = "1" ]; then
     (set -ex;
-      $SRC/../createdb.sh -d $TYPE -n booktest
+      $SRC/../createdb.sh -d $TYPE -n $TEST
       usql -f sql/${TYPE}_schema.sql $DB
     )
+    if [ -f sql/${TYPE}_data.sql ]; then
+      (set -ex;
+        usql -f sql/${TYPE}_data.sql $DB
+      )
+    fi
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE
@@ -54,7 +62,7 @@ for TYPE in $DATABASES; do
       --type-comment='AuthorBookResult is the result of a search.'
     go build ./$TYPE
     go build
-    ./booktest -v -dsn $DB
+    ./$TEST -v -dsn $DB
     usql -c 'select * from books;' $DB
   )
 done

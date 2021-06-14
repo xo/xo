@@ -3,12 +3,13 @@
 SRC=$(realpath $(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd))
 
 declare -A DSNS
+TEST=$(basename $SRC)
 DSNS+=(
-  [mysql]=my://django:django@localhost/django
-  [oracle]=or://django:django@localhost/db1
-  [postgres]=pg://django:django@localhost/django
-  [sqlite3]=sq:django.db
-  [sqlserver]=ms://django:django@localhost/django
+  [mysql]=my://$TEST:$TEST@localhost/$TEST
+  [oracle]=or://$TEST:$TEST@localhost/db1
+  [postgres]=pg://$TEST:$TEST@localhost/$TEST
+  [sqlite3]=sq:$TEST.db
+  [sqlserver]=ms://$TEST:$TEST@localhost/$TEST
 )
 
 APPLY=0
@@ -30,6 +31,8 @@ XOBIN=$(realpath $XOBIN)
 
 pushd $SRC &> /dev/null
 
+rm *.db
+
 for TYPE in $DATABASES; do
   DB=${DSNS[$TYPE]}
   mkdir -p $TYPE
@@ -39,15 +42,20 @@ for TYPE in $DATABASES; do
   echo ""
   if [ "$APPLY" = "1" ]; then
     (set -ex;
-      $SRC/../createdb.sh -d $TYPE -n django
+      $SRC/../createdb.sh -d $TYPE -n $TEST
       usql -f sql/${TYPE}_schema.sql $DB
     )
+    if [ -f sql/${TYPE}_data.sql ]; then
+      (set -ex;
+        usql -f sql/${TYPE}_data.sql $DB
+      )
+    fi
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE
     go build ./$TYPE
     go build
-    ./django -v -dsn $DB
+    ./$TEST -v -dsn $DB
   )
 done
 

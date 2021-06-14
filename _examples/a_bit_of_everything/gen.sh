@@ -3,12 +3,13 @@
 SRC=$(realpath $(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd))
 
 declare -A DSNS
+TEST=$(basename $SRC)
 DSNS+=(
-  [mysql]=my://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
-  [oracle]=or://a_bit_of_everything:a_bit_of_everything@localhost/db1
-  [postgres]=pg://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
-  [sqlite3]=sq:a_bit_of_everything.db
-  [sqlserver]=ms://a_bit_of_everything:a_bit_of_everything@localhost/a_bit_of_everything
+  [mysql]=my://$TEST:$TEST@localhost/$TEST
+  [oracle]=or://$TEST:$TEST@localhost/db1
+  [postgres]=pg://$TEST:$TEST@localhost/$TEST
+  [sqlite3]=sq:$TEST.db
+  [sqlserver]=ms://$TEST:$TEST@localhost/$TEST
 )
 
 APPLY=0
@@ -41,15 +42,20 @@ for TYPE in $DATABASES; do
   echo ""
   if [ "$APPLY" = "1" ]; then
     (set -ex;
-      $SRC/../createdb.sh -d $TYPE -n a_bit_of_everything
+      $SRC/../createdb.sh -d $TYPE -n $TEST
       usql -f sql/${TYPE}_schema.sql $DB
     )
+    if [ -f sql/${TYPE}_data.sql ]; then
+      (set -ex;
+        usql -f sql/${TYPE}_data.sql $DB
+      )
+    fi
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE
     go build ./$TYPE
     go build
-    ./a_bit_of_everything -v -dsn $DB
+    ./$TEST -v -dsn $DB
   )
 done
 
