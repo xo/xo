@@ -77,5 +77,4 @@ type ABitOfEverything struct {
 	AVarcharNullable         sql.NullString  `json:"a_varchar_nullable"`          // a_varchar_nullable
 	AYear                    int16           `json:"a_year"`                      // a_year
 	AYearNullable            sql.NullInt64   `json:"a_year_nullable"`             // a_year_nullable
-
 }

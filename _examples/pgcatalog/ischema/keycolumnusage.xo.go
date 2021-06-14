@@ -17,5 +17,4 @@ type KeyColumnUsage struct {
 	ColumnName                 pgtypes.SQLIdentifier  `json:"column_name"`                   // column_name
 	OrdinalPosition            pgtypes.CardinalNumber `json:"ordinal_position"`              // ordinal_position
 	PositionInUniqueConstraint pgtypes.CardinalNumber `json:"position_in_unique_constraint"` // position_in_unique_constraint
-
 }

@@ -35,5 +35,4 @@ type Domain struct {
 	ScopeName              pgtypes.SQLIdentifier  `json:"scope_name"`               // scope_name
 	MaximumCardinality     pgtypes.CardinalNumber `json:"maximum_cardinality"`      // maximum_cardinality
 	DtdIdentifier          pgtypes.SQLIdentifier  `json:"dtd_identifier"`           // dtd_identifier
-
 }

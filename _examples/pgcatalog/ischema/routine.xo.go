@@ -90,5 +90,4 @@ type Routine struct {
 	ResultCastScopeName             pgtypes.SQLIdentifier  `json:"result_cast_scope_name"`              // result_cast_scope_name
 	ResultCastMaximumCardinality    pgtypes.CardinalNumber `json:"result_cast_maximum_cardinality"`     // result_cast_maximum_cardinality
 	ResultCastDtdIdentifier         pgtypes.SQLIdentifier  `json:"result_cast_dtd_identifier"`          // result_cast_dtd_identifier
-
 }

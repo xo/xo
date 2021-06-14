@@ -11,7 +11,6 @@ import (
 type AIndexComposite struct {
 	AKey1 sql.NullInt64 `json:"a_key1"` // a_key1
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
-
 }
 
 // AIndexCompositesByAKey1AKey2 retrieves a row from 'a_index_composite' as a AIndexComposite.

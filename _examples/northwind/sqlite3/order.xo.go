@@ -12,9 +12,9 @@ type Order struct {
 	OrderID        int             `json:"order_id"`         // order_id
 	CustomerID     sql.NullString  `json:"customer_id"`      // customer_id
 	EmployeeID     sql.NullInt64   `json:"employee_id"`      // employee_id
-	OrderDate      Time            `json:"order_date"`       // order_date
-	RequiredDate   Time            `json:"required_date"`    // required_date
-	ShippedDate    Time            `json:"shipped_date"`     // shipped_date
+	OrderDate      *Time           `json:"order_date"`       // order_date
+	RequiredDate   *Time           `json:"required_date"`    // required_date
+	ShippedDate    *Time           `json:"shipped_date"`     // shipped_date
 	ShipVia        sql.NullInt64   `json:"ship_via"`         // ship_via
 	Freight        sql.NullFloat64 `json:"freight"`          // freight
 	ShipName       sql.NullString  `json:"ship_name"`        // ship_name

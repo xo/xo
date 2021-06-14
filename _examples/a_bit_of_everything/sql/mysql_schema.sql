@@ -2,51 +2,51 @@
 -- generate insert only (no update, save, upsert, delete)
 CREATE TABLE a_manual_table (
   a_text VARCHAR(255)
-);
+) ENGINE=InnoDB;
 
 -- table with sequence
 CREATE TABLE a_sequence (
   a_seq INTEGER PRIMARY KEY AUTO_INCREMENT
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE a_sequence_multi (
   a_seq INTEGER PRIMARY KEY AUTO_INCREMENT,
   a_text VARCHAR(255)
-);
+) ENGINE=InnoDB;
 
 -- table with primary key
 CREATE TABLE a_primary (
   a_key INTEGER PRIMARY KEY
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE a_primary_multi (
   a_key INTEGER PRIMARY KEY,
   a_text VARCHAR(255)
-);
+) ENGINE=InnoDB;
 
 -- table with composite primary key
 CREATE TABLE a_primary_composite (
   a_key1 INTEGER,
   a_key2 INTEGER,
   PRIMARY KEY (a_key1, a_key2)
-);
+) ENGINE=InnoDB;
 
 -- table with foreign key
 CREATE TABLE a_foreign_key (
   a_key INTEGER REFERENCES a_primary(a_key)
-);
+) ENGINE=InnoDB;
 
 -- table with composite foreign key
 CREATE TABLE a_foreign_key_composite (
   a_key1 INTEGER,
   a_key2 INTEGER,
   FOREIGN KEY (a_key1, a_key2) REFERENCES a_primary_composite(a_key1, a_key2)
-);
+) ENGINE=InnoDB;
 
 -- table with index
 CREATE TABLE a_index (
   a_key INTEGER
-);
+) ENGINE=InnoDB;
 
 CREATE INDEX a_index_idx ON a_index(a_key);
 
@@ -54,21 +54,21 @@ CREATE INDEX a_index_idx ON a_index(a_key);
 CREATE TABLE a_index_composite (
   a_key1 INTEGER,
   a_key2 INTEGER
-);
+) ENGINE=InnoDB;
 
 CREATE INDEX a_index_composite_idx ON a_index_composite(a_key1, a_key2);
 
 -- table with unique index
 CREATE TABLE a_unique_index (
   a_key INTEGER UNIQUE
-);
+) ENGINE=InnoDB;
 
 -- table with composite unique index
 CREATE TABLE a_unique_index_composite (
   a_key1 INTEGER,
   a_key2 INTEGER,
   UNIQUE (a_key1, a_key2)
-);
+) ENGINE=InnoDB;
 
 /*
 
@@ -180,7 +180,7 @@ CREATE TABLE a_bit_of_everything (
   a_varchar_nullable VARCHAR(255),
   a_year YEAR NOT NULL,
   a_year_nullable YEAR
-);
+) ENGINE=InnoDB;
 
 -- views
 CREATE VIEW a_view_of_everything AS

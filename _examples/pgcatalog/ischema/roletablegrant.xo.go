@@ -16,5 +16,4 @@ type RoleTableGrant struct {
 	PrivilegeType pgtypes.CharacterData `json:"privilege_type"` // privilege_type
 	IsGrantable   pgtypes.YesOrNo       `json:"is_grantable"`   // is_grantable
 	WithHierarchy pgtypes.YesOrNo       `json:"with_hierarchy"` // with_hierarchy
-
 }

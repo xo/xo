@@ -15,5 +15,4 @@ type ViewColumnUsage struct {
 	TableSchema  pgtypes.SQLIdentifier `json:"table_schema"`  // table_schema
 	TableName    pgtypes.SQLIdentifier `json:"table_name"`    // table_name
 	ColumnName   pgtypes.SQLIdentifier `json:"column_name"`   // column_name
-
 }

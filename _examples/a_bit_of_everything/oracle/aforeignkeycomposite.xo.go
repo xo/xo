@@ -11,7 +11,6 @@ import (
 type AForeignKeyComposite struct {
 	AKey1 sql.NullInt64 `json:"a_key1"` // a_key1
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
-
 }
 
 // APrimaryComposite returns the APrimaryComposite associated with the AForeignKeyComposite's AKey2 (a_key2).

@@ -18,5 +18,4 @@ type View struct {
 	IsTriggerUpdatable      pgtypes.YesOrNo       `json:"is_trigger_updatable"`       // is_trigger_updatable
 	IsTriggerDeletable      pgtypes.YesOrNo       `json:"is_trigger_deletable"`       // is_trigger_deletable
 	IsTriggerInsertableInto pgtypes.YesOrNo       `json:"is_trigger_insertable_into"` // is_trigger_insertable_into
-
 }

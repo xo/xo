@@ -14,5 +14,4 @@ type CollationCharacterSetApplicability struct {
 	CharacterSetCatalog pgtypes.SQLIdentifier `json:"character_set_catalog"` // character_set_catalog
 	CharacterSetSchema  pgtypes.SQLIdentifier `json:"character_set_schema"`  // character_set_schema
 	CharacterSetName    pgtypes.SQLIdentifier `json:"character_set_name"`    // character_set_name
-
 }

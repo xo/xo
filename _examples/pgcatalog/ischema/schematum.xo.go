@@ -15,5 +15,4 @@ type Schematum struct {
 	DefaultCharacterSetSchema  pgtypes.SQLIdentifier `json:"default_character_set_schema"`  // default_character_set_schema
 	DefaultCharacterSetName    pgtypes.SQLIdentifier `json:"default_character_set_name"`    // default_character_set_name
 	SQLPath                    pgtypes.CharacterData `json:"sql_path"`                      // sql_path
-
 }

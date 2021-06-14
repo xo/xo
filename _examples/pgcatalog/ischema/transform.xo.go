@@ -16,5 +16,4 @@ type Transform struct {
 	SpecificName    pgtypes.SQLIdentifier `json:"specific_name"`    // specific_name
 	GroupName       pgtypes.SQLIdentifier `json:"group_name"`       // group_name
 	TransformType   pgtypes.CharacterData `json:"transform_type"`   // transform_type
-
 }

@@ -18,5 +18,4 @@ type SQLSizing struct {
 	SizingName     pgtypes.CharacterData  `json:"sizing_name"`     // sizing_name
 	SupportedValue pgtypes.CardinalNumber `json:"supported_value"` // supported_value
 	Comments       pgtypes.CharacterData  `json:"comments"`        // comments
-
 }

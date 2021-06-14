@@ -16,5 +16,4 @@ type UsagePrivilege struct {
 	ObjectType    pgtypes.CharacterData `json:"object_type"`    // object_type
 	PrivilegeType pgtypes.CharacterData `json:"privilege_type"` // privilege_type
 	IsGrantable   pgtypes.YesOrNo       `json:"is_grantable"`   // is_grantable
-
 }

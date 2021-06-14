@@ -39,5 +39,4 @@ type Attribute struct {
 	MaximumCardinality          pgtypes.CardinalNumber `json:"maximum_cardinality"`            // maximum_cardinality
 	DtdIdentifier               pgtypes.SQLIdentifier  `json:"dtd_identifier"`                 // dtd_identifier
 	IsDerivedReferenceAttribute pgtypes.YesOrNo        `json:"is_derived_reference_attribute"` // is_derived_reference_attribute
-
 }

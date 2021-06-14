@@ -62,5 +62,4 @@ type ABitOfEverything struct {
 	AVarchar2Nullable                   sql.NullString              `json:"a_varchar2_nullable"`                       // a_varchar2_nullable
 	AXmltype                            Xmltype                     `json:"a_xmltype"`                                 // a_xmltype
 	AXmltypeNullable                    Xmltype                     `json:"a_xmltype_nullable"`                        // a_xmltype_nullable
-
 }

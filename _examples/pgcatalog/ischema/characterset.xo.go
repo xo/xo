@@ -16,5 +16,4 @@ type CharacterSet struct {
 	DefaultCollateCatalog pgtypes.SQLIdentifier `json:"default_collate_catalog"` // default_collate_catalog
 	DefaultCollateSchema  pgtypes.SQLIdentifier `json:"default_collate_schema"`  // default_collate_schema
 	DefaultCollateName    pgtypes.SQLIdentifier `json:"default_collate_name"`    // default_collate_name
-
 }

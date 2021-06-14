@@ -15,5 +15,4 @@ type ConstraintColumnUsage struct {
 	ConstraintCatalog pgtypes.SQLIdentifier `json:"constraint_catalog"` // constraint_catalog
 	ConstraintSchema  pgtypes.SQLIdentifier `json:"constraint_schema"`  // constraint_schema
 	ConstraintName    pgtypes.SQLIdentifier `json:"constraint_name"`    // constraint_name
-
 }

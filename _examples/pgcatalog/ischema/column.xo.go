@@ -52,5 +52,4 @@ type Column struct {
 	IsGenerated            pgtypes.CharacterData  `json:"is_generated"`             // is_generated
 	GenerationExpression   pgtypes.CharacterData  `json:"generation_expression"`    // generation_expression
 	IsUpdatable            pgtypes.YesOrNo        `json:"is_updatable"`             // is_updatable
-
 }

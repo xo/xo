@@ -11,7 +11,6 @@ import (
 type AForeignKeyComposite struct {
 	AKey1 sql.NullInt64 `json:"a_key1"` // a_key1
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
-
 }
 
 // AForeignKeyCompositesByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_foreign_key_composite' as a AForeignKeyComposite.

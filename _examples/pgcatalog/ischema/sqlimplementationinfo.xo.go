@@ -19,5 +19,4 @@ type SQLImplementationInfo struct {
 	IntegerValue           pgtypes.CardinalNumber `json:"integer_value"`            // integer_value
 	CharacterValue         pgtypes.CharacterData  `json:"character_value"`          // character_value
 	Comments               pgtypes.CharacterData  `json:"comments"`                 // comments
-
 }

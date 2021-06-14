@@ -63,5 +63,4 @@ type ABitOfEverything struct {
 	AVarcharNullable        sql.NullString  `json:"a_varchar_nullable"`        // a_varchar_nullable
 	AXML                    []byte          `json:"a_xml"`                     // a_xml
 	AXMLNullable            []byte          `json:"a_xml_nullable"`            // a_xml_nullable
-
 }

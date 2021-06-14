@@ -61,7 +61,7 @@ CREATE INDEX a_index_composite_idx ON a_index_composite(a_key1, a_key2);
 
 -- table with unique index
 CREATE TABLE a_unique_index (
-  a_key INTEGER UNIQUE
+  a_key INTEGER CONSTRAINT a_unique_index_idx UNIQUE
 );
 
 -- table with composite unique index

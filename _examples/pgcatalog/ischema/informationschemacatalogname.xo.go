@@ -9,5 +9,4 @@ import (
 // InformationSchemaCatalogName represents a row from 'information_schema.information_schema_catalog_name'.
 type InformationSchemaCatalogName struct {
 	CatalogName pgtypes.SQLIdentifier `json:"catalog_name"` // catalog_name
-
 }

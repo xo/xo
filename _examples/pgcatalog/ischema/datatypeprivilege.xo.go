@@ -13,5 +13,4 @@ type DataTypePrivilege struct {
 	ObjectName    pgtypes.SQLIdentifier `json:"object_name"`    // object_name
 	ObjectType    pgtypes.CharacterData `json:"object_type"`    // object_type
 	DtdIdentifier pgtypes.SQLIdentifier `json:"dtd_identifier"` // dtd_identifier
-
 }

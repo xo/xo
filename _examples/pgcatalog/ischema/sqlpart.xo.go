@@ -19,5 +19,4 @@ type SQLPart struct {
 	IsSupported  pgtypes.YesOrNo       `json:"is_supported"`   // is_supported
 	IsVerifiedBy pgtypes.CharacterData `json:"is_verified_by"` // is_verified_by
 	Comments     pgtypes.CharacterData `json:"comments"`       // comments
-
 }

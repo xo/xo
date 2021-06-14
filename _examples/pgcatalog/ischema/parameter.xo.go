@@ -40,5 +40,4 @@ type Parameter struct {
 	MaximumCardinality     pgtypes.CardinalNumber `json:"maximum_cardinality"`      // maximum_cardinality
 	DtdIdentifier          pgtypes.SQLIdentifier  `json:"dtd_identifier"`           // dtd_identifier
 	ParameterDefault       pgtypes.CharacterData  `json:"parameter_default"`        // parameter_default
-
 }

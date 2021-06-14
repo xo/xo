@@ -21,9 +21,9 @@ type ABitOfEverything struct {
 	AClob                             string          `json:"a_clob"`                                // a_clob
 	AClobNullable                     sql.NullString  `json:"a_clob_nullable"`                       // a_clob_nullable
 	ADate                             Time            `json:"a_date"`                                // a_date
-	ADateNullable                     sql.NullTime    `json:"a_date_nullable"`                       // a_date_nullable
+	ADateNullable                     *Time           `json:"a_date_nullable"`                       // a_date_nullable
 	ADatetime                         Time            `json:"a_datetime"`                            // a_datetime
-	ADatetimeNullable                 sql.NullTime    `json:"a_datetime_nullable"`                   // a_datetime_nullable
+	ADatetimeNullable                 *Time           `json:"a_datetime_nullable"`                   // a_datetime_nullable
 	ADecimal                          float64         `json:"a_decimal"`                             // a_decimal
 	ADecimalNullable                  sql.NullFloat64 `json:"a_decimal_nullable"`                    // a_decimal_nullable
 	ADouble                           float64         `json:"a_double"`                              // a_double
@@ -53,20 +53,19 @@ type ABitOfEverything struct {
 	ATime                             string          `json:"a_time"`                                // a_time
 	ATimeNullable                     sql.NullString  `json:"a_time_nullable"`                       // a_time_nullable
 	ATimestamp                        Time            `json:"a_timestamp"`                           // a_timestamp
-	ATimestampNullable                sql.NullTime    `json:"a_timestamp_nullable"`                  // a_timestamp_nullable
+	ATimestampNullable                *Time           `json:"a_timestamp_nullable"`                  // a_timestamp_nullable
 	ATimestampWithoutTimezone         Time            `json:"a_timestamp_without_timezone"`          // a_timestamp_without_timezone
-	ATimestampWithoutTimezoneNullable sql.NullTime    `json:"a_timestamp_without_timezone_nullable"` // a_timestamp_without_timezone_nullable
+	ATimestampWithoutTimezoneNullable *Time           `json:"a_timestamp_without_timezone_nullable"` // a_timestamp_without_timezone_nullable
 	ATimestampWithTimezone            Time            `json:"a_timestamp_with_timezone"`             // a_timestamp_with_timezone
-	ATimestampWithTimezoneNullable    sql.NullTime    `json:"a_timestamp_with_timezone_nullable"`    // a_timestamp_with_timezone_nullable
+	ATimestampWithTimezoneNullable    *Time           `json:"a_timestamp_with_timezone_nullable"`    // a_timestamp_with_timezone_nullable
 	ATimeWithoutTimezone              Time            `json:"a_time_without_timezone"`               // a_time_without_timezone
-	ATimeWithoutTimezoneNullable      sql.NullTime    `json:"a_time_without_timezone_nullable"`      // a_time_without_timezone_nullable
+	ATimeWithoutTimezoneNullable      *Time           `json:"a_time_without_timezone_nullable"`      // a_time_without_timezone_nullable
 	ATimeWithTimezone                 Time            `json:"a_time_with_timezone"`                  // a_time_with_timezone
-	ATimeWithTimezoneNullable         sql.NullTime    `json:"a_time_with_timezone_nullable"`         // a_time_with_timezone_nullable
+	ATimeWithTimezoneNullable         *Time           `json:"a_time_with_timezone_nullable"`         // a_time_with_timezone_nullable
 	ATinyint                          int             `json:"a_tinyint"`                             // a_tinyint
 	ATinyintNullable                  sql.NullInt64   `json:"a_tinyint_nullable"`                    // a_tinyint_nullable
 	AVarchar                          string          `json:"a_varchar"`                             // a_varchar
 	AVarcharNullable                  sql.NullString  `json:"a_varchar_nullable"`                    // a_varchar_nullable
 	AVaryingCharacter                 string          `json:"a_varying_character"`                   // a_varying_character
 	AVaryingCharacterNullable         sql.NullString  `json:"a_varying_character_nullable"`          // a_varying_character_nullable
-
 }

@@ -6,11 +6,11 @@ CREATE TABLE a_manual_table (
 
 -- table with auto increment
 CREATE TABLE a_sequence (
-  a_seq INTEGER IDENTITY(1, 1) NOT NULL PRIMARY KEY
+  a_seq INTEGER IDENTITY(1, 1) NOT NULL CONSTRAINT a_sequence_pkey PRIMARY KEY
 );
 
 CREATE TABLE a_sequence_multi (
-  a_seq INTEGER IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+  a_seq INTEGER IDENTITY(1, 1) NOT NULL CONSTRAINT a_sequence_multi_pkey PRIMARY KEY,
   a_text NVARCHAR(255)
 );
 
@@ -60,7 +60,7 @@ CREATE INDEX a_index_composite_idx ON a_index_composite(a_key1, a_key2);
 
 -- table with unique index
 CREATE TABLE a_unique_index (
-  a_key INTEGER UNIQUE
+  a_key INTEGER CONSTRAINT a_unique_index_idx UNIQUE
 );
 
 -- table with composite unique index

@@ -17,5 +17,4 @@ type PgForeignDataWrapper struct {
 	ForeignDataWrapperName     pgtypes.SQLIdentifier `json:"foreign_data_wrapper_name"`     // foreign_data_wrapper_name
 	AuthorizationIdentifier    pgtypes.SQLIdentifier `json:"authorization_identifier"`      // authorization_identifier
 	ForeignDataWrapperLanguage pgtypes.CharacterData `json:"foreign_data_wrapper_language"` // foreign_data_wrapper_language
-
 }

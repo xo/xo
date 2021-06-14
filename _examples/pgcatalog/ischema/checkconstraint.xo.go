@@ -12,5 +12,4 @@ type CheckConstraint struct {
 	ConstraintSchema  pgtypes.SQLIdentifier `json:"constraint_schema"`  // constraint_schema
 	ConstraintName    pgtypes.SQLIdentifier `json:"constraint_name"`    // constraint_name
 	CheckClause       pgtypes.CharacterData `json:"check_clause"`       // check_clause
-
 }

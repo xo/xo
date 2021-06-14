@@ -9,5 +9,4 @@ import (
 // EnabledRole represents a row from 'information_schema.enabled_roles'.
 type EnabledRole struct {
 	RoleName pgtypes.SQLIdentifier `json:"role_name"` // role_name
-
 }

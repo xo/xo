@@ -9,11 +9,10 @@
 type {{ $type.Name }} struct {
 {{ range $type.Fields -}}
 	{{ .Name }} {{ retype .Type }} {{ fieldtag . }} // {{ .Col.ColumnName }}
-{{ end -}}
-{{ if $type.PrimaryKey -}}
+{{ end }}{{ if $type.PrimaryKey -}}
 	// xo fields
 	_exists, _deleted bool
-{{- end }}
+{{ end -}}
 }
 
 {{ if $type.PrimaryKey -}}

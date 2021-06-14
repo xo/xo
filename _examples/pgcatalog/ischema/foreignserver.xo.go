@@ -15,5 +15,4 @@ type ForeignServer struct {
 	ForeignServerType         pgtypes.CharacterData `json:"foreign_server_type"`          // foreign_server_type
 	ForeignServerVersion      pgtypes.CharacterData `json:"foreign_server_version"`       // foreign_server_version
 	AuthorizationIdentifier   pgtypes.SQLIdentifier `json:"authorization_identifier"`     // authorization_identifier
-
 }

@@ -25,5 +25,4 @@ type Trigger struct {
 	ActionReferenceOldRow   pgtypes.SQLIdentifier  `json:"action_reference_old_row"`   // action_reference_old_row
 	ActionReferenceNewRow   pgtypes.SQLIdentifier  `json:"action_reference_new_row"`   // action_reference_new_row
 	Created                 pgtypes.TimeStamp      `json:"created"`                    // created
-
 }

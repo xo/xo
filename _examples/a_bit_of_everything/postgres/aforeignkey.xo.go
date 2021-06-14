@@ -10,7 +10,6 @@ import (
 // AForeignKey represents a row from 'public.a_foreign_key'.
 type AForeignKey struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
-
 }
 
 // APrimary returns the APrimary associated with the AForeignKey's AKey (a_key).

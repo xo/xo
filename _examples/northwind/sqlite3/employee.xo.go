@@ -14,8 +14,8 @@ type Employee struct {
 	FirstName       string         `json:"first_name"`        // first_name
 	Title           sql.NullString `json:"title"`             // title
 	TitleOfCourtesy sql.NullString `json:"title_of_courtesy"` // title_of_courtesy
-	BirthDate       Time           `json:"birth_date"`        // birth_date
-	HireDate        Time           `json:"hire_date"`         // hire_date
+	BirthDate       *Time          `json:"birth_date"`        // birth_date
+	HireDate        *Time          `json:"hire_date"`         // hire_date
 	Address         sql.NullString `json:"address"`           // address
 	City            sql.NullString `json:"city"`              // city
 	Region          sql.NullString `json:"region"`            // region

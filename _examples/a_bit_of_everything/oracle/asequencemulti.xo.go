@@ -10,5 +10,4 @@ import (
 type ASequenceMulti struct {
 	ASeq  int            `json:"a_seq"`  // a_seq
 	AText sql.NullString `json:"a_text"` // a_text
-
 }

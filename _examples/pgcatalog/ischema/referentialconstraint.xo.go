@@ -17,5 +17,4 @@ type ReferentialConstraint struct {
 	MatchOption             pgtypes.CharacterData `json:"match_option"`              // match_option
 	UpdateRule              pgtypes.CharacterData `json:"update_rule"`               // update_rule
 	DeleteRule              pgtypes.CharacterData `json:"delete_rule"`               // delete_rule
-
 }

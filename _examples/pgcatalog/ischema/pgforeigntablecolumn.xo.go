@@ -14,5 +14,4 @@ type PgForeignTableColumn struct {
 	Relname       pgtypes.Name     `json:"relname"`       // relname
 	Attname       pgtypes.Name     `json:"attname"`       // attname
 	Attfdwoptions []sql.NullString `json:"attfdwoptions"` // attfdwoptions
-
 }

@@ -13,5 +13,4 @@ type ForeignDataWrapper struct {
 	AuthorizationIdentifier    pgtypes.SQLIdentifier `json:"authorization_identifier"`      // authorization_identifier
 	LibraryName                pgtypes.CharacterData `json:"library_name"`                  // library_name
 	ForeignDataWrapperLanguage pgtypes.CharacterData `json:"foreign_data_wrapper_language"` // foreign_data_wrapper_language
-
 }

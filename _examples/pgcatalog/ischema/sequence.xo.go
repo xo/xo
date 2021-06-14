@@ -20,5 +20,4 @@ type Sequence struct {
 	MaximumValue          pgtypes.CharacterData  `json:"maximum_value"`           // maximum_value
 	Increment             pgtypes.CharacterData  `json:"increment"`               // increment
 	CycleOption           pgtypes.YesOrNo        `json:"cycle_option"`            // cycle_option
-
 }

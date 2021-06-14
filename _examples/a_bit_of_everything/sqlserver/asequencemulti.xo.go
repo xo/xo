@@ -113,7 +113,7 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 
 // ASequenceMultiByASeq retrieves a row from 'a_bit_of_everything.a_sequence_multi' as a ASequenceMulti.
 //
-// Generated from index 'PK__a_sequen__7A7B0F1654A636E4'.
+// Generated from index 'a_sequence_multi_pkey'.
 func ASequenceMultiByASeq(ctx context.Context, db DB, aSeq int) (*ASequenceMulti, error) {
 	// query
 	const sqlstr = `SELECT ` +

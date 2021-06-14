@@ -16,5 +16,4 @@ type ColumnPrivilege struct {
 	ColumnName    pgtypes.SQLIdentifier `json:"column_name"`    // column_name
 	PrivilegeType pgtypes.CharacterData `json:"privilege_type"` // privilege_type
 	IsGrantable   pgtypes.YesOrNo       `json:"is_grantable"`   // is_grantable
-
 }

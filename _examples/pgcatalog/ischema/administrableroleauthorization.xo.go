@@ -11,5 +11,4 @@ type AdministrableRoleAuthorization struct {
 	Grantee     pgtypes.SQLIdentifier `json:"grantee"`      // grantee
 	RoleName    pgtypes.SQLIdentifier `json:"role_name"`    // role_name
 	IsGrantable pgtypes.YesOrNo       `json:"is_grantable"` // is_grantable
-
 }

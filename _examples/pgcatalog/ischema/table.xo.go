@@ -20,5 +20,4 @@ type Table struct {
 	IsInsertableInto          pgtypes.YesOrNo       `json:"is_insertable_into"`           // is_insertable_into
 	IsTyped                   pgtypes.YesOrNo       `json:"is_typed"`                     // is_typed
 	CommitAction              pgtypes.CharacterData `json:"commit_action"`                // commit_action
-
 }

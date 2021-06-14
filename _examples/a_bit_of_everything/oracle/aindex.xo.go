@@ -10,7 +10,6 @@ import (
 // AIndex represents a row from 'a_bit_of_everything.a_index'.
 type AIndex struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
-
 }
 
 // AIndicesByAKey retrieves a row from 'a_bit_of_everything.a_index' as a AIndex.

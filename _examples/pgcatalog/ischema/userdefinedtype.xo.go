@@ -37,5 +37,4 @@ type UserDefinedType struct {
 	IntervalPrecision       pgtypes.CardinalNumber `json:"interval_precision"`         // interval_precision
 	SourceDtdIdentifier     pgtypes.SQLIdentifier  `json:"source_dtd_identifier"`      // source_dtd_identifier
 	RefDtdIdentifier        pgtypes.SQLIdentifier  `json:"ref_dtd_identifier"`         // ref_dtd_identifier
-
 }

@@ -15,5 +15,4 @@ type TriggeredUpdateColumn struct {
 	EventObjectSchema  pgtypes.SQLIdentifier `json:"event_object_schema"`  // event_object_schema
 	EventObjectTable   pgtypes.SQLIdentifier `json:"event_object_table"`   // event_object_table
 	EventObjectColumn  pgtypes.SQLIdentifier `json:"event_object_column"`  // event_object_column
-
 }

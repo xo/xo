@@ -13,5 +13,4 @@ type UserMappingOption struct {
 	ForeignServerName       pgtypes.SQLIdentifier `json:"foreign_server_name"`      // foreign_server_name
 	OptionName              pgtypes.SQLIdentifier `json:"option_name"`              // option_name
 	OptionValue             pgtypes.CharacterData `json:"option_value"`             // option_value
-
 }

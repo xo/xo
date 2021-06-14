@@ -17,5 +17,4 @@ type PgUserMapping struct {
 	ForeignServerCatalog    pgtypes.SQLIdentifier `json:"foreign_server_catalog"`   // foreign_server_catalog
 	ForeignServerName       pgtypes.SQLIdentifier `json:"foreign_server_name"`      // foreign_server_name
 	Srvowner                pgtypes.SQLIdentifier `json:"srvowner"`                 // srvowner
-
 }

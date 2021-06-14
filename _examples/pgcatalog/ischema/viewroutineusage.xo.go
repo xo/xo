@@ -14,5 +14,4 @@ type ViewRoutineUsage struct {
 	SpecificCatalog pgtypes.SQLIdentifier `json:"specific_catalog"` // specific_catalog
 	SpecificSchema  pgtypes.SQLIdentifier `json:"specific_schema"`  // specific_schema
 	SpecificName    pgtypes.SQLIdentifier `json:"specific_name"`    // specific_name
-
 }

@@ -16,5 +16,4 @@ type DomainConstraint struct {
 	DomainName        pgtypes.SQLIdentifier `json:"domain_name"`        // domain_name
 	IsDeferrable      pgtypes.YesOrNo       `json:"is_deferrable"`      // is_deferrable
 	InitiallyDeferred pgtypes.YesOrNo       `json:"initially_deferred"` // initially_deferred
-
 }

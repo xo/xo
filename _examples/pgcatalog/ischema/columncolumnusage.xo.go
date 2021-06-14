@@ -13,5 +13,4 @@ type ColumnColumnUsage struct {
 	TableName       pgtypes.SQLIdentifier `json:"table_name"`       // table_name
 	ColumnName      pgtypes.SQLIdentifier `json:"column_name"`      // column_name
 	DependentColumn pgtypes.SQLIdentifier `json:"dependent_column"` // dependent_column
-
 }

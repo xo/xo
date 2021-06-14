@@ -15,7 +15,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
+
+	"github.com/google/uuid"
 )
 
 var (
@@ -216,7 +219,7 @@ type PgAggregate struct {
 	Xmin             pgtypes.Xid     `json:"xmin"`             // xmin
 	Ctid             pgtypes.Tid     `json:"ctid"`             // ctid
 	Aggfnoid         pgtypes.Regproc `json:"aggfnoid"`         // aggfnoid
-	Aggkind          uint8           `json:"aggkind"`          // aggkind
+	Aggkind          pgtypes.Char    `json:"aggkind"`          // aggkind
 	Aggnumdirectargs int16           `json:"aggnumdirectargs"` // aggnumdirectargs
 	Aggtransfn       pgtypes.Regproc `json:"aggtransfn"`       // aggtransfn
 	Aggfinalfn       pgtypes.Regproc `json:"aggfinalfn"`       // aggfinalfn
@@ -228,8 +231,8 @@ type PgAggregate struct {
 	Aggmfinalfn      pgtypes.Regproc `json:"aggmfinalfn"`      // aggmfinalfn
 	Aggfinalextra    bool            `json:"aggfinalextra"`    // aggfinalextra
 	Aggmfinalextra   bool            `json:"aggmfinalextra"`   // aggmfinalextra
-	Aggfinalmodify   uint8           `json:"aggfinalmodify"`   // aggfinalmodify
-	Aggmfinalmodify  uint8           `json:"aggmfinalmodify"`  // aggmfinalmodify
+	Aggfinalmodify   pgtypes.Char    `json:"aggfinalmodify"`   // aggfinalmodify
+	Aggmfinalmodify  pgtypes.Char    `json:"aggmfinalmodify"`  // aggmfinalmodify
 	Aggsortop        pgtypes.Oid     `json:"aggsortop"`        // aggsortop
 	Aggtranstype     pgtypes.Oid     `json:"aggtranstype"`     // aggtranstype
 	Aggtransspace    int             `json:"aggtransspace"`    // aggtransspace
@@ -237,7 +240,6 @@ type PgAggregate struct {
 	Aggmtransspace   int             `json:"aggmtransspace"`   // aggmtransspace
 	Agginitval       sql.NullString  `json:"agginitval"`       // agginitval
 	Aggminitval      sql.NullString  `json:"aggminitval"`      // aggminitval
-
 }
 
 // PgAm represents a row from 'pg_catalog.pg_am'.
@@ -251,28 +253,26 @@ type PgAm struct {
 	Oid       pgtypes.Oid     `json:"oid"`       // oid
 	Amname    pgtypes.Name    `json:"amname"`    // amname
 	Amhandler pgtypes.Regproc `json:"amhandler"` // amhandler
-	Amtype    uint8           `json:"amtype"`    // amtype
-
+	Amtype    pgtypes.Char    `json:"amtype"`    // amtype
 }
 
 // PgAmop represents a row from 'pg_catalog.pg_amop'.
 type PgAmop struct {
-	Tableoid       pgtypes.Oid `json:"tableoid"`       // tableoid
-	Cmax           pgtypes.Cid `json:"cmax"`           // cmax
-	Xmax           pgtypes.Xid `json:"xmax"`           // xmax
-	Cmin           pgtypes.Cid `json:"cmin"`           // cmin
-	Xmin           pgtypes.Xid `json:"xmin"`           // xmin
-	Ctid           pgtypes.Tid `json:"ctid"`           // ctid
-	Oid            pgtypes.Oid `json:"oid"`            // oid
-	Amopfamily     pgtypes.Oid `json:"amopfamily"`     // amopfamily
-	Amoplefttype   pgtypes.Oid `json:"amoplefttype"`   // amoplefttype
-	Amoprighttype  pgtypes.Oid `json:"amoprighttype"`  // amoprighttype
-	Amopstrategy   int16       `json:"amopstrategy"`   // amopstrategy
-	Amoppurpose    uint8       `json:"amoppurpose"`    // amoppurpose
-	Amopopr        pgtypes.Oid `json:"amopopr"`        // amopopr
-	Amopmethod     pgtypes.Oid `json:"amopmethod"`     // amopmethod
-	Amopsortfamily pgtypes.Oid `json:"amopsortfamily"` // amopsortfamily
-
+	Tableoid       pgtypes.Oid  `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid  `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid  `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid  `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid  `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid  `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid  `json:"oid"`            // oid
+	Amopfamily     pgtypes.Oid  `json:"amopfamily"`     // amopfamily
+	Amoplefttype   pgtypes.Oid  `json:"amoplefttype"`   // amoplefttype
+	Amoprighttype  pgtypes.Oid  `json:"amoprighttype"`  // amoprighttype
+	Amopstrategy   int16        `json:"amopstrategy"`   // amopstrategy
+	Amoppurpose    pgtypes.Char `json:"amoppurpose"`    // amoppurpose
+	Amopopr        pgtypes.Oid  `json:"amopopr"`        // amopopr
+	Amopmethod     pgtypes.Oid  `json:"amopmethod"`     // amopmethod
+	Amopsortfamily pgtypes.Oid  `json:"amopsortfamily"` // amopsortfamily
 }
 
 // PgAmproc represents a row from 'pg_catalog.pg_amproc'.
@@ -289,7 +289,6 @@ type PgAmproc struct {
 	Amprocrighttype pgtypes.Oid     `json:"amprocrighttype"` // amprocrighttype
 	Amprocnum       int16           `json:"amprocnum"`       // amprocnum
 	Amproc          pgtypes.Regproc `json:"amproc"`          // amproc
-
 }
 
 // PgAttrdef represents a row from 'pg_catalog.pg_attrdef'.
@@ -304,7 +303,6 @@ type PgAttrdef struct {
 	Adrelid  pgtypes.Oid        `json:"adrelid"`  // adrelid
 	Adnum    int16              `json:"adnum"`    // adnum
 	Adbin    pgtypes.PgNodeTree `json:"adbin"`    // adbin
-
 }
 
 // PgAttribute represents a row from 'pg_catalog.pg_attribute'.
@@ -325,13 +323,13 @@ type PgAttribute struct {
 	Attcacheoff   int               `json:"attcacheoff"`   // attcacheoff
 	Atttypmod     int               `json:"atttypmod"`     // atttypmod
 	Attbyval      bool              `json:"attbyval"`      // attbyval
-	Attstorage    uint8             `json:"attstorage"`    // attstorage
-	Attalign      uint8             `json:"attalign"`      // attalign
+	Attstorage    pgtypes.Char      `json:"attstorage"`    // attstorage
+	Attalign      pgtypes.Char      `json:"attalign"`      // attalign
 	Attnotnull    bool              `json:"attnotnull"`    // attnotnull
 	Atthasdef     bool              `json:"atthasdef"`     // atthasdef
 	Atthasmissing bool              `json:"atthasmissing"` // atthasmissing
-	Attidentity   uint8             `json:"attidentity"`   // attidentity
-	Attgenerated  uint8             `json:"attgenerated"`  // attgenerated
+	Attidentity   pgtypes.Char      `json:"attidentity"`   // attidentity
+	Attgenerated  pgtypes.Char      `json:"attgenerated"`  // attgenerated
 	Attisdropped  bool              `json:"attisdropped"`  // attisdropped
 	Attislocal    bool              `json:"attislocal"`    // attislocal
 	Attinhcount   int               `json:"attinhcount"`   // attinhcount
@@ -340,7 +338,6 @@ type PgAttribute struct {
 	Attoptions    []sql.NullString  `json:"attoptions"`    // attoptions
 	Attfdwoptions []sql.NullString  `json:"attfdwoptions"` // attfdwoptions
 	Attmissingval pgtypes.Anyarray  `json:"attmissingval"` // attmissingval
-
 }
 
 // PgAuthMember represents a row from 'pg_catalog.pg_auth_members'.
@@ -355,7 +352,6 @@ type PgAuthMember struct {
 	Member      pgtypes.Oid `json:"member"`       // member
 	Grantor     pgtypes.Oid `json:"grantor"`      // grantor
 	AdminOption bool        `json:"admin_option"` // admin_option
-
 }
 
 // PgAuthid represents a row from 'pg_catalog.pg_authid'.
@@ -378,7 +374,6 @@ type PgAuthid struct {
 	Rolconnlimit   int            `json:"rolconnlimit"`   // rolconnlimit
 	Rolpassword    sql.NullString `json:"rolpassword"`    // rolpassword
 	Rolvaliduntil  sql.NullTime   `json:"rolvaliduntil"`  // rolvaliduntil
-
 }
 
 // PgAvailableExtension represents a row from 'pg_catalog.pg_available_extensions'.
@@ -387,7 +382,6 @@ type PgAvailableExtension struct {
 	DefaultVersion   sql.NullString `json:"default_version"`   // default_version
 	InstalledVersion sql.NullString `json:"installed_version"` // installed_version
 	Comment          sql.NullString `json:"comment"`           // comment
-
 }
 
 // PgAvailableExtensionVersion represents a row from 'pg_catalog.pg_available_extension_versions'.
@@ -401,24 +395,22 @@ type PgAvailableExtensionVersion struct {
 	Schema      pgtypes.Name   `json:"schema"`      // schema
 	Requires    []pgtypes.Name `json:"requires"`    // requires
 	Comment     sql.NullString `json:"comment"`     // comment
-
 }
 
 // PgCast represents a row from 'pg_catalog.pg_cast'.
 type PgCast struct {
-	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
-	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
-	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
-	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
-	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
-	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
-	Oid         pgtypes.Oid `json:"oid"`         // oid
-	Castsource  pgtypes.Oid `json:"castsource"`  // castsource
-	Casttarget  pgtypes.Oid `json:"casttarget"`  // casttarget
-	Castfunc    pgtypes.Oid `json:"castfunc"`    // castfunc
-	Castcontext uint8       `json:"castcontext"` // castcontext
-	Castmethod  uint8       `json:"castmethod"`  // castmethod
-
+	Tableoid    pgtypes.Oid  `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid  `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid  `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid  `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid  `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid  `json:"ctid"`        // ctid
+	Oid         pgtypes.Oid  `json:"oid"`         // oid
+	Castsource  pgtypes.Oid  `json:"castsource"`  // castsource
+	Casttarget  pgtypes.Oid  `json:"casttarget"`  // casttarget
+	Castfunc    pgtypes.Oid  `json:"castfunc"`    // castfunc
+	Castcontext pgtypes.Char `json:"castcontext"` // castcontext
+	Castmethod  pgtypes.Char `json:"castmethod"`  // castmethod
 }
 
 // PgClass represents a row from 'pg_catalog.pg_class'.
@@ -444,8 +436,8 @@ type PgClass struct {
 	Reltoastrelid       pgtypes.Oid        `json:"reltoastrelid"`       // reltoastrelid
 	Relhasindex         bool               `json:"relhasindex"`         // relhasindex
 	Relisshared         bool               `json:"relisshared"`         // relisshared
-	Relpersistence      uint8              `json:"relpersistence"`      // relpersistence
-	Relkind             uint8              `json:"relkind"`             // relkind
+	Relpersistence      pgtypes.Char       `json:"relpersistence"`      // relpersistence
+	Relkind             pgtypes.Char       `json:"relkind"`             // relkind
 	Relnatts            int16              `json:"relnatts"`            // relnatts
 	Relchecks           int16              `json:"relchecks"`           // relchecks
 	Relhasrules         bool               `json:"relhasrules"`         // relhasrules
@@ -454,7 +446,7 @@ type PgClass struct {
 	Relrowsecurity      bool               `json:"relrowsecurity"`      // relrowsecurity
 	Relforcerowsecurity bool               `json:"relforcerowsecurity"` // relforcerowsecurity
 	Relispopulated      bool               `json:"relispopulated"`      // relispopulated
-	Relreplident        uint8              `json:"relreplident"`        // relreplident
+	Relreplident        pgtypes.Char       `json:"relreplident"`        // relreplident
 	Relispartition      bool               `json:"relispartition"`      // relispartition
 	Relrewrite          pgtypes.Oid        `json:"relrewrite"`          // relrewrite
 	Relfrozenxid        pgtypes.Xid        `json:"relfrozenxid"`        // relfrozenxid
@@ -462,7 +454,6 @@ type PgClass struct {
 	Relacl              []pgtypes.Aclitem  `json:"relacl"`              // relacl
 	Reloptions          []sql.NullString   `json:"reloptions"`          // reloptions
 	Relpartbound        pgtypes.PgNodeTree `json:"relpartbound"`        // relpartbound
-
 }
 
 // PgCollation represents a row from 'pg_catalog.pg_collation'.
@@ -477,20 +468,18 @@ type PgCollation struct {
 	Collname            pgtypes.Name   `json:"collname"`            // collname
 	Collnamespace       pgtypes.Oid    `json:"collnamespace"`       // collnamespace
 	Collowner           pgtypes.Oid    `json:"collowner"`           // collowner
-	Collprovider        uint8          `json:"collprovider"`        // collprovider
+	Collprovider        pgtypes.Char   `json:"collprovider"`        // collprovider
 	Collisdeterministic bool           `json:"collisdeterministic"` // collisdeterministic
 	Collencoding        int            `json:"collencoding"`        // collencoding
 	Collcollate         pgtypes.Name   `json:"collcollate"`         // collcollate
 	Collctype           pgtypes.Name   `json:"collctype"`           // collctype
 	Collversion         sql.NullString `json:"collversion"`         // collversion
-
 }
 
 // PgConfig represents a row from 'pg_catalog.pg_config'.
 type PgConfig struct {
 	Name    sql.NullString `json:"name"`    // name
 	Setting sql.NullString `json:"setting"` // setting
-
 }
 
 // PgConstraint represents a row from 'pg_catalog.pg_constraint'.
@@ -504,7 +493,7 @@ type PgConstraint struct {
 	Oid           pgtypes.Oid        `json:"oid"`           // oid
 	Conname       pgtypes.Name       `json:"conname"`       // conname
 	Connamespace  pgtypes.Oid        `json:"connamespace"`  // connamespace
-	Contype       uint8              `json:"contype"`       // contype
+	Contype       pgtypes.Char       `json:"contype"`       // contype
 	Condeferrable bool               `json:"condeferrable"` // condeferrable
 	Condeferred   bool               `json:"condeferred"`   // condeferred
 	Convalidated  bool               `json:"convalidated"`  // convalidated
@@ -513,9 +502,9 @@ type PgConstraint struct {
 	Conindid      pgtypes.Oid        `json:"conindid"`      // conindid
 	Conparentid   pgtypes.Oid        `json:"conparentid"`   // conparentid
 	Confrelid     pgtypes.Oid        `json:"confrelid"`     // confrelid
-	Confupdtype   uint8              `json:"confupdtype"`   // confupdtype
-	Confdeltype   uint8              `json:"confdeltype"`   // confdeltype
-	Confmatchtype uint8              `json:"confmatchtype"` // confmatchtype
+	Confupdtype   pgtypes.Char       `json:"confupdtype"`   // confupdtype
+	Confdeltype   pgtypes.Char       `json:"confdeltype"`   // confdeltype
+	Confmatchtype pgtypes.Char       `json:"confmatchtype"` // confmatchtype
 	Conislocal    bool               `json:"conislocal"`    // conislocal
 	Coninhcount   int                `json:"coninhcount"`   // coninhcount
 	Connoinherit  bool               `json:"connoinherit"`  // connoinherit
@@ -526,7 +515,6 @@ type PgConstraint struct {
 	Conffeqop     []pgtypes.Oid      `json:"conffeqop"`     // conffeqop
 	Conexclop     []pgtypes.Oid      `json:"conexclop"`     // conexclop
 	Conbin        pgtypes.PgNodeTree `json:"conbin"`        // conbin
-
 }
 
 // PgConversion represents a row from 'pg_catalog.pg_conversion'.
@@ -545,7 +533,6 @@ type PgConversion struct {
 	Contoencoding  int             `json:"contoencoding"`  // contoencoding
 	Conproc        pgtypes.Regproc `json:"conproc"`        // conproc
 	Condefault     bool            `json:"condefault"`     // condefault
-
 }
 
 // PgCursor represents a row from 'pg_catalog.pg_cursors'.
@@ -556,7 +543,6 @@ type PgCursor struct {
 	IsBinary     sql.NullBool   `json:"is_binary"`     // is_binary
 	IsScrollable sql.NullBool   `json:"is_scrollable"` // is_scrollable
 	CreationTime sql.NullTime   `json:"creation_time"` // creation_time
-
 }
 
 // PgDatabase represents a row from 'pg_catalog.pg_database'.
@@ -581,7 +567,6 @@ type PgDatabase struct {
 	Datminmxid    pgtypes.Xid       `json:"datminmxid"`    // datminmxid
 	Dattablespace pgtypes.Oid       `json:"dattablespace"` // dattablespace
 	Datacl        []pgtypes.Aclitem `json:"datacl"`        // datacl
-
 }
 
 // PgDbRoleSetting represents a row from 'pg_catalog.pg_db_role_setting'.
@@ -595,7 +580,6 @@ type PgDbRoleSetting struct {
 	Setdatabase pgtypes.Oid      `json:"setdatabase"` // setdatabase
 	Setrole     pgtypes.Oid      `json:"setrole"`     // setrole
 	Setconfig   []sql.NullString `json:"setconfig"`   // setconfig
-
 }
 
 // PgDefaultACL represents a row from 'pg_catalog.pg_default_acl'.
@@ -609,27 +593,25 @@ type PgDefaultACL struct {
 	Oid             pgtypes.Oid       `json:"oid"`             // oid
 	Defaclrole      pgtypes.Oid       `json:"defaclrole"`      // defaclrole
 	Defaclnamespace pgtypes.Oid       `json:"defaclnamespace"` // defaclnamespace
-	Defaclobjtype   uint8             `json:"defaclobjtype"`   // defaclobjtype
+	Defaclobjtype   pgtypes.Char      `json:"defaclobjtype"`   // defaclobjtype
 	Defaclacl       []pgtypes.Aclitem `json:"defaclacl"`       // defaclacl
-
 }
 
 // PgDepend represents a row from 'pg_catalog.pg_depend'.
 type PgDepend struct {
-	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
-	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
-	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
-	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
-	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
-	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
-	Classid     pgtypes.Oid `json:"classid"`     // classid
-	Objid       pgtypes.Oid `json:"objid"`       // objid
-	Objsubid    int         `json:"objsubid"`    // objsubid
-	Refclassid  pgtypes.Oid `json:"refclassid"`  // refclassid
-	Refobjid    pgtypes.Oid `json:"refobjid"`    // refobjid
-	Refobjsubid int         `json:"refobjsubid"` // refobjsubid
-	Deptype     uint8       `json:"deptype"`     // deptype
-
+	Tableoid    pgtypes.Oid  `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid  `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid  `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid  `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid  `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid  `json:"ctid"`        // ctid
+	Classid     pgtypes.Oid  `json:"classid"`     // classid
+	Objid       pgtypes.Oid  `json:"objid"`       // objid
+	Objsubid    int          `json:"objsubid"`    // objsubid
+	Refclassid  pgtypes.Oid  `json:"refclassid"`  // refclassid
+	Refobjid    pgtypes.Oid  `json:"refobjid"`    // refobjid
+	Refobjsubid int          `json:"refobjsubid"` // refobjsubid
+	Deptype     pgtypes.Char `json:"deptype"`     // deptype
 }
 
 // PgDescription represents a row from 'pg_catalog.pg_description'.
@@ -644,7 +626,6 @@ type PgDescription struct {
 	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
 	Objsubid    int         `json:"objsubid"`    // objsubid
 	Description string      `json:"description"` // description
-
 }
 
 // PgEnum represents a row from 'pg_catalog.pg_enum'.
@@ -659,7 +640,6 @@ type PgEnum struct {
 	Enumtypid     pgtypes.Oid  `json:"enumtypid"`     // enumtypid
 	Enumsortorder float32      `json:"enumsortorder"` // enumsortorder
 	Enumlabel     pgtypes.Name `json:"enumlabel"`     // enumlabel
-
 }
 
 // PgEventTrigger represents a row from 'pg_catalog.pg_event_trigger'.
@@ -675,9 +655,8 @@ type PgEventTrigger struct {
 	Evtevent   pgtypes.Name     `json:"evtevent"`   // evtevent
 	Evtowner   pgtypes.Oid      `json:"evtowner"`   // evtowner
 	Evtfoid    pgtypes.Oid      `json:"evtfoid"`    // evtfoid
-	Evtenabled uint8            `json:"evtenabled"` // evtenabled
+	Evtenabled pgtypes.Char     `json:"evtenabled"` // evtenabled
 	Evttags    []sql.NullString `json:"evttags"`    // evttags
-
 }
 
 // PgExtension represents a row from 'pg_catalog.pg_extension'.
@@ -696,7 +675,6 @@ type PgExtension struct {
 	Extversion     string           `json:"extversion"`     // extversion
 	Extconfig      []pgtypes.Oid    `json:"extconfig"`      // extconfig
 	Extcondition   []sql.NullString `json:"extcondition"`   // extcondition
-
 }
 
 // PgFileSetting represents a row from 'pg_catalog.pg_file_settings'.
@@ -708,7 +686,6 @@ type PgFileSetting struct {
 	Setting    sql.NullString `json:"setting"`    // setting
 	Applied    sql.NullBool   `json:"applied"`    // applied
 	Error      sql.NullString `json:"error"`      // error
-
 }
 
 // PgForeignDataWrapper represents a row from 'pg_catalog.pg_foreign_data_wrapper'.
@@ -726,7 +703,6 @@ type PgForeignDataWrapper struct {
 	Fdwvalidator pgtypes.Oid       `json:"fdwvalidator"` // fdwvalidator
 	Fdwacl       []pgtypes.Aclitem `json:"fdwacl"`       // fdwacl
 	Fdwoptions   []sql.NullString  `json:"fdwoptions"`   // fdwoptions
-
 }
 
 // PgForeignServer represents a row from 'pg_catalog.pg_foreign_server'.
@@ -745,7 +721,6 @@ type PgForeignServer struct {
 	Srvversion sql.NullString    `json:"srvversion"` // srvversion
 	Srvacl     []pgtypes.Aclitem `json:"srvacl"`     // srvacl
 	Srvoptions []sql.NullString  `json:"srvoptions"` // srvoptions
-
 }
 
 // PgForeignTable represents a row from 'pg_catalog.pg_foreign_table'.
@@ -759,7 +734,6 @@ type PgForeignTable struct {
 	Ftrelid   pgtypes.Oid      `json:"ftrelid"`   // ftrelid
 	Ftserver  pgtypes.Oid      `json:"ftserver"`  // ftserver
 	Ftoptions []sql.NullString `json:"ftoptions"` // ftoptions
-
 }
 
 // PgGroup represents a row from 'pg_catalog.pg_group'.
@@ -767,7 +741,6 @@ type PgGroup struct {
 	Groname  pgtypes.Name  `json:"groname"`  // groname
 	Grosysid pgtypes.Oid   `json:"grosysid"` // grosysid
 	Grolist  []pgtypes.Oid `json:"grolist"`  // grolist
-
 }
 
 // PgHbaFileRule represents a row from 'pg_catalog.pg_hba_file_rules'.
@@ -781,17 +754,6 @@ type PgHbaFileRule struct {
 	AuthMethod sql.NullString   `json:"auth_method"` // auth_method
 	Options    []sql.NullString `json:"options"`     // options
 	Error      sql.NullString   `json:"error"`       // error
-
-}
-
-// PgIndex represents a row from 'pg_catalog.pg_indexes'.
-type PgIndex struct {
-	Schemaname pgtypes.Name   `json:"schemaname"` // schemaname
-	Tablename  pgtypes.Name   `json:"tablename"`  // tablename
-	Indexname  pgtypes.Name   `json:"indexname"`  // indexname
-	Tablespace pgtypes.Name   `json:"tablespace"` // tablespace
-	Indexdef   sql.NullString `json:"indexdef"`   // indexdef
-
 }
 
 // PgIndex represents a row from 'pg_catalog.pg_index'.
@@ -822,7 +784,15 @@ type PgIndex struct {
 	Indoption      pgtypes.Int2vector `json:"indoption"`      // indoption
 	Indexprs       pgtypes.PgNodeTree `json:"indexprs"`       // indexprs
 	Indpred        pgtypes.PgNodeTree `json:"indpred"`        // indpred
+}
 
+// PgIndex represents a row from 'pg_catalog.pg_indexes'.
+type PgIndex struct {
+	Schemaname pgtypes.Name   `json:"schemaname"` // schemaname
+	Tablename  pgtypes.Name   `json:"tablename"`  // tablename
+	Indexname  pgtypes.Name   `json:"indexname"`  // indexname
+	Tablespace pgtypes.Name   `json:"tablespace"` // tablespace
+	Indexdef   sql.NullString `json:"indexdef"`   // indexdef
 }
 
 // PgInherit represents a row from 'pg_catalog.pg_inherits'.
@@ -836,7 +806,6 @@ type PgInherit struct {
 	Inhrelid  pgtypes.Oid `json:"inhrelid"`  // inhrelid
 	Inhparent pgtypes.Oid `json:"inhparent"` // inhparent
 	Inhseqno  int         `json:"inhseqno"`  // inhseqno
-
 }
 
 // PgInitPriv represents a row from 'pg_catalog.pg_init_privs'.
@@ -850,9 +819,8 @@ type PgInitPriv struct {
 	Objoid    pgtypes.Oid       `json:"objoid"`    // objoid
 	Classoid  pgtypes.Oid       `json:"classoid"`  // classoid
 	Objsubid  int               `json:"objsubid"`  // objsubid
-	Privtype  uint8             `json:"privtype"`  // privtype
+	Privtype  pgtypes.Char      `json:"privtype"`  // privtype
 	Initprivs []pgtypes.Aclitem `json:"initprivs"` // initprivs
-
 }
 
 // PgLanguage represents a row from 'pg_catalog.pg_language'.
@@ -872,7 +840,6 @@ type PgLanguage struct {
 	Laninline     pgtypes.Oid       `json:"laninline"`     // laninline
 	Lanvalidator  pgtypes.Oid       `json:"lanvalidator"`  // lanvalidator
 	Lanacl        []pgtypes.Aclitem `json:"lanacl"`        // lanacl
-
 }
 
 // PgLargeobject represents a row from 'pg_catalog.pg_largeobject'.
@@ -886,7 +853,6 @@ type PgLargeobject struct {
 	Loid     pgtypes.Oid `json:"loid"`     // loid
 	Pageno   int         `json:"pageno"`   // pageno
 	Data     []byte      `json:"data"`     // data
-
 }
 
 // PgLargeobjectMetadatum represents a row from 'pg_catalog.pg_largeobject_metadata'.
@@ -900,7 +866,6 @@ type PgLargeobjectMetadatum struct {
 	Oid      pgtypes.Oid       `json:"oid"`      // oid
 	Lomowner pgtypes.Oid       `json:"lomowner"` // lomowner
 	Lomacl   []pgtypes.Aclitem `json:"lomacl"`   // lomacl
-
 }
 
 // PgLock represents a row from 'pg_catalog.pg_locks'.
@@ -920,7 +885,6 @@ type PgLock struct {
 	Mode               sql.NullString `json:"mode"`               // mode
 	Granted            sql.NullBool   `json:"granted"`            // granted
 	Fastpath           sql.NullBool   `json:"fastpath"`           // fastpath
-
 }
 
 // PgMatview represents a row from 'pg_catalog.pg_matviews'.
@@ -932,7 +896,6 @@ type PgMatview struct {
 	Hasindexes   sql.NullBool   `json:"hasindexes"`   // hasindexes
 	Ispopulated  sql.NullBool   `json:"ispopulated"`  // ispopulated
 	Definition   sql.NullString `json:"definition"`   // definition
-
 }
 
 // PgNamespace represents a row from 'pg_catalog.pg_namespace'.
@@ -947,7 +910,6 @@ type PgNamespace struct {
 	Nspname  pgtypes.Name      `json:"nspname"`  // nspname
 	Nspowner pgtypes.Oid       `json:"nspowner"` // nspowner
 	Nspacl   []pgtypes.Aclitem `json:"nspacl"`   // nspacl
-
 }
 
 // PgOpclass represents a row from 'pg_catalog.pg_opclass'.
@@ -967,7 +929,6 @@ type PgOpclass struct {
 	Opcintype    pgtypes.Oid  `json:"opcintype"`    // opcintype
 	Opcdefault   bool         `json:"opcdefault"`   // opcdefault
 	Opckeytype   pgtypes.Oid  `json:"opckeytype"`   // opckeytype
-
 }
 
 // PgOperator represents a row from 'pg_catalog.pg_operator'.
@@ -982,7 +943,7 @@ type PgOperator struct {
 	Oprname      pgtypes.Name    `json:"oprname"`      // oprname
 	Oprnamespace pgtypes.Oid     `json:"oprnamespace"` // oprnamespace
 	Oprowner     pgtypes.Oid     `json:"oprowner"`     // oprowner
-	Oprkind      uint8           `json:"oprkind"`      // oprkind
+	Oprkind      pgtypes.Char    `json:"oprkind"`      // oprkind
 	Oprcanmerge  bool            `json:"oprcanmerge"`  // oprcanmerge
 	Oprcanhash   bool            `json:"oprcanhash"`   // oprcanhash
 	Oprleft      pgtypes.Oid     `json:"oprleft"`      // oprleft
@@ -993,7 +954,6 @@ type PgOperator struct {
 	Oprcode      pgtypes.Regproc `json:"oprcode"`      // oprcode
 	Oprrest      pgtypes.Regproc `json:"oprrest"`      // oprrest
 	Oprjoin      pgtypes.Regproc `json:"oprjoin"`      // oprjoin
-
 }
 
 // PgOpfamily represents a row from 'pg_catalog.pg_opfamily'.
@@ -1009,7 +969,6 @@ type PgOpfamily struct {
 	Opfname      pgtypes.Name `json:"opfname"`      // opfname
 	Opfnamespace pgtypes.Oid  `json:"opfnamespace"` // opfnamespace
 	Opfowner     pgtypes.Oid  `json:"opfowner"`     // opfowner
-
 }
 
 // PgPartitionedTable represents a row from 'pg_catalog.pg_partitioned_table'.
@@ -1021,27 +980,13 @@ type PgPartitionedTable struct {
 	Xmin          pgtypes.Xid        `json:"xmin"`          // xmin
 	Ctid          pgtypes.Tid        `json:"ctid"`          // ctid
 	Partrelid     pgtypes.Oid        `json:"partrelid"`     // partrelid
-	Partstrat     uint8              `json:"partstrat"`     // partstrat
+	Partstrat     pgtypes.Char       `json:"partstrat"`     // partstrat
 	Partnatts     int16              `json:"partnatts"`     // partnatts
 	Partdefid     pgtypes.Oid        `json:"partdefid"`     // partdefid
 	Partattrs     pgtypes.Int2vector `json:"partattrs"`     // partattrs
 	Partclass     pgtypes.Oidvector  `json:"partclass"`     // partclass
 	Partcollation pgtypes.Oidvector  `json:"partcollation"` // partcollation
 	Partexprs     pgtypes.PgNodeTree `json:"partexprs"`     // partexprs
-
-}
-
-// PgPolicy represents a row from 'pg_catalog.pg_policies'.
-type PgPolicy struct {
-	Schemaname pgtypes.Name   `json:"schemaname"` // schemaname
-	Tablename  pgtypes.Name   `json:"tablename"`  // tablename
-	Policyname pgtypes.Name   `json:"policyname"` // policyname
-	Permissive sql.NullString `json:"permissive"` // permissive
-	Roles      []pgtypes.Name `json:"roles"`      // roles
-	Cmd        sql.NullString `json:"cmd"`        // cmd
-	Qual       sql.NullString `json:"qual"`       // qual
-	WithCheck  sql.NullString `json:"with_check"` // with_check
-
 }
 
 // PgPolicy represents a row from 'pg_catalog.pg_policy'.
@@ -1055,12 +1000,23 @@ type PgPolicy struct {
 	Oid           pgtypes.Oid        `json:"oid"`           // oid
 	Polname       pgtypes.Name       `json:"polname"`       // polname
 	Polrelid      pgtypes.Oid        `json:"polrelid"`      // polrelid
-	Polcmd        uint8              `json:"polcmd"`        // polcmd
+	Polcmd        pgtypes.Char       `json:"polcmd"`        // polcmd
 	Polpermissive bool               `json:"polpermissive"` // polpermissive
 	Polroles      []pgtypes.Oid      `json:"polroles"`      // polroles
 	Polqual       pgtypes.PgNodeTree `json:"polqual"`       // polqual
 	Polwithcheck  pgtypes.PgNodeTree `json:"polwithcheck"`  // polwithcheck
+}
 
+// PgPolicy represents a row from 'pg_catalog.pg_policies'.
+type PgPolicy struct {
+	Schemaname pgtypes.Name   `json:"schemaname"` // schemaname
+	Tablename  pgtypes.Name   `json:"tablename"`  // tablename
+	Policyname pgtypes.Name   `json:"policyname"` // policyname
+	Permissive sql.NullString `json:"permissive"` // permissive
+	Roles      []pgtypes.Name `json:"roles"`      // roles
+	Cmd        sql.NullString `json:"cmd"`        // cmd
+	Qual       sql.NullString `json:"qual"`       // qual
+	WithCheck  sql.NullString `json:"with_check"` // with_check
 }
 
 // PgPreparedStatement represents a row from 'pg_catalog.pg_prepared_statements'.
@@ -1070,7 +1026,6 @@ type PgPreparedStatement struct {
 	PrepareTime    sql.NullTime      `json:"prepare_time"`    // prepare_time
 	ParameterTypes []pgtypes.Regtype `json:"parameter_types"` // parameter_types
 	FromSQL        sql.NullBool      `json:"from_sql"`        // from_sql
-
 }
 
 // PgPreparedXact represents a row from 'pg_catalog.pg_prepared_xacts'.
@@ -1080,7 +1035,6 @@ type PgPreparedXact struct {
 	Prepared    sql.NullTime   `json:"prepared"`    // prepared
 	Owner       pgtypes.Name   `json:"owner"`       // owner
 	Database    pgtypes.Name   `json:"database"`    // database
-
 }
 
 // PgProc represents a row from 'pg_catalog.pg_proc'.
@@ -1100,19 +1054,19 @@ type PgProc struct {
 	Prorows         float32            `json:"prorows"`         // prorows
 	Provariadic     pgtypes.Oid        `json:"provariadic"`     // provariadic
 	Prosupport      pgtypes.Regproc    `json:"prosupport"`      // prosupport
-	Prokind         uint8              `json:"prokind"`         // prokind
+	Prokind         pgtypes.Char       `json:"prokind"`         // prokind
 	Prosecdef       bool               `json:"prosecdef"`       // prosecdef
 	Proleakproof    bool               `json:"proleakproof"`    // proleakproof
 	Proisstrict     bool               `json:"proisstrict"`     // proisstrict
 	Proretset       bool               `json:"proretset"`       // proretset
-	Provolatile     uint8              `json:"provolatile"`     // provolatile
-	Proparallel     uint8              `json:"proparallel"`     // proparallel
+	Provolatile     pgtypes.Char       `json:"provolatile"`     // provolatile
+	Proparallel     pgtypes.Char       `json:"proparallel"`     // proparallel
 	Pronargs        int16              `json:"pronargs"`        // pronargs
 	Pronargdefaults int16              `json:"pronargdefaults"` // pronargdefaults
 	Prorettype      pgtypes.Oid        `json:"prorettype"`      // prorettype
 	Proargtypes     pgtypes.Oidvector  `json:"proargtypes"`     // proargtypes
 	Proallargtypes  []pgtypes.Oid      `json:"proallargtypes"`  // proallargtypes
-	Proargmodes     []uint8            `json:"proargmodes"`     // proargmodes
+	Proargmodes     []pgtypes.Char     `json:"proargmodes"`     // proargmodes
 	Proargnames     []sql.NullString   `json:"proargnames"`     // proargnames
 	Proargdefaults  pgtypes.PgNodeTree `json:"proargdefaults"`  // proargdefaults
 	Protrftypes     []pgtypes.Oid      `json:"protrftypes"`     // protrftypes
@@ -1120,7 +1074,6 @@ type PgProc struct {
 	Probin          sql.NullString     `json:"probin"`          // probin
 	Proconfig       []sql.NullString   `json:"proconfig"`       // proconfig
 	Proacl          []pgtypes.Aclitem  `json:"proacl"`          // proacl
-
 }
 
 // PgPublication represents a row from 'pg_catalog.pg_publication'.
@@ -1140,7 +1093,6 @@ type PgPublication struct {
 	Pubdelete    bool         `json:"pubdelete"`    // pubdelete
 	Pubtruncate  bool         `json:"pubtruncate"`  // pubtruncate
 	Pubviaroot   bool         `json:"pubviaroot"`   // pubviaroot
-
 }
 
 // PgPublicationRel represents a row from 'pg_catalog.pg_publication_rel'.
@@ -1154,7 +1106,6 @@ type PgPublicationRel struct {
 	Oid      pgtypes.Oid `json:"oid"`      // oid
 	Prpubid  pgtypes.Oid `json:"prpubid"`  // prpubid
 	Prrelid  pgtypes.Oid `json:"prrelid"`  // prrelid
-
 }
 
 // PgPublicationTable represents a row from 'pg_catalog.pg_publication_tables'.
@@ -1162,7 +1113,6 @@ type PgPublicationTable struct {
 	Pubname    pgtypes.Name `json:"pubname"`    // pubname
 	Schemaname pgtypes.Name `json:"schemaname"` // schemaname
 	Tablename  pgtypes.Name `json:"tablename"`  // tablename
-
 }
 
 // PgRange represents a row from 'pg_catalog.pg_range'.
@@ -1179,7 +1129,6 @@ type PgRange struct {
 	Rngsubopc    pgtypes.Oid     `json:"rngsubopc"`    // rngsubopc
 	Rngcanonical pgtypes.Regproc `json:"rngcanonical"` // rngcanonical
 	Rngsubdiff   pgtypes.Regproc `json:"rngsubdiff"`   // rngsubdiff
-
 }
 
 // PgReplicationOrigin represents a row from 'pg_catalog.pg_replication_origin'.
@@ -1192,7 +1141,6 @@ type PgReplicationOrigin struct {
 	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
 	Roident  pgtypes.Oid `json:"roident"`  // roident
 	Roname   string      `json:"roname"`   // roname
-
 }
 
 // PgReplicationOriginStatus represents a row from 'pg_catalog.pg_replication_origin_status'.
@@ -1201,7 +1149,6 @@ type PgReplicationOriginStatus struct {
 	ExternalID sql.NullString `json:"external_id"` // external_id
 	RemoteLsn  pgtypes.PgLsn  `json:"remote_lsn"`  // remote_lsn
 	LocalLsn   pgtypes.PgLsn  `json:"local_lsn"`   // local_lsn
-
 }
 
 // PgReplicationSlot represents a row from 'pg_catalog.pg_replication_slots'.
@@ -1220,7 +1167,6 @@ type PgReplicationSlot struct {
 	ConfirmedFlushLsn pgtypes.PgLsn  `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
 	WalStatus         sql.NullString `json:"wal_status"`          // wal_status
 	SafeWalSize       sql.NullInt64  `json:"safe_wal_size"`       // safe_wal_size
-
 }
 
 // PgRewrite represents a row from 'pg_catalog.pg_rewrite'.
@@ -1234,12 +1180,11 @@ type PgRewrite struct {
 	Oid       pgtypes.Oid        `json:"oid"`        // oid
 	Rulename  pgtypes.Name       `json:"rulename"`   // rulename
 	EvClass   pgtypes.Oid        `json:"ev_class"`   // ev_class
-	EvType    uint8              `json:"ev_type"`    // ev_type
-	EvEnabled uint8              `json:"ev_enabled"` // ev_enabled
+	EvType    pgtypes.Char       `json:"ev_type"`    // ev_type
+	EvEnabled pgtypes.Char       `json:"ev_enabled"` // ev_enabled
 	IsInstead bool               `json:"is_instead"` // is_instead
 	EvQual    pgtypes.PgNodeTree `json:"ev_qual"`    // ev_qual
 	EvAction  pgtypes.PgNodeTree `json:"ev_action"`  // ev_action
-
 }
 
 // PgRole represents a row from 'pg_catalog.pg_roles'.
@@ -1257,7 +1202,6 @@ type PgRole struct {
 	Rolbypassrls   sql.NullBool     `json:"rolbypassrls"`   // rolbypassrls
 	Rolconfig      []sql.NullString `json:"rolconfig"`      // rolconfig
 	Oid            pgtypes.Oid      `json:"oid"`            // oid
-
 }
 
 // PgRule represents a row from 'pg_catalog.pg_rules'.
@@ -1266,7 +1210,18 @@ type PgRule struct {
 	Tablename  pgtypes.Name   `json:"tablename"`  // tablename
 	Rulename   pgtypes.Name   `json:"rulename"`   // rulename
 	Definition sql.NullString `json:"definition"` // definition
+}
 
+// PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
+type PgSeclabel struct {
+	Objoid       pgtypes.Oid    `json:"objoid"`       // objoid
+	Classoid     pgtypes.Oid    `json:"classoid"`     // classoid
+	Objsubid     sql.NullInt64  `json:"objsubid"`     // objsubid
+	Objtype      sql.NullString `json:"objtype"`      // objtype
+	Objnamespace pgtypes.Oid    `json:"objnamespace"` // objnamespace
+	Objname      sql.NullString `json:"objname"`      // objname
+	Provider     sql.NullString `json:"provider"`     // provider
+	Label        sql.NullString `json:"label"`        // label
 }
 
 // PgSeclabel represents a row from 'pg_catalog.pg_seclabel'.
@@ -1282,20 +1237,6 @@ type PgSeclabel struct {
 	Objsubid int         `json:"objsubid"` // objsubid
 	Provider string      `json:"provider"` // provider
 	Label    string      `json:"label"`    // label
-
-}
-
-// PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
-type PgSeclabel struct {
-	Objoid       pgtypes.Oid    `json:"objoid"`       // objoid
-	Classoid     pgtypes.Oid    `json:"classoid"`     // classoid
-	Objsubid     sql.NullInt64  `json:"objsubid"`     // objsubid
-	Objtype      sql.NullString `json:"objtype"`      // objtype
-	Objnamespace pgtypes.Oid    `json:"objnamespace"` // objnamespace
-	Objname      sql.NullString `json:"objname"`      // objname
-	Provider     sql.NullString `json:"provider"`     // provider
-	Label        sql.NullString `json:"label"`        // label
-
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequence'.
@@ -1314,7 +1255,6 @@ type PgSequence struct {
 	Seqmin       int64       `json:"seqmin"`       // seqmin
 	Seqcache     int64       `json:"seqcache"`     // seqcache
 	Seqcycle     bool        `json:"seqcycle"`     // seqcycle
-
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequences'.
@@ -1330,7 +1270,6 @@ type PgSequence struct {
 	Cycle         sql.NullBool    `json:"cycle"`         // cycle
 	CacheSize     sql.NullInt64   `json:"cache_size"`    // cache_size
 	LastValue     sql.NullInt64   `json:"last_value"`    // last_value
-
 }
 
 // PgSetting represents a row from 'pg_catalog.pg_settings'.
@@ -1352,7 +1291,6 @@ type PgSetting struct {
 	Sourcefile     sql.NullString   `json:"sourcefile"`      // sourcefile
 	Sourceline     sql.NullInt64    `json:"sourceline"`      // sourceline
 	PendingRestart sql.NullBool     `json:"pending_restart"` // pending_restart
-
 }
 
 // PgShadow represents a row from 'pg_catalog.pg_shadow'.
@@ -1366,25 +1304,23 @@ type PgShadow struct {
 	Passwd       sql.NullString   `json:"passwd"`       // passwd
 	Valuntil     sql.NullTime     `json:"valuntil"`     // valuntil
 	Useconfig    []sql.NullString `json:"useconfig"`    // useconfig
-
 }
 
 // PgShdepend represents a row from 'pg_catalog.pg_shdepend'.
 type PgShdepend struct {
-	Tableoid   pgtypes.Oid `json:"tableoid"`   // tableoid
-	Cmax       pgtypes.Cid `json:"cmax"`       // cmax
-	Xmax       pgtypes.Xid `json:"xmax"`       // xmax
-	Cmin       pgtypes.Cid `json:"cmin"`       // cmin
-	Xmin       pgtypes.Xid `json:"xmin"`       // xmin
-	Ctid       pgtypes.Tid `json:"ctid"`       // ctid
-	Dbid       pgtypes.Oid `json:"dbid"`       // dbid
-	Classid    pgtypes.Oid `json:"classid"`    // classid
-	Objid      pgtypes.Oid `json:"objid"`      // objid
-	Objsubid   int         `json:"objsubid"`   // objsubid
-	Refclassid pgtypes.Oid `json:"refclassid"` // refclassid
-	Refobjid   pgtypes.Oid `json:"refobjid"`   // refobjid
-	Deptype    uint8       `json:"deptype"`    // deptype
-
+	Tableoid   pgtypes.Oid  `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid  `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid  `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid  `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid  `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid  `json:"ctid"`       // ctid
+	Dbid       pgtypes.Oid  `json:"dbid"`       // dbid
+	Classid    pgtypes.Oid  `json:"classid"`    // classid
+	Objid      pgtypes.Oid  `json:"objid"`      // objid
+	Objsubid   int          `json:"objsubid"`   // objsubid
+	Refclassid pgtypes.Oid  `json:"refclassid"` // refclassid
+	Refobjid   pgtypes.Oid  `json:"refobjid"`   // refobjid
+	Deptype    pgtypes.Char `json:"deptype"`    // deptype
 }
 
 // PgShdescription represents a row from 'pg_catalog.pg_shdescription'.
@@ -1398,7 +1334,6 @@ type PgShdescription struct {
 	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
 	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
 	Description string      `json:"description"` // description
-
 }
 
 // PgShmemAllocation represents a row from 'pg_catalog.pg_shmem_allocations'.
@@ -1407,7 +1342,6 @@ type PgShmemAllocation struct {
 	Off           sql.NullInt64  `json:"off"`            // off
 	Size          sql.NullInt64  `json:"size"`           // size
 	AllocatedSize sql.NullInt64  `json:"allocated_size"` // allocated_size
-
 }
 
 // PgShseclabel represents a row from 'pg_catalog.pg_shseclabel'.
@@ -1422,7 +1356,6 @@ type PgShseclabel struct {
 	Classoid pgtypes.Oid `json:"classoid"` // classoid
 	Provider string      `json:"provider"` // provider
 	Label    string      `json:"label"`    // label
-
 }
 
 // PgStat represents a row from 'pg_catalog.pg_stats'.
@@ -1441,7 +1374,6 @@ type PgStat struct {
 	MostCommonElems     pgtypes.Anyarray  `json:"most_common_elems"`      // most_common_elems
 	MostCommonElemFreqs []sql.NullFloat64 `json:"most_common_elem_freqs"` // most_common_elem_freqs
 	ElemCountHistogram  []sql.NullFloat64 `json:"elem_count_histogram"`   // elem_count_histogram
-
 }
 
 // PgStatActivity represents a row from 'pg_catalog.pg_stat_activity'.
@@ -1467,7 +1399,6 @@ type PgStatActivity struct {
 	BackendXmin     pgtypes.Xid    `json:"backend_xmin"`     // backend_xmin
 	Query           sql.NullString `json:"query"`            // query
 	BackendType     sql.NullString `json:"backend_type"`     // backend_type
-
 }
 
 // PgStatAllIndex represents a row from 'pg_catalog.pg_stat_all_indexes'.
@@ -1480,7 +1411,6 @@ type PgStatAllIndex struct {
 	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
 	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
 	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-
 }
 
 // PgStatAllTable represents a row from 'pg_catalog.pg_stat_all_tables'.
@@ -1508,7 +1438,6 @@ type PgStatAllTable struct {
 	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
 	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
 	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
-
 }
 
 // PgStatArchiver represents a row from 'pg_catalog.pg_stat_archiver'.
@@ -1520,7 +1449,6 @@ type PgStatArchiver struct {
 	LastFailedWal    sql.NullString `json:"last_failed_wal"`    // last_failed_wal
 	LastFailedTime   sql.NullTime   `json:"last_failed_time"`   // last_failed_time
 	StatsReset       sql.NullTime   `json:"stats_reset"`        // stats_reset
-
 }
 
 // PgStatBgwriter represents a row from 'pg_catalog.pg_stat_bgwriter'.
@@ -1536,7 +1464,6 @@ type PgStatBgwriter struct {
 	BuffersBackendFsync sql.NullInt64   `json:"buffers_backend_fsync"` // buffers_backend_fsync
 	BuffersAlloc        sql.NullInt64   `json:"buffers_alloc"`         // buffers_alloc
 	StatsReset          sql.NullTime    `json:"stats_reset"`           // stats_reset
-
 }
 
 // PgStatDatabase represents a row from 'pg_catalog.pg_stat_database'.
@@ -1562,7 +1489,6 @@ type PgStatDatabase struct {
 	BlkReadTime         sql.NullFloat64 `json:"blk_read_time"`         // blk_read_time
 	BlkWriteTime        sql.NullFloat64 `json:"blk_write_time"`        // blk_write_time
 	StatsReset          sql.NullTime    `json:"stats_reset"`           // stats_reset
-
 }
 
 // PgStatDatabaseConflict represents a row from 'pg_catalog.pg_stat_database_conflicts'.
@@ -1574,7 +1500,6 @@ type PgStatDatabaseConflict struct {
 	ConflSnapshot   sql.NullInt64 `json:"confl_snapshot"`   // confl_snapshot
 	ConflBufferpin  sql.NullInt64 `json:"confl_bufferpin"`  // confl_bufferpin
 	ConflDeadlock   sql.NullInt64 `json:"confl_deadlock"`   // confl_deadlock
-
 }
 
 // PgStatGssapi represents a row from 'pg_catalog.pg_stat_gssapi'.
@@ -1583,7 +1508,6 @@ type PgStatGssapi struct {
 	GssAuthenticated sql.NullBool   `json:"gss_authenticated"` // gss_authenticated
 	Principal        sql.NullString `json:"principal"`         // principal
 	Encrypted        sql.NullBool   `json:"encrypted"`         // encrypted
-
 }
 
 // PgStatProgressAnalyze represents a row from 'pg_catalog.pg_stat_progress_analyze'.
@@ -1600,7 +1524,6 @@ type PgStatProgressAnalyze struct {
 	ChildTablesTotal       sql.NullInt64  `json:"child_tables_total"`        // child_tables_total
 	ChildTablesDone        sql.NullInt64  `json:"child_tables_done"`         // child_tables_done
 	CurrentChildTableRelid pgtypes.Oid    `json:"current_child_table_relid"` // current_child_table_relid
-
 }
 
 // PgStatProgressBasebackup represents a row from 'pg_catalog.pg_stat_progress_basebackup'.
@@ -1611,7 +1534,6 @@ type PgStatProgressBasebackup struct {
 	BackupStreamed      sql.NullInt64  `json:"backup_streamed"`      // backup_streamed
 	TablespacesTotal    sql.NullInt64  `json:"tablespaces_total"`    // tablespaces_total
 	TablespacesStreamed sql.NullInt64  `json:"tablespaces_streamed"` // tablespaces_streamed
-
 }
 
 // PgStatProgressCluster represents a row from 'pg_catalog.pg_stat_progress_cluster'.
@@ -1628,7 +1550,6 @@ type PgStatProgressCluster struct {
 	HeapBlksTotal     sql.NullInt64  `json:"heap_blks_total"`     // heap_blks_total
 	HeapBlksScanned   sql.NullInt64  `json:"heap_blks_scanned"`   // heap_blks_scanned
 	IndexRebuildCount sql.NullInt64  `json:"index_rebuild_count"` // index_rebuild_count
-
 }
 
 // PgStatProgressCreateIndex represents a row from 'pg_catalog.pg_stat_progress_create_index'.
@@ -1649,7 +1570,6 @@ type PgStatProgressCreateIndex struct {
 	TuplesDone       sql.NullInt64  `json:"tuples_done"`        // tuples_done
 	PartitionsTotal  sql.NullInt64  `json:"partitions_total"`   // partitions_total
 	PartitionsDone   sql.NullInt64  `json:"partitions_done"`    // partitions_done
-
 }
 
 // PgStatProgressVacuum represents a row from 'pg_catalog.pg_stat_progress_vacuum'.
@@ -1665,7 +1585,6 @@ type PgStatProgressVacuum struct {
 	IndexVacuumCount sql.NullInt64  `json:"index_vacuum_count"` // index_vacuum_count
 	MaxDeadTuples    sql.NullInt64  `json:"max_dead_tuples"`    // max_dead_tuples
 	NumDeadTuples    sql.NullInt64  `json:"num_dead_tuples"`    // num_dead_tuples
-
 }
 
 // PgStatReplication represents a row from 'pg_catalog.pg_stat_replication'.
@@ -1684,13 +1603,12 @@ type PgStatReplication struct {
 	WriteLsn        pgtypes.PgLsn  `json:"write_lsn"`        // write_lsn
 	FlushLsn        pgtypes.PgLsn  `json:"flush_lsn"`        // flush_lsn
 	ReplayLsn       pgtypes.PgLsn  `json:"replay_lsn"`       // replay_lsn
-	WriteLag        *time.Duration `json:"write_lag"`        // write_lag
-	FlushLag        *time.Duration `json:"flush_lag"`        // flush_lag
-	ReplayLag       *time.Duration `json:"replay_lag"`       // replay_lag
+	WriteLag        []byte         `json:"write_lag"`        // write_lag
+	FlushLag        []byte         `json:"flush_lag"`        // flush_lag
+	ReplayLag       []byte         `json:"replay_lag"`       // replay_lag
 	SyncPriority    sql.NullInt64  `json:"sync_priority"`    // sync_priority
 	SyncState       sql.NullString `json:"sync_state"`       // sync_state
 	ReplyTime       sql.NullTime   `json:"reply_time"`       // reply_time
-
 }
 
 // PgStatSlru represents a row from 'pg_catalog.pg_stat_slru'.
@@ -1704,7 +1622,6 @@ type PgStatSlru struct {
 	Flushes     sql.NullInt64  `json:"flushes"`      // flushes
 	Truncates   sql.NullInt64  `json:"truncates"`    // truncates
 	StatsReset  sql.NullTime   `json:"stats_reset"`  // stats_reset
-
 }
 
 // PgStatSsl represents a row from 'pg_catalog.pg_stat_ssl'.
@@ -1718,7 +1635,6 @@ type PgStatSsl struct {
 	ClientDn     sql.NullString  `json:"client_dn"`     // client_dn
 	ClientSerial sql.NullFloat64 `json:"client_serial"` // client_serial
 	IssuerDn     sql.NullString  `json:"issuer_dn"`     // issuer_dn
-
 }
 
 // PgStatSubscription represents a row from 'pg_catalog.pg_stat_subscription'.
@@ -1732,7 +1648,6 @@ type PgStatSubscription struct {
 	LastMsgReceiptTime sql.NullTime  `json:"last_msg_receipt_time"` // last_msg_receipt_time
 	LatestEndLsn       pgtypes.PgLsn `json:"latest_end_lsn"`        // latest_end_lsn
 	LatestEndTime      sql.NullTime  `json:"latest_end_time"`       // latest_end_time
-
 }
 
 // PgStatSysIndex represents a row from 'pg_catalog.pg_stat_sys_indexes'.
@@ -1745,7 +1660,6 @@ type PgStatSysIndex struct {
 	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
 	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
 	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-
 }
 
 // PgStatSysTable represents a row from 'pg_catalog.pg_stat_sys_tables'.
@@ -1773,7 +1687,6 @@ type PgStatSysTable struct {
 	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
 	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
 	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
-
 }
 
 // PgStatUserFunction represents a row from 'pg_catalog.pg_stat_user_functions'.
@@ -1784,7 +1697,6 @@ type PgStatUserFunction struct {
 	Calls      sql.NullInt64   `json:"calls"`      // calls
 	TotalTime  sql.NullFloat64 `json:"total_time"` // total_time
 	SelfTime   sql.NullFloat64 `json:"self_time"`  // self_time
-
 }
 
 // PgStatUserIndex represents a row from 'pg_catalog.pg_stat_user_indexes'.
@@ -1797,7 +1709,6 @@ type PgStatUserIndex struct {
 	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
 	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
 	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-
 }
 
 // PgStatUserTable represents a row from 'pg_catalog.pg_stat_user_tables'.
@@ -1825,7 +1736,6 @@ type PgStatUserTable struct {
 	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
 	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
 	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
-
 }
 
 // PgStatWalReceiver represents a row from 'pg_catalog.pg_stat_wal_receiver'.
@@ -1845,7 +1755,6 @@ type PgStatWalReceiver struct {
 	SenderHost         sql.NullString `json:"sender_host"`           // sender_host
 	SenderPort         sql.NullInt64  `json:"sender_port"`           // sender_port
 	Conninfo           sql.NullString `json:"conninfo"`              // conninfo
-
 }
 
 // PgStatXactAllTable represents a row from 'pg_catalog.pg_stat_xact_all_tables'.
@@ -1861,7 +1770,6 @@ type PgStatXactAllTable struct {
 	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
 	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
 	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
-
 }
 
 // PgStatXactSysTable represents a row from 'pg_catalog.pg_stat_xact_sys_tables'.
@@ -1877,7 +1785,6 @@ type PgStatXactSysTable struct {
 	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
 	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
 	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
-
 }
 
 // PgStatXactUserFunction represents a row from 'pg_catalog.pg_stat_xact_user_functions'.
@@ -1888,7 +1795,6 @@ type PgStatXactUserFunction struct {
 	Calls      sql.NullInt64   `json:"calls"`      // calls
 	TotalTime  sql.NullFloat64 `json:"total_time"` // total_time
 	SelfTime   sql.NullFloat64 `json:"self_time"`  // self_time
-
 }
 
 // PgStatXactUserTable represents a row from 'pg_catalog.pg_stat_xact_user_tables'.
@@ -1904,7 +1810,6 @@ type PgStatXactUserTable struct {
 	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
 	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
 	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
-
 }
 
 // PgStatioAllIndex represents a row from 'pg_catalog.pg_statio_all_indexes'.
@@ -1916,7 +1821,6 @@ type PgStatioAllIndex struct {
 	Indexrelname pgtypes.Name  `json:"indexrelname"`  // indexrelname
 	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
 	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
-
 }
 
 // PgStatioAllSequence represents a row from 'pg_catalog.pg_statio_all_sequences'.
@@ -1926,7 +1830,6 @@ type PgStatioAllSequence struct {
 	Relname    pgtypes.Name  `json:"relname"`    // relname
 	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
 	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
-
 }
 
 // PgStatioAllTable represents a row from 'pg_catalog.pg_statio_all_tables'.
@@ -1942,7 +1845,6 @@ type PgStatioAllTable struct {
 	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
 	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
 	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
-
 }
 
 // PgStatioSysIndex represents a row from 'pg_catalog.pg_statio_sys_indexes'.
@@ -1954,7 +1856,6 @@ type PgStatioSysIndex struct {
 	Indexrelname pgtypes.Name  `json:"indexrelname"`  // indexrelname
 	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
 	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
-
 }
 
 // PgStatioSysSequence represents a row from 'pg_catalog.pg_statio_sys_sequences'.
@@ -1964,7 +1865,6 @@ type PgStatioSysSequence struct {
 	Relname    pgtypes.Name  `json:"relname"`    // relname
 	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
 	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
-
 }
 
 // PgStatioSysTable represents a row from 'pg_catalog.pg_statio_sys_tables'.
@@ -1980,7 +1880,6 @@ type PgStatioSysTable struct {
 	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
 	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
 	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
-
 }
 
 // PgStatioUserIndex represents a row from 'pg_catalog.pg_statio_user_indexes'.
@@ -1992,7 +1891,6 @@ type PgStatioUserIndex struct {
 	Indexrelname pgtypes.Name  `json:"indexrelname"`  // indexrelname
 	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
 	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
-
 }
 
 // PgStatioUserSequence represents a row from 'pg_catalog.pg_statio_user_sequences'.
@@ -2002,7 +1900,6 @@ type PgStatioUserSequence struct {
 	Relname    pgtypes.Name  `json:"relname"`    // relname
 	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
 	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
-
 }
 
 // PgStatioUserTable represents a row from 'pg_catalog.pg_statio_user_tables'.
@@ -2018,7 +1915,6 @@ type PgStatioUserTable struct {
 	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
 	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
 	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
-
 }
 
 // PgStatistic represents a row from 'pg_catalog.pg_statistic'.
@@ -2060,7 +1956,6 @@ type PgStatistic struct {
 	Stavalues3  pgtypes.Anyarray  `json:"stavalues3"`  // stavalues3
 	Stavalues4  pgtypes.Anyarray  `json:"stavalues4"`  // stavalues4
 	Stavalues5  pgtypes.Anyarray  `json:"stavalues5"`  // stavalues5
-
 }
 
 // PgStatisticExt represents a row from 'pg_catalog.pg_statistic_ext'.
@@ -2078,8 +1973,7 @@ type PgStatisticExt struct {
 	Stxowner      pgtypes.Oid        `json:"stxowner"`      // stxowner
 	Stxstattarget int                `json:"stxstattarget"` // stxstattarget
 	Stxkeys       pgtypes.Int2vector `json:"stxkeys"`       // stxkeys
-	Stxkind       []uint8            `json:"stxkind"`       // stxkind
-
+	Stxkind       []pgtypes.Char     `json:"stxkind"`       // stxkind
 }
 
 // PgStatisticExtDatum represents a row from 'pg_catalog.pg_statistic_ext_data'.
@@ -2094,7 +1988,6 @@ type PgStatisticExtDatum struct {
 	Stxdndistinct    pgtypes.PgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
 	Stxddependencies pgtypes.PgDependencies `json:"stxddependencies"` // stxddependencies
 	Stxdmcv          pgtypes.PgMcvList      `json:"stxdmcv"`          // stxdmcv
-
 }
 
 // PgStatsExt represents a row from 'pg_catalog.pg_stats_ext'.
@@ -2105,14 +1998,13 @@ type PgStatsExt struct {
 	StatisticsName       pgtypes.Name           `json:"statistics_name"`        // statistics_name
 	StatisticsOwner      pgtypes.Name           `json:"statistics_owner"`       // statistics_owner
 	Attnames             []pgtypes.Name         `json:"attnames"`               // attnames
-	Kinds                []uint8                `json:"kinds"`                  // kinds
+	Kinds                []pgtypes.Char         `json:"kinds"`                  // kinds
 	NDistinct            pgtypes.PgNdistinct    `json:"n_distinct"`             // n_distinct
 	Dependencies         pgtypes.PgDependencies `json:"dependencies"`           // dependencies
 	MostCommonVals       []sql.NullString       `json:"most_common_vals"`       // most_common_vals
 	MostCommonValNulls   []sql.NullBool         `json:"most_common_val_nulls"`  // most_common_val_nulls
 	MostCommonFreqs      []sql.NullFloat64      `json:"most_common_freqs"`      // most_common_freqs
 	MostCommonBaseFreqs  []sql.NullFloat64      `json:"most_common_base_freqs"` // most_common_base_freqs
-
 }
 
 // PgSubscription represents a row from 'pg_catalog.pg_subscription'.
@@ -2132,7 +2024,6 @@ type PgSubscription struct {
 	Subslotname     pgtypes.Name `json:"subslotname"`     // subslotname
 	Subsynccommit   string       `json:"subsynccommit"`   // subsynccommit
 	Subpublications StringSlice  `json:"subpublications"` // subpublications
-
 }
 
 // PgSubscriptionRel represents a row from 'pg_catalog.pg_subscription_rel'.
@@ -2145,9 +2036,8 @@ type PgSubscriptionRel struct {
 	Ctid       pgtypes.Tid   `json:"ctid"`       // ctid
 	Srsubid    pgtypes.Oid   `json:"srsubid"`    // srsubid
 	Srrelid    pgtypes.Oid   `json:"srrelid"`    // srrelid
-	Srsubstate uint8         `json:"srsubstate"` // srsubstate
+	Srsubstate pgtypes.Char  `json:"srsubstate"` // srsubstate
 	Srsublsn   pgtypes.PgLsn `json:"srsublsn"`   // srsublsn
-
 }
 
 // PgTable represents a row from 'pg_catalog.pg_tables'.
@@ -2160,7 +2050,6 @@ type PgTable struct {
 	Hasrules    sql.NullBool `json:"hasrules"`    // hasrules
 	Hastriggers sql.NullBool `json:"hastriggers"` // hastriggers
 	Rowsecurity sql.NullBool `json:"rowsecurity"` // rowsecurity
-
 }
 
 // PgTablespace represents a row from 'pg_catalog.pg_tablespace'.
@@ -2176,24 +2065,21 @@ type PgTablespace struct {
 	Spcowner   pgtypes.Oid       `json:"spcowner"`   // spcowner
 	Spcacl     []pgtypes.Aclitem `json:"spcacl"`     // spcacl
 	Spcoptions []sql.NullString  `json:"spcoptions"` // spcoptions
-
 }
 
 // PgTimezoneAbbrev represents a row from 'pg_catalog.pg_timezone_abbrevs'.
 type PgTimezoneAbbrev struct {
 	Abbrev    sql.NullString `json:"abbrev"`     // abbrev
-	UtcOffset *time.Duration `json:"utc_offset"` // utc_offset
+	UtcOffset []byte         `json:"utc_offset"` // utc_offset
 	IsDst     sql.NullBool   `json:"is_dst"`     // is_dst
-
 }
 
 // PgTimezoneName represents a row from 'pg_catalog.pg_timezone_names'.
 type PgTimezoneName struct {
 	Name      sql.NullString `json:"name"`       // name
 	Abbrev    sql.NullString `json:"abbrev"`     // abbrev
-	UtcOffset *time.Duration `json:"utc_offset"` // utc_offset
+	UtcOffset []byte         `json:"utc_offset"` // utc_offset
 	IsDst     sql.NullBool   `json:"is_dst"`     // is_dst
-
 }
 
 // PgTransform represents a row from 'pg_catalog.pg_transform'.
@@ -2209,7 +2095,6 @@ type PgTransform struct {
 	Trflang    pgtypes.Oid     `json:"trflang"`    // trflang
 	Trffromsql pgtypes.Regproc `json:"trffromsql"` // trffromsql
 	Trftosql   pgtypes.Regproc `json:"trftosql"`   // trftosql
-
 }
 
 // PgTrigger represents a row from 'pg_catalog.pg_trigger'.
@@ -2226,7 +2111,7 @@ type PgTrigger struct {
 	Tgname         pgtypes.Name       `json:"tgname"`         // tgname
 	Tgfoid         pgtypes.Oid        `json:"tgfoid"`         // tgfoid
 	Tgtype         int16              `json:"tgtype"`         // tgtype
-	Tgenabled      uint8              `json:"tgenabled"`      // tgenabled
+	Tgenabled      pgtypes.Char       `json:"tgenabled"`      // tgenabled
 	Tgisinternal   bool               `json:"tgisinternal"`   // tgisinternal
 	Tgconstrrelid  pgtypes.Oid        `json:"tgconstrrelid"`  // tgconstrrelid
 	Tgconstrindid  pgtypes.Oid        `json:"tgconstrindid"`  // tgconstrindid
@@ -2239,7 +2124,6 @@ type PgTrigger struct {
 	Tgqual         pgtypes.PgNodeTree `json:"tgqual"`         // tgqual
 	Tgoldtable     pgtypes.Name       `json:"tgoldtable"`     // tgoldtable
 	Tgnewtable     pgtypes.Name       `json:"tgnewtable"`     // tgnewtable
-
 }
 
 // PgTsConfig represents a row from 'pg_catalog.pg_ts_config'.
@@ -2255,7 +2139,6 @@ type PgTsConfig struct {
 	Cfgnamespace pgtypes.Oid  `json:"cfgnamespace"` // cfgnamespace
 	Cfgowner     pgtypes.Oid  `json:"cfgowner"`     // cfgowner
 	Cfgparser    pgtypes.Oid  `json:"cfgparser"`    // cfgparser
-
 }
 
 // PgTsConfigMap represents a row from 'pg_catalog.pg_ts_config_map'.
@@ -2270,7 +2153,6 @@ type PgTsConfigMap struct {
 	Maptokentype int         `json:"maptokentype"` // maptokentype
 	Mapseqno     int         `json:"mapseqno"`     // mapseqno
 	Mapdict      pgtypes.Oid `json:"mapdict"`      // mapdict
-
 }
 
 // PgTsDict represents a row from 'pg_catalog.pg_ts_dict'.
@@ -2287,7 +2169,6 @@ type PgTsDict struct {
 	Dictowner      pgtypes.Oid    `json:"dictowner"`      // dictowner
 	Dicttemplate   pgtypes.Oid    `json:"dicttemplate"`   // dicttemplate
 	Dictinitoption sql.NullString `json:"dictinitoption"` // dictinitoption
-
 }
 
 // PgTsParser represents a row from 'pg_catalog.pg_ts_parser'.
@@ -2306,7 +2187,6 @@ type PgTsParser struct {
 	Prsend       pgtypes.Regproc `json:"prsend"`       // prsend
 	Prsheadline  pgtypes.Regproc `json:"prsheadline"`  // prsheadline
 	Prslextype   pgtypes.Regproc `json:"prslextype"`   // prslextype
-
 }
 
 // PgTsTemplate represents a row from 'pg_catalog.pg_ts_template'.
@@ -2322,7 +2202,6 @@ type PgTsTemplate struct {
 	Tmplnamespace pgtypes.Oid     `json:"tmplnamespace"` // tmplnamespace
 	Tmplinit      pgtypes.Regproc `json:"tmplinit"`      // tmplinit
 	Tmpllexize    pgtypes.Regproc `json:"tmpllexize"`    // tmpllexize
-
 }
 
 // PgType represents a row from 'pg_catalog.pg_type'.
@@ -2339,11 +2218,11 @@ type PgType struct {
 	Typowner       pgtypes.Oid        `json:"typowner"`       // typowner
 	Typlen         int16              `json:"typlen"`         // typlen
 	Typbyval       bool               `json:"typbyval"`       // typbyval
-	Typtype        uint8              `json:"typtype"`        // typtype
-	Typcategory    uint8              `json:"typcategory"`    // typcategory
+	Typtype        pgtypes.Char       `json:"typtype"`        // typtype
+	Typcategory    pgtypes.Char       `json:"typcategory"`    // typcategory
 	Typispreferred bool               `json:"typispreferred"` // typispreferred
 	Typisdefined   bool               `json:"typisdefined"`   // typisdefined
-	Typdelim       uint8              `json:"typdelim"`       // typdelim
+	Typdelim       pgtypes.Char       `json:"typdelim"`       // typdelim
 	Typrelid       pgtypes.Oid        `json:"typrelid"`       // typrelid
 	Typelem        pgtypes.Oid        `json:"typelem"`        // typelem
 	Typarray       pgtypes.Oid        `json:"typarray"`       // typarray
@@ -2354,8 +2233,8 @@ type PgType struct {
 	Typmodin       pgtypes.Regproc    `json:"typmodin"`       // typmodin
 	Typmodout      pgtypes.Regproc    `json:"typmodout"`      // typmodout
 	Typanalyze     pgtypes.Regproc    `json:"typanalyze"`     // typanalyze
-	Typalign       uint8              `json:"typalign"`       // typalign
-	Typstorage     uint8              `json:"typstorage"`     // typstorage
+	Typalign       pgtypes.Char       `json:"typalign"`       // typalign
+	Typstorage     pgtypes.Char       `json:"typstorage"`     // typstorage
 	Typnotnull     bool               `json:"typnotnull"`     // typnotnull
 	Typbasetype    pgtypes.Oid        `json:"typbasetype"`    // typbasetype
 	Typtypmod      int                `json:"typtypmod"`      // typtypmod
@@ -2364,7 +2243,6 @@ type PgType struct {
 	Typdefaultbin  pgtypes.PgNodeTree `json:"typdefaultbin"`  // typdefaultbin
 	Typdefault     sql.NullString     `json:"typdefault"`     // typdefault
 	Typacl         []pgtypes.Aclitem  `json:"typacl"`         // typacl
-
 }
 
 // PgUser represents a row from 'pg_catalog.pg_user'.
@@ -2378,7 +2256,16 @@ type PgUser struct {
 	Passwd       sql.NullString   `json:"passwd"`       // passwd
 	Valuntil     sql.NullTime     `json:"valuntil"`     // valuntil
 	Useconfig    []sql.NullString `json:"useconfig"`    // useconfig
+}
 
+// PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
+type PgUserMapping struct {
+	Umid      pgtypes.Oid      `json:"umid"`      // umid
+	Srvid     pgtypes.Oid      `json:"srvid"`     // srvid
+	Srvname   pgtypes.Name     `json:"srvname"`   // srvname
+	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
+	Usename   pgtypes.Name     `json:"usename"`   // usename
+	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
 
 // PgUserMapping represents a row from 'pg_catalog.pg_user_mapping'.
@@ -2393,18 +2280,6 @@ type PgUserMapping struct {
 	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
 	Umserver  pgtypes.Oid      `json:"umserver"`  // umserver
 	Umoptions []sql.NullString `json:"umoptions"` // umoptions
-
-}
-
-// PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
-type PgUserMapping struct {
-	Umid      pgtypes.Oid      `json:"umid"`      // umid
-	Srvid     pgtypes.Oid      `json:"srvid"`     // srvid
-	Srvname   pgtypes.Name     `json:"srvname"`   // srvname
-	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
-	Usename   pgtypes.Name     `json:"usename"`   // usename
-	Umoptions []sql.NullString `json:"umoptions"` // umoptions
-
 }
 
 // PgView represents a row from 'pg_catalog.pg_views'.
@@ -2413,7 +2288,6 @@ type PgView struct {
 	Viewname   pgtypes.Name   `json:"viewname"`   // viewname
 	Viewowner  pgtypes.Name   `json:"viewowner"`  // viewowner
 	Definition sql.NullString `json:"definition"` // definition
-
 }
 
 // PgAggregateByAggfnoid retrieves a row from 'pg_catalog.pg_aggregate' as a PgAggregate.
@@ -2509,7 +2383,7 @@ func PgAmopByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAmop, error) {
 // PgAmopByAmopoprAmoppurposeAmopfamily retrieves a row from 'pg_catalog.pg_amop' as a PgAmop.
 //
 // Generated from index 'pg_amop_opr_fam_index'.
-func PgAmopByAmopoprAmoppurposeAmopfamily(ctx context.Context, db DB, amopopr pgtypes.Oid, amoppurpose uint8, amopfamily pgtypes.Oid) (*PgAmop, error) {
+func PgAmopByAmopoprAmoppurposeAmopfamily(ctx context.Context, db DB, amopopr pgtypes.Oid, amoppurpose pgtypes.Char, amopfamily pgtypes.Oid) (*PgAmop, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amopfamily, amoplefttype, amoprighttype, amopstrategy, amoppurpose, amopopr, amopmethod, amopsortfamily ` +
@@ -3105,7 +2979,7 @@ func PgDefaultACLByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgDefaultA
 // PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype retrieves a row from 'pg_catalog.pg_default_acl' as a PgDefaultACL.
 //
 // Generated from index 'pg_default_acl_role_nsp_obj_index'.
-func PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype(ctx context.Context, db DB, defaclrole, defaclnamespace pgtypes.Oid, defaclobjtype uint8) (*PgDefaultACL, error) {
+func PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype(ctx context.Context, db DB, defaclrole, defaclnamespace pgtypes.Oid, defaclobjtype pgtypes.Char) (*PgDefaultACL, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, defaclrole, defaclnamespace, defaclobjtype, defaclacl ` +
@@ -4725,7 +4599,7 @@ func Aclcontains(ctx context.Context, db DB, v0 []pgtypes.Aclitem, v1 pgtypes.Ac
 }
 
 // Acldefault calls the stored procedure 'pg_catalog.acldefault("char", oid) aclitem[]' on db.
-func Acldefault(ctx context.Context, db DB, v0 uint8, v1 pgtypes.Oid) ([]pgtypes.Aclitem, error) {
+func Acldefault(ctx context.Context, db DB, v0 pgtypes.Char, v1 pgtypes.Oid) ([]pgtypes.Aclitem, error) {
 	// call pg_catalog.acldefault
 	const sqlstr = `SELECT pg_catalog.acldefault($1, $2)`
 	// run
@@ -4855,11 +4729,11 @@ func Acosh(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // Age calls the stored procedure 'pg_catalog.age(xid, timestamp without time zone, timestamp with time zone, timestamp without time zone, timestamp without time zone, timestamp with time zone, timestamp with time zone) interval' on db.
-func Age(ctx context.Context, db DB, v0 pgtypes.Xid, v1, v2, v3, v4, v5, v6 time.Time) (*time.Duration, error) {
+func Age(ctx context.Context, db DB, v0 pgtypes.Xid, v1, v2, v3, v4, v5, v6 time.Time) ([]byte, error) {
 	// call pg_catalog.age
 	const sqlstr = `SELECT pg_catalog.age($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -4881,20 +4755,20 @@ func Amvalidate(ctx context.Context, db DB, v0 pgtypes.Oid) (bool, error) {
 }
 
 // AnyIn calls the stored procedure 'pg_catalog.any_in(cstring) "any"' on db.
-func AnyIn(ctx context.Context, db DB, v0 pgtypes.Cstring) ([]byte, error) {
+func AnyIn(ctx context.Context, db DB, v0 pgtypes.Cstring) (pgtypes.Any, error) {
 	// call pg_catalog.any_in
 	const sqlstr = `SELECT pg_catalog.any_in($1)`
 	// run
-	var ret []byte
+	var ret pgtypes.Any
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return nil, logerror(err)
+		return pgtypes.Any{}, logerror(err)
 	}
 	return ret, nil
 }
 
 // AnyOut calls the stored procedure 'pg_catalog.any_out("any") cstring' on db.
-func AnyOut(ctx context.Context, db DB, v0 []byte) (pgtypes.Cstring, error) {
+func AnyOut(ctx context.Context, db DB, v0 pgtypes.Any) (pgtypes.Cstring, error) {
 	// call pg_catalog.any_out
 	const sqlstr = `SELECT pg_catalog.any_out($1)`
 	// run
@@ -5622,14 +5496,14 @@ func ArraySmaller(ctx context.Context, db DB, v0, v1 pgtypes.Anyarray) (pgtypes.
 }
 
 // ArrayToJSON calls the stored procedure 'pg_catalog.array_to_json(anyarray, anyarray, boolean) json' on db.
-func ArrayToJSON(ctx context.Context, db DB, v0, v1 pgtypes.Anyarray, v2 bool) (pgtypes.JSON, error) {
+func ArrayToJSON(ctx context.Context, db DB, v0, v1 pgtypes.Anyarray, v2 bool) ([]byte, error) {
 	// call pg_catalog.array_to_json
 	const sqlstr = `SELECT pg_catalog.array_to_json($1, $2, $3)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -5869,11 +5743,11 @@ func Atanh(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // Avg calls the stored procedure 'pg_catalog.avg(bigint, smallint, integer, real, double precision, interval, numeric) interval' on db.
-func Avg(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 *time.Duration, v6 float64) (*time.Duration, error) {
+func Avg(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 []byte, v6 float64) ([]byte, error) {
 	// call pg_catalog.avg
 	const sqlstr = `SELECT pg_catalog.avg($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -6375,7 +6249,7 @@ func Bitxor(ctx context.Context, db DB, v0, v1 uint8) (uint8, error) {
 }
 
 // Bool calls the stored procedure 'pg_catalog.bool(integer, jsonb) boolean' on db.
-func Bool(ctx context.Context, db DB, v0 int, v1 pgtypes.Jsonb) (bool, error) {
+func Bool(ctx context.Context, db DB, v0 int, v1 []byte) (bool, error) {
 	// call pg_catalog.bool
 	const sqlstr = `SELECT pg_catalog.bool($1, $2)`
 	// run
@@ -7051,7 +6925,7 @@ func BoxSub(ctx context.Context, db DB, v0 pgtypes.Box, v1 pgtypes.Point) (pgtyp
 }
 
 // Bpchar calls the stored procedure 'pg_catalog.bpchar("char", name, character, integer, boolean) character' on db.
-func Bpchar(ctx context.Context, db DB, v0 uint8, v1 pgtypes.Name, v2 string, v3 int, v4 bool) (string, error) {
+func Bpchar(ctx context.Context, db DB, v0 pgtypes.Char, v1 pgtypes.Name, v2 string, v3 int, v4 bool) (string, error) {
 	// call pg_catalog.bpchar
 	const sqlstr = `SELECT pg_catalog.bpchar($1, $2, $3, $4, $5)`
 	// run
@@ -7646,7 +7520,7 @@ func BtbpcharPatternSortsupport(ctx context.Context, db DB, v0 pgtypes.Internal)
 }
 
 // Btcharcmp calls the stored procedure 'pg_catalog.btcharcmp("char", "char") integer' on db.
-func Btcharcmp(ctx context.Context, db DB, v0, v1 uint8) (int, error) {
+func Btcharcmp(ctx context.Context, db DB, v0, v1 pgtypes.Char) (int, error) {
 	// call pg_catalog.btcharcmp
 	const sqlstr = `SELECT pg_catalog.btcharcmp($1, $2)`
 	// run
@@ -8754,14 +8628,14 @@ func Center(ctx context.Context, db DB, v0 pgtypes.Box, v1 pgtypes.Circle) (pgty
 }
 
 // Char calls the stored procedure 'pg_catalog.char(integer, text) "char"' on db.
-func Char(ctx context.Context, db DB, v0 int, v1 string) (uint8, error) {
+func Char(ctx context.Context, db DB, v0 int, v1 string) (pgtypes.Char, error) {
 	// call pg_catalog.char
 	const sqlstr = `SELECT pg_catalog.char($1, $2)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
@@ -8793,7 +8667,7 @@ func CharacterLength(ctx context.Context, db DB, v0, v1 string) (int, error) {
 }
 
 // Chareq calls the stored procedure 'pg_catalog.chareq("char", "char") boolean' on db.
-func Chareq(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Chareq(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.chareq
 	const sqlstr = `SELECT pg_catalog.chareq($1, $2)`
 	// run
@@ -8806,7 +8680,7 @@ func Chareq(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Charge calls the stored procedure 'pg_catalog.charge("char", "char") boolean' on db.
-func Charge(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Charge(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.charge
 	const sqlstr = `SELECT pg_catalog.charge($1, $2)`
 	// run
@@ -8819,7 +8693,7 @@ func Charge(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Chargt calls the stored procedure 'pg_catalog.chargt("char", "char") boolean' on db.
-func Chargt(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Chargt(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.chargt
 	const sqlstr = `SELECT pg_catalog.chargt($1, $2)`
 	// run
@@ -8832,20 +8706,20 @@ func Chargt(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Charin calls the stored procedure 'pg_catalog.charin(cstring) "char"' on db.
-func Charin(ctx context.Context, db DB, v0 pgtypes.Cstring) (uint8, error) {
+func Charin(ctx context.Context, db DB, v0 pgtypes.Cstring) (pgtypes.Char, error) {
 	// call pg_catalog.charin
 	const sqlstr = `SELECT pg_catalog.charin($1)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
 
 // Charle calls the stored procedure 'pg_catalog.charle("char", "char") boolean' on db.
-func Charle(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Charle(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.charle
 	const sqlstr = `SELECT pg_catalog.charle($1, $2)`
 	// run
@@ -8858,7 +8732,7 @@ func Charle(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Charlt calls the stored procedure 'pg_catalog.charlt("char", "char") boolean' on db.
-func Charlt(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Charlt(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.charlt
 	const sqlstr = `SELECT pg_catalog.charlt($1, $2)`
 	// run
@@ -8871,7 +8745,7 @@ func Charlt(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Charne calls the stored procedure 'pg_catalog.charne("char", "char") boolean' on db.
-func Charne(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
+func Charne(ctx context.Context, db DB, v0, v1 pgtypes.Char) (bool, error) {
 	// call pg_catalog.charne
 	const sqlstr = `SELECT pg_catalog.charne($1, $2)`
 	// run
@@ -8884,7 +8758,7 @@ func Charne(ctx context.Context, db DB, v0, v1 uint8) (bool, error) {
 }
 
 // Charout calls the stored procedure 'pg_catalog.charout("char") cstring' on db.
-func Charout(ctx context.Context, db DB, v0 uint8) (pgtypes.Cstring, error) {
+func Charout(ctx context.Context, db DB, v0 pgtypes.Char) (pgtypes.Cstring, error) {
 	// call pg_catalog.charout
 	const sqlstr = `SELECT pg_catalog.charout($1)`
 	// run
@@ -8897,20 +8771,20 @@ func Charout(ctx context.Context, db DB, v0 uint8) (pgtypes.Cstring, error) {
 }
 
 // Charrecv calls the stored procedure 'pg_catalog.charrecv(internal) "char"' on db.
-func Charrecv(ctx context.Context, db DB, v0 pgtypes.Internal) (uint8, error) {
+func Charrecv(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.Char, error) {
 	// call pg_catalog.charrecv
 	const sqlstr = `SELECT pg_catalog.charrecv($1)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
 
 // Charsend calls the stored procedure 'pg_catalog.charsend("char") bytea' on db.
-func Charsend(ctx context.Context, db DB, v0 uint8) ([]byte, error) {
+func Charsend(ctx context.Context, db DB, v0 pgtypes.Char) ([]byte, error) {
 	// call pg_catalog.charsend
 	const sqlstr = `SELECT pg_catalog.charsend($1)`
 	// run
@@ -9586,7 +9460,7 @@ func ColDescription(ctx context.Context, db DB, v0 pgtypes.Oid, v1 int) (string,
 }
 
 // Concat calls the stored procedure 'pg_catalog.concat("any") text' on db.
-func Concat(ctx context.Context, db DB, v0 []byte) (string, error) {
+func Concat(ctx context.Context, db DB, v0 pgtypes.Any) (string, error) {
 	// call pg_catalog.concat
 	const sqlstr = `SELECT pg_catalog.concat($1)`
 	// run
@@ -9599,7 +9473,7 @@ func Concat(ctx context.Context, db DB, v0 []byte) (string, error) {
 }
 
 // ConcatWs calls the stored procedure 'pg_catalog.concat_ws(text, "any") text' on db.
-func ConcatWs(ctx context.Context, db DB, v0 string, v1 []byte) (string, error) {
+func ConcatWs(ctx context.Context, db DB, v0 string, v1 pgtypes.Any) (string, error) {
 	// call pg_catalog.concat_ws
 	const sqlstr = `SELECT pg_catalog.concat_ws($1, $2)`
 	// run
@@ -9755,7 +9629,7 @@ func Cotd(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // Count calls the stored procedure 'pg_catalog.count("any") bigint' on db.
-func Count(ctx context.Context, db DB, v0 []byte) (int64, error) {
+func Count(ctx context.Context, db DB, v0 pgtypes.Any) (int64, error) {
 	// call pg_catalog.count
 	const sqlstr = `SELECT pg_catalog.count($1)`
 	// run
@@ -9846,7 +9720,7 @@ func CstringSend(ctx context.Context, db DB, v0 pgtypes.Cstring) ([]byte, error)
 }
 
 // CumeDist calls the stored procedure 'pg_catalog.cume_dist("any") double precision' on db.
-func CumeDist(ctx context.Context, db DB, v0 []byte) (float64, error) {
+func CumeDist(ctx context.Context, db DB, v0 pgtypes.Any) (float64, error) {
 	// call pg_catalog.cume_dist
 	const sqlstr = `SELECT pg_catalog.cume_dist($1)`
 	// run
@@ -9859,7 +9733,7 @@ func CumeDist(ctx context.Context, db DB, v0 []byte) (float64, error) {
 }
 
 // CumeDistFinal calls the stored procedure 'pg_catalog.cume_dist_final(internal, "any") double precision' on db.
-func CumeDistFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (float64, error) {
+func CumeDistFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (float64, error) {
 	// call pg_catalog.cume_dist_final
 	const sqlstr = `SELECT pg_catalog.cume_dist_final($1, $2)`
 	// run
@@ -9989,66 +9863,66 @@ func Currval(ctx context.Context, db DB, v0 pgtypes.Regclass) (int64, error) {
 }
 
 // CursorToXML calls the stored procedure 'pg_catalog.cursor_to_xml(refcursor, integer, boolean, boolean, text) xml' on db.
-func CursorToXML(ctx context.Context, db DB, v0 pgtypes.Refcursor, v1 int, v2, v3 bool, v4 string) (pgtypes.XML, error) {
+func CursorToXML(ctx context.Context, db DB, v0 pgtypes.Refcursor, v1 int, v2, v3 bool, v4 string) ([]byte, error) {
 	// call pg_catalog.cursor_to_xml
 	const sqlstr = `SELECT pg_catalog.cursor_to_xml($1, $2, $3, $4, $5)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // CursorToXmlschema calls the stored procedure 'pg_catalog.cursor_to_xmlschema(refcursor, boolean, boolean, text) xml' on db.
-func CursorToXmlschema(ctx context.Context, db DB, v0 pgtypes.Refcursor, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func CursorToXmlschema(ctx context.Context, db DB, v0 pgtypes.Refcursor, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.cursor_to_xmlschema
 	const sqlstr = `SELECT pg_catalog.cursor_to_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // DatabaseToXML calls the stored procedure 'pg_catalog.database_to_xml(boolean, boolean, text) xml' on db.
-func DatabaseToXML(ctx context.Context, db DB, v0, v1 bool, v2 string) (pgtypes.XML, error) {
+func DatabaseToXML(ctx context.Context, db DB, v0, v1 bool, v2 string) ([]byte, error) {
 	// call pg_catalog.database_to_xml
 	const sqlstr = `SELECT pg_catalog.database_to_xml($1, $2, $3)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // DatabaseToXMLAndXmlschema calls the stored procedure 'pg_catalog.database_to_xml_and_xmlschema(boolean, boolean, text) xml' on db.
-func DatabaseToXMLAndXmlschema(ctx context.Context, db DB, v0, v1 bool, v2 string) (pgtypes.XML, error) {
+func DatabaseToXMLAndXmlschema(ctx context.Context, db DB, v0, v1 bool, v2 string) ([]byte, error) {
 	// call pg_catalog.database_to_xml_and_xmlschema
 	const sqlstr = `SELECT pg_catalog.database_to_xml_and_xmlschema($1, $2, $3)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // DatabaseToXmlschema calls the stored procedure 'pg_catalog.database_to_xmlschema(boolean, boolean, text) xml' on db.
-func DatabaseToXmlschema(ctx context.Context, db DB, v0, v1 bool, v2 string) (pgtypes.XML, error) {
+func DatabaseToXmlschema(ctx context.Context, db DB, v0, v1 bool, v2 string) ([]byte, error) {
 	// call pg_catalog.database_to_xmlschema
 	const sqlstr = `SELECT pg_catalog.database_to_xmlschema($1, $2, $3)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -10340,7 +10214,7 @@ func DateMi(ctx context.Context, db DB, v0, v1 time.Time) (int, error) {
 }
 
 // DateMiInterval calls the stored procedure 'pg_catalog.date_mi_interval(date, interval) timestamp without time zone' on db.
-func DateMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func DateMiInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.date_mi_interval
 	const sqlstr = `SELECT pg_catalog.date_mi_interval($1, $2)`
 	// run
@@ -10418,7 +10292,7 @@ func DateOut(ctx context.Context, db DB, v0 time.Time) (pgtypes.Cstring, error) 
 }
 
 // DatePart calls the stored procedure 'pg_catalog.date_part(text, date, text, time without time zone, text, timestamp without time zone, text, timestamp with time zone, text, interval, text, time with time zone) double precision' on db.
-func DatePart(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 time.Time, v6 string, v7 time.Time, v8 string, v9 *time.Duration, v10 string, v11 time.Time) (float64, error) {
+func DatePart(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 time.Time, v6 string, v7 time.Time, v8 string, v9 []byte, v10 string, v11 time.Time) (float64, error) {
 	// call pg_catalog.date_part
 	const sqlstr = `SELECT pg_catalog.date_part($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	// run
@@ -10431,7 +10305,7 @@ func DatePart(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3
 }
 
 // DatePlInterval calls the stored procedure 'pg_catalog.date_pl_interval(date, interval) timestamp without time zone' on db.
-func DatePlInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func DatePlInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.date_pl_interval
 	const sqlstr = `SELECT pg_catalog.date_pl_interval($1, $2)`
 	// run
@@ -10508,7 +10382,7 @@ func DateSortsupport(ctx context.Context, db DB, v0 pgtypes.Internal) error {
 }
 
 // DateTrunc calls the stored procedure 'pg_catalog.date_trunc(text, timestamp without time zone, text, timestamp with time zone, text, interval, text, timestamp with time zone, text) timestamp without time zone' on db.
-func DateTrunc(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 *time.Duration, v6 string, v7 time.Time, v8 string) (time.Time, error) {
+func DateTrunc(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 []byte, v6 string, v7 time.Time, v8 string) (time.Time, error) {
 	// call pg_catalog.date_trunc
 	const sqlstr = `SELECT pg_catalog.date_trunc($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	// run
@@ -10625,7 +10499,7 @@ func Degrees(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // DenseRank calls the stored procedure 'pg_catalog.dense_rank("any") bigint' on db.
-func DenseRank(ctx context.Context, db DB, v0 []byte) (int64, error) {
+func DenseRank(ctx context.Context, db DB, v0 pgtypes.Any) (int64, error) {
 	// call pg_catalog.dense_rank
 	const sqlstr = `SELECT pg_catalog.dense_rank($1)`
 	// run
@@ -10638,7 +10512,7 @@ func DenseRank(ctx context.Context, db DB, v0 []byte) (int64, error) {
 }
 
 // DenseRankFinal calls the stored procedure 'pg_catalog.dense_rank_final(internal, "any") bigint' on db.
-func DenseRankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (int64, error) {
+func DenseRankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (int64, error) {
 	// call pg_catalog.dense_rank_final
 	const sqlstr = `SELECT pg_catalog.dense_rank_final($1, $2)`
 	// run
@@ -11015,27 +10889,27 @@ func Dlog10(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // DomainIn calls the stored procedure 'pg_catalog.domain_in(cstring, oid, integer) "any"' on db.
-func DomainIn(ctx context.Context, db DB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) ([]byte, error) {
+func DomainIn(ctx context.Context, db DB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) (pgtypes.Any, error) {
 	// call pg_catalog.domain_in
 	const sqlstr = `SELECT pg_catalog.domain_in($1, $2, $3)`
 	// run
-	var ret []byte
+	var ret pgtypes.Any
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return nil, logerror(err)
+		return pgtypes.Any{}, logerror(err)
 	}
 	return ret, nil
 }
 
 // DomainRecv calls the stored procedure 'pg_catalog.domain_recv(internal, oid, integer) "any"' on db.
-func DomainRecv(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) ([]byte, error) {
+func DomainRecv(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) (pgtypes.Any, error) {
 	// call pg_catalog.domain_recv
 	const sqlstr = `SELECT pg_catalog.domain_recv($1, $2, $3)`
 	// run
-	var ret []byte
+	var ret pgtypes.Any
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return nil, logerror(err)
+		return pgtypes.Any{}, logerror(err)
 	}
 	return ret, nil
 }
@@ -11692,7 +11566,7 @@ func FirstValue(ctx context.Context, db DB, v0 pgtypes.Anyelement) (pgtypes.Anye
 }
 
 // Float4 calls the stored procedure 'pg_catalog.float4(bigint, smallint, integer, double precision, numeric, jsonb) real' on db.
-func Float4(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3, v4 float64, v5 pgtypes.Jsonb) (float32, error) {
+func Float4(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3, v4 float64, v5 []byte) (float32, error) {
 	// call pg_catalog.float4
 	const sqlstr = `SELECT pg_catalog.float4($1, $2, $3, $4, $5, $6)`
 	// run
@@ -12095,7 +11969,7 @@ func Float4up(ctx context.Context, db DB, v0 float32) (float32, error) {
 }
 
 // Float8 calls the stored procedure 'pg_catalog.float8(bigint, smallint, integer, real, numeric, jsonb) double precision' on db.
-func Float8(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 pgtypes.Jsonb) (float64, error) {
+func Float8(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 []byte) (float64, error) {
 	// call pg_catalog.float8
 	const sqlstr = `SELECT pg_catalog.float8($1, $2, $3, $4, $5, $6)`
 	// run
@@ -12820,7 +12694,7 @@ func FmgrSQLValidator(ctx context.Context, db DB, v0 pgtypes.Oid) error {
 }
 
 // Format calls the stored procedure 'pg_catalog.format(text, text, "any") text' on db.
-func Format(ctx context.Context, db DB, v0, v1 string, v2 []byte) (string, error) {
+func Format(ctx context.Context, db DB, v0, v1 string, v2 pgtypes.Any) (string, error) {
 	// call pg_catalog.format
 	const sqlstr = `SELECT pg_catalog.format($1, $2, $3)`
 	// run
@@ -12896,7 +12770,7 @@ func GenRandomUUID(ctx context.Context, db DB) (uuid.UUID, error) {
 }
 
 // GenerateSeries calls the stored procedure 'pg_catalog.generate_series(bigint, bigint, integer, integer, numeric, numeric, bigint, bigint, bigint, integer, integer, integer, timestamp without time zone, timestamp without time zone, interval, timestamp with time zone, timestamp with time zone, interval, numeric, numeric, numeric) SETOF timestamp with time zone' on db.
-func GenerateSeries(ctx context.Context, db DB, v0, v1 int64, v2, v3 int, v4, v5 float64, v6, v7, v8 int64, v9, v10, v11 int, v12, v13 time.Time, v14 *time.Duration, v15, v16 time.Time, v17 *time.Duration, v18, v19, v20 float64) ([]time.Time, error) {
+func GenerateSeries(ctx context.Context, db DB, v0, v1 int64, v2, v3 int, v4, v5 float64, v6, v7, v8 int64, v9, v10, v11 int, v12, v13 time.Time, v14 []byte, v15, v16 time.Time, v17 []byte, v18, v19, v20 float64) ([]time.Time, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT pg_catalog.generate_series($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`
 	// run
@@ -13065,7 +12939,7 @@ func GinCompareJsonb(ctx context.Context, db DB, v0, v1 string) (int, error) {
 }
 
 // GinConsistentJsonb calls the stored procedure 'pg_catalog.gin_consistent_jsonb(internal, smallint, jsonb, integer, internal, internal, internal, internal) boolean' on db.
-func GinConsistentJsonb(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Jsonb, v3 int, v4, v5, v6, v7 pgtypes.Internal) (bool, error) {
+func GinConsistentJsonb(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 []byte, v3 int, v4, v5, v6, v7 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gin_consistent_jsonb
 	const sqlstr = `SELECT pg_catalog.gin_consistent_jsonb($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -13078,7 +12952,7 @@ func GinConsistentJsonb(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int1
 }
 
 // GinConsistentJsonbPath calls the stored procedure 'pg_catalog.gin_consistent_jsonb_path(internal, smallint, jsonb, integer, internal, internal, internal, internal) boolean' on db.
-func GinConsistentJsonbPath(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Jsonb, v3 int, v4, v5, v6, v7 pgtypes.Internal) (bool, error) {
+func GinConsistentJsonbPath(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 []byte, v3 int, v4, v5, v6, v7 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gin_consistent_jsonb_path
 	const sqlstr = `SELECT pg_catalog.gin_consistent_jsonb_path($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -13091,7 +12965,7 @@ func GinConsistentJsonbPath(ctx context.Context, db DB, v0 pgtypes.Internal, v1 
 }
 
 // GinExtractJsonb calls the stored procedure 'pg_catalog.gin_extract_jsonb(jsonb, internal, internal) internal' on db.
-func GinExtractJsonb(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1, v2 pgtypes.Internal) (pgtypes.Internal, error) {
+func GinExtractJsonb(ctx context.Context, db DB, v0 []byte, v1, v2 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_jsonb
 	const sqlstr = `SELECT pg_catalog.gin_extract_jsonb($1, $2, $3)`
 	// run
@@ -13104,7 +12978,7 @@ func GinExtractJsonb(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1, v2 pgtype
 }
 
 // GinExtractJsonbPath calls the stored procedure 'pg_catalog.gin_extract_jsonb_path(jsonb, internal, internal) internal' on db.
-func GinExtractJsonbPath(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1, v2 pgtypes.Internal) (pgtypes.Internal, error) {
+func GinExtractJsonbPath(ctx context.Context, db DB, v0 []byte, v1, v2 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_jsonb_path
 	const sqlstr = `SELECT pg_catalog.gin_extract_jsonb_path($1, $2, $3)`
 	// run
@@ -13117,7 +12991,7 @@ func GinExtractJsonbPath(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1, v2 pg
 }
 
 // GinExtractJsonbQuery calls the stored procedure 'pg_catalog.gin_extract_jsonb_query(jsonb, internal, smallint, internal, internal, internal, internal) internal' on db.
-func GinExtractJsonbQuery(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Internal, v2 int16, v3, v4, v5, v6 pgtypes.Internal) (pgtypes.Internal, error) {
+func GinExtractJsonbQuery(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Internal, v2 int16, v3, v4, v5, v6 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_jsonb_query
 	const sqlstr = `SELECT pg_catalog.gin_extract_jsonb_query($1, $2, $3, $4, $5, $6, $7)`
 	// run
@@ -13130,7 +13004,7 @@ func GinExtractJsonbQuery(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtyp
 }
 
 // GinExtractJsonbQueryPath calls the stored procedure 'pg_catalog.gin_extract_jsonb_query_path(jsonb, internal, smallint, internal, internal, internal, internal) internal' on db.
-func GinExtractJsonbQueryPath(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Internal, v2 int16, v3, v4, v5, v6 pgtypes.Internal) (pgtypes.Internal, error) {
+func GinExtractJsonbQueryPath(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Internal, v2 int16, v3, v4, v5, v6 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_jsonb_query_path
 	const sqlstr = `SELECT pg_catalog.gin_extract_jsonb_query_path($1, $2, $3, $4, $5, $6, $7)`
 	// run
@@ -13169,27 +13043,27 @@ func GinExtractTsvector(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 pgty
 }
 
 // GinTriconsistentJsonb calls the stored procedure 'pg_catalog.gin_triconsistent_jsonb(internal, smallint, jsonb, integer, internal, internal, internal) "char"' on db.
-func GinTriconsistentJsonb(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Jsonb, v3 int, v4, v5, v6 pgtypes.Internal) (uint8, error) {
+func GinTriconsistentJsonb(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 []byte, v3 int, v4, v5, v6 pgtypes.Internal) (pgtypes.Char, error) {
 	// call pg_catalog.gin_triconsistent_jsonb
 	const sqlstr = `SELECT pg_catalog.gin_triconsistent_jsonb($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
 
 // GinTriconsistentJsonbPath calls the stored procedure 'pg_catalog.gin_triconsistent_jsonb_path(internal, smallint, jsonb, integer, internal, internal, internal) "char"' on db.
-func GinTriconsistentJsonbPath(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Jsonb, v3 int, v4, v5, v6 pgtypes.Internal) (uint8, error) {
+func GinTriconsistentJsonbPath(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 []byte, v3 int, v4, v5, v6 pgtypes.Internal) (pgtypes.Char, error) {
 	// call pg_catalog.gin_triconsistent_jsonb_path
 	const sqlstr = `SELECT pg_catalog.gin_triconsistent_jsonb_path($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
@@ -13208,14 +13082,14 @@ func GinTsqueryConsistent(ctx context.Context, db DB, v0 pgtypes.Internal, v1 in
 }
 
 // GinTsqueryTriconsistent calls the stored procedure 'pg_catalog.gin_tsquery_triconsistent(internal, smallint, tsvector, integer, internal, internal, internal) "char"' on db.
-func GinTsqueryTriconsistent(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Tsvector, v3 int, v4, v5, v6 pgtypes.Internal) (uint8, error) {
+func GinTsqueryTriconsistent(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Tsvector, v3 int, v4, v5, v6 pgtypes.Internal) (pgtypes.Char, error) {
 	// call pg_catalog.gin_tsquery_triconsistent
 	const sqlstr = `SELECT pg_catalog.gin_tsquery_triconsistent($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
@@ -13247,14 +13121,14 @@ func Ginarrayextract(ctx context.Context, db DB, v0 pgtypes.Anyarray, v1 pgtypes
 }
 
 // Ginarraytriconsistent calls the stored procedure 'pg_catalog.ginarraytriconsistent(internal, smallint, anyarray, integer, internal, internal, internal) "char"' on db.
-func Ginarraytriconsistent(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Anyarray, v3 int, v4, v5, v6 pgtypes.Internal) (uint8, error) {
+func Ginarraytriconsistent(ctx context.Context, db DB, v0 pgtypes.Internal, v1 int16, v2 pgtypes.Anyarray, v3 int, v4, v5, v6 pgtypes.Internal) (pgtypes.Char, error) {
 	// call pg_catalog.ginarraytriconsistent
 	const sqlstr = `SELECT pg_catalog.ginarraytriconsistent($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret uint8
+	var ret pgtypes.Char
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
-		return 0, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return ret, nil
 }
@@ -14000,7 +13874,7 @@ func Hashbpcharextended(ctx context.Context, db DB, v0 string, v1 int64) (int64,
 }
 
 // Hashchar calls the stored procedure 'pg_catalog.hashchar("char") integer' on db.
-func Hashchar(ctx context.Context, db DB, v0 uint8) (int, error) {
+func Hashchar(ctx context.Context, db DB, v0 pgtypes.Char) (int, error) {
 	// call pg_catalog.hashchar
 	const sqlstr = `SELECT pg_catalog.hashchar($1)`
 	// run
@@ -14013,7 +13887,7 @@ func Hashchar(ctx context.Context, db DB, v0 uint8) (int, error) {
 }
 
 // Hashcharextended calls the stored procedure 'pg_catalog.hashcharextended("char", bigint) bigint' on db.
-func Hashcharextended(ctx context.Context, db DB, v0 uint8, v1 int64) (int64, error) {
+func Hashcharextended(ctx context.Context, db DB, v0 pgtypes.Char, v1 int64) (int64, error) {
 	// call pg_catalog.hashcharextended
 	const sqlstr = `SELECT pg_catalog.hashcharextended($1, $2)`
 	// run
@@ -14585,7 +14459,7 @@ func Icregexnesel(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oi
 }
 
 // InRange calls the stored procedure 'pg_catalog.in_range(bigint, bigint, bigint, boolean, boolean, smallint, smallint, bigint, boolean, boolean, smallint, smallint, smallint, boolean, boolean, smallint, smallint, integer, boolean, boolean, integer, integer, bigint, boolean, boolean, integer, integer, smallint, boolean, boolean, integer, integer, integer, boolean, boolean, real, real, double precision, boolean, boolean, double precision, double precision, double precision, boolean, boolean, date, date, interval, boolean, boolean, time without time zone, time without time zone, interval, boolean, boolean, timestamp without time zone, timestamp without time zone, interval, boolean, boolean, timestamp with time zone, timestamp with time zone, interval, boolean, boolean, interval, interval, interval, boolean, boolean, time with time zone, time with time zone, interval, boolean, boolean, numeric, numeric, numeric, boolean, boolean) boolean' on db.
-func InRange(ctx context.Context, db DB, v0, v1, v2 int64, v3, v4 bool, v5, v6 int16, v7 int64, v8, v9 bool, v10, v11, v12 int16, v13, v14 bool, v15, v16 int16, v17 int, v18, v19 bool, v20, v21 int, v22 int64, v23, v24 bool, v25, v26 int, v27 int16, v28, v29 bool, v30, v31, v32 int, v33, v34 bool, v35, v36 float32, v37 float64, v38, v39 bool, v40, v41, v42 float64, v43, v44 bool, v45, v46 time.Time, v47 *time.Duration, v48, v49 bool, v50, v51 time.Time, v52 *time.Duration, v53, v54 bool, v55, v56 time.Time, v57 *time.Duration, v58, v59 bool, v60, v61 time.Time, v62 *time.Duration, v63, v64 bool, v65, v66, v67 *time.Duration, v68, v69 bool, v70, v71 time.Time, v72 *time.Duration, v73, v74 bool, v75, v76, v77 float64, v78, v79 bool) (bool, error) {
+func InRange(ctx context.Context, db DB, v0, v1, v2 int64, v3, v4 bool, v5, v6 int16, v7 int64, v8, v9 bool, v10, v11, v12 int16, v13, v14 bool, v15, v16 int16, v17 int, v18, v19 bool, v20, v21 int, v22 int64, v23, v24 bool, v25, v26 int, v27 int16, v28, v29 bool, v30, v31, v32 int, v33, v34 bool, v35, v36 float32, v37 float64, v38, v39 bool, v40, v41, v42 float64, v43, v44 bool, v45, v46 time.Time, v47 []byte, v48, v49 bool, v50, v51 time.Time, v52 []byte, v53, v54 bool, v55, v56 time.Time, v57 []byte, v58, v59 bool, v60, v61 time.Time, v62 []byte, v63, v64 bool, v65, v66, v67 []byte, v68, v69 bool, v70, v71 time.Time, v72 []byte, v73, v74 bool, v75, v76, v77 float64, v78, v79 bool) (bool, error) {
 	// call pg_catalog.in_range
 	const sqlstr = `SELECT pg_catalog.in_range($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $80)`
 	// run
@@ -14997,7 +14871,7 @@ func Initcap(ctx context.Context, db DB, v0 string) (string, error) {
 }
 
 // Int2 calls the stored procedure 'pg_catalog.int2(bigint, integer, real, double precision, numeric, jsonb) smallint' on db.
-func Int2(ctx context.Context, db DB, v0 int64, v1 int, v2 float32, v3, v4 float64, v5 pgtypes.Jsonb) (int16, error) {
+func Int2(ctx context.Context, db DB, v0 int64, v1 int, v2 float32, v3, v4 float64, v5 []byte) (int16, error) {
 	// call pg_catalog.int2
 	const sqlstr = `SELECT pg_catalog.int2($1, $2, $3, $4, $5, $6)`
 	// run
@@ -15751,7 +15625,7 @@ func Int2xor(ctx context.Context, db DB, v0, v1 int16) (int16, error) {
 }
 
 // Int4 calls the stored procedure 'pg_catalog.int4(boolean, "char", bigint, smallint, real, double precision, bit, numeric, jsonb) integer' on db.
-func Int4(ctx context.Context, db DB, v0 bool, v1 uint8, v2 int64, v3 int16, v4 float32, v5 float64, v6 uint8, v7 float64, v8 pgtypes.Jsonb) (int, error) {
+func Int4(ctx context.Context, db DB, v0 bool, v1 pgtypes.Char, v2 int64, v3 int16, v4 float32, v5 float64, v6 uint8, v7 float64, v8 []byte) (int, error) {
 	// call pg_catalog.int4
 	const sqlstr = `SELECT pg_catalog.int4($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	// run
@@ -16505,7 +16379,7 @@ func Int4xor(ctx context.Context, db DB, v0, v1 int) (int, error) {
 }
 
 // Int8 calls the stored procedure 'pg_catalog.int8(smallint, integer, oid, real, double precision, bit, numeric, jsonb) bigint' on db.
-func Int8(ctx context.Context, db DB, v0 int16, v1 int, v2 pgtypes.Oid, v3 float32, v4 float64, v5 uint8, v6 float64, v7 pgtypes.Jsonb) (int64, error) {
+func Int8(ctx context.Context, db DB, v0 int16, v1 int, v2 pgtypes.Oid, v3 float32, v4 float64, v5 uint8, v6 float64, v7 []byte) (int64, error) {
 	// call pg_catalog.int8
 	const sqlstr = `SELECT pg_catalog.int8($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -16947,7 +16821,7 @@ func Int8dec(ctx context.Context, db DB, v0 int64) (int64, error) {
 }
 
 // Int8decAny calls the stored procedure 'pg_catalog.int8dec_any(bigint, "any") bigint' on db.
-func Int8decAny(ctx context.Context, db DB, v0 int64, v1 []byte) (int64, error) {
+func Int8decAny(ctx context.Context, db DB, v0 int64, v1 pgtypes.Any) (int64, error) {
 	// call pg_catalog.int8dec_any
 	const sqlstr = `SELECT pg_catalog.int8dec_any($1, $2)`
 	// run
@@ -17038,7 +16912,7 @@ func Int8inc(ctx context.Context, db DB, v0 int64) (int64, error) {
 }
 
 // Int8incAny calls the stored procedure 'pg_catalog.int8inc_any(bigint, "any") bigint' on db.
-func Int8incAny(ctx context.Context, db DB, v0 int64, v1 []byte) (int64, error) {
+func Int8incAny(ctx context.Context, db DB, v0 int64, v1 pgtypes.Any) (int64, error) {
 	// call pg_catalog.int8inc_any
 	const sqlstr = `SELECT pg_catalog.int8inc_any($1, $2)`
 	// run
@@ -17441,11 +17315,11 @@ func InternalOut(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.Cstri
 }
 
 // Interval calls the stored procedure 'pg_catalog.interval(time without time zone, interval, integer) interval' on db.
-func Interval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration, v2 int) (*time.Duration, error) {
+func Interval(ctx context.Context, db DB, v0 time.Time, v1 []byte, v2 int) ([]byte, error) {
 	// call pg_catalog.interval
 	const sqlstr = `SELECT pg_catalog.interval($1, $2, $3)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17454,11 +17328,11 @@ func Interval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration, v2 in
 }
 
 // IntervalAccum calls the stored procedure 'pg_catalog.interval_accum(interval[], interval) interval[]' on db.
-func IntervalAccum(ctx context.Context, db DB, v0 []*time.Duration, v1 *time.Duration) ([]*time.Duration, error) {
+func IntervalAccum(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_accum
 	const sqlstr = `SELECT pg_catalog.interval_accum($1, $2)`
 	// run
-	var ret []*time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17467,11 +17341,11 @@ func IntervalAccum(ctx context.Context, db DB, v0 []*time.Duration, v1 *time.Dur
 }
 
 // IntervalAccumInv calls the stored procedure 'pg_catalog.interval_accum_inv(interval[], interval) interval[]' on db.
-func IntervalAccumInv(ctx context.Context, db DB, v0 []*time.Duration, v1 *time.Duration) ([]*time.Duration, error) {
+func IntervalAccumInv(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_accum_inv
 	const sqlstr = `SELECT pg_catalog.interval_accum_inv($1, $2)`
 	// run
-	var ret []*time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17480,11 +17354,11 @@ func IntervalAccumInv(ctx context.Context, db DB, v0 []*time.Duration, v1 *time.
 }
 
 // IntervalAvg calls the stored procedure 'pg_catalog.interval_avg(interval[]) interval' on db.
-func IntervalAvg(ctx context.Context, db DB, v0 []*time.Duration) (*time.Duration, error) {
+func IntervalAvg(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.interval_avg
 	const sqlstr = `SELECT pg_catalog.interval_avg($1)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17493,7 +17367,7 @@ func IntervalAvg(ctx context.Context, db DB, v0 []*time.Duration) (*time.Duratio
 }
 
 // IntervalCmp calls the stored procedure 'pg_catalog.interval_cmp(interval, interval) integer' on db.
-func IntervalCmp(ctx context.Context, db DB, v0, v1 *time.Duration) (int, error) {
+func IntervalCmp(ctx context.Context, db DB, v0, v1 []byte) (int, error) {
 	// call pg_catalog.interval_cmp
 	const sqlstr = `SELECT pg_catalog.interval_cmp($1, $2)`
 	// run
@@ -17506,11 +17380,11 @@ func IntervalCmp(ctx context.Context, db DB, v0, v1 *time.Duration) (int, error)
 }
 
 // IntervalCombine calls the stored procedure 'pg_catalog.interval_combine(interval[], interval[]) interval[]' on db.
-func IntervalCombine(ctx context.Context, db DB, v0, v1 []*time.Duration) ([]*time.Duration, error) {
+func IntervalCombine(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_combine
 	const sqlstr = `SELECT pg_catalog.interval_combine($1, $2)`
 	// run
-	var ret []*time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17519,11 +17393,11 @@ func IntervalCombine(ctx context.Context, db DB, v0, v1 []*time.Duration) ([]*ti
 }
 
 // IntervalDiv calls the stored procedure 'pg_catalog.interval_div(interval, double precision) interval' on db.
-func IntervalDiv(ctx context.Context, db DB, v0 *time.Duration, v1 float64) (*time.Duration, error) {
+func IntervalDiv(ctx context.Context, db DB, v0 []byte, v1 float64) ([]byte, error) {
 	// call pg_catalog.interval_div
 	const sqlstr = `SELECT pg_catalog.interval_div($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17532,7 +17406,7 @@ func IntervalDiv(ctx context.Context, db DB, v0 *time.Duration, v1 float64) (*ti
 }
 
 // IntervalEq calls the stored procedure 'pg_catalog.interval_eq(interval, interval) boolean' on db.
-func IntervalEq(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalEq(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_eq
 	const sqlstr = `SELECT pg_catalog.interval_eq($1, $2)`
 	// run
@@ -17545,7 +17419,7 @@ func IntervalEq(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalGe calls the stored procedure 'pg_catalog.interval_ge(interval, interval) boolean' on db.
-func IntervalGe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalGe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_ge
 	const sqlstr = `SELECT pg_catalog.interval_ge($1, $2)`
 	// run
@@ -17558,7 +17432,7 @@ func IntervalGe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalGt calls the stored procedure 'pg_catalog.interval_gt(interval, interval) boolean' on db.
-func IntervalGt(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalGt(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_gt
 	const sqlstr = `SELECT pg_catalog.interval_gt($1, $2)`
 	// run
@@ -17571,7 +17445,7 @@ func IntervalGt(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalHash calls the stored procedure 'pg_catalog.interval_hash(interval) integer' on db.
-func IntervalHash(ctx context.Context, db DB, v0 *time.Duration) (int, error) {
+func IntervalHash(ctx context.Context, db DB, v0 []byte) (int, error) {
 	// call pg_catalog.interval_hash
 	const sqlstr = `SELECT pg_catalog.interval_hash($1)`
 	// run
@@ -17584,7 +17458,7 @@ func IntervalHash(ctx context.Context, db DB, v0 *time.Duration) (int, error) {
 }
 
 // IntervalHashExtended calls the stored procedure 'pg_catalog.interval_hash_extended(interval, bigint) bigint' on db.
-func IntervalHashExtended(ctx context.Context, db DB, v0 *time.Duration, v1 int64) (int64, error) {
+func IntervalHashExtended(ctx context.Context, db DB, v0 []byte, v1 int64) (int64, error) {
 	// call pg_catalog.interval_hash_extended
 	const sqlstr = `SELECT pg_catalog.interval_hash_extended($1, $2)`
 	// run
@@ -17597,11 +17471,11 @@ func IntervalHashExtended(ctx context.Context, db DB, v0 *time.Duration, v1 int6
 }
 
 // IntervalIn calls the stored procedure 'pg_catalog.interval_in(cstring, oid, integer) interval' on db.
-func IntervalIn(ctx context.Context, db DB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) (*time.Duration, error) {
+func IntervalIn(ctx context.Context, db DB, v0 pgtypes.Cstring, v1 pgtypes.Oid, v2 int) ([]byte, error) {
 	// call pg_catalog.interval_in
 	const sqlstr = `SELECT pg_catalog.interval_in($1, $2, $3)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17610,11 +17484,11 @@ func IntervalIn(ctx context.Context, db DB, v0 pgtypes.Cstring, v1 pgtypes.Oid, 
 }
 
 // IntervalLarger calls the stored procedure 'pg_catalog.interval_larger(interval, interval) interval' on db.
-func IntervalLarger(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Duration, error) {
+func IntervalLarger(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_larger
 	const sqlstr = `SELECT pg_catalog.interval_larger($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17623,7 +17497,7 @@ func IntervalLarger(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Du
 }
 
 // IntervalLe calls the stored procedure 'pg_catalog.interval_le(interval, interval) boolean' on db.
-func IntervalLe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalLe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_le
 	const sqlstr = `SELECT pg_catalog.interval_le($1, $2)`
 	// run
@@ -17636,7 +17510,7 @@ func IntervalLe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalLt calls the stored procedure 'pg_catalog.interval_lt(interval, interval) boolean' on db.
-func IntervalLt(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalLt(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_lt
 	const sqlstr = `SELECT pg_catalog.interval_lt($1, $2)`
 	// run
@@ -17649,11 +17523,11 @@ func IntervalLt(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalMi calls the stored procedure 'pg_catalog.interval_mi(interval, interval) interval' on db.
-func IntervalMi(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Duration, error) {
+func IntervalMi(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_mi
 	const sqlstr = `SELECT pg_catalog.interval_mi($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17662,11 +17536,11 @@ func IntervalMi(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Durati
 }
 
 // IntervalMul calls the stored procedure 'pg_catalog.interval_mul(interval, double precision) interval' on db.
-func IntervalMul(ctx context.Context, db DB, v0 *time.Duration, v1 float64) (*time.Duration, error) {
+func IntervalMul(ctx context.Context, db DB, v0 []byte, v1 float64) ([]byte, error) {
 	// call pg_catalog.interval_mul
 	const sqlstr = `SELECT pg_catalog.interval_mul($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17675,7 +17549,7 @@ func IntervalMul(ctx context.Context, db DB, v0 *time.Duration, v1 float64) (*ti
 }
 
 // IntervalNe calls the stored procedure 'pg_catalog.interval_ne(interval, interval) boolean' on db.
-func IntervalNe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error) {
+func IntervalNe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.interval_ne
 	const sqlstr = `SELECT pg_catalog.interval_ne($1, $2)`
 	// run
@@ -17688,7 +17562,7 @@ func IntervalNe(ctx context.Context, db DB, v0, v1 *time.Duration) (bool, error)
 }
 
 // IntervalOut calls the stored procedure 'pg_catalog.interval_out(interval) cstring' on db.
-func IntervalOut(ctx context.Context, db DB, v0 *time.Duration) (pgtypes.Cstring, error) {
+func IntervalOut(ctx context.Context, db DB, v0 []byte) (pgtypes.Cstring, error) {
 	// call pg_catalog.interval_out
 	const sqlstr = `SELECT pg_catalog.interval_out($1)`
 	// run
@@ -17701,11 +17575,11 @@ func IntervalOut(ctx context.Context, db DB, v0 *time.Duration) (pgtypes.Cstring
 }
 
 // IntervalPl calls the stored procedure 'pg_catalog.interval_pl(interval, interval) interval' on db.
-func IntervalPl(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Duration, error) {
+func IntervalPl(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_pl
 	const sqlstr = `SELECT pg_catalog.interval_pl($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17714,7 +17588,7 @@ func IntervalPl(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Durati
 }
 
 // IntervalPlDate calls the stored procedure 'pg_catalog.interval_pl_date(interval, date) timestamp without time zone' on db.
-func IntervalPlDate(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time) (time.Time, error) {
+func IntervalPlDate(ctx context.Context, db DB, v0 []byte, v1 time.Time) (time.Time, error) {
 	// call pg_catalog.interval_pl_date
 	const sqlstr = `SELECT pg_catalog.interval_pl_date($1, $2)`
 	// run
@@ -17727,7 +17601,7 @@ func IntervalPlDate(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time)
 }
 
 // IntervalPlTime calls the stored procedure 'pg_catalog.interval_pl_time(interval, time without time zone) time without time zone' on db.
-func IntervalPlTime(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time) (time.Time, error) {
+func IntervalPlTime(ctx context.Context, db DB, v0 []byte, v1 time.Time) (time.Time, error) {
 	// call pg_catalog.interval_pl_time
 	const sqlstr = `SELECT pg_catalog.interval_pl_time($1, $2)`
 	// run
@@ -17740,7 +17614,7 @@ func IntervalPlTime(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time)
 }
 
 // IntervalPlTimestamp calls the stored procedure 'pg_catalog.interval_pl_timestamp(interval, timestamp without time zone) timestamp without time zone' on db.
-func IntervalPlTimestamp(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time) (time.Time, error) {
+func IntervalPlTimestamp(ctx context.Context, db DB, v0 []byte, v1 time.Time) (time.Time, error) {
 	// call pg_catalog.interval_pl_timestamp
 	const sqlstr = `SELECT pg_catalog.interval_pl_timestamp($1, $2)`
 	// run
@@ -17753,7 +17627,7 @@ func IntervalPlTimestamp(ctx context.Context, db DB, v0 *time.Duration, v1 time.
 }
 
 // IntervalPlTimestamptz calls the stored procedure 'pg_catalog.interval_pl_timestamptz(interval, timestamp with time zone) timestamp with time zone' on db.
-func IntervalPlTimestamptz(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time) (time.Time, error) {
+func IntervalPlTimestamptz(ctx context.Context, db DB, v0 []byte, v1 time.Time) (time.Time, error) {
 	// call pg_catalog.interval_pl_timestamptz
 	const sqlstr = `SELECT pg_catalog.interval_pl_timestamptz($1, $2)`
 	// run
@@ -17766,7 +17640,7 @@ func IntervalPlTimestamptz(ctx context.Context, db DB, v0 *time.Duration, v1 tim
 }
 
 // IntervalPlTimetz calls the stored procedure 'pg_catalog.interval_pl_timetz(interval, time with time zone) time with time zone' on db.
-func IntervalPlTimetz(ctx context.Context, db DB, v0 *time.Duration, v1 time.Time) (time.Time, error) {
+func IntervalPlTimetz(ctx context.Context, db DB, v0 []byte, v1 time.Time) (time.Time, error) {
 	// call pg_catalog.interval_pl_timetz
 	const sqlstr = `SELECT pg_catalog.interval_pl_timetz($1, $2)`
 	// run
@@ -17779,11 +17653,11 @@ func IntervalPlTimetz(ctx context.Context, db DB, v0 *time.Duration, v1 time.Tim
 }
 
 // IntervalRecv calls the stored procedure 'pg_catalog.interval_recv(internal, oid, integer) interval' on db.
-func IntervalRecv(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) (*time.Duration, error) {
+func IntervalRecv(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid, v2 int) ([]byte, error) {
 	// call pg_catalog.interval_recv
 	const sqlstr = `SELECT pg_catalog.interval_recv($1, $2, $3)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17792,7 +17666,7 @@ func IntervalRecv(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oi
 }
 
 // IntervalSend calls the stored procedure 'pg_catalog.interval_send(interval) bytea' on db.
-func IntervalSend(ctx context.Context, db DB, v0 *time.Duration) ([]byte, error) {
+func IntervalSend(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.interval_send
 	const sqlstr = `SELECT pg_catalog.interval_send($1)`
 	// run
@@ -17805,11 +17679,11 @@ func IntervalSend(ctx context.Context, db DB, v0 *time.Duration) ([]byte, error)
 }
 
 // IntervalSmaller calls the stored procedure 'pg_catalog.interval_smaller(interval, interval) interval' on db.
-func IntervalSmaller(ctx context.Context, db DB, v0, v1 *time.Duration) (*time.Duration, error) {
+func IntervalSmaller(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.interval_smaller
 	const sqlstr = `SELECT pg_catalog.interval_smaller($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17831,11 +17705,11 @@ func IntervalSupport(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.I
 }
 
 // IntervalUm calls the stored procedure 'pg_catalog.interval_um(interval) interval' on db.
-func IntervalUm(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration, error) {
+func IntervalUm(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.interval_um
 	const sqlstr = `SELECT pg_catalog.interval_um($1)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -17909,7 +17783,7 @@ func Isempty(ctx context.Context, db DB, v0 pgtypes.Anyrange) (bool, error) {
 }
 
 // Isfinite calls the stored procedure 'pg_catalog.isfinite(date, timestamp without time zone, timestamp with time zone, interval) boolean' on db.
-func Isfinite(ctx context.Context, db DB, v0, v1, v2 time.Time, v3 *time.Duration) (bool, error) {
+func Isfinite(ctx context.Context, db DB, v0, v1, v2 time.Time, v3 []byte) (bool, error) {
 	// call pg_catalog.isfinite
 	const sqlstr = `SELECT pg_catalog.isfinite($1, $2, $3, $4)`
 	// run
@@ -18059,27 +17933,27 @@ func Isvertical(ctx context.Context, db DB, v0 pgtypes.Lseg, v1 pgtypes.Line, v2
 }
 
 // JSONAgg calls the stored procedure 'pg_catalog.json_agg(anyelement) json' on db.
-func JSONAgg(ctx context.Context, db DB, v0 pgtypes.Anyelement) (pgtypes.JSON, error) {
+func JSONAgg(ctx context.Context, db DB, v0 pgtypes.Anyelement) ([]byte, error) {
 	// call pg_catalog.json_agg
 	const sqlstr = `SELECT pg_catalog.json_agg($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONAggFinalfn calls the stored procedure 'pg_catalog.json_agg_finalfn(internal) json' on db.
-func JSONAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.JSON, error) {
+func JSONAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.json_agg_finalfn
 	const sqlstr = `SELECT pg_catalog.json_agg_finalfn($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -18098,20 +17972,20 @@ func JSONAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.
 }
 
 // JSONArrayElement calls the stored procedure 'pg_catalog.json_array_element(json, integer) json' on db.
-func JSONArrayElement(ctx context.Context, db DB, v0 pgtypes.JSON, v1 int) (pgtypes.JSON, error) {
+func JSONArrayElement(ctx context.Context, db DB, v0 []byte, v1 int) ([]byte, error) {
 	// call pg_catalog.json_array_element
 	const sqlstr = `SELECT pg_catalog.json_array_element($1, $2)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONArrayElementText calls the stored procedure 'pg_catalog.json_array_element_text(json, integer) text' on db.
-func JSONArrayElementText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 int) (string, error) {
+func JSONArrayElementText(ctx context.Context, db DB, v0 []byte, v1 int) (string, error) {
 	// call pg_catalog.json_array_element_text
 	const sqlstr = `SELECT pg_catalog.json_array_element_text($1, $2)`
 	// run
@@ -18124,11 +17998,11 @@ func JSONArrayElementText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 int) (
 }
 
 // JSONArrayElements calls the stored procedure 'pg_catalog.json_array_elements(json) SETOF json' on db.
-func JSONArrayElements(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.JSON, error) {
+func JSONArrayElements(ctx context.Context, db DB, v0 []byte) ([][]byte, error) {
 	// call pg_catalog.json_array_elements
 	const sqlstr = `SELECT pg_catalog.json_array_elements($1)`
 	// run
-	var ret []pgtypes.JSON
+	var ret [][]byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -18137,7 +18011,7 @@ func JSONArrayElements(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.J
 }
 
 // JSONArrayElementsText calls the stored procedure 'pg_catalog.json_array_elements_text(json) SETOF text' on db.
-func JSONArrayElementsText(ctx context.Context, db DB, v0 pgtypes.JSON) ([]string, error) {
+func JSONArrayElementsText(ctx context.Context, db DB, v0 []byte) ([]string, error) {
 	// call pg_catalog.json_array_elements_text
 	const sqlstr = `SELECT pg_catalog.json_array_elements_text($1)`
 	// run
@@ -18150,7 +18024,7 @@ func JSONArrayElementsText(ctx context.Context, db DB, v0 pgtypes.JSON) ([]strin
 }
 
 // JSONArrayLength calls the stored procedure 'pg_catalog.json_array_length(json) integer' on db.
-func JSONArrayLength(ctx context.Context, db DB, v0 pgtypes.JSON) (int, error) {
+func JSONArrayLength(ctx context.Context, db DB, v0 []byte) (int, error) {
 	// call pg_catalog.json_array_length
 	const sqlstr = `SELECT pg_catalog.json_array_length($1)`
 	// run
@@ -18163,33 +18037,33 @@ func JSONArrayLength(ctx context.Context, db DB, v0 pgtypes.JSON) (int, error) {
 }
 
 // JSONBuildArray calls the stored procedure 'pg_catalog.json_build_array("any") json' on db.
-func JSONBuildArray(ctx context.Context, db DB, v0 []byte) (pgtypes.JSON, error) {
+func JSONBuildArray(ctx context.Context, db DB, v0 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.json_build_array
 	const sqlstr = `SELECT pg_catalog.json_build_array($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONBuildObject calls the stored procedure 'pg_catalog.json_build_object("any") json' on db.
-func JSONBuildObject(ctx context.Context, db DB, v0 []byte) (pgtypes.JSON, error) {
+func JSONBuildObject(ctx context.Context, db DB, v0 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.json_build_object
 	const sqlstr = `SELECT pg_catalog.json_build_object($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONEach calls the stored procedure 'pg_catalog.json_each(json) SETOF record' on db.
-func JSONEach(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Record, error) {
+func JSONEach(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.json_each
 	const sqlstr = `SELECT pg_catalog.json_each($1)`
 	// run
@@ -18202,7 +18076,7 @@ func JSONEach(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Record, er
 }
 
 // JSONEachText calls the stored procedure 'pg_catalog.json_each_text(json) SETOF record' on db.
-func JSONEachText(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Record, error) {
+func JSONEachText(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.json_each_text
 	const sqlstr = `SELECT pg_catalog.json_each_text($1)`
 	// run
@@ -18215,20 +18089,20 @@ func JSONEachText(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Record
 }
 
 // JSONExtractPath calls the stored procedure 'pg_catalog.json_extract_path(json, text[]) json' on db.
-func JSONExtractPath(ctx context.Context, db DB, v0 pgtypes.JSON, v1 StringSlice) (pgtypes.JSON, error) {
+func JSONExtractPath(ctx context.Context, db DB, v0 []byte, v1 StringSlice) ([]byte, error) {
 	// call pg_catalog.json_extract_path
 	const sqlstr = `SELECT pg_catalog.json_extract_path($1, $2)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONExtractPathText calls the stored procedure 'pg_catalog.json_extract_path_text(json, text[]) text' on db.
-func JSONExtractPathText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 StringSlice) (string, error) {
+func JSONExtractPathText(ctx context.Context, db DB, v0 []byte, v1 StringSlice) (string, error) {
 	// call pg_catalog.json_extract_path_text
 	const sqlstr = `SELECT pg_catalog.json_extract_path_text($1, $2)`
 	// run
@@ -18241,59 +18115,59 @@ func JSONExtractPathText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 StringS
 }
 
 // JSONIn calls the stored procedure 'pg_catalog.json_in(cstring) json' on db.
-func JSONIn(ctx context.Context, db DB, v0 pgtypes.Cstring) (pgtypes.JSON, error) {
+func JSONIn(ctx context.Context, db DB, v0 pgtypes.Cstring) ([]byte, error) {
 	// call pg_catalog.json_in
 	const sqlstr = `SELECT pg_catalog.json_in($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONObject calls the stored procedure 'pg_catalog.json_object(text[], text[], text[]) json' on db.
-func JSONObject(ctx context.Context, db DB, v0, v1, v2 StringSlice) (pgtypes.JSON, error) {
+func JSONObject(ctx context.Context, db DB, v0, v1, v2 StringSlice) ([]byte, error) {
 	// call pg_catalog.json_object
 	const sqlstr = `SELECT pg_catalog.json_object($1, $2, $3)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONObjectAgg calls the stored procedure 'pg_catalog.json_object_agg("any", "any") json' on db.
-func JSONObjectAgg(ctx context.Context, db DB, v0, v1 []byte) (pgtypes.JSON, error) {
+func JSONObjectAgg(ctx context.Context, db DB, v0, v1 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.json_object_agg
 	const sqlstr = `SELECT pg_catalog.json_object_agg($1, $2)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONObjectAggFinalfn calls the stored procedure 'pg_catalog.json_object_agg_finalfn(internal) json' on db.
-func JSONObjectAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.JSON, error) {
+func JSONObjectAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.json_object_agg_finalfn
 	const sqlstr = `SELECT pg_catalog.json_object_agg_finalfn($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONObjectAggTransfn calls the stored procedure 'pg_catalog.json_object_agg_transfn(internal, "any", "any") internal' on db.
-func JSONObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, v2 []byte) (pgtypes.Internal, error) {
+func JSONObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, v2 pgtypes.Any) (pgtypes.Internal, error) {
 	// call pg_catalog.json_object_agg_transfn
 	const sqlstr = `SELECT pg_catalog.json_object_agg_transfn($1, $2, $3)`
 	// run
@@ -18306,20 +18180,20 @@ func JSONObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, v
 }
 
 // JSONObjectField calls the stored procedure 'pg_catalog.json_object_field(json, text) json' on db.
-func JSONObjectField(ctx context.Context, db DB, v0 pgtypes.JSON, v1 string) (pgtypes.JSON, error) {
+func JSONObjectField(ctx context.Context, db DB, v0 []byte, v1 string) ([]byte, error) {
 	// call pg_catalog.json_object_field
 	const sqlstr = `SELECT pg_catalog.json_object_field($1, $2)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONObjectFieldText calls the stored procedure 'pg_catalog.json_object_field_text(json, text) text' on db.
-func JSONObjectFieldText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 string) (string, error) {
+func JSONObjectFieldText(ctx context.Context, db DB, v0 []byte, v1 string) (string, error) {
 	// call pg_catalog.json_object_field_text
 	const sqlstr = `SELECT pg_catalog.json_object_field_text($1, $2)`
 	// run
@@ -18332,7 +18206,7 @@ func JSONObjectFieldText(ctx context.Context, db DB, v0 pgtypes.JSON, v1 string)
 }
 
 // JSONObjectKeys calls the stored procedure 'pg_catalog.json_object_keys(json) SETOF text' on db.
-func JSONObjectKeys(ctx context.Context, db DB, v0 pgtypes.JSON) ([]string, error) {
+func JSONObjectKeys(ctx context.Context, db DB, v0 []byte) ([]string, error) {
 	// call pg_catalog.json_object_keys
 	const sqlstr = `SELECT pg_catalog.json_object_keys($1)`
 	// run
@@ -18345,7 +18219,7 @@ func JSONObjectKeys(ctx context.Context, db DB, v0 pgtypes.JSON) ([]string, erro
 }
 
 // JSONOut calls the stored procedure 'pg_catalog.json_out(json) cstring' on db.
-func JSONOut(ctx context.Context, db DB, v0 pgtypes.JSON) (pgtypes.Cstring, error) {
+func JSONOut(ctx context.Context, db DB, v0 []byte) (pgtypes.Cstring, error) {
 	// call pg_catalog.json_out
 	const sqlstr = `SELECT pg_catalog.json_out($1)`
 	// run
@@ -18358,7 +18232,7 @@ func JSONOut(ctx context.Context, db DB, v0 pgtypes.JSON) (pgtypes.Cstring, erro
 }
 
 // JSONPopulateRecord calls the stored procedure 'pg_catalog.json_populate_record(anyelement, json, boolean) anyelement' on db.
-func JSONPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 pgtypes.JSON, v2 bool) (pgtypes.Anyelement, error) {
+func JSONPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 []byte, v2 bool) (pgtypes.Anyelement, error) {
 	// call pg_catalog.json_populate_record
 	const sqlstr = `SELECT pg_catalog.json_populate_record($1, $2, $3)`
 	// run
@@ -18371,7 +18245,7 @@ func JSONPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 pg
 }
 
 // JSONPopulateRecordset calls the stored procedure 'pg_catalog.json_populate_recordset(anyelement, json, boolean) SETOF anyelement' on db.
-func JSONPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 pgtypes.JSON, v2 bool) ([]pgtypes.Anyelement, error) {
+func JSONPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 []byte, v2 bool) ([]pgtypes.Anyelement, error) {
 	// call pg_catalog.json_populate_recordset
 	const sqlstr = `SELECT pg_catalog.json_populate_recordset($1, $2, $3)`
 	// run
@@ -18384,20 +18258,20 @@ func JSONPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1
 }
 
 // JSONRecv calls the stored procedure 'pg_catalog.json_recv(internal) json' on db.
-func JSONRecv(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.JSON, error) {
+func JSONRecv(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.json_recv
 	const sqlstr = `SELECT pg_catalog.json_recv($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONSend calls the stored procedure 'pg_catalog.json_send(json) bytea' on db.
-func JSONSend(ctx context.Context, db DB, v0 pgtypes.JSON) ([]byte, error) {
+func JSONSend(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.json_send
 	const sqlstr = `SELECT pg_catalog.json_send($1)`
 	// run
@@ -18410,20 +18284,20 @@ func JSONSend(ctx context.Context, db DB, v0 pgtypes.JSON) ([]byte, error) {
 }
 
 // JSONStripNulls calls the stored procedure 'pg_catalog.json_strip_nulls(json) json' on db.
-func JSONStripNulls(ctx context.Context, db DB, v0 pgtypes.JSON) (pgtypes.JSON, error) {
+func JSONStripNulls(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.json_strip_nulls
 	const sqlstr = `SELECT pg_catalog.json_strip_nulls($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JSONToRecord calls the stored procedure 'pg_catalog.json_to_record(json) record' on db.
-func JSONToRecord(ctx context.Context, db DB, v0 pgtypes.JSON) (pgtypes.Record, error) {
+func JSONToRecord(ctx context.Context, db DB, v0 []byte) (pgtypes.Record, error) {
 	// call pg_catalog.json_to_record
 	const sqlstr = `SELECT pg_catalog.json_to_record($1)`
 	// run
@@ -18436,7 +18310,7 @@ func JSONToRecord(ctx context.Context, db DB, v0 pgtypes.JSON) (pgtypes.Record, 
 }
 
 // JSONToRecordset calls the stored procedure 'pg_catalog.json_to_recordset(json) SETOF record' on db.
-func JSONToRecordset(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Record, error) {
+func JSONToRecordset(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.json_to_recordset
 	const sqlstr = `SELECT pg_catalog.json_to_recordset($1)`
 	// run
@@ -18449,7 +18323,7 @@ func JSONToRecordset(ctx context.Context, db DB, v0 pgtypes.JSON) ([]pgtypes.Rec
 }
 
 // JSONToTsvector calls the stored procedure 'pg_catalog.json_to_tsvector(json, jsonb, regconfig, json, jsonb) tsvector' on db.
-func JSONToTsvector(ctx context.Context, db DB, v0 pgtypes.JSON, v1 pgtypes.Jsonb, v2 pgtypes.Regconfig, v3 pgtypes.JSON, v4 pgtypes.Jsonb) (pgtypes.Tsvector, error) {
+func JSONToTsvector(ctx context.Context, db DB, v0, v1 []byte, v2 pgtypes.Regconfig, v3, v4 []byte) (pgtypes.Tsvector, error) {
 	// call pg_catalog.json_to_tsvector
 	const sqlstr = `SELECT pg_catalog.json_to_tsvector($1, $2, $3, $4, $5)`
 	// run
@@ -18462,7 +18336,7 @@ func JSONToTsvector(ctx context.Context, db DB, v0 pgtypes.JSON, v1 pgtypes.Json
 }
 
 // JSONTypeof calls the stored procedure 'pg_catalog.json_typeof(json) text' on db.
-func JSONTypeof(ctx context.Context, db DB, v0 pgtypes.JSON) (string, error) {
+func JSONTypeof(ctx context.Context, db DB, v0 []byte) (string, error) {
 	// call pg_catalog.json_typeof
 	const sqlstr = `SELECT pg_catalog.json_typeof($1)`
 	// run
@@ -18487,27 +18361,27 @@ func JohabToUTF8(ctx context.Context, db DB, v0, v1 int, v2 pgtypes.Cstring, v3 
 }
 
 // JsonbAgg calls the stored procedure 'pg_catalog.jsonb_agg(anyelement) jsonb' on db.
-func JsonbAgg(ctx context.Context, db DB, v0 pgtypes.Anyelement) (pgtypes.Jsonb, error) {
+func JsonbAgg(ctx context.Context, db DB, v0 pgtypes.Anyelement) ([]byte, error) {
 	// call pg_catalog.jsonb_agg
 	const sqlstr = `SELECT pg_catalog.jsonb_agg($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbAggFinalfn calls the stored procedure 'pg_catalog.jsonb_agg_finalfn(internal) jsonb' on db.
-func JsonbAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.Jsonb, error) {
+func JsonbAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.jsonb_agg_finalfn
 	const sqlstr = `SELECT pg_catalog.jsonb_agg_finalfn($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -18526,20 +18400,20 @@ func JsonbAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes
 }
 
 // JsonbArrayElement calls the stored procedure 'pg_catalog.jsonb_array_element(jsonb, integer) jsonb' on db.
-func JsonbArrayElement(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int) (pgtypes.Jsonb, error) {
+func JsonbArrayElement(ctx context.Context, db DB, v0 []byte, v1 int) ([]byte, error) {
 	// call pg_catalog.jsonb_array_element
 	const sqlstr = `SELECT pg_catalog.jsonb_array_element($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbArrayElementText calls the stored procedure 'pg_catalog.jsonb_array_element_text(jsonb, integer) text' on db.
-func JsonbArrayElementText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int) (string, error) {
+func JsonbArrayElementText(ctx context.Context, db DB, v0 []byte, v1 int) (string, error) {
 	// call pg_catalog.jsonb_array_element_text
 	const sqlstr = `SELECT pg_catalog.jsonb_array_element_text($1, $2)`
 	// run
@@ -18552,11 +18426,11 @@ func JsonbArrayElementText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int)
 }
 
 // JsonbArrayElements calls the stored procedure 'pg_catalog.jsonb_array_elements(jsonb) SETOF jsonb' on db.
-func JsonbArrayElements(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Jsonb, error) {
+func JsonbArrayElements(ctx context.Context, db DB, v0 []byte) ([][]byte, error) {
 	// call pg_catalog.jsonb_array_elements
 	const sqlstr = `SELECT pg_catalog.jsonb_array_elements($1)`
 	// run
-	var ret []pgtypes.Jsonb
+	var ret [][]byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -18565,7 +18439,7 @@ func JsonbArrayElements(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes
 }
 
 // JsonbArrayElementsText calls the stored procedure 'pg_catalog.jsonb_array_elements_text(jsonb) SETOF text' on db.
-func JsonbArrayElementsText(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]string, error) {
+func JsonbArrayElementsText(ctx context.Context, db DB, v0 []byte) ([]string, error) {
 	// call pg_catalog.jsonb_array_elements_text
 	const sqlstr = `SELECT pg_catalog.jsonb_array_elements_text($1)`
 	// run
@@ -18578,7 +18452,7 @@ func JsonbArrayElementsText(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]str
 }
 
 // JsonbArrayLength calls the stored procedure 'pg_catalog.jsonb_array_length(jsonb) integer' on db.
-func JsonbArrayLength(ctx context.Context, db DB, v0 pgtypes.Jsonb) (int, error) {
+func JsonbArrayLength(ctx context.Context, db DB, v0 []byte) (int, error) {
 	// call pg_catalog.jsonb_array_length
 	const sqlstr = `SELECT pg_catalog.jsonb_array_length($1)`
 	// run
@@ -18591,33 +18465,33 @@ func JsonbArrayLength(ctx context.Context, db DB, v0 pgtypes.Jsonb) (int, error)
 }
 
 // JsonbBuildArray calls the stored procedure 'pg_catalog.jsonb_build_array("any") jsonb' on db.
-func JsonbBuildArray(ctx context.Context, db DB, v0 []byte) (pgtypes.Jsonb, error) {
+func JsonbBuildArray(ctx context.Context, db DB, v0 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.jsonb_build_array
 	const sqlstr = `SELECT pg_catalog.jsonb_build_array($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbBuildObject calls the stored procedure 'pg_catalog.jsonb_build_object("any") jsonb' on db.
-func JsonbBuildObject(ctx context.Context, db DB, v0 []byte) (pgtypes.Jsonb, error) {
+func JsonbBuildObject(ctx context.Context, db DB, v0 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.jsonb_build_object
 	const sqlstr = `SELECT pg_catalog.jsonb_build_object($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbCmp calls the stored procedure 'pg_catalog.jsonb_cmp(jsonb, jsonb) integer' on db.
-func JsonbCmp(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (int, error) {
+func JsonbCmp(ctx context.Context, db DB, v0, v1 []byte) (int, error) {
 	// call pg_catalog.jsonb_cmp
 	const sqlstr = `SELECT pg_catalog.jsonb_cmp($1, $2)`
 	// run
@@ -18630,20 +18504,20 @@ func JsonbCmp(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (int, error) {
 }
 
 // JsonbConcat calls the stored procedure 'pg_catalog.jsonb_concat(jsonb, jsonb) jsonb' on db.
-func JsonbConcat(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (pgtypes.Jsonb, error) {
+func JsonbConcat(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.jsonb_concat
 	const sqlstr = `SELECT pg_catalog.jsonb_concat($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbContained calls the stored procedure 'pg_catalog.jsonb_contained(jsonb, jsonb) boolean' on db.
-func JsonbContained(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbContained(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_contained
 	const sqlstr = `SELECT pg_catalog.jsonb_contained($1, $2)`
 	// run
@@ -18656,7 +18530,7 @@ func JsonbContained(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, err
 }
 
 // JsonbContains calls the stored procedure 'pg_catalog.jsonb_contains(jsonb, jsonb) boolean' on db.
-func JsonbContains(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbContains(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_contains
 	const sqlstr = `SELECT pg_catalog.jsonb_contains($1, $2)`
 	// run
@@ -18669,33 +18543,33 @@ func JsonbContains(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, erro
 }
 
 // JsonbDelete calls the stored procedure 'pg_catalog.jsonb_delete(jsonb, integer, jsonb, text, jsonb, text[]) jsonb' on db.
-func JsonbDelete(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int, v2 pgtypes.Jsonb, v3 string, v4 pgtypes.Jsonb, v5 StringSlice) (pgtypes.Jsonb, error) {
+func JsonbDelete(ctx context.Context, db DB, v0 []byte, v1 int, v2 []byte, v3 string, v4 []byte, v5 StringSlice) ([]byte, error) {
 	// call pg_catalog.jsonb_delete
 	const sqlstr = `SELECT pg_catalog.jsonb_delete($1, $2, $3, $4, $5, $6)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbDeletePath calls the stored procedure 'pg_catalog.jsonb_delete_path(jsonb, text[]) jsonb' on db.
-func JsonbDeletePath(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice) (pgtypes.Jsonb, error) {
+func JsonbDeletePath(ctx context.Context, db DB, v0 []byte, v1 StringSlice) ([]byte, error) {
 	// call pg_catalog.jsonb_delete_path
 	const sqlstr = `SELECT pg_catalog.jsonb_delete_path($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbEach calls the stored procedure 'pg_catalog.jsonb_each(jsonb) SETOF record' on db.
-func JsonbEach(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Record, error) {
+func JsonbEach(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.jsonb_each
 	const sqlstr = `SELECT pg_catalog.jsonb_each($1)`
 	// run
@@ -18708,7 +18582,7 @@ func JsonbEach(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Record, 
 }
 
 // JsonbEachText calls the stored procedure 'pg_catalog.jsonb_each_text(jsonb) SETOF record' on db.
-func JsonbEachText(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Record, error) {
+func JsonbEachText(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.jsonb_each_text
 	const sqlstr = `SELECT pg_catalog.jsonb_each_text($1)`
 	// run
@@ -18721,7 +18595,7 @@ func JsonbEachText(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Reco
 }
 
 // JsonbEq calls the stored procedure 'pg_catalog.jsonb_eq(jsonb, jsonb) boolean' on db.
-func JsonbEq(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbEq(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_eq
 	const sqlstr = `SELECT pg_catalog.jsonb_eq($1, $2)`
 	// run
@@ -18734,7 +18608,7 @@ func JsonbEq(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbExists calls the stored procedure 'pg_catalog.jsonb_exists(jsonb, text) boolean' on db.
-func JsonbExists(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 string) (bool, error) {
+func JsonbExists(ctx context.Context, db DB, v0 []byte, v1 string) (bool, error) {
 	// call pg_catalog.jsonb_exists
 	const sqlstr = `SELECT pg_catalog.jsonb_exists($1, $2)`
 	// run
@@ -18747,7 +18621,7 @@ func JsonbExists(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 string) (bool,
 }
 
 // JsonbExistsAll calls the stored procedure 'pg_catalog.jsonb_exists_all(jsonb, text[]) boolean' on db.
-func JsonbExistsAll(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice) (bool, error) {
+func JsonbExistsAll(ctx context.Context, db DB, v0 []byte, v1 StringSlice) (bool, error) {
 	// call pg_catalog.jsonb_exists_all
 	const sqlstr = `SELECT pg_catalog.jsonb_exists_all($1, $2)`
 	// run
@@ -18760,7 +18634,7 @@ func JsonbExistsAll(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice
 }
 
 // JsonbExistsAny calls the stored procedure 'pg_catalog.jsonb_exists_any(jsonb, text[]) boolean' on db.
-func JsonbExistsAny(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice) (bool, error) {
+func JsonbExistsAny(ctx context.Context, db DB, v0 []byte, v1 StringSlice) (bool, error) {
 	// call pg_catalog.jsonb_exists_any
 	const sqlstr = `SELECT pg_catalog.jsonb_exists_any($1, $2)`
 	// run
@@ -18773,20 +18647,20 @@ func JsonbExistsAny(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice
 }
 
 // JsonbExtractPath calls the stored procedure 'pg_catalog.jsonb_extract_path(jsonb, text[]) jsonb' on db.
-func JsonbExtractPath(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice) (pgtypes.Jsonb, error) {
+func JsonbExtractPath(ctx context.Context, db DB, v0 []byte, v1 StringSlice) ([]byte, error) {
 	// call pg_catalog.jsonb_extract_path
 	const sqlstr = `SELECT pg_catalog.jsonb_extract_path($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbExtractPathText calls the stored procedure 'pg_catalog.jsonb_extract_path_text(jsonb, text[]) text' on db.
-func JsonbExtractPathText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice) (string, error) {
+func JsonbExtractPathText(ctx context.Context, db DB, v0 []byte, v1 StringSlice) (string, error) {
 	// call pg_catalog.jsonb_extract_path_text
 	const sqlstr = `SELECT pg_catalog.jsonb_extract_path_text($1, $2)`
 	// run
@@ -18799,7 +18673,7 @@ func JsonbExtractPathText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 Strin
 }
 
 // JsonbGe calls the stored procedure 'pg_catalog.jsonb_ge(jsonb, jsonb) boolean' on db.
-func JsonbGe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbGe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_ge
 	const sqlstr = `SELECT pg_catalog.jsonb_ge($1, $2)`
 	// run
@@ -18812,7 +18686,7 @@ func JsonbGe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbGt calls the stored procedure 'pg_catalog.jsonb_gt(jsonb, jsonb) boolean' on db.
-func JsonbGt(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbGt(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_gt
 	const sqlstr = `SELECT pg_catalog.jsonb_gt($1, $2)`
 	// run
@@ -18825,7 +18699,7 @@ func JsonbGt(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbHash calls the stored procedure 'pg_catalog.jsonb_hash(jsonb) integer' on db.
-func JsonbHash(ctx context.Context, db DB, v0 pgtypes.Jsonb) (int, error) {
+func JsonbHash(ctx context.Context, db DB, v0 []byte) (int, error) {
 	// call pg_catalog.jsonb_hash
 	const sqlstr = `SELECT pg_catalog.jsonb_hash($1)`
 	// run
@@ -18838,7 +18712,7 @@ func JsonbHash(ctx context.Context, db DB, v0 pgtypes.Jsonb) (int, error) {
 }
 
 // JsonbHashExtended calls the stored procedure 'pg_catalog.jsonb_hash_extended(jsonb, bigint) bigint' on db.
-func JsonbHashExtended(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int64) (int64, error) {
+func JsonbHashExtended(ctx context.Context, db DB, v0 []byte, v1 int64) (int64, error) {
 	// call pg_catalog.jsonb_hash_extended
 	const sqlstr = `SELECT pg_catalog.jsonb_hash_extended($1, $2)`
 	// run
@@ -18851,33 +18725,33 @@ func JsonbHashExtended(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 int64) (
 }
 
 // JsonbIn calls the stored procedure 'pg_catalog.jsonb_in(cstring) jsonb' on db.
-func JsonbIn(ctx context.Context, db DB, v0 pgtypes.Cstring) (pgtypes.Jsonb, error) {
+func JsonbIn(ctx context.Context, db DB, v0 pgtypes.Cstring) ([]byte, error) {
 	// call pg_catalog.jsonb_in
 	const sqlstr = `SELECT pg_catalog.jsonb_in($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbInsert calls the stored procedure 'pg_catalog.jsonb_insert(jsonb, text[], jsonb, boolean) jsonb' on db.
-func JsonbInsert(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbInsert(ctx context.Context, db DB, v0 []byte, v1 StringSlice, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_insert
 	const sqlstr = `SELECT pg_catalog.jsonb_insert($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbLe calls the stored procedure 'pg_catalog.jsonb_le(jsonb, jsonb) boolean' on db.
-func JsonbLe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbLe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_le
 	const sqlstr = `SELECT pg_catalog.jsonb_le($1, $2)`
 	// run
@@ -18890,7 +18764,7 @@ func JsonbLe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbLt calls the stored procedure 'pg_catalog.jsonb_lt(jsonb, jsonb) boolean' on db.
-func JsonbLt(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbLt(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_lt
 	const sqlstr = `SELECT pg_catalog.jsonb_lt($1, $2)`
 	// run
@@ -18903,7 +18777,7 @@ func JsonbLt(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbNe calls the stored procedure 'pg_catalog.jsonb_ne(jsonb, jsonb) boolean' on db.
-func JsonbNe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
+func JsonbNe(ctx context.Context, db DB, v0, v1 []byte) (bool, error) {
 	// call pg_catalog.jsonb_ne
 	const sqlstr = `SELECT pg_catalog.jsonb_ne($1, $2)`
 	// run
@@ -18916,46 +18790,46 @@ func JsonbNe(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb) (bool, error) {
 }
 
 // JsonbObject calls the stored procedure 'pg_catalog.jsonb_object(text[], text[], text[]) jsonb' on db.
-func JsonbObject(ctx context.Context, db DB, v0, v1, v2 StringSlice) (pgtypes.Jsonb, error) {
+func JsonbObject(ctx context.Context, db DB, v0, v1, v2 StringSlice) ([]byte, error) {
 	// call pg_catalog.jsonb_object
 	const sqlstr = `SELECT pg_catalog.jsonb_object($1, $2, $3)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbObjectAgg calls the stored procedure 'pg_catalog.jsonb_object_agg("any", "any") jsonb' on db.
-func JsonbObjectAgg(ctx context.Context, db DB, v0, v1 []byte) (pgtypes.Jsonb, error) {
+func JsonbObjectAgg(ctx context.Context, db DB, v0, v1 pgtypes.Any) ([]byte, error) {
 	// call pg_catalog.jsonb_object_agg
 	const sqlstr = `SELECT pg_catalog.jsonb_object_agg($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbObjectAggFinalfn calls the stored procedure 'pg_catalog.jsonb_object_agg_finalfn(internal) jsonb' on db.
-func JsonbObjectAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.Jsonb, error) {
+func JsonbObjectAggFinalfn(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.jsonb_object_agg_finalfn
 	const sqlstr = `SELECT pg_catalog.jsonb_object_agg_finalfn($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbObjectAggTransfn calls the stored procedure 'pg_catalog.jsonb_object_agg_transfn(internal, "any", "any") internal' on db.
-func JsonbObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, v2 []byte) (pgtypes.Internal, error) {
+func JsonbObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, v2 pgtypes.Any) (pgtypes.Internal, error) {
 	// call pg_catalog.jsonb_object_agg_transfn
 	const sqlstr = `SELECT pg_catalog.jsonb_object_agg_transfn($1, $2, $3)`
 	// run
@@ -18968,20 +18842,20 @@ func JsonbObjectAggTransfn(ctx context.Context, db DB, v0 pgtypes.Internal, v1, 
 }
 
 // JsonbObjectField calls the stored procedure 'pg_catalog.jsonb_object_field(jsonb, text) jsonb' on db.
-func JsonbObjectField(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 string) (pgtypes.Jsonb, error) {
+func JsonbObjectField(ctx context.Context, db DB, v0 []byte, v1 string) ([]byte, error) {
 	// call pg_catalog.jsonb_object_field
 	const sqlstr = `SELECT pg_catalog.jsonb_object_field($1, $2)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbObjectFieldText calls the stored procedure 'pg_catalog.jsonb_object_field_text(jsonb, text) text' on db.
-func JsonbObjectFieldText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 string) (string, error) {
+func JsonbObjectFieldText(ctx context.Context, db DB, v0 []byte, v1 string) (string, error) {
 	// call pg_catalog.jsonb_object_field_text
 	const sqlstr = `SELECT pg_catalog.jsonb_object_field_text($1, $2)`
 	// run
@@ -18994,7 +18868,7 @@ func JsonbObjectFieldText(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 strin
 }
 
 // JsonbObjectKeys calls the stored procedure 'pg_catalog.jsonb_object_keys(jsonb) SETOF text' on db.
-func JsonbObjectKeys(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]string, error) {
+func JsonbObjectKeys(ctx context.Context, db DB, v0 []byte) ([]string, error) {
 	// call pg_catalog.jsonb_object_keys
 	const sqlstr = `SELECT pg_catalog.jsonb_object_keys($1)`
 	// run
@@ -19007,7 +18881,7 @@ func JsonbObjectKeys(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]string, er
 }
 
 // JsonbOut calls the stored procedure 'pg_catalog.jsonb_out(jsonb) cstring' on db.
-func JsonbOut(ctx context.Context, db DB, v0 pgtypes.Jsonb) (pgtypes.Cstring, error) {
+func JsonbOut(ctx context.Context, db DB, v0 []byte) (pgtypes.Cstring, error) {
 	// call pg_catalog.jsonb_out
 	const sqlstr = `SELECT pg_catalog.jsonb_out($1)`
 	// run
@@ -19020,7 +18894,7 @@ func JsonbOut(ctx context.Context, db DB, v0 pgtypes.Jsonb) (pgtypes.Cstring, er
 }
 
 // JsonbPathExists calls the stored procedure 'pg_catalog.jsonb_path_exists(jsonb, jsonpath, jsonb, boolean) boolean' on db.
-func JsonbPathExists(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (bool, error) {
+func JsonbPathExists(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) (bool, error) {
 	// call pg_catalog.jsonb_path_exists
 	const sqlstr = `SELECT pg_catalog.jsonb_path_exists($1, $2, $3, $4)`
 	// run
@@ -19033,7 +18907,7 @@ func JsonbPathExists(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Js
 }
 
 // JsonbPathExistsOpr calls the stored procedure 'pg_catalog.jsonb_path_exists_opr(jsonb, jsonpath) boolean' on db.
-func JsonbPathExistsOpr(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath) (bool, error) {
+func JsonbPathExistsOpr(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath) (bool, error) {
 	// call pg_catalog.jsonb_path_exists_opr
 	const sqlstr = `SELECT pg_catalog.jsonb_path_exists_opr($1, $2)`
 	// run
@@ -19046,7 +18920,7 @@ func JsonbPathExistsOpr(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes
 }
 
 // JsonbPathExistsTz calls the stored procedure 'pg_catalog.jsonb_path_exists_tz(jsonb, jsonpath, jsonb, boolean) boolean' on db.
-func JsonbPathExistsTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (bool, error) {
+func JsonbPathExistsTz(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) (bool, error) {
 	// call pg_catalog.jsonb_path_exists_tz
 	const sqlstr = `SELECT pg_catalog.jsonb_path_exists_tz($1, $2, $3, $4)`
 	// run
@@ -19059,7 +18933,7 @@ func JsonbPathExistsTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.
 }
 
 // JsonbPathMatch calls the stored procedure 'pg_catalog.jsonb_path_match(jsonb, jsonpath, jsonb, boolean) boolean' on db.
-func JsonbPathMatch(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (bool, error) {
+func JsonbPathMatch(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) (bool, error) {
 	// call pg_catalog.jsonb_path_match
 	const sqlstr = `SELECT pg_catalog.jsonb_path_match($1, $2, $3, $4)`
 	// run
@@ -19072,7 +18946,7 @@ func JsonbPathMatch(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jso
 }
 
 // JsonbPathMatchOpr calls the stored procedure 'pg_catalog.jsonb_path_match_opr(jsonb, jsonpath) boolean' on db.
-func JsonbPathMatchOpr(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath) (bool, error) {
+func JsonbPathMatchOpr(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath) (bool, error) {
 	// call pg_catalog.jsonb_path_match_opr
 	const sqlstr = `SELECT pg_catalog.jsonb_path_match_opr($1, $2)`
 	// run
@@ -19085,7 +18959,7 @@ func JsonbPathMatchOpr(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.
 }
 
 // JsonbPathMatchTz calls the stored procedure 'pg_catalog.jsonb_path_match_tz(jsonb, jsonpath, jsonb, boolean) boolean' on db.
-func JsonbPathMatchTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (bool, error) {
+func JsonbPathMatchTz(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) (bool, error) {
 	// call pg_catalog.jsonb_path_match_tz
 	const sqlstr = `SELECT pg_catalog.jsonb_path_match_tz($1, $2, $3, $4)`
 	// run
@@ -19098,11 +18972,11 @@ func JsonbPathMatchTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.J
 }
 
 // JsonbPathQuery calls the stored procedure 'pg_catalog.jsonb_path_query(jsonb, jsonpath, jsonb, boolean) SETOF jsonb' on db.
-func JsonbPathQuery(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) ([]pgtypes.Jsonb, error) {
+func JsonbPathQuery(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([][]byte, error) {
 	// call pg_catalog.jsonb_path_query
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query($1, $2, $3, $4)`
 	// run
-	var ret []pgtypes.Jsonb
+	var ret [][]byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -19111,63 +18985,63 @@ func JsonbPathQuery(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jso
 }
 
 // JsonbPathQueryArray calls the stored procedure 'pg_catalog.jsonb_path_query_array(jsonb, jsonpath, jsonb, boolean) jsonb' on db.
-func JsonbPathQueryArray(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbPathQueryArray(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_path_query_array
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query_array($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbPathQueryArrayTz calls the stored procedure 'pg_catalog.jsonb_path_query_array_tz(jsonb, jsonpath, jsonb, boolean) jsonb' on db.
-func JsonbPathQueryArrayTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbPathQueryArrayTz(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_path_query_array_tz
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query_array_tz($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbPathQueryFirst calls the stored procedure 'pg_catalog.jsonb_path_query_first(jsonb, jsonpath, jsonb, boolean) jsonb' on db.
-func JsonbPathQueryFirst(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbPathQueryFirst(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_path_query_first
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query_first($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbPathQueryFirstTz calls the stored procedure 'pg_catalog.jsonb_path_query_first_tz(jsonb, jsonpath, jsonb, boolean) jsonb' on db.
-func JsonbPathQueryFirstTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbPathQueryFirstTz(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_path_query_first_tz
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query_first_tz($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbPathQueryTz calls the stored procedure 'pg_catalog.jsonb_path_query_tz(jsonb, jsonpath, jsonb, boolean) SETOF jsonb' on db.
-func JsonbPathQueryTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.Jsonpath, v2 pgtypes.Jsonb, v3 bool) ([]pgtypes.Jsonb, error) {
+func JsonbPathQueryTz(ctx context.Context, db DB, v0 []byte, v1 pgtypes.Jsonpath, v2 []byte, v3 bool) ([][]byte, error) {
 	// call pg_catalog.jsonb_path_query_tz
 	const sqlstr = `SELECT pg_catalog.jsonb_path_query_tz($1, $2, $3, $4)`
 	// run
-	var ret []pgtypes.Jsonb
+	var ret [][]byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -19176,7 +19050,7 @@ func JsonbPathQueryTz(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 pgtypes.J
 }
 
 // JsonbPopulateRecord calls the stored procedure 'pg_catalog.jsonb_populate_record(anyelement, jsonb) anyelement' on db.
-func JsonbPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 pgtypes.Jsonb) (pgtypes.Anyelement, error) {
+func JsonbPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 []byte) (pgtypes.Anyelement, error) {
 	// call pg_catalog.jsonb_populate_record
 	const sqlstr = `SELECT pg_catalog.jsonb_populate_record($1, $2)`
 	// run
@@ -19189,7 +19063,7 @@ func JsonbPopulateRecord(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 p
 }
 
 // JsonbPopulateRecordset calls the stored procedure 'pg_catalog.jsonb_populate_recordset(anyelement, jsonb) SETOF anyelement' on db.
-func JsonbPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 pgtypes.Jsonb) ([]pgtypes.Anyelement, error) {
+func JsonbPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v1 []byte) ([]pgtypes.Anyelement, error) {
 	// call pg_catalog.jsonb_populate_recordset
 	const sqlstr = `SELECT pg_catalog.jsonb_populate_recordset($1, $2)`
 	// run
@@ -19202,7 +19076,7 @@ func JsonbPopulateRecordset(ctx context.Context, db DB, v0 pgtypes.Anyelement, v
 }
 
 // JsonbPretty calls the stored procedure 'pg_catalog.jsonb_pretty(jsonb) text' on db.
-func JsonbPretty(ctx context.Context, db DB, v0 pgtypes.Jsonb) (string, error) {
+func JsonbPretty(ctx context.Context, db DB, v0 []byte) (string, error) {
 	// call pg_catalog.jsonb_pretty
 	const sqlstr = `SELECT pg_catalog.jsonb_pretty($1)`
 	// run
@@ -19215,20 +19089,20 @@ func JsonbPretty(ctx context.Context, db DB, v0 pgtypes.Jsonb) (string, error) {
 }
 
 // JsonbRecv calls the stored procedure 'pg_catalog.jsonb_recv(internal) jsonb' on db.
-func JsonbRecv(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.Jsonb, error) {
+func JsonbRecv(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.jsonb_recv
 	const sqlstr = `SELECT pg_catalog.jsonb_recv($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbSend calls the stored procedure 'pg_catalog.jsonb_send(jsonb) bytea' on db.
-func JsonbSend(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]byte, error) {
+func JsonbSend(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.jsonb_send
 	const sqlstr = `SELECT pg_catalog.jsonb_send($1)`
 	// run
@@ -19241,46 +19115,46 @@ func JsonbSend(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]byte, error) {
 }
 
 // JsonbSet calls the stored procedure 'pg_catalog.jsonb_set(jsonb, text[], jsonb, boolean) jsonb' on db.
-func JsonbSet(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice, v2 pgtypes.Jsonb, v3 bool) (pgtypes.Jsonb, error) {
+func JsonbSet(ctx context.Context, db DB, v0 []byte, v1 StringSlice, v2 []byte, v3 bool) ([]byte, error) {
 	// call pg_catalog.jsonb_set
 	const sqlstr = `SELECT pg_catalog.jsonb_set($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbSetLax calls the stored procedure 'pg_catalog.jsonb_set_lax(jsonb, text[], jsonb, boolean, text) jsonb' on db.
-func JsonbSetLax(ctx context.Context, db DB, v0 pgtypes.Jsonb, v1 StringSlice, v2 pgtypes.Jsonb, v3 bool, v4 string) (pgtypes.Jsonb, error) {
+func JsonbSetLax(ctx context.Context, db DB, v0 []byte, v1 StringSlice, v2 []byte, v3 bool, v4 string) ([]byte, error) {
 	// call pg_catalog.jsonb_set_lax
 	const sqlstr = `SELECT pg_catalog.jsonb_set_lax($1, $2, $3, $4, $5)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbStripNulls calls the stored procedure 'pg_catalog.jsonb_strip_nulls(jsonb) jsonb' on db.
-func JsonbStripNulls(ctx context.Context, db DB, v0 pgtypes.Jsonb) (pgtypes.Jsonb, error) {
+func JsonbStripNulls(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.jsonb_strip_nulls
 	const sqlstr = `SELECT pg_catalog.jsonb_strip_nulls($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // JsonbToRecord calls the stored procedure 'pg_catalog.jsonb_to_record(jsonb) record' on db.
-func JsonbToRecord(ctx context.Context, db DB, v0 pgtypes.Jsonb) (pgtypes.Record, error) {
+func JsonbToRecord(ctx context.Context, db DB, v0 []byte) (pgtypes.Record, error) {
 	// call pg_catalog.jsonb_to_record
 	const sqlstr = `SELECT pg_catalog.jsonb_to_record($1)`
 	// run
@@ -19293,7 +19167,7 @@ func JsonbToRecord(ctx context.Context, db DB, v0 pgtypes.Jsonb) (pgtypes.Record
 }
 
 // JsonbToRecordset calls the stored procedure 'pg_catalog.jsonb_to_recordset(jsonb) SETOF record' on db.
-func JsonbToRecordset(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.Record, error) {
+func JsonbToRecordset(ctx context.Context, db DB, v0 []byte) ([]pgtypes.Record, error) {
 	// call pg_catalog.jsonb_to_recordset
 	const sqlstr = `SELECT pg_catalog.jsonb_to_recordset($1)`
 	// run
@@ -19306,7 +19180,7 @@ func JsonbToRecordset(ctx context.Context, db DB, v0 pgtypes.Jsonb) ([]pgtypes.R
 }
 
 // JsonbToTsvector calls the stored procedure 'pg_catalog.jsonb_to_tsvector(jsonb, jsonb, regconfig, jsonb, jsonb) tsvector' on db.
-func JsonbToTsvector(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb, v2 pgtypes.Regconfig, v3, v4 pgtypes.Jsonb) (pgtypes.Tsvector, error) {
+func JsonbToTsvector(ctx context.Context, db DB, v0, v1 []byte, v2 pgtypes.Regconfig, v3, v4 []byte) (pgtypes.Tsvector, error) {
 	// call pg_catalog.jsonb_to_tsvector
 	const sqlstr = `SELECT pg_catalog.jsonb_to_tsvector($1, $2, $3, $4, $5)`
 	// run
@@ -19319,7 +19193,7 @@ func JsonbToTsvector(ctx context.Context, db DB, v0, v1 pgtypes.Jsonb, v2 pgtype
 }
 
 // JsonbTypeof calls the stored procedure 'pg_catalog.jsonb_typeof(jsonb) text' on db.
-func JsonbTypeof(ctx context.Context, db DB, v0 pgtypes.Jsonb) (string, error) {
+func JsonbTypeof(ctx context.Context, db DB, v0 []byte) (string, error) {
 	// call pg_catalog.jsonb_typeof
 	const sqlstr = `SELECT pg_catalog.jsonb_typeof($1)`
 	// run
@@ -19384,11 +19258,11 @@ func JsonpathSend(ctx context.Context, db DB, v0 pgtypes.Jsonpath) ([]byte, erro
 }
 
 // JustifyDays calls the stored procedure 'pg_catalog.justify_days(interval) interval' on db.
-func JustifyDays(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration, error) {
+func JustifyDays(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.justify_days
 	const sqlstr = `SELECT pg_catalog.justify_days($1)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -19397,11 +19271,11 @@ func JustifyDays(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration,
 }
 
 // JustifyHours calls the stored procedure 'pg_catalog.justify_hours(interval) interval' on db.
-func JustifyHours(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration, error) {
+func JustifyHours(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.justify_hours
 	const sqlstr = `SELECT pg_catalog.justify_hours($1)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -19410,11 +19284,11 @@ func JustifyHours(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration
 }
 
 // JustifyInterval calls the stored procedure 'pg_catalog.justify_interval(interval) interval' on db.
-func JustifyInterval(ctx context.Context, db DB, v0 *time.Duration) (*time.Duration, error) {
+func JustifyInterval(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.justify_interval
 	const sqlstr = `SELECT pg_catalog.justify_interval($1)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -20918,11 +20792,11 @@ func MakeDate(ctx context.Context, db DB, v0, v1, v2 int) (time.Time, error) {
 }
 
 // MakeInterval calls the stored procedure 'pg_catalog.make_interval(integer, integer, integer, integer, integer, integer, double precision) interval' on db.
-func MakeInterval(ctx context.Context, db DB, v0, v1, v2, v3, v4, v5 int, v6 float64) (*time.Duration, error) {
+func MakeInterval(ctx context.Context, db DB, v0, v1, v2, v3, v4, v5 int, v6 float64) ([]byte, error) {
 	// call pg_catalog.make_interval
 	const sqlstr = `SELECT pg_catalog.make_interval($1, $2, $3, $4, $5, $6, $7)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -21022,7 +20896,7 @@ func Matchingsel(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid
 }
 
 // Max calls the stored procedure 'pg_catalog.max(bigint, smallint, integer, text, oid, tid, real, double precision, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, pg_lsn, anyenum) anyenum' on db.
-func Max(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8, v9, v10 string, v11, v12, v13, v14 time.Time, v15 *time.Duration, v16 time.Time, v17 float64, v18 pgtypes.Anyarray, v19 pgtypes.PgLsn, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Max(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8, v9, v10 string, v11, v12, v13, v14 time.Time, v15 []byte, v16 time.Time, v17 float64, v18 pgtypes.Anyarray, v19 pgtypes.PgLsn, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	// call pg_catalog.max
 	const sqlstr = `SELECT pg_catalog.max($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`
 	// run
@@ -21228,7 +21102,7 @@ func MicToWin866(ctx context.Context, db DB, v0, v1 int, v2 pgtypes.Cstring, v3 
 }
 
 // Min calls the stored procedure 'pg_catalog.min(bigint, smallint, integer, text, oid, tid, real, double precision, money, inet, character, date, time without time zone, timestamp without time zone, timestamp with time zone, interval, time with time zone, numeric, anyarray, pg_lsn, anyenum) anyenum' on db.
-func Min(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8, v9, v10 string, v11, v12, v13, v14 time.Time, v15 *time.Duration, v16 time.Time, v17 float64, v18 pgtypes.Anyarray, v19 pgtypes.PgLsn, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
+func Min(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 string, v4 pgtypes.Oid, v5 pgtypes.Tid, v6 float32, v7 float64, v8, v9, v10 string, v11, v12, v13, v14 time.Time, v15 []byte, v16 time.Time, v17 float64, v18 pgtypes.Anyarray, v19 pgtypes.PgLsn, v20 pgtypes.Anyenum) (pgtypes.Anyenum, error) {
 	// call pg_catalog.min
 	const sqlstr = `SELECT pg_catalog.min($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`
 	// run
@@ -21306,11 +21180,11 @@ func Money(ctx context.Context, db DB, v0 int64, v1 int, v2 float64) (string, er
 }
 
 // MulDInterval calls the stored procedure 'pg_catalog.mul_d_interval(double precision, interval) interval' on db.
-func MulDInterval(ctx context.Context, db DB, v0 float64, v1 *time.Duration) (*time.Duration, error) {
+func MulDInterval(ctx context.Context, db DB, v0 float64, v1 []byte) ([]byte, error) {
 	// call pg_catalog.mul_d_interval
 	const sqlstr = `SELECT pg_catalog.mul_d_interval($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -22072,7 +21946,7 @@ func Ntile(ctx context.Context, db DB, v0 int) (int, error) {
 }
 
 // NumNonnulls calls the stored procedure 'pg_catalog.num_nonnulls("any") integer' on db.
-func NumNonnulls(ctx context.Context, db DB, v0 []byte) (int, error) {
+func NumNonnulls(ctx context.Context, db DB, v0 pgtypes.Any) (int, error) {
 	// call pg_catalog.num_nonnulls
 	const sqlstr = `SELECT pg_catalog.num_nonnulls($1)`
 	// run
@@ -22085,7 +21959,7 @@ func NumNonnulls(ctx context.Context, db DB, v0 []byte) (int, error) {
 }
 
 // NumNulls calls the stored procedure 'pg_catalog.num_nulls("any") integer' on db.
-func NumNulls(ctx context.Context, db DB, v0 []byte) (int, error) {
+func NumNulls(ctx context.Context, db DB, v0 pgtypes.Any) (int, error) {
 	// call pg_catalog.num_nulls
 	const sqlstr = `SELECT pg_catalog.num_nulls($1)`
 	// run
@@ -22098,7 +21972,7 @@ func NumNulls(ctx context.Context, db DB, v0 []byte) (int, error) {
 }
 
 // Numeric calls the stored procedure 'pg_catalog.numeric(bigint, smallint, integer, real, double precision, money, jsonb, numeric, integer) numeric' on db.
-func Numeric(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 pgtypes.Jsonb, v7 float64, v8 int) (float64, error) {
+func Numeric(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 []byte, v7 float64, v8 int) (float64, error) {
 	// call pg_catalog.numeric
 	const sqlstr = `SELECT pg_catalog.numeric($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	// run
@@ -23306,7 +23180,7 @@ func OnSl(ctx context.Context, db DB, v0 pgtypes.Lseg, v1 pgtypes.Line) (bool, e
 }
 
 // OrderedSetTransition calls the stored procedure 'pg_catalog.ordered_set_transition(internal, "any") internal' on db.
-func OrderedSetTransition(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (pgtypes.Internal, error) {
+func OrderedSetTransition(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (pgtypes.Internal, error) {
 	// call pg_catalog.ordered_set_transition
 	const sqlstr = `SELECT pg_catalog.ordered_set_transition($1, $2)`
 	// run
@@ -23319,7 +23193,7 @@ func OrderedSetTransition(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []
 }
 
 // OrderedSetTransitionMulti calls the stored procedure 'pg_catalog.ordered_set_transition_multi(internal, "any") internal' on db.
-func OrderedSetTransitionMulti(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (pgtypes.Internal, error) {
+func OrderedSetTransitionMulti(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (pgtypes.Internal, error) {
 	// call pg_catalog.ordered_set_transition_multi
 	const sqlstr = `SELECT pg_catalog.ordered_set_transition_multi($1, $2)`
 	// run
@@ -23332,7 +23206,7 @@ func OrderedSetTransitionMulti(ctx context.Context, db DB, v0 pgtypes.Internal, 
 }
 
 // Overlaps calls the stored procedure 'pg_catalog.overlaps(time without time zone, time without time zone, time without time zone, time without time zone, time without time zone, time without time zone, time without time zone, interval, time without time zone, interval, time without time zone, time without time zone, time without time zone, interval, time without time zone, interval, timestamp without time zone, timestamp without time zone, timestamp without time zone, timestamp without time zone, timestamp without time zone, timestamp without time zone, timestamp without time zone, interval, timestamp without time zone, interval, timestamp without time zone, timestamp without time zone, timestamp without time zone, interval, timestamp without time zone, interval, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, interval, timestamp with time zone, interval, timestamp with time zone, timestamp with time zone, timestamp with time zone, interval, timestamp with time zone, interval, time with time zone, time with time zone, time with time zone, time with time zone) boolean' on db.
-func Overlaps(ctx context.Context, db DB, v0, v1, v2, v3, v4, v5, v6 time.Time, v7 *time.Duration, v8 time.Time, v9 *time.Duration, v10, v11, v12 time.Time, v13 *time.Duration, v14 time.Time, v15 *time.Duration, v16, v17, v18, v19, v20, v21, v22 time.Time, v23 *time.Duration, v24 time.Time, v25 *time.Duration, v26, v27, v28 time.Time, v29 *time.Duration, v30 time.Time, v31 *time.Duration, v32, v33, v34, v35, v36, v37, v38 time.Time, v39 *time.Duration, v40 time.Time, v41 *time.Duration, v42, v43, v44 time.Time, v45 *time.Duration, v46 time.Time, v47 *time.Duration, v48, v49, v50, v51 time.Time) (bool, error) {
+func Overlaps(ctx context.Context, db DB, v0, v1, v2, v3, v4, v5, v6 time.Time, v7 []byte, v8 time.Time, v9 []byte, v10, v11, v12 time.Time, v13 []byte, v14 time.Time, v15 []byte, v16, v17, v18, v19, v20, v21, v22 time.Time, v23 []byte, v24 time.Time, v25 []byte, v26, v27, v28 time.Time, v29 []byte, v30 time.Time, v31 []byte, v32, v33, v34, v35, v36, v37, v38 time.Time, v39 []byte, v40 time.Time, v41 []byte, v42, v43, v44 time.Time, v45 []byte, v46 time.Time, v47 []byte, v48, v49, v50, v51 time.Time) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT pg_catalog.overlaps($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52)`
 	// run
@@ -23657,7 +23531,7 @@ func Pclose(ctx context.Context, db DB, v0 pgtypes.Path) (pgtypes.Path, error) {
 }
 
 // PercentRank calls the stored procedure 'pg_catalog.percent_rank("any") double precision' on db.
-func PercentRank(ctx context.Context, db DB, v0 []byte) (float64, error) {
+func PercentRank(ctx context.Context, db DB, v0 pgtypes.Any) (float64, error) {
 	// call pg_catalog.percent_rank
 	const sqlstr = `SELECT pg_catalog.percent_rank($1)`
 	// run
@@ -23670,7 +23544,7 @@ func PercentRank(ctx context.Context, db DB, v0 []byte) (float64, error) {
 }
 
 // PercentRankFinal calls the stored procedure 'pg_catalog.percent_rank_final(internal, "any") double precision' on db.
-func PercentRankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (float64, error) {
+func PercentRankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (float64, error) {
 	// call pg_catalog.percent_rank_final
 	const sqlstr = `SELECT pg_catalog.percent_rank_final($1, $2)`
 	// run
@@ -23683,11 +23557,11 @@ func PercentRankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte
 }
 
 // PercentileCont calls the stored procedure 'pg_catalog.percentile_cont(double precision, double precision, double precision, interval, double precision[], double precision, double precision[], interval) interval[]' on db.
-func PercentileCont(ctx context.Context, db DB, v0, v1, v2 float64, v3 *time.Duration, v4 []float64, v5 float64, v6 []float64, v7 *time.Duration) ([]*time.Duration, error) {
+func PercentileCont(ctx context.Context, db DB, v0, v1, v2 float64, v3 []byte, v4 []float64, v5 float64, v6 []float64, v7 []byte) ([]byte, error) {
 	// call pg_catalog.percentile_cont
 	const sqlstr = `SELECT pg_catalog.percentile_cont($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
-	var ret []*time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6, v7).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -23722,11 +23596,11 @@ func PercentileContFloat8MultiFinal(ctx context.Context, db DB, v0 pgtypes.Inter
 }
 
 // PercentileContIntervalFinal calls the stored procedure 'pg_catalog.percentile_cont_interval_final(internal, double precision) interval' on db.
-func PercentileContIntervalFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 float64) (*time.Duration, error) {
+func PercentileContIntervalFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 float64) ([]byte, error) {
 	// call pg_catalog.percentile_cont_interval_final
 	const sqlstr = `SELECT pg_catalog.percentile_cont_interval_final($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -23735,11 +23609,11 @@ func PercentileContIntervalFinal(ctx context.Context, db DB, v0 pgtypes.Internal
 }
 
 // PercentileContIntervalMultiFinal calls the stored procedure 'pg_catalog.percentile_cont_interval_multi_final(internal, double precision[]) interval[]' on db.
-func PercentileContIntervalMultiFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []float64) ([]*time.Duration, error) {
+func PercentileContIntervalMultiFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []float64) ([]byte, error) {
 	// call pg_catalog.percentile_cont_interval_multi_final
 	const sqlstr = `SELECT pg_catalog.percentile_cont_interval_multi_final($1, $2)`
 	// run
-	var ret []*time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -23990,7 +23864,7 @@ func PgCollationActualVersion(ctx context.Context, db DB, v0 pgtypes.Oid) (strin
 }
 
 // PgCollationFor calls the stored procedure 'pg_catalog.pg_collation_for("any") text' on db.
-func PgCollationFor(ctx context.Context, db DB, v0 []byte) (string, error) {
+func PgCollationFor(ctx context.Context, db DB, v0 pgtypes.Any) (string, error) {
 	// call pg_catalog.pg_collation_for
 	const sqlstr = `SELECT pg_catalog.pg_collation_for($1)`
 	// run
@@ -24029,7 +23903,7 @@ func PgColumnIsUpdatable(ctx context.Context, db DB, v0 pgtypes.Regclass, v1 int
 }
 
 // PgColumnSize calls the stored procedure 'pg_catalog.pg_column_size("any") integer' on db.
-func PgColumnSize(ctx context.Context, db DB, v0 []byte) (int, error) {
+func PgColumnSize(ctx context.Context, db DB, v0 pgtypes.Any) (int, error) {
 	// call pg_catalog.pg_column_size
 	const sqlstr = `SELECT pg_catalog.pg_column_size($1)`
 	// run
@@ -26281,7 +26155,7 @@ func PgSleep(ctx context.Context, db DB, v0 float64) error {
 }
 
 // PgSleepFor calls the stored procedure 'pg_catalog.pg_sleep_for(interval) void' on db.
-func PgSleepFor(ctx context.Context, db DB, v0 *time.Duration) error {
+func PgSleepFor(ctx context.Context, db DB, v0 []byte) error {
 	// call pg_catalog.pg_sleep_for
 	const sqlstr = `SELECT pg_catalog.pg_sleep_for($1)`
 	// run
@@ -27963,7 +27837,7 @@ func PgTypeIsVisible(ctx context.Context, db DB, v0 pgtypes.Oid) (bool, error) {
 }
 
 // PgTypeof calls the stored procedure 'pg_catalog.pg_typeof("any") regtype' on db.
-func PgTypeof(ctx context.Context, db DB, v0 []byte) (pgtypes.Regtype, error) {
+func PgTypeof(ctx context.Context, db DB, v0 pgtypes.Any) (pgtypes.Regtype, error) {
 	// call pg_catalog.pg_typeof
 	const sqlstr = `SELECT pg_catalog.pg_typeof($1)`
 	// run
@@ -28868,40 +28742,40 @@ func PtContainedPoly(ctx context.Context, db DB, v0 pgtypes.Point, v1 pgtypes.Po
 }
 
 // QueryToXML calls the stored procedure 'pg_catalog.query_to_xml(text, boolean, boolean, text) xml' on db.
-func QueryToXML(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func QueryToXML(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.query_to_xml
 	const sqlstr = `SELECT pg_catalog.query_to_xml($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // QueryToXMLAndXmlschema calls the stored procedure 'pg_catalog.query_to_xml_and_xmlschema(text, boolean, boolean, text) xml' on db.
-func QueryToXMLAndXmlschema(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func QueryToXMLAndXmlschema(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.query_to_xml_and_xmlschema
 	const sqlstr = `SELECT pg_catalog.query_to_xml_and_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // QueryToXmlschema calls the stored procedure 'pg_catalog.query_to_xmlschema(text, boolean, boolean, text) xml' on db.
-func QueryToXmlschema(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func QueryToXmlschema(ctx context.Context, db DB, v0 string, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.query_to_xmlschema
 	const sqlstr = `SELECT pg_catalog.query_to_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -29401,7 +29275,7 @@ func Rangesel(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Oid, v
 }
 
 // Rank calls the stored procedure 'pg_catalog.rank("any") bigint' on db.
-func Rank(ctx context.Context, db DB, v0 []byte) (int64, error) {
+func Rank(ctx context.Context, db DB, v0 pgtypes.Any) (int64, error) {
 	// call pg_catalog.rank
 	const sqlstr = `SELECT pg_catalog.rank($1)`
 	// run
@@ -29414,7 +29288,7 @@ func Rank(ctx context.Context, db DB, v0 []byte) (int64, error) {
 }
 
 // RankFinal calls the stored procedure 'pg_catalog.rank_final(internal, "any") bigint' on db.
-func RankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 []byte) (int64, error) {
+func RankFinal(ctx context.Context, db DB, v0 pgtypes.Internal, v1 pgtypes.Any) (int64, error) {
 	// call pg_catalog.rank_final
 	const sqlstr = `SELECT pg_catalog.rank_final($1, $2)`
 	// run
@@ -30545,14 +30419,14 @@ func RowSecurityActive(ctx context.Context, db DB, v0 string, v1 pgtypes.Oid) (b
 }
 
 // RowToJSON calls the stored procedure 'pg_catalog.row_to_json(record, record, boolean) json' on db.
-func RowToJSON(ctx context.Context, db DB, v0, v1 pgtypes.Record, v2 bool) (pgtypes.JSON, error) {
+func RowToJSON(ctx context.Context, db DB, v0, v1 pgtypes.Record, v2 bool) ([]byte, error) {
 	// call pg_catalog.row_to_json
 	const sqlstr = `SELECT pg_catalog.row_to_json($1, $2, $3)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1, v2)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -30584,7 +30458,7 @@ func Rtrim(ctx context.Context, db DB, v0, v1, v2 string) (string, error) {
 }
 
 // SatisfiesHashPartition calls the stored procedure 'pg_catalog.satisfies_hash_partition(oid, integer, integer, "any") boolean' on db.
-func SatisfiesHashPartition(ctx context.Context, db DB, v0 pgtypes.Oid, v1, v2 int, v3 []byte) (bool, error) {
+func SatisfiesHashPartition(ctx context.Context, db DB, v0 pgtypes.Oid, v1, v2 int, v3 pgtypes.Any) (bool, error) {
 	// call pg_catalog.satisfies_hash_partition
 	const sqlstr = `SELECT pg_catalog.satisfies_hash_partition($1, $2, $3, $4)`
 	// run
@@ -30714,40 +30588,40 @@ func Scale(ctx context.Context, db DB, v0 float64) (int, error) {
 }
 
 // SchemaToXML calls the stored procedure 'pg_catalog.schema_to_xml(name, boolean, boolean, text) xml' on db.
-func SchemaToXML(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func SchemaToXML(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.schema_to_xml
 	const sqlstr = `SELECT pg_catalog.schema_to_xml($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // SchemaToXMLAndXmlschema calls the stored procedure 'pg_catalog.schema_to_xml_and_xmlschema(name, boolean, boolean, text) xml' on db.
-func SchemaToXMLAndXmlschema(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func SchemaToXMLAndXmlschema(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.schema_to_xml_and_xmlschema
 	const sqlstr = `SELECT pg_catalog.schema_to_xml_and_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // SchemaToXmlschema calls the stored procedure 'pg_catalog.schema_to_xmlschema(name, boolean, boolean, text) xml' on db.
-func SchemaToXmlschema(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func SchemaToXmlschema(ctx context.Context, db DB, v0 pgtypes.Name, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.schema_to_xmlschema
 	const sqlstr = `SELECT pg_catalog.schema_to_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -30843,7 +30717,7 @@ func Setval(ctx context.Context, db DB, v0 pgtypes.Regclass, v1 int64, v2 pgtype
 }
 
 // Setweight calls the stored procedure 'pg_catalog.setweight(tsvector, "char", tsvector, "char", text[]) tsvector' on db.
-func Setweight(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 uint8, v2 pgtypes.Tsvector, v3 uint8, v4 StringSlice) (pgtypes.Tsvector, error) {
+func Setweight(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 pgtypes.Char, v2 pgtypes.Tsvector, v3 pgtypes.Char, v4 StringSlice) (pgtypes.Tsvector, error) {
 	// call pg_catalog.setweight
 	const sqlstr = `SELECT pg_catalog.setweight($1, $2, $3, $4, $5)`
 	// run
@@ -31622,7 +31496,7 @@ func Substring(ctx context.Context, db DB, v0 []byte, v1 int, v2 string, v3 int,
 }
 
 // Sum calls the stored procedure 'pg_catalog.sum(bigint, smallint, integer, real, double precision, money, interval, numeric) numeric' on db.
-func Sum(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 *time.Duration, v7 float64) (float64, error) {
+func Sum(ctx context.Context, db DB, v0 int64, v1 int16, v2 int, v3 float32, v4 float64, v5 string, v6 []byte, v7 float64) (float64, error) {
 	// call pg_catalog.sum
 	const sqlstr = `SELECT pg_catalog.sum($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -31674,40 +31548,40 @@ func TableAmHandlerOut(ctx context.Context, db DB, v0 pgtypes.TableAmHandler) (p
 }
 
 // TableToXML calls the stored procedure 'pg_catalog.table_to_xml(regclass, boolean, boolean, text) xml' on db.
-func TableToXML(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func TableToXML(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.table_to_xml
 	const sqlstr = `SELECT pg_catalog.table_to_xml($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // TableToXMLAndXmlschema calls the stored procedure 'pg_catalog.table_to_xml_and_xmlschema(regclass, boolean, boolean, text) xml' on db.
-func TableToXMLAndXmlschema(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func TableToXMLAndXmlschema(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.table_to_xml_and_xmlschema
 	const sqlstr = `SELECT pg_catalog.table_to_xml_and_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // TableToXmlschema calls the stored procedure 'pg_catalog.table_to_xmlschema(regclass, boolean, boolean, text) xml' on db.
-func TableToXmlschema(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) (pgtypes.XML, error) {
+func TableToXmlschema(ctx context.Context, db DB, v0 pgtypes.Regclass, v1, v2 bool, v3 string) ([]byte, error) {
 	// call pg_catalog.table_to_xmlschema
 	const sqlstr = `SELECT pg_catalog.table_to_xmlschema($1, $2, $3, $4)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -31752,7 +31626,7 @@ func Tanh(ctx context.Context, db DB, v0 float64) (float64, error) {
 }
 
 // Text calls the stored procedure 'pg_catalog.text(boolean, "char", name, xml, inet, character) text' on db.
-func Text(ctx context.Context, db DB, v0 bool, v1 uint8, v2 pgtypes.Name, v3 pgtypes.XML, v4, v5 string) (string, error) {
+func Text(ctx context.Context, db DB, v0 bool, v1 pgtypes.Char, v2 pgtypes.Name, v3 []byte, v4, v5 string) (string, error) {
 	// call pg_catalog.text
 	const sqlstr = `SELECT pg_catalog.text($1, $2, $3, $4, $5, $6)`
 	// run
@@ -32428,7 +32302,7 @@ func Tidsmaller(ctx context.Context, db DB, v0, v1 pgtypes.Tid) (pgtypes.Tid, er
 }
 
 // Time calls the stored procedure 'pg_catalog.time(timestamp without time zone, timestamp with time zone, interval, time with time zone, time without time zone, integer) time without time zone' on db.
-func Time(ctx context.Context, db DB, v0, v1 time.Time, v2 *time.Duration, v3, v4 time.Time, v5 int) (time.Time, error) {
+func Time(ctx context.Context, db DB, v0, v1 time.Time, v2 []byte, v3, v4 time.Time, v5 int) (time.Time, error) {
 	// call pg_catalog.time
 	const sqlstr = `SELECT pg_catalog.time($1, $2, $3, $4, $5, $6)`
 	// run
@@ -32571,7 +32445,7 @@ func TimeLt(ctx context.Context, db DB, v0, v1 time.Time) (bool, error) {
 }
 
 // TimeMiInterval calls the stored procedure 'pg_catalog.time_mi_interval(time without time zone, interval) time without time zone' on db.
-func TimeMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimeMiInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.time_mi_interval
 	const sqlstr = `SELECT pg_catalog.time_mi_interval($1, $2)`
 	// run
@@ -32584,11 +32458,11 @@ func TimeMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration)
 }
 
 // TimeMiTime calls the stored procedure 'pg_catalog.time_mi_time(time without time zone, time without time zone) interval' on db.
-func TimeMiTime(ctx context.Context, db DB, v0, v1 time.Time) (*time.Duration, error) {
+func TimeMiTime(ctx context.Context, db DB, v0, v1 time.Time) ([]byte, error) {
 	// call pg_catalog.time_mi_time
 	const sqlstr = `SELECT pg_catalog.time_mi_time($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -32623,7 +32497,7 @@ func TimeOut(ctx context.Context, db DB, v0 time.Time) (pgtypes.Cstring, error) 
 }
 
 // TimePlInterval calls the stored procedure 'pg_catalog.time_pl_interval(time without time zone, interval) time without time zone' on db.
-func TimePlInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimePlInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.time_pl_interval
 	const sqlstr = `SELECT pg_catalog.time_pl_interval($1, $2)`
 	// run
@@ -33013,11 +32887,11 @@ func TimestampLtTimestamptz(ctx context.Context, db DB, v0, v1 time.Time) (bool,
 }
 
 // TimestampMi calls the stored procedure 'pg_catalog.timestamp_mi(timestamp without time zone, timestamp without time zone) interval' on db.
-func TimestampMi(ctx context.Context, db DB, v0, v1 time.Time) (*time.Duration, error) {
+func TimestampMi(ctx context.Context, db DB, v0, v1 time.Time) ([]byte, error) {
 	// call pg_catalog.timestamp_mi
 	const sqlstr = `SELECT pg_catalog.timestamp_mi($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -33026,7 +32900,7 @@ func TimestampMi(ctx context.Context, db DB, v0, v1 time.Time) (*time.Duration, 
 }
 
 // TimestampMiInterval calls the stored procedure 'pg_catalog.timestamp_mi_interval(timestamp without time zone, interval) timestamp without time zone' on db.
-func TimestampMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimestampMiInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timestamp_mi_interval
 	const sqlstr = `SELECT pg_catalog.timestamp_mi_interval($1, $2)`
 	// run
@@ -33091,7 +32965,7 @@ func TimestampOut(ctx context.Context, db DB, v0 time.Time) (pgtypes.Cstring, er
 }
 
 // TimestampPlInterval calls the stored procedure 'pg_catalog.timestamp_pl_interval(timestamp without time zone, interval) timestamp without time zone' on db.
-func TimestampPlInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimestampPlInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timestamp_pl_interval
 	const sqlstr = `SELECT pg_catalog.timestamp_pl_interval($1, $2)`
 	// run
@@ -33467,11 +33341,11 @@ func TimestamptzLtTimestamp(ctx context.Context, db DB, v0, v1 time.Time) (bool,
 }
 
 // TimestamptzMi calls the stored procedure 'pg_catalog.timestamptz_mi(timestamp with time zone, timestamp with time zone) interval' on db.
-func TimestamptzMi(ctx context.Context, db DB, v0, v1 time.Time) (*time.Duration, error) {
+func TimestamptzMi(ctx context.Context, db DB, v0, v1 time.Time) ([]byte, error) {
 	// call pg_catalog.timestamptz_mi
 	const sqlstr = `SELECT pg_catalog.timestamptz_mi($1, $2)`
 	// run
-	var ret *time.Duration
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -33480,7 +33354,7 @@ func TimestamptzMi(ctx context.Context, db DB, v0, v1 time.Time) (*time.Duration
 }
 
 // TimestamptzMiInterval calls the stored procedure 'pg_catalog.timestamptz_mi_interval(timestamp with time zone, interval) timestamp with time zone' on db.
-func TimestamptzMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimestamptzMiInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timestamptz_mi_interval
 	const sqlstr = `SELECT pg_catalog.timestamptz_mi_interval($1, $2)`
 	// run
@@ -33545,7 +33419,7 @@ func TimestamptzOut(ctx context.Context, db DB, v0 time.Time) (pgtypes.Cstring, 
 }
 
 // TimestamptzPlInterval calls the stored procedure 'pg_catalog.timestamptz_pl_interval(timestamp with time zone, interval) timestamp with time zone' on db.
-func TimestamptzPlInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimestamptzPlInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timestamptz_pl_interval
 	const sqlstr = `SELECT pg_catalog.timestamptz_pl_interval($1, $2)`
 	// run
@@ -33792,7 +33666,7 @@ func TimetzLt(ctx context.Context, db DB, v0, v1 time.Time) (bool, error) {
 }
 
 // TimetzMiInterval calls the stored procedure 'pg_catalog.timetz_mi_interval(time with time zone, interval) time with time zone' on db.
-func TimetzMiInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimetzMiInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timetz_mi_interval
 	const sqlstr = `SELECT pg_catalog.timetz_mi_interval($1, $2)`
 	// run
@@ -33831,7 +33705,7 @@ func TimetzOut(ctx context.Context, db DB, v0 time.Time) (pgtypes.Cstring, error
 }
 
 // TimetzPlInterval calls the stored procedure 'pg_catalog.timetz_pl_interval(time with time zone, interval) time with time zone' on db.
-func TimetzPlInterval(ctx context.Context, db DB, v0 time.Time, v1 *time.Duration) (time.Time, error) {
+func TimetzPlInterval(ctx context.Context, db DB, v0 time.Time, v1 []byte) (time.Time, error) {
 	// call pg_catalog.timetz_pl_interval
 	const sqlstr = `SELECT pg_catalog.timetz_pl_interval($1, $2)`
 	// run
@@ -33922,7 +33796,7 @@ func Timetztypmodout(ctx context.Context, db DB, v0 int) (pgtypes.Cstring, error
 }
 
 // Timezone calls the stored procedure 'pg_catalog.timezone(text, timestamp without time zone, text, timestamp with time zone, text, time with time zone, interval, timestamp without time zone, interval, timestamp with time zone, interval, time with time zone) timestamp with time zone' on db.
-func Timezone(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 time.Time, v6 *time.Duration, v7 time.Time, v8 *time.Duration, v9 time.Time, v10 *time.Duration, v11 time.Time) (time.Time, error) {
+func Timezone(ctx context.Context, db DB, v0 string, v1 time.Time, v2 string, v3 time.Time, v4 string, v5 time.Time, v6 []byte, v7 time.Time, v8 []byte, v9 time.Time, v10 []byte, v11 time.Time) (time.Time, error) {
 	// call pg_catalog.timezone
 	const sqlstr = `SELECT pg_catalog.timezone($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	// run
@@ -33948,7 +33822,7 @@ func ToASCII(ctx context.Context, db DB, v0, v1 string, v2 pgtypes.Name, v3 stri
 }
 
 // ToChar calls the stored procedure 'pg_catalog.to_char(bigint, text, integer, text, real, text, double precision, text, timestamp without time zone, text, timestamp with time zone, text, interval, text, numeric, text) text' on db.
-func ToChar(ctx context.Context, db DB, v0 int64, v1 string, v2 int, v3 string, v4 float32, v5 string, v6 float64, v7 string, v8 time.Time, v9 string, v10 time.Time, v11 string, v12 *time.Duration, v13 string, v14 float64, v15 string) (string, error) {
+func ToChar(ctx context.Context, db DB, v0 int64, v1 string, v2 int, v3 string, v4 float32, v5 string, v6 float64, v7 string, v8 time.Time, v9 string, v10 time.Time, v11 string, v12 []byte, v13 string, v14 float64, v15 string) (string, error) {
 	// call pg_catalog.to_char
 	const sqlstr = `SELECT pg_catalog.to_char($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`
 	// run
@@ -33987,27 +33861,27 @@ func ToHex(ctx context.Context, db DB, v0 int64, v1 int) (string, error) {
 }
 
 // ToJSON calls the stored procedure 'pg_catalog.to_json(anyelement) json' on db.
-func ToJSON(ctx context.Context, db DB, v0 pgtypes.Anyelement) (pgtypes.JSON, error) {
+func ToJSON(ctx context.Context, db DB, v0 pgtypes.Anyelement) ([]byte, error) {
 	// call pg_catalog.to_json
 	const sqlstr = `SELECT pg_catalog.to_json($1)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // ToJsonb calls the stored procedure 'pg_catalog.to_jsonb(anyelement) jsonb' on db.
-func ToJsonb(ctx context.Context, db DB, v0 pgtypes.Anyelement) (pgtypes.Jsonb, error) {
+func ToJsonb(ctx context.Context, db DB, v0 pgtypes.Anyelement) ([]byte, error) {
 	// call pg_catalog.to_jsonb
 	const sqlstr = `SELECT pg_catalog.to_jsonb($1)`
 	// run
-	var ret pgtypes.Jsonb
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.Jsonb{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -34169,7 +34043,7 @@ func ToTsquery(ctx context.Context, db DB, v0 string, v1 pgtypes.Regconfig, v2 s
 }
 
 // ToTsvector calls the stored procedure 'pg_catalog.to_tsvector(text, json, jsonb, regconfig, text, regconfig, json, regconfig, jsonb) tsvector' on db.
-func ToTsvector(ctx context.Context, db DB, v0 string, v1 pgtypes.JSON, v2 pgtypes.Jsonb, v3 pgtypes.Regconfig, v4 string, v5 pgtypes.Regconfig, v6 pgtypes.JSON, v7 pgtypes.Regconfig, v8 pgtypes.Jsonb) (pgtypes.Tsvector, error) {
+func ToTsvector(ctx context.Context, db DB, v0 string, v1, v2 []byte, v3 pgtypes.Regconfig, v4 string, v5 pgtypes.Regconfig, v6 []byte, v7 pgtypes.Regconfig, v8 []byte) (pgtypes.Tsvector, error) {
 	// call pg_catalog.to_tsvector
 	const sqlstr = `SELECT pg_catalog.to_tsvector($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	// run
@@ -34273,7 +34147,7 @@ func TsDelete(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 string, v2 pgt
 }
 
 // TsFilter calls the stored procedure 'pg_catalog.ts_filter(tsvector, "char"[]) tsvector' on db.
-func TsFilter(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 []uint8) (pgtypes.Tsvector, error) {
+func TsFilter(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 []pgtypes.Char) (pgtypes.Tsvector, error) {
 	// call pg_catalog.ts_filter
 	const sqlstr = `SELECT pg_catalog.ts_filter($1, $2)`
 	// run
@@ -34286,14 +34160,14 @@ func TsFilter(ctx context.Context, db DB, v0 pgtypes.Tsvector, v1 []uint8) (pgty
 }
 
 // TsHeadline calls the stored procedure 'pg_catalog.ts_headline(text, tsquery, json, tsquery, jsonb, tsquery, text, tsquery, text, json, tsquery, text, regconfig, text, tsquery, regconfig, json, tsquery, regconfig, jsonb, tsquery, jsonb, tsquery, text, regconfig, text, tsquery, text, regconfig, json, tsquery, text, regconfig, jsonb, tsquery, text) json' on db.
-func TsHeadline(ctx context.Context, db DB, v0 string, v1 pgtypes.Tsquery, v2 pgtypes.JSON, v3 pgtypes.Tsquery, v4 pgtypes.Jsonb, v5 pgtypes.Tsquery, v6 string, v7 pgtypes.Tsquery, v8 string, v9 pgtypes.JSON, v10 pgtypes.Tsquery, v11 string, v12 pgtypes.Regconfig, v13 string, v14 pgtypes.Tsquery, v15 pgtypes.Regconfig, v16 pgtypes.JSON, v17 pgtypes.Tsquery, v18 pgtypes.Regconfig, v19 pgtypes.Jsonb, v20 pgtypes.Tsquery, v21 pgtypes.Jsonb, v22 pgtypes.Tsquery, v23 string, v24 pgtypes.Regconfig, v25 string, v26 pgtypes.Tsquery, v27 string, v28 pgtypes.Regconfig, v29 pgtypes.JSON, v30 pgtypes.Tsquery, v31 string, v32 pgtypes.Regconfig, v33 pgtypes.Jsonb, v34 pgtypes.Tsquery, v35 string) (pgtypes.JSON, error) {
+func TsHeadline(ctx context.Context, db DB, v0 string, v1 pgtypes.Tsquery, v2 []byte, v3 pgtypes.Tsquery, v4 []byte, v5 pgtypes.Tsquery, v6 string, v7 pgtypes.Tsquery, v8 string, v9 []byte, v10 pgtypes.Tsquery, v11 string, v12 pgtypes.Regconfig, v13 string, v14 pgtypes.Tsquery, v15 pgtypes.Regconfig, v16 []byte, v17 pgtypes.Tsquery, v18 pgtypes.Regconfig, v19 []byte, v20 pgtypes.Tsquery, v21 []byte, v22 pgtypes.Tsquery, v23 string, v24 pgtypes.Regconfig, v25 string, v26 pgtypes.Tsquery, v27 string, v28 pgtypes.Regconfig, v29 []byte, v30 pgtypes.Tsquery, v31 string, v32 pgtypes.Regconfig, v33 []byte, v34 pgtypes.Tsquery, v35 string) ([]byte, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT pg_catalog.ts_headline($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36)`
 	// run
-	var ret pgtypes.JSON
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35).Scan(&ret); err != nil {
-		return pgtypes.JSON{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -36178,27 +36052,27 @@ func WinToUTF8(ctx context.Context, db DB, v0, v1 int, v2 pgtypes.Cstring, v3 pg
 }
 
 // XML calls the stored procedure 'pg_catalog.xml(text) xml' on db.
-func XML(ctx context.Context, db DB, v0 string) (pgtypes.XML, error) {
+func XML(ctx context.Context, db DB, v0 string) ([]byte, error) {
 	// call pg_catalog.xml
 	const sqlstr = `SELECT pg_catalog.xml($1)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // XMLIn calls the stored procedure 'pg_catalog.xml_in(cstring) xml' on db.
-func XMLIn(ctx context.Context, db DB, v0 pgtypes.Cstring) (pgtypes.XML, error) {
+func XMLIn(ctx context.Context, db DB, v0 pgtypes.Cstring) ([]byte, error) {
 	// call pg_catalog.xml_in
 	const sqlstr = `SELECT pg_catalog.xml_in($1)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
@@ -36243,7 +36117,7 @@ func XMLIsWellFormedDocument(ctx context.Context, db DB, v0 string) (bool, error
 }
 
 // XMLOut calls the stored procedure 'pg_catalog.xml_out(xml) cstring' on db.
-func XMLOut(ctx context.Context, db DB, v0 pgtypes.XML) (pgtypes.Cstring, error) {
+func XMLOut(ctx context.Context, db DB, v0 []byte) (pgtypes.Cstring, error) {
 	// call pg_catalog.xml_out
 	const sqlstr = `SELECT pg_catalog.xml_out($1)`
 	// run
@@ -36256,20 +36130,20 @@ func XMLOut(ctx context.Context, db DB, v0 pgtypes.XML) (pgtypes.Cstring, error)
 }
 
 // XMLRecv calls the stored procedure 'pg_catalog.xml_recv(internal) xml' on db.
-func XMLRecv(ctx context.Context, db DB, v0 pgtypes.Internal) (pgtypes.XML, error) {
+func XMLRecv(ctx context.Context, db DB, v0 pgtypes.Internal) ([]byte, error) {
 	// call pg_catalog.xml_recv
 	const sqlstr = `SELECT pg_catalog.xml_recv($1)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // XMLSend calls the stored procedure 'pg_catalog.xml_send(xml) bytea' on db.
-func XMLSend(ctx context.Context, db DB, v0 pgtypes.XML) ([]byte, error) {
+func XMLSend(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.xml_send
 	const sqlstr = `SELECT pg_catalog.xml_send($1)`
 	// run
@@ -36542,46 +36416,46 @@ func Xidsend(ctx context.Context, db DB, v0 pgtypes.Xid) ([]byte, error) {
 }
 
 // Xmlagg calls the stored procedure 'pg_catalog.xmlagg(xml) xml' on db.
-func Xmlagg(ctx context.Context, db DB, v0 pgtypes.XML) (pgtypes.XML, error) {
+func Xmlagg(ctx context.Context, db DB, v0 []byte) ([]byte, error) {
 	// call pg_catalog.xmlagg
 	const sqlstr = `SELECT pg_catalog.xmlagg($1)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // Xmlcomment calls the stored procedure 'pg_catalog.xmlcomment(text) xml' on db.
-func Xmlcomment(ctx context.Context, db DB, v0 string) (pgtypes.XML, error) {
+func Xmlcomment(ctx context.Context, db DB, v0 string) ([]byte, error) {
 	// call pg_catalog.xmlcomment
 	const sqlstr = `SELECT pg_catalog.xmlcomment($1)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0)
 	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // Xmlconcat2 calls the stored procedure 'pg_catalog.xmlconcat2(xml, xml) xml' on db.
-func Xmlconcat2(ctx context.Context, db DB, v0, v1 pgtypes.XML) (pgtypes.XML, error) {
+func Xmlconcat2(ctx context.Context, db DB, v0, v1 []byte) ([]byte, error) {
 	// call pg_catalog.xmlconcat2
 	const sqlstr = `SELECT pg_catalog.xmlconcat2($1, $2)`
 	// run
-	var ret pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1).Scan(&ret); err != nil {
-		return pgtypes.XML{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return ret, nil
 }
 
 // Xmlexists calls the stored procedure 'pg_catalog.xmlexists(text, xml) boolean' on db.
-func Xmlexists(ctx context.Context, db DB, v0 string, v1 pgtypes.XML) (bool, error) {
+func Xmlexists(ctx context.Context, db DB, v0 string, v1 []byte) (bool, error) {
 	// call pg_catalog.xmlexists
 	const sqlstr = `SELECT pg_catalog.xmlexists($1, $2)`
 	// run
@@ -36594,7 +36468,7 @@ func Xmlexists(ctx context.Context, db DB, v0 string, v1 pgtypes.XML) (bool, err
 }
 
 // Xmlvalidate calls the stored procedure 'pg_catalog.xmlvalidate(xml, text) boolean' on db.
-func Xmlvalidate(ctx context.Context, db DB, v0 pgtypes.XML, v1 string) (bool, error) {
+func Xmlvalidate(ctx context.Context, db DB, v0 []byte, v1 string) (bool, error) {
 	// call pg_catalog.xmlvalidate
 	const sqlstr = `SELECT pg_catalog.xmlvalidate($1, $2)`
 	// run
@@ -36607,11 +36481,11 @@ func Xmlvalidate(ctx context.Context, db DB, v0 pgtypes.XML, v1 string) (bool, e
 }
 
 // Xpath calls the stored procedure 'pg_catalog.xpath(text, xml, text, xml, text[]) xml[]' on db.
-func Xpath(ctx context.Context, db DB, v0 string, v1 pgtypes.XML, v2 string, v3 pgtypes.XML, v4 StringSlice) ([]pgtypes.XML, error) {
+func Xpath(ctx context.Context, db DB, v0 string, v1 []byte, v2 string, v3 []byte, v4 StringSlice) ([]byte, error) {
 	// call pg_catalog.xpath
 	const sqlstr = `SELECT pg_catalog.xpath($1, $2, $3, $4, $5)`
 	// run
-	var ret []pgtypes.XML
+	var ret []byte
 	logf(sqlstr, v0, v1, v2, v3, v4)
 	if err := db.QueryRowContext(ctx, sqlstr, v0, v1, v2, v3, v4).Scan(&ret); err != nil {
 		return nil, logerror(err)
@@ -36620,7 +36494,7 @@ func Xpath(ctx context.Context, db DB, v0 string, v1 pgtypes.XML, v2 string, v3 
 }
 
 // XpathExists calls the stored procedure 'pg_catalog.xpath_exists(text, xml, text, xml, text[]) boolean' on db.
-func XpathExists(ctx context.Context, db DB, v0 string, v1 pgtypes.XML, v2 string, v3 pgtypes.XML, v4 StringSlice) (bool, error) {
+func XpathExists(ctx context.Context, db DB, v0 string, v1 []byte, v2 string, v3 []byte, v4 StringSlice) (bool, error) {
 	// call pg_catalog.xpath_exists
 	const sqlstr = `SELECT pg_catalog.xpath_exists($1, $2, $3, $4, $5)`
 	// run

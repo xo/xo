@@ -12,5 +12,4 @@ type Collation struct {
 	CollationSchema  pgtypes.SQLIdentifier `json:"collation_schema"`  // collation_schema
 	CollationName    pgtypes.SQLIdentifier `json:"collation_name"`    // collation_name
 	PadAttribute     pgtypes.CharacterData `json:"pad_attribute"`     // pad_attribute
-
 }

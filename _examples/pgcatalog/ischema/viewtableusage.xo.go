@@ -14,5 +14,4 @@ type ViewTableUsage struct {
 	TableCatalog pgtypes.SQLIdentifier `json:"table_catalog"` // table_catalog
 	TableSchema  pgtypes.SQLIdentifier `json:"table_schema"`  // table_schema
 	TableName    pgtypes.SQLIdentifier `json:"table_name"`    // table_name
-
 }

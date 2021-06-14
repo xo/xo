@@ -13,5 +13,4 @@ type ForeignTable struct {
 	ForeignTableName     pgtypes.SQLIdentifier `json:"foreign_table_name"`     // foreign_table_name
 	ForeignServerCatalog pgtypes.SQLIdentifier `json:"foreign_server_catalog"` // foreign_server_catalog
 	ForeignServerName    pgtypes.SQLIdentifier `json:"foreign_server_name"`    // foreign_server_name
-
 }

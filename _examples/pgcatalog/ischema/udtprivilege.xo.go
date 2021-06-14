@@ -15,5 +15,4 @@ type UdtPrivilege struct {
 	UdtName       pgtypes.SQLIdentifier `json:"udt_name"`       // udt_name
 	PrivilegeType pgtypes.CharacterData `json:"privilege_type"` // privilege_type
 	IsGrantable   pgtypes.YesOrNo       `json:"is_grantable"`   // is_grantable
-
 }

@@ -12,5 +12,4 @@ type ForeignDataWrapperOption struct {
 	ForeignDataWrapperName    pgtypes.SQLIdentifier `json:"foreign_data_wrapper_name"`    // foreign_data_wrapper_name
 	OptionName                pgtypes.SQLIdentifier `json:"option_name"`                  // option_name
 	OptionValue               pgtypes.CharacterData `json:"option_value"`                 // option_value
-
 }

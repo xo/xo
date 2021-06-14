@@ -14,5 +14,4 @@ type ColumnOption struct {
 	ColumnName   pgtypes.SQLIdentifier `json:"column_name"`   // column_name
 	OptionName   pgtypes.SQLIdentifier `json:"option_name"`   // option_name
 	OptionValue  pgtypes.CharacterData `json:"option_value"`  // option_value
-
 }

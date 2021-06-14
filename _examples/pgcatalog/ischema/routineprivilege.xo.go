@@ -18,5 +18,4 @@ type RoutinePrivilege struct {
 	RoutineName     pgtypes.SQLIdentifier `json:"routine_name"`     // routine_name
 	PrivilegeType   pgtypes.CharacterData `json:"privilege_type"`   // privilege_type
 	IsGrantable     pgtypes.YesOrNo       `json:"is_grantable"`     // is_grantable
-
 }

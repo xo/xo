@@ -13,5 +13,4 @@ type ForeignTableOption struct {
 	ForeignTableName    pgtypes.SQLIdentifier `json:"foreign_table_name"`    // foreign_table_name
 	OptionName          pgtypes.SQLIdentifier `json:"option_name"`           // option_name
 	OptionValue         pgtypes.CharacterData `json:"option_value"`          // option_value
-
 }

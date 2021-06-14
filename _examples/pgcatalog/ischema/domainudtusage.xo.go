@@ -14,5 +14,4 @@ type DomainUdtUsage struct {
 	DomainCatalog pgtypes.SQLIdentifier `json:"domain_catalog"` // domain_catalog
 	DomainSchema  pgtypes.SQLIdentifier `json:"domain_schema"`  // domain_schema
 	DomainName    pgtypes.SQLIdentifier `json:"domain_name"`    // domain_name
-
 }

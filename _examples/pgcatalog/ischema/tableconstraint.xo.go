@@ -18,5 +18,4 @@ type TableConstraint struct {
 	IsDeferrable      pgtypes.YesOrNo       `json:"is_deferrable"`      // is_deferrable
 	InitiallyDeferred pgtypes.YesOrNo       `json:"initially_deferred"` // initially_deferred
 	Enforced          pgtypes.YesOrNo       `json:"enforced"`           // enforced
-
 }
