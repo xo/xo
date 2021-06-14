@@ -76,7 +76,7 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 	case "timestamp", "datetime", "date", "timestamp with timezone", "time with timezone", "time without timezone", "timestamp without timezone":
 		goType, zero = "Time", "Time{}"
 		if nullable {
-			goType, zero = "sql.NullTime", "sql.NullTime{}"
+			goType, zero = "*Time", "nil"
 		}
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "time":

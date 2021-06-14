@@ -48,7 +48,7 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		if nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
-	case "char", "varchar", "text", "nchar", "nvarchar", "ntext", "smallmoney", "money":
+	case "char", "money", "nchar", "ntext", "nvarchar", "smallmoney", "text", "varchar":
 		goType, zero = "string", `""`
 		if nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
@@ -68,21 +68,6 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
-	case "smallserial":
-		goType, zero = "uint16", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "serial":
-		goType, zero = gotpl.Uint32(ctx), "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "bigserial":
-		goType, zero = "uint64", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
 	case "real":
 		goType, zero = "float32", "0.0"
 		if nullable {
@@ -93,20 +78,13 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "binary", "varbinary", "image", "xml":
+	case "binary", "image", "varbinary", "xml":
 		goType, zero = "[]byte", "nil"
 	case "date", "time", "smalldatetime", "datetime", "datetime2", "datetimeoffset":
 		goType, zero = "time.Time", "time.Time{}"
 		if nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
-	case "time with time zone", "time without time zone", "timestamp without time zone":
-		goType, zero = "int64", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "interval":
-		goType, zero = "*time.Duration", "nil"
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
