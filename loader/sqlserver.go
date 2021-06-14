@@ -88,12 +88,12 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "numeric", "decimal":
+	case "numeric", "decimal", "float":
 		goType, zero = "float64", "0.0"
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "binary", "varbinary":
+	case "binary", "varbinary", "image", "xml":
 		goType, zero = "[]byte", "nil"
 	case "date", "time", "smalldatetime", "datetime", "datetime2", "datetimeoffset":
 		goType, zero = "time.Time", "time.Time{}"

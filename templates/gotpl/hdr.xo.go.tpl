@@ -23,7 +23,11 @@ import (
 	"regexp"
 	"strings"
 	"time"
-{{ range imports }}
+
+{{- if driver "postgres" }}
+	"github.com/lib/pq/hstore"
+{{- end }}
+{{- range imports }}
 	{{ . }}
 {{- end }}
 )

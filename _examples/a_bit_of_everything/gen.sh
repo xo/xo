@@ -30,6 +30,8 @@ XOBIN=$(realpath $XOBIN)
 
 pushd $SRC &> /dev/null
 
+rm *.db
+
 for TYPE in $DATABASES; do
   DB=${DSNS[$TYPE]}
   mkdir -p $TYPE

@@ -15,10 +15,11 @@ require (
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/sijms/go-ora v1.2.0
+	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/xo/dburl v0.8.4
 	github.com/yookoala/realpath v1.0.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
-	golang.org/x/sys v0.0.0-20210608053332-aa57babbf139 // indirect
-	golang.org/x/tools v0.1.2
+	golang.org/x/sys v0.0.0-20210611083646-a4fc73990273 // indirect
+	golang.org/x/tools v0.1.3
 	mvdan.cc/gofumpt v0.1.1
 )

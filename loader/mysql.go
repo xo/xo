@@ -90,7 +90,7 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		default:
 			goType, zero = "int8", "0"
 		}
-	case "smallint":
+	case "smallint", "year":
 		goType, zero = "int16", "0"
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"

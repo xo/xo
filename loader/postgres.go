@@ -69,7 +69,7 @@ func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, str
 		if nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
-	case "character", "character varying", "text", "money", "inet", "bpchar":
+	case "bpchar", "char", "character varying", "character", "inet", "money", "text":
 		goType, zero = "string", `""`
 		if nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
@@ -89,57 +89,37 @@ func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, str
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
-	case "smallserial":
-		goType, zero = "uint16", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "serial":
-		goType, zero = gotpl.Uint32(ctx), "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
-	case "bigserial":
-		goType, zero = "uint64", "0"
-		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
-		}
 	case "real":
 		goType, zero = "float32", "0.0"
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "numeric", "double precision":
+	case "double precision", "numeric":
 		goType, zero = "float64", "0.0"
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "bytea":
-		goType, zero, asSlice = "byte", "nil", true
 	case "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
 		goType, zero = "time.Time", "time.Time{}"
 		if nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
-	case "interval":
-		goType, zero = "*time.Duration", "nil"
-	case `"char"`, "bit":
-		// FIXME: this needs to actually be tested ...
-		// should be 'rune' but not sure if database/sql supports 'rune' as a
-		// type?
-		//
-		// this is mainly here because postgres's pg_catalog.* meta tables have
-		// this as a type.
-		//
-		// typ = "rune"
+	case "bit":
 		goType, zero = "uint8", "0"
-	case `"any"`, "bit varying":
+		if nullable {
+			goType, zero = "*uint8", "nil"
+		}
+	case "any", "bit varying", "bytea", "interval", "json", "jsonb", "xml":
+		// TODO: write custom type for interval marshaling
+		// TODO: marshalling for json types
 		goType, zero, asSlice = "byte", "nil", true
 	case "hstore":
 		goType, zero = "hstore.Hstore", "nil"
 	case "uuid":
-		// FIXME: this is probably not what we want
 		goType, zero = "uuid.UUID", "uuid.UUID{}"
+		if nullable {
+			goType, zero = "*uuid.UUID", "nil"
+		}
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
