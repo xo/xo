@@ -8,9 +8,9 @@ import (
 
 // AuthorBookResult is the result of a search.
 type AuthorBookResult struct {
-	AuthorID   int64  `json:"author_id"`   // author_id
+	AuthorID   int    `json:"author_id"`   // author_id
 	AuthorName string `json:"author_name"` // author_name
-	BookID     int64  `json:"book_id"`     // book_id
+	BookID     int    `json:"book_id"`     // book_id
 	BookIsbn   string `json:"book_isbn"`   // book_isbn
 	BookTitle  string `json:"book_title"`  // book_title
 	BookTags   string `json:"book_tags"`   // book_tags

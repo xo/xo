@@ -9,7 +9,7 @@ import (
 
 // Author represents a row from 'booktest.authors'.
 type Author struct {
-	AuthorID int64  `json:"author_id"` // author_id
+	AuthorID int    `json:"author_id"` // author_id
 	Name     string `json:"name"`      // name
 	// xo fields
 	_exists, _deleted bool
@@ -46,7 +46,7 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err
 	} // set primary key
-	a.AuthorID = int64(id)
+	a.AuthorID = int(id)
 	// set exists
 	a._exists = true
 	return nil
@@ -137,7 +137,7 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 // AuthorByAuthorID retrieves a row from 'booktest.authors' as a Author.
 //
 // Generated from index 'authors_pkey'.
-func AuthorByAuthorID(ctx context.Context, db DB, authorID int64) (*Author, error) {
+func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +

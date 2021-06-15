@@ -10,8 +10,8 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    int64     `json:"book_id"`   // book_id
-	AuthorID  int64     `json:"author_id"` // author_id
+	BookID    int       `json:"book_id"`   // book_id
+	AuthorID  int       `json:"author_id"` // author_id
 	Isbn      string    `json:"isbn"`      // isbn
 	Title     string    `json:"title"`     // title
 	Year      int64     `json:"year"`      // year
@@ -52,7 +52,7 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err
 	} // set primary key
-	b.BookID = int64(id)
+	b.BookID = int(id)
 	// set exists
 	b._exists = true
 	return nil
@@ -129,7 +129,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 // BookByBookID retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_pkey'.
-func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
+func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
