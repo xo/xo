@@ -12,9 +12,9 @@ import (
 
 	"github.com/gedex/inflector"
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/loader"
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/loader"
+	"github.com/mmmcorp/xo/models"
+	"github.com/mmmcorp/xo/templates"
 )
 
 // QueryGenerator generates code for custom SQL queries.

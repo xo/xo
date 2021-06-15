@@ -19,11 +19,11 @@ import (
 	//_ "github.com/sijms/go-ora"
 
 	// models
-	"github.com/xo/xo/_examples/a_bit_of_everything/mysql"
-	"github.com/xo/xo/_examples/a_bit_of_everything/oracle"
-	"github.com/xo/xo/_examples/a_bit_of_everything/postgres"
-	"github.com/xo/xo/_examples/a_bit_of_everything/sqlite3"
-	"github.com/xo/xo/_examples/a_bit_of_everything/sqlserver"
+	"github.com/mmmcorp/xo/_examples/a_bit_of_everything/mysql"
+	"github.com/mmmcorp/xo/_examples/a_bit_of_everything/oracle"
+	"github.com/mmmcorp/xo/_examples/a_bit_of_everything/postgres"
+	"github.com/mmmcorp/xo/_examples/a_bit_of_everything/sqlite3"
+	"github.com/mmmcorp/xo/_examples/a_bit_of_everything/sqlserver"
 
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"

@@ -19,11 +19,11 @@ import (
 	//_ "github.com/sijms/go-ora"
 
 	// models
-	"github.com/xo/xo/_examples/booktest/mysql"
-	"github.com/xo/xo/_examples/booktest/oracle"
-	"github.com/xo/xo/_examples/booktest/postgres"
-	"github.com/xo/xo/_examples/booktest/sqlite3"
-	"github.com/xo/xo/_examples/booktest/sqlserver"
+	"github.com/mmmcorp/xo/_examples/booktest/mysql"
+	"github.com/mmmcorp/xo/_examples/booktest/oracle"
+	"github.com/mmmcorp/xo/_examples/booktest/postgres"
+	"github.com/mmmcorp/xo/_examples/booktest/sqlite3"
+	"github.com/mmmcorp/xo/_examples/booktest/sqlserver"
 
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"

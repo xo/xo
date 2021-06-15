@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
+	"github.com/mmmcorp/xo/models"
+	"github.com/mmmcorp/xo/templates/gotpl"
 )
 
 func init() {

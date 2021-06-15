@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/alecthomas/kingpin"
+	"github.com/mmmcorp/xo/loader"
+	"github.com/mmmcorp/xo/models"
+	"github.com/mmmcorp/xo/templates"
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"
-	"github.com/xo/xo/loader"
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
 	"github.com/yookoala/realpath"
 )
 

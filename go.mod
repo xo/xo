@@ -1,4 +1,4 @@
-module github.com/xo/xo
+module github.com/mmmcorp/xo
 
 go 1.16
 

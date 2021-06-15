@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/xo/xo/models"
+	"github.com/mmmcorp/xo/models"
 )
 
 func init() {

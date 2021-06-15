@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/models"
+	"github.com/mmmcorp/xo/templates"
 )
 
 // loaders are registered database loaders.

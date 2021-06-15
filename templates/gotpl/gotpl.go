@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/templates"
 	"golang.org/x/tools/imports"
 	"mvdan.cc/gofumpt/format"
 )

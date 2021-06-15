@@ -1,4 +1,4 @@
-module github.com/xo/xo/_examples
+module github.com/mmmcorp/xo/_examples
 
 go 1.16
 

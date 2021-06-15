@@ -5,7 +5,7 @@ package ischema
 import (
 	"database/sql"
 
-	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
+	"github.com/mmmcorp/xo/_examples/pgcatalog/pgtypes"
 )
 
 // PgUserMapping represents a row from 'information_schema._pg_user_mappings'.

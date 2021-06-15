@@ -53,10 +53,10 @@ $ go get -u golang.org/x/tools/cmd/goimports
 Then, install `xo` in the usual Go way:
 
 ```sh
-$ go get -u github.com/xo/xo
+$ go get -u github.com/mmmcorp/xo
 
 # Install with oracle support (see notes below)
-$ go get -tags oracle -u github.com/xo/xo
+$ go get -tags oracle -u github.com/mmmcorp/xo
 ```
 
 > **Note:** Go 1.16+ is needed for installing `xo` from source, as it makes use
@@ -507,7 +507,7 @@ according to the installation instructions, you can simply pass `-tags oracle`
 to `go get`, `go install` or `go build` to enable Oracle support:
 
 ```sh
-$ go get -tags oracle -u github.com/xo/xo
+$ go get -tags oracle -u github.com/mmmcorp/xo
 ```
 
 #### Installing Oracle instantclient on Debian/Ubuntu
@@ -527,16 +527,16 @@ $ sudo alien -i oracle-instantclient-12.1-devel-*.rpm
 $ sudo alien -i oracle-instantclient-12.1-sqlplus-*.rpm
 
 # get xo
-$ go get -u github.com/xo/xo
+$ go get -u github.com/mmmcorp/xo
 
 # copy oci8.pc from xo/contrib to system pkg-config directory
-$ sudo cp $GOPATH/src/github.com/xo/xo/contrib/oci8.pc /usr/lib/pkgconfig/
+$ sudo cp $GOPATH/src/github.com/mmmcorp/xo/contrib/oci8.pc /usr/lib/pkgconfig/
 
 # install rana's ora driver
 $ go get -u gopkg.in/rana/ora.v4
 
 # assuming the above succeeded, install xo with oracle support enabled
-$ go install -tags oracle github.com/xo/xo
+$ go install -tags oracle github.com/mmmcorp/xo
 ```
 
 #### Contrib Scripts and Oracle Docker Image

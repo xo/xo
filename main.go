@@ -17,10 +17,10 @@ import (
 	_ "github.com/sijms/go-ora"
 
 	// templates
-	_ "github.com/xo/xo/templates/gotpl"
-	_ "github.com/xo/xo/templates/graphviztpl"
+	_ "github.com/mmmcorp/xo/templates/gotpl"
+	_ "github.com/mmmcorp/xo/templates/graphviztpl"
 
-	"github.com/xo/xo/cmd"
+	"github.com/mmmcorp/xo/cmd"
 )
 
 // version is the app version.

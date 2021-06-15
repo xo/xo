@@ -3,7 +3,7 @@ package graphviztpl
 import (
 	"embed"
 
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/templates"
 )
 
 //go:embed *.tpl

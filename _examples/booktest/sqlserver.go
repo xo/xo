@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	models "github.com/xo/xo/_examples/booktest/sqlserver"
+	models "github.com/mmmcorp/xo/_examples/booktest/sqlserver"
 )
 
 func runSqlserver(ctx context.Context, db *sql.DB) error {

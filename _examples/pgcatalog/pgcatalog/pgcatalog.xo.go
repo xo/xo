@@ -16,7 +16,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
+	"github.com/mmmcorp/xo/_examples/pgcatalog/pgtypes"
 
 	"github.com/google/uuid"
 )

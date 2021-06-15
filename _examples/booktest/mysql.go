@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	models "github.com/xo/xo/_examples/booktest/mysql"
+	models "github.com/mmmcorp/xo/_examples/booktest/mysql"
 )
 
 func runMysql(ctx context.Context, db *sql.DB) error {

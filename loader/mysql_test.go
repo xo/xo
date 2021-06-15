@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/templates"
 )
 
 func TestMysqlGoType(t *testing.T) {

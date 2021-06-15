@@ -10,8 +10,8 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
+	"github.com/mmmcorp/xo/models"
+	"github.com/mmmcorp/xo/templates"
 )
 
 // Funcs is a set of template funcs.

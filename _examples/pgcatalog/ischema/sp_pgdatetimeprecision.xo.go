@@ -5,7 +5,7 @@ package ischema
 import (
 	"context"
 
-	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
+	"github.com/mmmcorp/xo/_examples/pgcatalog/pgtypes"
 )
 
 // PgDatetimePrecision calls the stored procedure 'information_schema._pg_datetime_precision(oid, integer) integer' on db.

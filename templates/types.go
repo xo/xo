@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"github.com/xo/xo/models"
+	"github.com/mmmcorp/xo/models"
 )
 
 // Template wraps other templates.
