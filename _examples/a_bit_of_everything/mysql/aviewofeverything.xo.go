@@ -55,8 +55,8 @@ type AViewOfEverything struct {
 	ANumericNullable         sql.NullFloat64 `json:"a_numeric_nullable"`          // a_numeric_nullable
 	AReal                    float32         `json:"a_real"`                      // a_real
 	ARealNullable            sql.NullFloat64 `json:"a_real_nullable"`             // a_real_nullable
-	ASet                     SetOneTwo       `json:"a_set"`                       // a_set
-	ASetNullable             SetOneTwo       `json:"a_set_nullable"`              // a_set_nullable
+	ASet                     []byte          `json:"a_set"`                       // a_set
+	ASetNullable             []byte          `json:"a_set_nullable"`              // a_set_nullable
 	ASmallint                int16           `json:"a_smallint"`                  // a_smallint
 	ASmallintNullable        sql.NullInt64   `json:"a_smallint_nullable"`         // a_smallint_nullable
 	AText                    string          `json:"a_text"`                      // a_text

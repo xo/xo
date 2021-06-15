@@ -26,6 +26,7 @@ func init() {
 		GoType:           Sqlite3GoType,
 		Tables:           Sqlite3Tables,
 		TableColumns:     Sqlite3TableColumns,
+		TableSequences:   Sqlite3TableSequences,
 		TableForeignKeys: Sqlite3ForeignKeys,
 		TableIndexes:     Sqlite3Indexes,
 		IndexColumns:     Sqlite3IndexColumns,
@@ -93,67 +94,32 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 }
 
 // Sqlite3Tables returns the sqlite3 tables.
-func Sqlite3Tables(ctx context.Context, db models.DB, schema string, kind string) ([]*models.Table, error) {
-	// get tables
-	rows, err := models.Sqlite3Tables(ctx, db, kind)
-	if err != nil {
-		return nil, err
-	}
-	// add manual pk info for sequences
-	sequences, err := models.Sqlite3Sequences(ctx, db)
-	if err != nil {
-		return nil, err
-	}
-	// Add information about manual FK
-	var tables []*models.Table
-	for _, row := range rows {
-		// Look for a match in the table name where it contains the autoincrement
-		manualPk := true
-		for _, seq := range sequences {
-			if seq.TableName == row.TableName {
-				manualPk = false
-				break
-			}
-		}
-		if manualPk {
-			// check for primary key that is an integer
-			cols, err := Sqlite3TableColumns(ctx, db, schema, row.TableName)
-			if err != nil {
-				return nil, err
-			}
-			for _, col := range cols {
-				if col.IsPrimaryKey && strings.ToUpper(col.DataType) == "INTEGER" {
-					manualPk = false
-					break
-				}
-			}
-		}
-		tables = append(tables, &models.Table{
-			TableName: row.TableName,
-			Type:      row.Type,
-			ManualPk:  manualPk,
-		})
-	}
-	return tables, nil
+func Sqlite3Tables(ctx context.Context, db models.DB, _ string, kind string) ([]*models.Table, error) {
+	return models.Sqlite3Tables(ctx, db, kind)
 }
 
 // Sqlite3TableColumns returns the sqlite3 table column info.
-func Sqlite3TableColumns(ctx context.Context, db models.DB, schema string, table string) ([]*models.Column, error) {
+func Sqlite3TableColumns(ctx context.Context, db models.DB, _ string, table string) ([]*models.Column, error) {
 	return models.Sqlite3TableColumns(ctx, db, table)
 }
 
+// Sqlite3TableSequences returns the sqlite3 table sequence info.
+func Sqlite3TableSequences(ctx context.Context, db models.DB, _ string) ([]*models.Sequence, error) {
+	return models.Sqlite3TableSequences(ctx, db)
+}
+
 // Sqlite3ForeignKeys returns the sqlite3 foreign key info.
-func Sqlite3ForeignKeys(ctx context.Context, db models.DB, schema string, table string) ([]*models.ForeignKey, error) {
+func Sqlite3ForeignKeys(ctx context.Context, db models.DB, _ string, table string) ([]*models.ForeignKey, error) {
 	return models.Sqlite3TableForeignKeys(ctx, db, table)
 }
 
 // Sqlite3Indexes returns the sqlite3 indexes info.
-func Sqlite3Indexes(ctx context.Context, db models.DB, schema string, table string) ([]*models.Index, error) {
+func Sqlite3Indexes(ctx context.Context, db models.DB, _ string, table string) ([]*models.Index, error) {
 	return models.Sqlite3TableIndexes(ctx, db, table)
 }
 
 // Sqlite3IndexColumns returns the sqlite3 index column info.
-func Sqlite3IndexColumns(ctx context.Context, db models.DB, schema string, table string, index string) ([]*models.IndexColumn, error) {
+func Sqlite3IndexColumns(ctx context.Context, db models.DB, _ string, table string, index string) ([]*models.IndexColumn, error) {
 	return models.Sqlite3IndexColumns(ctx, db, index)
 }
 

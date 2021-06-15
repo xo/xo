@@ -8,6 +8,7 @@ import (
 
 // ProcParam represents a stored procedure param.
 type ProcParam struct {
+	ParamName string `json:"param_name"` // param_name
 	ParamType string `json:"param_type"` // param_type
 }
 
@@ -15,7 +16,8 @@ type ProcParam struct {
 func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`UNNEST(STRING_TO_ARRAY(oidvectortypes(p.proargtypes), ', ')) ` + // ::varchar AS param_type
+		`LEFT(PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')))-1), ` + // ::varchar AS param_name
+		`UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')) ` + // ::varchar AS param_type
 		`FROM pg_proc p ` +
 		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
 		`WHERE n.nspname = $1 AND p.proname = $2`
@@ -31,7 +33,7 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 	for rows.Next() {
 		var pp ProcParam
 		// scan
-		if err := rows.Scan(&pp.ParamType); err != nil {
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &pp)
@@ -46,6 +48,7 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
+		`parameter_name as param_name, ` +
 		`dtd_identifier AS param_type ` +
 		`FROM information_schema.parameters ` +
 		`WHERE ordinal_position > 0 AND specific_schema = ? AND specific_name = ? ` +
@@ -62,7 +65,40 @@ func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcPa
 	for rows.Next() {
 		var pp ProcParam
 		// scan
-		if err := rows.Scan(&pp.ParamType); err != nil {
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
+			return nil, logerror(err)
+		}
+		res = append(res, &pp)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, logerror(err)
+	}
+	return res, nil
+}
+
+// SqlserverProcParams runs a custom query, returning results as ProcParam.
+func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`p.name AS param_name, ` +
+		`TYPE_NAME(p.user_type_id) AS param_type ` +
+		`FROM sys.objects o ` +
+		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
+		`ORDER BY p.parameter_id ` +
+		`WHERE SCHEMA_NAME(schema_id) = @p1 AND o.name = @p2`
+	// run
+	logf(sqlstr, schema, proc)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	if err != nil {
+		return nil, logerror(err)
+	}
+	defer rows.Close()
+	// load results
+	var res []*ProcParam
+	for rows.Next() {
+		var pp ProcParam
+		// scan
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &pp)

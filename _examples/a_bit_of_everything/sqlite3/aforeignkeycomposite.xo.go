@@ -16,13 +16,6 @@ type AForeignKeyComposite struct {
 // APrimaryCompositeByAKey1 returns the APrimaryComposite associated with the AForeignKeyComposite's AKey1 (a_key1).
 //
 // Generated from foreign key 'a_foreign_key_composite_a_key1_fkey'.
-func (afkc *AForeignKeyComposite) APrimaryCompositeByAKey1(ctx context.Context, db DB) (*APrimaryComposite, error) {
-	return APrimaryCompositeByAKey1(ctx, db, int(afkc.AKey1.Int64))
-}
-
-// APrimaryCompositeByAKey2 returns the APrimaryComposite associated with the AForeignKeyComposite's AKey2 (a_key2).
-//
-// Generated from foreign key 'a_foreign_key_composite_a_key2_fkey'.
-func (afkc *AForeignKeyComposite) APrimaryCompositeByAKey2(ctx context.Context, db DB) (*APrimaryComposite, error) {
-	return APrimaryCompositeByAKey2(ctx, db, int(afkc.AKey2.Int64))
+func (afkc *AForeignKeyComposite) APrimaryCompositeByAKey1AKey2(ctx context.Context, db DB) (*APrimaryComposite, error) {
+	return APrimaryCompositeByAKey1AKey2(ctx, db, int(afkc.AKey1.Int64), int(afkc.AKey2.Int64))
 }

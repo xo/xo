@@ -32,8 +32,9 @@ func init() {
 		EnumValues:       models.PostgresEnumValues,
 		Procs:            models.PostgresProcs,
 		ProcParams:       models.PostgresProcParams,
-		Tables:           PostgresTables,
+		Tables:           models.PostgresTables,
 		TableColumns:     PostgresTableColumns,
+		TableSequences:   models.PostgresTableSequences,
 		TableForeignKeys: models.PostgresTableForeignKeys,
 		TableIndexes:     models.PostgresTableIndexes,
 		IndexColumns:     PostgresIndexColumns,
@@ -131,38 +132,6 @@ func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, str
 		return "[]" + goType, "nil", 0, nil
 	}
 	return goType, zero, prec, nil
-}
-
-// PostgresTables returns the Postgres tables with the manual PK information added.
-// ManualPk is true when the table does not have a sequence defined.
-func PostgresTables(ctx context.Context, db models.DB, schema string, relkind string) ([]*models.Table, error) {
-	// get the tables
-	rows, err := models.PostgresTables(ctx, db, schema, relkind)
-	if err != nil {
-		return nil, err
-	}
-	// Get the tables that have a sequence defined.
-	sequences, err := models.PostgresSequences(ctx, db, schema)
-	if err != nil {
-		return nil, err
-	}
-	// Add information about manual FK.
-	var tables []*models.Table
-	for _, row := range rows {
-		manualPk := true
-		// Look for a match in the table name where it contains the sequence
-		for _, sequence := range sequences {
-			if sequence.TableName == row.TableName {
-				manualPk = false
-			}
-		}
-		tables = append(tables, &models.Table{
-			TableName: row.TableName,
-			Type:      row.Type,
-			ManualPk:  manualPk,
-		})
-	}
-	return tables, nil
 }
 
 // PostgresTableColumns returns the columns for a table.

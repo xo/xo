@@ -100,6 +100,13 @@ func init() {
 				Value:       []string{},
 			},
 			{
+				ContextKey:  UUIDKey,
+				Desc:        "uuid type package",
+				PlaceHolder: "<pkg>",
+				Default:     "github.com/google/uuid",
+				Value:       "",
+			},
+			{
 				ContextKey:  CustomKey,
 				Desc:        "package name for custom types",
 				PlaceHolder: "<name>",
@@ -209,6 +216,7 @@ const (
 	PkgKey        templates.ContextKey = "pkg"
 	TagKey        templates.ContextKey = "tag"
 	ImportKey     templates.ContextKey = "import"
+	UUIDKey       templates.ContextKey = "uuid"
 	CustomKey     templates.ContextKey = "custom"
 	ConflictKey   templates.ContextKey = "conflict"
 	EscKey        templates.ContextKey = "esc"
@@ -255,6 +263,12 @@ func Tag(ctx context.Context) []string {
 func Import(ctx context.Context) []string {
 	v, _ := ctx.Value(ImportKey).([]string)
 	return v
+}
+
+// UUID returns uuid from the context.
+func UUID(ctx context.Context) string {
+	s, _ := ctx.Value(UUIDKey).(string)
+	return s
 }
 
 // Custom returns custom-pkg from the context.

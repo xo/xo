@@ -19,6 +19,7 @@ import (
 	// templates
 	_ "github.com/xo/xo/templates/gotpl"
 	_ "github.com/xo/xo/templates/graphviztpl"
+	_ "github.com/xo/xo/templates/jsontpl"
 
 	"github.com/xo/xo/cmd"
 )

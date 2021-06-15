@@ -34,24 +34,17 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	case apm._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (basic)
 	const sqlstr = `INSERT INTO a_primary_multi (` +
-		`a_text` +
+		`a_key, a_text` +
 		`) VALUES (` +
-		`?` +
+		`?, ?` +
 		`)`
 	// run
-	logf(sqlstr, apm.AText)
-	res, err := db.ExecContext(ctx, sqlstr, apm.AText)
-	if err != nil {
-		return err
+	logf(sqlstr, apm.AKey, apm.AText)
+	if err := db.QueryRowContext(ctx, sqlstr, apm.AKey, apm.AText).Scan(&apm.AKey); err != nil {
+		return logerror(err)
 	}
-	// retrieve id
-	id, err := res.LastInsertId()
-	if err != nil {
-		return err
-	} // set primary key
-	apm.AKey = int(id)
 	// set exists
 	apm._exists = true
 	return nil

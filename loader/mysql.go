@@ -2,6 +2,7 @@ package loader
 
 import (
 	"context"
+	"regexp"
 	"strings"
 
 	"github.com/xo/xo/models"
@@ -27,8 +28,9 @@ func init() {
 		EnumValues:       MysqlEnumValues,
 		Procs:            models.MysqlProcs,
 		ProcParams:       models.MysqlProcParams,
-		Tables:           MysqlTables,
+		Tables:           models.MysqlTables,
 		TableColumns:     models.MysqlTableColumns,
+		TableSequences:   models.MysqlTableSequences,
 		TableForeignKeys: models.MysqlTableForeignKeys,
 		TableIndexes:     models.MysqlTableIndexes,
 		IndexColumns:     models.MysqlIndexColumns,
@@ -79,9 +81,8 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	case "tinyint":
-		// force tinyint(1) as bool
 		switch {
-		case prec == 1 && !nullable:
+		case prec == 1 && !nullable: // force tinyint(1) as bool
 			goType, zero = "bool", "false"
 		case prec == 1 && nullable:
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
@@ -115,7 +116,7 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
+	case "binary", "blob", "longblob", "mediumblob", "tinyblob", "varbinary":
 		goType, zero = "[]byte", "nil"
 	case "timestamp", "datetime", "date":
 		goType, zero = "time.Time", "time.Time{}"
@@ -131,12 +132,19 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
+	// force []byte for SET('a',...)
+	if setRE.MatchString(typ) {
+		goType, zero = "[]byte", "nil"
+	}
 	// if unsigned ...
 	if intRE.MatchString(goType) && unsigned && goType == gotpl.Int32(ctx) {
 		goType, zero = gotpl.Uint32(ctx), "0"
 	}
 	return goType, zero, prec, nil
 }
+
+// setRE is the regexp that matches MySQL SET() type definitions.
+var setRE = regexp.MustCompile(`(?i)^set\([^)]*\)$`)
 
 // MysqlEnumValues loads the enum values.
 func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum string) ([]*models.EnumValue, error) {
@@ -154,36 +162,6 @@ func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum stri
 		})
 	}
 	return values, nil
-}
-
-// MysqlTables returns the mysql tables.
-func MysqlTables(ctx context.Context, db models.DB, schema string, kind string) ([]*models.Table, error) {
-	// get tables
-	rows, err := models.MysqlTables(ctx, db, schema, kind)
-	if err != nil {
-		return nil, err
-	}
-	// add manual pk info for sequences
-	sequences, err := models.MysqlSequences(ctx, db, schema)
-	if err != nil {
-		return nil, err
-	}
-	var tables []*models.Table
-	for _, row := range rows {
-		// Look for a match in the table name where it contains the autoincrement
-		manualPk := true
-		for _, seq := range sequences {
-			if seq.TableName == row.TableName {
-				manualPk = false
-			}
-		}
-		tables = append(tables, &models.Table{
-			TableName: row.TableName,
-			Type:      row.Type,
-			ManualPk:  manualPk,
-		})
-	}
-	return tables, nil
 }
 
 // MysqlQueryColumns parses the query and generates a type for it.

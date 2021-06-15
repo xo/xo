@@ -105,10 +105,46 @@ $ xo --help-long
 usage: xo [<flags>] <command> [<args> ...]
 
 Flags:
-      --help     Show context-sensitive help (also try --help-long and
-                 --help-man).
-  -v, --verbose  enable verbose output
-      --version  display version and exit
+      --help                   Show context-sensitive help (also try --help-long
+                               and --help-man).
+  -v, --verbose                enable verbose output
+      --version                display version and exit
+  -s, --schema=<name>          database schema name
+  -t, --template=go            template type (go, graphviz; default: go)
+  -f, --suffix=<ext>           file extension suffix for generated files
+                               (otherwise set by template type)
+  -o, --out=models             out path (default: models)
+  -a, --append                 enable append mode
+  -S, --single=<file>          enable single file output
+  -D, --debug                  debug generated code (writes generated code to
+                               disk without post processing)
+  -k, --fk-mode=smart          foreign key resolution mode (smart, parent,
+                               field, key; default: smart)
+  -I, --ignore=<field> ...     fields to exclude from generated code
+  -j, --use-index-names        use index names as defined in schema for
+                               generated code
+  -d, --src=<path>             template source directory
+  -2, --go-not-first           disable package comment (ie, not first generated
+                               file)
+      --go-int32=int           int32 type (default: int)
+      --go-uint32=uint         uint32 type (default: uint)
+      --go-pkg=<name>          package name
+      --go-tag="" ...          build tags
+      --go-import="" ...       package imports
+      --go-uuid=<pkg>          uuid type package
+      --go-custom=<name>       package name for custom types
+      --go-conflict=Val        name conflict suffix (default: Val)
+      --go-esc=none ...        escape fields (none, schema, table, column, all;
+                               default: none)
+  -g, --go-field-tag=<tag>     field tag
+      --go-context=only        context mode (disable, both, only; default: only)
+      --go-inject=""           insert code into generated file headers
+      --go-inject-file=<file>  insert code into generated file headers from a
+                               file
+      --postgres-oids          enable postgres OIDs
+
+Args:
+  <DSN>  data source name
 
 Commands:
   help [<command>...]
@@ -125,8 +161,8 @@ Commands:
     -o, --out=models             out path (default: models)
     -a, --append                 enable append mode
     -S, --single=<file>          enable single file output
-    -D, --debug                  debug generated code (writes generated
-                                 code to disk without post processing)
+    -D, --debug                  debug generated code (writes generated code to
+                                 disk without post processing)
     -Q, --query=""               custom database query (uses stdin if not
                                  provided)
     -T, --type=<name>            type name
@@ -138,8 +174,8 @@ Commands:
     -1, --one                    enable returning single (only one) result
     -l, --flat                   enable returning unstructured values
     -I, --interpolate            enable interpolation of embedded params
-    -L, --delimiter=%%           delimiter used for embedded params
-                                 (default: %%)
+    -L, --delimiter=%%           delimiter used for embedded params (default:
+                                 %%)
     -Z, --fields=<field>         override field names for results
     -U, --allow-nulls            allow result fields with NULL values
     -d, --src=<path>             template source directory
@@ -150,16 +186,17 @@ Commands:
         --go-pkg=<name>          package name
         --go-tag="" ...          build tags
         --go-import="" ...       package imports
+        --go-uuid=<pkg>          uuid type package
         --go-custom=<name>       package name for custom types
         --go-conflict=Val        name conflict suffix (default: Val)
-        --go-esc=none ...        escape fields (none, schema, table,
-                                 column, all; default: none)
+        --go-esc=none ...        escape fields (none, schema, table, column,
+                                 all; default: none)
     -g, --go-field-tag=<tag>     field tag
-        --go-context=only        context mode (disable, both, only;
-                                 default: only)
+        --go-context=only        context mode (disable, both, only; default:
+                                 only)
         --go-inject=""           insert code into generated file headers
-        --go-inject-file=<file>  insert code into generated file headers
-                                 from a file
+        --go-inject-file=<file>  insert code into generated file headers from a
+                                 file
 
   schema [<flags>] <DSN>
     Generate code for a database schema from a template.
@@ -171,10 +208,10 @@ Commands:
     -o, --out=models             out path (default: models)
     -a, --append                 enable append mode
     -S, --single=<file>          enable single file output
-    -D, --debug                  debug generated code (writes generated
-                                 code to disk without post processing)
-    -k, --fk-mode=smart          foreign key resolution mode (smart,
-                                 parent, field, key; default: smart)
+    -D, --debug                  debug generated code (writes generated code to
+                                 disk without post processing)
+    -k, --fk-mode=smart          foreign key resolution mode (smart, parent,
+                                 field, key; default: smart)
     -I, --ignore=<field> ...     fields to exclude from generated code
     -j, --use-index-names        use index names as defined in schema for
                                  generated code
@@ -186,24 +223,25 @@ Commands:
         --go-pkg=<name>          package name
         --go-tag="" ...          build tags
         --go-import="" ...       package imports
+        --go-uuid=<pkg>          uuid type package
         --go-custom=<name>       package name for custom types
         --go-conflict=Val        name conflict suffix (default: Val)
-        --go-esc=none ...        escape fields (none, schema, table,
-                                 column, all; default: none)
+        --go-esc=none ...        escape fields (none, schema, table, column,
+                                 all; default: none)
     -g, --go-field-tag=<tag>     field tag
-        --go-context=only        context mode (disable, both, only;
-                                 default: only)
+        --go-context=only        context mode (disable, both, only; default:
+                                 only)
         --go-inject=""           insert code into generated file headers
-        --go-inject-file=<file>  insert code into generated file headers
-                                 from a file
+        --go-inject-file=<file>  insert code into generated file headers from a
+                                 file
         --postgres-oids          enable postgres OIDs
 
   dump [<flags>] <out>
     Dump internal templates to path.
 
     -t, --template=go   template type (go, graphviz; default: go)
-    -f, --suffix=<ext>  file extension suffix for generated files
-                        (otherwise set by template type)
+    -f, --suffix=<ext>  file extension suffix for generated files (otherwise set
+                        by template type)
 ```
 
 ## About Base Templates

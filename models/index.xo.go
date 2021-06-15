@@ -11,9 +11,6 @@ type Index struct {
 	IndexName string `json:"index_name"` // index_name
 	IsUnique  bool   `json:"is_unique"`  // is_unique
 	IsPrimary bool   `json:"is_primary"` // is_primary
-	SeqNo     int    `json:"seq_no"`     // seq_no
-	Origin    string `json:"origin"`     // origin
-	IsPartial bool   `json:"is_partial"` // is_partial
 }
 
 // PostgresTableIndexes runs a custom query, returning results as Index.
@@ -22,10 +19,7 @@ func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*
 	const sqlstr = `SELECT ` +
 		`DISTINCT ic.relname, ` + // ::varchar AS index_name
 		`i.indisunique, ` + // ::boolean AS is_unique
-		`i.indisprimary, ` + // ::boolean AS is_primary
-		`0, ` + // ::integer AS seq_no
-		`'', ` + // ::varchar AS origin
-		`false ` + // ::boolean AS is_partial
+		`i.indisprimary ` + // ::boolean AS is_primary
 		`FROM pg_index i ` +
 		`JOIN ONLY pg_class c ON c.oid = i.indrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
@@ -43,7 +37,7 @@ func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*
 	for rows.Next() {
 		var i Index
 		// scan
-		if err := rows.Scan(&i.IndexName, &i.IsUnique, &i.IsPrimary, &i.SeqNo, &i.Origin, &i.IsPartial); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique, &i.IsPrimary); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &i)
@@ -89,11 +83,9 @@ func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Ind
 func Sqlite3TableIndexes(ctx context.Context, db DB, table string) ([]*Index, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`seq AS seq_no, ` +
 		`name AS index_name, ` +
 		`"unique" AS is_unique, ` +
-		`origin, ` +
-		`partial AS is_partial ` +
+		`CAST(origin = 'pk' AS boolean) AS is_primary ` +
 		`FROM pragma_index_list(?)`
 	// run
 	logf(sqlstr, table)
@@ -107,7 +99,7 @@ func Sqlite3TableIndexes(ctx context.Context, db DB, table string) ([]*Index, er
 	for rows.Next() {
 		var i Index
 		// scan
-		if err := rows.Scan(&i.SeqNo, &i.IndexName, &i.IsUnique, &i.Origin, &i.IsPartial); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique, &i.IsPrimary); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &i)

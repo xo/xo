@@ -33,24 +33,17 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 	case apc._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (basic)
 	const sqlstr = `INSERT INTO a_primary_composite (` +
-		`a_key1` +
+		`a_key1, a_key2` +
 		`) VALUES (` +
-		`?` +
+		`?, ?` +
 		`)`
 	// run
-	logf(sqlstr, apc.AKey1)
-	res, err := db.ExecContext(ctx, sqlstr, apc.AKey1)
-	if err != nil {
-		return err
+	logf(sqlstr, apc.AKey1, apc.AKey2)
+	if err := db.QueryRowContext(ctx, sqlstr, apc.AKey1, apc.AKey2).Scan(&apc.AKey2); err != nil {
+		return logerror(err)
 	}
-	// retrieve id
-	id, err := res.LastInsertId()
-	if err != nil {
-		return err
-	} // set primary key
-	apc.AKey2 = int(id)
 	// set exists
 	apc._exists = true
 	return nil

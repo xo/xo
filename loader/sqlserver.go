@@ -24,8 +24,11 @@ func init() {
 		},
 		Schema:           models.SqlserverSchema,
 		GoType:           SqlserverGoType,
-		Tables:           SqlserverTables,
+		Procs:            models.SqlserverProcs,
+		ProcParams:       models.SqlserverProcParams,
+		Tables:           models.SqlserverTables,
 		TableColumns:     models.SqlserverTableColumns,
+		TableSequences:   models.SqlserverTableSequences,
 		TableForeignKeys: models.SqlserverTableForeignKeys,
 		TableIndexes:     models.SqlserverTableIndexes,
 		IndexColumns:     models.SqlserverIndexColumns,
@@ -89,39 +92,6 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 		goType, zero = schemaGoType(ctx, typ)
 	}
 	return goType, zero, prec, nil
-}
-
-// SqlserverTables returns the sqlserver tables with the manual PK information added.
-// ManualPk is true when the table's primary key is not an identity.
-func SqlserverTables(ctx context.Context, db models.DB, schema string, relkind string) ([]*models.Table, error) {
-	// get the tables
-	rows, err := models.SqlserverTables(ctx, db, schema, relkind)
-	if err != nil {
-		return nil, err
-	}
-	// get the tables that have Identity included
-	identities, err := models.SqlserverIdentities(ctx, db, schema)
-	if err != nil {
-		// set it to an empty set on error
-		identities = []*models.SqlserverIdentity{}
-	}
-	// add information about manual fk
-	var tables []*models.Table
-	for _, row := range rows {
-		manualPk := true
-		// look for a match in the table name where it contains the identity
-		for _, identity := range identities {
-			if identity.TableName == row.TableName {
-				manualPk = false
-			}
-		}
-		tables = append(tables, &models.Table{
-			TableName: row.TableName,
-			Type:      row.Type,
-			ManualPk:  manualPk,
-		})
-	}
-	return tables, nil
 }
 
 // SqlserverQueryColumns parses the query and generates a type for it.

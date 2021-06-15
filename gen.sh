@@ -35,7 +35,7 @@ ENDSQL
 COMMENT='Enum represents a enum.'
 $XOBIN query $PGDB -M -B -2 -T Enum -F PostgresEnums --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  t.typname::varchar AS enum_name
+  DISTINCT t.typname::varchar AS enum_name
 FROM pg_type t
   JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
   JOIN ONLY pg_enum e ON t.oid = e.enumtypid
@@ -54,18 +54,6 @@ FROM pg_type t
 WHERE n.nspname = %%schema string%% AND t.typname = %%enum string%%
 ENDSQL
 
-# postgres sequence list query
-COMMENT='Sequence represents a table that references a sequence.'
-$XOBIN query $PGDB -M -B -2 -T Sequence -F PostgresSequences -o $DEST $@ << ENDSQL
-SELECT
-  t.relname::varchar AS table_name
-FROM pg_class s
-  JOIN pg_depend d ON d.objid = s.oid
-  JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
-  JOIN pg_namespace n ON n.oid = s.relnamespace
-WHERE n.nspname = %%schema string%% AND s.relkind = 'S'
-ENDSQL
-
 # postgres proc list query
 COMMENT='Proc represents a stored procedure.'
 $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
@@ -81,7 +69,8 @@ ENDSQL
 COMMENT='ProcParam represents a stored procedure param.'
 $XOBIN query $PGDB -M -B -2 -T ProcParam -F PostgresProcParams --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  UNNEST(STRING_TO_ARRAY(oidvectortypes(p.proargtypes), ', '))::varchar AS param_type
+  LEFT(PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')))-1)::varchar AS param_name,
+  UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))::varchar AS param_type
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = %%schema string%% AND p.proname = %%proc string%%
@@ -119,6 +108,18 @@ WHERE a.attisdropped = false AND n.nspname = %%schema string%% AND c.relname = %
 ORDER BY a.attnum
 ENDSQL
 
+# postgres sequence list query
+COMMENT='Sequence represents a table that references a sequence.'
+$XOBIN query $PGDB -M -B -2 -T Sequence -F PostgresTableSequences --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
+SELECT
+  t.relname::varchar AS table_name
+FROM pg_class s
+  JOIN pg_depend d ON d.objid = s.oid
+  JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
+  JOIN pg_namespace n ON n.oid = s.relnamespace
+WHERE n.nspname = %%schema string%% AND s.relkind = 'S'
+ENDSQL
+
 # postgres table foreign key list query
 COMMENT='ForeignKey represents a foreign key.'
 $XOBIN query $PGDB -M -B -2 -T ForeignKey -F PostgresTableForeignKeys --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
@@ -147,10 +148,7 @@ $XOBIN query $PGDB -M -B -2 -T Index -F PostgresTableIndexes --type-comment "$CO
 SELECT
   DISTINCT ic.relname::varchar AS index_name,
   i.indisunique::boolean AS is_unique,
-  i.indisprimary::boolean AS is_primary,
-  0::integer AS seq_no,
-  ''::varchar AS origin,
-  false::boolean AS is_partial
+  i.indisprimary::boolean AS is_primary
 FROM pg_index i
   JOIN ONLY pg_class c ON c.oid = i.indrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
@@ -207,14 +205,6 @@ FROM information_schema.columns
 WHERE data_type = 'enum' AND table_schema = %%schema string%% AND column_name = %%enum string%%
 ENDSQL
 
-# mysql sequence list query
-$XOBIN query $MYDB -M -B -2 -T Sequence -F MysqlSequences -a -o $DEST $@ << ENDSQL
-SELECT
-  table_name
-FROM information_schema.tables
-WHERE auto_increment IS NOT NULL AND table_schema = %%schema string%%
-ENDSQL
-
 # mysql proc list query
 $XOBIN query $MYDB -M -B -2 -T Proc -F MysqlProcs -a -o $DEST $@ << ENDSQL
 SELECT
@@ -229,6 +219,7 @@ ENDSQL
 # mysql proc parameter list query
 $XOBIN query $MYDB -M -B -2 -T ProcParam -F MysqlProcParams -a -o $DEST $@ << ENDSQL
 SELECT
+  parameter_name as param_name,
   dtd_identifier AS param_type
 FROM information_schema.parameters
 WHERE ordinal_position > 0 AND specific_schema = %%schema string%% AND specific_name = %%proc string%%
@@ -255,6 +246,14 @@ SELECT
 FROM information_schema.columns
 WHERE table_schema = %%schema string%% AND table_name = %%table string%%
 ORDER BY ordinal_position
+ENDSQL
+
+# mysql sequence list query
+$XOBIN query $MYDB -M -B -2 -T Sequence -F MysqlTableSequences -a -o $DEST $@ << ENDSQL
+SELECT
+  table_name
+FROM information_schema.tables
+WHERE auto_increment IS NOT NULL AND table_schema = %%schema string%%
 ENDSQL
 
 # mysql table foreign key list query
@@ -293,15 +292,6 @@ $XOBIN query $SQDB -M -B -l -F Sqlite3Schema --func-comment "$COMMENT" --single=
 SELECT REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name FROM pragma_database_list()
 ENDSQL
 
-# sqlite3 sequence list query
-$XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3Sequences -a -o $DEST $@ << ENDSQL
-SELECT
-  name AS table_name
-FROM sqlite_master
-WHERE type='table' AND LOWER(sql) LIKE '%autoincrement%'
-ORDER BY name
-ENDSQL
-
 # sqlite3 table list query
 $XOBIN query $SQDB -M -B -2 -T Table -F Sqlite3Tables -a -o $DEST $@ << ENDSQL
 SELECT
@@ -322,6 +312,15 @@ SELECT
 FROM pragma_table_info(%%table string%%)
 ENDSQL
 
+# sqlite3 sequence list query
+$XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3TableSequences -a -o $DEST $@ << ENDSQL
+SELECT
+  name AS table_name
+FROM sqlite_master
+WHERE type='table' AND LOWER(sql) LIKE '%autoincrement%'
+ORDER BY name
+ENDSQL
+
 # sqlite3 table foreign key list query
 $XOBIN query $SQDB -M -B -2 -T ForeignKey -F Sqlite3TableForeignKeys -a -o $DEST $@ << ENDSQL
 SELECT
@@ -336,11 +335,9 @@ ENDSQL
 # sqlite3 table index list query
 $XOBIN query $SQDB -M -B -2 -T Index -F Sqlite3TableIndexes -a -o $DEST $@ << ENDSQL
 SELECT
-  seq AS seq_no,
   name AS index_name,
   "unique" AS is_unique,
-  origin,
-  partial AS is_partial
+  CAST(origin = 'pk' AS boolean) AS is_primary
 FROM pragma_index_list(%%table string%%)
 ENDSQL
 
@@ -359,12 +356,24 @@ $XOBIN query $MSDB -M -B -l -F SqlserverSchema --func-comment "$COMMENT" --singl
 SELECT SCHEMA_NAME() AS schema_name
 ENDSQL
 
-# sqlserver identity table list query
-$XOBIN query $MSDB -M -B -2 -T SqlserverIdentity -F SqlserverIdentities -o $DEST $@ << ENDSQL
-SELECT o.name AS table_name
+# sqlserver proc list query
+$XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
+SELECT
+  name AS proc_name,
+  type AS return_type
 FROM sys.objects o
-  INNER JOIN sys.columns c ON o.object_id = c.object_id
-WHERE c.is_identity = 1 AND SCHEMA_NAME(o.schema_id) = %%schema string%% AND o.type = 'U'
+WHERE SCHEMA_NAME(o.schema_id) = %%schema string%% AND o.type = 'FN'
+ENDSQL
+
+# sqlserver proc parameter list query
+$XOBIN query $MSDB -M -B -2 -T ProcParam -F SqlserverProcParams -a -o $DEST $@ << ENDSQL
+SELECT
+  p.name AS param_name,
+  TYPE_NAME(p.user_type_id) AS param_type
+FROM sys.objects o
+INNER JOIN sys.parameters p ON o.object_id = p.object_id
+ORDER BY p.parameter_id
+WHERE SCHEMA_NAME(schema_id) = %%schema string%% AND o.name = %%proc string%%
 ENDSQL
 
 # sqlserver table list query
@@ -396,6 +405,15 @@ FROM syscolumns c
   LEFT JOIN syscomments x ON x.id = c.cdefault
 WHERE o.type IN('U', 'V') AND SCHEMA_NAME(o.uid) = %%schema string%% AND o.name = %%table string%%
 ORDER BY c.colid
+ENDSQL
+
+# sqlserver sequence list query
+$XOBIN query $MSDB -M -B -2 -T Sequence -F SqlserverTableSequences -a -o $DEST $@ << ENDSQL
+SELECT
+  o.name AS table_name
+FROM sys.objects o
+  INNER JOIN sys.columns c ON o.object_id = c.object_id
+WHERE c.is_identity = 1 AND SCHEMA_NAME(o.schema_id) = %%schema string%% AND o.type = 'U'
 ENDSQL
 
 # sqlserver table foreign key list query
@@ -448,13 +466,14 @@ ENDSQL
 # oracle proc list query
 #$XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
 #SELECT
-#  object_name
-#FROM
+#  p.object_name AS proc_name
+#FROM dba_procedures p
+#JOIN
+#WHERE p.owner = UPPER(%%schema string%%)
 #ENDSQL
 
 # oracle proc parameter list query
 #$XOBIN query $ORDB -M -B -2 -T ProcParam -F OracleProcParams -a -o $DEST $@ << ENDSQL
-#SELECT
 #ENDSQL
 
 # oracle table list query
@@ -493,6 +512,14 @@ SELECT
 FROM all_tab_columns c
 WHERE c.owner = UPPER(%%schema string%%) AND c.table_name = UPPER(%%table string%%)
 ORDER BY c.column_id
+ENDSQL
+
+# oracle sequence list query
+$XOBIN query $ORDB -M -B -2 -T Sequence -F OracleTableSequences -a -o $DEST $@ << ENDSQL
+SELECT
+  LOWER(c.table_name) AS table_name
+FROM all_tab_columns c
+WHERE c.identity_column='YES' AND c.owner = UPPER(%%schema string%%)
 ENDSQL
 
 # oracle table foreign key list query

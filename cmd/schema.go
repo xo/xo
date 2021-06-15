@@ -223,17 +223,12 @@ func LoadProcParams(ctx context.Context, args *Args, proc *templates.Proc) error
 
 // LoadTypes loads types for the kind (ie, table/view definitions).
 func LoadTypes(ctx context.Context, args *Args, kind loader.Kind) (map[string]*templates.Type, error) {
-	db, l, schema := DbLoaderSchema(ctx)
-	kindName, err := l.KindName(kind)
+	// load tables
+	tables, err := LoadTables(ctx, args, kind)
 	if err != nil {
 		return nil, err
 	}
-	// load
-	tables, err := l.Tables(ctx, db, schema, kindName)
-	if err != nil {
-		return nil, err
-	}
-	// build map of tables
+	// build table map
 	m := make(map[string]*templates.Type)
 	for _, table := range tables {
 		// create template
@@ -260,6 +255,38 @@ func LoadTypes(ctx context.Context, args *Args, kind loader.Kind) (map[string]*t
 		}
 	}
 	return m, nil
+}
+
+// LoadTables loads tables.
+func LoadTables(ctx context.Context, args *Args, kind loader.Kind) ([]*models.Table, error) {
+	db, l, schema := DbLoaderSchema(ctx)
+	kindName, err := l.KindName(kind)
+	if err != nil {
+		return nil, err
+	}
+	// load tables
+	tables, err := l.Tables(ctx, db, schema, kindName)
+	if err != nil {
+		return nil, err
+	}
+	if l.TableSequences == nil {
+		return tables, nil
+	}
+	// load sequences
+	sequences, err := l.TableSequences(ctx, db, schema)
+	if err != nil {
+		return nil, err
+	}
+	// build sequence map
+	sequenceMap := make(map[string]bool)
+	for _, sequence := range sequences {
+		sequenceMap[sequence.TableName] = true
+	}
+	// force manual pk if not defined in sequences
+	for _, table := range tables {
+		table.ManualPk = table.ManualPk || !sequenceMap[table.TableName]
+	}
+	return tables, nil
 }
 
 // LoadColumns loads table/view columns.
@@ -432,7 +459,7 @@ func LoadTableIndexes(ctx context.Context, args *Args, typ *templates.Type, inde
 	var priIxLoaded bool
 	for _, tableIndex := range tableIndexes {
 		// save whether or not the primary key index was processed
-		priIxLoaded = priIxLoaded || tableIndex.IsPrimary || (tableIndex.Origin == "pk")
+		priIxLoaded = priIxLoaded || tableIndex.IsPrimary
 		// create index template
 		index := &templates.Index{
 			Type:  typ,

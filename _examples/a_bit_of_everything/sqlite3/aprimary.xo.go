@@ -32,24 +32,17 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 	case ap._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (basic)
 	const sqlstr = `INSERT INTO a_primary (` +
-		`` +
+		`a_key` +
 		`) VALUES (` +
-		`` +
+		`?` +
 		`)`
 	// run
-	logf(sqlstr)
-	res, err := db.ExecContext(ctx, sqlstr)
-	if err != nil {
-		return err
+	logf(sqlstr, ap.AKey)
+	if err := db.QueryRowContext(ctx, sqlstr, ap.AKey).Scan(&ap.AKey); err != nil {
+		return logerror(err)
 	}
-	// retrieve id
-	id, err := res.LastInsertId()
-	if err != nil {
-		return err
-	} // set primary key
-	ap.AKey = int(id)
 	// set exists
 	ap._exists = true
 	return nil

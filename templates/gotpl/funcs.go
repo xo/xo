@@ -58,6 +58,9 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 			imports = append(imports, s)
 		}
 	}
+	if s := UUID(ctx); s != "" {
+		imports = append(imports, s)
+	}
 	// parse field tag template
 	fieldtag, err := template.New("fieldtag").Parse(FieldTag(ctx))
 	if err != nil {

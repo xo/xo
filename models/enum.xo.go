@@ -15,7 +15,7 @@ type Enum struct {
 func PostgresEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`t.typname ` + // ::varchar AS enum_name
+		`DISTINCT t.typname ` + // ::varchar AS enum_name
 		`FROM pg_type t ` +
 		`JOIN ONLY pg_namespace n ON n.oid = t.typnamespace ` +
 		`JOIN ONLY pg_enum e ON t.oid = e.enumtypid ` +

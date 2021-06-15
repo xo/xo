@@ -26,6 +26,7 @@ func init() {
 		GoType:           OracleGoType,
 		Tables:           models.OracleTables,
 		TableColumns:     models.OracleTableColumns,
+		TableSequences:   models.OracleTableSequences,
 		TableForeignKeys: models.OracleTableForeignKeys,
 		TableIndexes:     models.OracleTableIndexes,
 		IndexColumns:     models.OracleIndexColumns,

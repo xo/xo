@@ -76,3 +76,34 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	}
 	return res, nil
 }
+
+// SqlserverProcs runs a custom query, returning results as Proc.
+func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`name AS proc_name, ` +
+		`type AS return_type ` +
+		`FROM sys.objects o ` +
+		`WHERE SCHEMA_NAME(o.schema_id) = @p1 AND o.type = 'FN'`
+	// run
+	logf(sqlstr, schema)
+	rows, err := db.QueryContext(ctx, sqlstr, schema)
+	if err != nil {
+		return nil, logerror(err)
+	}
+	defer rows.Close()
+	// load results
+	var res []*Proc
+	for rows.Next() {
+		var p Proc
+		// scan
+		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+			return nil, logerror(err)
+		}
+		res = append(res, &p)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, logerror(err)
+	}
+	return res, nil
+}
