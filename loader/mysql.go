@@ -39,15 +39,15 @@ func init() {
 // MysqlGoType parse a mysql type into a Go type based on the column
 // definition.
 func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
-	// extract precision
-	typ, prec, _, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
 	// extract unsigned
 	unsigned := false
 	if strings.HasSuffix(typ, " unsigned") {
 		typ, unsigned = typ[:len(typ)-len(" unsigned")], true
+	}
+	// extract precision
+	typ, prec, _, err := parsePrec(typ)
+	if err != nil {
+		return "", "", 0, err
 	}
 	var goType, zero string
 	switch typ {
@@ -56,7 +56,7 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		case prec == 1 && !nullable:
 			goType, zero = "bool", "false"
 		case prec == 1 && nullable:
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "*bool", "nil"
 		case prec <= 8 && !nullable:
 			goType, zero = "uint8", "0"
 		case prec <= 16 && !nullable:
@@ -64,19 +64,19 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		case prec <= 32 && !nullable:
 			goType, zero = "uint32", "0"
 		case nullable:
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "*int64", "nil"
 		default:
 			goType, zero = "uint64", "0"
 		}
 	case "bool", "boolean":
 		goType, zero = "bool", "false"
 		if nullable {
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "*bool", "nil"
 		}
 	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
 		goType, zero = "string", `""`
 		if nullable {
-			goType, zero = "sql.NullString", "sql.NullString{}"
+			goType, zero = "*string", "nil"
 		}
 	case "tinyint":
 		// force tinyint(1) as bool
@@ -84,56 +84,56 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		case prec == 1 && !nullable:
 			goType, zero = "bool", "false"
 		case prec == 1 && nullable:
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "*bool", "nil"
 		case nullable:
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "*int64", "nil"
 		default:
 			goType, zero = "int8", "0"
 		}
 	case "smallint", "year":
 		goType, zero = "int16", "0"
 		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "*int64", "nil"
 		}
 	case "mediumint", "int", "integer":
 		goType, zero = gotpl.Int32(ctx), "0"
 		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "*int64", "nil"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
 		if nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "*int64", "nil"
 		}
 	case "float":
 		goType, zero = "float32", "0.0"
 		if nullable {
-			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
+			goType, zero = "*float64", "nil"
 		}
 	case "decimal", "double":
 		goType, zero = "float64", "0.0"
 		if nullable {
-			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
+			goType, zero = "*float64", "nil"
 		}
 	case "binary", "varbinary", "tinyblob", "blob", "mediumblob", "longblob":
 		goType, zero = "[]byte", "nil"
 	case "timestamp", "datetime", "date":
 		goType, zero = "time.Time", "time.Time{}"
 		if nullable {
-			goType, zero = "sql.NullTime", "sql.NullTime{}"
+			goType, zero = "*time.Time", "nil"
 		}
 	case "time":
 		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
 		goType, zero = "string", `""`
 		if nullable {
-			goType, zero = "sql.NullString", "sql.NullString{}"
+			goType, zero = "*time.Time", "nil"
 		}
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
 	// if unsigned ...
-	if intRE.MatchString(goType) && unsigned && goType == gotpl.Int32(ctx) {
-		goType, zero = gotpl.Uint32(ctx), "0"
+	if intRE.MatchString(goType) && unsigned && goType == "int64" {
+		goType, zero = "uint64", "0"
 	}
 	return goType, zero, prec, nil
 }
