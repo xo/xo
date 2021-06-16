@@ -378,8 +378,8 @@ SELECT
   TYPE_NAME(p.user_type_id) AS param_type
 FROM sys.objects o
 INNER JOIN sys.parameters p ON o.object_id = p.object_id
-ORDER BY p.parameter_id
 WHERE SCHEMA_NAME(schema_id) = %%schema string%% AND o.name = %%proc string%%
+ORDER BY p.parameter_id
 ENDSQL
 
 # sqlserver table list query

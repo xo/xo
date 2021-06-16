@@ -84,8 +84,8 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pr
 		`TYPE_NAME(p.user_type_id) AS param_type ` +
 		`FROM sys.objects o ` +
 		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
-		`ORDER BY p.parameter_id ` +
-		`WHERE SCHEMA_NAME(schema_id) = @p1 AND o.name = @p2`
+		`WHERE SCHEMA_NAME(schema_id) = @p1 AND o.name = @p2 ` +
+		`ORDER BY p.parameter_id`
 	// run
 	logf(sqlstr, schema, proc)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
