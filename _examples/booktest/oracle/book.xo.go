@@ -14,7 +14,7 @@ type Book struct {
 	AuthorID  int       `json:"author_id"` // author_id
 	Isbn      string    `json:"isbn"`      // isbn
 	Title     string    `json:"title"`     // title
-	Year      int64     `json:"year"`      // year
+	Year      int       `json:"year"`      // year
 	Available time.Time `json:"available"` // available
 	Tags      string    `json:"tags"`      // tags
 	// xo fields
@@ -149,7 +149,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 // BooksByTitleYear retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'books_title_idx'.
-func BooksByTitleYear(ctx context.Context, db DB, title string, year int64) ([]*Book, error) {
+func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +

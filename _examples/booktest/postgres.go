@@ -29,7 +29,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		AuthorID:  a.AuthorID,
 		Isbn:      "1",
 		Title:     "my book title",
-		Booktype:  models.BookTypeFiction,
+		BookType:  models.BookTypeFiction,
 		Year:      2016,
 		Available: now,
 	}
@@ -41,7 +41,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		AuthorID:  a.AuthorID,
 		Isbn:      "2",
 		Title:     "the second book",
-		Booktype:  models.BookTypeFiction,
+		BookType:  models.BookTypeFiction,
 		Year:      2016,
 		Available: now,
 		Tags:      models.StringSlice{"cool", "unique"},
@@ -60,7 +60,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		AuthorID:  a.AuthorID,
 		Isbn:      "3",
 		Title:     "the third book",
-		Booktype:  models.BookTypeFiction,
+		BookType:  models.BookTypeFiction,
 		Year:      2001,
 		Available: now,
 		Tags:      models.StringSlice{"cool"},
@@ -73,7 +73,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		AuthorID:  a.AuthorID,
 		Isbn:      "4",
 		Title:     "4th place finisher",
-		Booktype:  models.BookTypeNonfiction,
+		BookType:  models.BookTypeNonfiction,
 		Year:      2011,
 		Available: now,
 		Tags:      models.StringSlice{"other"},
@@ -90,7 +90,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		BookID:    b3.BookID,
 		AuthorID:  a.AuthorID,
 		Isbn:      "NEW ISBN",
-		Booktype:  b3.Booktype,
+		BookType:  b3.BookType,
 		Title:     "never ever gonna finish, a quatrain",
 		Year:      b3.Year,
 		Available: b3.Available,
@@ -105,7 +105,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 	for _, book := range books0 {
-		fmt.Printf("Book %d %q: %q available: %q\n", book.BookID, book.Booktype, book.Title, book.Available.Format(time.RFC822Z))
+		fmt.Printf("Book %d %q: %q available: %q\n", book.BookID, book.BookType, book.Title, book.Available.Format(time.RFC822Z))
 		author, err := book.Author(ctx, db)
 		if err != nil {
 			return err

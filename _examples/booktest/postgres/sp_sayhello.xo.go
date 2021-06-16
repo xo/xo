@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// SayHello calls the stored procedure 'public.say_hello(text) text' on db.
+// SayHello calls the stored procedure 'public.say_hello(character varying) character varying' on db.
 func SayHello(ctx context.Context, db DB, v0 string) (string, error) {
 	// call public.say_hello
 	const sqlstr = `SELECT public.say_hello($1)`

@@ -12,21 +12,19 @@ CREATE TYPE book_type AS ENUM (
 
 CREATE TABLE books (
   book_id SERIAL PRIMARY KEY,
-  author_id INTEGER NOT NULL REFERENCES authors(author_id),
-  isbn TEXT NOT NULL DEFAULT '' UNIQUE,
-  booktype book_type NOT NULL DEFAULT 'FICTION',
-  title TEXT NOT NULL DEFAULT '',
-  year INTEGER NOT NULL DEFAULT 2000,
-  available TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT 'NOW()',
-  tags VARCHAR[] NOT NULL DEFAULT '{}'
+  author_id INTEGER NOT NULL CONSTRAINT books_author_id_fkey REFERENCES authors(author_id),
+  isbn VARCHAR(255) NOT NULL DEFAULT '' CONSTRAINT books_isbn_key UNIQUE,
+  book_type book_type DEFAULT 'FICTION' NOT NULL,
+  title VARCHAR(255) DEFAULT '' NOT NULL,
+  year INTEGER DEFAULT 2000 NOT NULL,
+  available TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+  tags VARCHAR[] DEFAULT '{}' NOT NULL
 );
 
 CREATE INDEX books_title_idx ON books(title, year);
 
-CREATE FUNCTION say_hello(text) RETURNS TEXT AS $$
+CREATE FUNCTION say_hello(name VARCHAR(255)) RETURNS VARCHAR(255) AS $$
 BEGIN
-  RETURN CONCAT('hello ', $1);
+  RETURN 'hello ' || name;
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE INDEX books_title_lower_idx ON books(title);
