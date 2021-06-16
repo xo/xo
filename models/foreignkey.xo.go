@@ -94,9 +94,10 @@ func MysqlTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]
 }
 
 // Sqlite3TableForeignKeys runs a custom query, returning results as ForeignKey.
-func Sqlite3TableForeignKeys(ctx context.Context, db DB, table string) ([]*ForeignKey, error) {
+func Sqlite3TableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` */ ` +
+		`SELECT ` +
 		`id AS key_id, ` +
 		`seq AS seq_no, ` +
 		`"table" AS ref_table_name, ` +

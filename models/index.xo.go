@@ -80,9 +80,10 @@ func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Ind
 }
 
 // Sqlite3TableIndexes runs a custom query, returning results as Index.
-func Sqlite3TableIndexes(ctx context.Context, db DB, table string) ([]*Index, error) {
+func Sqlite3TableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` */ ` +
+		`SELECT ` +
 		`name AS index_name, ` +
 		`"unique" AS is_unique, ` +
 		`CAST(origin = 'pk' AS boolean) AS is_primary ` +

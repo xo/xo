@@ -82,9 +82,10 @@ func MysqlIndexColumns(ctx context.Context, db DB, schema, table, index string) 
 }
 
 // Sqlite3IndexColumns runs a custom query, returning results as IndexColumn.
-func Sqlite3IndexColumns(ctx context.Context, db DB, index string) ([]*IndexColumn, error) {
+func Sqlite3IndexColumns(ctx context.Context, db DB, schema, table, index string) ([]*IndexColumn, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` ` + table + ` */ ` +
+		`SELECT ` +
 		`seqno AS seq_no, ` +
 		`cid, ` +
 		`name AS column_name ` +

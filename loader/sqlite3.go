@@ -24,12 +24,12 @@ func init() {
 		},
 		Schema:           models.Sqlite3Schema,
 		GoType:           Sqlite3GoType,
-		Tables:           Sqlite3Tables,
-		TableColumns:     Sqlite3TableColumns,
-		TableSequences:   Sqlite3TableSequences,
-		TableForeignKeys: Sqlite3ForeignKeys,
-		TableIndexes:     Sqlite3Indexes,
-		IndexColumns:     Sqlite3IndexColumns,
+		Tables:           models.Sqlite3Tables,
+		TableColumns:     models.Sqlite3TableColumns,
+		TableSequences:   models.Sqlite3TableSequences,
+		TableForeignKeys: models.Sqlite3TableForeignKeys,
+		TableIndexes:     models.Sqlite3TableIndexes,
+		IndexColumns:     models.Sqlite3IndexColumns,
 		QueryColumns:     Sqlite3QueryColumns,
 	})
 }
@@ -93,36 +93,6 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 	return goType, zero, prec, nil
 }
 
-// Sqlite3Tables returns the sqlite3 tables.
-func Sqlite3Tables(ctx context.Context, db models.DB, _ string, kind string) ([]*models.Table, error) {
-	return models.Sqlite3Tables(ctx, db, kind)
-}
-
-// Sqlite3TableColumns returns the sqlite3 table column info.
-func Sqlite3TableColumns(ctx context.Context, db models.DB, _ string, table string) ([]*models.Column, error) {
-	return models.Sqlite3TableColumns(ctx, db, table)
-}
-
-// Sqlite3TableSequences returns the sqlite3 table sequence info.
-func Sqlite3TableSequences(ctx context.Context, db models.DB, _ string) ([]*models.Sequence, error) {
-	return models.Sqlite3TableSequences(ctx, db)
-}
-
-// Sqlite3ForeignKeys returns the sqlite3 foreign key info.
-func Sqlite3ForeignKeys(ctx context.Context, db models.DB, _ string, table string) ([]*models.ForeignKey, error) {
-	return models.Sqlite3TableForeignKeys(ctx, db, table)
-}
-
-// Sqlite3Indexes returns the sqlite3 indexes info.
-func Sqlite3Indexes(ctx context.Context, db models.DB, _ string, table string) ([]*models.Index, error) {
-	return models.Sqlite3TableIndexes(ctx, db, table)
-}
-
-// Sqlite3IndexColumns returns the sqlite3 index column info.
-func Sqlite3IndexColumns(ctx context.Context, db models.DB, _ string, table string, index string) ([]*models.IndexColumn, error) {
-	return models.Sqlite3IndexColumns(ctx, db, index)
-}
-
 // Sqlite3QueryColumns parses a sqlite3 query and generates a type for it.
 func Sqlite3QueryColumns(ctx context.Context, db models.DB, _ string, inspect []string) ([]*models.Column, error) {
 	// create temporary view xoid
@@ -133,5 +103,5 @@ func Sqlite3QueryColumns(ctx context.Context, db models.DB, _ string, inspect []
 		return nil, err
 	}
 	// load column information
-	return Sqlite3TableColumns(ctx, db, "", xoid)
+	return models.Sqlite3TableColumns(ctx, db, "", xoid)
 }

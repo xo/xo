@@ -94,9 +94,10 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 }
 
 // Sqlite3TableColumns runs a custom query, returning results as Column.
-func Sqlite3TableColumns(ctx context.Context, db DB, table string) ([]*Column, error) {
+func Sqlite3TableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` */ ` +
+		`SELECT ` +
 		`cid AS field_ordinal, ` +
 		`name AS column_name, ` +
 		`type AS data_type, ` +

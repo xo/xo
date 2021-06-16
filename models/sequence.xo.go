@@ -75,9 +75,10 @@ func MysqlTableSequences(ctx context.Context, db DB, schema string) ([]*Sequence
 }
 
 // Sqlite3TableSequences runs a custom query, returning results as Sequence.
-func Sqlite3TableSequences(ctx context.Context, db DB) ([]*Sequence, error) {
+func Sqlite3TableSequences(ctx context.Context, db DB, schema string) ([]*Sequence, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` */ ` +
+		`SELECT ` +
 		`name AS table_name ` +
 		`FROM sqlite_master ` +
 		`WHERE type='table' AND LOWER(sql) LIKE '%autoincrement%' ` +

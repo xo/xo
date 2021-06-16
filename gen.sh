@@ -293,7 +293,8 @@ SELECT REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name FRO
 ENDSQL
 
 # sqlite3 table list query
-$XOBIN query $SQDB -M -B -2 -T Table -F Sqlite3Tables -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T Table -F Sqlite3Tables -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
 SELECT
   tbl_name AS table_name
 FROM sqlite_master
@@ -301,7 +302,8 @@ WHERE tbl_name NOT LIKE 'sqlite_%' AND type = %%kind string%%
 ENDSQL
 
 # sqlite3 table column list query
-$XOBIN query $SQDB -M -B -2 -T Column -F Sqlite3TableColumns -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T Column -F Sqlite3TableColumns -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
 SELECT
   cid AS field_ordinal,
   name AS column_name,
@@ -313,7 +315,8 @@ FROM pragma_table_info(%%table string%%)
 ENDSQL
 
 # sqlite3 sequence list query
-$XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3TableSequences -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3TableSequences -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
 SELECT
   name AS table_name
 FROM sqlite_master
@@ -322,7 +325,8 @@ ORDER BY name
 ENDSQL
 
 # sqlite3 table foreign key list query
-$XOBIN query $SQDB -M -B -2 -T ForeignKey -F Sqlite3TableForeignKeys -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T ForeignKey -F Sqlite3TableForeignKeys -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
 SELECT
   id AS key_id,
   seq AS seq_no,
@@ -333,7 +337,8 @@ FROM pragma_foreign_key_list(%%table string%%)
 ENDSQL
 
 # sqlite3 table index list query
-$XOBIN query $SQDB -M -B -2 -T Index -F Sqlite3TableIndexes -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T Index -F Sqlite3TableIndexes -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
 SELECT
   name AS index_name,
   "unique" AS is_unique,
@@ -342,7 +347,8 @@ FROM pragma_index_list(%%table string%%)
 ENDSQL
 
 # sqlite3 index column list query
-$XOBIN query $SQDB -M -B -2 -T IndexColumn -F Sqlite3IndexColumns -a -o $DEST $@ << ENDSQL
+$XOBIN query $SQDB -M -B -2 -T IndexColumn -F Sqlite3IndexColumns -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% %%table string,interpolate%% */
 SELECT
   seqno AS seq_no,
   cid,

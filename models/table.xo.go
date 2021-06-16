@@ -77,9 +77,10 @@ func MysqlTables(ctx context.Context, db DB, schema, kind string) ([]*Table, err
 }
 
 // Sqlite3Tables runs a custom query, returning results as Table.
-func Sqlite3Tables(ctx context.Context, db DB, kind string) ([]*Table, error) {
+func Sqlite3Tables(ctx context.Context, db DB, schema, kind string) ([]*Table, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	sqlstr := `/* ` + schema + ` */ ` +
+		`SELECT ` +
 		`tbl_name AS table_name ` +
 		`FROM sqlite_master ` +
 		`WHERE tbl_name NOT LIKE 'sqlite_%' AND type = ?`
