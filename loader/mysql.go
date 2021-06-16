@@ -128,6 +128,9 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		if nullable {
 			goType, zero = "*time.Time", "nil"
 		}
+	case "json":
+		// gorm.io/datatypes
+		goType, zero = "datatypes.JSON", "nil"
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
