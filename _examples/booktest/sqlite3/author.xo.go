@@ -37,7 +37,7 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 	const sqlstr = `INSERT INTO authors (` +
 		`name` +
 		`) VALUES (` +
-		`?` +
+		`$1` +
 		`)`
 	// run
 	logf(sqlstr, a.Name)
@@ -66,8 +66,8 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE authors SET ` +
-		`name = ?` +
-		` WHERE author_id = ?`
+		`name = $1` +
+		` WHERE author_id = $2`
 	// run
 	logf(sqlstr, a.Name, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, a.AuthorID); err != nil {
@@ -93,7 +93,7 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM authors WHERE author_id = ?`
+	const sqlstr = `DELETE FROM authors WHERE author_id = $1`
 	// run
 	logf(sqlstr, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID); err != nil {
@@ -112,7 +112,7 @@ func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error)
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM authors ` +
-		`WHERE author_id = ?`
+		`WHERE author_id = $1`
 	// run
 	logf(sqlstr, authorID)
 	a := Author{
@@ -132,7 +132,7 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM authors ` +
-		`WHERE name = ?`
+		`WHERE name = $1`
 	// run
 	logf(sqlstr, name)
 	rows, err := db.QueryContext(ctx, sqlstr, name)

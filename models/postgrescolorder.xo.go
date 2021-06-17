@@ -20,7 +20,8 @@ func PostgresGetColOrder(ctx context.Context, db DB, schema, index string) (*Pos
 		`JOIN ONLY pg_class c ON c.oid = i.indrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`JOIN ONLY pg_class ic ON ic.oid = i.indexrelid ` +
-		`WHERE n.nspname = $1 AND ic.relname = $2`
+		`WHERE n.nspname = $1 ` +
+		`AND ic.relname = $2`
 	// run
 	logf(sqlstr, schema, index)
 	var pco PostgresColOrder

@@ -42,7 +42,7 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	const sqlstr = `INSERT INTO books (` +
 		`author_id, isbn, title, year, available, tags` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?` +
+		`$1, $2, $3, $4, $5, $6` +
 		`)`
 	// run
 	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
@@ -71,8 +71,8 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE books SET ` +
-		`author_id = ?, isbn = ?, title = ?, year = ?, available = ?, tags = ?` +
-		` WHERE book_id = ?`
+		`author_id = $1, isbn = $2, title = $3, year = $4, available = $5, tags = $6` +
+		` WHERE book_id = $7`
 	// run
 	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID); err != nil {
@@ -98,7 +98,7 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM books WHERE book_id = ?`
+	const sqlstr = `DELETE FROM books WHERE book_id = $1`
 	// run
 	logf(sqlstr, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.BookID); err != nil {
@@ -117,7 +117,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM books ` +
-		`WHERE book_id = ?`
+		`WHERE book_id = $1`
 	// run
 	logf(sqlstr, bookID)
 	b := Book{
@@ -137,7 +137,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM books ` +
-		`WHERE title = ? AND year = ?`
+		`WHERE title = $1 AND year = $2`
 	// run
 	logf(sqlstr, title, year)
 	rows, err := db.QueryContext(ctx, sqlstr, title, year)
@@ -171,7 +171,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM books ` +
-		`WHERE isbn = ?`
+		`WHERE isbn = $1`
 	// run
 	logf(sqlstr, isbn)
 	b := Book{

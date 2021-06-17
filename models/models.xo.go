@@ -206,7 +206,8 @@ func (ss StringSlice) Value() (driver.Value, error) {
 // PostgresSchema retrieves the current schema.
 func PostgresSchema(ctx context.Context, db DB) (string, error) {
 	// query
-	const sqlstr = `SELECT CURRENT_SCHEMA()`
+	const sqlstr = `SELECT ` +
+		`CURRENT_SCHEMA()`
 	// run
 	logf(sqlstr)
 	var schemaName string
@@ -219,7 +220,8 @@ func PostgresSchema(ctx context.Context, db DB) (string, error) {
 // MysqlSchema retrieves the current schema.
 func MysqlSchema(ctx context.Context, db DB) (string, error) {
 	// query
-	const sqlstr = `SELECT SCHEMA() AS schema_name`
+	const sqlstr = `SELECT ` +
+		`SCHEMA() AS schema_name`
 	// run
 	logf(sqlstr)
 	var schemaName string
@@ -232,7 +234,9 @@ func MysqlSchema(ctx context.Context, db DB) (string, error) {
 // Sqlite3Schema retrieves the current schema.
 func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
 	// query
-	const sqlstr = `SELECT REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name FROM pragma_database_list()`
+	const sqlstr = `SELECT ` +
+		`REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name ` +
+		`FROM pragma_database_list()`
 	// run
 	logf(sqlstr)
 	var schemaName string
@@ -245,7 +249,8 @@ func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
 // SqlserverSchema retrieves the current schema.
 func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 	// query
-	const sqlstr = `SELECT SCHEMA_NAME() AS schema_name`
+	const sqlstr = `SELECT ` +
+		`SCHEMA_NAME() AS schema_name`
 	// run
 	logf(sqlstr)
 	var schemaName string
@@ -258,7 +263,9 @@ func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 // OracleSchema retrieves the current schema.
 func OracleSchema(ctx context.Context, db DB) (string, error) {
 	// query
-	const sqlstr = `SELECT LOWER(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')) AS schema_name FROM dual`
+	const sqlstr = `SELECT ` +
+		`LOWER(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')) AS schema_name ` +
+		`FROM dual`
 	// run
 	logf(sqlstr)
 	var schemaName string

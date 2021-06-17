@@ -30,12 +30,18 @@ func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) 
 		`0 ` + // ::integer AS seq_no
 		`FROM pg_constraint r ` +
 		`JOIN ONLY pg_class a ON a.oid = r.conrelid ` +
-		`JOIN ONLY pg_attribute b ON b.attisdropped = false AND b.attnum = ANY(r.conkey) AND b.attrelid = r.conrelid ` +
+		`JOIN ONLY pg_attribute b ON b.attisdropped = false ` +
+		`AND b.attnum = ANY(r.conkey) ` +
+		`AND b.attrelid = r.conrelid ` +
 		`JOIN ONLY pg_class i ON i.oid = r.conindid ` +
 		`JOIN ONLY pg_class c ON c.oid = r.confrelid ` +
-		`JOIN ONLY pg_attribute d ON d.attisdropped = false AND d.attnum = ANY(r.confkey) AND d.attrelid = r.confrelid ` +
+		`JOIN ONLY pg_attribute d ON d.attisdropped = false ` +
+		`AND d.attnum = ANY(r.confkey) ` +
+		`AND d.attrelid = r.confrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = r.connamespace ` +
-		`WHERE r.contype = 'f' AND n.nspname = $1 AND a.relname = $2 ` +
+		`WHERE r.contype = 'f' ` +
+		`AND n.nspname = $1 ` +
+		`AND a.relname = $2 ` +
 		`ORDER BY r.conname, b.attname`
 	// run
 	logf(sqlstr, schema, table)
@@ -69,7 +75,9 @@ func MysqlTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]
 		`referenced_table_name AS ref_table_name, ` +
 		`referenced_column_name AS ref_column_name ` +
 		`FROM information_schema.key_column_usage ` +
-		`WHERE referenced_table_name IS NOT NULL AND table_schema = ? AND table_name = ?`
+		`WHERE referenced_table_name IS NOT NULL ` +
+		`AND table_schema = ? ` +
+		`AND table_name = ?`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -103,7 +111,7 @@ func Sqlite3TableForeignKeys(ctx context.Context, db DB, schema, table string) (
 		`"table" AS ref_table_name, ` +
 		`"from" AS column_name, ` +
 		`"to" AS ref_column_name ` +
-		`FROM pragma_foreign_key_list(?)`
+		`FROM pragma_foreign_key_list($1)`
 	// run
 	logf(sqlstr, table)
 	rows, err := db.QueryContext(ctx, sqlstr, table)
@@ -139,9 +147,14 @@ func SqlserverTableForeignKeys(ctx context.Context, db DB, schema, table string)
 		`INNER JOIN sysobjects t ON f.parent_obj = t.id ` +
 		`INNER JOIN sysreferences r ON f.id = r.constid ` +
 		`INNER JOIN sysobjects o ON r.rkeyid = o.id ` +
-		`INNER JOIN syscolumns c ON r.rkeyid = c.id AND r.rkey1 = c.colid ` +
-		`INNER JOIN syscolumns x ON r.fkeyid = x.id AND r.fkey1 = x.colid ` +
-		`WHERE f.type = 'F' AND t.type = 'U' AND SCHEMA_NAME(t.uid) = @p1 AND t.name = @p2`
+		`INNER JOIN syscolumns c ON r.rkeyid = c.id ` +
+		`AND r.rkey1 = c.colid ` +
+		`INNER JOIN syscolumns x ON r.fkeyid = x.id ` +
+		`AND r.fkey1 = x.colid ` +
+		`WHERE f.type = 'F' ` +
+		`AND t.type = 'U' ` +
+		`AND SCHEMA_NAME(t.uid) = @p1 ` +
+		`AND t.name = @p2`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -174,9 +187,13 @@ func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([
 		`LOWER(r.constraint_name) AS ref_index_name, ` +
 		`LOWER(r.table_name) AS ref_table_name ` +
 		`FROM all_cons_columns a ` +
-		`JOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name ` +
-		`JOIN all_constraints r ON c.r_owner = r.owner AND c.r_constraint_name = r.constraint_name ` +
-		`WHERE c.constraint_type = 'R' AND a.owner = UPPER(:1) AND a.table_name = UPPER(:2)`
+		`JOIN all_constraints c ON a.owner = c.owner ` +
+		`AND a.constraint_name = c.constraint_name ` +
+		`JOIN all_constraints r ON c.r_owner = r.owner ` +
+		`AND c.r_constraint_name = r.constraint_name ` +
+		`WHERE c.constraint_type = 'R' ` +
+		`AND a.owner = UPPER(:1) ` +
+		`AND a.table_name = UPPER(:2)`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)

@@ -11,19 +11,10 @@ import (
 
 func init() {
 	Register(&Loader{
-		Driver: "mysql",
-		Kind: map[Kind]string{
-			KindTable: "BASE TABLE",
-			KindView:  "VIEW",
-		},
-		ParamN: func(int) string {
-			return "?"
-		},
-		MaskFunc: func() string {
-			return "?"
-		},
-		Schema:           models.MysqlSchema,
+		Driver:           "mysql",
+		Mask:             "?",
 		GoType:           MysqlGoType,
+		Schema:           models.MysqlSchema,
 		Enums:            models.MysqlEnums,
 		EnumValues:       MysqlEnumValues,
 		Procs:            models.MysqlProcs,
@@ -35,6 +26,10 @@ func init() {
 		TableIndexes:     models.MysqlTableIndexes,
 		IndexColumns:     models.MysqlIndexColumns,
 		QueryColumns:     MysqlQueryColumns,
+		/*
+			ViewCreate:       models.MysqlViewCreate,
+			ViewDrop:         models.MysqlViewDrop,
+		*/
 	})
 }
 

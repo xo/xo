@@ -42,7 +42,10 @@ func Flags() []FlagSet {
 	var flags []FlagSet
 	for _, driver := range drivers {
 		l := loaders[driver]
-		for _, flag := range l.Flags {
+		if l.Flags == nil {
+			continue
+		}
+		for _, flag := range l.Flags() {
 			flags = append(flags, FlagSet{
 				Driver: driver,
 				Name:   string(flag.ContextKey),
@@ -77,12 +80,10 @@ type ContextKey string
 // Loader loads type information from a database.
 type Loader struct {
 	Driver           string
-	Flags            []Flag
-	ParamN           func(int) string
-	MaskFunc         func() string
-	Kind             map[Kind]string
+	Mask             string
+	ViewPrefix       string
+	Flags            func() []Flag
 	GoType           func(context.Context, string, bool) (string, string, int, error)
-	QueryStrip       func([]string, []string)
 	Schema           func(context.Context, models.DB) (string, error)
 	Enums            func(context.Context, models.DB, string) ([]*models.Enum, error)
 	EnumValues       func(context.Context, models.DB, string, string) ([]*models.EnumValue, error)
@@ -94,34 +95,22 @@ type Loader struct {
 	TableForeignKeys func(context.Context, models.DB, string, string) ([]*models.ForeignKey, error)
 	TableIndexes     func(context.Context, models.DB, string, string) ([]*models.Index, error)
 	IndexColumns     func(context.Context, models.DB, string, string, string) ([]*models.IndexColumn, error)
+	QueryStrip       func([]string, []string)
 	QueryColumns     func(context.Context, models.DB, string, []string) ([]*models.Column, error)
+	ViewCreate       interface{}
+	ViewDrop         interface{}
 }
 
 // NthParam returns the 0-based Nth param for the Loader.
 func (l *Loader) NthParam(i int) string {
-	if l.ParamN != nil {
-		return l.ParamN(i)
+	mask := l.Mask
+	if mask == "" {
+		return "?"
 	}
-	return fmt.Sprintf("$%d", i+1)
-}
-
-// Mask returns the parameter mask.
-func (l *Loader) Mask() string {
-	if l.MaskFunc != nil {
-		return l.MaskFunc()
+	if strings.Contains(mask, "%d") {
+		return fmt.Sprintf(mask, i+1)
 	}
-	return "$%d"
-}
-
-// KindName returns the identifier used in queries for a table, view, etc.
-func (l *Loader) KindName(kind Kind) (string, error) {
-	if l.Kind != nil {
-		if s, ok := l.Kind[kind]; ok {
-			return s, nil
-		}
-		return "", fmt.Errorf("unsupported kind %q", l.Kind)
-	}
-	return kind.String(), nil
+	return mask
 }
 
 // SchemaName loads the active schema name for a database.
@@ -130,26 +119,6 @@ func (l *Loader) SchemaName(ctx context.Context, db models.DB) (string, error) {
 		return l.Schema(ctx, db)
 	}
 	return "", nil
-}
-
-// Kind represents the different types of relational storage (table/view).
-type Kind uint
-
-// Kind values.
-const (
-	KindTable Kind = iota
-	KindView
-)
-
-// String provides the string representation of RelType.
-func (kind Kind) String() string {
-	switch kind {
-	case KindTable:
-		return "TABLE"
-	case KindView:
-		return "VIEW"
-	}
-	return "<unknown>"
 }
 
 // intRE matches Go int types.

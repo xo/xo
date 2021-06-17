@@ -8,7 +8,6 @@ import (
 
 	"github.com/gedex/inflector"
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/loader"
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates"
 )
@@ -32,12 +31,12 @@ func (*SchemaGenerator) Exec(ctx context.Context, args *Args) error {
 		return err
 	}
 	// load table types
-	tables, err := LoadTypes(ctx, args, loader.KindTable)
+	tables, err := LoadTypes(ctx, args, "table")
 	if err != nil {
 		return err
 	}
 	// load view types
-	views, err := LoadTypes(ctx, args, loader.KindView)
+	views, err := LoadTypes(ctx, args, "view")
 	if err != nil {
 		return err
 	}
@@ -222,7 +221,7 @@ func LoadProcParams(ctx context.Context, args *Args, proc *templates.Proc) error
 }
 
 // LoadTypes loads types for the kind (ie, table/view definitions).
-func LoadTypes(ctx context.Context, args *Args, kind loader.Kind) (map[string]*templates.Type, error) {
+func LoadTypes(ctx context.Context, args *Args, kind string) (map[string]*templates.Type, error) {
 	// load tables
 	tables, err := LoadTables(ctx, args, kind)
 	if err != nil {
@@ -234,7 +233,7 @@ func LoadTypes(ctx context.Context, args *Args, kind loader.Kind) (map[string]*t
 		// create template
 		typ := &templates.Type{
 			Name:  singularize(table.TableName),
-			Kind:  kind.String(),
+			Kind:  kind,
 			Table: table,
 		}
 		// process columns
@@ -258,14 +257,10 @@ func LoadTypes(ctx context.Context, args *Args, kind loader.Kind) (map[string]*t
 }
 
 // LoadTables loads tables.
-func LoadTables(ctx context.Context, args *Args, kind loader.Kind) ([]*models.Table, error) {
+func LoadTables(ctx context.Context, args *Args, kind string) ([]*models.Table, error) {
 	db, l, schema := DbLoaderSchema(ctx)
-	kindName, err := l.KindName(kind)
-	if err != nil {
-		return nil, err
-	}
 	// load tables
-	tables, err := l.Tables(ctx, db, schema, kindName)
+	tables, err := l.Tables(ctx, db, schema, kind)
 	if err != nil {
 		return nil, err
 	}

@@ -28,7 +28,7 @@ func AuthorBookResultsByTag(ctx context.Context, db DB, tag string) ([]*AuthorBo
 		`b.tags AS book_tags ` +
 		`FROM books b ` +
 		`JOIN authors a ON a.author_id = b.author_id ` +
-		`WHERE b.tags LIKE '%' || ? || '%'`
+		`WHERE b.tags LIKE '%' || $1 || '%'`
 	// run
 	logf(sqlstr, tag)
 	rows, err := db.QueryContext(ctx, sqlstr, tag)

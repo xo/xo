@@ -13,21 +13,11 @@ import (
 
 func init() {
 	Register(&Loader{
-		Driver: "postgres",
-		Kind: map[Kind]string{
-			KindTable: "r",
-			KindView:  "v",
-		},
-		Flags: []Flag{
-			{
-				ContextKey: OidsKey,
-				Desc:       "enable postgres OIDs",
-				Default:    "false",
-				Value:      false,
-			},
-		},
-		Schema:           models.PostgresSchema,
+		Driver:           "postgres",
+		Mask:             "$%d",
+		Flags:            PostgresFlags,
 		GoType:           PostgresGoType,
+		Schema:           models.PostgresSchema,
 		Enums:            models.PostgresEnums,
 		EnumValues:       models.PostgresEnumValues,
 		Procs:            models.PostgresProcs,
@@ -41,6 +31,18 @@ func init() {
 		QueryStrip:       PostgresQueryStrip,
 		QueryColumns:     PostgresQueryColumns,
 	})
+}
+
+// PostgresFlags returnss the postgres flags.
+func PostgresFlags() []Flag {
+	return []Flag{
+		{
+			ContextKey: OidsKey,
+			Desc:       "enable postgres OIDs",
+			Default:    "false",
+			Value:      false,
+		},
+	}
 }
 
 // PostgresGoType parse a type into a Go type based on the database type definition.

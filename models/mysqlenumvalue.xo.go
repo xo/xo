@@ -17,7 +17,9 @@ func MysqlEnumValues(ctx context.Context, db DB, schema, enum string) (*MysqlEnu
 	const sqlstr = `SELECT ` +
 		`SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values ` +
 		`FROM information_schema.columns ` +
-		`WHERE data_type = 'enum' AND table_schema = ? AND column_name = ?`
+		`WHERE data_type = 'enum' ` +
+		`AND table_schema = ? ` +
+		`AND column_name = ?`
 	// run
 	logf(sqlstr, schema, enum)
 	var mev MysqlEnumValue

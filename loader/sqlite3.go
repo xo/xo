@@ -11,19 +11,10 @@ import (
 
 func init() {
 	Register(&Loader{
-		Driver: "sqlite3",
-		Kind: map[Kind]string{
-			KindTable: "table",
-			KindView:  "view",
-		},
-		ParamN: func(int) string {
-			return "?"
-		},
-		MaskFunc: func() string {
-			return "?"
-		},
-		Schema:           models.Sqlite3Schema,
+		Driver:           "sqlite3",
+		Mask:             "$%d",
 		GoType:           Sqlite3GoType,
+		Schema:           models.Sqlite3Schema,
 		Tables:           models.Sqlite3Tables,
 		TableColumns:     models.Sqlite3TableColumns,
 		TableSequences:   models.Sqlite3TableSequences,

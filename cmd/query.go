@@ -12,7 +12,6 @@ import (
 
 	"github.com/gedex/inflector"
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/loader"
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates"
 )
@@ -41,12 +40,12 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 		querystr = string(bytes.TrimRight(buf, "\r\n"))
 	}
 	// build query
-	qstr, params, err := ParseQueryParams(querystr, l.Mask(), true, args.QueryParams.Delimiter, args.QueryParams.Interpolate)
+	qstr, params, err := ParseQueryParams(querystr, l.NthParam, true, args.QueryParams.Delimiter, args.QueryParams.Interpolate)
 	if err != nil {
 		return err
 	}
 	// build introspection query
-	istr, _, err := ParseQueryParams(querystr, "NULL", false, args.QueryParams.Delimiter, args.QueryParams.Interpolate)
+	istr, _, err := ParseQueryParams(querystr, nullParam, false, args.QueryParams.Delimiter, args.QueryParams.Interpolate)
 	if err != nil {
 		return err
 	}
@@ -76,7 +75,7 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 	// template for query type
 	typ := &templates.Type{
 		Name: args.QueryParams.Type,
-		Kind: loader.KindTable.String(),
+		Kind: "table",
 		Table: &models.Table{
 			TableName: fmt.Sprintf("[custom %s]", strings.ToLower(snaker.CamelToSnake(args.QueryParams.Type))),
 		},
@@ -192,7 +191,7 @@ func (*QueryGenerator) Process(ctx context.Context, args *Args) error {
 //
 // Mask can contain "%d" to indicate current position. The modified query is
 // returned, along with any extracted parameters.
-func ParseQueryParams(query, mask string, interpol bool, delim string, allowInterpol bool) (string, []*templates.QueryParam, error) {
+func ParseQueryParams(query string, nth func(int) string, interpol bool, delim string, allowInterpol bool) (string, []*templates.QueryParam, error) {
 	// create regexp for delimiter
 	placeholderRE, err := regexp.Compile(delim + `[^` + delim[:1] + `]+` + delim)
 	if err != nil {
@@ -202,14 +201,9 @@ func ParseQueryParams(query, mask string, interpol bool, delim string, allowInte
 	matches := placeholderRE.FindAllStringIndex(query, -1)
 	// return vals and placeholders
 	var params []*templates.QueryParam
-	sqlstr, i, last := "", 1, 0
+	sqlstr, i, last := "", 0, 0
 	// loop over matches, extracting each placeholder and splitting to name/type
 	for _, m := range matches {
-		// generate place holder value
-		pstr := mask
-		if strings.Contains(mask, "%d") {
-			pstr = fmt.Sprintf(mask, i)
-		}
 		// extract parameter info
 		paramStr := query[m[0]+len(delim) : m[1]-len(delim)]
 		p := strings.SplitN(paramStr, " ", 2)
@@ -243,11 +237,15 @@ func ParseQueryParams(query, mask string, interpol bool, delim string, allowInte
 			}
 			sqlstr += "` + " + xstr + " + `"
 		} else {
-			sqlstr += pstr
+			sqlstr += nth(i)
+			i++
 		}
 		params, last = append(params, param), m[1]
-		i++
 	}
 	// return built query and any remaining
 	return sqlstr + query[last:], params, nil
+}
+
+func nullParam(int) string {
+	return "NULL"
 }

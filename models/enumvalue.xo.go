@@ -21,7 +21,8 @@ func PostgresEnumValues(ctx context.Context, db DB, schema, enum string) ([]*Enu
 		`FROM pg_type t ` +
 		`JOIN ONLY pg_namespace n ON n.oid = t.typnamespace ` +
 		`LEFT JOIN pg_enum e ON t.oid = e.enumtypid ` +
-		`WHERE n.nspname = $1 AND t.typname = $2`
+		`WHERE n.nspname = $1 ` +
+		`AND t.typname = $2`
 	// run
 	logf(sqlstr, schema, enum)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, enum)

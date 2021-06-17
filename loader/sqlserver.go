@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/xo/xo/models"
@@ -11,19 +10,10 @@ import (
 
 func init() {
 	Register(&Loader{
-		Driver: "sqlserver",
-		Kind: map[Kind]string{
-			KindTable: "U",
-			KindView:  "V",
-		},
-		ParamN: func(i int) string {
-			return fmt.Sprintf("@p%d", i+1)
-		},
-		MaskFunc: func() string {
-			return "@p%d"
-		},
-		Schema:           models.SqlserverSchema,
+		Driver:           "sqlserver",
+		Mask:             "@p%d",
 		GoType:           SqlserverGoType,
+		Schema:           models.SqlserverSchema,
 		Procs:            models.SqlserverProcs,
 		ProcParams:       models.SqlserverProcParams,
 		Tables:           models.SqlserverTables,

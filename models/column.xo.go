@@ -30,9 +30,15 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 		`FROM pg_attribute a ` +
 		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
-		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND a.attnum = ANY(ct.conkey) AND ct.contype = 'p' ` +
-		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid AND ad.adnum = a.attnum ` +
-		`WHERE a.attisdropped = false AND n.nspname = $1 AND c.relname = $2 AND ($3 OR a.attnum > 0) ` +
+		`LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid ` +
+		`AND a.attnum = ANY(ct.conkey) ` +
+		`AND ct.contype = 'p' ` +
+		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid ` +
+		`AND ad.adnum = a.attnum ` +
+		`WHERE a.attisdropped = false ` +
+		`AND n.nspname = $1 ` +
+		`AND c.relname = $2 ` +
+		`AND ($3 OR a.attnum > 0) ` +
 		`ORDER BY a.attnum`
 	// run
 	logf(sqlstr, schema, table, sys)
@@ -68,7 +74,8 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 		`column_default AS default_value, ` +
 		`IF(column_key = 'PRI', true, false) AS is_primary_key ` +
 		`FROM information_schema.columns ` +
-		`WHERE table_schema = ? AND table_name = ? ` +
+		`WHERE table_schema = ? ` +
+		`AND table_name = ? ` +
 		`ORDER BY ordinal_position`
 	// run
 	logf(sqlstr, schema, table)
@@ -104,7 +111,7 @@ func Sqlite3TableColumns(ctx context.Context, db DB, schema, table string) ([]*C
 		`"notnull" AS not_null, ` +
 		`dflt_value AS default_value, ` +
 		`CAST(pk <> 0 AS boolean) AS is_primary_key ` +
-		`FROM pragma_table_info(?)`
+		`FROM pragma_table_info($1)`
 	// run
 	logf(sqlstr, table)
 	rows, err := db.QueryContext(ctx, sqlstr, table)
@@ -140,14 +147,20 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 		`IIF(COALESCE(( ` +
 		`SELECT COUNT(z.colid) ` +
 		`FROM sysindexes i ` +
-		`INNER JOIN sysindexkeys z ON i.id = z.id AND i.indid = z.indid AND z.colid = c.colid ` +
-		`WHERE i.id = o.id AND i.name = k.name ` +
+		`INNER JOIN sysindexkeys z ON i.id = z.id ` +
+		`AND i.indid = z.indid ` +
+		`AND z.colid = c.colid ` +
+		`WHERE i.id = o.id ` +
+		`AND i.name = k.name ` +
 		`), 0) > 0, 1, 0) AS is_primary_key ` +
 		`FROM syscolumns c ` +
 		`JOIN sysobjects o ON o.id = c.id ` +
-		`LEFT JOIN sysobjects k ON k.xtype='PK' AND k.parent_obj = o.id ` +
+		`LEFT JOIN sysobjects k ON k.xtype='PK' ` +
+		`AND k.parent_obj = o.id ` +
 		`LEFT JOIN syscomments x ON x.id = c.cdefault ` +
-		`WHERE o.type IN('U', 'V') AND SCHEMA_NAME(o.uid) = @p1 AND o.name = @p2 ` +
+		`WHERE o.type IN('U', 'V') ` +
+		`AND SCHEMA_NAME(o.uid) = @p1 ` +
+		`AND o.name = @p2 ` +
 		`ORDER BY c.colid`
 	// run
 	logf(sqlstr, schema, table)
@@ -188,11 +201,16 @@ func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Co
 		`SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END ` +
 		`FROM all_cons_columns l, all_constraints r ` +
 		`WHERE r.constraint_type = 'P' ` +
-		`AND r.owner = c.owner AND r.table_name = c.table_name AND r.constraint_name = l.constraint_name ` +
-		`AND l.owner = c.owner AND l.table_name = c.table_name AND l.column_name = c.column_name ` +
+		`AND r.owner = c.owner ` +
+		`AND r.table_name = c.table_name ` +
+		`AND r.constraint_name = l.constraint_name ` +
+		`AND l.owner = c.owner ` +
+		`AND l.table_name = c.table_name ` +
+		`AND l.column_name = c.column_name ` +
 		`), '0') AS is_primary_key ` +
 		`FROM all_tab_columns c ` +
-		`WHERE c.owner = UPPER(:1) AND c.table_name = UPPER(:2) ` +
+		`WHERE c.owner = UPPER(:1) ` +
+		`AND c.table_name = UPPER(:2) ` +
 		`ORDER BY c.column_id`
 	// run
 	logf(sqlstr, schema, table)

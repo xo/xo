@@ -49,7 +49,8 @@ func MysqlEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	const sqlstr = `SELECT ` +
 		`DISTINCT column_name AS enum_name ` +
 		`FROM information_schema.columns ` +
-		`WHERE data_type = 'enum' AND table_schema = ?`
+		`WHERE data_type = 'enum' ` +
+		`AND table_schema = ?`
 	// run
 	logf(sqlstr, schema)
 	rows, err := db.QueryContext(ctx, sqlstr, schema)

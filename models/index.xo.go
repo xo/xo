@@ -24,7 +24,9 @@ func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*
 		`JOIN ONLY pg_class c ON c.oid = i.indrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
 		`JOIN ONLY pg_class ic ON ic.oid = i.indexrelid ` +
-		`WHERE i.indkey <> '0' AND n.nspname = $1 AND c.relname = $2`
+		`WHERE i.indkey <> '0' ` +
+		`AND n.nspname = $1 ` +
+		`AND c.relname = $2`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -55,7 +57,9 @@ func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Ind
 		`DISTINCT index_name, ` +
 		`NOT non_unique AS is_unique ` +
 		`FROM information_schema.statistics ` +
-		`WHERE index_name <> 'PRIMARY' AND index_schema = ? AND table_name = ?`
+		`WHERE index_name <> 'PRIMARY' ` +
+		`AND index_schema = ? ` +
+		`AND table_name = ?`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -87,7 +91,7 @@ func Sqlite3TableIndexes(ctx context.Context, db DB, schema, table string) ([]*I
 		`name AS index_name, ` +
 		`"unique" AS is_unique, ` +
 		`CAST(origin = 'pk' AS boolean) AS is_primary ` +
-		`FROM pragma_index_list(?)`
+		`FROM pragma_index_list($1)`
 	// run
 	logf(sqlstr, table)
 	rows, err := db.QueryContext(ctx, sqlstr, table)
@@ -120,7 +124,10 @@ func SqlserverTableIndexes(ctx context.Context, db DB, schema, table string) ([]
 		`i.is_unique ` +
 		`FROM sys.indexes i ` +
 		`INNER JOIN sysobjects o ON i.object_id = o.id ` +
-		`WHERE i.name IS NOT NULL AND o.type = 'U' AND SCHEMA_NAME(o.uid) = @p1 AND o.name = @p2`
+		`WHERE i.name IS NOT NULL ` +
+		`AND o.type = 'U' ` +
+		`AND SCHEMA_NAME(o.uid) = @p1 ` +
+		`AND o.name = @p2`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -151,7 +158,8 @@ func OracleTableIndexes(ctx context.Context, db DB, schema, table string) ([]*In
 		`LOWER(index_name) AS index_name, ` +
 		`CASE WHEN uniqueness = 'UNIQUE' THEN '1' ELSE '0' END AS is_unique ` +
 		`FROM all_indexes ` +
-		`WHERE owner = UPPER(:1) AND table_name = UPPER(:2)`
+		`WHERE owner = UPPER(:1) ` +
+		`AND table_name = UPPER(:2)`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)

@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -11,26 +10,22 @@ import (
 
 func init() {
 	Register(&Loader{
-		Driver: "oracle",
-		Kind: map[Kind]string{
-			KindTable: "TABLE",
-			KindView:  "VIEW",
-		},
-		ParamN: func(i int) string {
-			return fmt.Sprintf(":%d", i+1)
-		},
-		MaskFunc: func() string {
-			return ":%d"
-		},
-		Schema:           models.OracleSchema,
+		Driver:           "oracle",
+		Mask:             ":%d",
 		GoType:           OracleGoType,
+		Schema:           models.OracleSchema,
 		Tables:           models.OracleTables,
 		TableColumns:     models.OracleTableColumns,
 		TableSequences:   models.OracleTableSequences,
 		TableForeignKeys: models.OracleTableForeignKeys,
 		TableIndexes:     models.OracleTableIndexes,
 		IndexColumns:     models.OracleIndexColumns,
+		ViewPrefix:       "XO$",
 		QueryColumns:     OracleQueryColumns,
+		/*
+			ViewCreate:       models.OracleViewCreate,
+			ViewDrop:         models.OracleViewDrop,
+		*/
 	})
 }
 

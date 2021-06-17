@@ -51,8 +51,9 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 		`r.routine_name AS proc_name, ` +
 		`p.dtd_identifier AS return_type ` +
 		`FROM information_schema.routines r ` +
-		`INNER JOIN information_schema.parameters p ` +
-		`ON p.specific_schema = r.routine_schema AND p.specific_name = r.routine_name AND p.ordinal_position = 0 ` +
+		`INNER JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema ` +
+		`AND p.specific_name = r.routine_name ` +
+		`AND p.ordinal_position = 0 ` +
 		`WHERE r.routine_schema = ?`
 	// run
 	logf(sqlstr, schema)
@@ -84,7 +85,8 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 		`name AS proc_name, ` +
 		`type AS return_type ` +
 		`FROM sys.objects o ` +
-		`WHERE SCHEMA_NAME(o.schema_id) = @p1 AND o.type = 'FN'`
+		`WHERE o.type = 'FN' ` +
+		`AND SCHEMA_NAME(o.schema_id) = @p1`
 	// run
 	logf(sqlstr, schema)
 	rows, err := db.QueryContext(ctx, sqlstr, schema)
