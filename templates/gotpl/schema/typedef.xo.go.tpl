@@ -44,7 +44,7 @@ func ({{ $short }} *{{ $type.Name }}) Insert{{ if context_both }}Context{{ end }
 		`)`
 	// run
 	logf(sqlstr, {{ fieldnames $type.Fields $short }})
-	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short }}).Scan(&{{ $short }}.{{ $type.PrimaryKey.Name }}); err != nil {
+	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr, {{ fieldnames $type.Fields $short }}); err != nil {
 		return logerror(err)
 	}
 {{- else -}}
