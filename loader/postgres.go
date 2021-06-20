@@ -28,8 +28,10 @@ func init() {
 		TableForeignKeys: models.PostgresTableForeignKeys,
 		TableIndexes:     models.PostgresTableIndexes,
 		IndexColumns:     PostgresIndexColumns,
-		QueryStrip:       PostgresQueryStrip,
-		QueryColumns:     PostgresQueryColumns,
+		ViewStrip:        PostgresViewStrip,
+		ViewCreate:       models.PostgresViewCreate,
+		ViewSchema:       models.PostgresViewSchema,
+		ViewDrop:         models.PostgresViewDrop,
 	})
 }
 
@@ -185,46 +187,21 @@ func PostgresIndexColumns(ctx context.Context, db models.DB, schema string, tabl
 	return ret, nil
 }
 
-// PostgresQueryStrip strips '::type AS name' in queries.
-func PostgresQueryStrip(query []string, queryComments []string) {
-	for i, l := range query {
-		pos := stripRE.FindStringIndex(l)
-		if pos != nil {
-			query[i] = l[:pos[0]] + l[pos[1]:]
-			queryComments[i+1] = l[pos[0]:pos[1]]
-		} else {
-			queryComments[i+1] = ""
+// PostgresViewStrip strips '::type AS name' in queries.
+func PostgresViewStrip(query []string) ([]string, []string) {
+	comments := make([]string, len(query))
+	for i, line := range query {
+		if pos := stripRE.FindStringIndex(line); pos != nil {
+			query[i] = line[:pos[0]] + line[pos[1]:]
+			comments[i] = line[pos[0]:pos[1]]
 		}
 	}
+	return query, comments
 }
 
 // stripRE is the regexp to match the '::type AS name' portion in a query,
 // which is a quirk/requirement of generating queries for postgres.
 var stripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
-
-// PostgresQueryColumns parses the query and generates a type for it.
-func PostgresQueryColumns(ctx context.Context, db models.DB, _ string, inspect []string) ([]*models.Column, error) {
-	// create temporary view xoid
-	xoid := "_xo_" + randomID()
-	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
-	models.Logf(viewq)
-	if _, err := db.ExecContext(ctx, viewq); err != nil {
-		return nil, err
-	}
-	// query to determine schema name where temporary view was created
-	nspq := `SELECT n.nspname ` +
-		`FROM pg_class c ` +
-		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
-		`WHERE n.nspname LIKE 'pg_temp%' AND c.relname = $1`
-	// run query
-	models.Logf(nspq, xoid)
-	var schema string
-	if err := db.QueryRowContext(ctx, nspq, xoid).Scan(&schema); err != nil {
-		return nil, err
-	}
-	// load column information
-	return models.PostgresTableColumns(ctx, db, schema, xoid, false)
-}
 
 // OidsKey is the oids context key.
 const OidsKey ContextKey = "oids"

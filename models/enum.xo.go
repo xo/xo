@@ -30,12 +30,12 @@ func PostgresEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	// load results
 	var res []*Enum
 	for rows.Next() {
-		var e Enum
+		var row Enum
 		// scan
-		if err := rows.Scan(&e.EnumName); err != nil {
+		if err := rows.Scan(&row.EnumName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &e)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -61,12 +61,12 @@ func MysqlEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	// load results
 	var res []*Enum
 	for rows.Next() {
-		var e Enum
+		var row Enum
 		// scan
-		if err := rows.Scan(&e.EnumName); err != nil {
+		if err := rows.Scan(&row.EnumName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &e)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

@@ -25,11 +25,8 @@ func init() {
 		TableForeignKeys: models.MysqlTableForeignKeys,
 		TableIndexes:     models.MysqlTableIndexes,
 		IndexColumns:     models.MysqlIndexColumns,
-		QueryColumns:     MysqlQueryColumns,
-		/*
-			ViewCreate:       models.MysqlViewCreate,
-			ViewDrop:         models.MysqlViewDrop,
-		*/
+		ViewCreate:       models.MysqlViewCreate,
+		ViewDrop:         models.MysqlViewDrop,
 	})
 }
 
@@ -149,7 +146,7 @@ func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum stri
 		return nil, err
 	}
 	// process enum vals
-	values := []*models.EnumValue{}
+	var values []*models.EnumValue
 	for i, val := range strings.Split(res.EnumValues[1:len(res.EnumValues)-1], "','") {
 		values = append(values, &models.EnumValue{
 			EnumValue:  val,
@@ -157,23 +154,4 @@ func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum stri
 		})
 	}
 	return values, nil
-}
-
-// MysqlQueryColumns parses the query and generates a type for it.
-func MysqlQueryColumns(ctx context.Context, db models.DB, schema string, inspect []string) ([]*models.Column, error) {
-	// create temporary view xoid
-	xoid := "_xo_" + randomID()
-	viewq := `CREATE VIEW ` + xoid + ` AS (` + strings.Join(inspect, "\n") + `)`
-	models.Logf(viewq)
-	if _, err := db.ExecContext(ctx, viewq); err != nil {
-		return nil, err
-	}
-	// load columns
-	cols, err := models.MysqlTableColumns(ctx, db, schema, xoid)
-	// drop inspect view
-	dropq := `DROP VIEW ` + xoid
-	models.Logf(dropq)
-	_, _ = db.ExecContext(ctx, dropq)
-	// load column information
-	return cols, err
 }

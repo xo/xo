@@ -3,7 +3,6 @@ package loader
 import (
 	"context"
 	"regexp"
-	"strings"
 
 	"github.com/xo/xo/models"
 )
@@ -20,17 +19,11 @@ func init() {
 		TableForeignKeys: models.OracleTableForeignKeys,
 		TableIndexes:     models.OracleTableIndexes,
 		IndexColumns:     models.OracleIndexColumns,
-		ViewPrefix:       "XO$",
-		QueryColumns:     OracleQueryColumns,
-		/*
-			ViewCreate:       models.OracleViewCreate,
-			ViewDrop:         models.OracleViewDrop,
-		*/
+		ViewCreate:       models.OracleViewCreate,
+		ViewTruncate:     models.OracleViewTruncate,
+		ViewDrop:         models.OracleViewDrop,
 	})
 }
-
-// orLenRE is a regexp that matches lengths.
-var orLenRE = regexp.MustCompile(`\([0-9]+\)`)
 
 // OracleGoType parse a oracle type into a Go type based on the column
 // definition.
@@ -86,23 +79,5 @@ func OracleGoType(ctx context.Context, typ string, nullable bool) (string, strin
 	return goType, zero, prec, nil
 }
 
-// OracleQueryColumns parses the query and generates a type for it.
-func OracleQueryColumns(ctx context.Context, db models.DB, schema string, inspect []string) ([]*models.Column, error) {
-	// create temporary view xoid
-	xoid := "XO$" + randomID()
-	viewq := `CREATE GLOBAL TEMPORARY TABLE ` + xoid + ` ` +
-		`ON COMMIT PRESERVE ROWS ` +
-		`AS ` + strings.Join(inspect, "\n")
-	models.Logf(viewq)
-	if _, err := db.ExecContext(ctx, viewq); err != nil {
-		return nil, err
-	}
-	// load columns
-	cols, err := models.OracleTableColumns(ctx, db, schema, xoid)
-	// drop inspect view
-	dropq := `DROP TABLE ` + xoid
-	models.Logf(dropq)
-	_, _ = db.ExecContext(ctx, dropq)
-	// load column information
-	return cols, err
-}
+// orLenRE is a regexp that matches lengths.
+var orLenRE = regexp.MustCompile(`\([0-9]+\)`)

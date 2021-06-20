@@ -40,12 +40,12 @@ func PostgresTables(ctx context.Context, db DB, schema, kind string) ([]*Table, 
 	// load results
 	var res []*Table
 	for rows.Next() {
-		var t Table
+		var row Table
 		// scan
-		if err := rows.Scan(&t.Type, &t.TableName, &t.ManualPk); err != nil {
+		if err := rows.Scan(&row.Type, &row.TableName, &row.ManualPk); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &t)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -78,12 +78,12 @@ func MysqlTables(ctx context.Context, db DB, schema, kind string) ([]*Table, err
 	// load results
 	var res []*Table
 	for rows.Next() {
-		var t Table
+		var row Table
 		// scan
-		if err := rows.Scan(&t.Type, &t.TableName); err != nil {
+		if err := rows.Scan(&row.Type, &row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &t)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -111,12 +111,12 @@ func Sqlite3Tables(ctx context.Context, db DB, schema, kind string) ([]*Table, e
 	// load results
 	var res []*Table
 	for rows.Next() {
-		var t Table
+		var row Table
 		// scan
-		if err := rows.Scan(&t.Type, &t.TableName); err != nil {
+		if err := rows.Scan(&row.Type, &row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &t)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -149,12 +149,12 @@ func SqlserverTables(ctx context.Context, db DB, schema, kind string) ([]*Table,
 	// load results
 	var res []*Table
 	for rows.Next() {
-		var t Table
+		var row Table
 		// scan
-		if err := rows.Scan(&t.Type, &t.TableName); err != nil {
+		if err := rows.Scan(&row.Type, &row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &t)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -186,12 +186,12 @@ func OracleTables(ctx context.Context, db DB, schema, kind string) ([]*Table, er
 	// load results
 	var res []*Table
 	for rows.Next() {
-		var t Table
+		var row Table
 		// scan
-		if err := rows.Scan(&t.Type, &t.TableName); err != nil {
+		if err := rows.Scan(&row.Type, &row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &t)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

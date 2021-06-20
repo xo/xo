@@ -93,6 +93,7 @@ type QueryParam struct {
 	Name        string
 	Type        string
 	Interpolate bool
+	Join        bool
 }
 
 // Query is a custom query template.
@@ -103,6 +104,7 @@ type Query struct {
 	Params      []*QueryParam
 	One         bool
 	Flat        bool
+	Exec        bool
 	Interpolate bool
 	Type        *Type
 	Comment     string

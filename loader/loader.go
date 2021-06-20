@@ -3,13 +3,12 @@ package loader
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-	"math/rand"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/models"
@@ -81,7 +80,6 @@ type ContextKey string
 type Loader struct {
 	Driver           string
 	Mask             string
-	ViewPrefix       string
 	Flags            func() []Flag
 	GoType           func(context.Context, string, bool) (string, string, int, error)
 	Schema           func(context.Context, models.DB) (string, error)
@@ -95,10 +93,11 @@ type Loader struct {
 	TableForeignKeys func(context.Context, models.DB, string, string) ([]*models.ForeignKey, error)
 	TableIndexes     func(context.Context, models.DB, string, string) ([]*models.Index, error)
 	IndexColumns     func(context.Context, models.DB, string, string, string) ([]*models.IndexColumn, error)
-	QueryStrip       func([]string, []string)
-	QueryColumns     func(context.Context, models.DB, string, []string) ([]*models.Column, error)
-	ViewCreate       interface{}
-	ViewDrop         interface{}
+	ViewStrip        func([]string) ([]string, []string)
+	ViewCreate       func(context.Context, models.DB, string, string, []string) (sql.Result, error)
+	ViewSchema       func(context.Context, models.DB, string) (string, error)
+	ViewTruncate     func(context.Context, models.DB, string, string) (sql.Result, error)
+	ViewDrop         func(context.Context, models.DB, string, string) (sql.Result, error)
 }
 
 // NthParam returns the 0-based Nth param for the Loader.
@@ -123,21 +122,6 @@ func (l *Loader) SchemaName(ctx context.Context, db models.DB) (string, error) {
 
 // intRE matches Go int types.
 var intRE = regexp.MustCompile(`^int(32|64)?$`)
-
-// letters for GenRandomID.
-const letters = "abcdefghijklmnopqrstuvwxyz0123456789"
-
-// rnd is a random source.
-var rnd = rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
-
-// randomID generates a 8 character random string.
-func randomID() string {
-	buf := make([]byte, 8)
-	for i := range buf {
-		buf[i] = letters[rnd.Intn(len(letters))]
-	}
-	return string(buf)
-}
 
 // parsePrec parses "type[ (precision[,scale])]" strings returning the parsed
 // precision and scale.

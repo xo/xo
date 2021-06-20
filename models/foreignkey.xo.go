@@ -53,12 +53,12 @@ func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) 
 	// load results
 	var res []*ForeignKey
 	for rows.Next() {
-		var fk ForeignKey
+		var row ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo); err != nil {
+		if err := rows.Scan(&row.ForeignKeyName, &row.ColumnName, &row.RefIndexName, &row.RefTableName, &row.RefColumnName, &row.KeyID, &row.SeqNo); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &fk)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -88,12 +88,12 @@ func MysqlTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]
 	// load results
 	var res []*ForeignKey
 	for rows.Next() {
-		var fk ForeignKey
+		var row ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName); err != nil {
+		if err := rows.Scan(&row.ForeignKeyName, &row.ColumnName, &row.RefTableName, &row.RefColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &fk)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -122,12 +122,12 @@ func Sqlite3TableForeignKeys(ctx context.Context, db DB, schema, table string) (
 	// load results
 	var res []*ForeignKey
 	for rows.Next() {
-		var fk ForeignKey
+		var row ForeignKey
 		// scan
-		if err := rows.Scan(&fk.KeyID, &fk.SeqNo, &fk.RefTableName, &fk.ColumnName, &fk.RefColumnName); err != nil {
+		if err := rows.Scan(&row.KeyID, &row.SeqNo, &row.RefTableName, &row.ColumnName, &row.RefColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &fk)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -165,12 +165,12 @@ func SqlserverTableForeignKeys(ctx context.Context, db DB, schema, table string)
 	// load results
 	var res []*ForeignKey
 	for rows.Next() {
-		var fk ForeignKey
+		var row ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName); err != nil {
+		if err := rows.Scan(&row.ForeignKeyName, &row.ColumnName, &row.RefTableName, &row.RefColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &fk)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -204,12 +204,12 @@ func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([
 	// load results
 	var res []*ForeignKey
 	for rows.Next() {
-		var fk ForeignKey
+		var row ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName); err != nil {
+		if err := rows.Scan(&row.ForeignKeyName, &row.ColumnName, &row.RefIndexName, &row.RefTableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &fk)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

@@ -29,13 +29,13 @@ func Run(ctx context.Context, name, version string) error {
 	switch cmd {
 	case "schema":
 		var err error
-		if ctx, err = Open(ctx, args); err != nil {
+		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
 			return err
 		}
 		g = NewSchemaGenerator()
 	case "query":
 		var err error
-		if ctx, err = Open(ctx, args); err != nil {
+		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
 			return err
 		}
 		g = NewQueryGenerator()
@@ -174,6 +174,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	queryCmd.Flag("strip", "enable stripping type casts").Short('B').BoolVar(&args.QueryParams.Strip)
 	queryCmd.Flag("one", "enable returning single (only one) result").Short('1').BoolVar(&args.QueryParams.One)
 	queryCmd.Flag("flat", "enable returning unstructured values").Short('l').BoolVar(&args.QueryParams.Flat)
+	queryCmd.Flag("exec", "enable exec (no introspection performed)").Short('X').BoolVar(&args.QueryParams.Exec)
 	queryCmd.Flag("interpolate", "enable interpolation of embedded params").Short('I').BoolVar(&args.QueryParams.Interpolate)
 	queryCmd.Flag("delimiter", "delimiter used for embedded params (default: %%)").Short('L').PlaceHolder("%%").Default("%%").StringVar(&args.QueryParams.Delimiter)
 	queryCmd.Flag("fields", "override field names for results").Short('Z').PlaceHolder("<field>").StringVar(&args.QueryParams.Fields)
@@ -303,6 +304,8 @@ type QueryParams struct {
 	One bool
 	// Flat toggles the generated code to return all scanned values directly.
 	Flat bool
+	// Exec toggles the generated code to do a db exec.
+	Exec bool
 	// Interpolate enables interpolation.
 	Interpolate bool
 	// Delimiter is the delimiter for parameterized values.
@@ -341,10 +344,11 @@ type OutParams struct {
 	Debug bool
 }
 
-// Open opens database and associated loader for the specified dsn.
-func Open(ctx context.Context, args *Args) (context.Context, error) {
+// Open opens a connection to the database, returning a context for use in the
+// application logic.
+func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 	// parse dsn
-	v, err := dburl.Parse(args.DbParams.DSN)
+	v, err := dburl.Parse(dsn)
 	if err != nil {
 		return nil, err
 	}
@@ -358,7 +362,7 @@ func Open(ctx context.Context, args *Args) (context.Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	schema := args.DbParams.Schema
+	// determine schema
 	if schema == "" {
 		if schema, err = l.SchemaName(ctx, db); err != nil {
 			return nil, err

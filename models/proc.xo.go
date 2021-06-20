@@ -31,12 +31,12 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// load results
 	var res []*Proc
 	for rows.Next() {
-		var p Proc
+		var row Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&row.ProcName, &row.ReturnType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &p)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -65,12 +65,12 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// load results
 	var res []*Proc
 	for rows.Next() {
-		var p Proc
+		var row Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&row.ProcName, &row.ReturnType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &p)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -97,12 +97,12 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	// load results
 	var res []*Proc
 	for rows.Next() {
-		var p Proc
+		var row Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&row.ProcName, &row.ReturnType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &p)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

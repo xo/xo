@@ -122,7 +122,7 @@ func (err *ErrUpdateFailed) Unwrap() error {
 	return err.Err
 }
 
-{{ if (driver "postgres") -}}
+{{ if driver "postgres" -}}
 // ErrUpsertFailed is the upsert failed error.
 type ErrUpsertFailed struct {
 	Err error
@@ -195,7 +195,7 @@ func (ss StringSlice) Value() (driver.Value, error) {
 }
 {{- end }}
 
-{{ if (driver "sqlite3") -}}
+{{ if driver "sqlite3" -}}
 // ErrInvalidTime is the invalid Time error.
 type ErrInvalidTime string
 

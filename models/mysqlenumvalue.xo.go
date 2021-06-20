@@ -22,9 +22,9 @@ func MysqlEnumValues(ctx context.Context, db DB, schema, enum string) (*MysqlEnu
 		`AND column_name = ?`
 	// run
 	logf(sqlstr, schema, enum)
-	var mev MysqlEnumValue
-	if err := db.QueryRowContext(ctx, sqlstr, schema, enum).Scan(&mev.EnumValues); err != nil {
+	var res MysqlEnumValue
+	if err := db.QueryRowContext(ctx, sqlstr, schema, enum).Scan(&res.EnumValues); err != nil {
 		return nil, logerror(err)
 	}
-	return &mev, nil
+	return &res, nil
 }

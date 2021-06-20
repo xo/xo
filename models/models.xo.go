@@ -203,11 +203,49 @@ func (ss StringSlice) Value() (driver.Value, error) {
 	return "{" + strings.Join(v, ",") + "}", nil
 }
 
+// PostgresViewCreate creates a view for introspection of the query.
+func PostgresViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`CREATE TEMPORARY VIEW ` + id + ` AS ` + strings.Join(query, "\n")
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// PostgresViewSchema retrieves the schema for a view created for introspection.
+func PostgresViewSchema(ctx context.Context, db DB, id string) (string, error) {
+	// query
+	sqlstr := `SELECT ` +
+		`n.nspname ` + // ::varchar AS schema_name
+		`FROM pg_class c ` +
+		`JOIN pg_namespace n ON n.oid = c.relnamespace ` +
+		`WHERE n.nspname LIKE 'pg_temp%' ` +
+		`AND c.relname = $1`
+	// run
+	logf(sqlstr, id)
+	var schemaName string
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&schemaName); err != nil {
+		return "", logerror(err)
+	}
+	return schemaName, nil
+}
+
+// PostgresViewDrop drops the view created for introspection.
+func PostgresViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`DROP VIEW ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
 // PostgresSchema retrieves the current schema.
 func PostgresSchema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`CURRENT_SCHEMA()`
+		`CURRENT_SCHEMA()` // ::varchar AS schema_name
 	// run
 	logf(sqlstr)
 	var schemaName string
@@ -215,6 +253,26 @@ func PostgresSchema(ctx context.Context, db DB) (string, error) {
 		return "", logerror(err)
 	}
 	return schemaName, nil
+}
+
+// MysqlViewCreate creates a view for introspection of the query.
+func MysqlViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`CREATE VIEW ` + id + ` AS ` + strings.Join(query, "\n")
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// MysqlViewDrop drops the view created for introspection.
+func MysqlViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`DROP VIEW ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
 }
 
 // MysqlSchema retrieves the current schema.
@@ -229,6 +287,26 @@ func MysqlSchema(ctx context.Context, db DB) (string, error) {
 		return "", logerror(err)
 	}
 	return schemaName, nil
+}
+
+// Sqlite3ViewCreate creates a view for introspection of the query.
+func Sqlite3ViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`CREATE TEMPORARY VIEW ` + id + ` AS ` + strings.Join(query, "\n")
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// Sqlite3ViewDrop drops the view created for introspection.
+func Sqlite3ViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`DROP VIEW ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
 }
 
 // Sqlite3Schema retrieves the current schema.
@@ -246,6 +324,26 @@ func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
+// SqlserverViewCreate creates a view for introspection of the query.
+func SqlserverViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`CREATE VIEW ` + id + ` AS ` + strings.Join(query, "\n")
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// SqlserverViewDrop drops the view created for introspection.
+func SqlserverViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`DROP VIEW ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
 // SqlserverSchema retrieves the current schema.
 func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 	// query
@@ -258,6 +356,36 @@ func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 		return "", logerror(err)
 	}
 	return schemaName, nil
+}
+
+// OracleViewCreate creates a view for introspection of the query.
+func OracleViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`CREATE GLOBAL TEMPORARY TABLE ` + id + ` ON COMMIT PRESERVE ROWS AS ` + strings.Join(query, "\n")
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// OracleViewTruncate truncates the view created for introspection.
+func OracleViewTruncate(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`TRUNCATE TABLE ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
+}
+
+// OracleViewDrop drops the view created for introspection.
+func OracleViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
+	// query
+	sqlstr := `/* ` + schema + ` */ ` +
+		`DROP TABLE ` + id
+	// run
+	logf(sqlstr)
+	return db.ExecContext(ctx, sqlstr)
 }
 
 // OracleSchema retrieves the current schema.

@@ -25,11 +25,36 @@ mkdir -p $DEST
 rm -f *.db
 rm -rf $DEST/*.xo.go
 
+# postgres view create query
+COMMENT='PostgresViewCreate creates a view for introspection of the query.'
+$XOBIN query $PGDB -M -B -X -F PostgresViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+CREATE TEMPORARY VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
+ENDSQL
+
+# postgres view schema query
+COMMENT='PostgresViewSchema retrieves the schema for a view created for introspection.'
+$XOBIN query $PGDB -M -B -l -F PostgresViewSchema --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+SELECT
+  n.nspname::varchar AS schema_name
+FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname LIKE 'pg_temp%'
+  AND c.relname = %%id string%%
+ENDSQL
+
+# postgres view drop query
+COMMENT='PostgresViewDrop drops the view created for introspection.'
+$XOBIN query $PGDB -M -B -X -F PostgresViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+DROP VIEW %%id string,interpolate%%
+ENDSQL
+
 # postgres schema query
 COMMENT='PostgresSchema retrieves the current schema.'
-$XOBIN query $PGDB -M -B -l -F PostgresSchema --func-comment "$COMMENT" --single=models.xo.go -o $DEST $@ << ENDSQL
+$XOBIN query $PGDB -M -B -l -F PostgresSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
-  CURRENT_SCHEMA()::text AS schema_name
+  CURRENT_SCHEMA()::varchar AS schema_name
 ENDSQL
 
 # postgres enum list query
@@ -214,6 +239,20 @@ WHERE n.nspname = %%schema string%%
   AND ic.relname = %%index string%%
 ENDSQL
 
+# mysql view create query
+COMMENT='MysqlViewCreate creates a view for introspection of the query.'
+$XOBIN query $MYDB -M -B -X -F MysqlViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+CREATE VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
+ENDSQL
+
+# mysql view drop query
+COMMENT='MysqlViewDrop drops the view created for introspection.'
+$XOBIN query $MYDB -M -B -X -F MysqlViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+DROP VIEW %%id string,interpolate%%
+ENDSQL
+
 # mysql schema query
 COMMENT='MysqlSchema retrieves the current schema.'
 $XOBIN query $MYDB -M -B -l -F MysqlSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
@@ -340,6 +379,20 @@ WHERE index_schema = %%schema string%%
 ORDER BY seq_in_index
 ENDSQL
 
+# sqlite3 view create query
+COMMENT='Sqlite3ViewCreate creates a view for introspection of the query.'
+$XOBIN query $SQDB -M -B -X -F Sqlite3ViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+CREATE TEMPORARY VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
+ENDSQL
+
+# sqlite3 view drop query
+COMMENT='Sqlite3ViewDrop drops the view created for introspection.'
+$XOBIN query $SQDB -M -B -X -F Sqlite3ViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+DROP VIEW %%id string,interpolate%%
+ENDSQL
+
 # sqlite3 schema query
 COMMENT='Sqlite3Schema retrieves the current schema.'
 $XOBIN query $SQDB -M -B -l -F Sqlite3Schema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
@@ -413,6 +466,20 @@ SELECT
   cid,
   name AS column_name
 FROM pragma_index_info(%%index string%%)
+ENDSQL
+
+# sqlserver view create query
+COMMENT='SqlserverViewCreate creates a view for introspection of the query.'
+$XOBIN query $MSDB -M -B -X -F SqlserverViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+CREATE VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
+ENDSQL
+
+# sqlserver view drop query
+COMMENT='SqlserverViewDrop drops the view created for introspection.'
+$XOBIN query $MSDB -M -B -X -F SqlserverViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+DROP VIEW %%id string,interpolate%%
 ENDSQL
 
 # sqlserver schema query
@@ -551,6 +618,27 @@ WHERE o.type = 'U'
   AND o.name = %%table string%%
   AND i.name = %%index string%%
 ORDER BY k.keyno
+ENDSQL
+
+# oracle view create query
+COMMENT='OracleViewCreate creates a view for introspection of the query.'
+$XOBIN query $ORDB -M -B -X -F OracleViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+CREATE GLOBAL TEMPORARY TABLE %%id string,interpolate%% ON COMMIT PRESERVE ROWS AS %%query []string,interpolate,join%%
+ENDSQL
+
+# oracle view truncate query
+COMMENT='OracleViewTruncate truncates the view created for introspection.'
+$XOBIN query $ORDB -M -B -X -F OracleViewTruncate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+TRUNCATE TABLE %%id string,interpolate%%
+ENDSQL
+
+# oracle view drop query
+COMMENT='OracleViewDrop drops the view created for introspection.'
+$XOBIN query $ORDB -M -B -X -F OracleViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
+/* %%schema string,interpolate%% */
+DROP TABLE %%id string,interpolate%%
 ENDSQL
 
 # oracle schema query

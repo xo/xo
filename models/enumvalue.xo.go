@@ -33,12 +33,12 @@ func PostgresEnumValues(ctx context.Context, db DB, schema, enum string) ([]*Enu
 	// load results
 	var res []*EnumValue
 	for rows.Next() {
-		var ev EnumValue
+		var row EnumValue
 		// scan
-		if err := rows.Scan(&ev.EnumValue, &ev.ConstValue); err != nil {
+		if err := rows.Scan(&row.EnumValue, &row.ConstValue); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &ev)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

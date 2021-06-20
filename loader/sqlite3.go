@@ -3,7 +3,6 @@ package loader
 import (
 	"context"
 	"regexp"
-	"strings"
 
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates/gotpl"
@@ -21,12 +20,10 @@ func init() {
 		TableForeignKeys: models.Sqlite3TableForeignKeys,
 		TableIndexes:     models.Sqlite3TableIndexes,
 		IndexColumns:     models.Sqlite3IndexColumns,
-		QueryColumns:     Sqlite3QueryColumns,
+		ViewCreate:       models.Sqlite3ViewCreate,
+		ViewDrop:         models.Sqlite3ViewDrop,
 	})
 }
-
-// unsignedRE is the unsigned regexp.
-var unsignedRE = regexp.MustCompile(`\s*unsigned\*`)
 
 // Sqlite3GoType parse a sqlite3 type into a Go type based on the column
 // definition.
@@ -84,15 +81,5 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 	return goType, zero, prec, nil
 }
 
-// Sqlite3QueryColumns parses a sqlite3 query and generates a type for it.
-func Sqlite3QueryColumns(ctx context.Context, db models.DB, _ string, inspect []string) ([]*models.Column, error) {
-	// create temporary view xoid
-	xoid := "_xo_" + randomID()
-	viewq := `CREATE TEMPORARY VIEW ` + xoid + ` AS ` + strings.Join(inspect, "\n")
-	models.Logf(viewq)
-	if _, err := db.ExecContext(ctx, viewq); err != nil {
-		return nil, err
-	}
-	// load column information
-	return models.Sqlite3TableColumns(ctx, db, "", xoid)
-}
+// unsignedRE is the unsigned regexp.
+var unsignedRE = regexp.MustCompile(`\s*unsigned\*`)

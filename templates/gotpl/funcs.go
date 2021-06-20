@@ -5,12 +5,10 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"strconv"
+	"regexp"
 	"strings"
 	"text/template"
 
-	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates"
 )
 
@@ -104,40 +102,52 @@ func (f *Funcs) AddKnownType(name string) {
 // FuncMap returns the func map.
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
+		// general
+		"driver":  f.driverfn,
+		"schema":  f.schemafn,
+		"first":   f.firstfn,
+		"pkg":     f.pkgfn,
+		"tags":    f.tagsfn,
+		"imports": f.importsfn,
+		"inject":  f.injectfn,
 		// context
-		"driver":          f.driverfn,
-		"schema":          f.schemafn,
-		"first":           f.firstfn,
-		"pkg":             f.pkgfn,
-		"tags":            f.tagsfn,
-		"imports":         f.importsfn,
-		"nthparam":        f.nthparam,
-		"fieldtag":        f.fieldtagfn,
 		"context":         f.contextfn,
 		"context_both":    f.context_both,
 		"context_disable": f.context_disable,
-		"inject":          f.injectfn,
-
-		// general
-		"colcount":           f.colcount,
-		"colname":            f.colname,
-		"colnames":           f.colnames,
-		"colnamesmulti":      f.colnamesmulti,
-		"colnamesquery":      f.colnamesquery,
-		"colnamesquerymulti": f.colnamesquerymulti,
-		"colprefixnames":     f.colprefixnames,
-		"colvals":            f.colvals,
-		"colvalsmulti":       f.colvalsmulti,
-		"convext":            f.convext,
-		"fieldnames":         f.fieldnames,
-		"fieldnamesmulti":    f.fieldnamesmulti,
-		"startcount":         f.startcount,
-		"hascolumn":          f.hascolumn,
-		"hasfield":           f.hasfield,
-		"paramlist":          f.paramlist,
-		"reniltype":          f.reniltype,
-		"retype":             f.retype,
-		"shortname":          f.shortname,
+		// func and query
+		"func_name": f.func_name,
+		"func":      f.funcfn,
+		"sqlstr":    f.sqlstr,
+		"db":        f.db,
+		// type
+		"names": f.names,
+		"zero":  f.zero,
+		"type":  f.typefn,
+		"field": f.field,
+		//"fieldtag": f.fieldtagfn,
+		/*
+			"nthparam":        f.nthparam,
+			// general
+			"colcount":           f.colcount,
+			"colname":            f.colname,
+			"colnames":           f.colnames,
+			"colnamesmulti":      f.colnamesmulti,
+			"colnamesquery":      f.colnamesquery,
+			"colnamesquerymulti": f.colnamesquerymulti,
+			"colprefixnames":     f.colprefixnames,
+			"colvals":            f.colvals,
+			"colvalsmulti":       f.colvalsmulti,
+			"convext":            f.convext,
+			"fieldnames":         f.fieldnames,
+			"fieldnamesmulti":    f.fieldnamesmulti,
+			"startcount":         f.startcount,
+			"hascolumn":          f.hascolumn,
+			"hasfield":           f.hasfield,
+			"paramlist":          f.paramlist,
+			"zero":          f.zero,
+			"retype":             f.retype,
+			"shortname":          f.shortname,
+		*/
 	}
 }
 
@@ -210,20 +220,6 @@ func (f *Funcs) importsfn() []PackageImport {
 	return imports
 }
 
-// nthparam returns the nth param placeholder
-func (f *Funcs) nthparam(i int) string {
-	return f.nth(i)
-}
-
-// fieldtagfn returns the field tag for the field.
-func (f *Funcs) fieldtagfn(field *templates.Field) (string, error) {
-	buf := new(bytes.Buffer)
-	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
-		return "", err
-	}
-	return buf.String(), nil
-}
-
 // contextfn returns true when the context mode is both or only.
 func (f *Funcs) contextfn() bool {
 	return f.context == "both" || f.context == "only"
@@ -244,8 +240,142 @@ func (f *Funcs) injectfn() string {
 	return f.inject
 }
 
-// retype checks typ against known types, and prefixing custom (if applicable).
-func (f *Funcs) retype(typ string) string {
+// func_name builds a func name.
+func (f *Funcs) func_name(context bool, name string) string {
+	if context {
+		return name + "Context"
+	}
+	return name
+}
+
+// funcfn builds a func definition.
+func (f *Funcs) funcfn(context bool, v interface{}) string {
+	var recv, name string
+	var p, r []string
+	switch x := v.(type) {
+	case *templates.Query:
+		name = f.func_name(context, x.Name)
+		// params
+		if f.contextfn() {
+			p = append(p, "ctx context.Context")
+		}
+		p = append(p, "db DB")
+		for _, z := range x.Params {
+			p = append(p, fmt.Sprintf("%s %s", z.Name, z.Type))
+		}
+		// returns
+		switch {
+		case x.Exec:
+			r = append(r, "sql.Result")
+		case x.Flat:
+			for _, z := range x.Type.Fields {
+				r = append(r, f.typefn(z.Type))
+			}
+		case x.One:
+			r = append(r, "*"+x.Type.Name)
+		default:
+			r = append(r, "[]*"+x.Type.Name)
+		}
+		r = append(r, "error")
+	}
+	return fmt.Sprintf("func %s%s(%s) (%s)", recv, name, strings.Join(p, ", "), strings.Join(r, ", "))
+}
+
+// sqlstr generates a sqlstr for the specified query and any accompanying
+// comments.
+func (f *Funcs) sqlstr(v interface{}) string {
+	var interpolate bool
+	var query, comments []string
+	switch x := v.(type) {
+	case *templates.Query:
+		interpolate, query, comments = x.Interpolate, x.Query, x.Comments
+	default:
+		fmt.Sprintf(`const sqlstr = [[ NOT IMPLEMENTED FOR %T ]]`, v)
+	}
+	typ := "const"
+	if interpolate {
+		typ = "var"
+	}
+	var lines []string
+	for i := 0; i < len(query); i++ {
+		line := "`" + query[i] + "`"
+		if i != len(query)-1 {
+			line += " + "
+		}
+		if s := strings.TrimSpace(comments[i]); s != "" {
+			line += "// " + s
+		}
+		lines = append(lines, line)
+	}
+	sqlstr := stripRE.ReplaceAllString(strings.Join(lines, "\n"), " ")
+	return fmt.Sprintf("%s sqlstr = %s", typ, sqlstr)
+}
+
+var stripRE = regexp.MustCompile(`\s+\+\s+` + "``")
+
+// db generates a db.<name>Context(ctx, sqlstr, ...)
+func (f *Funcs) db(name string, v interface{}) string {
+	// params
+	var p []interface{}
+	if f.contextfn() {
+		name, p = name+"Context", append(p, "ctx")
+	}
+	return fmt.Sprintf(`db.%s(%s)`, name, f.names("", append(p, "sqlstr", v)...))
+}
+
+// names generates a list of names.
+func (f *Funcs) names(prefix string, z ...interface{}) string {
+	var names []string
+	for i, v := range z {
+		switch x := v.(type) {
+		case string:
+			names = append(names, x)
+		case *templates.Query:
+			for _, p := range x.Params {
+				if p.Interpolate {
+					continue
+				}
+				names = append(names, prefix+p.Name)
+			}
+		case *templates.Type:
+			for _, p := range x.Fields {
+				names = append(names, prefix+p.Name)
+			}
+		case []*templates.Field:
+			for _, p := range x {
+				names = append(names, prefix+p.Name)
+			}
+		default:
+			names = append(names, fmt.Sprintf("/* UNSUPPORTED TYPE %d %T */", i, v))
+		}
+	}
+	return strings.Join(names, ", ")
+}
+
+// zero generates a zero list.
+func (f *Funcs) zero(z ...interface{}) string {
+	var zeroes []string
+	for i, v := range z {
+		switch x := v.(type) {
+		case string:
+			zeroes = append(zeroes, x)
+		case *templates.Type:
+			for _, p := range x.Fields {
+				zeroes = append(zeroes, p.Zero)
+			}
+		case []*templates.Field:
+			for _, p := range x {
+				zeroes = append(zeroes, p.Zero)
+			}
+		default:
+			zeroes = append(zeroes, fmt.Sprintf("/* UNSUPPORTED TYPE %d %T */", i, v))
+		}
+	}
+	return strings.Join(zeroes, ", ")
+}
+
+// typefn generates the Go type, prefixing the custom package name if applicable.
+func (f *Funcs) typefn(typ string) string {
 	if strings.Contains(typ, ".") {
 		return typ
 	}
@@ -264,9 +394,27 @@ func (f *Funcs) retype(typ string) string {
 	return prefix + typ
 }
 
-// reniltype checks typ against known nil types (similar to retype), prefixing
+// field generates a field definition for a struct.
+func (f *Funcs) field(field *templates.Field) (string, error) {
+	tag, comment := "", ""
+	buf := new(bytes.Buffer)
+	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
+		return "", err
+	}
+	if s := buf.String(); s != "" {
+		tag = " " + s
+	}
+	if field.Col != nil {
+		comment = " // " + field.Col.ColumnName
+	}
+	return fmt.Sprintf("%s %s%s%s", field.Name, field.Type, tag, comment), nil
+}
+
+/*
+
+// zero checks typ against known nil types (similar to typefn), prefixing
 // custom (if applicable).
-func (f *Funcs) reniltype(typ string) string {
+func (f *Funcs) zero(typ string) string {
 	if strings.Contains(typ, ".") {
 		return typ
 	}
@@ -702,6 +850,15 @@ func (f *Funcs) hasfield(fields []*templates.Field, name string) bool {
 func (f *Funcs) startcount(fields []*templates.Field, pkFields []*templates.Field) int {
 	return len(fields) - len(pkFields)
 }
+
+*/
+
+/*
+// nthparam returns the nth param placeholder
+func (f *Funcs) nthparam(i int) string {
+	return f.nth(i)
+}
+*/
 
 // esc escapes s.
 func (f *Funcs) esc(s string, typ string) string {

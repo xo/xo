@@ -24,9 +24,9 @@ func PostgresGetColOrder(ctx context.Context, db DB, schema, index string) (*Pos
 		`AND ic.relname = $2`
 	// run
 	logf(sqlstr, schema, index)
-	var pco PostgresColOrder
-	if err := db.QueryRowContext(ctx, sqlstr, schema, index).Scan(&pco.Ord); err != nil {
+	var res PostgresColOrder
+	if err := db.QueryRowContext(ctx, sqlstr, schema, index).Scan(&res.Ord); err != nil {
 		return nil, logerror(err)
 	}
-	return &pco, nil
+	return &res, nil
 }

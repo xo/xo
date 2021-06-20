@@ -50,12 +50,12 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 	// load results
 	var res []*Column
 	for rows.Next() {
-		var c Column
+		var row Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&row.FieldOrdinal, &row.ColumnName, &row.DataType, &row.NotNull, &row.DefaultValue, &row.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &c)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -87,12 +87,12 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 	// load results
 	var res []*Column
 	for rows.Next() {
-		var c Column
+		var row Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&row.FieldOrdinal, &row.ColumnName, &row.DataType, &row.NotNull, &row.DefaultValue, &row.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &c)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -122,12 +122,12 @@ func Sqlite3TableColumns(ctx context.Context, db DB, schema, table string) ([]*C
 	// load results
 	var res []*Column
 	for rows.Next() {
-		var c Column
+		var row Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&row.FieldOrdinal, &row.ColumnName, &row.DataType, &row.NotNull, &row.DefaultValue, &row.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &c)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -172,12 +172,12 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 	// load results
 	var res []*Column
 	for rows.Next() {
-		var c Column
+		var row Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&row.FieldOrdinal, &row.ColumnName, &row.DataType, &row.NotNull, &row.DefaultValue, &row.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &c)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -222,12 +222,12 @@ func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Co
 	// load results
 	var res []*Column
 	for rows.Next() {
-		var c Column
+		var row Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&row.FieldOrdinal, &row.ColumnName, &row.DataType, &row.NotNull, &row.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &c)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

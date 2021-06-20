@@ -33,12 +33,12 @@ func PostgresTableSequences(ctx context.Context, db DB, schema string) ([]*Seque
 	// load results
 	var res []*Sequence
 	for rows.Next() {
-		var s Sequence
+		var row Sequence
 		// scan
-		if err := rows.Scan(&s.TableName); err != nil {
+		if err := rows.Scan(&row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &s)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -64,12 +64,12 @@ func MysqlTableSequences(ctx context.Context, db DB, schema string) ([]*Sequence
 	// load results
 	var res []*Sequence
 	for rows.Next() {
-		var s Sequence
+		var row Sequence
 		// scan
-		if err := rows.Scan(&s.TableName); err != nil {
+		if err := rows.Scan(&row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &s)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -97,12 +97,12 @@ func Sqlite3TableSequences(ctx context.Context, db DB, schema string) ([]*Sequen
 	// load results
 	var res []*Sequence
 	for rows.Next() {
-		var s Sequence
+		var row Sequence
 		// scan
-		if err := rows.Scan(&s.TableName); err != nil {
+		if err := rows.Scan(&row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &s)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -130,12 +130,12 @@ func SqlserverTableSequences(ctx context.Context, db DB, schema string) ([]*Sequ
 	// load results
 	var res []*Sequence
 	for rows.Next() {
-		var s Sequence
+		var row Sequence
 		// scan
-		if err := rows.Scan(&s.TableName); err != nil {
+		if err := rows.Scan(&row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &s)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -161,12 +161,12 @@ func OracleTableSequences(ctx context.Context, db DB, schema string) ([]*Sequenc
 	// load results
 	var res []*Sequence
 	for rows.Next() {
-		var s Sequence
+		var row Sequence
 		// scan
-		if err := rows.Scan(&s.TableName); err != nil {
+		if err := rows.Scan(&row.TableName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &s)
+		res = append(res, &row)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

@@ -2,7 +2,7 @@ package loader
 
 import (
 	"context"
-	"strings"
+	"regexp"
 
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates/gotpl"
@@ -22,7 +22,9 @@ func init() {
 		TableForeignKeys: models.SqlserverTableForeignKeys,
 		TableIndexes:     models.SqlserverTableIndexes,
 		IndexColumns:     models.SqlserverIndexColumns,
-		QueryColumns:     SqlserverQueryColumns,
+		ViewStrip:        SqlserverViewStrip,
+		ViewCreate:       models.SqlserverViewCreate,
+		ViewDrop:         models.SqlserverViewDrop,
 	})
 }
 
@@ -84,28 +86,18 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 	return goType, zero, prec, nil
 }
 
-// SqlserverQueryColumns parses the query and generates a type for it.
-func SqlserverQueryColumns(ctx context.Context, db models.DB, schema string, inspect []string) ([]*models.Column, error) {
-	// process inspect -- cannot have 'order by' in a CREATE VIEW
-	ins := []string{}
-	for _, l := range inspect {
-		if !strings.HasPrefix(strings.ToUpper(l), "ORDER BY ") {
-			ins = append(ins, l)
+// SqlserverViewStrip strips ORDER BY clauses from the passed query.
+func SqlserverViewStrip(query []string) ([]string, []string) {
+	// sqlserver cannot have an 'ORDER BY' clause in a CREATE VIEW
+	var inspect []string
+	for _, line := range query {
+		if orderByRE.MatchString(line) {
+			continue
 		}
+		inspect = append(inspect, line)
 	}
-	// create temporary view xoid
-	xoid := "_xo_" + randomID()
-	viewq := `CREATE VIEW ` + xoid + ` AS ` + strings.Join(ins, "\n")
-	models.Logf(viewq)
-	if _, err := db.ExecContext(ctx, viewq); err != nil {
-		return nil, err
-	}
-	// load columns
-	cols, err := models.SqlserverTableColumns(ctx, db, schema, xoid)
-	// drop inspect view
-	dropq := `DROP VIEW ` + xoid
-	models.Logf(dropq)
-	_, _ = db.ExecContext(ctx, dropq)
-	// load column information
-	return cols, err
+	return inspect, make([]string, len(inspect))
 }
+
+// orderByRE is a regexp matching ORDER by clauses in sqlserver queries.
+var orderByRE = regexp.MustCompile(`(?i)^\s*ORDER\s+BY\s+`)
