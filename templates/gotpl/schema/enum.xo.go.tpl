@@ -40,12 +40,12 @@ func ({{ $short }} *{{ $type }}) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the sql/driver.Valuer interface.
+// Value satisfies the driver.Valuer interface.
 func ({{ $short }} {{ $type }}) Value() (driver.Value, error) {
 	return {{ $short }}.String(), nil
 }
 
-// Scan satisfies the database/sql.Scanner interface.
+// Scan satisfies the sql.Scanner interface.
 func ({{ $short }} *{{ $type }}) Scan(v interface{}) error {
 	if buf, ok := v.([]byte); ok {
 		return {{ $short }}.UnmarshalText(buf)

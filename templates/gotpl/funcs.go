@@ -124,7 +124,6 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"zero":  f.zero,
 		"type":  f.typefn,
 		"field": f.field,
-		//"fieldtag": f.fieldtagfn,
 		/*
 			"nthparam":        f.nthparam,
 			// general
@@ -144,7 +143,6 @@ func (f *Funcs) FuncMap() template.FuncMap {
 			"hascolumn":          f.hascolumn,
 			"hasfield":           f.hasfield,
 			"paramlist":          f.paramlist,
-			"zero":          f.zero,
 			"retype":             f.retype,
 			"shortname":          f.shortname,
 		*/
@@ -411,25 +409,6 @@ func (f *Funcs) field(field *templates.Field) (string, error) {
 }
 
 /*
-
-// zero checks typ against known nil types (similar to typefn), prefixing
-// custom (if applicable).
-func (f *Funcs) zero(typ string) string {
-	if strings.Contains(typ, ".") {
-		return typ
-	}
-	if strings.HasSuffix(typ, "{}") {
-		if _, ok := f.knownTypes[typ[:len(typ)-2]]; ok {
-			return typ
-		}
-		pkg := f.custom
-		if pkg != "" {
-			pkg = pkg + "."
-		}
-		return pkg + typ
-	}
-	return typ
-}
 
 // shortname generates a safe Go identifier for typ. typ is first checked
 // against shortNames, and if not found, then the value is calculated and

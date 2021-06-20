@@ -8,7 +8,7 @@
 {{- end }}
 type {{ $type.Name }} struct {
 {{ range $type.Fields -}}
-	{{ .Name }} {{ retype .Type }} {{ fieldtag . }} // {{ .Col.ColumnName }}
+	{{ field . }}
 {{ end }}{{ if $type.PrimaryKey -}}
 	// xo fields
 	_exists, _deleted bool
@@ -110,7 +110,7 @@ func ({{ $short }} *{{ $type.Name }}) Insert(db DB) error {
 {{- end }}
 
 {{ if eq (fieldnamesmulti $type.Fields $short $type.PrimaryKeyFields) "" -}}
-// ------ NOTE: Update statements omitted due to lack of fields other than primary key ------ 
+// ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 {{- else -}}
 // Update{{ if context_both }}Context{{ end }} updates a {{ $type.Name }} in the database.
 func ({{ $short }} *{{ $type.Name }}) Update{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB) error {

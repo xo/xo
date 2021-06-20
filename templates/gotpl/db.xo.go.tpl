@@ -264,7 +264,7 @@ func (t *Time) Parse(s string) error {
 }
 
 // TimestampFormats are the timestamp formats used by SQLite3 database drivers
-// to store a time.Time in SQLite3. 
+// to store a time.Time in SQLite3.
 //
 // The first format in the slice will be used when saving time values into the
 // database.  When parsing a string from a timestamp or datetime column, the
