@@ -26,7 +26,7 @@ rm -f *.db
 rm -rf $DEST/*.xo.go
 
 # postgres view create query
-COMMENT='{{ . }} creates a view for introspection of the query.'
+COMMENT='{{ . }} creates a view for introspection.'
 $XOBIN query $PGDB -M -B -X -F PostgresViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 CREATE TEMPORARY VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
@@ -44,21 +44,21 @@ WHERE n.nspname LIKE 'pg_temp%'
 ENDSQL
 
 # postgres view drop query
-COMMENT='{{ . }} drops the view created for introspection.'
+COMMENT='{{ . }} drops a view created for introspection.'
 $XOBIN query $PGDB -M -B -X -F PostgresViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 DROP VIEW %%id string,interpolate%%
 ENDSQL
 
 # postgres schema query
-COMMENT='{{ . }} retrieves the current schema.'
+COMMENT='{{ . }} retrieves the schema.'
 $XOBIN query $PGDB -M -B -l -F PostgresSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
   CURRENT_SCHEMA()::varchar AS schema_name
 ENDSQL
 
 # postgres enum list query
-COMMENT='{{ . }} represents a enum.'
+COMMENT='{{ . }} is a enum.'
 $XOBIN query $PGDB -M -B -2 -T Enum -F PostgresEnums --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   DISTINCT t.typname::varchar AS enum_name
@@ -69,7 +69,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres enum value list query
-COMMENT='{{ . }} represents a enum value.'
+COMMENT='{{ . }} is a enum value.'
 $XOBIN query $PGDB -M -B -2 -T EnumValue -F PostgresEnumValues --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   e.enumlabel::varchar AS enum_value,
@@ -82,7 +82,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres proc list query
-COMMENT='{{ . }} represents a stored procedure.'
+COMMENT='{{ . }} is a stored procedure.'
 $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   p.proname::varchar AS proc_name,
@@ -93,10 +93,13 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres proc parameter list query
-COMMENT='{{ . }} represents a stored procedure param.'
+COMMENT='{{ . }} is a stored procedure param.'
 $XOBIN query $PGDB -M -B -2 -T ProcParam -F PostgresProcParams --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  LEFT(PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')))-1)::varchar AS param_name,
+  LEFT(
+    PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid),
+    -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))) - 1
+  )::varchar AS param_name,
   UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))::varchar AS param_type
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
@@ -105,7 +108,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres table list query
-COMMENT='{{ . }} represents table info.'
+COMMENT='{{ . }} is a table.'
 $XOBIN query $PGDB -M -B -2 -T Table -F PostgresTables --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   (CASE c.relkind
@@ -125,7 +128,7 @@ ENDSQL
 
 # postgres table column list query
 FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
-COMMENT='{{ . }} represents column info.'
+COMMENT='{{ . }} is a column.'
 $XOBIN query $PGDB -M -B -2 -T Column -F PostgresTableColumns -Z "$FIELDS" --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   a.attnum::integer AS field_ordinal,
@@ -150,7 +153,7 @@ ORDER BY a.attnum
 ENDSQL
 
 # postgres sequence list query
-COMMENT='{{ . }} represents a table that references a sequence.'
+COMMENT='{{ . }} is a sequence.'
 $XOBIN query $PGDB -M -B -2 -T Sequence -F PostgresTableSequences --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   t.relname::varchar AS table_name
@@ -164,7 +167,7 @@ WHERE s.relkind = 'S'
 ENDSQL
 
 # postgres table foreign key list query
-COMMENT='{{ . }} represents a foreign key.'
+COMMENT='{{ . }} is a foreign key.'
 $XOBIN query $PGDB -M -B -2 -T ForeignKey -F PostgresTableForeignKeys --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   r.conname::varchar AS foreign_key_name,
@@ -192,7 +195,7 @@ ORDER BY r.conname, b.attname
 ENDSQL
 
 # postgres table index list query
-COMMENT='{{ . }} represents an index.'
+COMMENT='{{ . }} is a index.'
 $XOBIN query $PGDB -M -B -2 -T Index -F PostgresTableIndexes --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   DISTINCT ic.relname::varchar AS index_name,
@@ -208,7 +211,7 @@ WHERE i.indkey <> '0'
 ENDSQL
 
 # postgres index column list query
-COMMENT='{{ . }} represents index column info.'
+COMMENT='{{ . }} is a index column.'
 $XOBIN query $PGDB -M -B -2 -T IndexColumn -F PostgresIndexColumns --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   (row_number() over())::integer AS seq_no,
@@ -227,7 +230,7 @@ WHERE i.indkey <> '0'
 ENDSQL
 
 # postgres index column order query
-COMMENT='{{ . }} represents index column order.'
+COMMENT='{{ . }} is a index column order.'
 $XOBIN query $PGDB -M -B -1 -2 -T PostgresColOrder -F PostgresGetColOrder --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   i.indkey::varchar AS ord
@@ -240,21 +243,21 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # mysql view create query
-COMMENT='{{ . }} creates a view for introspection of the query.'
+COMMENT='{{ . }} creates a view for introspection.'
 $XOBIN query $MYDB -M -B -X -F MysqlViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 CREATE VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
 ENDSQL
 
 # mysql view drop query
-COMMENT='{{ . }} drops the view created for introspection.'
+COMMENT='{{ . }} drops a view created for introspection.'
 $XOBIN query $MYDB -M -B -X -F MysqlViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 DROP VIEW %%id string,interpolate%%
 ENDSQL
 
 # mysql schema query
-COMMENT='{{ . }} retrieves the current schema.'
+COMMENT='{{ . }} retrieves the schema.'
 $XOBIN query $MYDB -M -B -l -F MysqlSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
   SCHEMA() AS schema_name
@@ -380,21 +383,21 @@ ORDER BY seq_in_index
 ENDSQL
 
 # sqlite3 view create query
-COMMENT='{{ . }} creates a view for introspection of the query.'
+COMMENT='{{ . }} creates a view for introspection.'
 $XOBIN query $SQDB -M -B -X -F Sqlite3ViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 CREATE TEMPORARY VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
 ENDSQL
 
 # sqlite3 view drop query
-COMMENT='{{ . }} drops the view created for introspection.'
+COMMENT='{{ . }} drops a view created for introspection.'
 $XOBIN query $SQDB -M -B -X -F Sqlite3ViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 DROP VIEW %%id string,interpolate%%
 ENDSQL
 
 # sqlite3 schema query
-COMMENT='{{ . }} retrieves the current schema.'
+COMMENT='{{ . }} retrieves the schema.'
 $XOBIN query $SQDB -M -B -l -F Sqlite3Schema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
   REPLACE(file, RTRIM(file, REPLACE(file, '/', '')), '') AS schema_name
@@ -469,21 +472,21 @@ FROM pragma_index_info(%%index string%%)
 ENDSQL
 
 # sqlserver view create query
-COMMENT='{{ . }} creates a view for introspection of the query.'
+COMMENT='{{ . }} creates a view for introspection.'
 $XOBIN query $MSDB -M -B -X -F SqlserverViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 CREATE VIEW %%id string,interpolate%% AS %%query []string,interpolate,join%%
 ENDSQL
 
 # sqlserver view drop query
-COMMENT='{{ . }} drops the view created for introspection.'
+COMMENT='{{ . }} drops a view created for introspection.'
 $XOBIN query $MSDB -M -B -X -F SqlserverViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 DROP VIEW %%id string,interpolate%%
 ENDSQL
 
 # sqlserver schema query
-COMMENT='{{ . }} retrieves the current schema.'
+COMMENT='{{ . }} retrieves the schema.'
 $XOBIN query $MSDB -M -B -l -F SqlserverSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
   SCHEMA_NAME() AS schema_name
@@ -546,7 +549,7 @@ SELECT
   ), 0) > 0, 1, 0) AS is_primary_key
 FROM syscolumns c
   JOIN sysobjects o ON o.id = c.id
-  LEFT JOIN sysobjects k ON k.xtype='PK'
+  LEFT JOIN sysobjects k ON k.xtype = 'PK'
     AND k.parent_obj = o.id
   LEFT JOIN syscomments x ON x.id = c.cdefault
 WHERE o.type IN('U', 'V')
@@ -621,28 +624,28 @@ ORDER BY k.keyno
 ENDSQL
 
 # oracle view create query
-COMMENT='{{ . }} creates a view for introspection of the query.'
+COMMENT='{{ . }} creates a view for introspection.'
 $XOBIN query $ORDB -M -B -X -F OracleViewCreate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 CREATE GLOBAL TEMPORARY TABLE %%id string,interpolate%% ON COMMIT PRESERVE ROWS AS %%query []string,interpolate,join%%
 ENDSQL
 
 # oracle view truncate query
-COMMENT='{{ . }} truncates the view created for introspection.'
+COMMENT='{{ . }} truncates a view created for introspection.'
 $XOBIN query $ORDB -M -B -X -F OracleViewTruncate --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 TRUNCATE TABLE %%id string,interpolate%%
 ENDSQL
 
 # oracle view drop query
-COMMENT='{{ . }} drops the view created for introspection.'
+COMMENT='{{ . }} drops a view created for introspection.'
 $XOBIN query $ORDB -M -B -X -F OracleViewDrop --func-comment "$COMMENT" --single=models.xo.go -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
 DROP TABLE %%id string,interpolate%%
 ENDSQL
 
 # oracle schema query
-COMMENT='{{ . }} retrieves the current schema.'
+COMMENT='{{ . }} retrieves the schema.'
 $XOBIN query $ORDB -M -B -l -F OracleSchema --func-comment "$COMMENT" --single=models.xo.go -a -o $DEST $@ << ENDSQL
 SELECT
   LOWER(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')) AS schema_name
