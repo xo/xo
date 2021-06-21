@@ -115,15 +115,17 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"context_both":    f.context_both,
 		"context_disable": f.context_disable,
 		// func and query
-		"func_name": f.func_name,
-		"func":      f.funcfn,
-		"sqlstr":    f.sqlstr,
-		"db":        f.db,
+		"func_name":    f.func_name,
+		"func_context": f.func_context,
+		"func":         f.func_none,
+		"sqlstr":       f.sqlstr,
+		"db":           f.db,
 		// type
-		"names": f.names,
-		"zero":  f.zero,
-		"type":  f.typefn,
-		"field": f.field,
+		"names":     f.names,
+		"names_all": f.names_all,
+		"zero":      f.zero,
+		"type":      f.typefn,
+		"field":     f.field,
 		/*
 			"nthparam":        f.nthparam,
 			// general
@@ -247,14 +249,12 @@ func (f *Funcs) func_name(context bool, name string) string {
 }
 
 // funcfn builds a func definition.
-func (f *Funcs) funcfn(context bool, v interface{}) string {
-	var recv, name string
+func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 	var p, r []string
 	switch x := v.(type) {
 	case *templates.Query:
-		name = f.func_name(context, x.Name)
 		// params
-		if f.contextfn() {
+		if context {
 			p = append(p, "ctx context.Context")
 		}
 		p = append(p, "db DB")
@@ -275,8 +275,34 @@ func (f *Funcs) funcfn(context bool, v interface{}) string {
 			r = append(r, "[]*"+x.Type.Name)
 		}
 		r = append(r, "error")
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
-	return fmt.Sprintf("func %s%s(%s) (%s)", recv, name, strings.Join(p, ", "), strings.Join(r, ", "))
+	return fmt.Sprintf("func %s(%s) (%s)", name, strings.Join(p, ", "), strings.Join(r, ", "))
+}
+
+// func_context generates a func signature for v with context determined by the context mode.
+func (f *Funcs) func_context(v interface{}) string {
+	var name string
+	switch x := v.(type) {
+	case *templates.Query:
+		name = f.func_name(f.context_both(), x.Name)
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+	}
+	return f.funcfn(name, f.contextfn(), v)
+}
+
+// func_none genarates a func signature for v without context.
+func (f *Funcs) func_none(v interface{}) string {
+	var name string
+	switch x := v.(type) {
+	case *templates.Query:
+		name = f.func_name(false, x.Name)
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+	}
+	return f.funcfn(name, false, v)
 }
 
 // sqlstr generates a sqlstr for the specified query and any accompanying
@@ -322,7 +348,7 @@ func (f *Funcs) db(name string, v interface{}) string {
 }
 
 // names generates a list of names.
-func (f *Funcs) names(prefix string, z ...interface{}) string {
+func (f *Funcs) namesfn(all bool, prefix string, z ...interface{}) string {
 	var names []string
 	for i, v := range z {
 		switch x := v.(type) {
@@ -330,7 +356,7 @@ func (f *Funcs) names(prefix string, z ...interface{}) string {
 			names = append(names, x)
 		case *templates.Query:
 			for _, p := range x.Params {
-				if p.Interpolate {
+				if !all && p.Interpolate {
 					continue
 				}
 				names = append(names, prefix+p.Name)
@@ -348,6 +374,17 @@ func (f *Funcs) names(prefix string, z ...interface{}) string {
 		}
 	}
 	return strings.Join(names, ", ")
+}
+
+// names generates a list of names (excluding certain ones such as interpolated
+// names).
+func (f *Funcs) names(prefix string, z ...interface{}) string {
+	return f.namesfn(false, prefix, z...)
+}
+
+// names_all generates a list of all names.
+func (f *Funcs) names_all(prefix string, z ...interface{}) string {
+	return f.namesfn(true, prefix, z...)
 }
 
 // zero generates a zero list.

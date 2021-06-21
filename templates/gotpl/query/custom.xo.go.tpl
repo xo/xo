@@ -4,7 +4,7 @@
 {{- else -}}
 // {{ func_name context_both $q.Name }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.Name }}{{ end }}.
 {{- end }}
-{{ func context_both  $q }} {
+{{ func_context $q }} {
 	// query
 	{{ sqlstr $q }}
 	// run
@@ -54,8 +54,8 @@
 {{- else -}}
 // {{ func_name false $q.Name }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.Name }}{{ end }}.
 {{- end }}
-{{ func false $q }} {
-	return {{ func_name true $q.Name }}({{ names "" "context.Background()" $q.Params }})
+{{ func $q }} {
+	return {{ func_name true $q.Name }}({{ names_all "" "context.Background()" "db" $q }})
 }
 {{- end }}
 
