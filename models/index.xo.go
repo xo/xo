@@ -37,12 +37,12 @@ func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*
 	// load results
 	var res []*Index
 	for rows.Next() {
-		var row Index
+		var i Index
 		// scan
-		if err := rows.Scan(&row.IndexName, &row.IsUnique, &row.IsPrimary); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique, &i.IsPrimary); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -70,12 +70,12 @@ func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Ind
 	// load results
 	var res []*Index
 	for rows.Next() {
-		var row Index
+		var i Index
 		// scan
-		if err := rows.Scan(&row.IndexName, &row.IsUnique); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -102,12 +102,12 @@ func Sqlite3TableIndexes(ctx context.Context, db DB, schema, table string) ([]*I
 	// load results
 	var res []*Index
 	for rows.Next() {
-		var row Index
+		var i Index
 		// scan
-		if err := rows.Scan(&row.IndexName, &row.IsUnique, &row.IsPrimary); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique, &i.IsPrimary); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -138,12 +138,12 @@ func SqlserverTableIndexes(ctx context.Context, db DB, schema, table string) ([]
 	// load results
 	var res []*Index
 	for rows.Next() {
-		var row Index
+		var i Index
 		// scan
-		if err := rows.Scan(&row.IndexName, &row.IsPrimary, &row.IsUnique); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsPrimary, &i.IsUnique); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -170,12 +170,12 @@ func OracleTableIndexes(ctx context.Context, db DB, schema, table string) ([]*In
 	// load results
 	var res []*Index
 	for rows.Next() {
-		var row Index
+		var i Index
 		// scan
-		if err := rows.Scan(&row.IndexName, &row.IsUnique); err != nil {
+		if err := rows.Scan(&i.IndexName, &i.IsUnique); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

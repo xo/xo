@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/templates"
 )
 
@@ -31,13 +32,13 @@ type Funcs struct {
 	inject    string
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
-	// shortNames is the collection of Go style short names for types, mainly
+	// shorts is the collection of Go style short names for types, mainly
 	// used for use with declaring a func receiver on a type.
-	shortNames map[string]string
+	shorts map[string]string
 }
 
 // NewFuncs returns a set of template funcs.
-func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[string]string, first *bool) (*Funcs, error) {
+func NewFuncs(ctx context.Context, knownTypes map[string]bool, shorts map[string]string, first *bool) (*Funcs, error) {
 	// force not first
 	if NotFirst(ctx) {
 		b := false
@@ -90,7 +91,7 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shortNames map[st
 		context:    Context(ctx),
 		inject:     inject,
 		knownTypes: knownTypes,
-		shortNames: shortNames,
+		shorts:     shorts,
 	}, nil
 }
 
@@ -128,6 +129,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"zero":      f.zero,
 		"type":      f.typefn,
 		"field":     f.field,
+		"short":     f.short,
 		/*
 			"nthparam":        f.nthparam,
 			// general
@@ -148,7 +150,6 @@ func (f *Funcs) FuncMap() template.FuncMap {
 			"hasfield":           f.hasfield,
 			"paramlist":          f.paramlist,
 			"retype":             f.retype,
-			"shortname":          f.shortname,
 		*/
 	}
 }
@@ -462,77 +463,54 @@ func (f *Funcs) field(field *templates.Field) (string, error) {
 	return fmt.Sprintf("%s %s%s%s", field.Name, field.Type, tag, comment), nil
 }
 
-/*
-
-// shortname generates a safe Go identifier for typ. typ is first checked
-// against shortNames, and if not found, then the value is calculated and
-// stored in the shortNames for future use.
+// short generates a safe Go identifier for typ. typ is first checked
+// against shorts, and if not found, then the value is calculated and
+// stored in the shorts for future use.
 //
-// A shortname is the concatentation of the lowercase of the first character in
+// A short is the concatentation of the lowercase of the first character in
 // the words comprising the name. For example, "MyCustomName" will have have
-// the shortname of "mcn".
+// the short of "mcn".
 //
-// If a generated shortname conflicts with a Go reserved name, then the
-// corresponding value in goReservedNames map will be used.
+// If a generated short conflicts with a Go reserved name or a name used in
+// the templates, then the corresponding value in goReservedNames map will be
+// used.
 //
-// Generated shortnames that have conflicts with any scopeConflicts member will
+// Generated shorts that have conflicts with any scopeConflicts member will
 // have nameConflictSuffix appended.
-//
-// Note: recognized types for scopeConflicts are string, []*templates.Field,
-// []*templates.QueryParam.
-func (f *Funcs) shortname(typ string, scopeConflicts ...interface{}) string {
+func (f *Funcs) short(v interface{}) string {
+	var n string
+	switch x := v.(type) {
+	case *templates.Type:
+		n = x.Name
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
+	}
 	// check short name map
-	v, ok := f.shortNames[typ]
+	name, ok := f.shorts[n]
 	if !ok {
 		// calc the short name
 		var u []string
-		for _, s := range strings.Split(strings.ToLower(snaker.CamelToSnake(typ)), "_") {
+		for _, s := range strings.Split(strings.ToLower(snaker.CamelToSnake(n)), "_") {
 			if len(s) > 0 && s != "id" {
 				u = append(u, s[:1])
 			}
 		}
-		v = strings.Join(u, "")
+		name = strings.Join(u, "")
 		// check go reserved names
-		if n, ok := goReservedNames[v]; ok {
-			v = n
+		if n, ok := goReservedNames[name]; ok {
+			name = n
 		}
 		// store back to short name map
-		f.shortNames[typ] = v
-	}
-	// initial conflicts are the default imported packages
-	conflicts := map[string]bool{
-		"sql":     true,
-		"driver":  true,
-		"csv":     true,
-		"errors":  true,
-		"fmt":     true,
-		"regexp":  true,
-		"strings": true,
-		"time":    true,
-	}
-	// add scopeConflicts to conflicts
-	for _, c := range scopeConflicts {
-		switch z := c.(type) {
-		case string:
-			conflicts[z] = true
-		case []*templates.Field:
-			for _, field := range z {
-				conflicts[field.Name] = true
-			}
-		case []*templates.QueryParam:
-			for _, p := range z {
-				conflicts[p.Name] = true
-			}
-		default:
-			panic(fmt.Sprintf("unsupported type %T", c))
-		}
+		f.shorts[n] = name
 	}
 	// append suffix if conflict exists
-	if _, ok := conflicts[v]; ok {
-		v = v + f.conflict
+	if _, ok := templateReservedNames[name]; ok {
+		name += f.conflict
 	}
-	return v
+	return name
 }
+
+/*
 
 // colnames creates a list of the column names found in fields, excluding any
 // Field with Name contained in ignore.
@@ -910,6 +888,29 @@ func (v PackageImport) String() string {
 		return fmt.Sprintf("%s %q", v.Alias, v.Pkg)
 	}
 	return fmt.Sprintf("%q", v.Pkg)
+}
+
+// templateReservedNames are the template reserved names.
+var templateReservedNames = map[string]bool{
+	// variables
+	"ctx":  true,
+	"db":   true,
+	"err":  true,
+	"res":  true,
+	"rows": true,
+
+	// packages
+	"context": true,
+	"csv":     true,
+	"driver":  true,
+	"errors":  true,
+	"fmt":     true,
+	"hstore":  true,
+	"regexp":  true,
+	"sql":     true,
+	"strings": true,
+	"time":    true,
+	"uuid":    true,
 }
 
 // goReservedNames is a map of of go reserved names to "safe" names.

@@ -32,12 +32,12 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 	// load results
 	var res []*ProcParam
 	for rows.Next() {
-		var row ProcParam
+		var pp ProcParam
 		// scan
-		if err := rows.Scan(&row.ParamName, &row.ParamType); err != nil {
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &pp)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -66,12 +66,12 @@ func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcPa
 	// load results
 	var res []*ProcParam
 	for rows.Next() {
-		var row ProcParam
+		var pp ProcParam
 		// scan
-		if err := rows.Scan(&row.ParamName, &row.ParamType); err != nil {
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &pp)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -100,12 +100,12 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pr
 	// load results
 	var res []*ProcParam
 	for rows.Next() {
-		var row ProcParam
+		var pp ProcParam
 		// scan
-		if err := rows.Scan(&row.ParamName, &row.ParamType); err != nil {
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &pp)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

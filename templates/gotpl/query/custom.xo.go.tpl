@@ -20,11 +20,11 @@
 	}
 	return {{ names "" $q.Type "nil" }}
 {{- else if $q.One -}}
-	var res {{ type $q.Type.Name }}
-	if err := {{ db "QueryRow" $q }}.Scan({{ names "&res." $q.Type.Fields }}); err != nil {
+	var {{ short $q.Type }} {{ type $q.Type.Name }}
+	if err := {{ db "QueryRow" $q }}.Scan({{ names (print "&" (short $q.Type) ".") $q.Type.Fields }}); err != nil {
 		return nil, logerror(err)
 	}
-	return &res, nil
+	return &{{ short $q.Type }}, nil
 {{- else -}}
 	rows, err := {{ db "Query" $q }}
 	if err != nil {
@@ -34,12 +34,12 @@
 	// load results
 	var res []*{{ type $q.Type.Name }}
 	for rows.Next() {
-		var row {{ type $q.Type.Name }}
+		var {{ short $q.Type}} {{ type $q.Type.Name }}
 		// scan
-		if err := rows.Scan({{ names "&row." $q.Type.Fields }}); err != nil {
+		if err := rows.Scan({{ names (print "&" (short $q.Type) ".") $q.Type.Fields }}); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &{{ short $q.Type }})
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)

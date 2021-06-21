@@ -40,12 +40,12 @@ func PostgresIndexColumns(ctx context.Context, db DB, schema, index string) ([]*
 	// load results
 	var res []*IndexColumn
 	for rows.Next() {
-		var row IndexColumn
+		var ic IndexColumn
 		// scan
-		if err := rows.Scan(&row.SeqNo, &row.Cid, &row.ColumnName); err != nil {
+		if err := rows.Scan(&ic.SeqNo, &ic.Cid, &ic.ColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &ic)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -74,12 +74,12 @@ func MysqlIndexColumns(ctx context.Context, db DB, schema, table, index string) 
 	// load results
 	var res []*IndexColumn
 	for rows.Next() {
-		var row IndexColumn
+		var ic IndexColumn
 		// scan
-		if err := rows.Scan(&row.SeqNo, &row.ColumnName); err != nil {
+		if err := rows.Scan(&ic.SeqNo, &ic.ColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &ic)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -106,12 +106,12 @@ func Sqlite3IndexColumns(ctx context.Context, db DB, schema, table, index string
 	// load results
 	var res []*IndexColumn
 	for rows.Next() {
-		var row IndexColumn
+		var ic IndexColumn
 		// scan
-		if err := rows.Scan(&row.SeqNo, &row.Cid, &row.ColumnName); err != nil {
+		if err := rows.Scan(&ic.SeqNo, &ic.Cid, &ic.ColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &ic)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -147,12 +147,12 @@ func SqlserverIndexColumns(ctx context.Context, db DB, schema, table, index stri
 	// load results
 	var res []*IndexColumn
 	for rows.Next() {
-		var row IndexColumn
+		var ic IndexColumn
 		// scan
-		if err := rows.Scan(&row.SeqNo, &row.Cid, &row.ColumnName); err != nil {
+		if err := rows.Scan(&ic.SeqNo, &ic.Cid, &ic.ColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &ic)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -181,12 +181,12 @@ func OracleIndexColumns(ctx context.Context, db DB, schema, table, index string)
 	// load results
 	var res []*IndexColumn
 	for rows.Next() {
-		var row IndexColumn
+		var ic IndexColumn
 		// scan
-		if err := rows.Scan(&row.SeqNo, &row.ColumnName); err != nil {
+		if err := rows.Scan(&ic.SeqNo, &ic.ColumnName); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &row)
+		res = append(res, &ic)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
