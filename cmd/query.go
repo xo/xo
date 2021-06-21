@@ -10,7 +10,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/gedex/inflector"
@@ -88,19 +87,6 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 			}
 		}
 	}
-	// build func comment
-	comment := args.QueryParams.FuncComment
-	if comment != "" {
-		buf := new(bytes.Buffer)
-		tpl, err := template.New("func-comment").Parse(comment)
-		if err != nil {
-			return err
-		}
-		if err := tpl.Execute(buf, name); err != nil {
-			return err
-		}
-		comment = buf.String()
-	}
 	// emit type template
 	if !args.QueryParams.Exec && !args.QueryParams.Flat && !args.OutParams.Append {
 		// emit typedef
@@ -128,7 +114,7 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 			Exec:        args.QueryParams.Exec,
 			Interpolate: args.QueryParams.Interpolate,
 			Type:        typ,
-			Comment:     comment,
+			Comment:     args.QueryParams.FuncComment,
 		},
 	}); err != nil {
 		return err
@@ -270,18 +256,6 @@ func ParseQueryParams(query, delim string, interpolate, paramInterpolate bool, n
 
 // BuildQueryType creates the type for the query.
 func BuildQueryType(ctx context.Context, name, comment string, allowNulls, flat bool, query []string, fieldstr string) (*templates.Type, error) {
-	// build type comment
-	if comment != "" {
-		buf := new(bytes.Buffer)
-		tpl, err := template.New("type-comment").Parse(comment)
-		if err != nil {
-			return nil, err
-		}
-		if err := tpl.Execute(buf, name); err != nil {
-			return nil, err
-		}
-		comment = buf.String()
-	}
 	// template for query type
 	typ := &templates.Type{
 		Name: name,

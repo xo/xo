@@ -110,16 +110,18 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"tags":    f.tagsfn,
 		"imports": f.importsfn,
 		"inject":  f.injectfn,
+		"eval":    f.eval,
 		// context
 		"context":         f.contextfn,
 		"context_both":    f.context_both,
 		"context_disable": f.context_disable,
 		// func and query
-		"func_name":    f.func_name,
-		"func_context": f.func_context,
-		"func":         f.func_none,
-		"sqlstr":       f.sqlstr,
-		"db":           f.db,
+		"func_name_context": f.func_name_context,
+		"func_name":         f.func_name,
+		"func_context":      f.func_context,
+		"func":              f.func_none,
+		"sqlstr":            f.sqlstr,
+		"db":                f.db,
 		// type
 		"names":     f.names,
 		"names_all": f.names_all,
@@ -240,10 +242,39 @@ func (f *Funcs) injectfn() string {
 	return f.inject
 }
 
+// eval evalutates a template s against v.
+func (f *Funcs) eval(v interface{}, s string) (string, error) {
+	tpl, err := template.New(fmt.Sprintf("[EVAL %q]", s)).Parse(s)
+	if err != nil {
+		return "", err
+	}
+	buf := new(bytes.Buffer)
+	if err := tpl.Execute(buf, v); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
 // func_name builds a func name.
-func (f *Funcs) func_name(context bool, name string) string {
-	if context {
-		return name + "Context"
+func (f *Funcs) func_name(v interface{}) string {
+	var name string
+	switch x := v.(type) {
+	case *templates.Query:
+		name = nameContext(false, x.Name)
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+	}
+	return name
+}
+
+// func_name_context generates a name for the func.
+func (f *Funcs) func_name_context(v interface{}) string {
+	var name string
+	switch x := v.(type) {
+	case *templates.Query:
+		name = nameContext(f.context_both(), x.Name)
+	default:
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
 	return name
 }
@@ -283,26 +314,12 @@ func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 
 // func_context generates a func signature for v with context determined by the context mode.
 func (f *Funcs) func_context(v interface{}) string {
-	var name string
-	switch x := v.(type) {
-	case *templates.Query:
-		name = f.func_name(f.context_both(), x.Name)
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
-	}
-	return f.funcfn(name, f.contextfn(), v)
+	return f.funcfn(f.func_name_context(v), f.contextfn(), v)
 }
 
 // func_none genarates a func signature for v without context.
 func (f *Funcs) func_none(v interface{}) string {
-	var name string
-	switch x := v.(type) {
-	case *templates.Query:
-		name = f.func_name(false, x.Name)
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
-	}
-	return f.funcfn(name, false, v)
+	return f.funcfn(f.func_name(v), false, v)
 }
 
 // sqlstr generates a sqlstr for the specified query and any accompanying
@@ -314,7 +331,7 @@ func (f *Funcs) sqlstr(v interface{}) string {
 	case *templates.Query:
 		interpolate, query, comments = x.Interpolate, x.Query, x.Comments
 	default:
-		fmt.Sprintf(`const sqlstr = [[ NOT IMPLEMENTED FOR %T ]]`, v)
+		return fmt.Sprintf(`const sqlstr = [[ NOT IMPLEMENTED FOR %T ]]`, v)
 	}
 	typ := "const"
 	if interpolate {
@@ -943,4 +960,12 @@ var goReservedNames = map[string]string{
 	"float64":    "f",
 	"complex64":  "c",
 	"complex128": "c128",
+}
+
+// nameContext adds suffix Context to name.
+func nameContext(context bool, name string) string {
+	if context {
+		return name + "Context"
+	}
+	return name
 }

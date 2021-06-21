@@ -1,6 +1,6 @@
 {{- $q := .Data -}}
 {{- if $q.Comment -}}
-// {{ $q.Comment }}
+// {{ $q.Comment | eval $q.Name }}
 {{- else -}}
 // {{ $q.Name }} represents a row from '{{ schema $q.Table.TableName }}'.
 {{- end }}
