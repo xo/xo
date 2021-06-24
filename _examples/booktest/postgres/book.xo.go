@@ -67,7 +67,7 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.books SET (` +
 		`author_id, isbn, book_type, title, year, available, tags` +
-		`) = ( ` +
+		`) = (` +
 		`$1, $2, $3, $4, $5, $6, $7` +
 		`) WHERE book_id = $8`
 	// run

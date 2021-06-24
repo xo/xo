@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// IndexColumn represents index column info.
+// IndexColumn is a index column.
 type IndexColumn struct {
 	SeqNo      int    `json:"seq_no"`      // seq_no
 	Cid        int    `json:"cid"`         // cid

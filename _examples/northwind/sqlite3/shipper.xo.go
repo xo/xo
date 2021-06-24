@@ -35,15 +35,15 @@ func (s *Shipper) Insert(ctx context.Context, db DB) error {
 	case s._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO shippers (` +
 		`shipper_id, company_name, phone` +
 		`) VALUES (` +
-		`?, ?, ?` +
+		`$1, $2, $3` +
 		`)`
 	// run
 	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
-	if err := db.QueryRowContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone).Scan(&s.ShipperID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -61,8 +61,8 @@ func (s *Shipper) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE shippers SET ` +
-		`company_name = ?, phone = ?` +
-		` WHERE shipper_id = ?`
+		`company_name = $1, phone = $2` +
+		` WHERE shipper_id = $3`
 	// run
 	logf(sqlstr, s.CompanyName, s.Phone, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.Phone, s.ShipperID); err != nil {
@@ -88,7 +88,7 @@ func (s *Shipper) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM shippers WHERE shipper_id = ?`
+	const sqlstr = `DELETE FROM shippers WHERE shipper_id = $1`
 	// run
 	logf(sqlstr, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID); err != nil {
@@ -107,7 +107,7 @@ func ShipperByShipperID(ctx context.Context, db DB, shipperID int) (*Shipper, er
 	const sqlstr = `SELECT ` +
 		`shipper_id, company_name, phone ` +
 		`FROM shippers ` +
-		`WHERE shipper_id = ?`
+		`WHERE shipper_id = $1`
 	// run
 	logf(sqlstr, shipperID)
 	s := Shipper{

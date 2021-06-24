@@ -17,7 +17,7 @@ CREATE TABLE books (
 
 CREATE INDEX books_title_idx ON books(title, year);
 
-CREATE FUNCTION say_hello(@name NVARCHAR(255)) RETURNS NVARCHAR(255) AS
+CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS
 BEGIN
-  RETURN CONCAT('hello ', @name)\;
+  SELECT @result = CONCAT('hello ', @name)\;
 END;

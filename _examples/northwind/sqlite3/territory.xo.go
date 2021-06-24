@@ -34,15 +34,15 @@ func (t *Territory) Insert(ctx context.Context, db DB) error {
 	case t._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO territories (` +
 		`territory_id, territory_description, region_id` +
 		`) VALUES (` +
-		`?, ?, ?` +
+		`$1, $2, $3` +
 		`)`
 	// run
 	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
-	if err := db.QueryRowContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID).Scan(&t.TerritoryID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,8 +60,8 @@ func (t *Territory) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE territories SET ` +
-		`territory_description = ?, region_id = ?` +
-		` WHERE territory_id = ?`
+		`territory_description = $1, region_id = $2` +
+		` WHERE territory_id = $3`
 	// run
 	logf(sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID); err != nil {
@@ -87,7 +87,7 @@ func (t *Territory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM territories WHERE territory_id = ?`
+	const sqlstr = `DELETE FROM territories WHERE territory_id = $1`
 	// run
 	logf(sqlstr, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID); err != nil {
@@ -106,7 +106,7 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM territories ` +
-		`WHERE territory_id = ?`
+		`WHERE territory_id = $1`
 	// run
 	logf(sqlstr, territoryID)
 	t := Territory{

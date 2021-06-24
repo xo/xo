@@ -14,17 +14,27 @@ DSNS+=(
 )
 
 APPLY=0
+BUILD=0
 DATABASES="mysql oracle postgres sqlite3 sqlserver"
 ARGS=()
 
 OPTIND=1
-while getopts "ad:v" opt; do
+while getopts "abd:v" opt; do
 case "$opt" in
   a) APPLY=1 ;;
+  b) BUILD=1 ;;
   d) DATABASES=$OPTARG ;;
-  v) ARGS+=(-v)
+  v) ARGS+=(-v) ;;
 esac
 done
+
+if [ "$BUILD" = "1" ]; then
+  pushd $SRC/../../ &> /dev/null
+  (set -x;
+    go build
+  )
+  popd &> /dev/null
+fi
 
 XOBIN=$(which xo)
 if [ -e $SRC/../../xo ]; then
@@ -36,6 +46,10 @@ pushd $SRC &> /dev/null
 
 for TYPE in $DATABASES; do
   DB=${DSNS[$TYPE]}
+  if [ -z "$DB" ]; then
+    echo "$TYPE has no defined DSN"
+    exit 1
+  fi
   mkdir -p $TYPE
   rm -f $TYPE/*.xo.go
   echo "------------------------------------------------------"

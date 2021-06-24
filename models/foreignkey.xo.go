@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// ForeignKey represents a foreign key.
+// ForeignKey is a foreign key.
 type ForeignKey struct {
 	ForeignKeyName string `json:"foreign_key_name"` // foreign_key_name
 	ColumnName     string `json:"column_name"`      // column_name

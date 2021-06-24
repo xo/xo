@@ -7,14 +7,14 @@ import (
 )
 
 // SayHello calls the stored procedure 'booktest.say_hello(varchar(255)) varchar(255)' on db.
-func SayHello(ctx context.Context, db DB, v0 string) (string, error) {
+func SayHello(ctx context.Context, db DB, name string) (string, error) {
 	// call booktest.say_hello
 	const sqlstr = `SELECT booktest.say_hello(?)`
 	// run
-	var ret string
-	logf(sqlstr, v0)
-	if err := db.QueryRowContext(ctx, sqlstr, v0).Scan(&ret); err != nil {
+	var s string
+	logf(sqlstr, name)
+	if err := db.QueryRowContext(ctx, sqlstr, name).Scan(&s); err != nil {
 		return "", logerror(err)
 	}
-	return ret, nil
+	return s, nil
 }

@@ -46,19 +46,17 @@ func (o *Order) Insert(ctx context.Context, db DB) error {
 	case o._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.orders (` +
-		`customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
+		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
 		`) VALUES (` +
-		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13` +
-		`) RETURNING order_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14` +
+		`)`
 	// run
-	logf(sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	o.OrderID = int(id)
+	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	o._exists = true
 	return nil

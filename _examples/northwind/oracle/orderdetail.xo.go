@@ -4,7 +4,6 @@ package oracle
 
 import (
 	"context"
-	"database/sql"
 )
 
 // OrderDetail represents a row from 'northwind.order_details'.
@@ -37,19 +36,17 @@ func (od *OrderDetail) Insert(ctx context.Context, db DB) error {
 	case od._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.order_details (` +
-		`order_id, unit_price, quantity, discount` +
+		`order_id, product_id, unit_price, quantity, discount` +
 		`) VALUES (` +
-		`:1, :2, :3, :4` +
-		`) RETURNING product_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4, :5` +
+		`)`
 	// run
-	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	od.ProductID = int(id)
+	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	od._exists = true
 	return nil
@@ -68,8 +65,8 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 		`unit_price = :1, quantity = :2, discount = :3` +
 		` WHERE order_id = :4 AND product_id = :5`
 	// run
-	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
-	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
+	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
 		return logerror(err)
 	}
 	return nil

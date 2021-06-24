@@ -6,10 +6,11 @@ import (
 	"context"
 )
 
-// Proc represents a stored procedure.
+// Proc is a stored procedure.
 type Proc struct {
 	ProcName   string `json:"proc_name"`   // proc_name
 	ReturnType string `json:"return_type"` // return_type
+	ReturnName string `json:"return_name"` // return_name
 }
 
 // PostgresProcs runs a custom query, returning results as Proc.
@@ -17,7 +18,8 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`p.proname, ` + // ::varchar AS proc_name
-		`pg_get_function_result(p.oid) ` + // ::varchar AS return_type
+		`pg_get_function_result(p.oid), ` + // ::varchar AS return_type
+		`'' ` + // ::varchar AS return_name
 		`FROM pg_proc p ` +
 		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
 		`WHERE n.nspname = $1`
@@ -33,7 +35,7 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&p.ProcName, &p.ReturnType, &p.ReturnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -82,10 +84,13 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`name AS proc_name, ` +
-		`type AS return_type ` +
+		`o.name AS proc_name, ` +
+		`TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') AS return_type, ` +
+		`SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name ` +
 		`FROM sys.objects o ` +
-		`WHERE o.type = 'FN' ` +
+		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
+		`WHERE o.type = 'P' ` +
+		`AND p.is_output = 'true' ` +
 		`AND SCHEMA_NAME(o.schema_id) = @p1`
 	// run
 	logf(sqlstr, schema)
@@ -99,7 +104,7 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&p.ProcName, &p.ReturnType, &p.ReturnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)

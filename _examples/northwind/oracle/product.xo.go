@@ -42,19 +42,17 @@ func (p *Product) Insert(ctx context.Context, db DB) error {
 	case p._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.products (` +
-		`product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
+		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
 		`) VALUES (` +
-		`:1, :2, :3, :4, :5, :6, :7, :8, :9` +
-		`) RETURNING product_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10` +
+		`)`
 	// run
-	logf(sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	p.ProductID = int(id)
+	logf(sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued)
+	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	p._exists = true
 	return nil

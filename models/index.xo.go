@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Index represents an index.
+// Index is a index.
 type Index struct {
 	IndexName string `json:"index_name"` // index_name
 	IsUnique  bool   `json:"is_unique"`  // is_unique

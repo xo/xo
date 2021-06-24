@@ -4,7 +4,6 @@ package oracle
 
 import (
 	"context"
-	"database/sql"
 )
 
 // Territory represents a row from 'northwind.territories'.
@@ -35,19 +34,17 @@ func (t *Territory) Insert(ctx context.Context, db DB) error {
 	case t._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.territories (` +
-		`territory_description, region_id` +
+		`territory_id, territory_description, region_id` +
 		`) VALUES (` +
-		`:1, :2` +
-		`) RETURNING territory_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3` +
+		`)`
 	// run
-	logf(sqlstr, t.TerritoryDescription, t.RegionID, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryDescription, t.RegionID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	t.TerritoryID = string(id)
+	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
+	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	t._exists = true
 	return nil

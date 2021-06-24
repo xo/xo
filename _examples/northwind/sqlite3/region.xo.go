@@ -33,15 +33,15 @@ func (r *Region) Insert(ctx context.Context, db DB) error {
 	case r._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO region (` +
 		`region_id, region_description` +
 		`) VALUES (` +
-		`?, ?` +
+		`$1, $2` +
 		`)`
 	// run
 	logf(sqlstr, r.RegionID, r.RegionDescription)
-	if err := db.QueryRowContext(ctx, sqlstr, r.RegionID, r.RegionDescription).Scan(&r.RegionID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID, r.RegionDescription); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -59,8 +59,8 @@ func (r *Region) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE region SET ` +
-		`region_description = ?` +
-		` WHERE region_id = ?`
+		`region_description = $1` +
+		` WHERE region_id = $2`
 	// run
 	logf(sqlstr, r.RegionDescription, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionDescription, r.RegionID); err != nil {
@@ -86,7 +86,7 @@ func (r *Region) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM region WHERE region_id = ?`
+	const sqlstr = `DELETE FROM region WHERE region_id = $1`
 	// run
 	logf(sqlstr, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID); err != nil {
@@ -105,7 +105,7 @@ func RegionByRegionID(ctx context.Context, db DB, regionID int) (*Region, error)
 	const sqlstr = `SELECT ` +
 		`region_id, region_description ` +
 		`FROM region ` +
-		`WHERE region_id = ?`
+		`WHERE region_id = $1`
 	// run
 	logf(sqlstr, regionID)
 	r := Region{

@@ -43,15 +43,15 @@ func (c *Customer) Insert(ctx context.Context, db DB) error {
 	case c._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO customers (` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
 		`)`
 	// run
 	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
-	if err := db.QueryRowContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax).Scan(&c.CustomerID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -69,8 +69,8 @@ func (c *Customer) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE customers SET ` +
-		`company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?` +
-		` WHERE customer_id = ?`
+		`company_name = $1, contact_name = $2, contact_title = $3, address = $4, city = $5, region = $6, postal_code = $7, country = $8, phone = $9, fax = $10` +
+		` WHERE customer_id = $11`
 	// run
 	logf(sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID); err != nil {
@@ -96,7 +96,7 @@ func (c *Customer) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM customers WHERE customer_id = ?`
+	const sqlstr = `DELETE FROM customers WHERE customer_id = $1`
 	// run
 	logf(sqlstr, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID); err != nil {
@@ -115,7 +115,7 @@ func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Custo
 	const sqlstr = `SELECT ` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax ` +
 		`FROM customers ` +
-		`WHERE customer_id = ?`
+		`WHERE customer_id = $1`
 	// run
 	logf(sqlstr, customerID)
 	c := Customer{

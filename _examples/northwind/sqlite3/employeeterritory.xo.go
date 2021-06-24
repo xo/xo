@@ -33,15 +33,15 @@ func (et *EmployeeTerritory) Insert(ctx context.Context, db DB) error {
 	case et._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO employee_territories (` +
 		`employee_id, territory_id` +
 		`) VALUES (` +
-		`?, ?` +
+		`$1, $2` +
 		`)`
 	// run
 	logf(sqlstr, et.EmployeeID, et.TerritoryID)
-	if err := db.QueryRowContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID).Scan(&et.TerritoryID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,7 +60,7 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM employee_territories WHERE employee_id = ? AND territory_id = ?`
+	const sqlstr = `DELETE FROM employee_territories WHERE employee_id = $1 AND territory_id = $2`
 	// run
 	logf(sqlstr, et.EmployeeID, et.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID); err != nil {
@@ -79,7 +79,7 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM employee_territories ` +
-		`WHERE employee_id = ? AND territory_id = ?`
+		`WHERE employee_id = $1 AND territory_id = $2`
 	// run
 	logf(sqlstr, employeeID, territoryID)
 	et := EmployeeTerritory{

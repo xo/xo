@@ -41,7 +41,7 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 		`:1` +
 		`) RETURNING author_id /*LASTINSERTID*/ INTO :pk`
 	// run
-	logf(sqlstr, a.Name, nil)
+	logf(sqlstr, a.Name)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err

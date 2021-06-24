@@ -44,7 +44,7 @@ func (s *Supplier) Insert(ctx context.Context, db DB) error {
 	case s._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.suppliers (` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
 		`) VALUES (` +
@@ -52,7 +52,7 @@ func (s *Supplier) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage)
-	if err := db.QueryRowContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage).Scan(&s.SupplierID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -71,7 +71,7 @@ func (s *Supplier) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.suppliers SET (` +
 		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
-		`) = ( ` +
+		`) = (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
 		`) WHERE supplier_id = $12`
 	// run

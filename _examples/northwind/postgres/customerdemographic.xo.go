@@ -34,7 +34,7 @@ func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 	case cd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.customer_demographics (` +
 		`customer_type_id, customer_desc` +
 		`) VALUES (` +
@@ -42,7 +42,7 @@ func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
-	if err := db.QueryRowContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc).Scan(&cd.CustomerTypeID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -61,7 +61,7 @@ func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.customer_demographics SET (` +
 		`customer_desc` +
-		`) = ( ` +
+		`) = (` +
 		`$1` +
 		`) WHERE customer_type_id = $2`
 	// run

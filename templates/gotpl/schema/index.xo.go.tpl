@@ -1,46 +1,41 @@
-{{- $index := .Data -}}
-{{- $short := (shortname $index.Type.Name "err" "sqlstr" "db" "rows" "res" "logf" $index.Fields) -}}
-{{- $table := (schema $index.Type.Table.TableName) -}}
-// {{ $index.FuncName }}{{ if context_both }}Context{{ end }} retrieves a row from '{{ $table }}' as a {{ $index.Type.Name }}.
+{{- $i := .Data -}}
+// {{ func_name_context $i }} retrieves a row from '{{ schema $i.Type.Table.TableName }}' as a {{ $i.Type.Name }}.
 //
-// Generated from index '{{ $index.Index.IndexName }}'.
-func {{ $index.FuncName }}{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB{{ paramlist $index.Fields true true }}) ({{ if not $index.Index.IsUnique }}[]{{ end }}*{{ $index.Type.Name }}, error) {
+// Generated from index '{{ $i.Index.IndexName }}'.
+{{ func_context $i }} {
 	// query
-	const sqlstr = `SELECT ` +
-		`{{ colnames $index.Type.Fields }} ` +
-		`FROM {{ $table }} ` +
-		`WHERE {{ colnamesquery $index.Fields " AND " }}`
+	{{ sqlstr "index" $i }}
 	// run
-	logf(sqlstr{{ paramlist $index.Fields true false }})
-{{ if $index.Index.IsUnique -}}
-	{{ $short }} := {{ $index.Type.Name }}{
-	{{- if $index.Type.PrimaryKey }}
+	logf(sqlstr, {{ params $i.Fields false }})
+{{- if $i.Index.IsUnique }}
+	{{ short $i.Type }} := {{ $i.Type.Name }}{
+	{{- if $i.Type.PrimaryKey }}
 		_exists: true,
 	{{ end -}}
 	}
-	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ paramlist $index.Fields true false }}).Scan({{ fieldnames $index.Type.Fields (print "&" $short) }}); err != nil {
+	if err := {{ db "QueryRow"  $i }}.Scan({{ names (print "&" (short $i.Type) ".") $i.Type }}); err != nil {
 		return nil, logerror(err)
 	}
-	return &{{ $short }}, nil
-{{- else -}}
-	rows, err := db.Query{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ paramlist $index.Fields true false }})
+	return &{{ short $i.Type }}, nil
+{{- else }}
+	rows, err := {{ db "Query" $i }}
 	if err != nil {
 		return nil, logerror(err)
 	}
 	defer rows.Close()
 	// process
-	var res []*{{ $index.Type.Name }}
+	var res []*{{ $i.Type.Name }}
 	for rows.Next() {
-		{{ $short }} := {{ $index.Type.Name }}{
-		{{- if $index.Type.PrimaryKey }}
+		{{ short $i.Type }} := {{ $i.Type.Name }}{
+		{{- if $i.Type.PrimaryKey }}
 			_exists: true,
 		{{ end -}}
 		}
 		// scan
-		if err := rows.Scan({{ fieldnames $index.Type.Fields (print "&" $short) }}); err != nil {
+		if err := rows.Scan({{ names_ignore (print "&" (short $i.Type) ".")  $i.Type }}); err != nil {
 			return nil, logerror(err)
 		}
-		res = append(res, &{{ $short }})
+		res = append(res, &{{ short $i.Type }})
 	}
 	if err := rows.Err(); err != nil {
 		return nil, logerror(err)
@@ -50,11 +45,11 @@ func {{ $index.FuncName }}{{ if context_both }}Context{{ end }}({{ if context }}
 }
 
 {{ if context_both -}}
-// {{ $index.FuncName }} retrieves a row from '{{ $table }}' as a {{ $index.Type.Name }}.
+// {{ func_name $i }} retrieves a row from '{{ schema $i.Type.Table.TableName }}' as a {{ $i.Type.Name }}.
 //
-// Generated from index '{{ $index.Index.IndexName }}'.
-func {{ $index.FuncName }}(db DB{{ paramlist $index.Fields true true }}) ({{ if not $index.Index.IsUnique }}[]{{ end }}*{{ $index.Type.Name }}, error) {
-	return {{ $index.FuncName }}Context(context.Background(), db{{ paramlist $index.Fields true false }})
+// Generated from index '{{ $i.Index.IndexName }}'.
+{{ func $i }} {
+	return {{ func_name_context $i }}({{ names "" "context.Background()" "db" $i }})
 }
 {{- end }}
 

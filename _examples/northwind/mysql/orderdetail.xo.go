@@ -36,7 +36,7 @@ func (od *OrderDetail) Insert(ctx context.Context, db DB) error {
 	case od._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.order_details (` +
 		`order_id, product_id, unit_price, quantity, discount` +
 		`) VALUES (` +
@@ -44,7 +44,7 @@ func (od *OrderDetail) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
-	if err := db.QueryRowContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount).Scan(&od.ProductID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -65,8 +65,8 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 		`unit_price = ?, quantity = ?, discount = ?` +
 		` WHERE order_id = ? AND product_id = ?`
 	// run
-	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
-	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
+	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
 		return logerror(err)
 	}
 	return nil

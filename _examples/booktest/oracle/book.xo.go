@@ -47,7 +47,7 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 		`:1, :2, :3, :4, :5, :6` +
 		`) RETURNING book_id /*LASTINSERTID*/ INTO :pk`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, nil)
+	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err

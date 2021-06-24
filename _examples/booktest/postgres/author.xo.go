@@ -60,7 +60,7 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.authors SET (` +
 		`name` +
-		`) = ( ` +
+		`) = (` +
 		`$1` +
 		`) WHERE author_id = $2`
 	// run

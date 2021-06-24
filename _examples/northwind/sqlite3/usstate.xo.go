@@ -36,15 +36,15 @@ func (us *UsState) Insert(ctx context.Context, db DB) error {
 	case us._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO us_states (` +
 		`state_id, state_name, state_abbr, state_region` +
 		`) VALUES (` +
-		`?, ?, ?, ?` +
+		`$1, $2, $3, $4` +
 		`)`
 	// run
 	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
-	if err := db.QueryRowContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion).Scan(&us.StateID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -62,8 +62,8 @@ func (us *UsState) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE us_states SET ` +
-		`state_name = ?, state_abbr = ?, state_region = ?` +
-		` WHERE state_id = ?`
+		`state_name = $1, state_abbr = $2, state_region = $3` +
+		` WHERE state_id = $4`
 	// run
 	logf(sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID); err != nil {
@@ -89,7 +89,7 @@ func (us *UsState) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM us_states WHERE state_id = ?`
+	const sqlstr = `DELETE FROM us_states WHERE state_id = $1`
 	// run
 	logf(sqlstr, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateID); err != nil {
@@ -108,7 +108,7 @@ func UsStateByStateID(ctx context.Context, db DB, stateID int) (*UsState, error)
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +
 		`FROM us_states ` +
-		`WHERE state_id = ?`
+		`WHERE state_id = $1`
 	// run
 	logf(sqlstr, stateID)
 	us := UsState{

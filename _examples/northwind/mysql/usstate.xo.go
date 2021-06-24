@@ -36,7 +36,7 @@ func (us *UsState) Insert(ctx context.Context, db DB) error {
 	case us._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.us_states (` +
 		`state_id, state_name, state_abbr, state_region` +
 		`) VALUES (` +
@@ -44,7 +44,7 @@ func (us *UsState) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
-	if err := db.QueryRowContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion).Scan(&us.StateID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
 		return logerror(err)
 	}
 	// set exists

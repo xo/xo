@@ -203,7 +203,7 @@ func (ss StringSlice) Value() (driver.Value, error) {
 	return "{" + strings.Join(v, ",") + "}", nil
 }
 
-// PostgresViewCreate creates a view for introspection of the query.
+// PostgresViewCreate creates a view for introspection.
 func PostgresViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -231,7 +231,7 @@ func PostgresViewSchema(ctx context.Context, db DB, id string) (string, error) {
 	return schemaName, nil
 }
 
-// PostgresViewDrop drops the view created for introspection.
+// PostgresViewDrop drops a view created for introspection.
 func PostgresViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -241,7 +241,7 @@ func PostgresViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// PostgresSchema retrieves the current schema.
+// PostgresSchema retrieves the schema.
 func PostgresSchema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -255,7 +255,7 @@ func PostgresSchema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
-// MysqlViewCreate creates a view for introspection of the query.
+// MysqlViewCreate creates a view for introspection.
 func MysqlViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -265,7 +265,7 @@ func MysqlViewCreate(ctx context.Context, db DB, schema, id string, query []stri
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// MysqlViewDrop drops the view created for introspection.
+// MysqlViewDrop drops a view created for introspection.
 func MysqlViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -275,7 +275,7 @@ func MysqlViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, e
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// MysqlSchema retrieves the current schema.
+// MysqlSchema retrieves the schema.
 func MysqlSchema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -289,7 +289,7 @@ func MysqlSchema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
-// Sqlite3ViewCreate creates a view for introspection of the query.
+// Sqlite3ViewCreate creates a view for introspection.
 func Sqlite3ViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -299,7 +299,7 @@ func Sqlite3ViewCreate(ctx context.Context, db DB, schema, id string, query []st
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// Sqlite3ViewDrop drops the view created for introspection.
+// Sqlite3ViewDrop drops a view created for introspection.
 func Sqlite3ViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -309,7 +309,7 @@ func Sqlite3ViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result,
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// Sqlite3Schema retrieves the current schema.
+// Sqlite3Schema retrieves the schema.
 func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -324,7 +324,7 @@ func Sqlite3Schema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
-// SqlserverViewCreate creates a view for introspection of the query.
+// SqlserverViewCreate creates a view for introspection.
 func SqlserverViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -334,7 +334,7 @@ func SqlserverViewCreate(ctx context.Context, db DB, schema, id string, query []
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// SqlserverViewDrop drops the view created for introspection.
+// SqlserverViewDrop drops a view created for introspection.
 func SqlserverViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -344,7 +344,7 @@ func SqlserverViewDrop(ctx context.Context, db DB, schema, id string) (sql.Resul
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// SqlserverSchema retrieves the current schema.
+// SqlserverSchema retrieves the schema.
 func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -358,7 +358,7 @@ func SqlserverSchema(ctx context.Context, db DB) (string, error) {
 	return schemaName, nil
 }
 
-// OracleViewCreate creates a view for introspection of the query.
+// OracleViewCreate creates a view for introspection.
 func OracleViewCreate(ctx context.Context, db DB, schema, id string, query []string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -368,7 +368,7 @@ func OracleViewCreate(ctx context.Context, db DB, schema, id string, query []str
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// OracleViewTruncate truncates the view created for introspection.
+// OracleViewTruncate truncates a view created for introspection.
 func OracleViewTruncate(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -378,7 +378,7 @@ func OracleViewTruncate(ctx context.Context, db DB, schema, id string) (sql.Resu
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// OracleViewDrop drops the view created for introspection.
+// OracleViewDrop drops a view created for introspection.
 func OracleViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -388,7 +388,7 @@ func OracleViewDrop(ctx context.Context, db DB, schema, id string) (sql.Result, 
 	return db.ExecContext(ctx, sqlstr)
 }
 
-// OracleSchema retrieves the current schema.
+// OracleSchema retrieves the schema.
 func OracleSchema(ctx context.Context, db DB) (string, error) {
 	// query
 	const sqlstr = `SELECT ` +

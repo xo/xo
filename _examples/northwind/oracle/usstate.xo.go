@@ -36,19 +36,17 @@ func (us *UsState) Insert(ctx context.Context, db DB) error {
 	case us._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.us_states (` +
-		`state_name, state_abbr, state_region` +
+		`state_id, state_name, state_abbr, state_region` +
 		`) VALUES (` +
-		`:1, :2, :3` +
-		`) RETURNING state_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4` +
+		`)`
 	// run
-	logf(sqlstr, us.StateName, us.StateAbbr, us.StateRegion, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, us.StateName, us.StateAbbr, us.StateRegion, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	us.StateID = int(id)
+	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	us._exists = true
 	return nil

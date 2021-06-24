@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// PostgresColOrder represents index column order.
+// PostgresColOrder is a index column order.
 type PostgresColOrder struct {
 	Ord string `json:"ord"` // ord
 }

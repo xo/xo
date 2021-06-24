@@ -7,7 +7,7 @@ import (
 	"database/sql"
 )
 
-// Column represents column info.
+// Column is a column.
 type Column struct {
 	FieldOrdinal int            `json:"field_ordinal"`  // field_ordinal
 	ColumnName   string         `json:"column_name"`    // column_name
@@ -155,7 +155,7 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 		`), 0) > 0, 1, 0) AS is_primary_key ` +
 		`FROM syscolumns c ` +
 		`JOIN sysobjects o ON o.id = c.id ` +
-		`LEFT JOIN sysobjects k ON k.xtype='PK' ` +
+		`LEFT JOIN sysobjects k ON k.xtype = 'PK' ` +
 		`AND k.parent_obj = o.id ` +
 		`LEFT JOIN syscomments x ON x.id = c.cdefault ` +
 		`WHERE o.type IN('U', 'V') ` +

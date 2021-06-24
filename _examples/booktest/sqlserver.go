@@ -118,14 +118,12 @@ func runSqlserver(ctx context.Context, db *sql.DB) error {
 	for _, ab := range res {
 		fmt.Printf("Book %d: %q, Author: %q, ISBN: %q Tags: %q\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
 	}
-	/*
-		// call say_hello(varchar)
-		str, err := models.SayHello(ctx, db, "john")
-		if err != nil {
-			return err
-		}
-		fmt.Printf("SayHello response: %q\n", str)
-	*/
+	// call say_hello(varchar)
+	str, err := models.SayHello(ctx, db, "john")
+	if err != nil {
+		return err
+	}
+	fmt.Printf("SayHello response: %q\n", str)
 	// get book 4 and delete
 	b5, err := models.BookByBookID(ctx, db, 4)
 	if err != nil {

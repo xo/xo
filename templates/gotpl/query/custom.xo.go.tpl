@@ -6,7 +6,7 @@
 {{- end }}
 {{ func_context $q }} {
 	// query
-	{{ sqlstr $q }}
+	{{ querystr $q }}
 	// run
 	logf({{ names "" "sqlstr" $q }})
 {{ if $q.Exec -}}

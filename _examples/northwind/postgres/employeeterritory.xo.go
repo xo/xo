@@ -33,7 +33,7 @@ func (et *EmployeeTerritory) Insert(ctx context.Context, db DB) error {
 	case et._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.employee_territories (` +
 		`employee_id, territory_id` +
 		`) VALUES (` +
@@ -41,7 +41,7 @@ func (et *EmployeeTerritory) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, et.EmployeeID, et.TerritoryID)
-	if err := db.QueryRowContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID).Scan(&et.TerritoryID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID); err != nil {
 		return logerror(err)
 	}
 	// set exists

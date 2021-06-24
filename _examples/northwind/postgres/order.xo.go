@@ -46,7 +46,7 @@ func (o *Order) Insert(ctx context.Context, db DB) error {
 	case o._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.orders (` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
 		`) VALUES (` +
@@ -54,7 +54,7 @@ func (o *Order) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
-	if err := db.QueryRowContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry).Scan(&o.OrderID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -73,7 +73,7 @@ func (o *Order) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.orders SET (` +
 		`customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
-		`) = ( ` +
+		`) = (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
 		`) WHERE order_id = $14`
 	// run

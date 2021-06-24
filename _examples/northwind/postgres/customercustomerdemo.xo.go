@@ -33,7 +33,7 @@ func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 	case ccd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.customer_customer_demo (` +
 		`customer_id, customer_type_id` +
 		`) VALUES (` +
@@ -41,7 +41,7 @@ func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, ccd.CustomerID, ccd.CustomerTypeID)
-	if err := db.QueryRowContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID).Scan(&ccd.CustomerTypeID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID); err != nil {
 		return logerror(err)
 	}
 	// set exists

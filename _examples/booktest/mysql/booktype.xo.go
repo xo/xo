@@ -12,9 +12,9 @@ type BookType uint16
 
 const (
 	// BookTypeFiction is the 'FICTION' BookType.
-	BookTypeFiction = BookType(1)
+	BookTypeFiction BookType = 1
 	// BookTypeNonfiction is the 'NONFICTION' BookType.
-	BookTypeNonfiction = BookType(2)
+	BookTypeNonfiction BookType = 2
 )
 
 // String satisfies the fmt.Stringer interface.
@@ -46,12 +46,12 @@ func (bt *BookType) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the sql/driver.Valuer interface.
+// Value satisfies the driver.Valuer interface.
 func (bt BookType) Value() (driver.Value, error) {
 	return bt.String(), nil
 }
 
-// Scan satisfies the database/sql.Scanner interface.
+// Scan satisfies the sql.Scanner interface.
 func (bt *BookType) Scan(v interface{}) error {
 	if buf, ok := v.([]byte); ok {
 		return bt.UnmarshalText(buf)

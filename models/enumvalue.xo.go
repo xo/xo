@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// EnumValue represents a enum value.
+// EnumValue is a enum value.
 type EnumValue struct {
 	EnumValue  string `json:"enum_value"`  // enum_value
 	ConstValue int    `json:"const_value"` // const_value

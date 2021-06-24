@@ -204,8 +204,12 @@ func LoadProcParams(ctx context.Context, args *Args, proc *templates.Proc) error
 		if err != nil {
 			return err
 		}
+		name := param.ParamName
+		if name == "" {
+			name = fmt.Sprintf("v%d", i)
+		}
 		field := &templates.Field{
-			Name: fmt.Sprintf("v%d", i),
+			Name: name,
 			Type: goType,
 			Zero: zero,
 			Prec: prec,

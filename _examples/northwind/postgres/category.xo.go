@@ -36,7 +36,7 @@ func (c *Category) Insert(ctx context.Context, db DB) error {
 	case c._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.categories (` +
 		`category_id, category_name, description, picture` +
 		`) VALUES (` +
@@ -44,7 +44,7 @@ func (c *Category) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
-	if err := db.QueryRowContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture).Scan(&c.CategoryID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -63,7 +63,7 @@ func (c *Category) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.categories SET (` +
 		`category_name, description, picture` +
-		`) = ( ` +
+		`) = (` +
 		`$1, $2, $3` +
 		`) WHERE category_id = $4`
 	// run

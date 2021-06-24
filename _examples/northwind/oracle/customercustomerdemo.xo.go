@@ -4,7 +4,6 @@ package oracle
 
 import (
 	"context"
-	"database/sql"
 )
 
 // CustomerCustomerDemo represents a row from 'northwind.customer_customer_demo'.
@@ -34,19 +33,17 @@ func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 	case ccd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.customer_customer_demo (` +
-		`customer_id` +
+		`customer_id, customer_type_id` +
 		`) VALUES (` +
-		`:1` +
-		`) RETURNING customer_type_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2` +
+		`)`
 	// run
-	logf(sqlstr, ccd.CustomerID, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	ccd.CustomerTypeID = string(id)
+	logf(sqlstr, ccd.CustomerID, ccd.CustomerTypeID)
+	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	ccd._exists = true
 	return nil

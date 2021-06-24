@@ -36,19 +36,17 @@ func (c *Category) Insert(ctx context.Context, db DB) error {
 	case c._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.categories (` +
-		`category_name, description, picture` +
+		`category_id, category_name, description, picture` +
 		`) VALUES (` +
-		`:1, :2, :3` +
-		`) RETURNING category_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4` +
+		`)`
 	// run
-	logf(sqlstr, c.CategoryName, c.Description, c.Picture, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryName, c.Description, c.Picture, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	c.CategoryID = int(id)
+	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
+	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	c._exists = true
 	return nil

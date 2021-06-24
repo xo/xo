@@ -34,19 +34,17 @@ func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 	case cd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.customer_demographics (` +
-		`customer_desc` +
+		`customer_type_id, customer_desc` +
 		`) VALUES (` +
-		`:1` +
-		`) RETURNING customer_type_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2` +
+		`)`
 	// run
-	logf(sqlstr, cd.CustomerDesc, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerDesc, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	cd.CustomerTypeID = string(id)
+	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	cd._exists = true
 	return nil

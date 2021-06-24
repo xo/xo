@@ -33,15 +33,15 @@ func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 	case ccd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO customer_customer_demo (` +
 		`customer_id, customer_type_id` +
 		`) VALUES (` +
-		`?, ?` +
+		`$1, $2` +
 		`)`
 	// run
 	logf(sqlstr, ccd.CustomerID, ccd.CustomerTypeID)
-	if err := db.QueryRowContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID).Scan(&ccd.CustomerTypeID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,7 +60,7 @@ func (ccd *CustomerCustomerDemo) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM customer_customer_demo WHERE customer_id = ? AND customer_type_id = ?`
+	const sqlstr = `DELETE FROM customer_customer_demo WHERE customer_id = $1 AND customer_type_id = $2`
 	// run
 	logf(sqlstr, ccd.CustomerID, ccd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID); err != nil {
@@ -79,7 +79,7 @@ func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, 
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM customer_customer_demo ` +
-		`WHERE customer_id = ? AND customer_type_id = ?`
+		`WHERE customer_id = $1 AND customer_type_id = $2`
 	// run
 	logf(sqlstr, customerID, customerTypeID)
 	ccd := CustomerCustomerDemo{

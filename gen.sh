@@ -86,7 +86,8 @@ COMMENT='{{ . }} is a stored procedure.'
 $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
   p.proname::varchar AS proc_name,
-  pg_get_function_result(p.oid)::varchar AS return_type
+  pg_get_function_result(p.oid)::varchar AS return_type,
+	''::varchar AS return_name
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = %%schema string%%
@@ -495,22 +496,26 @@ ENDSQL
 # sqlserver proc list query
 $XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
 SELECT
-  name AS proc_name,
-  type AS return_type
+  o.name AS proc_name,
+  TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') AS return_type,
+	SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name
 FROM sys.objects o
-WHERE o.type = 'FN'
-  AND SCHEMA_NAME(o.schema_id) = %%schema string%%
+	INNER JOIN sys.parameters p ON o.object_id = p.object_id
+WHERE o.type = 'P'
+  AND p.is_output = 'true'
+	AND SCHEMA_NAME(o.schema_id) = %%schema string%%
 ENDSQL
 
 # sqlserver proc parameter list query
 $XOBIN query $MSDB -M -B -2 -T ProcParam -F SqlserverProcParams -a -o $DEST $@ << ENDSQL
 SELECT
-  p.name AS param_name,
+	SUBSTRING(p.name, 2, LEN(p.name)-1) AS param_name,
   TYPE_NAME(p.user_type_id) AS param_type
 FROM sys.objects o
   INNER JOIN sys.parameters p ON o.object_id = p.object_id
 WHERE SCHEMA_NAME(schema_id) = %%schema string%%
   AND o.name = %%proc string%%
+	AND p.is_output = 'false'
 ORDER BY p.parameter_id
 ENDSQL
 

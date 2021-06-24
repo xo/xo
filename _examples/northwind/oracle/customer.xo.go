@@ -43,19 +43,17 @@ func (c *Customer) Insert(ctx context.Context, db DB) error {
 	case c._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.customers (` +
-		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
+		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
 		`) VALUES (` +
-		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10` +
-		`) RETURNING customer_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11` +
+		`)`
 	// run
-	logf(sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	c.CustomerID = string(id)
+	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
+	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	c._exists = true
 	return nil

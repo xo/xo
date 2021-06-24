@@ -46,15 +46,15 @@ func (o *Order) Insert(ctx context.Context, db DB) error {
 	case o._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO orders (` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
 		`)`
 	// run
 	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
-	if err := db.QueryRowContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry).Scan(&o.OrderID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -72,8 +72,8 @@ func (o *Order) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE orders SET ` +
-		`customer_id = ?, employee_id = ?, order_date = ?, required_date = ?, shipped_date = ?, ship_via = ?, freight = ?, ship_name = ?, ship_address = ?, ship_city = ?, ship_region = ?, ship_postal_code = ?, ship_country = ?` +
-		` WHERE order_id = ?`
+		`customer_id = $1, employee_id = $2, order_date = $3, required_date = $4, shipped_date = $5, ship_via = $6, freight = $7, ship_name = $8, ship_address = $9, ship_city = $10, ship_region = $11, ship_postal_code = $12, ship_country = $13` +
+		` WHERE order_id = $14`
 	// run
 	logf(sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID); err != nil {
@@ -99,7 +99,7 @@ func (o *Order) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM orders WHERE order_id = ?`
+	const sqlstr = `DELETE FROM orders WHERE order_id = $1`
 	// run
 	logf(sqlstr, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID); err != nil {
@@ -118,7 +118,7 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int) (*Order, error) {
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM orders ` +
-		`WHERE order_id = ?`
+		`WHERE order_id = $1`
 	// run
 	logf(sqlstr, orderID)
 	o := Order{

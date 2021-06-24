@@ -33,7 +33,7 @@ func (r *Region) Insert(ctx context.Context, db DB) error {
 	case r._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.region (` +
 		`region_id, region_description` +
 		`) VALUES (` +
@@ -41,7 +41,7 @@ func (r *Region) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, r.RegionID, r.RegionDescription)
-	if err := db.QueryRowContext(ctx, sqlstr, r.RegionID, r.RegionDescription).Scan(&r.RegionID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID, r.RegionDescription); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,7 +60,7 @@ func (r *Region) Update(ctx context.Context, db DB) error {
 	// update with composite primary key
 	const sqlstr = `UPDATE public.region SET (` +
 		`region_description` +
-		`) = ( ` +
+		`) = (` +
 		`$1` +
 		`) WHERE region_id = $2`
 	// run

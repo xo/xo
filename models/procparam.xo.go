@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// ProcParam represents a stored procedure param.
+// ProcParam is a stored procedure param.
 type ProcParam struct {
 	ParamName string `json:"param_name"` // param_name
 	ParamType string `json:"param_type"` // param_type
@@ -16,7 +16,10 @@ type ProcParam struct {
 func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`LEFT(PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')))-1), ` + // ::varchar AS param_name
+		`LEFT( ` +
+		`PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), ` +
+		`-LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))) - 1 ` +
+		`), ` + // ::varchar AS param_name
 		`UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')) ` + // ::varchar AS param_type
 		`FROM pg_proc p ` +
 		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
@@ -83,12 +86,13 @@ func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcPa
 func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`p.name AS param_name, ` +
+		`SUBSTRING(p.name, 2, LEN(p.name)-1) AS param_name, ` +
 		`TYPE_NAME(p.user_type_id) AS param_type ` +
 		`FROM sys.objects o ` +
 		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
 		`WHERE SCHEMA_NAME(schema_id) = @p1 ` +
 		`AND o.name = @p2 ` +
+		`AND p.is_output = 'false' ` +
 		`ORDER BY p.parameter_id`
 	// run
 	logf(sqlstr, schema, proc)

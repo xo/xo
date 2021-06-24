@@ -1,22 +1,24 @@
-{{- $proc := .Data -}}
-{{- $notVoid := (ne $proc.Proc.ReturnType "void") -}}
-{{- $name := (schema $proc.Proc.ProcName) -}}
-{{- if ne $proc.Proc.ReturnType "trigger" -}}
-// {{ $proc.Name }}{{ if context_both }}Context{{ end }} calls the stored procedure '{{ $name }}({{ $proc.ProcParams }}) {{ $proc.Proc.ReturnType }}' on db.
-func {{ $proc.Name }}{{ if context_both }}Context{{ end }}({{ if context }}ctx context.Context, {{ end }}db DB{{ paramlist $proc.Params true true }}) ({{ if $notVoid }}{{ retype $proc.Return.Type }}, {{ end }}error) {
-	// call {{ $name }}
-	const sqlstr = `SELECT {{ $name }}({{ colvals $proc.Params }})`
+{{- $p := .Data -}}
+{{- if ne $p.Proc.ReturnType "trigger" -}}
+// {{ func_name_context $p }} calls the stored procedure '{{ schema $p.Proc.ProcName }}({{ $p.ProcParams }}) {{ $p.Proc.ReturnType }}' on db.
+{{ func_context $p }} {
+	// call {{ schema $p.Proc.ProcName }}
+	{{ sqlstr "proc" $p }}
 	// run
-{{ if $notVoid -}}
-	var ret {{ retype $proc.Return.Type }}
-	logf(sqlstr{{ paramlist $proc.Params true false }})
-	if err := db.QueryRow{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr{{ paramlist $proc.Params true false }}).Scan(&ret); err != nil {
-		return {{ reniltype $proc.Return.Zero }}, logerror(err)
+{{- if ne $p.Proc.ReturnType "void" }}
+	var {{ short $p.Return.Type }} {{ type $p.Return.Type }}
+	logf(sqlstr, {{ params $p.Params false }})
+{{- if driver "sqlserver" }}
+	if _, err := {{ db_named "Exec" $p }}; err != nil {
+{{- else }}
+	if err := {{ db "QueryRow" $p }}.Scan(&{{ short $p.Return.Type}}); err != nil {
+{{- end }}	
+		return {{ zero $p.Return.Zero }}, logerror(err)
 	}
-	return ret, nil
+	return {{ short $p.Return.Type }}, nil
 {{- else -}}
 	logf(sqlstr)
-	if _, err := db.Exec{{ if context }}Context{{ end }}({{ if context }}ctx, {{ end }}sqlstr); err != nil {
+	if _, err := {{ db "Exec" }}
 		return logerror(err)
 	}
 	return nil
@@ -24,9 +26,9 @@ func {{ $proc.Name }}{{ if context_both }}Context{{ end }}({{ if context }}ctx c
 }
 
 {{ if context_both -}}
-// {{ $proc.Name }} calls the stored procedure '{{ $name }}({{ $proc.ProcParams }}) {{ $proc.Proc.ReturnType }}' on db.
-func {{ $proc.Name }}(db DB{{ paramlist $proc.Params true true }}) ({{ if $notVoid }}{{ retype $proc.Return.Type }}, {{ end }}error) {
-	return {{ $proc.Name }}Context(context.Background(), db{{ paramlist $proc.Params true false }})
+// {{ func_name $p }} calls the stored procedure '{{ schema $p.Proc.ProcName }}({{ $p.ProcParams }}) {{ $p.Proc.ReturnType }}' on db.
+{{ func $p }} {
+	return {{ func_name_context $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }
 {{- end }}
 {{- end }}

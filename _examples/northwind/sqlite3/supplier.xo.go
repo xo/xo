@@ -44,15 +44,15 @@ func (s *Supplier) Insert(ctx context.Context, db DB) error {
 	case s._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO suppliers (` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
 		`)`
 	// run
 	logf(sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage)
-	if err := db.QueryRowContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage).Scan(&s.SupplierID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -70,8 +70,8 @@ func (s *Supplier) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE suppliers SET ` +
-		`company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?, homepage = ?` +
-		` WHERE supplier_id = ?`
+		`company_name = $1, contact_name = $2, contact_title = $3, address = $4, city = $5, region = $6, postal_code = $7, country = $8, phone = $9, fax = $10, homepage = $11` +
+		` WHERE supplier_id = $12`
 	// run
 	logf(sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID); err != nil {
@@ -97,7 +97,7 @@ func (s *Supplier) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM suppliers WHERE supplier_id = ?`
+	const sqlstr = `DELETE FROM suppliers WHERE supplier_id = $1`
 	// run
 	logf(sqlstr, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID); err != nil {
@@ -116,7 +116,7 @@ func SupplierBySupplierID(ctx context.Context, db DB, supplierID int) (*Supplier
 	const sqlstr = `SELECT ` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage ` +
 		`FROM suppliers ` +
-		`WHERE supplier_id = ?`
+		`WHERE supplier_id = $1`
 	// run
 	logf(sqlstr, supplierID)
 	s := Supplier{

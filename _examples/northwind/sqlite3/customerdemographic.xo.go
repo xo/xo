@@ -34,15 +34,15 @@ func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 	case cd._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO customer_demographics (` +
 		`customer_type_id, customer_desc` +
 		`) VALUES (` +
-		`?, ?` +
+		`$1, $2` +
 		`)`
 	// run
 	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
-	if err := db.QueryRowContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc).Scan(&cd.CustomerTypeID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,8 +60,8 @@ func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE customer_demographics SET ` +
-		`customer_desc = ?` +
-		` WHERE customer_type_id = ?`
+		`customer_desc = $1` +
+		` WHERE customer_type_id = $2`
 	// run
 	logf(sqlstr, cd.CustomerDesc, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerDesc, cd.CustomerTypeID); err != nil {
@@ -87,7 +87,7 @@ func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM customer_demographics WHERE customer_type_id = ?`
+	const sqlstr = `DELETE FROM customer_demographics WHERE customer_type_id = $1`
 	// run
 	logf(sqlstr, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID); err != nil {
@@ -106,7 +106,7 @@ func CustomerDemographicByCustomerTypeID(ctx context.Context, db DB, customerTyp
 	const sqlstr = `SELECT ` +
 		`customer_type_id, customer_desc ` +
 		`FROM customer_demographics ` +
-		`WHERE customer_type_id = ?`
+		`WHERE customer_type_id = $1`
 	// run
 	logf(sqlstr, customerTypeID)
 	cd := CustomerDemographic{

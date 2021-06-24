@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Sequence represents a table that references a sequence.
+// Sequence is a sequence.
 type Sequence struct {
 	TableName string `json:"table_name"` // table_name
 }

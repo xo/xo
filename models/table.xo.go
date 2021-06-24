@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Table represents table info.
+// Table is a table.
 type Table struct {
 	Type      string `json:"type"`       // type
 	TableName string `json:"table_name"` // table_name

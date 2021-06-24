@@ -34,7 +34,7 @@ func (t *Territory) Insert(ctx context.Context, db DB) error {
 	case t._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.territories (` +
 		`territory_id, territory_description, region_id` +
 		`) VALUES (` +
@@ -42,7 +42,7 @@ func (t *Territory) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
-	if err := db.QueryRowContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID).Scan(&t.TerritoryID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
 		return logerror(err)
 	}
 	// set exists

@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Enum represents a enum.
+// Enum is a enum.
 type Enum struct {
 	EnumName string `json:"enum_name"` // enum_name
 }

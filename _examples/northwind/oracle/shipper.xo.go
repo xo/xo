@@ -35,19 +35,17 @@ func (s *Shipper) Insert(ctx context.Context, db DB) error {
 	case s._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO northwind.shippers (` +
-		`company_name, phone` +
+		`shipper_id, company_name, phone` +
 		`) VALUES (` +
-		`:1, :2` +
-		`) RETURNING shipper_id /*LASTINSERTID*/ INTO :pk`
+		`:1, :2, :3` +
+		`)`
 	// run
-	logf(sqlstr, s.CompanyName, s.Phone, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.Phone, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	s.ShipperID = int(id)
+	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
+	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	s._exists = true
 	return nil
