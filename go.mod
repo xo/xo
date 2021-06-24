@@ -10,7 +10,7 @@ require (
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/kenshaw/snaker v0.1.1
+	github.com/kenshaw/snaker v0.1.2
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/sijms/go-ora v1.2.0

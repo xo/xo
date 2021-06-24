@@ -17,8 +17,8 @@ github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe/go.mod h1:8vg3r2V
 github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.6 h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=
 github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/kenshaw/snaker v0.1.1 h1:MVAJya/KNG8w6ufdBtzXmhU3vldfUjrnDvXCUhslgok=
-github.com/kenshaw/snaker v0.1.1/go.mod h1:0xAAdPB2IwUAxxUZj5ZvPclku2HJBSB7TRcJxvhVwM8=
+github.com/kenshaw/snaker v0.1.2 h1:vw+ZtL5YLok+YsRJEvBxHeO1FQyn3cIEfxx1h3hK0kc=
+github.com/kenshaw/snaker v0.1.2/go.mod h1:0xAAdPB2IwUAxxUZj5ZvPclku2HJBSB7TRcJxvhVwM8=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
