@@ -59,8 +59,8 @@ func (r *Region) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.region SET ` +
-		`region_description = :1` +
-		` WHERE region_id = :2`
+		`region_description = :1 ` +
+		`WHERE region_id = :2`
 	// run
 	logf(sqlstr, r.RegionDescription, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionDescription, r.RegionID); err != nil {
@@ -86,7 +86,8 @@ func (r *Region) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.region WHERE region_id = :1`
+	const sqlstr = `DELETE FROM northwind.region ` +
+		`WHERE region_id = :1`
 	// run
 	logf(sqlstr, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID); err != nil {
@@ -105,7 +106,8 @@ func RegionByRegionID(ctx context.Context, db DB, regionID int) (*Region, error)
 	const sqlstr = `SELECT ` +
 		`region_id, region_description ` +
 		`FROM northwind.region ` +
-		`WHERE region_id = :1`
+		`WHERE ` +
+		`region_id = :1`
 	// run
 	logf(sqlstr, regionID)
 	r := Region{

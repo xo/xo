@@ -61,11 +61,9 @@ func (us *UsState) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.us_states SET (` +
-		`state_name, state_abbr, state_region` +
-		`) = (` +
-		`$1, $2, $3` +
-		`) WHERE state_id = $4`
+	const sqlstr = `UPDATE public.us_states SET ` +
+		`state_name = $1, state_abbr = $2, state_region = $3 ` +
+		`WHERE state_id = $4`
 	// run
 	logf(sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID); err != nil {
@@ -92,14 +90,13 @@ func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.us_states (` +
-		`state_id, state_name, state_abbr, state_region` +
+		`state_name, state_abbr, state_region` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
-		`) ON CONFLICT (state_id) DO UPDATE SET (` +
-		`state_id, state_name, state_abbr, state_region` +
-		`) = (` +
-		`EXCLUDED.state_id, EXCLUDED.state_name, EXCLUDED.state_abbr, EXCLUDED.state_region` +
-		`)`
+		`$1, $2, $3` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`state_name = EXCLUDED.state_name, state_abbr = EXCLUDED.state_abbr, state_region = EXCLUDED.state_region `
 	// run
 	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
@@ -119,7 +116,8 @@ func (us *UsState) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.us_states WHERE state_id = $1`
+	const sqlstr = `DELETE FROM public.us_states ` +
+		`WHERE state_id = $1`
 	// run
 	logf(sqlstr, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateID); err != nil {
@@ -138,7 +136,8 @@ func UsStateByStateID(ctx context.Context, db DB, stateID int) (*UsState, error)
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +
 		`FROM public.us_states ` +
-		`WHERE state_id = $1`
+		`WHERE ` +
+		`state_id = $1`
 	// run
 	logf(sqlstr, stateID)
 	us := UsState{

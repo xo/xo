@@ -76,8 +76,8 @@ func (e *Employee) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.employees SET ` +
-		`last_name = ?, first_name = ?, title = ?, title_of_courtesy = ?, birth_date = ?, hire_date = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, home_phone = ?, extension = ?, photo = ?, notes = ?, reports_to = ?, photo_path = ?` +
-		` WHERE employee_id = ?`
+		`last_name = ?, first_name = ?, title = ?, title_of_courtesy = ?, birth_date = ?, hire_date = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, home_phone = ?, extension = ?, photo = ?, notes = ?, reports_to = ?, photo_path = ? ` +
+		`WHERE employee_id = ?`
 	// run
 	logf(sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID); err != nil {
@@ -103,7 +103,8 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.employees WHERE employee_id = ?`
+	const sqlstr = `DELETE FROM northwind.employees ` +
+		`WHERE employee_id = ?`
 	// run
 	logf(sqlstr, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID); err != nil {
@@ -122,7 +123,8 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM northwind.employees ` +
-		`WHERE employee_id = ?`
+		`WHERE ` +
+		`employee_id = ?`
 	// run
 	logf(sqlstr, employeeID)
 	e := Employee{
@@ -142,7 +144,8 @@ func EmployeesByReportsTo(ctx context.Context, db DB, reportsTo sql.NullInt64) (
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM northwind.employees ` +
-		`WHERE reports_to = ?`
+		`WHERE ` +
+		`reports_to = ?`
 	// run
 	logf(sqlstr, reportsTo)
 	rows, err := db.QueryContext(ctx, sqlstr, reportsTo)

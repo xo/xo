@@ -70,8 +70,8 @@ func (s *Supplier) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.suppliers SET ` +
-		`company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?, homepage = ?` +
-		` WHERE supplier_id = ?`
+		`company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?, homepage = ? ` +
+		`WHERE supplier_id = ?`
 	// run
 	logf(sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID); err != nil {
@@ -97,7 +97,8 @@ func (s *Supplier) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.suppliers WHERE supplier_id = ?`
+	const sqlstr = `DELETE FROM northwind.suppliers ` +
+		`WHERE supplier_id = ?`
 	// run
 	logf(sqlstr, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID); err != nil {
@@ -116,7 +117,8 @@ func SupplierBySupplierID(ctx context.Context, db DB, supplierID int16) (*Suppli
 	const sqlstr = `SELECT ` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage ` +
 		`FROM northwind.suppliers ` +
-		`WHERE supplier_id = ?`
+		`WHERE ` +
+		`supplier_id = ?`
 	// run
 	logf(sqlstr, supplierID)
 	s := Supplier{

@@ -60,7 +60,8 @@ func (ccd *CustomerCustomerDemo) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM northwind.customer_customer_demo WHERE customer_id = ? AND customer_type_id = ?`
+	const sqlstr = `DELETE FROM northwind.customer_customer_demo ` +
+		`WHERE customer_id = ? AND customer_type_id = ?`
 	// run
 	logf(sqlstr, ccd.CustomerID, ccd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, ccd.CustomerID, ccd.CustomerTypeID); err != nil {
@@ -71,35 +72,37 @@ func (ccd *CustomerCustomerDemo) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// CustomerCustomerDemoByCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a CustomerCustomerDemo.
+// CustomerCustomerDemoByCustomerIDCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a CustomerCustomerDemo.
 //
-// Generated from index 'customer_customer_demo_customer_type_id_pkey'.
-func CustomerCustomerDemoByCustomerTypeID(ctx context.Context, db DB, customerTypeID string) (*CustomerCustomerDemo, error) {
+// Generated from index 'customer_customer_demo_customer_id_customer_type_id_pkey'.
+func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, customerID, customerTypeID string) (*CustomerCustomerDemo, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM northwind.customer_customer_demo ` +
-		`WHERE customer_type_id = ?`
+		`WHERE ` +
+		`customer_id = ? AND customer_type_id = ?`
 	// run
-	logf(sqlstr, customerTypeID)
+	logf(sqlstr, customerID, customerTypeID)
 	ccd := CustomerCustomerDemo{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, customerTypeID).Scan(&ccd.CustomerID, &ccd.CustomerTypeID); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, customerID, customerTypeID).Scan(&ccd.CustomerID, &ccd.CustomerTypeID); err != nil {
 		return nil, logerror(err)
 	}
 	return &ccd, nil
 }
 
-// CustomerCustomerDemosByCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a CustomerCustomerDemo.
+// CustomerCustomerDemoByCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a CustomerCustomerDemo.
 //
 // Generated from index 'customer_type_id'.
-func CustomerCustomerDemosByCustomerTypeID(ctx context.Context, db DB, customerTypeID string) ([]*CustomerCustomerDemo, error) {
+func CustomerCustomerDemoByCustomerTypeID(ctx context.Context, db DB, customerTypeID string) ([]*CustomerCustomerDemo, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM northwind.customer_customer_demo ` +
-		`WHERE customer_type_id = ?`
+		`WHERE ` +
+		`customer_type_id = ?`
 	// run
 	logf(sqlstr, customerTypeID)
 	rows, err := db.QueryContext(ctx, sqlstr, customerTypeID)

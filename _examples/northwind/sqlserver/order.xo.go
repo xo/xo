@@ -71,8 +71,8 @@ func (o *Order) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.orders SET ` +
-		`customer_id = @p1, employee_id = @p2, order_date = @p3, required_date = @p4, shipped_date = @p5, freight = @p6, ship_name = @p7, ship_address = @p8, ship_city = @p9, ship_region = @p10, ship_postal_code = @p11, ship_country = @p12` +
-		` WHERE order_id = @p13`
+		`customer_id = @p1, employee_id = @p2, order_date = @p3, required_date = @p4, shipped_date = @p5, freight = @p6, ship_name = @p7, ship_address = @p8, ship_city = @p9, ship_region = @p10, ship_postal_code = @p11, ship_country = @p12 ` +
+		`WHERE order_id = @p13`
 	// run
 	logf(sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID); err != nil {
@@ -98,7 +98,8 @@ func (o *Order) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.orders WHERE order_id = @p1`
+	const sqlstr = `DELETE FROM northwind.orders ` +
+		`WHERE order_id = @p1`
 	// run
 	logf(sqlstr, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID); err != nil {
@@ -117,7 +118,8 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE order_id = @p1`
+		`WHERE ` +
+		`order_id = @p1`
 	// run
 	logf(sqlstr, orderID)
 	o := Order{

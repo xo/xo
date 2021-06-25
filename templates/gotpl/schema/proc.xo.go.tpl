@@ -1,11 +1,11 @@
 {{- $p := .Data -}}
-{{- if ne $p.Proc.ReturnType "trigger" -}}
-// {{ func_name_context $p }} calls the stored procedure '{{ schema $p.Proc.ProcName }}({{ $p.ProcParams }}) {{ $p.Proc.ReturnType }}' on db.
+{{- if ne $p.Return.GoName "trigger" -}}
+// {{ func_name_context $p }} calls the stored procedure '{{ $p.Signature }}' on db.
 {{ func_context $p }} {
-	// call {{ schema $p.Proc.ProcName }}
+	// call {{ schema $p.SQLName }}
 	{{ sqlstr "proc" $p }}
 	// run
-{{- if ne $p.Proc.ReturnType "void" }}
+{{- if ne $p.Return.Type "void" }}
 	var {{ short $p.Return.Type }} {{ type $p.Return.Type }}
 	logf(sqlstr, {{ params $p.Params false }})
 {{- if driver "sqlserver" }}
@@ -26,7 +26,7 @@
 }
 
 {{ if context_both -}}
-// {{ func_name $p }} calls the stored procedure '{{ schema $p.Proc.ProcName }}({{ $p.ProcParams }}) {{ $p.Proc.ReturnType }}' on db.
+// {{ func_name $p }} calls the stored procedure '{{ $p.Signature }}' on db.
 {{ func $p }} {
 	return {{ func_name_context $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }

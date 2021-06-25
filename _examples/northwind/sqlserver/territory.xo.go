@@ -60,8 +60,8 @@ func (t *Territory) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.territories SET ` +
-		`territory_description = @p1, region_id = @p2` +
-		` WHERE territory_id = @p3`
+		`territory_description = @p1, region_id = @p2 ` +
+		`WHERE territory_id = @p3`
 	// run
 	logf(sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID); err != nil {
@@ -87,7 +87,8 @@ func (t *Territory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.territories WHERE territory_id = @p1`
+	const sqlstr = `DELETE FROM northwind.territories ` +
+		`WHERE territory_id = @p1`
 	// run
 	logf(sqlstr, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID); err != nil {
@@ -106,7 +107,8 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM northwind.territories ` +
-		`WHERE territory_id = @p1`
+		`WHERE ` +
+		`territory_id = @p1`
 	// run
 	logf(sqlstr, territoryID)
 	t := Territory{

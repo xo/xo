@@ -60,7 +60,8 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM northwind.employee_territories WHERE employee_id = ? AND territory_id = ?`
+	const sqlstr = `DELETE FROM northwind.employee_territories ` +
+		`WHERE employee_id = ? AND territory_id = ?`
 	// run
 	logf(sqlstr, et.EmployeeID, et.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID); err != nil {
@@ -71,21 +72,22 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// EmployeeTerritoryByTerritoryID retrieves a row from 'northwind.employee_territories' as a EmployeeTerritory.
+// EmployeeTerritoryByEmployeeIDTerritoryID retrieves a row from 'northwind.employee_territories' as a EmployeeTerritory.
 //
-// Generated from index 'employee_territories_territory_id_pkey'.
-func EmployeeTerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*EmployeeTerritory, error) {
+// Generated from index 'employee_territories_employee_id_territory_id_pkey'.
+func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employeeID int16, territoryID string) (*EmployeeTerritory, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM northwind.employee_territories ` +
-		`WHERE territory_id = ?`
+		`WHERE ` +
+		`employee_id = ? AND territory_id = ?`
 	// run
-	logf(sqlstr, territoryID)
+	logf(sqlstr, employeeID, territoryID)
 	et := EmployeeTerritory{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, territoryID).Scan(&et.EmployeeID, &et.TerritoryID); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, employeeID, territoryID).Scan(&et.EmployeeID, &et.TerritoryID); err != nil {
 		return nil, logerror(err)
 	}
 	return &et, nil
@@ -99,7 +101,8 @@ func EmployeeTerritoriesByTerritoryID(ctx context.Context, db DB, territoryID st
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM northwind.employee_territories ` +
-		`WHERE territory_id = ?`
+		`WHERE ` +
+		`territory_id = ?`
 	// run
 	logf(sqlstr, territoryID)
 	rows, err := db.QueryContext(ctx, sqlstr, territoryID)

@@ -62,11 +62,11 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.order_details SET ` +
-		`unit_price = :1, quantity = :2, discount = :3` +
-		` WHERE order_id = :4 AND product_id = :5`
+		`unit_price = :1, quantity = :2, discount = :3 ` +
+		`WHERE order_id = :4, product_id = :5`
 	// run
-	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
-	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
+	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
+	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -89,7 +89,8 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM northwind.order_details WHERE order_id = :1 AND product_id = :2`
+	const sqlstr = `DELETE FROM northwind.order_details ` +
+		`WHERE order_id = :1 AND product_id = :2`
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID); err != nil {
@@ -108,7 +109,8 @@ func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productI
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE order_id = :1 AND product_id = :2`
+		`WHERE ` +
+		`order_id = :1 AND product_id = :2`
 	// run
 	logf(sqlstr, orderID, productID)
 	od := OrderDetail{

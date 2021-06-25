@@ -12,25 +12,21 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gedex/inflector"
-	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
 )
 
-// QueryGenerator generates code for custom SQL queries.
-//
-// Provides a generator that parses a query and writes templates for generated
-// type(s).
-type QueryGenerator struct{}
+// QueryBuilder builds a custom query.
+type QueryBuilder struct{}
 
-// NewQueryGenerator creates a new query generator.
-func NewQueryGenerator() *QueryGenerator {
-	return &QueryGenerator{}
+// NewQueryBuilder creates a new query loader.
+func NewQueryBuilder() *QueryBuilder {
+	return &QueryBuilder{}
 }
 
-// Exec Satisfies the Generator interface.
-func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
+// Build satisfies the Builder interface.
+func (*QueryBuilder) Build(ctx context.Context, args *Args, dest *xo.XO) error {
+	// driver info
+	_, l, _ := DbLoaderSchema(ctx)
 	// read query string from stdin if not provided via --query
 	sqlstr := args.QueryParams.Query
 	if sqlstr == "" {
@@ -41,7 +37,7 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 		sqlstr = string(bytes.TrimRight(buf, "\r\n"))
 	}
 	// introspect query if not exec mode
-	query, inspect, comments, params, err := ParseQuery(
+	query, inspect, comments, fields, err := ParseQuery(
 		ctx,
 		sqlstr,
 		args.QueryParams.Delimiter,
@@ -52,13 +48,11 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 	if err != nil {
 		return err
 	}
-	var typ *templates.Type
+	var typeFields []xo.Field
 	if !args.QueryParams.Exec {
 		// build query type
-		typ, err = BuildQueryType(
+		typeFields, err = LoadTypeFields(
 			ctx,
-			args.QueryParams.Type,
-			args.QueryParams.TypeComment,
 			args.QueryParams.AllowNulls,
 			args.QueryParams.Flat,
 			inspect,
@@ -68,76 +62,31 @@ func (*QueryGenerator) Exec(ctx context.Context, args *Args) error {
 			return err
 		}
 	}
-	// build func name
-	name := args.QueryParams.Func
-	if name == "" {
-		// no func name specified, so generate based on type
-		if args.QueryParams.One {
-			name = args.QueryParams.Type
-		} else {
-			name = inflector.Pluralize(args.QueryParams.Type)
-		}
-		// affix any params
-		if len(params) == 0 {
-			name = "Get" + name
-		} else {
-			name += "By"
-			for _, p := range params {
-				name += strings.ToUpper(p.Name[:1]) + p.Name[1:]
-			}
-		}
-	}
-	// emit type template
-	if !args.QueryParams.Exec && !args.QueryParams.Flat && !args.OutParams.Append {
-		// emit typedef
-		if err := templates.Emit(ctx, &templates.Template{
-			Set:      "query",
-			Template: "typedef",
-			Type:     args.QueryParams.Type,
-			Data:     typ,
-		}); err != nil {
-			return err
-		}
-	}
-	// emit query template
-	if err := templates.Emit(ctx, &templates.Template{
-		Set:      "query",
-		Template: "custom",
-		Type:     args.QueryParams.Type,
-		Data: &templates.Query{
-			Name:        name,
-			Query:       query,
-			Comments:    comments,
-			Params:      params,
-			One:         args.QueryParams.Exec || args.QueryParams.Flat || args.QueryParams.One,
-			Flat:        args.QueryParams.Flat,
-			Exec:        args.QueryParams.Exec,
-			Interpolate: args.QueryParams.Interpolate,
-			Type:        typ,
-			Comment:     args.QueryParams.FuncComment,
-		},
-	}); err != nil {
-		return err
-	}
+	dest.Emit(xo.Query{
+		Driver:       l.Driver,
+		Name:         args.QueryParams.Func,
+		Comment:      args.QueryParams.FuncComment,
+		Exec:         args.QueryParams.Exec,
+		Flat:         args.QueryParams.Flat,
+		One:          args.QueryParams.One,
+		Interpolate:  args.QueryParams.Interpolate,
+		Type:         args.QueryParams.Type,
+		TypeComment:  args.QueryParams.TypeComment,
+		Fields:       typeFields,
+		ManualFields: args.QueryParams.Fields != "",
+		Params:       fields,
+		Query:        query,
+		Comments:     comments,
+	})
 	return nil
-}
-
-// Process satisfies the Generator interface.
-func (*QueryGenerator) Process(ctx context.Context, args *Args) error {
-	return templates.Process(
-		ctx,
-		args.OutParams.Append,
-		args.OutParams.Single,
-		"typedef", "custom",
-	)
 }
 
 // ParseQuery parses a query returning the processed query, a query for
 // introspection, related comments, and extracted params.
-func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim, strip bool) ([]string, []string, []string, []*templates.QueryParam, error) {
+func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim, strip bool) ([]string, []string, []string, []xo.Field, error) {
 	_, l, _ := DbLoaderSchema(ctx)
 	// build query
-	qstr, params, err := ParseQueryParams(
+	qstr, fields, err := ParseQueryFields(
 		sqlstr,
 		delimiter,
 		interpolate,
@@ -148,7 +97,7 @@ func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim
 		return nil, nil, nil, nil, err
 	}
 	// build introspection query
-	istr, _, err := ParseQueryParams(
+	istr, _, err := ParseQueryFields(
 		sqlstr,
 		delimiter,
 		interpolate,
@@ -186,15 +135,15 @@ func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim
 	default:
 		comments = make([]string, len(query))
 	}
-	return query, inspect, comments, params, nil
+	return query, inspect, comments, fields, nil
 }
 
-// ParseQueryParams takes a SQL query and looks for strings in the form of
+// ParseQueryFields takes a SQL query and looks for strings in the form of
 // "<delim><name> <type>[,<option>,...]<delim>", replacing them with the nth
 // param value.
 //
 // The modified query is returned, along with any extracted parameters.
-func ParseQueryParams(query, delim string, interpolate, paramInterpolate bool, nth func(int) string) (string, []*templates.QueryParam, error) {
+func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, nth func(int) string) (string, []xo.Field, error) {
 	// create regexp for delimiter
 	placeholderRE, err := regexp.Compile(delim + `[^` + delim[:1] + `]+` + delim)
 	if err != nil {
@@ -203,30 +152,32 @@ func ParseQueryParams(query, delim string, interpolate, paramInterpolate bool, n
 	// grab matches from query string
 	matches := placeholderRE.FindAllStringIndex(query, -1)
 	// return vals and placeholders
-	var params []*templates.QueryParam
+	var fields []xo.Field
 	sqlstr, i, last := "", 0, 0
 	// loop over matches, extracting each placeholder and splitting to name/type
 	for _, m := range matches {
 		// extract parameter info
 		paramStr := query[m[0]+len(delim) : m[1]-len(delim)]
 		p := strings.SplitN(paramStr, " ", 2)
-		param := &templates.QueryParam{
-			Name: p[0],
-			Type: p[1],
+		name, typ := p[0], p[1]
+		field := xo.Field{
+			Name: name,
+			Datatype: xo.Datatype{
+				Type: typ,
+			},
 		}
 		// parse parameter options if present
-		if strings.Contains(param.Type, ",") {
-			opts := strings.Split(param.Type, ",")
-			param.Type = opts[0]
+		if opts := strings.Split(typ, ","); len(opts) > 1 {
+			field.Datatype.Type = opts[0]
 			for _, o := range opts[1:] {
 				switch o {
 				case "interpolate": // enable interpolation of the variable
 					if !interpolate {
 						return "", nil, errors.New("query interpolate is not enabled")
 					}
-					param.Interpolate = true
+					field.Interpolate = true
 				case "join": // enable string join of the variable
-					param.Join = true
+					field.Join = true
 				default:
 					return "", nil, fmt.Errorf("unknown option encountered on query parameter %q", paramStr)
 				}
@@ -234,51 +185,36 @@ func ParseQueryParams(query, delim string, interpolate, paramInterpolate bool, n
 		}
 		// add to string
 		sqlstr = sqlstr + query[last:m[0]]
-		if paramInterpolate && param.Interpolate {
+		if paramInterpolate && field.Interpolate {
 			// handle interpolation case
-			s := param.Name
 			switch {
-			case param.Join:
-				s = `strings.Join(` + param.Name + `, "\n")`
-			case param.Type != "string":
-				s = fmt.Sprintf(`fmt.Sprintf("%%v", %s)`, param.Name)
+			case field.Join:
+				name = `strings.Join(` + field.Name + `, "\n")`
+			case typ != "string":
+				name = fmt.Sprintf(`fmt.Sprintf("%%v", %s)`, field.Name)
 			}
-			sqlstr += "` + " + s + " + `"
+			sqlstr += "` + " + name + " + `"
 		} else {
 			sqlstr += nth(i)
 			i++
 		}
-		params, last = append(params, param), m[1]
+		fields, last = append(fields, field), m[1]
 	}
 	// return built query and any remaining
-	return sqlstr + query[last:], params, nil
+	return sqlstr + query[last:], fields, nil
 }
 
-// BuildQueryType creates the type for the query.
-func BuildQueryType(ctx context.Context, name, comment string, allowNulls, flat bool, query []string, fieldstr string) (*templates.Type, error) {
-	// template for query type
-	typ := &templates.Type{
-		Name: name,
-		Kind: "table",
-		Table: &models.Table{
-			TableName: fmt.Sprintf("[custom %s]", strings.ToLower(snaker.CamelToSnake(name))),
-		},
-		Comment: comment,
-	}
+// LoadTypeFields loads the query type fields.
+func LoadTypeFields(ctx context.Context, allowNulls, flat bool, query []string, fields string) ([]xo.Field, error) {
 	// introspect or use defined user fields
 	f := Introspect
-	if fieldstr != "" {
+	if fields != "" {
 		// wrap ...
-		f = func(context.Context, []string, bool, bool) ([]*templates.Field, error) {
-			return SplitFields(fieldstr)
+		f = func(context.Context, []string, bool, bool) ([]xo.Field, error) {
+			return SplitFields(fields)
 		}
 	}
-	// introspect
-	var err error
-	if typ.Fields, err = f(ctx, query, allowNulls, flat); err != nil {
-		return nil, err
-	}
-	return typ, nil
+	return f(ctx, query, allowNulls, flat)
 }
 
 // Introspect creates a view of a query, introspecting the query's columns and
@@ -286,7 +222,7 @@ func BuildQueryType(ctx context.Context, name, comment string, allowNulls, flat 
 //
 // Creates a temporary view/table, retrieves its column definitions and
 // dropping the temporary view/table.
-func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]*templates.Field, error) {
+func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]xo.Field, error) {
 	// create random id
 	id := func(r *rand.Rand) string {
 		buf := make([]byte, 8)
@@ -329,24 +265,21 @@ func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]*
 		return nil, err
 	}
 	// process columns
-	var fields []*templates.Field
+	var fields []xo.Field
 	for _, col := range cols {
 		// get type
-		goType, zero, prec, err := l.GoType(ctx, col.DataType, allowNulls && !col.NotNull)
+		name, prec, scale, array, err := parseType(col.DataType)
 		if err != nil {
 			return nil, err
 		}
-		// determine name
-		name := snaker.SnakeToCamelIdentifier(col.ColumnName)
-		if flat {
-			name = snaker.ForceLowerCamelIdentifier(col.ColumnName)
-		}
-		fields = append(fields, &templates.Field{
-			Name: name,
-			Type: goType,
-			Zero: zero,
-			Prec: prec,
-			Col:  col,
+		fields = append(fields, xo.Field{
+			Name: col.ColumnName,
+			Datatype: xo.Datatype{
+				Type:  name,
+				Prec:  prec,
+				Scale: scale,
+				Array: array,
+			},
 		})
 	}
 	return fields, nil
@@ -355,21 +288,20 @@ func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]*
 // letters are used for random IDs.
 const letters = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-// SplitFields splits s (common separated) into fields.
-func SplitFields(s string) ([]*templates.Field, error) {
-	var fields []*templates.Field
+// SplitFields splits s (comma separated) into fields.
+func SplitFields(s string) ([]xo.Field, error) {
+	var fields []xo.Field
 	for _, field := range strings.Split(s, ",") {
 		// process fields
 		field = strings.TrimSpace(field)
-		name, goType := field, "string"
+		name, typ := field, "string"
 		if i := strings.Index(field, " "); i != -1 {
-			name, goType = field[:i], field[i+1:]
+			name, typ = field[:i], field[i+1:]
 		}
-		fields = append(fields, &templates.Field{
+		fields = append(fields, xo.Field{
 			Name: name,
-			Type: goType,
-			Col: &models.Column{
-				ColumnName: snaker.CamelToSnake(name),
+			Datatype: xo.Datatype{
+				Type: typ,
 			},
 		})
 	}

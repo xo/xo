@@ -11,9 +11,9 @@ import (
 type BookType uint16
 
 const (
-	// BookTypeFiction is the 'FICTION' BookType.
+	// BookTypeFiction is the 'FICTION' book_type.
 	BookTypeFiction BookType = 1
-	// BookTypeNonfiction is the 'NONFICTION' BookType.
+	// BookTypeNonfiction is the 'NONFICTION' book_type.
 	BookTypeNonfiction BookType = 2
 )
 
@@ -64,5 +64,5 @@ type ErrInvalidBookType string
 
 // Error satisfies the error interface.
 func (err ErrInvalidBookType) Error() string {
-	return fmt.Sprintf("invalid BookType (%s)", string(err))
+	return fmt.Sprintf("invalid BookType(%s)", string(err))
 }

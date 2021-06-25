@@ -117,8 +117,8 @@ xml
 
 -- table with all field types and all nullable field types
 CREATE TABLE a_bit_of_everything (
-	a_enum a_enum NOT NULL,
-	a_enum_nullable a_enum,
+  a_enum a_enum NOT NULL,
+  a_enum_nullable a_enum,
   a_bigint BIGINT NOT NULL,
   a_bigint_nullable BIGINT,
   a_bigserial BIGSERIAL NOT NULL,
@@ -191,4 +191,4 @@ CREATE TABLE a_bit_of_everything (
 
 -- views
 CREATE VIEW a_view_of_everything AS
-	SELECT * FROM a_bit_of_everything;
+  SELECT * FROM a_bit_of_everything;

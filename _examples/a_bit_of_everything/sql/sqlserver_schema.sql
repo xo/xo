@@ -161,4 +161,4 @@ CREATE TABLE a_bit_of_everything (
 
 -- views
 CREATE VIEW a_view_of_everything AS
-	SELECT * FROM a_bit_of_everything;
+  SELECT * FROM a_bit_of_everything;

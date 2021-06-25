@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
+	xo "github.com/xo/xo/types"
 )
 
 func init() {
@@ -32,12 +32,8 @@ func init() {
 
 // MysqlGoType parse a mysql type into a Go type based on the column
 // definition.
-func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
-	// extract precision
-	typ, prec, _, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
+func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+	typ, nullable, prec := d.Type, d.Nullable, d.Prec
 	// extract unsigned
 	unsigned := false
 	if strings.HasSuffix(typ, " unsigned") {
@@ -89,7 +85,7 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "mediumint", "int", "integer":
-		goType, zero = gotpl.Int32(ctx), "0"
+		goType, zero = Int32(ctx), "0"
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -129,10 +125,10 @@ func MysqlGoType(ctx context.Context, typ string, nullable bool) (string, string
 		goType, zero = "[]byte", "nil"
 	}
 	// if unsigned ...
-	if intRE.MatchString(goType) && unsigned && goType == gotpl.Int32(ctx) {
-		goType, zero = gotpl.Uint32(ctx), "0"
+	if intRE.MatchString(goType) && unsigned && goType == Int32(ctx) {
+		goType, zero = Uint32(ctx), "0"
 	}
-	return goType, zero, prec, nil
+	return goType, zero, nil
 }
 
 // setRE is the regexp that matches MySQL SET() type definitions.

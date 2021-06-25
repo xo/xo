@@ -61,11 +61,9 @@ func (c *Category) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.categories SET (` +
-		`category_name, description, picture` +
-		`) = (` +
-		`$1, $2, $3` +
-		`) WHERE category_id = $4`
+	const sqlstr = `UPDATE public.categories SET ` +
+		`category_name = $1, description = $2, picture = $3 ` +
+		`WHERE category_id = $4`
 	// run
 	logf(sqlstr, c.CategoryName, c.Description, c.Picture, c.CategoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryName, c.Description, c.Picture, c.CategoryID); err != nil {
@@ -92,14 +90,13 @@ func (c *Category) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.categories (` +
-		`category_id, category_name, description, picture` +
+		`category_name, description, picture` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
-		`) ON CONFLICT (category_id) DO UPDATE SET (` +
-		`category_id, category_name, description, picture` +
-		`) = (` +
-		`EXCLUDED.category_id, EXCLUDED.category_name, EXCLUDED.description, EXCLUDED.picture` +
-		`)`
+		`$1, $2, $3` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`category_name = EXCLUDED.category_name, description = EXCLUDED.description, picture = EXCLUDED.picture `
 	// run
 	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
@@ -119,7 +116,8 @@ func (c *Category) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.categories WHERE category_id = $1`
+	const sqlstr = `DELETE FROM public.categories ` +
+		`WHERE category_id = $1`
 	// run
 	logf(sqlstr, c.CategoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID); err != nil {
@@ -138,7 +136,8 @@ func CategoryByCategoryID(ctx context.Context, db DB, categoryID int) (*Category
 	const sqlstr = `SELECT ` +
 		`category_id, category_name, description, picture ` +
 		`FROM public.categories ` +
-		`WHERE category_id = $1`
+		`WHERE ` +
+		`category_id = $1`
 	// run
 	logf(sqlstr, categoryID)
 	c := Category{

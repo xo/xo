@@ -44,7 +44,7 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 		`author_id, isbn, title, year, available, tags` +
 		`) VALUES (` +
 		`@p1, @p2, @p3, @p4, @p5, @p6` +
-		`); select ID = convert(bigint, SCOPE_IDENTITY())`
+		`); SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())`
 	// run
 	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
 	rows, err := db.QueryContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
@@ -78,8 +78,8 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE booktest.books SET ` +
-		`author_id = @p1, isbn = @p2, title = @p3, year = @p4, available = @p5, tags = @p6` +
-		` WHERE book_id = @p7`
+		`author_id = @p1, isbn = @p2, title = @p3, year = @p4, available = @p5, tags = @p6 ` +
+		`WHERE book_id = @p7`
 	// run
 	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID); err != nil {
@@ -105,7 +105,8 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM booktest.books WHERE book_id = @p1`
+	const sqlstr = `DELETE FROM booktest.books ` +
+		`WHERE book_id = @p1`
 	// run
 	logf(sqlstr, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.BookID); err != nil {
@@ -124,7 +125,8 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE isbn = @p1`
+		`WHERE ` +
+		`isbn = @p1`
 	// run
 	logf(sqlstr, isbn)
 	b := Book{
@@ -144,7 +146,8 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE book_id = @p1`
+		`WHERE ` +
+		`book_id = @p1`
 	// run
 	logf(sqlstr, bookID)
 	b := Book{
@@ -164,7 +167,8 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE title = @p1 AND year = @p2`
+		`WHERE ` +
+		`title = @p1 AND year = @p2`
 	// run
 	logf(sqlstr, title, year)
 	rows, err := db.QueryContext(ctx, sqlstr, title, year)

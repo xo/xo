@@ -76,8 +76,8 @@ func (e *Employee) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE employees SET ` +
-		`last_name = $1, first_name = $2, title = $3, title_of_courtesy = $4, birth_date = $5, hire_date = $6, address = $7, city = $8, region = $9, postal_code = $10, country = $11, home_phone = $12, extension = $13, photo = $14, notes = $15, reports_to = $16, photo_path = $17` +
-		` WHERE employee_id = $18`
+		`last_name = $1, first_name = $2, title = $3, title_of_courtesy = $4, birth_date = $5, hire_date = $6, address = $7, city = $8, region = $9, postal_code = $10, country = $11, home_phone = $12, extension = $13, photo = $14, notes = $15, reports_to = $16, photo_path = $17 ` +
+		`WHERE employee_id = $18`
 	// run
 	logf(sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID); err != nil {
@@ -103,7 +103,8 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM employees WHERE employee_id = $1`
+	const sqlstr = `DELETE FROM employees ` +
+		`WHERE employee_id = $1`
 	// run
 	logf(sqlstr, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID); err != nil {
@@ -122,7 +123,8 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int) (*Employee
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM employees ` +
-		`WHERE employee_id = $1`
+		`WHERE ` +
+		`employee_id = $1`
 	// run
 	logf(sqlstr, employeeID)
 	e := Employee{

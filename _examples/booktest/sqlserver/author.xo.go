@@ -38,7 +38,7 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 		`name` +
 		`) VALUES (` +
 		`@p1` +
-		`); select ID = convert(bigint, SCOPE_IDENTITY())`
+		`); SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())`
 	// run
 	logf(sqlstr, a.Name)
 	rows, err := db.QueryContext(ctx, sqlstr, a.Name)
@@ -72,8 +72,8 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE booktest.authors SET ` +
-		`name = @p1` +
-		` WHERE author_id = @p2`
+		`name = @p1 ` +
+		`WHERE author_id = @p2`
 	// run
 	logf(sqlstr, a.Name, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, a.AuthorID); err != nil {
@@ -99,7 +99,8 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM booktest.authors WHERE author_id = @p1`
+	const sqlstr = `DELETE FROM booktest.authors ` +
+		`WHERE author_id = @p1`
 	// run
 	logf(sqlstr, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID); err != nil {
@@ -118,7 +119,8 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE name = @p1`
+		`WHERE ` +
+		`name = @p1`
 	// run
 	logf(sqlstr, name)
 	rows, err := db.QueryContext(ctx, sqlstr, name)
@@ -152,7 +154,8 @@ func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error)
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE author_id = @p1`
+		`WHERE ` +
+		`author_id = @p1`
 	// run
 	logf(sqlstr, authorID)
 	a := Author{

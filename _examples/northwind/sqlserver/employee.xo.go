@@ -76,8 +76,8 @@ func (e *Employee) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.employees SET ` +
-		`last_name = @p1, first_name = @p2, title = @p3, title_of_courtesy = @p4, birth_date = @p5, hire_date = @p6, address = @p7, city = @p8, region = @p9, postal_code = @p10, country = @p11, home_phone = @p12, extension = @p13, photo = @p14, notes = @p15, reports_to = @p16, photo_path = @p17` +
-		` WHERE employee_id = @p18`
+		`last_name = @p1, first_name = @p2, title = @p3, title_of_courtesy = @p4, birth_date = @p5, hire_date = @p6, address = @p7, city = @p8, region = @p9, postal_code = @p10, country = @p11, home_phone = @p12, extension = @p13, photo = @p14, notes = @p15, reports_to = @p16, photo_path = @p17 ` +
+		`WHERE employee_id = @p18`
 	// run
 	logf(sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID); err != nil {
@@ -103,7 +103,8 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.employees WHERE employee_id = @p1`
+	const sqlstr = `DELETE FROM northwind.employees ` +
+		`WHERE employee_id = @p1`
 	// run
 	logf(sqlstr, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID); err != nil {
@@ -122,7 +123,8 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM northwind.employees ` +
-		`WHERE employee_id = @p1`
+		`WHERE ` +
+		`employee_id = @p1`
 	// run
 	logf(sqlstr, employeeID)
 	e := Employee{

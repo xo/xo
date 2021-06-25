@@ -69,11 +69,9 @@ func (s *Supplier) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.suppliers SET (` +
-		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
-		`) WHERE supplier_id = $12`
+	const sqlstr = `UPDATE public.suppliers SET ` +
+		`company_name = $1, contact_name = $2, contact_title = $3, address = $4, city = $5, region = $6, postal_code = $7, country = $8, phone = $9, fax = $10, homepage = $11 ` +
+		`WHERE supplier_id = $12`
 	// run
 	logf(sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage, s.SupplierID); err != nil {
@@ -100,14 +98,13 @@ func (s *Supplier) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.suppliers (` +
-		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
+		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
-		`) ON CONFLICT (supplier_id) DO UPDATE SET (` +
-		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
-		`) = (` +
-		`EXCLUDED.supplier_id, EXCLUDED.company_name, EXCLUDED.contact_name, EXCLUDED.contact_title, EXCLUDED.address, EXCLUDED.city, EXCLUDED.region, EXCLUDED.postal_code, EXCLUDED.country, EXCLUDED.phone, EXCLUDED.fax, EXCLUDED.homepage` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`company_name = EXCLUDED.company_name, contact_name = EXCLUDED.contact_name, contact_title = EXCLUDED.contact_title, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, phone = EXCLUDED.phone, fax = EXCLUDED.fax, homepage = EXCLUDED.homepage `
 	// run
 	logf(sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage)
 	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage); err != nil {
@@ -127,7 +124,8 @@ func (s *Supplier) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.suppliers WHERE supplier_id = $1`
+	const sqlstr = `DELETE FROM public.suppliers ` +
+		`WHERE supplier_id = $1`
 	// run
 	logf(sqlstr, s.SupplierID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID); err != nil {
@@ -146,7 +144,8 @@ func SupplierBySupplierID(ctx context.Context, db DB, supplierID int) (*Supplier
 	const sqlstr = `SELECT ` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage ` +
 		`FROM public.suppliers ` +
-		`WHERE supplier_id = $1`
+		`WHERE ` +
+		`supplier_id = $1`
 	// run
 	logf(sqlstr, supplierID)
 	s := Supplier{

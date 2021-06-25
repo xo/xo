@@ -75,11 +75,9 @@ func (e *Employee) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.employees SET (` +
-		`last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17` +
-		`) WHERE employee_id = $18`
+	const sqlstr = `UPDATE public.employees SET ` +
+		`last_name = $1, first_name = $2, title = $3, title_of_courtesy = $4, birth_date = $5, hire_date = $6, address = $7, city = $8, region = $9, postal_code = $10, country = $11, home_phone = $12, extension = $13, photo = $14, notes = $15, reports_to = $16, photo_path = $17 ` +
+		`WHERE employee_id = $18`
 	// run
 	logf(sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID); err != nil {
@@ -106,14 +104,13 @@ func (e *Employee) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.employees (` +
-		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
+		`last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18` +
-		`) ON CONFLICT (employee_id) DO UPDATE SET (` +
-		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
-		`) = (` +
-		`EXCLUDED.employee_id, EXCLUDED.last_name, EXCLUDED.first_name, EXCLUDED.title, EXCLUDED.title_of_courtesy, EXCLUDED.birth_date, EXCLUDED.hire_date, EXCLUDED.address, EXCLUDED.city, EXCLUDED.region, EXCLUDED.postal_code, EXCLUDED.country, EXCLUDED.home_phone, EXCLUDED.extension, EXCLUDED.photo, EXCLUDED.notes, EXCLUDED.reports_to, EXCLUDED.photo_path` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`last_name = EXCLUDED.last_name, first_name = EXCLUDED.first_name, title = EXCLUDED.title, title_of_courtesy = EXCLUDED.title_of_courtesy, birth_date = EXCLUDED.birth_date, hire_date = EXCLUDED.hire_date, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, home_phone = EXCLUDED.home_phone, extension = EXCLUDED.extension, photo = EXCLUDED.photo, notes = EXCLUDED.notes, reports_to = EXCLUDED.reports_to, photo_path = EXCLUDED.photo_path `
 	// run
 	logf(sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath)
 	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath); err != nil {
@@ -133,7 +130,8 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.employees WHERE employee_id = $1`
+	const sqlstr = `DELETE FROM public.employees ` +
+		`WHERE employee_id = $1`
 	// run
 	logf(sqlstr, e.EmployeeID)
 	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID); err != nil {
@@ -152,7 +150,8 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int) (*Employee
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM public.employees ` +
-		`WHERE employee_id = $1`
+		`WHERE ` +
+		`employee_id = $1`
 	// run
 	logf(sqlstr, employeeID)
 	e := Employee{

@@ -58,11 +58,9 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.authors SET (` +
-		`name` +
-		`) = (` +
-		`$1` +
-		`) WHERE author_id = $2`
+	const sqlstr = `UPDATE public.authors SET ` +
+		`name = $1 ` +
+		`WHERE author_id = $2`
 	// run
 	logf(sqlstr, a.Name, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, a.AuthorID); err != nil {
@@ -89,14 +87,13 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.authors (` +
-		`author_id, name` +
+		`name` +
 		`) VALUES (` +
-		`$1, $2` +
-		`) ON CONFLICT (author_id) DO UPDATE SET (` +
-		`author_id, name` +
-		`) = (` +
-		`EXCLUDED.author_id, EXCLUDED.name` +
-		`)`
+		`$1` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`name = EXCLUDED.name `
 	// run
 	logf(sqlstr, a.AuthorID, a.Name)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID, a.Name); err != nil {
@@ -116,7 +113,8 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.authors WHERE author_id = $1`
+	const sqlstr = `DELETE FROM public.authors ` +
+		`WHERE author_id = $1`
 	// run
 	logf(sqlstr, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID); err != nil {
@@ -135,7 +133,8 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM public.authors ` +
-		`WHERE name = $1`
+		`WHERE ` +
+		`name = $1`
 	// run
 	logf(sqlstr, name)
 	rows, err := db.QueryContext(ctx, sqlstr, name)
@@ -169,7 +168,8 @@ func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error)
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM public.authors ` +
-		`WHERE author_id = $1`
+		`WHERE ` +
+		`author_id = $1`
 	// run
 	logf(sqlstr, authorID)
 	a := Author{

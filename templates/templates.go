@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"sort"
 	"text/template"
+
+	xo "github.com/xo/xo/types"
 )
 
 // templates are registered template sets.
@@ -59,7 +61,7 @@ type FlagSet struct {
 
 // Flag is a option flag.
 type Flag struct {
-	ContextKey  ContextKey
+	ContextKey  xo.ContextKey
 	Desc        string
 	PlaceHolder string
 	Default     string
@@ -81,24 +83,18 @@ func AddKnownType(ctx context.Context, name string) error {
 	return nil
 }
 
-// Emit emits a template to a template set.
-func Emit(ctx context.Context, tpl *Template) error {
+// Process processes emitted templates for a template set.
+func Process(ctx context.Context, doAppend bool, single string, v *xo.XO) error {
 	typ := TemplateType(ctx)
 	set, ok := templates[typ]
 	if !ok {
 		return fmt.Errorf("unknown template %q", typ)
 	}
-	return set.Emit(ctx, tpl)
-}
-
-// Process processes emitted templates for a template set.
-func Process(ctx context.Context, doAppend bool, single string, order ...string) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
+	if err := set.Process(ctx, doAppend, set, v); err != nil {
+		return err
 	}
 	sortEmitted(set.emitted)
+	order := set.Order
 	// add package templates
 	if !doAppend {
 		var additional []string
@@ -108,7 +104,7 @@ func Process(ctx context.Context, doAppend bool, single string, order ...string)
 			}
 			additional = append(additional, tpl.Template)
 		}
-		order = removeMatching(order, additional)
+		order = removeMatching(set.Order, additional)
 		order = append(additional, order...)
 	}
 	set.files = make(map[string]*EmittedTemplate)
@@ -244,6 +240,8 @@ type TemplateSet struct {
 	AddType func(string)
 	// Flags are additional template flags.
 	Flags []Flag
+	// Order in which to process templates.
+	Order []string
 	// HeaderTemplate is the name of the header template.
 	HeaderTemplate func(context.Context) *Template
 	// PackageTemplates returns package templates.
@@ -252,6 +250,8 @@ type TemplateSet struct {
 	Funcs func(context.Context) (template.FuncMap, error)
 	// FileName determines the out file name templates.
 	FileName func(context.Context, *Template) string
+	// Process performs the preprocessing and the order to load files.
+	Process func(context.Context, bool, *TemplateSet, *xo.XO) error
 	// Post performs post processing of generated content.
 	Post func(context.Context, []byte) ([]byte, error)
 	// emitted holds emitted templates.
@@ -330,6 +330,24 @@ func (set *TemplateSet) LoadFile(ctx context.Context, file string, doAppend bool
 	return ioutil.ReadFile(name)
 }
 
+// Template wraps other templates.
+type Template struct {
+	Set      string
+	Template string
+	Type     string
+	Name     string
+	Data     interface{}
+	Extra    map[string]interface{}
+}
+
+// File returns the file name for the template.
+func (tpl *Template) File() string {
+	if tpl.Set != "" {
+		return tpl.Set + "/" + tpl.Template
+	}
+	return tpl.Template
+}
+
 // EmittedTemplate wraps a template with its content and file name.
 type EmittedTemplate struct {
 	Template *Template
@@ -354,19 +372,13 @@ func (err *ErrPostFailed) Unwrap() error {
 	return err.Err
 }
 
-// ContextKey is a context key.
-type ContextKey string
-
 // Context keys.
 const (
-	GenTypeKey      ContextKey = "gen-type"
-	TemplateTypeKey ContextKey = "template-type"
-	SuffixKey       ContextKey = "suffix"
-	DriverKey       ContextKey = "driver"
-	SchemaKey       ContextKey = "schema"
-	SrcKey          ContextKey = "src"
-	NthParamKey     ContextKey = "nth-param"
-	OutKey          ContextKey = "out"
+	GenTypeKey      xo.ContextKey = "gen-type"
+	TemplateTypeKey xo.ContextKey = "template-type"
+	SuffixKey       xo.ContextKey = "suffix"
+	SrcKey          xo.ContextKey = "src"
+	OutKey          xo.ContextKey = "out"
 )
 
 // GenType returns the the gen-type option from the context.
@@ -389,13 +401,13 @@ func Suffix(ctx context.Context) string {
 
 // Driver returns driver option from the context.
 func Driver(ctx context.Context) string {
-	s, _ := ctx.Value(DriverKey).(string)
+	s, _ := ctx.Value(xo.DriverKey).(string)
 	return s
 }
 
 // Schema returns schema option from the context.
 func Schema(ctx context.Context) string {
-	s, _ := ctx.Value(SchemaKey).(string)
+	s, _ := ctx.Value(xo.SchemaKey).(string)
 	return s
 }
 
@@ -407,7 +419,7 @@ func Src(ctx context.Context) fs.FS {
 
 // NthParam returns the nth-param option from the context.
 func NthParam(ctx context.Context) func(int) string {
-	f, _ := ctx.Value(NthParamKey).(func(int) string)
+	f, _ := ctx.Value(xo.NthParamKey).(func(int) string)
 	return f
 }
 

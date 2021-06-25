@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
+	xo "github.com/xo/xo/types"
 )
 
 func init() {
@@ -27,12 +27,8 @@ func init() {
 
 // Sqlite3GoType parse a sqlite3 type into a Go type based on the column
 // definition.
-func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
-	// extract precision
-	typ, prec, _, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
+func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+	typ, nullable := d.Type, d.Nullable
 	unsigned := false
 	if unsignedRE.MatchString(typ) {
 		unsigned = true
@@ -46,7 +42,7 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "int", "integer", "tinyint", "smallint", "mediumint":
-		goType, zero = gotpl.Int32(ctx), "0"
+		goType, zero = Int32(ctx), "0"
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -75,10 +71,10 @@ func Sqlite3GoType(ctx context.Context, typ string, nullable bool) (string, stri
 		}
 	}
 	// if unsigned ...
-	if intRE.MatchString(goType) && unsigned && goType == gotpl.Int32(ctx) {
-		goType, zero = gotpl.Uint32(ctx), "0"
+	if intRE.MatchString(goType) && unsigned && goType == Int32(ctx) {
+		goType, zero = Uint32(ctx), "0"
 	}
-	return goType, zero, prec, nil
+	return goType, zero, nil
 }
 
 // unsignedRE is the unsigned regexp.

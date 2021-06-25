@@ -1,9 +1,12 @@
 /xo
 /xo.exe
-/*.txt
 /build/
 /x/
 
+*.txt
 *.db
+*.dot
+*.json
 *.sqlite3
 *.sqlite3-journal
+*.svg

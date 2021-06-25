@@ -7,7 +7,7 @@ CREATE TABLE a_manual_table (
 -- table with auto increment
 CREATE TABLE a_sequence (
   a_seq NUMBER GENERATED ALWAYS AS IDENTITY,
-	CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
+  CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
 );
 
 CREATE TABLE a_sequence_multi (
@@ -158,4 +158,4 @@ CREATE TABLE a_bit_of_everything (
 
 -- views
 CREATE VIEW a_view_of_everything AS
-	SELECT * FROM a_bit_of_everything;
+  SELECT * FROM a_bit_of_everything;

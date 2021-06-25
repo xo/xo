@@ -69,8 +69,8 @@ func (c *Customer) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.customers SET ` +
-		`company_name = :1, contact_name = :2, contact_title = :3, address = :4, city = :5, region = :6, postal_code = :7, country = :8, phone = :9, fax = :10` +
-		` WHERE customer_id = :11`
+		`company_name = :1, contact_name = :2, contact_title = :3, address = :4, city = :5, region = :6, postal_code = :7, country = :8, phone = :9, fax = :10 ` +
+		`WHERE customer_id = :11`
 	// run
 	logf(sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID); err != nil {
@@ -96,7 +96,8 @@ func (c *Customer) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.customers WHERE customer_id = :1`
+	const sqlstr = `DELETE FROM northwind.customers ` +
+		`WHERE customer_id = :1`
 	// run
 	logf(sqlstr, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID); err != nil {
@@ -115,7 +116,8 @@ func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Custo
 	const sqlstr = `SELECT ` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax ` +
 		`FROM northwind.customers ` +
-		`WHERE customer_id = :1`
+		`WHERE ` +
+		`customer_id = :1`
 	// run
 	logf(sqlstr, customerID)
 	c := Customer{

@@ -44,22 +44,6 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shorts map[string
 		b := false
 		first = &b
 	}
-	esc := Esc(ctx)
-	var tags []string
-	for _, tag := range Tag(ctx) {
-		if tag != "" {
-			tags = append(tags, tag)
-		}
-	}
-	var imports []string
-	for _, s := range Import(ctx) {
-		if s != "" {
-			imports = append(imports, s)
-		}
-	}
-	if s := UUID(ctx); s != "" {
-		imports = append(imports, s)
-	}
 	// parse field tag template
 	fieldtag, err := template.New("fieldtag").Parse(FieldTag(ctx))
 	if err != nil {
@@ -80,13 +64,13 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shorts map[string
 		first:      first,
 		nth:        templates.NthParam(ctx),
 		pkg:        Pkg(ctx),
-		tags:       tags,
-		imports:    imports,
+		tags:       Tags(ctx),
+		imports:    Imports(ctx),
 		conflict:   Conflict(ctx),
 		custom:     Custom(ctx),
-		escSchema:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "schema")),
-		escTable:   !contains(esc, "none") && (contains(esc, "all") || contains(esc, "table")),
-		escColumn:  !contains(esc, "none") && (contains(esc, "all") || contains(esc, "column")),
+		escSchema:  Esc(ctx, "schema"),
+		escTable:   Esc(ctx, "table"),
+		escColumn:  Esc(ctx, "column"),
 		fieldtag:   fieldtag,
 		context:    Context(ctx),
 		inject:     inject,
@@ -118,13 +102,13 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"context_disable": f.context_disable,
 		// func and query
 		"func_name_context":   f.func_name_context,
-		"func_name":           f.func_name,
+		"func_name":           f.func_name_none,
 		"func_context":        f.func_context,
 		"func":                f.func_none,
 		"recv_context":        f.recv_context,
 		"recv":                f.recv_none,
 		"foreign_key_context": f.foreign_key_context,
-		"foreign_key":         f.foreign_key,
+		"foreign_key":         f.foreign_key_none,
 		"db":                  f.db,
 		"db_prefix":           f.db_prefix,
 		"db_update":           f.db_update,
@@ -157,7 +141,6 @@ func (f *Funcs) FuncMap() template.FuncMap {
 			"colprefixnames":     f.colprefixnames,
 			"colvals":            f.colvals,
 			"colvalsmulti":       f.colvalsmulti,
-			"convext":            f.convext,
 			"fieldnames":         f.fieldnames,
 			"fieldnamesmulti":    f.fieldnamesmulti,
 			"startcount":         f.startcount,
@@ -271,20 +254,20 @@ func (f *Funcs) eval(v interface{}, s string) (string, error) {
 	return buf.String(), nil
 }
 
-// func_name builds a func name.
-func (f *Funcs) func_name(v interface{}) string {
+// func_name_none builds a func name.
+func (f *Funcs) func_name_none(v interface{}) string {
 	switch x := v.(type) {
 	case string:
 		return x
-	case *templates.Query:
+	case Query:
 		return x.Name
-	case *templates.Type:
-		return x.Name
-	case *templates.ForeignKey:
-		return x.Name
-	case *templates.Proc:
-		return x.Name
-	case *templates.Index:
+	case Table:
+		return x.GoName
+	case ForeignKey:
+		return x.GoName
+	case Proc:
+		return x.GoName
+	case Index:
 		return x.FuncName
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
@@ -297,15 +280,15 @@ func (f *Funcs) func_name_context(v interface{}) string {
 	switch x := v.(type) {
 	case string:
 		return nameContext(f.context_both(), x)
-	case *templates.Query:
+	case Query:
 		name = nameContext(f.context_both(), x.Name)
-	case *templates.Type:
-		name = nameContext(f.context_both(), x.Name)
-	case *templates.ForeignKey:
-		name = nameContext(f.context_both(), x.Name)
-	case *templates.Proc:
-		name = nameContext(f.context_both(), x.Name)
-	case *templates.Index:
+	case Table:
+		name = nameContext(f.context_both(), x.GoName)
+	case ForeignKey:
+		name = nameContext(f.context_both(), x.GoName)
+	case Proc:
+		name = nameContext(f.context_both(), x.GoName)
+	case Index:
 		name = nameContext(f.context_both(), x.FuncName)
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
@@ -321,7 +304,7 @@ func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 	}
 	p = append(p, "db DB")
 	switch x := v.(type) {
-	case *templates.Query:
+	case Query:
 		// params
 		for _, z := range x.Params {
 			p = append(p, fmt.Sprintf("%s %s", z.Name, z.Type))
@@ -335,23 +318,23 @@ func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 				r = append(r, f.typefn(z.Type))
 			}
 		case x.One:
-			r = append(r, "*"+x.Type.Name)
+			r = append(r, "*"+x.Type.GoName)
 		default:
-			r = append(r, "[]*"+x.Type.Name)
+			r = append(r, "[]*"+x.Type.GoName)
 		}
-	case *templates.Proc:
+	case Proc:
 		// params
 		p = append(p, f.params(x.Params, true))
 		// returns
 		if x.Return.Type != "void" {
 			r = append(r, f.typefn(x.Return.Type))
 		}
-	case *templates.Index:
+	case Index:
 		// params
 		p = append(p, f.params(x.Fields, true))
 		// returns
-		rt := "*" + x.Type.Name
-		if !x.Index.IsUnique {
+		rt := "*" + x.Table.GoName
+		if !x.IsUnique {
 			rt = "[]" + rt
 		}
 		r = append(r, rt)
@@ -370,16 +353,16 @@ func (f *Funcs) func_context(v interface{}) string {
 
 // func_none genarates a func signature for v without context.
 func (f *Funcs) func_none(v interface{}) string {
-	return f.funcfn(f.func_name(v), false, v)
+	return f.funcfn(f.func_name_none(v), false, v)
 }
 
 // recv builds a receiver func definition.
 func (f *Funcs) recv(name string, context bool, typ interface{}, v interface{}) string {
 	short := f.short(typ)
-	var typeName string
+	var tableName string
 	switch x := typ.(type) {
-	case *templates.Type:
-		typeName = x.Name
+	case Table:
+		tableName = x.GoName
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED RECEIVER TYPE: %T ]]", typ)
 	}
@@ -390,11 +373,11 @@ func (f *Funcs) recv(name string, context bool, typ interface{}, v interface{}) 
 	}
 	p = append(p, "db DB")
 	switch x := v.(type) {
-	case *templates.ForeignKey:
-		r = append(r, "*"+x.RefType.Name)
+	case ForeignKey:
+		r = append(r, "*"+x.RefTable)
 	}
 	r = append(r, "error")
-	return fmt.Sprintf("func (%s *%s) %s(%s) (%s)", short, typeName, name, strings.Join(p, ", "), strings.Join(r, ", "))
+	return fmt.Sprintf("func (%s *%s) %s(%s) (%s)", short, tableName, name, strings.Join(p, ", "), strings.Join(r, ", "))
 }
 
 // recv_context builds a receiver func definition with context determined by
@@ -405,7 +388,7 @@ func (f *Funcs) recv_context(typ interface{}, v interface{}) string {
 
 // recv_none builds a receiver func definition without context.
 func (f *Funcs) recv_none(typ interface{}, v interface{}) string {
-	return f.recv(f.func_name(v), false, typ, v)
+	return f.recv(f.func_name_none(v), false, typ, v)
 }
 
 func (f *Funcs) foreign_key_context(v interface{}) string {
@@ -415,27 +398,26 @@ func (f *Funcs) foreign_key_context(v interface{}) string {
 		p = append(p, "ctx")
 	}
 	switch x := v.(type) {
-	case *templates.ForeignKey:
-		var ctx string
+	case ForeignKey:
+		name = x.RefFuncName
 		if f.context_both() {
-			ctx = "Context"
+			name += "Context"
 		}
-		name = fmt.Sprintf("%sBy%s%s", x.RefType.Name, x.RefField.Name, ctx)
 		// add params
-		p = append(p, "db", f.convext(x.Type, x.Field, x.RefField))
+		p = append(p, "db", f.convext(x))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
 	}
 	return fmt.Sprintf("%s(%s)", name, strings.Join(p, ", "))
 }
 
-func (f *Funcs) foreign_key(v interface{}) string {
+func (f *Funcs) foreign_key_none(v interface{}) string {
 	var name string
 	var p []string
 	switch x := v.(type) {
-	case *templates.ForeignKey:
-		name = fmt.Sprintf("%sBy%sContext", x.RefType.Name, x.RefField.Name)
-		p = append(p, "context.Background()", "db", f.convext(x.Type, x.Field, x.RefField))
+	case ForeignKey:
+		name = x.RefFuncName
+		p = append(p, "context.Background()", "db", f.convext(x))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
 	}
@@ -450,13 +432,12 @@ func (f *Funcs) db(name string, v ...interface{}) string {
 		name, p = name+"Context", append(p, "ctx")
 	}
 	p = append(p, "sqlstr")
-	return fmt.Sprintf(`db.%s(%s)`, name, f.names("", append(p, v...)...))
+	return fmt.Sprintf("db.%s(%s)", name, f.names("", append(p, v...)...))
 }
 
 // db_prefix generates a db.<name>Context(ctx, sqlstr, <prefix>.param, ...).
 //
-// Will skip the specific parameters based
-// on the type provided.
+// Will skip the specific parameters based on the type provided.
 func (f *Funcs) db_prefix(name string, skip bool, vs ...interface{}) string {
 	var prefix string
 	var params []interface{}
@@ -465,11 +446,13 @@ func (f *Funcs) db_prefix(name string, skip bool, vs ...interface{}) string {
 		switch x := v.(type) {
 		case string:
 			params = append(params, x)
-		case *templates.Type:
-			prefix = f.short(x.Name) + "."
+		case Table:
+			prefix = f.short(x.GoName) + "."
 			// skip primary keys
 			if skip {
-				ignore = append(ignore, x.PrimaryKey.Name)
+				for _, pk := range x.PrimaryKeys {
+					ignore = append(ignore, pk.GoName)
+				}
 			}
 			params = append(params, f.names_ignore(prefix, v, ignore...))
 		default:
@@ -482,11 +465,14 @@ func (f *Funcs) db_prefix(name string, skip bool, vs ...interface{}) string {
 // db_update generates a db.<name>Context(ctx, sqlstr, regularparams,
 // primaryparams)
 func (f *Funcs) db_update(name string, v interface{}) string {
-	var p []string
+	var ignore, p []string
 	switch x := v.(type) {
-	case *templates.Type:
-		prefix := f.short(x.Name) + "."
-		p = append(p, f.names_ignore(prefix, x, x.PrimaryKey.Name), f.names(prefix, x.PrimaryKeyFields))
+	case Table:
+		prefix := f.short(x.GoName) + "."
+		for _, pk := range x.PrimaryKeys {
+			ignore = append(ignore, pk.GoName)
+		}
+		p = append(p, f.names_ignore(prefix, x, ignore...), f.names(prefix, x.PrimaryKeys))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
@@ -497,11 +483,11 @@ func (f *Funcs) db_update(name string, v interface{}) string {
 func (f *Funcs) db_named(name string, v interface{}) string {
 	var p []string
 	switch x := v.(type) {
-	case *templates.Proc:
+	case Proc:
 		for _, z := range x.Params {
-			p = append(p, f.named(z.Name, f.param(z, false), false))
+			p = append(p, f.named(z.SQLName, f.param(z, false), false))
 		}
-		p = append(p, f.named(x.Proc.ReturnName, "&"+f.short(x.Return.Type), true))
+		p = append(p, f.named(x.Return.SQLName, "&"+f.short(x.Return.Type), true))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
@@ -518,17 +504,34 @@ func (f *Funcs) named(name, value string, out bool) string {
 func (f *Funcs) logf_pkeys(v interface{}) string {
 	p := []string{"sqlstr"}
 	switch x := v.(type) {
-	case *templates.Type:
-		p = append(p, f.names(f.short(x.Name)+".", x.PrimaryKeyFields))
+	case Table:
+		p = append(p, f.names(f.short(x.GoName)+".", x.PrimaryKeys))
 	}
 	return fmt.Sprintf("logf(%s)", strings.Join(p, ", "))
 }
 
-func (f *Funcs) logf(v interface{}, ignore ...string) string {
+func (f *Funcs) logf(v interface{}, ignore ...interface{}) string {
+	var ignoreNames []string
 	p := []string{"sqlstr"}
+	// build ignore list
+	for i, x := range ignore {
+		switch z := x.(type) {
+		case string:
+			ignoreNames = append(ignoreNames, z)
+		case Field:
+			ignoreNames = append(ignoreNames, z.GoName)
+		case []Field:
+			for _, f := range z {
+				ignoreNames = append(ignoreNames, f.GoName)
+			}
+		default:
+			return fmt.Sprintf("[[ UNSUPPORTED TYPE %d: %T ]]", i, x)
+		}
+	}
+	// add fields
 	switch x := v.(type) {
-	case *templates.Type:
-		p = append(p, f.names_ignore(f.short(x.Name)+".", x, ignore...))
+	case Table:
+		p = append(p, f.names_ignore(f.short(x.GoName)+".", x, ignoreNames...))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
@@ -536,11 +539,15 @@ func (f *Funcs) logf(v interface{}, ignore ...string) string {
 }
 
 func (f *Funcs) logf_update(v interface{}) string {
+	var ignore []string
 	p := []string{"sqlstr"}
 	switch x := v.(type) {
-	case *templates.Type:
-		prefix := f.short(x.Name) + "."
-		p = append(p, f.names_ignore(prefix, x, x.PrimaryKey.Name), f.names(prefix, x.PrimaryKeyFields))
+	case Table:
+		prefix := f.short(x.GoName) + "."
+		for _, pk := range x.PrimaryKeys {
+			ignore = append(ignore, pk.GoName)
+		}
+		p = append(p, f.names_ignore(prefix, x, ignore...), f.names(prefix, x.PrimaryKeys))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
@@ -554,24 +561,24 @@ func (f *Funcs) namesfn(all bool, prefix string, z ...interface{}) string {
 		switch x := v.(type) {
 		case string:
 			names = append(names, x)
-		case *templates.Query:
+		case Query:
 			for _, p := range x.Params {
 				if !all && p.Interpolate {
 					continue
 				}
 				names = append(names, prefix+p.Name)
 			}
-		case *templates.Type:
+		case Table:
 			for _, p := range x.Fields {
-				names = append(names, prefix+p.Name)
+				names = append(names, prefix+p.GoName)
 			}
-		case []*templates.Field:
+		case []Field:
 			for _, p := range x {
-				names = append(names, prefix+p.Name)
+				names = append(names, prefix+p.GoName)
 			}
-		case *templates.Proc:
+		case Proc:
 			names = append(names, f.params(x.Params, false))
-		case *templates.Index:
+		case Index:
 			names = append(names, f.params(x.Fields, false))
 		default:
 			names = append(names, fmt.Sprintf("/* UNSUPPORTED TYPE %d %T */", i, v))
@@ -597,18 +604,18 @@ func (f *Funcs) names_ignore(prefix string, v interface{}, ignore ...string) str
 	for _, n := range ignore {
 		m[n] = true
 	}
-	var vals []*templates.Field
+	var vals []Field
 	switch x := v.(type) {
-	case *templates.Type:
+	case Table:
 		for _, p := range x.Fields {
-			if m[p.Name] {
+			if m[p.GoName] {
 				continue
 			}
 			vals = append(vals, p)
 		}
-	case []*templates.Field:
+	case []Field:
 		for _, p := range x {
-			if m[p.Name] {
+			if m[p.GoName] {
 				continue
 			}
 			vals = append(vals, p)
@@ -625,10 +632,10 @@ func (f *Funcs) querystr(v interface{}) string {
 	var interpolate bool
 	var query, comments []string
 	switch x := v.(type) {
-	case *templates.Query:
+	case Query:
 		interpolate, query, comments = x.Interpolate, x.Query, x.Comments
 	default:
-		return fmt.Sprintf(`const sqlstr = [[ NOT IMPLEMENTED FOR %T ]]`, v)
+		return fmt.Sprintf("const sqlstr = [[ NOT IMPLEMENTED FOR %T ]]", v)
 	}
 	typ := "const"
 	if interpolate {
@@ -652,214 +659,222 @@ func (f *Funcs) querystr(v interface{}) string {
 var stripRE = regexp.MustCompile(`\s+\+\s+` + "``")
 
 func (f *Funcs) sqlstr(typ string, v interface{}) string {
-	var sql string
+	var lines []string
 	switch typ {
 	case "insert_manual":
-		sql = f.insert_manual(v)
+		lines = f.sqlstr_insert_manual(v)
 	case "insert":
-		sql = f.insert(v)
+		lines = f.sqlstr_insert(v)
 	case "update":
-		sql = f.update(v)
+		lines = f.sqlstr_update(v)
 	case "upsert":
-		sql = f.upsert(v)
+		lines = f.sqlstr_upsert(v)
 	case "delete":
-		sql = f.delete(v)
+		lines = f.sqlstr_delete(v)
 	case "proc":
-		sql = f.proc(v)
+		lines = f.sqlstr_proc(v)
 	case "index":
-		sql = f.index(v)
+		lines = f.sqlstr_index(v)
 	default:
-		return fmt.Sprintf("const sqlstr =  `UNKNOWN sqlstr: %q`", typ)
+		return fmt.Sprintf("const sqlstr = `UNKNOWN QUERY TYPE: %s`", typ)
 	}
-	split := strings.Split(sql, "|")
-	return fmt.Sprintf("const sqlstr = `%s`", strings.Join(split, "` +\n`"))
+	return fmt.Sprintf("const sqlstr = `%s`", strings.Join(lines, "` +\n\t`"))
 }
 
-func (f *Funcs) insert_manual(v interface{}) string {
-	var table string
-	var fields, vals []string
+// sqlstr_insert_manual builds an INSERT query skipping primary keys when
+// skipPrimary is true.
+func (f *Funcs) sqlstr_insert_base(skipPrimary bool, v interface{}) []string {
 	switch x := v.(type) {
-	case *templates.Type:
-		table = f.schemafn(x.Table.TableName)
-		// names and values
-		for i, z := range x.Fields {
-			fields = append(fields, f.colname(z))
-			vals = append(vals, f.nth(i))
-		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
-	}
-	return fmt.Sprintf("INSERT INTO %s (|%s|) VALUES (|%s|)",
-		table, strings.Join(fields, ", "), strings.Join(vals, ", "))
-}
-
-func (f *Funcs) insert(v interface{}) string {
-	var table, end string
-	var fields, vals []string
-	switch x := v.(type) {
-	case *templates.Type:
-		table = f.schemafn(x.Table.TableName)
-		// names and values
+	case Table:
+		// build names and values
+		var fields, vals []string
 		var i int
 		for _, z := range x.Fields {
-			if z.Col.IsPrimaryKey {
+			if skipPrimary && z.IsPrimary {
 				continue
 			}
-			fields = append(fields, f.colname(z))
-			vals = append(vals, f.nth(i))
+			fields, vals = append(fields, f.colname(z)), append(vals, f.nth(i))
 			i++
 		}
-		// end
+		return []string{
+			"INSERT INTO " + f.schemafn(x.SQLName) + " (",
+			strings.Join(fields, ", "),
+			") VALUES (",
+			strings.Join(vals, ", "),
+			")",
+		}
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_insert_manual builds an INSERT query that inserts all fields.
+func (f *Funcs) sqlstr_insert_manual(v interface{}) []string {
+	return f.sqlstr_insert_base(false, v)
+}
+
+// sqlstr_insert builds an INSERT query, skipping primary key fields with
+// applicable RETURNING clause for generated primary key fields.
+func (f *Funcs) sqlstr_insert(v interface{}) []string {
+	switch x := v.(type) {
+	case Table:
+		lines := f.sqlstr_insert_base(true, v)
+		// add return clause
 		switch f.driver {
-		case "postgres":
-			end = fmt.Sprintf(" RETURNING %s", f.colname(x.PrimaryKey))
 		case "oracle":
-			end = fmt.Sprintf(" RETURNING %s /*LASTINSERTID*/ INTO :pk", f.colname(x.PrimaryKey))
+			lines[len(lines)-1] += ` RETURNING ` + f.colname(x.PrimaryKeys[0]) + ` /*LASTINSERTID*/ INTO :pk`
+		case "postgres":
+			lines[len(lines)-1] += ` RETURNING ` + f.colname(x.PrimaryKeys[0])
 		case "sqlserver":
-			end = "; select ID = convert(bigint, SCOPE_IDENTITY())"
+			lines[len(lines)-1] += "; SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())"
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+		return lines
 	}
-	return fmt.Sprintf("INSERT INTO %s (|%s|) VALUES (|%s|)%s",
-		table, strings.Join(fields, ", "), strings.Join(vals, ", "), end)
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-func (f *Funcs) update(v interface{}) string {
-	var table string
-	var fields, vals, pvals []string
+// sqlstr_update builds an UPDATE query, using primary key fields as the WHERE
+// clause, adding prefix.
+//
+// When prefix is empty, the WHERE clause will be in the form of name = $1.
+// When prefix is non-empty, the WHERE clause will be in the form of name = <PREFIX>name.
+//
+// Similarly, when prefix is empty, the table's name is added after UPDATE,
+// otherwise it is omitted.
+func (f *Funcs) sqlstr_update_base(prefix string, v interface{}) (int, []string) {
 	switch x := v.(type) {
-	case *templates.Type:
-		table = f.schemafn(x.Table.TableName)
-		// names and values
+	case Table:
+		// build names and values
 		var i int
+		var list []string
 		for _, z := range x.Fields {
-			if z.Col.IsPrimaryKey {
+			if z.IsPrimary {
 				continue
 			}
-			fields = append(fields, f.colname(z))
-			vals = append(vals, f.nth(i))
+			name, param := f.colname(z), f.nth(i)
+			if prefix != "" {
+				param = prefix + name
+			}
+			list = append(list, fmt.Sprintf("%s = %s", name, param))
 			i++
 		}
-		// add values for pkey fields
-		for j, z := range x.PrimaryKeyFields {
-			pvals = append(pvals, fmt.Sprintf("%s = %s", f.colname(z), f.nth(i+j)))
+		name := ""
+		if prefix == "" {
+			name = f.schemafn(x.SQLName) + " "
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+		return i, []string{
+			"UPDATE " + name + "SET ",
+			strings.Join(list, ", ") + " ",
+		}
 	}
-	if f.driver == "postgres" {
-		return fmt.Sprintf("UPDATE %s SET (|%s|) = (|%s|) WHERE %s",
-			table, strings.Join(fields, ", "), strings.Join(vals, ", "), strings.Join(pvals, " AND "))
-	}
-	// col1 = $1, col2 = $2...
-	for i, s := range fields {
-		fields[i] = fmt.Sprintf("%s = %s", s, vals[i])
-	}
-	return fmt.Sprintf("UPDATE %s SET |%s| WHERE %s",
-		table, strings.Join(fields, ", "), strings.Join(pvals, " AND "))
+	return 0, []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-func (f *Funcs) upsert(v interface{}) string {
-	var table string
-	var fields, vals, pkeys, excluded []string
+// sqlstr_update builds an UPDATE query, using primary key fields as the WHERE
+// clause.
+func (f *Funcs) sqlstr_update(v interface{}) []string {
+	// build pkey vals
 	switch x := v.(type) {
-	case *templates.Type:
-		table = f.schemafn(x.Table.TableName)
+	case Table:
+		var list []string
+		n, lines := f.sqlstr_update_base("", v)
+		for i, z := range x.PrimaryKeys {
+			list = append(list, fmt.Sprintf("%s = %s", f.colname(z), f.nth(n+i)))
+		}
+		return append(lines, "WHERE "+strings.Join(list, ", "))
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_upsert builds an uspert query (effectively an INSERT with CONFLICT
+// clause).
+func (f *Funcs) sqlstr_upsert(v interface{}) []string {
+	switch v.(type) {
+	case Table:
+		// build insert
+		lines := f.sqlstr_insert_base(true, v)
+		// add conflict and update
+		lines = append(lines, ` ON CONFLICT DO `)
+		_, update := f.sqlstr_update_base("EXCLUDED.", v)
+		return append(lines, update...)
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_delete builds a DELETE query for the primary keys.
+func (f *Funcs) sqlstr_delete(v interface{}) []string {
+	switch x := v.(type) {
+	case Table:
 		// names and values
-		for i, z := range x.Fields {
-			if z.Col.IsPrimaryKey {
-				pkeys = append(pkeys, f.colname(z))
-			}
-			fields = append(fields, f.colname(z))
-			vals = append(vals, f.nth(i))
-			excluded = append(excluded, "EXCLUDED."+f.colname(z))
+		var list []string
+		for i, z := range x.PrimaryKeys {
+			list = append(list, fmt.Sprintf("%s = %s", f.colname(z), f.nth(i)))
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+		return []string{
+			"DELETE FROM " + f.schemafn(x.SQLName) + " ",
+			"WHERE " + strings.Join(list, " AND "),
+		}
 	}
-	return fmt.Sprintf("INSERT INTO %s (|%s|) VALUES (|%s|) ON CONFLICT (%s) DO UPDATE SET (|%s|) = (|%s|)",
-		table, strings.Join(fields, ", "), strings.Join(vals, ", "), strings.Join(pkeys, ", "),
-		strings.Join(fields, ", "), strings.Join(excluded, ", "))
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-func (f *Funcs) delete(v interface{}) string {
-	var table string
-	var fields []string
+// sqlstr_proc builds a stored procedure call.
+func (f *Funcs) sqlstr_proc(v interface{}) []string {
 	switch x := v.(type) {
-	case *templates.Type:
-		table = f.schemafn(x.Table.TableName)
-		// names and values
-		for i, z := range x.PrimaryKeyFields {
-			fields = append(fields, fmt.Sprintf("%s = %s", f.colname(z), f.nth(i)))
+	case Proc:
+		if f.driver == "sqlserver" {
+			return []string{f.schemafn(x.SQLName)}
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
-	}
-
-	return fmt.Sprintf("DELETE FROM %s WHERE %s",
-		table, strings.Join(fields, " AND "))
-}
-
-func (f *Funcs) proc(v interface{}) string {
-	name, mask := "", "SELECT %s(%s)"
-	var params []string
-	switch x := v.(type) {
-	case *templates.Proc:
-		name = f.schemafn(x.Proc.ProcName)
+		var list []string
 		for i := range x.Params {
-			params = append(params, f.nth(i))
+			list = append(list, f.nth(i))
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+		return []string{
+			"SELECT " + f.schemafn(x.SQLName) + "(",
+			strings.Join(list, ", "),
+			")",
+		}
 	}
-	switch f.driver {
-	case "sqlserver":
-		return name
-	}
-	return fmt.Sprintf(mask, name, strings.Join(params, ", "))
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-func (f *Funcs) index(v interface{}) string {
-	var table string
-	var fields, vals []string
+// sqlstr_index builds a
+func (f *Funcs) sqlstr_index(v interface{}) []string {
 	switch x := v.(type) {
-	case *templates.Index:
-		table = f.schemafn(x.Type.Table.TableName)
-		// table fieldnames
-		for _, z := range x.Type.Fields {
+	case Index:
+		// build table fieldnames
+		var fields []string
+		for _, z := range x.Table.Fields {
 			fields = append(fields, f.colname(z))
 		}
 		// index fields
+		var list []string
 		for i, z := range x.Fields {
-			vals = append(vals, fmt.Sprintf("%s = %s", f.colname(z), f.nth(i)))
+			list = append(list, fmt.Sprintf("%s = %s", f.colname(z), f.nth(i)))
 		}
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
+		return []string{
+			"SELECT ",
+			strings.Join(fields, ", ") + " ",
+			"FROM " + f.schemafn(x.Table.SQLName) + " ",
+			"WHERE ",
+			strings.Join(list, " AND "),
+		}
 	}
-	return fmt.Sprintf("SELECT |%s |FROM %s |WHERE %s",
-		strings.Join(fields, ", "), table, strings.Join(vals, " AND "))
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
 // convext generates the Go conversion for a to be assignable to b.
-func (f *Funcs) convext(v interface{}, a, b *templates.Field) string {
-	expr := a.Name
-	switch x := v.(type) {
-	case *templates.Type:
-		expr = f.short(x) + "." + expr
-	default:
-		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
-	}
-	if a.Type == b.Type {
+func (f *Funcs) convext(fkey ForeignKey) string {
+	expr := f.short(fkey.Table) + "." + fkey.Field.GoName
+	if fkey.Field.Type == fkey.RefField.Type {
 		return expr
 	}
-	typ := a.Type
+	typ, refType := fkey.Field.Type, fkey.RefField.Type
 	if strings.HasPrefix(typ, "sql.Null") {
-		expr = expr + "." + a.Type[8:]
-		typ = strings.ToLower(a.Type[8:])
+		expr = expr + "." + typ[8:]
+		typ = strings.ToLower(typ[8:])
 	}
-	if b.Type != typ {
-		expr = b.Type + "(" + expr + ")"
+	if strings.ToLower(refType) != typ {
+		expr = refType + "(" + expr + ")"
 	}
 	return expr
 }
@@ -875,14 +890,14 @@ func (f *Funcs) convext(v interface{}, a, b *templates.Field) string {
 // Used to present a comma separated list of Go variable names for use with as
 // either a Go func parameter list, or in a call to another Go func.
 // (ie, ", a, b, c, ..." or ", a T1, b T2, c T3, ...").
-func (f *Funcs) params(fields []*templates.Field, addType bool, ignore ...string) string {
+func (f *Funcs) params(fields []Field, addType bool, ignore ...string) string {
 	m := map[string]bool{}
 	for _, n := range ignore {
 		m[n] = true
 	}
 	var vals []string
 	for _, field := range fields {
-		if m[field.Name] {
+		if m[field.GoName] {
 			continue
 		}
 		// add to vals
@@ -891,9 +906,9 @@ func (f *Funcs) params(fields []*templates.Field, addType bool, ignore ...string
 	return strings.Join(vals, ", ")
 }
 
-func (f *Funcs) param(field *templates.Field, addType bool) string {
-	n := strings.Split(snaker.CamelToSnake(field.Name), "_")
-	s := strings.ToLower(n[0]) + field.Name[len(n[0]):]
+func (f *Funcs) param(field Field, addType bool) string {
+	n := strings.Split(snaker.CamelToSnake(field.GoName), "_")
+	s := strings.ToLower(n[0]) + field.GoName[len(n[0]):]
 	// check go reserved names
 	if r, ok := goReservedNames[strings.ToLower(s)]; ok {
 		s = r
@@ -913,11 +928,11 @@ func (f *Funcs) zero(z ...interface{}) string {
 		switch x := v.(type) {
 		case string:
 			zeroes = append(zeroes, x)
-		case *templates.Type:
+		case Table:
 			for _, p := range x.Fields {
 				zeroes = append(zeroes, p.Zero)
 			}
-		case []*templates.Field:
+		case []Field:
 			for _, p := range x {
 				zeroes = append(zeroes, p.Zero)
 			}
@@ -949,8 +964,8 @@ func (f *Funcs) typefn(typ string) string {
 }
 
 // field generates a field definition for a struct.
-func (f *Funcs) field(field *templates.Field) (string, error) {
-	tag, comment := "", ""
+func (f *Funcs) field(field Field) (string, error) {
+	tag := ""
 	buf := new(bytes.Buffer)
 	if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
 		return "", err
@@ -958,10 +973,8 @@ func (f *Funcs) field(field *templates.Field) (string, error) {
 	if s := buf.String(); s != "" {
 		tag = " " + s
 	}
-	if field.Col != nil {
-		comment = " // " + field.Col.ColumnName
-	}
-	return fmt.Sprintf("%s %s%s%s", field.Name, field.Type, tag, comment), nil
+	s := fmt.Sprintf("%s %s%s %s", field.GoName, field.Type, tag, "// "+field.SQLName)
+	return s, nil
 }
 
 // short generates a safe Go identifier for typ. typ is first checked
@@ -983,8 +996,8 @@ func (f *Funcs) short(v interface{}) string {
 	switch x := v.(type) {
 	case string:
 		n = x
-	case *templates.Type:
-		n = x.Name
+	case Table:
+		n = x.GoName
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
 	}
@@ -1014,11 +1027,11 @@ func (f *Funcs) short(v interface{}) string {
 }
 
 // column returns the ColumnName of a field escaped if needed.
-func (f *Funcs) colname(z *templates.Field) string {
+func (f *Funcs) colname(z Field) string {
 	if f.escColumn {
-		return f.escfn(z.Col.ColumnName)
+		return f.escfn(z.SQLName)
 	}
-	return z.Col.ColumnName
+	return z.SQLName
 }
 
 // escfn escapes s.

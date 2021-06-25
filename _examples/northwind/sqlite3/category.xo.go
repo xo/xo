@@ -62,8 +62,8 @@ func (c *Category) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE categories SET ` +
-		`category_name = $1, description = $2, picture = $3` +
-		` WHERE category_id = $4`
+		`category_name = $1, description = $2, picture = $3 ` +
+		`WHERE category_id = $4`
 	// run
 	logf(sqlstr, c.CategoryName, c.Description, c.Picture, c.CategoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryName, c.Description, c.Picture, c.CategoryID); err != nil {
@@ -89,7 +89,8 @@ func (c *Category) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM categories WHERE category_id = $1`
+	const sqlstr = `DELETE FROM categories ` +
+		`WHERE category_id = $1`
 	// run
 	logf(sqlstr, c.CategoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID); err != nil {
@@ -108,7 +109,8 @@ func CategoryByCategoryID(ctx context.Context, db DB, categoryID int) (*Category
 	const sqlstr = `SELECT ` +
 		`category_id, category_name, description, picture ` +
 		`FROM categories ` +
-		`WHERE category_id = $1`
+		`WHERE ` +
+		`category_id = $1`
 	// run
 	logf(sqlstr, categoryID)
 	c := Category{

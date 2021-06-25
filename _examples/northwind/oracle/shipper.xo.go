@@ -61,8 +61,8 @@ func (s *Shipper) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.shippers SET ` +
-		`company_name = :1, phone = :2` +
-		` WHERE shipper_id = :3`
+		`company_name = :1, phone = :2 ` +
+		`WHERE shipper_id = :3`
 	// run
 	logf(sqlstr, s.CompanyName, s.Phone, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.Phone, s.ShipperID); err != nil {
@@ -88,7 +88,8 @@ func (s *Shipper) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.shippers WHERE shipper_id = :1`
+	const sqlstr = `DELETE FROM northwind.shippers ` +
+		`WHERE shipper_id = :1`
 	// run
 	logf(sqlstr, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID); err != nil {
@@ -107,7 +108,8 @@ func ShipperByShipperID(ctx context.Context, db DB, shipperID int) (*Shipper, er
 	const sqlstr = `SELECT ` +
 		`shipper_id, company_name, phone ` +
 		`FROM northwind.shippers ` +
-		`WHERE shipper_id = :1`
+		`WHERE ` +
+		`shipper_id = :1`
 	// run
 	logf(sqlstr, shipperID)
 	s := Shipper{

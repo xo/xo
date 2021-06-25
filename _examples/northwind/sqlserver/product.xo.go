@@ -68,8 +68,8 @@ func (p *Product) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.products SET ` +
-		`product_name = @p1, supplier_id = @p2, category_id = @p3, quantity_per_unit = @p4, unit_price = @p5, units_in_stock = @p6, units_on_order = @p7, reorder_level = @p8, discontinued = @p9` +
-		` WHERE product_id = @p10`
+		`product_name = @p1, supplier_id = @p2, category_id = @p3, quantity_per_unit = @p4, unit_price = @p5, units_in_stock = @p6, units_on_order = @p7, reorder_level = @p8, discontinued = @p9 ` +
+		`WHERE product_id = @p10`
 	// run
 	logf(sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID); err != nil {
@@ -95,7 +95,8 @@ func (p *Product) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.products WHERE product_id = @p1`
+	const sqlstr = `DELETE FROM northwind.products ` +
+		`WHERE product_id = @p1`
 	// run
 	logf(sqlstr, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID); err != nil {
@@ -114,7 +115,8 @@ func ProductByProductID(ctx context.Context, db DB, productID int16) (*Product, 
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM northwind.products ` +
-		`WHERE product_id = @p1`
+		`WHERE ` +
+		`product_id = @p1`
 	// run
 	logf(sqlstr, productID)
 	p := Product{

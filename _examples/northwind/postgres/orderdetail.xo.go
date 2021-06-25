@@ -61,14 +61,12 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.order_details SET (` +
-		`unit_price, quantity, discount` +
-		`) = (` +
-		`$1, $2, $3` +
-		`) WHERE order_id = $4 AND product_id = $5`
+	const sqlstr = `UPDATE public.order_details SET ` +
+		`unit_price = $1, quantity = $2, discount = $3 ` +
+		`WHERE order_id = $4, product_id = $5`
 	// run
-	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
-	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
+	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
+	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -92,14 +90,13 @@ func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.order_details (` +
-		`order_id, product_id, unit_price, quantity, discount` +
+		`unit_price, quantity, discount` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5` +
-		`) ON CONFLICT (order_id, product_id) DO UPDATE SET (` +
-		`order_id, product_id, unit_price, quantity, discount` +
-		`) = (` +
-		`EXCLUDED.order_id, EXCLUDED.product_id, EXCLUDED.unit_price, EXCLUDED.quantity, EXCLUDED.discount` +
-		`)`
+		`$1, $2, $3` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`unit_price = EXCLUDED.unit_price, quantity = EXCLUDED.quantity, discount = EXCLUDED.discount `
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
 	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
@@ -119,7 +116,8 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM public.order_details WHERE order_id = $1 AND product_id = $2`
+	const sqlstr = `DELETE FROM public.order_details ` +
+		`WHERE order_id = $1 AND product_id = $2`
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID); err != nil {
@@ -138,7 +136,8 @@ func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productI
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM public.order_details ` +
-		`WHERE order_id = $1 AND product_id = $2`
+		`WHERE ` +
+		`order_id = $1 AND product_id = $2`
 	// run
 	logf(sqlstr, orderID, productID)
 	od := OrderDetail{

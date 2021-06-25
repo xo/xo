@@ -62,11 +62,11 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.order_details SET ` +
-		`unit_price = ?, quantity = ?, discount = ?` +
-		` WHERE order_id = ? AND product_id = ?`
+		`unit_price = ?, quantity = ?, discount = ? ` +
+		`WHERE order_id = ?, product_id = ?`
 	// run
-	logf(sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
-	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
+	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
+	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -89,7 +89,8 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM northwind.order_details WHERE order_id = ? AND product_id = ?`
+	const sqlstr = `DELETE FROM northwind.order_details ` +
+		`WHERE order_id = ? AND product_id = ?`
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID); err != nil {
@@ -100,21 +101,22 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// OrderDetailByProductID retrieves a row from 'northwind.order_details' as a OrderDetail.
+// OrderDetailByOrderIDProductID retrieves a row from 'northwind.order_details' as a OrderDetail.
 //
-// Generated from index 'order_details_product_id_pkey'.
-func OrderDetailByProductID(ctx context.Context, db DB, productID int16) (*OrderDetail, error) {
+// Generated from index 'order_details_order_id_product_id_pkey'.
+func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productID int16) (*OrderDetail, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE product_id = ?`
+		`WHERE ` +
+		`order_id = ? AND product_id = ?`
 	// run
-	logf(sqlstr, productID)
+	logf(sqlstr, orderID, productID)
 	od := OrderDetail{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, productID).Scan(&od.OrderID, &od.ProductID, &od.UnitPrice, &od.Quantity, &od.Discount); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, orderID, productID).Scan(&od.OrderID, &od.ProductID, &od.UnitPrice, &od.Quantity, &od.Discount); err != nil {
 		return nil, logerror(err)
 	}
 	return &od, nil
@@ -128,7 +130,8 @@ func OrderDetailsByProductID(ctx context.Context, db DB, productID int16) ([]*Or
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE product_id = ?`
+		`WHERE ` +
+		`product_id = ?`
 	// run
 	logf(sqlstr, productID)
 	rows, err := db.QueryContext(ctx, sqlstr, productID)

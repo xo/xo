@@ -68,11 +68,9 @@ func (c *Customer) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.customers SET (` +
-		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
-		`) WHERE customer_id = $11`
+	const sqlstr = `UPDATE public.customers SET ` +
+		`company_name = $1, contact_name = $2, contact_title = $3, address = $4, city = $5, region = $6, postal_code = $7, country = $8, phone = $9, fax = $10 ` +
+		`WHERE customer_id = $11`
 	// run
 	logf(sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID); err != nil {
@@ -99,14 +97,13 @@ func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.customers (` +
-		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
+		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
-		`) ON CONFLICT (customer_id) DO UPDATE SET (` +
-		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
-		`) = (` +
-		`EXCLUDED.customer_id, EXCLUDED.company_name, EXCLUDED.contact_name, EXCLUDED.contact_title, EXCLUDED.address, EXCLUDED.city, EXCLUDED.region, EXCLUDED.postal_code, EXCLUDED.country, EXCLUDED.phone, EXCLUDED.fax` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`company_name = EXCLUDED.company_name, contact_name = EXCLUDED.contact_name, contact_title = EXCLUDED.contact_title, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, phone = EXCLUDED.phone, fax = EXCLUDED.fax `
 	// run
 	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
@@ -126,7 +123,8 @@ func (c *Customer) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.customers WHERE customer_id = $1`
+	const sqlstr = `DELETE FROM public.customers ` +
+		`WHERE customer_id = $1`
 	// run
 	logf(sqlstr, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID); err != nil {
@@ -145,7 +143,8 @@ func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Custo
 	const sqlstr = `SELECT ` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax ` +
 		`FROM public.customers ` +
-		`WHERE customer_id = $1`
+		`WHERE ` +
+		`customer_id = $1`
 	// run
 	logf(sqlstr, customerID)
 	c := Customer{

@@ -60,7 +60,8 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM northwind.employee_territories WHERE employee_id = :1 AND territory_id = :2`
+	const sqlstr = `DELETE FROM northwind.employee_territories ` +
+		`WHERE employee_id = :1 AND territory_id = :2`
 	// run
 	logf(sqlstr, et.EmployeeID, et.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, et.EmployeeID, et.TerritoryID); err != nil {
@@ -79,7 +80,8 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM northwind.employee_territories ` +
-		`WHERE employee_id = :1 AND territory_id = :2`
+		`WHERE ` +
+		`employee_id = :1 AND territory_id = :2`
 	// run
 	logf(sqlstr, employeeID, territoryID)
 	et := EmployeeTerritory{

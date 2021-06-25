@@ -13,6 +13,7 @@ import (
 	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
 )
 
 // loaders are registered database loaders.
@@ -64,7 +65,7 @@ type FlagSet struct {
 
 // Flag is a option flag.
 type Flag struct {
-	ContextKey  ContextKey
+	ContextKey  xo.ContextKey
 	Desc        string
 	PlaceHolder string
 	Default     string
@@ -73,15 +74,12 @@ type Flag struct {
 	Enums       []string
 }
 
-// ContextKey is a context key.
-type ContextKey string
-
 // Loader loads type information from a database.
 type Loader struct {
 	Driver           string
 	Mask             string
 	Flags            func() []Flag
-	GoType           func(context.Context, string, bool) (string, string, int, error)
+	GoType           func(context.Context, xo.Datatype) (string, string, error)
 	Schema           func(context.Context, models.DB) (string, error)
 	Enums            func(context.Context, models.DB, string) ([]*models.Enum, error)
 	EnumValues       func(context.Context, models.DB, string, string) ([]*models.EnumValue, error)
@@ -118,6 +116,24 @@ func (l *Loader) SchemaName(ctx context.Context, db models.DB) (string, error) {
 		return l.Schema(ctx, db)
 	}
 	return "", nil
+}
+
+// CtxLoader returns loader from the context.
+func CtxLoader(ctx context.Context) *Loader {
+	l, _ := ctx.Value(xo.LoaderKey).(*Loader)
+	return l
+}
+
+// Int32 returns int32 from the context.
+func Int32(ctx context.Context) string {
+	s, _ := ctx.Value(xo.Int32Key).(string)
+	return s
+}
+
+// Uint32 returns uint32 from the context.
+func Uint32(ctx context.Context) string {
+	s, _ := ctx.Value(xo.Uint32Key).(string)
+	return s
 }
 
 // intRE matches Go int types.

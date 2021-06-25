@@ -65,11 +65,9 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.books SET (` +
-		`author_id, isbn, book_type, title, year, available, tags` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7` +
-		`) WHERE book_id = $8`
+	const sqlstr = `UPDATE public.books SET ` +
+		`author_id = $1, isbn = $2, book_type = $3, title = $4, year = $5, available = $6, tags = $7 ` +
+		`WHERE book_id = $8`
 	// run
 	logf(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID); err != nil {
@@ -96,14 +94,13 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.books (` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags` +
+		`author_id, isbn, book_type, title, year, available, tags` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8` +
-		`) ON CONFLICT (book_id) DO UPDATE SET (` +
-		`book_id, author_id, isbn, book_type, title, year, available, tags` +
-		`) = (` +
-		`EXCLUDED.book_id, EXCLUDED.author_id, EXCLUDED.isbn, EXCLUDED.book_type, EXCLUDED.title, EXCLUDED.year, EXCLUDED.available, EXCLUDED.tags` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`author_id = EXCLUDED.author_id, isbn = EXCLUDED.isbn, book_type = EXCLUDED.book_type, title = EXCLUDED.title, year = EXCLUDED.year, available = EXCLUDED.available, tags = EXCLUDED.tags `
 	// run
 	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags)
 	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags); err != nil {
@@ -123,7 +120,8 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.books WHERE book_id = $1`
+	const sqlstr = `DELETE FROM public.books ` +
+		`WHERE book_id = $1`
 	// run
 	logf(sqlstr, b.BookID)
 	if _, err := db.ExecContext(ctx, sqlstr, b.BookID); err != nil {
@@ -142,7 +140,8 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM public.books ` +
-		`WHERE isbn = $1`
+		`WHERE ` +
+		`isbn = $1`
 	// run
 	logf(sqlstr, isbn)
 	b := Book{
@@ -162,7 +161,8 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM public.books ` +
-		`WHERE book_id = $1`
+		`WHERE ` +
+		`book_id = $1`
 	// run
 	logf(sqlstr, bookID)
 	b := Book{
@@ -182,7 +182,8 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, book_type, title, year, available, tags ` +
 		`FROM public.books ` +
-		`WHERE title = $1 AND year = $2`
+		`WHERE ` +
+		`title = $1 AND year = $2`
 	// run
 	logf(sqlstr, title, year)
 	rows, err := db.QueryContext(ctx, sqlstr, title, year)

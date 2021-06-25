@@ -67,11 +67,9 @@ func (p *Product) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.products SET (` +
-		`product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
-		`) WHERE product_id = $10`
+	const sqlstr = `UPDATE public.products SET ` +
+		`product_name = $1, supplier_id = $2, category_id = $3, quantity_per_unit = $4, unit_price = $5, units_in_stock = $6, units_on_order = $7, reorder_level = $8, discontinued = $9 ` +
+		`WHERE product_id = $10`
 	// run
 	logf(sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID); err != nil {
@@ -98,14 +96,13 @@ func (p *Product) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.products (` +
-		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
+		`product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
-		`) ON CONFLICT (product_id) DO UPDATE SET (` +
-		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
-		`) = (` +
-		`EXCLUDED.product_id, EXCLUDED.product_name, EXCLUDED.supplier_id, EXCLUDED.category_id, EXCLUDED.quantity_per_unit, EXCLUDED.unit_price, EXCLUDED.units_in_stock, EXCLUDED.units_on_order, EXCLUDED.reorder_level, EXCLUDED.discontinued` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`product_name = EXCLUDED.product_name, supplier_id = EXCLUDED.supplier_id, category_id = EXCLUDED.category_id, quantity_per_unit = EXCLUDED.quantity_per_unit, unit_price = EXCLUDED.unit_price, units_in_stock = EXCLUDED.units_in_stock, units_on_order = EXCLUDED.units_on_order, reorder_level = EXCLUDED.reorder_level, discontinued = EXCLUDED.discontinued `
 	// run
 	logf(sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
@@ -125,7 +122,8 @@ func (p *Product) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.products WHERE product_id = $1`
+	const sqlstr = `DELETE FROM public.products ` +
+		`WHERE product_id = $1`
 	// run
 	logf(sqlstr, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID); err != nil {
@@ -144,7 +142,8 @@ func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, er
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM public.products ` +
-		`WHERE product_id = $1`
+		`WHERE ` +
+		`product_id = $1`
 	// run
 	logf(sqlstr, productID)
 	p := Product{

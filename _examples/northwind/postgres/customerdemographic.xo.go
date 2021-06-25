@@ -59,11 +59,9 @@ func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.customer_demographics SET (` +
-		`customer_desc` +
-		`) = (` +
-		`$1` +
-		`) WHERE customer_type_id = $2`
+	const sqlstr = `UPDATE public.customer_demographics SET ` +
+		`customer_desc = $1 ` +
+		`WHERE customer_type_id = $2`
 	// run
 	logf(sqlstr, cd.CustomerDesc, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerDesc, cd.CustomerTypeID); err != nil {
@@ -90,14 +88,13 @@ func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.customer_demographics (` +
-		`customer_type_id, customer_desc` +
+		`customer_desc` +
 		`) VALUES (` +
-		`$1, $2` +
-		`) ON CONFLICT (customer_type_id) DO UPDATE SET (` +
-		`customer_type_id, customer_desc` +
-		`) = (` +
-		`EXCLUDED.customer_type_id, EXCLUDED.customer_desc` +
-		`)`
+		`$1` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`customer_desc = EXCLUDED.customer_desc `
 	// run
 	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
@@ -117,7 +114,8 @@ func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.customer_demographics WHERE customer_type_id = $1`
+	const sqlstr = `DELETE FROM public.customer_demographics ` +
+		`WHERE customer_type_id = $1`
 	// run
 	logf(sqlstr, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID); err != nil {
@@ -136,7 +134,8 @@ func CustomerDemographicByCustomerTypeID(ctx context.Context, db DB, customerTyp
 	const sqlstr = `SELECT ` +
 		`customer_type_id, customer_desc ` +
 		`FROM public.customer_demographics ` +
-		`WHERE customer_type_id = $1`
+		`WHERE ` +
+		`customer_type_id = $1`
 	// run
 	logf(sqlstr, customerTypeID)
 	cd := CustomerDemographic{

@@ -68,8 +68,8 @@ func (p *Product) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE products SET ` +
-		`product_name = $1, supplier_id = $2, category_id = $3, quantity_per_unit = $4, unit_price = $5, units_in_stock = $6, units_on_order = $7, reorder_level = $8, discontinued = $9` +
-		` WHERE product_id = $10`
+		`product_name = $1, supplier_id = $2, category_id = $3, quantity_per_unit = $4, unit_price = $5, units_in_stock = $6, units_on_order = $7, reorder_level = $8, discontinued = $9 ` +
+		`WHERE product_id = $10`
 	// run
 	logf(sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID); err != nil {
@@ -95,7 +95,8 @@ func (p *Product) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM products WHERE product_id = $1`
+	const sqlstr = `DELETE FROM products ` +
+		`WHERE product_id = $1`
 	// run
 	logf(sqlstr, p.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID); err != nil {
@@ -114,7 +115,8 @@ func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, er
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM products ` +
-		`WHERE product_id = $1`
+		`WHERE ` +
+		`product_id = $1`
 	// run
 	logf(sqlstr, productID)
 	p := Product{

@@ -18,7 +18,7 @@ require (
 	github.com/xo/dburl v0.8.4
 	github.com/yookoala/realpath v1.0.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
+	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.4
 	mvdan.cc/gofumpt v0.1.1
 )

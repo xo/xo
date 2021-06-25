@@ -66,8 +66,8 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE booktest.authors SET ` +
-		`name = ?` +
-		` WHERE author_id = ?`
+		`name = ? ` +
+		`WHERE author_id = ?`
 	// run
 	logf(sqlstr, a.Name, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.Name, a.AuthorID); err != nil {
@@ -93,7 +93,8 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM booktest.authors WHERE author_id = ?`
+	const sqlstr = `DELETE FROM booktest.authors ` +
+		`WHERE author_id = ?`
 	// run
 	logf(sqlstr, a.AuthorID)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID); err != nil {
@@ -112,7 +113,8 @@ func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error)
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE author_id = ?`
+		`WHERE ` +
+		`author_id = ?`
 	// run
 	logf(sqlstr, authorID)
 	a := Author{
@@ -132,7 +134,8 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE name = ?`
+		`WHERE ` +
+		`name = ?`
 	// run
 	logf(sqlstr, name)
 	rows, err := db.QueryContext(ctx, sqlstr, name)

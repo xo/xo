@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
+	xo "github.com/xo/xo/types"
 )
 
 func init() {
@@ -48,25 +48,19 @@ func PostgresFlags() []Flag {
 }
 
 // PostgresGoType parse a type into a Go type based on the database type definition.
-func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
+func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+	typ, nullable := d.Type, d.Nullable
 	// SETOF -> []T
 	if strings.HasPrefix(typ, "SETOF ") {
-		goType, _, _, err := PostgresGoType(ctx, typ[len("SETOF "):], false)
+		d.Type = typ[len("SETOF "):]
+		goType, _, err := PostgresGoType(ctx, d)
 		if err != nil {
-			return "", "", 0, err
+			return "", "", err
 		}
-		return "[]" + goType, "nil", 0, nil
+		return "[]" + goType, "nil", nil
 	}
 	// determine if it's a slice
-	asSlice := false
-	if strings.HasSuffix(typ, "[]") {
-		typ, asSlice = typ[:len(typ)-2], true
-	}
-	// extract precision
-	typ, prec, _, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
+	asSlice := d.Array
 	var goType, zero string
 	switch typ {
 	case "boolean":
@@ -85,7 +79,7 @@ func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, str
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "integer":
-		goType, zero = gotpl.Int32(ctx), "0"
+		goType, zero = Int32(ctx), "0"
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -131,11 +125,11 @@ func PostgresGoType(ctx context.Context, typ string, nullable bool) (string, str
 	// handle slices
 	switch {
 	case asSlice && goType == "string":
-		return "StringSlice", "StringSlice{}", prec, nil
+		return "StringSlice", "StringSlice{}", nil
 	case asSlice:
-		return "[]" + goType, "nil", 0, nil
+		return "[]" + goType, "nil", nil
 	}
-	return goType, zero, prec, nil
+	return goType, zero, nil
 }
 
 // PostgresTableColumns returns the columns for a table.
@@ -204,7 +198,7 @@ func PostgresViewStrip(query []string) ([]string, []string) {
 var stripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
 
 // OidsKey is the oids context key.
-const OidsKey ContextKey = "oids"
+const OidsKey xo.ContextKey = "oids"
 
 // EnableOids returns the EnableOids value from the context.
 func EnableOids(ctx context.Context) bool {

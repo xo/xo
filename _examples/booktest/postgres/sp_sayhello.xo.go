@@ -9,7 +9,9 @@ import (
 // SayHello calls the stored procedure 'public.say_hello(character varying) character varying' on db.
 func SayHello(ctx context.Context, db DB, name string) (string, error) {
 	// call public.say_hello
-	const sqlstr = `SELECT public.say_hello($1)`
+	const sqlstr = `SELECT public.say_hello(` +
+		`$1` +
+		`)`
 	// run
 	var s string
 	logf(sqlstr, name)

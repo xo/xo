@@ -60,11 +60,9 @@ func (s *Shipper) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.shippers SET (` +
-		`company_name, phone` +
-		`) = (` +
-		`$1, $2` +
-		`) WHERE shipper_id = $3`
+	const sqlstr = `UPDATE public.shippers SET ` +
+		`company_name = $1, phone = $2 ` +
+		`WHERE shipper_id = $3`
 	// run
 	logf(sqlstr, s.CompanyName, s.Phone, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.CompanyName, s.Phone, s.ShipperID); err != nil {
@@ -91,14 +89,13 @@ func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.shippers (` +
-		`shipper_id, company_name, phone` +
+		`company_name, phone` +
 		`) VALUES (` +
-		`$1, $2, $3` +
-		`) ON CONFLICT (shipper_id) DO UPDATE SET (` +
-		`shipper_id, company_name, phone` +
-		`) = (` +
-		`EXCLUDED.shipper_id, EXCLUDED.company_name, EXCLUDED.phone` +
-		`)`
+		`$1, $2` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`company_name = EXCLUDED.company_name, phone = EXCLUDED.phone `
 	// run
 	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
 	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone); err != nil {
@@ -118,7 +115,8 @@ func (s *Shipper) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.shippers WHERE shipper_id = $1`
+	const sqlstr = `DELETE FROM public.shippers ` +
+		`WHERE shipper_id = $1`
 	// run
 	logf(sqlstr, s.ShipperID)
 	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID); err != nil {
@@ -137,7 +135,8 @@ func ShipperByShipperID(ctx context.Context, db DB, shipperID int) (*Shipper, er
 	const sqlstr = `SELECT ` +
 		`shipper_id, company_name, phone ` +
 		`FROM public.shippers ` +
-		`WHERE shipper_id = $1`
+		`WHERE ` +
+		`shipper_id = $1`
 	// run
 	logf(sqlstr, shipperID)
 	s := Shipper{

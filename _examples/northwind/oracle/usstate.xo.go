@@ -62,8 +62,8 @@ func (us *UsState) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.us_states SET ` +
-		`state_name = :1, state_abbr = :2, state_region = :3` +
-		` WHERE state_id = :4`
+		`state_name = :1, state_abbr = :2, state_region = :3 ` +
+		`WHERE state_id = :4`
 	// run
 	logf(sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateName, us.StateAbbr, us.StateRegion, us.StateID); err != nil {
@@ -89,7 +89,8 @@ func (us *UsState) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.us_states WHERE state_id = :1`
+	const sqlstr = `DELETE FROM northwind.us_states ` +
+		`WHERE state_id = :1`
 	// run
 	logf(sqlstr, us.StateID)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateID); err != nil {
@@ -108,7 +109,8 @@ func UsStateByStateID(ctx context.Context, db DB, stateID int) (*UsState, error)
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +
 		`FROM northwind.us_states ` +
-		`WHERE state_id = :1`
+		`WHERE ` +
+		`state_id = :1`
 	// run
 	logf(sqlstr, stateID)
 	us := UsState{

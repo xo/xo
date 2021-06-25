@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/xo/xo/models"
+	xo "github.com/xo/xo/types"
 )
 
 func init() {
@@ -27,12 +28,8 @@ func init() {
 
 // OracleGoType parse a oracle type into a Go type based on the column
 // definition.
-func OracleGoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
-	// extract precision
-	typ, prec, scale, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
+func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+	typ, nullable, prec, scale := d.Type, d.Nullable, d.Prec, d.Scale
 	var goType, zero string
 	// strip remaining length (on things like timestamp)
 	switch orLenRE.ReplaceAllString(typ, "") {
@@ -76,7 +73,7 @@ func OracleGoType(ctx context.Context, typ string, nullable bool) (string, strin
 	case goType == "int" && prec == 1 && nullable:
 		goType, zero = "sql.NullBool", "sql.NullBool{}"
 	}
-	return goType, zero, prec, nil
+	return goType, zero, nil
 }
 
 // orLenRE is a regexp that matches lengths.

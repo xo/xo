@@ -58,11 +58,9 @@ func (r *Region) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.region SET (` +
-		`region_description` +
-		`) = (` +
-		`$1` +
-		`) WHERE region_id = $2`
+	const sqlstr = `UPDATE public.region SET ` +
+		`region_description = $1 ` +
+		`WHERE region_id = $2`
 	// run
 	logf(sqlstr, r.RegionDescription, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionDescription, r.RegionID); err != nil {
@@ -89,14 +87,13 @@ func (r *Region) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.region (` +
-		`region_id, region_description` +
+		`region_description` +
 		`) VALUES (` +
-		`$1, $2` +
-		`) ON CONFLICT (region_id) DO UPDATE SET (` +
-		`region_id, region_description` +
-		`) = (` +
-		`EXCLUDED.region_id, EXCLUDED.region_description` +
-		`)`
+		`$1` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`region_description = EXCLUDED.region_description `
 	// run
 	logf(sqlstr, r.RegionID, r.RegionDescription)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID, r.RegionDescription); err != nil {
@@ -116,7 +113,8 @@ func (r *Region) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.region WHERE region_id = $1`
+	const sqlstr = `DELETE FROM public.region ` +
+		`WHERE region_id = $1`
 	// run
 	logf(sqlstr, r.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID); err != nil {
@@ -135,7 +133,8 @@ func RegionByRegionID(ctx context.Context, db DB, regionID int) (*Region, error)
 	const sqlstr = `SELECT ` +
 		`region_id, region_description ` +
 		`FROM public.region ` +
-		`WHERE region_id = $1`
+		`WHERE ` +
+		`region_id = $1`
 	// run
 	logf(sqlstr, regionID)
 	r := Region{

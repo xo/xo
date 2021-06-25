@@ -60,8 +60,8 @@ func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.customer_demographics SET ` +
-		`customer_desc = :1` +
-		` WHERE customer_type_id = :2`
+		`customer_desc = :1 ` +
+		`WHERE customer_type_id = :2`
 	// run
 	logf(sqlstr, cd.CustomerDesc, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerDesc, cd.CustomerTypeID); err != nil {
@@ -87,7 +87,8 @@ func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.customer_demographics WHERE customer_type_id = :1`
+	const sqlstr = `DELETE FROM northwind.customer_demographics ` +
+		`WHERE customer_type_id = :1`
 	// run
 	logf(sqlstr, cd.CustomerTypeID)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID); err != nil {
@@ -106,7 +107,8 @@ func CustomerDemographicByCustomerTypeID(ctx context.Context, db DB, customerTyp
 	const sqlstr = `SELECT ` +
 		`customer_type_id, customer_desc ` +
 		`FROM northwind.customer_demographics ` +
-		`WHERE customer_type_id = :1`
+		`WHERE ` +
+		`customer_type_id = :1`
 	// run
 	logf(sqlstr, customerTypeID)
 	cd := CustomerDemographic{

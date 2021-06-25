@@ -1,10 +1,10 @@
 {{- $q := .Data -}}
 {{- if $q.Comment -}}
-// {{ $q.Comment | eval $q.Name }}
+// {{ $q.Comment | eval $q.GoName }}
 {{- else -}}
-// {{ $q.Name }} represents a row from '{{ schema $q.Table.TableName }}'.
+// {{ $q.GoName }} represents a row from '{{ schema $q.SQLName }}'.
 {{- end }}
-type {{ $q.Name }} struct {
+type {{ $q.GoName }} struct {
 {{ range $q.Fields -}}
     {{ field . }}
 {{ end -}}

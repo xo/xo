@@ -59,11 +59,9 @@ func (t *Territory) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.territories SET (` +
-		`territory_description, region_id` +
-		`) = (` +
-		`$1, $2` +
-		`) WHERE territory_id = $3`
+	const sqlstr = `UPDATE public.territories SET ` +
+		`territory_description = $1, region_id = $2 ` +
+		`WHERE territory_id = $3`
 	// run
 	logf(sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryDescription, t.RegionID, t.TerritoryID); err != nil {
@@ -90,14 +88,13 @@ func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.territories (` +
-		`territory_id, territory_description, region_id` +
+		`territory_description, region_id` +
 		`) VALUES (` +
-		`$1, $2, $3` +
-		`) ON CONFLICT (territory_id) DO UPDATE SET (` +
-		`territory_id, territory_description, region_id` +
-		`) = (` +
-		`EXCLUDED.territory_id, EXCLUDED.territory_description, EXCLUDED.region_id` +
-		`)`
+		`$1, $2` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`territory_description = EXCLUDED.territory_description, region_id = EXCLUDED.region_id `
 	// run
 	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
@@ -117,7 +114,8 @@ func (t *Territory) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.territories WHERE territory_id = $1`
+	const sqlstr = `DELETE FROM public.territories ` +
+		`WHERE territory_id = $1`
 	// run
 	logf(sqlstr, t.TerritoryID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID); err != nil {
@@ -136,7 +134,8 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM public.territories ` +
-		`WHERE territory_id = $1`
+		`WHERE ` +
+		`territory_id = $1`
 	// run
 	logf(sqlstr, territoryID)
 	t := Territory{

@@ -14,40 +14,43 @@ import (
 	"github.com/xo/xo/loader"
 	"github.com/xo/xo/models"
 	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
 	"github.com/yookoala/realpath"
 )
 
 // Run runs the code generation.
 func Run(ctx context.Context, name, version string) error {
-	// build args
+	// process args
 	ctx, args, cmd, err := NewArgs(ctx, name, version)
 	if err != nil {
 		return err
 	}
-	// build generator
-	var g Generator
+	// create builder
+	var v Builder
 	switch cmd {
 	case "schema":
 		var err error
 		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
 			return err
 		}
-		g = NewSchemaGenerator()
+		v = NewSchemaBuilder()
 	case "query":
 		var err error
 		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
 			return err
 		}
-		g = NewQueryGenerator()
+		v = NewQueryBuilder()
 	case "dump":
-		g = NewNoopGenerator()
+		v = NewNoopBuilder()
 	}
+	x := &xo.XO{}
 	// exec
-	if err := g.Exec(ctx, args); err != nil {
+	if err := v.Build(ctx, args, x); err != nil {
 		return err
 	}
 	// process
-	if err := g.Process(ctx, args); err != nil {
+	err = templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x)
+	if err != nil {
 		return err
 	}
 	// write
@@ -61,7 +64,7 @@ func Run(ctx context.Context, name, version string) error {
 	if err := f(ctx); err != nil {
 		return err
 	}
-	// do error ouutput
+	// do error output
 	errors, err := templates.Errors(ctx)
 	if err != nil {
 		return err
@@ -98,10 +101,10 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	// create args
 	args := &Args{
 		DbParams: DbParams{
-			Flags: make(map[loader.ContextKey]interface{}),
+			Flags: make(map[xo.ContextKey]interface{}),
 		},
 		TemplateParams: TemplateParams{
-			Flags: make(map[templates.ContextKey]interface{}),
+			Flags: make(map[xo.ContextKey]interface{}),
 		},
 	}
 	// general
@@ -265,7 +268,7 @@ type DbParams struct {
 	// DSN is the database string (ie, postgres://user:pass@host:5432/dbname?args=)
 	DSN string
 	// Flags are additional loader flags.
-	Flags map[loader.ContextKey]interface{}
+	Flags map[xo.ContextKey]interface{}
 }
 
 // TemplateParams are template parameters.
@@ -279,7 +282,7 @@ type TemplateParams struct {
 	// Esc indicates which types to escape (none, schema, table, column, all).
 	Esc []string
 	// Flags are additional template flags.
-	Flags map[templates.ContextKey]interface{}
+	Flags map[xo.ContextKey]interface{}
 }
 
 // QueryParams are query parameters.
@@ -369,56 +372,41 @@ func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 		}
 	}
 	// add db to context
-	ctx = context.WithValue(ctx, DbKey, db)
+	ctx = context.WithValue(ctx, xo.DbKey, db)
 	// add loader to context
-	ctx = context.WithValue(ctx, LoaderKey, l)
+	ctx = context.WithValue(ctx, xo.LoaderKey, l)
 	// add driver to context
-	ctx = context.WithValue(ctx, templates.DriverKey, v.Driver)
+	ctx = context.WithValue(ctx, xo.DriverKey, v.Driver)
 	// add schema to context
-	ctx = context.WithValue(ctx, templates.SchemaKey, schema)
+	ctx = context.WithValue(ctx, xo.SchemaKey, schema)
 	// add nth-func to context
-	ctx = context.WithValue(ctx, templates.NthParamKey, l.NthParam)
+	ctx = context.WithValue(ctx, xo.NthParamKey, l.NthParam)
 	return ctx, nil
 }
 
-// ContextKey is a context key.
-type ContextKey string
-
-// Context key values.
-const (
-	DbKey     ContextKey = "db"
-	LoaderKey ContextKey = "loader"
-)
-
 // DbLoaderSchema returns the database, loader, and schema name from the context.
 func DbLoaderSchema(ctx context.Context) (models.DB, *loader.Loader, string) {
-	db, _ := ctx.Value(DbKey).(models.DB)
-	l, _ := ctx.Value(LoaderKey).(*loader.Loader)
-	schema, _ := ctx.Value(templates.SchemaKey).(string)
+	db, _ := ctx.Value(xo.DbKey).(models.DB)
+	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
+	schema, _ := ctx.Value(xo.SchemaKey).(string)
 	return db, l, schema
 }
 
-// Generator is the shared interface for generators.
-type Generator interface {
-	Exec(context.Context, *Args) error
-	Process(context.Context, *Args) error
+// Builder is the shared interface for builders.
+type Builder interface {
+	Build(context.Context, *Args, *xo.XO) error
 }
 
-// NoopGenerator is a no op generator.
-type NoopGenerator struct{}
+// NoopBuilder is a no op generator.
+type NoopBuilder struct{}
 
-// NewNoopGenerator creates a new noop generator.
-func NewNoopGenerator() *NoopGenerator {
-	return &NoopGenerator{}
+// NewNoopBuilder creates a new noop generator.
+func NewNoopBuilder() *NoopBuilder {
+	return &NoopBuilder{}
 }
 
-// Exec satisfies the Generator interface.
-func (*NoopGenerator) Exec(context.Context, *Args) error {
-	return nil
-}
-
-// Process satisfies the Generator interface.
-func (*NoopGenerator) Process(ctx context.Context, args *Args) error {
+// Build satisfies the Builder interface.
+func (*NoopBuilder) Build(context.Context, *Args, *xo.XO) error {
 	return nil
 }
 

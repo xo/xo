@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates/gotpl"
+	xo "github.com/xo/xo/types"
 )
 
 func init() {
@@ -30,12 +30,8 @@ func init() {
 
 // SqlserverGoType parse a mssql type into a Go type based on the column
 // definition.
-func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, string, int, error) {
-	// extract precision
-	typ, prec, _, err := parsePrec(typ)
-	if err != nil {
-		return "", "", 0, err
-	}
+func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+	typ, nullable := d.Type, d.Nullable
 	var goType, zero string
 	switch typ {
 	case "tinyint", "bit":
@@ -54,7 +50,7 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "int":
-		goType, zero = gotpl.Int32(ctx), "0"
+		goType, zero = Int32(ctx), "0"
 		if nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -83,7 +79,7 @@ func SqlserverGoType(ctx context.Context, typ string, nullable bool) (string, st
 	default:
 		goType, zero = schemaGoType(ctx, typ)
 	}
-	return goType, zero, prec, nil
+	return goType, zero, nil
 }
 
 // SqlserverViewStrip strips ORDER BY clauses from the passed query.

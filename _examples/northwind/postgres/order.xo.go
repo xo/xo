@@ -71,11 +71,9 @@ func (o *Order) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.orders SET (` +
-		`customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
-		`) = (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
-		`) WHERE order_id = $14`
+	const sqlstr = `UPDATE public.orders SET ` +
+		`customer_id = $1, employee_id = $2, order_date = $3, required_date = $4, shipped_date = $5, ship_via = $6, freight = $7, ship_name = $8, ship_address = $9, ship_city = $10, ship_region = $11, ship_postal_code = $12, ship_country = $13 ` +
+		`WHERE order_id = $14`
 	// run
 	logf(sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID); err != nil {
@@ -102,14 +100,13 @@ func (o *Order) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.orders (` +
-		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
+		`customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
-		`) ON CONFLICT (order_id) DO UPDATE SET (` +
-		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
-		`) = (` +
-		`EXCLUDED.order_id, EXCLUDED.customer_id, EXCLUDED.employee_id, EXCLUDED.order_date, EXCLUDED.required_date, EXCLUDED.shipped_date, EXCLUDED.ship_via, EXCLUDED.freight, EXCLUDED.ship_name, EXCLUDED.ship_address, EXCLUDED.ship_city, EXCLUDED.ship_region, EXCLUDED.ship_postal_code, EXCLUDED.ship_country` +
-		`)`
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`customer_id = EXCLUDED.customer_id, employee_id = EXCLUDED.employee_id, order_date = EXCLUDED.order_date, required_date = EXCLUDED.required_date, shipped_date = EXCLUDED.shipped_date, ship_via = EXCLUDED.ship_via, freight = EXCLUDED.freight, ship_name = EXCLUDED.ship_name, ship_address = EXCLUDED.ship_address, ship_city = EXCLUDED.ship_city, ship_region = EXCLUDED.ship_region, ship_postal_code = EXCLUDED.ship_postal_code, ship_country = EXCLUDED.ship_country `
 	// run
 	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
 	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
@@ -129,7 +126,8 @@ func (o *Order) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.orders WHERE order_id = $1`
+	const sqlstr = `DELETE FROM public.orders ` +
+		`WHERE order_id = $1`
 	// run
 	logf(sqlstr, o.OrderID)
 	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID); err != nil {
@@ -148,7 +146,8 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int) (*Order, error) {
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM public.orders ` +
-		`WHERE order_id = $1`
+		`WHERE ` +
+		`order_id = $1`
 	// run
 	logf(sqlstr, orderID)
 	o := Order{

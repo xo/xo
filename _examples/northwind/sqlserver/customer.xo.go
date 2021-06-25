@@ -69,8 +69,8 @@ func (c *Customer) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE northwind.customers SET ` +
-		`company_name = @p1, contact_name = @p2, contact_title = @p3, address = @p4, city = @p5, region = @p6, postal_code = @p7, country = @p8, phone = @p9, fax = @p10` +
-		` WHERE customer_id = @p11`
+		`company_name = @p1, contact_name = @p2, contact_title = @p3, address = @p4, city = @p5, region = @p6, postal_code = @p7, country = @p8, phone = @p9, fax = @p10 ` +
+		`WHERE customer_id = @p11`
 	// run
 	logf(sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID); err != nil {
@@ -96,7 +96,8 @@ func (c *Customer) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM northwind.customers WHERE customer_id = @p1`
+	const sqlstr = `DELETE FROM northwind.customers ` +
+		`WHERE customer_id = @p1`
 	// run
 	logf(sqlstr, c.CustomerID)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID); err != nil {
@@ -115,7 +116,8 @@ func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Custo
 	const sqlstr = `SELECT ` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax ` +
 		`FROM northwind.customers ` +
-		`WHERE customer_id = @p1`
+		`WHERE ` +
+		`customer_id = @p1`
 	// run
 	logf(sqlstr, customerID)
 	c := Customer{
