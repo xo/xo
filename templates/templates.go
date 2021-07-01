@@ -96,7 +96,7 @@ func Process(ctx context.Context, doAppend bool, single string, v *xo.XO) error 
 	sortEmitted(set.emitted)
 	order := set.Order
 	// add package templates
-	if !doAppend {
+	if !doAppend && set.PackageTemplates != nil {
 		var additional []string
 		for _, tpl := range set.PackageTemplates(ctx) {
 			if err := set.Emit(ctx, tpl); err != nil {
@@ -155,6 +155,9 @@ func Write(ctx context.Context) error {
 		files = append(files, file)
 	}
 	sort.Strings(files)
+	if set.Post == nil {
+		return WriteFiles(ctx)
+	}
 	for _, file := range files {
 		buf, err := set.Post(ctx, set.files[file].Buf)
 		switch {
@@ -321,6 +324,9 @@ func (set *TemplateSet) LoadFile(ctx context.Context, file string, doAppend bool
 	fi, err := os.Stat(name)
 	switch {
 	case (err != nil && os.IsNotExist(err)) || !doAppend:
+		if set.HeaderTemplate == nil {
+			return nil, nil
+		}
 		return set.Exec(ctx, set.HeaderTemplate(ctx))
 	case err != nil:
 		return nil, err

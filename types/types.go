@@ -19,8 +19,8 @@ const (
 
 // XO is the data from introspection.
 type XO struct {
-	Queries []Query
-	Schemas []Schema
+	Queries []Query  `json:"queries,omitempty"`
+	Schemas []Schema `json:"schemas,omitempty"`
 }
 
 // Emit adds v.
@@ -35,20 +35,20 @@ func (xo *XO) Emit(v interface{}) {
 
 // Query is a query.
 type Query struct {
-	Driver       string
-	Name         string
-	Comment      string
-	Exec         bool
-	Flat         bool
-	One          bool
-	Interpolate  bool
-	Type         string
-	TypeComment  string
-	Fields       []Field
-	ManualFields bool // fields generated or provided by user
-	Params       []Field
-	Query        []string
-	Comments     []string
+	Driver       string   `json:"driver,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Comment      string   `json:"comment,omitempty"`
+	Exec         bool     `json:"exec,omitempty"`
+	Flat         bool     `json:"flat,omitempty"`
+	One          bool     `json:"one,omitempty"`
+	Interpolate  bool     `json:"interpolate,omitempty"`
+	Type         string   `json:"type,omitempty"`
+	TypeComment  string   `json:"type_comment,omitempty"`
+	Fields       []Field  `json:"fields,omitempty"`
+	ManualFields bool     `json:"manual_fields,omitempty"` // fields generated or provided by user
+	Params       []Field  `json:"params,omitempty"`
+	Query        []string `json:"query,omitempty"`
+	Comments     []string `json:"comments,omitempty"`
 }
 
 // Schema is a SQL schema.
@@ -65,7 +65,7 @@ type Schema struct {
 type Enum struct {
 	Name    string  `json:"name,omitempty"`
 	Values  []Field `json:"values,omitempty"`
-	Comment string
+	Comment string  `json:"comment,omitempty"`
 }
 
 // Proc is a stored procedure.
@@ -73,25 +73,25 @@ type Proc struct {
 	Name    string  `json:"name,omitempty"`
 	Params  []Field `json:"params,omitempty"`
 	Return  Field   `json:"return,omitempty"`
-	Comment string
+	Comment string  `json:"comment,omitempty"`
 }
 
 // Table is a table or view.
 type Table struct {
 	Type        string       `json:"type,omitempty"` // 'table' or 'view'
-	Name        string       `json:"table_name,omitempty"`
-	Columns     []Field      `json:"fields,omitempty"`
-	PrimaryKeys []Field      `json:"primary_keys"`
+	Name        string       `json:"name,omitempty"`
+	Columns     []Field      `json:"columns,omitempty"`
+	PrimaryKeys []Field      `json:"primary_keys,omitempty"`
 	Indexes     []Index      `json:"indexes,omitempty"`
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
-	Manual      bool
-	Comment     string
+	Manual      bool         `json:"manual,omitempty"`
+	Comment     string       `json:"comment,omitempty"`
 }
 
 // Index is a index.
 type Index struct {
 	Name      string  `json:"name,omitempty"`
-	FuncName  string  `json:"func_name",omitempty"`
+	FuncName  string  `json:"func_name,omitempty"`
 	Fields    []Field `json:"fields,omitempty"`
 	IsUnique  bool    `json:"is_unique,omitempty"`
 	IsPrimary bool    `json:"is_primary,omitempty"`
