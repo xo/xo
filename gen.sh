@@ -576,23 +576,21 @@ ENDSQL
 
 # sqlserver table foreign key list query
 $XOBIN query $MSDB -M -B -2 -T ForeignKey -F SqlserverTableForeignKeys -a -o $DEST $@ << ENDSQL
-SELECT
-  f.name AS foreign_key_name,
-  c.name AS column_name,
-  o.name AS ref_table_name,
-  x.name AS ref_column_name
-FROM sysobjects f
-  INNER JOIN sysobjects t ON f.parent_obj = t.id
-  INNER JOIN sysreferences r ON f.id = r.constid
-  INNER JOIN sysobjects o ON r.rkeyid = o.id
-  INNER JOIN syscolumns c ON r.rkeyid = c.id
-    AND r.rkey1 = c.colid
-  INNER JOIN syscolumns x ON r.fkeyid = x.id
-    AND r.fkey1 = x.colid
-WHERE f.type = 'F'
-  AND t.type = 'U'
-  AND SCHEMA_NAME(t.uid) = %%schema string%%
-  AND t.name = %%table string%%
+SELECT fk.name AS foreign_key_name,
+  col.name AS column_name,
+  pk_tab.name AS ref_table_name,
+  pk_col.name AS ref_column_name
+FROM sys.tables tab
+  INNER JOIN sys.columns col ON col.object_id = tab.object_id
+  LEFT OUTER JOIN sys.foreign_key_columns fk_cols ON fk_cols.parent_object_id = tab.object_id
+    AND fk_cols.parent_column_id = col.column_id
+  LEFT OUTER JOIN sys.foreign_keys fk ON fk.object_id = fk_cols.constraint_object_id
+  LEFT OUTER JOIN sys.tables pk_tab ON pk_tab.object_id = fk_cols.referenced_object_id
+  LEFT OUTER JOIN sys.columns pk_col ON pk_col.column_id = fk_cols.referenced_column_id
+    AND pk_col.object_id = fk_cols.referenced_object_id
+WHERE schema_name(tab.schema_id) = %%schema string%%
+  AND tab.name = %%table string%%
+  AND fk.object_id IS NOT NULL
 ENDSQL
 
 # sqlserver table index list query

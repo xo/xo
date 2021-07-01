@@ -119,8 +119,7 @@ func OrdersByCustomerID(ctx context.Context, db DB, customerID sql.NullString) (
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE ` +
-		`customer_id = ?`
+		`WHERE customer_id = ?`
 	// run
 	logf(sqlstr, customerID)
 	rows, err := db.QueryContext(ctx, sqlstr, customerID)
@@ -154,8 +153,7 @@ func OrdersByEmployeeID(ctx context.Context, db DB, employeeID sql.NullInt64) ([
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE ` +
-		`employee_id = ?`
+		`WHERE employee_id = ?`
 	// run
 	logf(sqlstr, employeeID)
 	rows, err := db.QueryContext(ctx, sqlstr, employeeID)
@@ -189,8 +187,7 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE ` +
-		`order_id = ?`
+		`WHERE order_id = ?`
 	// run
 	logf(sqlstr, orderID)
 	o := Order{
@@ -210,8 +207,7 @@ func OrdersByShipVia(ctx context.Context, db DB, shipVia sql.NullInt64) ([]*Orde
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE ` +
-		`ship_via = ?`
+		`WHERE ship_via = ?`
 	// run
 	logf(sqlstr, shipVia)
 	rows, err := db.QueryContext(ctx, sqlstr, shipVia)

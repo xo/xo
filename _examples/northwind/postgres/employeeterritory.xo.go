@@ -80,8 +80,7 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM public.employee_territories ` +
-		`WHERE ` +
-		`employee_id = $1 AND territory_id = $2`
+		`WHERE employee_id = $1 AND territory_id = $2`
 	// run
 	logf(sqlstr, employeeID, territoryID)
 	et := EmployeeTerritory{

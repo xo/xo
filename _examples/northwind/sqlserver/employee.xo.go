@@ -123,8 +123,7 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 	const sqlstr = `SELECT ` +
 		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path ` +
 		`FROM northwind.employees ` +
-		`WHERE ` +
-		`employee_id = @p1`
+		`WHERE employee_id = @p1`
 	// run
 	logf(sqlstr, employeeID)
 	e := Employee{
@@ -136,9 +135,9 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 	return &e, nil
 }
 
-// Employee returns the Employee associated with the Employee's EmployeeID (employee_id).
+// Employee returns the Employee associated with the Employee's ReportsTo (reports_to).
 //
 // Generated from foreign key 'employees_reports_to_fkey'.
 func (e *Employee) Employee(ctx context.Context, db DB) (*Employee, error) {
-	return nil, nil
+	return EmployeeByEmployeeID(ctx, db, int16(e.ReportsTo.Int64))
 }

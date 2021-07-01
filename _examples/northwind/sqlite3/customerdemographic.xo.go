@@ -107,8 +107,7 @@ func CustomerDemographicByCustomerTypeID(ctx context.Context, db DB, customerTyp
 	const sqlstr = `SELECT ` +
 		`customer_type_id, customer_desc ` +
 		`FROM customer_demographics ` +
-		`WHERE ` +
-		`customer_type_id = $1`
+		`WHERE customer_type_id = $1`
 	// run
 	logf(sqlstr, customerTypeID)
 	cd := CustomerDemographic{

@@ -125,8 +125,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE ` +
-		`isbn = @p1`
+		`WHERE isbn = @p1`
 	// run
 	logf(sqlstr, isbn)
 	b := Book{
@@ -146,8 +145,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE ` +
-		`book_id = @p1`
+		`WHERE book_id = @p1`
 	// run
 	logf(sqlstr, bookID)
 	b := Book{
@@ -167,8 +165,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, title, year, available, tags ` +
 		`FROM booktest.books ` +
-		`WHERE ` +
-		`title = @p1 AND year = @p2`
+		`WHERE title = @p1 AND year = @p2`
 	// run
 	logf(sqlstr, title, year)
 	rows, err := db.QueryContext(ctx, sqlstr, title, year)

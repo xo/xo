@@ -115,8 +115,7 @@ func ProductsByCategoryID(ctx context.Context, db DB, categoryID sql.NullInt64) 
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM northwind.products ` +
-		`WHERE ` +
-		`category_id = ?`
+		`WHERE category_id = ?`
 	// run
 	logf(sqlstr, categoryID)
 	rows, err := db.QueryContext(ctx, sqlstr, categoryID)
@@ -150,8 +149,7 @@ func ProductByProductID(ctx context.Context, db DB, productID int16) (*Product, 
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM northwind.products ` +
-		`WHERE ` +
-		`product_id = ?`
+		`WHERE product_id = ?`
 	// run
 	logf(sqlstr, productID)
 	p := Product{
@@ -171,8 +169,7 @@ func ProductsBySupplierID(ctx context.Context, db DB, supplierID sql.NullInt64) 
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM northwind.products ` +
-		`WHERE ` +
-		`supplier_id = ?`
+		`WHERE supplier_id = ?`
 	// run
 	logf(sqlstr, supplierID)
 	rows, err := db.QueryContext(ctx, sqlstr, supplierID)

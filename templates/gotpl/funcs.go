@@ -817,26 +817,6 @@ func (f *Funcs) sqlstr_delete(v interface{}) []string {
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-// sqlstr_proc builds a stored procedure call.
-func (f *Funcs) sqlstr_proc(v interface{}) []string {
-	switch x := v.(type) {
-	case Proc:
-		if f.driver == "sqlserver" {
-			return []string{f.schemafn(x.SQLName)}
-		}
-		var list []string
-		for i := range x.Params {
-			list = append(list, f.nth(i))
-		}
-		return []string{
-			"SELECT " + f.schemafn(x.SQLName) + "(",
-			strings.Join(list, ", "),
-			")",
-		}
-	}
-	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
-}
-
 // sqlstr_index builds a
 func (f *Funcs) sqlstr_index(v interface{}) []string {
 	switch x := v.(type) {
@@ -855,8 +835,25 @@ func (f *Funcs) sqlstr_index(v interface{}) []string {
 			"SELECT ",
 			strings.Join(fields, ", ") + " ",
 			"FROM " + f.schemafn(x.Table.SQLName) + " ",
-			"WHERE ",
-			strings.Join(list, " AND "),
+			"WHERE " + strings.Join(list, " AND "),
+		}
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_proc builds a stored procedure call.
+func (f *Funcs) sqlstr_proc(v interface{}) []string {
+	switch x := v.(type) {
+	case Proc:
+		if f.driver == "sqlserver" {
+			return []string{f.schemafn(x.SQLName)}
+		}
+		var list []string
+		for i := range x.Params {
+			list = append(list, f.nth(i))
+		}
+		return []string{
+			"SELECT " + f.schemafn(x.SQLName) + "(" + strings.Join(list, ", ") + ")",
 		}
 	}
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}

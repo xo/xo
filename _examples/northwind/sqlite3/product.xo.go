@@ -115,8 +115,7 @@ func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, er
 	const sqlstr = `SELECT ` +
 		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued ` +
 		`FROM products ` +
-		`WHERE ` +
-		`product_id = $1`
+		`WHERE product_id = $1`
 	// run
 	logf(sqlstr, productID)
 	p := Product{

@@ -118,8 +118,7 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
 	const sqlstr = `SELECT ` +
 		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country ` +
 		`FROM northwind.orders ` +
-		`WHERE ` +
-		`order_id = @p1`
+		`WHERE order_id = @p1`
 	// run
 	logf(sqlstr, orderID)
 	o := Order{

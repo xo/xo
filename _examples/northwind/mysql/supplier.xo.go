@@ -117,8 +117,7 @@ func SupplierBySupplierID(ctx context.Context, db DB, supplierID int16) (*Suppli
 	const sqlstr = `SELECT ` +
 		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage ` +
 		`FROM northwind.suppliers ` +
-		`WHERE ` +
-		`supplier_id = ?`
+		`WHERE supplier_id = ?`
 	// run
 	logf(sqlstr, supplierID)
 	s := Supplier{

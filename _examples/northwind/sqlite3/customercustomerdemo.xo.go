@@ -80,8 +80,7 @@ func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, 
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM customer_customer_demo ` +
-		`WHERE ` +
-		`customer_id = $1 AND customer_type_id = $2`
+		`WHERE customer_id = $1 AND customer_type_id = $2`
 	// run
 	logf(sqlstr, customerID, customerTypeID)
 	ccd := CustomerCustomerDemo{

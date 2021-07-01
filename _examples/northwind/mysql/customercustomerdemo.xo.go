@@ -80,8 +80,7 @@ func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, 
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM northwind.customer_customer_demo ` +
-		`WHERE ` +
-		`customer_id = ? AND customer_type_id = ?`
+		`WHERE customer_id = ? AND customer_type_id = ?`
 	// run
 	logf(sqlstr, customerID, customerTypeID)
 	ccd := CustomerCustomerDemo{
@@ -101,8 +100,7 @@ func CustomerCustomerDemoByCustomerTypeID(ctx context.Context, db DB, customerTy
 	const sqlstr = `SELECT ` +
 		`customer_id, customer_type_id ` +
 		`FROM northwind.customer_customer_demo ` +
-		`WHERE ` +
-		`customer_type_id = ?`
+		`WHERE customer_type_id = ?`
 	// run
 	logf(sqlstr, customerTypeID)
 	rows, err := db.QueryContext(ctx, sqlstr, customerTypeID)

@@ -109,8 +109,7 @@ func UsStateByStateID(ctx context.Context, db DB, stateID int16) (*UsState, erro
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +
 		`FROM northwind.us_states ` +
-		`WHERE ` +
-		`state_id = ?`
+		`WHERE state_id = ?`
 	// run
 	logf(sqlstr, stateID)
 	us := UsState{

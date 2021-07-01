@@ -80,8 +80,7 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	const sqlstr = `SELECT ` +
 		`employee_id, territory_id ` +
 		`FROM northwind.employee_territories ` +
-		`WHERE ` +
-		`employee_id = @p1 AND territory_id = @p2`
+		`WHERE employee_id = @p1 AND territory_id = @p2`
 	// run
 	logf(sqlstr, employeeID, territoryID)
 	et := EmployeeTerritory{

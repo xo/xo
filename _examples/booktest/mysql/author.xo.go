@@ -113,8 +113,7 @@ func AuthorByAuthorID(ctx context.Context, db DB, authorID int) (*Author, error)
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE ` +
-		`author_id = ?`
+		`WHERE author_id = ?`
 	// run
 	logf(sqlstr, authorID)
 	a := Author{
@@ -134,8 +133,7 @@ func AuthorsByName(ctx context.Context, db DB, name string) ([]*Author, error) {
 	const sqlstr = `SELECT ` +
 		`author_id, name ` +
 		`FROM booktest.authors ` +
-		`WHERE ` +
-		`name = ?`
+		`WHERE name = ?`
 	// run
 	logf(sqlstr, name)
 	rows, err := db.QueryContext(ctx, sqlstr, name)

@@ -109,8 +109,7 @@ func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productI
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE ` +
-		`order_id = @p1 AND product_id = @p2`
+		`WHERE order_id = @p1 AND product_id = @p2`
 	// run
 	logf(sqlstr, orderID, productID)
 	od := OrderDetail{

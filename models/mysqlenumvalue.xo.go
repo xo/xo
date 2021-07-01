@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// MysqlEnumValue represents a row from 'mysql.[custom mysql_enum_value]'.
+// MysqlEnumValue represents a row from 'mysql.mysql_enum_value'.
 type MysqlEnumValue struct {
 	EnumValues string `json:"enum_values"` // enum_values
 }

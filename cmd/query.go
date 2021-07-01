@@ -191,7 +191,7 @@ func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, n
 			case field.Join:
 				name = `strings.Join(` + field.Name + `, "\n")`
 			case typ != "string":
-				name = fmt.Sprintf(`fmt.Sprintf("%%v", %s)`, field.Name)
+				name = field.Name
 			}
 			sqlstr += "` + " + name + " + `"
 		} else {

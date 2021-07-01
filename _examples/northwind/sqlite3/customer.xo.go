@@ -116,8 +116,7 @@ func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Custo
 	const sqlstr = `SELECT ` +
 		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax ` +
 		`FROM customers ` +
-		`WHERE ` +
-		`customer_id = $1`
+		`WHERE customer_id = $1`
 	// run
 	logf(sqlstr, customerID)
 	c := Customer{

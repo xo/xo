@@ -107,8 +107,7 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM territories ` +
-		`WHERE ` +
-		`territory_id = $1`
+		`WHERE territory_id = $1`
 	// run
 	logf(sqlstr, territoryID)
 	t := Territory{

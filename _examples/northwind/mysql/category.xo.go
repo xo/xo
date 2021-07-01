@@ -109,8 +109,7 @@ func CategoryByCategoryID(ctx context.Context, db DB, categoryID int16) (*Catego
 	const sqlstr = `SELECT ` +
 		`category_id, category_name, description, picture ` +
 		`FROM northwind.categories ` +
-		`WHERE ` +
-		`category_id = ?`
+		`WHERE category_id = ?`
 	// run
 	logf(sqlstr, categoryID)
 	c := Category{

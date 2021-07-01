@@ -109,8 +109,7 @@ func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productI
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE ` +
-		`order_id = ? AND product_id = ?`
+		`WHERE order_id = ? AND product_id = ?`
 	// run
 	logf(sqlstr, orderID, productID)
 	od := OrderDetail{
@@ -130,8 +129,7 @@ func OrderDetailsByProductID(ctx context.Context, db DB, productID int16) ([]*Or
 	const sqlstr = `SELECT ` +
 		`order_id, product_id, unit_price, quantity, discount ` +
 		`FROM northwind.order_details ` +
-		`WHERE ` +
-		`product_id = ?`
+		`WHERE product_id = ?`
 	// run
 	logf(sqlstr, productID)
 	rows, err := db.QueryContext(ctx, sqlstr, productID)

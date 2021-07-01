@@ -107,8 +107,7 @@ func TerritoriesByRegionID(ctx context.Context, db DB, regionID int16) ([]*Terri
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM northwind.territories ` +
-		`WHERE ` +
-		`region_id = ?`
+		`WHERE region_id = ?`
 	// run
 	logf(sqlstr, regionID)
 	rows, err := db.QueryContext(ctx, sqlstr, regionID)
@@ -142,8 +141,7 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	const sqlstr = `SELECT ` +
 		`territory_id, territory_description, region_id ` +
 		`FROM northwind.territories ` +
-		`WHERE ` +
-		`territory_id = ?`
+		`WHERE territory_id = ?`
 	// run
 	logf(sqlstr, territoryID)
 	t := Territory{

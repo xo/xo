@@ -136,8 +136,7 @@ func CategoryByCategoryID(ctx context.Context, db DB, categoryID int) (*Category
 	const sqlstr = `SELECT ` +
 		`category_id, category_name, description, picture ` +
 		`FROM public.categories ` +
-		`WHERE ` +
-		`category_id = $1`
+		`WHERE category_id = $1`
 	// run
 	logf(sqlstr, categoryID)
 	c := Category{

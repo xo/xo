@@ -135,8 +135,7 @@ func ShipperByShipperID(ctx context.Context, db DB, shipperID int) (*Shipper, er
 	const sqlstr = `SELECT ` +
 		`shipper_id, company_name, phone ` +
 		`FROM public.shippers ` +
-		`WHERE ` +
-		`shipper_id = $1`
+		`WHERE shipper_id = $1`
 	// run
 	logf(sqlstr, shipperID)
 	s := Shipper{

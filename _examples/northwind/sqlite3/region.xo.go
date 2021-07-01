@@ -106,8 +106,7 @@ func RegionByRegionID(ctx context.Context, db DB, regionID int) (*Region, error)
 	const sqlstr = `SELECT ` +
 		`region_id, region_description ` +
 		`FROM region ` +
-		`WHERE ` +
-		`region_id = $1`
+		`WHERE region_id = $1`
 	// run
 	logf(sqlstr, regionID)
 	r := Region{

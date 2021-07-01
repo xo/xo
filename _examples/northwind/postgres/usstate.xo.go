@@ -136,8 +136,7 @@ func UsStateByStateID(ctx context.Context, db DB, stateID int) (*UsState, error)
 	const sqlstr = `SELECT ` +
 		`state_id, state_name, state_abbr, state_region ` +
 		`FROM public.us_states ` +
-		`WHERE ` +
-		`state_id = $1`
+		`WHERE state_id = $1`
 	// run
 	logf(sqlstr, stateID)
 	us := UsState{
