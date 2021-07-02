@@ -188,14 +188,12 @@ func init() {
 		},
 		Process: func(ctx context.Context, doAppend bool, set *templates.TemplateSet, v *xo.XO) error {
 			for _, q := range v.Queries {
-				err := emitQuery(ctx, doAppend, set, q)
-				if err != nil {
+				if err := emitQuery(ctx, doAppend, set, q); err != nil {
 					return err
 				}
 			}
 			for _, s := range v.Schemas {
-				err := emitSchema(ctx, set, s)
-				if err != nil {
+				if err := emitSchema(ctx, set, s); err != nil {
 					return err
 				}
 			}
@@ -225,7 +223,7 @@ func init() {
 				ExtraRules: true,
 			})
 		},
-		Order: []string{"enum", "typedef", "index", "foreignkey", "proc", "custom"},
+		Order: []string{"enum", "typedef", "custom", "index", "foreignkey", "proc"},
 	})
 }
 
@@ -514,7 +512,7 @@ func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, er
 	if err != nil {
 		return ForeignKey{}, err
 	}
-	refName := snaker.ForceCamelIdentifier(fk.RefTable)
+	refName := snaker.ForceCamelIdentifier(singularize(fk.RefTable))
 	refField, err := convertField(ctx, true, fk.RefField)
 	if err != nil {
 		return ForeignKey{}, err

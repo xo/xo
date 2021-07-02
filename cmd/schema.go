@@ -434,7 +434,7 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 			Name:        fkey.ForeignKeyName,
 			Field:       *field,
 			RefIndex:    fkey.RefIndexName,
-			RefTable:    singularize(refTable.Name),
+			RefTable:    refTable.Name,
 			RefField:    *refField,
 			RefFuncName: refFunc,
 		})
