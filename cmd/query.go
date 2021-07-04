@@ -15,16 +15,8 @@ import (
 	xo "github.com/xo/xo/types"
 )
 
-// QueryBuilder builds a custom query.
-type QueryBuilder struct{}
-
-// NewQueryBuilder creates a new query loader.
-func NewQueryBuilder() *QueryBuilder {
-	return &QueryBuilder{}
-}
-
-// Build satisfies the Builder interface.
-func (*QueryBuilder) Build(ctx context.Context, args *Args, dest *xo.XO) error {
+// BuildQuery builds a query.
+func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
 	// driver info
 	_, l, _ := DbLoaderSchema(ctx)
 	// read query string from stdin if not provided via --query

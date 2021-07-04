@@ -13,16 +13,8 @@ import (
 	xo "github.com/xo/xo/types"
 )
 
-// SchemaBuilder builds a database schema.
-type SchemaBuilder struct{}
-
-// NewSchemaBuilder creates a new schema builder.
-func NewSchemaBuilder() *SchemaBuilder {
-	return &SchemaBuilder{}
-}
-
-// Build satisfies the Builder interface.
-func (*SchemaBuilder) Build(ctx context.Context, args *Args, dest *xo.XO) error {
+// BuildSchema builds a schema.
+func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
 	// driver info
 	_, l, schema := DbLoaderSchema(ctx)
 	s := xo.Schema{

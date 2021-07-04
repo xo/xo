@@ -33,6 +33,17 @@ func Types() []string {
 	return types
 }
 
+// For returns true if the template is available for the command name.
+func For(typ, name string) bool {
+	if name == "dump" {
+		return true
+	}
+	if set := templates[typ]; set != nil && set.For != nil {
+		return contains(set.For, name)
+	}
+	return true
+}
+
 // Flags returns flag options and context for the template sets for the
 // specified command name.
 //

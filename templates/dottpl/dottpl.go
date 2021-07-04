@@ -3,7 +3,7 @@ package dottpl
 import (
 	"context"
 	"embed"
-	"fmt"
+	"errors"
 	"text/template"
 
 	"github.com/xo/xo/templates"
@@ -61,7 +61,7 @@ func init() {
 		},
 		Process: func(ctx context.Context, _ bool, set *templates.TemplateSet, v *xo.XO) error {
 			if len(v.Schemas) == 0 {
-				return fmt.Errorf("dot output only works with schema mode")
+				return errors.New("dot template must be passed at least one schema")
 			}
 			for _, schema := range v.Schemas {
 				if err := set.Emit(ctx, &templates.Template{

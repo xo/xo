@@ -25,32 +25,31 @@ func Run(ctx context.Context, name, version string) error {
 	if err != nil {
 		return err
 	}
-	// create builder
-	var v Builder
-	switch cmd {
-	case "schema":
+	// check template is available for cmd
+	if !templates.For(args.TemplateParams.Type, cmd) {
+		return fmt.Errorf("template %s does not support %s", args.TemplateParams.Type, cmd)
+	}
+	// load
+	if cmd != "dump" {
+		// open database
 		var err error
 		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
 			return err
 		}
-		v = NewSchemaBuilder()
-	case "query":
-		var err error
-		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
+		// builder
+		f := BuildSchema
+		if cmd == "query" {
+			f = BuildQuery
+		}
+		// build
+		x := new(xo.XO)
+		if err := f(ctx, args, x); err != nil {
 			return err
 		}
-		v = NewQueryBuilder()
-	case "dump":
-		v = NewNoopBuilder()
-	}
-	// build
-	x := &xo.XO{}
-	if err := v.Build(ctx, args, x); err != nil {
-		return err
-	}
-	// process
-	if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x); err != nil {
-		return err
+		// process
+		if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x); err != nil {
+			return err
+		}
 	}
 	// write
 	f := templates.Write
@@ -63,11 +62,12 @@ func Run(ctx context.Context, name, version string) error {
 	if err := f(ctx); err != nil {
 		return err
 	}
-	// do error output
+	// collect errors
 	errors, err := templates.Errors(ctx)
 	if err != nil {
 		return err
 	}
+	// display errors
 	for _, err := range errors {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
@@ -389,24 +389,6 @@ func DbLoaderSchema(ctx context.Context) (models.DB, *loader.Loader, string) {
 	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
 	schema, _ := ctx.Value(xo.SchemaKey).(string)
 	return db, l, schema
-}
-
-// Builder is the shared interface for builders.
-type Builder interface {
-	Build(context.Context, *Args, *xo.XO) error
-}
-
-// NoopBuilder is a no op generator.
-type NoopBuilder struct{}
-
-// NewNoopBuilder creates a new noop generator.
-func NewNoopBuilder() *NoopBuilder {
-	return &NoopBuilder{}
-}
-
-// Build satisfies the Builder interface.
-func (*NoopBuilder) Build(context.Context, *Args, *xo.XO) error {
-	return nil
 }
 
 // newBool creates a new bool when v is nil, otherwise it converts v and returns.
