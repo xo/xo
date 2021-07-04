@@ -36,8 +36,8 @@ func init() {
 }
 
 // PostgresFlags returnss the postgres flags.
-func PostgresFlags() []Flag {
-	return []Flag{
+func PostgresFlags() []xo.Flag {
+	return []xo.Flag{
 		{
 			ContextKey: OidsKey,
 			Desc:       "enable postgres OIDs",

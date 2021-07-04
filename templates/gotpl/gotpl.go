@@ -64,7 +64,7 @@ func init() {
 		AddType: func(typ string) {
 			knownTypes[typ] = true
 		},
-		Flags: []templates.Flag{
+		Flags: []xo.Flag{
 			{
 				ContextKey: NotFirstKey,
 				Desc:       "disable package comment (ie, not first generated file)",

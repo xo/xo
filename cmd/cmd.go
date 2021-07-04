@@ -130,36 +130,14 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	// additonal loader flags
 	lf := func(cmd *kingpin.CmdClause) {
 		for _, flag := range loader.Flags() {
-			f := cmd.Flag(flag.Driver+"-"+flag.Name, flag.Flag.Desc).
-				PlaceHolder(flag.Flag.PlaceHolder).
-				Short(flag.Flag.Short).
-				Default(flag.Flag.Default)
-			switch flag.Flag.Value.(type) {
-			case bool:
-				args.DbParams.Flags[flag.Flag.ContextKey] = newBool(f, args.DbParams.Flags[flag.Flag.ContextKey])
-			case string:
-				args.DbParams.Flags[flag.Flag.ContextKey] = newString(f, args.DbParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
-			case []string:
-				args.DbParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.DbParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
-			}
+			flag.Add(cmd, args.DbParams.Flags)
 		}
 	}
 	// additional templates flags
 	tf := func(cmd *kingpin.CmdClause) {
 		cmd.Flag("src", "template source directory").Short('d').PlaceHolder("<path>").StringVar(&args.TemplateParams.Src)
 		for _, flag := range templates.Flags(cmd.Model().Name) {
-			f := cmd.Flag(flag.Type+"-"+flag.Name, flag.Flag.Desc).
-				PlaceHolder(flag.Flag.PlaceHolder).
-				Short(flag.Flag.Short).
-				Default(flag.Flag.Default)
-			switch flag.Flag.Value.(type) {
-			case bool:
-				args.TemplateParams.Flags[flag.Flag.ContextKey] = newBool(f, args.TemplateParams.Flags[flag.Flag.ContextKey])
-			case string:
-				args.TemplateParams.Flags[flag.Flag.ContextKey] = newString(f, args.TemplateParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
-			case []string:
-				args.TemplateParams.Flags[flag.Flag.ContextKey] = newStrings(f, args.TemplateParams.Flags[flag.Flag.ContextKey], flag.Flag.Enums)
-			}
+			flag.Add(cmd, args.TemplateParams.Flags)
 		}
 	}
 	// query command
@@ -389,57 +367,4 @@ func DbLoaderSchema(ctx context.Context) (models.DB, *loader.Loader, string) {
 	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
 	schema, _ := ctx.Value(xo.SchemaKey).(string)
 	return db, l, schema
-}
-
-// newBool creates a new bool when v is nil, otherwise it converts v and returns.
-func newBool(f *kingpin.FlagClause, v interface{}) *bool {
-	if v == nil {
-		b := false
-		f.BoolVar(&b)
-		return &b
-	}
-	b := v.(*bool)
-	f.BoolVar(b)
-	return b
-}
-
-// newString creates a new string when v is nil, otherwise it converts v and returns.
-func newString(f *kingpin.FlagClause, v interface{}, enums []string) *string {
-	if v == nil {
-		s := ""
-		if len(enums) != 0 {
-			f.EnumVar(&s, enums...)
-		} else {
-			f.StringVar(&s)
-		}
-		return &s
-	}
-	s := v.(*string)
-	if len(enums) != 0 {
-		f.EnumVar(s, enums...)
-	} else {
-		f.StringVar(s)
-	}
-	return s
-}
-
-// newStrings creates a new string when v is nil, otherwise it converts v and returns.
-func newStrings(f *kingpin.FlagClause, v interface{}, enums []string) *[]string {
-	switch {
-	case v == nil && enums == nil:
-		var s []string
-		f.StringsVar(&s)
-		return &s
-	case v != nil && enums == nil:
-		s := v.(*[]string)
-		f.StringsVar(s)
-		return s
-	case v == nil:
-		var s []string
-		f.EnumsVar(&s, enums...)
-		return &s
-	}
-	s := v.(*[]string)
-	f.EnumsVar(s, enums...)
-	return s
 }

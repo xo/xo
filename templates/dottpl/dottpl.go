@@ -15,7 +15,7 @@ func init() {
 		Files:   Files,
 		For:     []string{"schema"},
 		FileExt: ".xo.dot",
-		Flags: []templates.Flag{
+		Flags: []xo.Flag{
 			{
 				ContextKey:  DefaultsKey,
 				Desc:        "default statements, default: node [shape=none, margin=0]",

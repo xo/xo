@@ -49,8 +49,8 @@ func For(typ, name string) bool {
 //
 // These should be added to the invocation context for any call to a template
 // set func.
-func Flags(name string) []FlagSet {
-	var flags []FlagSet
+func Flags(name string) []xo.FlagSet {
+	var flags []xo.FlagSet
 	for _, typ := range Types() {
 		set := templates[typ]
 		// skip flag if not for the command name
@@ -58,7 +58,7 @@ func Flags(name string) []FlagSet {
 			continue
 		}
 		for _, flag := range set.Flags {
-			flags = append(flags, FlagSet{
+			flags = append(flags, xo.FlagSet{
 				Type: typ,
 				Name: string(flag.ContextKey),
 				Flag: flag,
@@ -66,24 +66,6 @@ func Flags(name string) []FlagSet {
 		}
 	}
 	return flags
-}
-
-// FlagSet wraps a option flag with context information.
-type FlagSet struct {
-	Type string
-	Name string
-	Flag Flag
-}
-
-// Flag is a option flag.
-type Flag struct {
-	ContextKey  xo.ContextKey
-	Desc        string
-	PlaceHolder string
-	Default     string
-	Short       rune
-	Value       interface{}
-	Enums       []string
 }
 
 // AddKnownType adds a known type name to a template set.
@@ -260,7 +242,7 @@ type TemplateSet struct {
 	// AddType will be called when a new type is encountered.
 	AddType func(string)
 	// Flags are additional template flags.
-	Flags []Flag
+	Flags []xo.Flag
 	// Order in which to process templates.
 	Order []string
 	// HeaderTemplate is the name of the header template.

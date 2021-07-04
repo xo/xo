@@ -33,52 +33,34 @@ func Get(driver string) *Loader {
 //
 // These should be added to the invocation context for any call to a loader
 // func.
-func Flags() []FlagSet {
+func Flags() []xo.FlagSet {
 	var drivers []string
 	for driver := range loaders {
 		drivers = append(drivers, driver)
 	}
 	sort.Strings(drivers)
-	var flags []FlagSet
+	var flags []xo.FlagSet
 	for _, driver := range drivers {
 		l := loaders[driver]
 		if l.Flags == nil {
 			continue
 		}
 		for _, flag := range l.Flags() {
-			flags = append(flags, FlagSet{
-				Driver: driver,
-				Name:   string(flag.ContextKey),
-				Flag:   flag,
+			flags = append(flags, xo.FlagSet{
+				Type: driver,
+				Name: string(flag.ContextKey),
+				Flag: flag,
 			})
 		}
 	}
 	return flags
 }
 
-// FlagSet is a set of flags for a driver.
-type FlagSet struct {
-	Driver string
-	Name   string
-	Flag   Flag
-}
-
-// Flag is a option flag.
-type Flag struct {
-	ContextKey  xo.ContextKey
-	Desc        string
-	PlaceHolder string
-	Default     string
-	Short       rune
-	Value       interface{}
-	Enums       []string
-}
-
 // Loader loads type information from a database.
 type Loader struct {
 	Driver           string
 	Mask             string
-	Flags            func() []Flag
+	Flags            func() []xo.Flag
 	GoType           func(context.Context, xo.Datatype) (string, string, error)
 	Schema           func(context.Context, models.DB) (string, error)
 	Enums            func(context.Context, models.DB, string) ([]*models.Enum, error)

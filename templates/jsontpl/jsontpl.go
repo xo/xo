@@ -13,7 +13,7 @@ func init() {
 	templates.Register("json", &templates.TemplateSet{
 		Files:   Files,
 		FileExt: ".xo.json",
-		Flags: []templates.Flag{
+		Flags: []xo.Flag{
 			{
 				ContextKey: IndentKey,
 				Desc:       "indent spacing",
