@@ -3,19 +3,20 @@ package jsontpl
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"text/template"
 )
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	Indent string
+	indent string
+	ugly   bool
 }
 
-// NewFuncs creates a new Funcs
+// NewFuncs creates a new Funcs.
 func NewFuncs(ctx context.Context) *Funcs {
 	return &Funcs{
-		Indent: Indent(ctx),
+		indent: Indent(ctx),
+		ugly:   Ugly(ctx),
 	}
 }
 
@@ -26,10 +27,21 @@ func (f *Funcs) FuncMap() template.FuncMap {
 	}
 }
 
-func (f *Funcs) jsonfn(v interface{}) string {
-	buf, err := json.MarshalIndent(v, "", f.Indent)
-	if err != nil {
-		return fmt.Sprintf("[[ COULD NOT MARSHAL: %v ]]", err)
+// jsonfn marshals v as json.
+func (f *Funcs) jsonfn(v interface{}) (string, error) {
+	z := json.MarshalIndent
+	if f.ugly {
+		z = uglyMarshal
 	}
-	return string(buf)
+	// marshal
+	buf, err := z(v, "", f.indent)
+	if err != nil {
+		return "", err
+	}
+	return string(buf), nil
+}
+
+// uglyMarshal marshals v without indentation.
+func uglyMarshal(v interface{}, _, _ string) ([]byte, error) {
+	return json.Marshal(v)
 }

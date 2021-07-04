@@ -1,0 +1,242 @@
+{
+  "schemas": [
+    {
+      "type": "sqlserver",
+      "name": "booktest",
+      "procs": [
+        {
+          "name": "say_hello",
+          "params": [
+            {
+              "name": "name",
+              "datatype": {
+                "type": "nvarchar"
+              }
+            }
+          ],
+          "return": {
+            "name": "result",
+            "datatype": {
+              "type": "nvarchar"
+            }
+          }
+        }
+      ],
+      "tables": [
+        {
+          "type": "table",
+          "name": "authors",
+          "columns": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              },
+              "is_primary": true
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255
+              },
+              "default": "('')"
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "authors_name_idx",
+              "func_name": "authors_by_name",
+              "fields": [
+                {
+                  "name": "name",
+                  "datatype": {
+                    "type": "varchar",
+                    "prec": 255
+                  },
+                  "default": "('')"
+                }
+              ]
+            },
+            {
+              "name": "authors_pkey",
+              "func_name": "author_by_author_id",
+              "fields": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 10
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "books",
+          "columns": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              },
+              "is_primary": true
+            },
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              }
+            },
+            {
+              "name": "isbn",
+              "datatype": {
+                "type": "nvarchar",
+                "prec": 255
+              },
+              "default": "('')"
+            },
+            {
+              "name": "title",
+              "datatype": {
+                "type": "nvarchar",
+                "prec": 255
+              },
+              "default": "('')"
+            },
+            {
+              "name": "year",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              },
+              "default": "((2000))"
+            },
+            {
+              "name": "available",
+              "datatype": {
+                "type": "datetime2",
+                "prec": 27,
+                "scale": 7
+              },
+              "default": "(getdate())"
+            },
+            {
+              "name": "tags",
+              "datatype": {
+                "type": "text"
+              },
+              "default": "('')"
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "int",
+                "prec": 10
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "books_isbn_key",
+              "func_name": "book_by_isbn",
+              "fields": [
+                {
+                  "name": "isbn",
+                  "datatype": {
+                    "type": "nvarchar",
+                    "prec": 255
+                  },
+                  "default": "('')"
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "books_pkey",
+              "func_name": "book_by_book_id",
+              "fields": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 10
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "books_title_idx",
+              "func_name": "books_by_title_year",
+              "fields": [
+                {
+                  "name": "title",
+                  "datatype": {
+                    "type": "nvarchar",
+                    "prec": 255
+                  },
+                  "default": "('')"
+                },
+                {
+                  "name": "year",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 10
+                  },
+                  "default": "((2000))"
+                }
+              ]
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "books_author_id_fkey",
+              "resolved_name": "author",
+              "column": {
+                "name": "author_id",
+                "datatype": {
+                  "type": "int",
+                  "prec": 10
+                }
+              },
+              "ref_table": "authors",
+              "ref_column": {
+                "name": "author_id",
+                "datatype": {
+                  "type": "int",
+                  "prec": 10
+                },
+                "is_primary": true
+              },
+              "ref_func_name": "author_by_author_id"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

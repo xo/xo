@@ -1,0 +1,1331 @@
+{
+  "schemas": [
+    {
+      "type": "sqlite3",
+      "name": "a_bit_of_everything.db",
+      "tables": [
+        {
+          "type": "table",
+          "name": "a_bit_of_everything",
+          "columns": [
+            {
+              "name": "a_bigint",
+              "datatype": {
+                "type": "bigint"
+              }
+            },
+            {
+              "name": "a_bigint_nullable",
+              "datatype": {
+                "type": "bigint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_blob",
+              "datatype": {
+                "type": "blob"
+              }
+            },
+            {
+              "name": "a_blob_nullable",
+              "datatype": {
+                "type": "blob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_bool",
+              "datatype": {
+                "type": "bool"
+              }
+            },
+            {
+              "name": "a_bool_nullable",
+              "datatype": {
+                "type": "bool",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_boolean",
+              "datatype": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "a_boolean_nullable",
+              "datatype": {
+                "type": "boolean",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_character",
+              "datatype": {
+                "type": "character"
+              }
+            },
+            {
+              "name": "a_character_nullable",
+              "datatype": {
+                "type": "character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_clob",
+              "datatype": {
+                "type": "clob"
+              }
+            },
+            {
+              "name": "a_clob_nullable",
+              "datatype": {
+                "type": "clob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_date",
+              "datatype": {
+                "type": "date"
+              }
+            },
+            {
+              "name": "a_date_nullable",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_datetime",
+              "datatype": {
+                "type": "datetime"
+              }
+            },
+            {
+              "name": "a_datetime_nullable",
+              "datatype": {
+                "type": "datetime",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_decimal",
+              "datatype": {
+                "type": "decimal"
+              }
+            },
+            {
+              "name": "a_decimal_nullable",
+              "datatype": {
+                "type": "decimal",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_double",
+              "datatype": {
+                "type": "double"
+              }
+            },
+            {
+              "name": "a_double_nullable",
+              "datatype": {
+                "type": "double",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_float",
+              "datatype": {
+                "type": "float"
+              }
+            },
+            {
+              "name": "a_float_nullable",
+              "datatype": {
+                "type": "float",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_int",
+              "datatype": {
+                "type": "int"
+              }
+            },
+            {
+              "name": "a_int_nullable",
+              "datatype": {
+                "type": "int",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_integer",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "a_integer_nullable",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_mediumint",
+              "datatype": {
+                "type": "mediumint"
+              }
+            },
+            {
+              "name": "a_mediumint_nullable",
+              "datatype": {
+                "type": "mediumint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_native_character",
+              "datatype": {
+                "type": "native character"
+              }
+            },
+            {
+              "name": "a_native_character_nullable",
+              "datatype": {
+                "type": "native character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nchar",
+              "datatype": {
+                "type": "nchar"
+              }
+            },
+            {
+              "name": "a_nchar_nullable",
+              "datatype": {
+                "type": "nchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_numeric",
+              "datatype": {
+                "type": "numeric"
+              }
+            },
+            {
+              "name": "a_numeric_nullable",
+              "datatype": {
+                "type": "numeric",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nvarchar",
+              "datatype": {
+                "type": "nvarchar"
+              }
+            },
+            {
+              "name": "a_nvarchar_nullable",
+              "datatype": {
+                "type": "nvarchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_real",
+              "datatype": {
+                "type": "real"
+              }
+            },
+            {
+              "name": "a_real_nullable",
+              "datatype": {
+                "type": "real",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_smallint",
+              "datatype": {
+                "type": "smallint"
+              }
+            },
+            {
+              "name": "a_smallint_nullable",
+              "datatype": {
+                "type": "smallint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "text"
+              }
+            },
+            {
+              "name": "a_text_nullable",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time",
+              "datatype": {
+                "type": "time"
+              }
+            },
+            {
+              "name": "a_time_nullable",
+              "datatype": {
+                "type": "time",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp",
+              "datatype": {
+                "type": "timestamp"
+              }
+            },
+            {
+              "name": "a_timestamp_nullable",
+              "datatype": {
+                "type": "timestamp",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_without_timezone",
+              "datatype": {
+                "type": "timestamp without timezone"
+              }
+            },
+            {
+              "name": "a_timestamp_without_timezone_nullable",
+              "datatype": {
+                "type": "timestamp without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_with_timezone",
+              "datatype": {
+                "type": "timestamp with timezone"
+              }
+            },
+            {
+              "name": "a_timestamp_with_timezone_nullable",
+              "datatype": {
+                "type": "timestamp with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_without_timezone",
+              "datatype": {
+                "type": "time without timezone"
+              }
+            },
+            {
+              "name": "a_time_without_timezone_nullable",
+              "datatype": {
+                "type": "time without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_with_timezone",
+              "datatype": {
+                "type": "time with timezone"
+              }
+            },
+            {
+              "name": "a_time_with_timezone_nullable",
+              "datatype": {
+                "type": "time with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_tinyint",
+              "datatype": {
+                "type": "tinyint"
+              }
+            },
+            {
+              "name": "a_tinyint_nullable",
+              "datatype": {
+                "type": "tinyint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varchar",
+              "datatype": {
+                "type": "varchar"
+              }
+            },
+            {
+              "name": "a_varchar_nullable",
+              "datatype": {
+                "type": "varchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varying_character",
+              "datatype": {
+                "type": "varying character"
+              }
+            },
+            {
+              "name": "a_varying_character_nullable",
+              "datatype": {
+                "type": "varying character",
+                "nullable": true
+              }
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_foreign_key",
+          "columns": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "a_foreign_key_a_key_fkey",
+              "resolved_name": "a_primary",
+              "column": {
+                "name": "a_key",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                }
+              },
+              "ref_table": "a_primary",
+              "ref_column": {
+                "name": "a_key",
+                "datatype": {
+                  "type": "integer"
+                },
+                "is_primary": true
+              },
+              "ref_func_name": "a_primary_by_a_key"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_foreign_key_composite",
+          "columns": [
+            {
+              "name": "a_key1",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_key2",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "a_foreign_key_composite_a_key1_fkey",
+              "resolved_name": "a_primary_composite",
+              "column": {
+                "name": "a_key1",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                }
+              },
+              "ref_table": "a_primary_composite",
+              "ref_column": {
+                "name": "a_key1",
+                "datatype": {
+                  "type": "integer"
+                },
+                "is_primary": true
+              },
+              "ref_func_name": "a_primary_composite_by_a_key1"
+            },
+            {
+              "name": "a_foreign_key_composite_a_key2_fkey",
+              "resolved_name": "a_primary_composite",
+              "column": {
+                "name": "a_key2",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                }
+              },
+              "ref_table": "a_primary_composite",
+              "ref_column": {
+                "name": "a_key2",
+                "datatype": {
+                  "type": "integer"
+                },
+                "is_primary": true
+              },
+              "ref_func_name": "a_primary_composite_by_a_key2"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_index",
+          "columns": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_index_idx",
+              "func_name": "a_index_by_a_key",
+              "fields": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ]
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_index_composite",
+          "columns": [
+            {
+              "name": "a_key1",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_key2",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_index_composite_idx",
+              "func_name": "a_index_composite_by_a_key1_a_key2",
+              "fields": [
+                {
+                  "name": "a_key1",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "a_key2",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ]
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_manual_table",
+          "columns": [
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255,
+                "nullable": true
+              }
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_primary",
+          "columns": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_primary_a_key_pkey",
+              "func_name": "a_primary_by_a_key",
+              "fields": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_primary_composite",
+          "columns": [
+            {
+              "name": "a_key1",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "a_key2",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_key1",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "a_key2",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "sqlite_autoindex_a_primary_composite_1",
+              "func_name": "a_primary_composite_by_a_key1_a_key2",
+              "fields": [
+                {
+                  "name": "a_key1",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                },
+                {
+                  "name": "a_key2",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_primary_multi",
+          "columns": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255,
+                "nullable": true
+              }
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_primary_multi_a_key_pkey",
+              "func_name": "a_primary_multi_by_a_key",
+              "fields": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_sequence",
+          "columns": [
+            {
+              "name": "a_seq",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_seq",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_sequence_a_seq_pkey",
+              "func_name": "a_sequence_by_a_seq",
+              "fields": [
+                {
+                  "name": "a_seq",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "a_sequence_multi",
+          "columns": [
+            {
+              "name": "a_seq",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255,
+                "nullable": true
+              }
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_seq",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_sequence_multi_a_seq_pkey",
+              "func_name": "a_sequence_multi_by_a_seq",
+              "fields": [
+                {
+                  "name": "a_seq",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "a_unique_index",
+          "columns": [
+            {
+              "name": "a_key",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "indexes": [
+            {
+              "name": "sqlite_autoindex_a_unique_index_1",
+              "func_name": "a_unique_index_by_a_key",
+              "fields": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ],
+              "is_unique": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_unique_index_composite",
+          "columns": [
+            {
+              "name": "a_key1",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_key2",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "indexes": [
+            {
+              "name": "sqlite_autoindex_a_unique_index_composite_1",
+              "func_name": "a_unique_index_composite_by_a_key1_a_key2",
+              "fields": [
+                {
+                  "name": "a_key1",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "a_key2",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ],
+              "is_unique": true
+            }
+          ],
+          "manual": true
+        }
+      ],
+      "views": [
+        {
+          "type": "view",
+          "name": "a_view_of_everything",
+          "columns": [
+            {
+              "name": "a_bigint",
+              "datatype": {
+                "type": "bigint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_bigint_nullable",
+              "datatype": {
+                "type": "bigint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_blob",
+              "datatype": {
+                "type": "blob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_blob_nullable",
+              "datatype": {
+                "type": "blob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_bool",
+              "datatype": {
+                "type": "bool",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_bool_nullable",
+              "datatype": {
+                "type": "bool",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_boolean",
+              "datatype": {
+                "type": "boolean",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_boolean_nullable",
+              "datatype": {
+                "type": "boolean",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_character",
+              "datatype": {
+                "type": "character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_character_nullable",
+              "datatype": {
+                "type": "character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_clob",
+              "datatype": {
+                "type": "clob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_clob_nullable",
+              "datatype": {
+                "type": "clob",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_date_nullable",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_datetime",
+              "datatype": {
+                "type": "datetime",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_datetime_nullable",
+              "datatype": {
+                "type": "datetime",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_decimal",
+              "datatype": {
+                "type": "decimal",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_decimal_nullable",
+              "datatype": {
+                "type": "decimal",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_double",
+              "datatype": {
+                "type": "double",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_double_nullable",
+              "datatype": {
+                "type": "double",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_float",
+              "datatype": {
+                "type": "float",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_float_nullable",
+              "datatype": {
+                "type": "float",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_int",
+              "datatype": {
+                "type": "int",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_int_nullable",
+              "datatype": {
+                "type": "int",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_integer",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_integer_nullable",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_mediumint",
+              "datatype": {
+                "type": "mediumint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_mediumint_nullable",
+              "datatype": {
+                "type": "mediumint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_native_character",
+              "datatype": {
+                "type": "native character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_native_character_nullable",
+              "datatype": {
+                "type": "native character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nchar",
+              "datatype": {
+                "type": "nchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nchar_nullable",
+              "datatype": {
+                "type": "nchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_numeric",
+              "datatype": {
+                "type": "numeric",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_numeric_nullable",
+              "datatype": {
+                "type": "numeric",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nvarchar",
+              "datatype": {
+                "type": "nvarchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_nvarchar_nullable",
+              "datatype": {
+                "type": "nvarchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_real",
+              "datatype": {
+                "type": "real",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_real_nullable",
+              "datatype": {
+                "type": "real",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_smallint",
+              "datatype": {
+                "type": "smallint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_smallint_nullable",
+              "datatype": {
+                "type": "smallint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_text_nullable",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time",
+              "datatype": {
+                "type": "time",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_nullable",
+              "datatype": {
+                "type": "time",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp",
+              "datatype": {
+                "type": "timestamp",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_nullable",
+              "datatype": {
+                "type": "timestamp",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_without_timezone",
+              "datatype": {
+                "type": "timestamp without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_without_timezone_nullable",
+              "datatype": {
+                "type": "timestamp without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_with_timezone",
+              "datatype": {
+                "type": "timestamp with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_timestamp_with_timezone_nullable",
+              "datatype": {
+                "type": "timestamp with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_without_timezone",
+              "datatype": {
+                "type": "time without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_without_timezone_nullable",
+              "datatype": {
+                "type": "time without timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_with_timezone",
+              "datatype": {
+                "type": "time with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_time_with_timezone_nullable",
+              "datatype": {
+                "type": "time with timezone",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_tinyint",
+              "datatype": {
+                "type": "tinyint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_tinyint_nullable",
+              "datatype": {
+                "type": "tinyint",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varchar",
+              "datatype": {
+                "type": "varchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varchar_nullable",
+              "datatype": {
+                "type": "varchar",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varying_character",
+              "datatype": {
+                "type": "varying character",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_varying_character_nullable",
+              "datatype": {
+                "type": "varying character",
+                "nullable": true
+              }
+            }
+          ],
+          "manual": true
+        }
+      ]
+    }
+  ]
+}

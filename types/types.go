@@ -106,7 +106,6 @@ type ForeignKey struct {
 	RefTable     string `json:"ref_table,omitempty"`     // table the foreign key refers to
 	RefField     Field  `json:"ref_column,omitempty"`    // column in ref table the index refers to
 	RefFuncName  string `json:"ref_func_name"`           // func name from ref index
-
 }
 
 // Field is a column, index, enum value, or stored procedure parameter.

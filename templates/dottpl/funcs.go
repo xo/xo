@@ -13,9 +13,8 @@ import (
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	schema string
-	driver string
-
+	schema    string
+	driver    string
 	defaults  []string
 	bold      bool
 	color     string
@@ -44,14 +43,12 @@ func NewFuncs(ctx context.Context) (*Funcs, error) {
 // FuncMap returns the func map.
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
-		"schema": f.schemafn,
-
+		"schema":   f.schemafn,
 		"defaults": f.defaultsfn,
 		"header":   f.header,
 		"row":      f.rowfn,
 		"edge":     f.edge,
-
-		"quotes": f.quotes,
+		"quotes":   f.quotes,
 	}
 }
 
@@ -80,9 +77,7 @@ func (f *Funcs) edge(node, row, toNode, toRow string) string {
 		dirFrom, dirTo = "", ""
 	}
 	// "table":"col":e -> "reftable":"refcol":w
-	return fmt.Sprintf("%s:%s%s -> %s:%s%s",
-		node, row, dirFrom,
-		toNode, toRow, dirTo)
+	return fmt.Sprintf("%s:%s%s -> %s:%s%s", node, row, dirFrom, toNode, toRow, dirTo)
 }
 
 // schemafn takes a series of names and joins them with the schema name.

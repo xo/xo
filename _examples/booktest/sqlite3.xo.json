@@ -1,0 +1,208 @@
+{
+  "schemas": [
+    {
+      "type": "sqlite3",
+      "name": "booktest.db",
+      "tables": [
+        {
+          "type": "table",
+          "name": "authors",
+          "columns": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "text"
+              },
+              "default": "''"
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "authors_name_idx",
+              "func_name": "authors_by_name",
+              "fields": [
+                {
+                  "name": "name",
+                  "datatype": {
+                    "type": "text"
+                  },
+                  "default": "''"
+                }
+              ]
+            },
+            {
+              "name": "authors_author_id_pkey",
+              "func_name": "author_by_author_id",
+              "fields": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "books",
+          "columns": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            },
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "isbn",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255
+              },
+              "default": "''"
+            },
+            {
+              "name": "title",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255
+              },
+              "default": "''"
+            },
+            {
+              "name": "year",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "2000"
+            },
+            {
+              "name": "available",
+              "datatype": {
+                "type": "timestamp"
+              },
+              "default": "STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'NOW')"
+            },
+            {
+              "name": "tags",
+              "datatype": {
+                "type": "text"
+              },
+              "default": "'{}'"
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "books_title_idx",
+              "func_name": "books_by_title_year",
+              "fields": [
+                {
+                  "name": "title",
+                  "datatype": {
+                    "type": "varchar",
+                    "prec": 255
+                  },
+                  "default": "''"
+                },
+                {
+                  "name": "year",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "2000"
+                }
+              ]
+            },
+            {
+              "name": "sqlite_autoindex_books_1",
+              "func_name": "book_by_isbn",
+              "fields": [
+                {
+                  "name": "isbn",
+                  "datatype": {
+                    "type": "varchar",
+                    "prec": 255
+                  },
+                  "default": "''"
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "books_book_id_pkey",
+              "func_name": "book_by_book_id",
+              "fields": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "books_author_id_fkey",
+              "resolved_name": "author",
+              "column": {
+                "name": "author_id",
+                "datatype": {
+                  "type": "integer"
+                }
+              },
+              "ref_table": "authors",
+              "ref_column": {
+                "name": "author_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "is_primary": true
+              },
+              "ref_func_name": "author_by_author_id"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

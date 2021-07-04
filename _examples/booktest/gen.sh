@@ -72,6 +72,7 @@ for TYPE in $DATABASES; do
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE ${ARGS[@]}
+    $XOBIN schema $DB -o . --single=$TYPE.xo.json --template=json ${ARGS[@]}
     $XOBIN query $DB ${ARGS[@]} < sql/${TYPE}_query.sql \
       -o $TYPE \
       -M \

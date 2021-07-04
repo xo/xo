@@ -43,14 +43,13 @@ func Run(ctx context.Context, name, version string) error {
 	case "dump":
 		v = NewNoopBuilder()
 	}
+	// build
 	x := &xo.XO{}
-	// exec
 	if err := v.Build(ctx, args, x); err != nil {
 		return err
 	}
 	// process
-	err = templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x)
-	if err != nil {
+	if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x); err != nil {
 		return err
 	}
 	// write
@@ -148,7 +147,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	// additional templates flags
 	tf := func(cmd *kingpin.CmdClause) {
 		cmd.Flag("src", "template source directory").Short('d').PlaceHolder("<path>").StringVar(&args.TemplateParams.Src)
-		for _, flag := range templates.Flags() {
+		for _, flag := range templates.Flags(cmd.Model().Name) {
 			f := cmd.Flag(flag.Type+"-"+flag.Name, flag.Flag.Desc).
 				PlaceHolder(flag.Flag.PlaceHolder).
 				Short(flag.Flag.Short).

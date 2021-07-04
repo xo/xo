@@ -16,9 +16,15 @@ func init() {
 		Flags: []templates.Flag{
 			{
 				ContextKey: IndentKey,
-				Desc:       "indentation",
+				Desc:       "indent spacing",
 				Default:    "  ",
 				Value:      "",
+			},
+			{
+				ContextKey: UglyKey,
+				Desc:       "disable indentation",
+				Default:    "false",
+				Value:      false,
 			},
 		},
 		Funcs: func(ctx context.Context) (template.FuncMap, error) {
@@ -41,12 +47,19 @@ func init() {
 // Context keys.
 const (
 	IndentKey xo.ContextKey = "indent"
+	UglyKey   xo.ContextKey = "ugly"
 )
 
-// Indent returns the indent from the context.
+// Indent returns indent from the context.
 func Indent(ctx context.Context) string {
 	s, _ := ctx.Value(IndentKey).(string)
 	return s
+}
+
+// Ugly returns ugly from the context.
+func Ugly(ctx context.Context) bool {
+	b, _ := ctx.Value(UglyKey).(bool)
+	return b
 }
 
 // Files are the embedded JSON templates.

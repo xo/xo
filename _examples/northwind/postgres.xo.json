@@ -1,0 +1,1636 @@
+{
+  "schemas": [
+    {
+      "type": "postgres",
+      "name": "public",
+      "tables": [
+        {
+          "type": "table",
+          "name": "categories",
+          "columns": [
+            {
+              "name": "category_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "category_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15
+              },
+              "default": ""
+            },
+            {
+              "name": "description",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "picture",
+              "datatype": {
+                "type": "bytea",
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "category_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "categories_pkey",
+              "func_name": "category_by_category_id",
+              "fields": [
+                {
+                  "name": "category_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "customer_customer_demo",
+          "columns": [
+            {
+              "name": "customer_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "customer_type_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "customer_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "customer_type_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "customer_customer_demo_pkey",
+              "func_name": "customer_customer_demo_by_customer_id_customer_type_id",
+              "fields": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "bpchar"
+                  },
+                  "default": "",
+                  "is_primary": true
+                },
+                {
+                  "name": "customer_type_id",
+                  "datatype": {
+                    "type": "bpchar"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "customer_customer_demo_customer_id_fkey",
+              "resolved_name": "customer",
+              "column": {
+                "name": "customer_id",
+                "datatype": {
+                  "type": "bpchar"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "customers_pkey",
+              "ref_table": "customers",
+              "ref_column": {
+                "name": "customer_id",
+                "datatype": {
+                  "type": "bpchar"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "customer_by_customer_id"
+            },
+            {
+              "name": "customer_customer_demo_customer_type_id_fkey",
+              "resolved_name": "customer_demographic",
+              "column": {
+                "name": "customer_type_id",
+                "datatype": {
+                  "type": "bpchar"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "customer_demographics_pkey",
+              "ref_table": "customer_demographics",
+              "ref_column": {
+                "name": "customer_type_id",
+                "datatype": {
+                  "type": "bpchar"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "customer_demographic_by_customer_type_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "customer_demographics",
+          "columns": [
+            {
+              "name": "customer_type_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "customer_desc",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "customer_type_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "customer_demographics_pkey",
+              "func_name": "customer_demographic_by_customer_type_id",
+              "fields": [
+                {
+                  "name": "customer_type_id",
+                  "datatype": {
+                    "type": "bpchar"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "customers",
+          "columns": [
+            {
+              "name": "customer_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "company_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": ""
+            },
+            {
+              "name": "contact_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "contact_title",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "address",
+              "datatype": {
+                "type": "character varying",
+                "prec": 60,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "city",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "region",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "postal_code",
+              "datatype": {
+                "type": "character varying",
+                "prec": 10,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "country",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "phone",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "fax",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "customer_id",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "customers_pkey",
+              "func_name": "customer_by_customer_id",
+              "fields": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "bpchar"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "employee_territories",
+          "columns": [
+            {
+              "name": "employee_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "territory_id",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "employee_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "territory_id",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "employee_territories_pkey",
+              "func_name": "employee_territory_by_employee_id_territory_id",
+              "fields": [
+                {
+                  "name": "employee_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                },
+                {
+                  "name": "territory_id",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 20
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "employee_territories_employee_id_fkey",
+              "resolved_name": "employee",
+              "column": {
+                "name": "employee_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "employees_pkey",
+              "ref_table": "employees",
+              "ref_column": {
+                "name": "employee_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "employee_by_employee_id"
+            },
+            {
+              "name": "employee_territories_territory_id_fkey",
+              "resolved_name": "territory",
+              "column": {
+                "name": "territory_id",
+                "datatype": {
+                  "type": "character varying",
+                  "prec": 20
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "territories_pkey",
+              "ref_table": "territories",
+              "ref_column": {
+                "name": "territory_id",
+                "datatype": {
+                  "type": "character varying",
+                  "prec": 20
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "territory_by_territory_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "employees",
+          "columns": [
+            {
+              "name": "employee_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "last_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20
+              },
+              "default": ""
+            },
+            {
+              "name": "first_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 10
+              },
+              "default": ""
+            },
+            {
+              "name": "title",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "title_of_courtesy",
+              "datatype": {
+                "type": "character varying",
+                "prec": 25,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "birth_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "hire_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "address",
+              "datatype": {
+                "type": "character varying",
+                "prec": 60,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "city",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "region",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "postal_code",
+              "datatype": {
+                "type": "character varying",
+                "prec": 10,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "country",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "home_phone",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "extension",
+              "datatype": {
+                "type": "character varying",
+                "prec": 4,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "photo",
+              "datatype": {
+                "type": "bytea",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "notes",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "reports_to",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "photo_path",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255,
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "employee_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "employees_pkey",
+              "func_name": "employee_by_employee_id",
+              "fields": [
+                {
+                  "name": "employee_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "employees_reports_to_fkey",
+              "resolved_name": "employee",
+              "column": {
+                "name": "reports_to",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "employees_pkey",
+              "ref_table": "employees",
+              "ref_column": {
+                "name": "employee_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "employee_by_employee_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "order_details",
+          "columns": [
+            {
+              "name": "order_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "product_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "unit_price",
+              "datatype": {
+                "type": "real"
+              },
+              "default": ""
+            },
+            {
+              "name": "quantity",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "discount",
+              "datatype": {
+                "type": "real"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "order_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "product_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "order_details_pkey",
+              "func_name": "order_detail_by_order_id_product_id",
+              "fields": [
+                {
+                  "name": "order_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                },
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "order_details_order_id_fkey",
+              "resolved_name": "order",
+              "column": {
+                "name": "order_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "orders_pkey",
+              "ref_table": "orders",
+              "ref_column": {
+                "name": "order_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "order_by_order_id"
+            },
+            {
+              "name": "order_details_product_id_fkey",
+              "resolved_name": "product",
+              "column": {
+                "name": "product_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_index": "products_pkey",
+              "ref_table": "products",
+              "ref_column": {
+                "name": "product_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "product_by_product_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "orders",
+          "columns": [
+            {
+              "name": "order_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "customer_id",
+              "datatype": {
+                "type": "bpchar",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "employee_id",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "order_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "required_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "shipped_date",
+              "datatype": {
+                "type": "date",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_via",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "freight",
+              "datatype": {
+                "type": "real",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_address",
+              "datatype": {
+                "type": "character varying",
+                "prec": 60,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_city",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_region",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_postal_code",
+              "datatype": {
+                "type": "character varying",
+                "prec": 10,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "ship_country",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "order_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "orders_pkey",
+              "func_name": "order_by_order_id",
+              "fields": [
+                {
+                  "name": "order_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "orders_customer_id_fkey",
+              "resolved_name": "customer",
+              "column": {
+                "name": "customer_id",
+                "datatype": {
+                  "type": "bpchar",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "customers_pkey",
+              "ref_table": "customers",
+              "ref_column": {
+                "name": "customer_id",
+                "datatype": {
+                  "type": "bpchar"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "customer_by_customer_id"
+            },
+            {
+              "name": "orders_employee_id_fkey",
+              "resolved_name": "employee",
+              "column": {
+                "name": "employee_id",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "employees_pkey",
+              "ref_table": "employees",
+              "ref_column": {
+                "name": "employee_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "employee_by_employee_id"
+            },
+            {
+              "name": "orders_ship_via_fkey",
+              "resolved_name": "shipper",
+              "column": {
+                "name": "ship_via",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "shippers_pkey",
+              "ref_table": "shippers",
+              "ref_column": {
+                "name": "shipper_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "shipper_by_shipper_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "products",
+          "columns": [
+            {
+              "name": "product_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "product_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": ""
+            },
+            {
+              "name": "supplier_id",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "category_id",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "quantity_per_unit",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "unit_price",
+              "datatype": {
+                "type": "real",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "units_in_stock",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "units_on_order",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "reorder_level",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "discontinued",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "product_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "products_pkey",
+              "func_name": "product_by_product_id",
+              "fields": [
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "products_category_id_fkey",
+              "resolved_name": "category",
+              "column": {
+                "name": "category_id",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "categories_pkey",
+              "ref_table": "categories",
+              "ref_column": {
+                "name": "category_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "category_by_category_id"
+            },
+            {
+              "name": "products_supplier_id_fkey",
+              "resolved_name": "supplier",
+              "column": {
+                "name": "supplier_id",
+                "datatype": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "default": ""
+              },
+              "ref_index": "suppliers_pkey",
+              "ref_table": "suppliers",
+              "ref_column": {
+                "name": "supplier_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "supplier_by_supplier_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "region",
+          "columns": [
+            {
+              "name": "region_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "region_description",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "region_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "region_pkey",
+              "func_name": "region_by_region_id",
+              "fields": [
+                {
+                  "name": "region_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "shippers",
+          "columns": [
+            {
+              "name": "shipper_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "company_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": ""
+            },
+            {
+              "name": "phone",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "shipper_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "shippers_pkey",
+              "func_name": "shipper_by_shipper_id",
+              "fields": [
+                {
+                  "name": "shipper_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "suppliers",
+          "columns": [
+            {
+              "name": "supplier_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "company_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": ""
+            },
+            {
+              "name": "contact_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "contact_title",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "address",
+              "datatype": {
+                "type": "character varying",
+                "prec": 60,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "city",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "region",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "postal_code",
+              "datatype": {
+                "type": "character varying",
+                "prec": 10,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "country",
+              "datatype": {
+                "type": "character varying",
+                "prec": 15,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "phone",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "fax",
+              "datatype": {
+                "type": "character varying",
+                "prec": 24,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "homepage",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "supplier_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "suppliers_pkey",
+              "func_name": "supplier_by_supplier_id",
+              "fields": [
+                {
+                  "name": "supplier_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "territories",
+          "columns": [
+            {
+              "name": "territory_id",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "territory_description",
+              "datatype": {
+                "type": "bpchar"
+              },
+              "default": ""
+            },
+            {
+              "name": "region_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "territory_id",
+              "datatype": {
+                "type": "character varying",
+                "prec": 20
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "territories_pkey",
+              "func_name": "territory_by_territory_id",
+              "fields": [
+                {
+                  "name": "territory_id",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 20
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "territories_region_id_fkey",
+              "resolved_name": "region",
+              "column": {
+                "name": "region_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": ""
+              },
+              "ref_index": "region_pkey",
+              "ref_table": "region",
+              "ref_column": {
+                "name": "region_id",
+                "datatype": {
+                  "type": "integer"
+                },
+                "default": "",
+                "is_primary": true
+              },
+              "ref_func_name": "region_by_region_id"
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "us_states",
+          "columns": [
+            {
+              "name": "state_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "state_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 100,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "state_abbr",
+              "datatype": {
+                "type": "character varying",
+                "prec": 2,
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "state_region",
+              "datatype": {
+                "type": "character varying",
+                "prec": 50,
+                "nullable": true
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "state_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "us_states_pkey",
+              "func_name": "us_state_by_state_id",
+              "fields": [
+                {
+                  "name": "state_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "manual": true
+        }
+      ]
+    }
+  ]
+}

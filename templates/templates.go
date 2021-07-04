@@ -33,14 +33,19 @@ func Types() []string {
 	return types
 }
 
-// Flags returns flag options and context for the template sets.
+// Flags returns flag options and context for the template sets for the
+// specified command name.
 //
 // These should be added to the invocation context for any call to a template
 // set func.
-func Flags() []FlagSet {
+func Flags(name string) []FlagSet {
 	var flags []FlagSet
 	for _, typ := range Types() {
 		set := templates[typ]
+		// skip flag if not for the command name
+		if set.For != nil && !contains(set.For, name) {
+			continue
+		}
 		for _, flag := range set.Flags {
 			flags = append(flags, FlagSet{
 				Type: typ,
@@ -237,6 +242,8 @@ func Errors(ctx context.Context) ([]error, error) {
 type TemplateSet struct {
 	// Files are the embedded templates.
 	Files embed.FS
+	// For are the command names the template set is available for.
+	For []string
 	// FileExt is the file extension added to out files.
 	FileExt string
 	// AddType will be called when a new type is encountered.

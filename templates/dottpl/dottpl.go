@@ -13,6 +13,7 @@ import (
 func init() {
 	templates.Register("dot", &templates.TemplateSet{
 		Files:   Files,
+		For:     []string{"schema"},
 		FileExt: ".xo.dot",
 		Flags: []templates.Flag{
 			{
@@ -86,7 +87,7 @@ const (
 	ColorKey     xo.ContextKey = "color"
 )
 
-// Defaults returns default values from the context.
+// Defaults returns defaults from the context.
 func Defaults(ctx context.Context) []string {
 	s, _ := ctx.Value(DefaultsKey).([]string)
 	return s
@@ -104,13 +105,13 @@ func Color(ctx context.Context) string {
 	return s
 }
 
-// Row returns the row template from the context.
+// Row returns row from the context.
 func Row(ctx context.Context) string {
 	s, _ := ctx.Value(RowKey).(string)
 	return s
 }
 
-// Direction returns edge direction from the context.
+// Direction returns direction from the context.
 func Direction(ctx context.Context) bool {
 	b, _ := ctx.Value(DirectionKey).(bool)
 	return b
