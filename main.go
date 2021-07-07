@@ -20,6 +20,7 @@ import (
 	_ "github.com/xo/xo/templates/dottpl"
 	_ "github.com/xo/xo/templates/gotpl"
 	_ "github.com/xo/xo/templates/jsontpl"
+	_ "github.com/xo/xo/templates/yamltpl"
 
 	"github.com/xo/xo/cmd"
 )

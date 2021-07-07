@@ -1,0 +1,151 @@
+---
+schemas:
+  - type: postgres
+    name: public
+    enums:
+    - name: book_type
+      values:
+      - name: FICTION
+        const_value: 1
+      - name: NONFICTION
+        const_value: 2
+    procs:
+    - name: say_hello
+      params:
+      - name: name
+        datatype:
+          type: character varying
+      return:
+        datatype:
+          type: character varying
+    tables:
+    - type: table
+      name: authors
+      columns:
+      - name: author_id
+        datatype:
+          type: integer
+        default: nextval('authors_author_id_seq'::regclass)
+        is_primary: true
+      - name: name
+        datatype:
+          type: text
+        default: "''::text"
+      primary_keys:
+      - name: author_id
+        datatype:
+          type: integer
+        default: nextval('authors_author_id_seq'::regclass)
+        is_primary: true
+      indexes:
+      - name: authors_name_idx
+        func_name: authors_by_name
+        fields:
+        - name: name
+          datatype:
+            type: text
+          default: "''::text"
+      - name: authors_pkey
+        func_name: author_by_author_id
+        fields:
+        - name: author_id
+          datatype:
+            type: integer
+          default: nextval('authors_author_id_seq'::regclass)
+          is_primary: true
+        is_unique: true
+        is_primary: true
+    - type: table
+      name: books
+      columns:
+      - name: book_id
+        datatype:
+          type: integer
+        default: nextval('books_book_id_seq'::regclass)
+        is_primary: true
+      - name: author_id
+        datatype:
+          type: integer
+        default: ""
+      - name: isbn
+        datatype:
+          type: character varying
+          prec: 255
+        default: "''::character varying"
+      - name: book_type
+        datatype:
+          type: book_type
+        default: "'FICTION'::book_type"
+      - name: title
+        datatype:
+          type: character varying
+          prec: 255
+        default: "''::character varying"
+      - name: year
+        datatype:
+          type: integer
+        default: "2000"
+      - name: available
+        datatype:
+          type: timestamp with time zone
+        default: now()
+      - name: tags
+        datatype:
+          type: character varying
+          array: true
+        default: "'{}'::character varying[]"
+      primary_keys:
+      - name: book_id
+        datatype:
+          type: integer
+        default: nextval('books_book_id_seq'::regclass)
+        is_primary: true
+      indexes:
+      - name: books_isbn_key
+        func_name: book_by_isbn
+        fields:
+        - name: isbn
+          datatype:
+            type: character varying
+            prec: 255
+          default: "''::character varying"
+        is_unique: true
+      - name: books_pkey
+        func_name: book_by_book_id
+        fields:
+        - name: book_id
+          datatype:
+            type: integer
+          default: nextval('books_book_id_seq'::regclass)
+          is_primary: true
+        is_unique: true
+        is_primary: true
+      - name: books_title_idx
+        func_name: books_by_title_year
+        fields:
+        - name: title
+          datatype:
+            type: character varying
+            prec: 255
+          default: "''::character varying"
+        - name: year
+          datatype:
+            type: integer
+          default: "2000"
+      foreign_keys:
+      - name: books_author_id_fkey
+        resolved_name: author
+        column:
+          name: author_id
+          datatype:
+            type: integer
+          default: ""
+        ref_index: authors_pkey
+        ref_table: authors
+        ref_column:
+          name: author_id
+          datatype:
+            type: integer
+          default: nextval('authors_author_id_seq'::regclass)
+          is_primary: true
+        ref_func_name: author_by_author_id

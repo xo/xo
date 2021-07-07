@@ -31,6 +31,8 @@ func (flag FlagSet) Add(cmd *kingpin.CmdClause, flags map[ContextKey]interface{}
 	switch flag.Flag.Value.(type) {
 	case bool:
 		flags[flag.Flag.ContextKey] = newBool(f, flags[flag.Flag.ContextKey])
+	case int:
+		flags[flag.Flag.ContextKey] = newInt(f, flags[flag.Flag.ContextKey])
 	case string:
 		flags[flag.Flag.ContextKey] = newString(f, flags[flag.Flag.ContextKey], flag.Flag.Enums)
 	case []string:
@@ -48,6 +50,18 @@ func newBool(f *kingpin.FlagClause, v interface{}) *bool {
 	b := v.(*bool)
 	f.BoolVar(b)
 	return b
+}
+
+// newInt creates a new int when v is nil, otherwise it converts v and returns.
+func newInt(f *kingpin.FlagClause, v interface{}) *int {
+	if v == nil {
+		i := 0
+		f.IntVar(&i)
+		return &i
+	}
+	i := v.(*int)
+	f.IntVar(i)
+	return i
 }
 
 // newString creates a new string when v is nil, otherwise it converts v and returns.
