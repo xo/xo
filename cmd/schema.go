@@ -103,7 +103,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	for _, proc := range procs {
 		// parse return type into template
 		// TODO: fix this so that nullable types can be returned
-		typ, prec, scale, array, err := parseType(proc.ReturnType)
+		typ, prec, scale, array, err := parseType(l.Driver, proc.ReturnType)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +138,7 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 	}
 	// process
 	for i, param := range params {
-		typ, prec, scale, array, err := parseType(param.ParamType)
+		typ, prec, scale, array, err := parseType(l.Driver, param.ParamType)
 		if err != nil {
 			return err
 		}
@@ -192,11 +192,24 @@ func LoadTypes(ctx context.Context, args *Args, kind string) ([]xo.Table, error)
 		if err != nil {
 			return nil, err
 		}
-		// determine fk function names
-		for i, fkey := range fkeys {
-			fkeys[i].ResolvedName = resolveFkName(args.SchemaParams.FkMode, table, fkey)
+		for _, fkey := range fkeys {
+			// manual foreign key name generation if name not found
+			if fkey.Name == "" {
+				var names []string
+				for _, field := range fkey.Fields {
+					names = append(names, field.Name)
+				}
+				fkey.Name = table.Name + "_" + strings.Join(names, "_") + "_fkey"
+			}
+			// foreign key called func name
+			fkey.RefFuncName = indexFuncName(fkey.RefTable, xo.Index{
+				IsUnique: true,
+				Fields:   fkey.RefFields,
+			}, false)
+			// determine foreign key func name
+			fkey.ResolvedName = resolveFkName(args.SchemaParams.FkMode, table, fkey)
+			table.ForeignKeys = append(table.ForeignKeys, fkey)
 		}
-		table.ForeignKeys = fkeys
 		m[i] = table
 	}
 	return m, nil
@@ -256,7 +269,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			continue
 		}
 		// set col info
-		typ, prec, scale, array, err := parseType(c.DataType)
+		typ, prec, scale, array, err := parseType(l.Driver, c.DataType)
 		if err != nil {
 			return err
 		}
@@ -309,7 +322,7 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 			return err
 		}
 		// load index func name
-		index.FuncName = indexFuncName(*table, *index, args.SchemaParams.UseIndexNames)
+		index.FuncName = indexFuncName(table.Name, *index, args.SchemaParams.UseIndexNames)
 		table.Indexes = append(table.Indexes, *index)
 	}
 	pkeys := table.PrimaryKeys
@@ -329,7 +342,7 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 			IsUnique:  true,
 			IsPrimary: true,
 		}
-		index.FuncName = indexFuncName(*table, index, args.SchemaParams.UseIndexNames)
+		index.FuncName = indexFuncName(table.Name, index, args.SchemaParams.UseIndexNames)
 		table.Indexes = append(table.Indexes, index)
 	}
 	return nil
@@ -363,7 +376,7 @@ func LoadIndexColumns(ctx context.Context, args *Args, table *xo.Table, index *x
 }
 
 // LoadTableForeignKeys loads foreign key definitions per table.
-func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, table xo.Table) ([]xo.ForeignKey, error) {
+func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, table xo.Table) (map[string]xo.ForeignKey, error) {
 	db, l, schema := DbLoaderSchema(ctx)
 	// load foreign keys
 	fkeys, err := l.TableForeignKeys(ctx, db, schema, table.Name)
@@ -371,7 +384,7 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 		return nil, err
 	}
 	sort.Slice(fkeys, func(i, j int) bool { return fkeys[i].ForeignKeyName < fkeys[j].ForeignKeyName })
-	var foreignkeys []xo.ForeignKey
+	fkMap := make(map[string]xo.ForeignKey)
 	// loop over foreign keys for table
 	for _, fkey := range fkeys {
 		var refTable *xo.Table
@@ -410,34 +423,51 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 				fkey.ForeignKeyName,
 			)
 		}
-		// foreign key name
+		// ForeignKeyName should only be empty on SQLite. When this happens, we
+		// resort to using the keyid (which is unique to each foreign key, even
+		// if it references multiple columns) as the map for the foreign key.
+		mapKey := fkey.ForeignKeyName
 		if fkey.ForeignKeyName == "" {
-			fkey.ForeignKeyName = table.Name + "_" + field.Name + "_fkey"
+			mapKey = strconv.Itoa(fkey.KeyID)
 		}
-		var refFunc string
-		// foreign key func name
-		refFunc = indexFuncName(*refTable, xo.Index{
-			IsUnique: true,
-			Fields: []xo.Field{{
-				Name: refField.Name,
-			}},
-		}, false)
-		foreignkeys = append(foreignkeys, xo.ForeignKey{
-			Name:        fkey.ForeignKeyName,
-			Field:       *field,
-			RefIndex:    fkey.RefIndexName,
-			RefTable:    refTable.Name,
-			RefField:    *refField,
-			RefFuncName: refFunc,
-		})
+		// create fkey or append (ref)fields
+		var f xo.ForeignKey
+		var ok bool
+		if f, ok = fkMap[mapKey]; !ok {
+			f = xo.ForeignKey{
+				Name:     fkey.ForeignKeyName,
+				RefTable: refTable.Name,
+			}
+		}
+		f.Fields = append(f.Fields, *field)
+		f.RefFields = append(f.RefFields, *refField)
+		fkMap[mapKey] = f
 	}
-	return foreignkeys, nil
+	return fkMap, nil
 }
 
-// parseType parses "type[ (precision[,scale])][\[\]]" strings returning the parsed
-// precision, scale, and if the type is an array or not.
+// parseType parses "type[ (precision[,scale])][\[\]]" strings returning the
+// parsed precision, scale, and if the type is an array or not.
+//
+// Expected formats:
+//
+//	type
+//	type(precision)
+//	type(precision, scale)
+//	type(precision, scale)[]
+//	timestamp(n) with [local] time zone (oracle only)
+//
 // The returned type is stripped of precision and scale.
-func parseType(typ string) (string, int, int, bool, error) {
+func parseType(driver, typ string) (string, int, int, bool, error) {
+	// special case for oracle timestamp(n) with [local] time zone
+	if m := oracleTimestampRE.FindStringSubmatch(typ); driver == "oracle" && m != nil {
+		prec, err := strconv.Atoi(m[1])
+		if err != nil {
+			return "", 0, 0, false, fmt.Errorf("could not parse precision: %w", err)
+		}
+		return "timestamp " + m[2], prec, 0, false, nil
+	}
+	// handle normal
 	var prec, scale int
 	if m := precRE.FindStringIndex(typ); m != nil {
 		s := typ[m[0]+1 : m[1]-1]
@@ -456,12 +486,13 @@ func parseType(typ string) (string, int, int, bool, error) {
 		typ = typ[:m[0]]
 	}
 	typ = strings.TrimSpace(typ)
-	var array bool
-	if strings.HasSuffix(typ, "[]") {
-		array = true
-	}
-	return strings.ToLower(strings.TrimSuffix(typ, "[]")), prec, scale, array, nil
+	isArray := strings.HasSuffix(typ, "[]")
+	return strings.ToLower(strings.TrimSuffix(typ, "[]")), prec, scale, isArray, nil
 }
+
+// oracleTimestampRE is the regexp that matches "timestamp(precision) with [local]
+// time zone" definitions in oracle databases
+var oracleTimestampRE = regexp.MustCompile(`^timestamp\((\d)\) (with(?: local)? time zone)$`)
 
 // precRE is the regexp that matches "(precision[,scale])" definitions in a
 // database.
@@ -481,11 +512,15 @@ func resolveFkName(mode string, table xo.Table, fkey xo.ForeignKey) string {
 		return tableName
 	case "field":
 		// field causes a foreign key field to be named in the form of
-		// "<type>.<ParentName>_by_<Field>".
+		// "<type>.<ParentName>_by_<Field1>_<Field2>".
 		//
 		// For example, if you have an `authors` and `books` tables, then the
-		// foreign key func will be Book.AuthorByAuthorID
-		return tableName + "_by_" + fkey.Field.Name
+		// foreign key func will be book.AuthorByAuthorIDAuthorName
+		var names []string
+		for _, f := range fkey.Fields {
+			names = append(names, f.Name)
+		}
+		return tableName + "_by_" + strings.Join(names, "_")
 	case "key":
 		// key causes a foreign key field to be named in the form of
 		// "<type>.<ParentName>By<ForeignKeyName>".
@@ -497,12 +532,12 @@ func resolveFkName(mode string, table xo.Table, fkey xo.ForeignKey) string {
 	case "smart":
 		// smart is the default.
 		//
-		// When there are no naming conflicts, smart behaves the same parent,
+		// When there are no naming conflicts, smart behaves like parent,
 		// otherwise it behaves the same as field.
 		//
 		// inspect all foreign keys and use field if conflict found
 		for _, v := range table.ForeignKeys {
-			if fkey != v && fkey.RefTable == v.RefTable {
+			if fkey.Name != v.Name && fkey.RefTable == v.RefTable {
 				return resolveFkName("field", table, fkey)
 			}
 		}
@@ -513,17 +548,16 @@ func resolveFkName(mode string, table xo.Table, fkey xo.ForeignKey) string {
 }
 
 // indexFuncName creates the func name for an index and its supplied fields.
-func indexFuncName(table xo.Table, index xo.Index, useIndexNames bool) string {
+func indexFuncName(tableName string, index xo.Index, useIndexNames bool) string {
 	// func name
-	typ := table.Name
 	if index.IsUnique {
-		typ = inflector.Singularize(typ)
+		tableName = inflector.Singularize(tableName)
 	}
-	name := indexName(index.Name, table.Name)
+	name := indexName(index.Name, tableName)
 	if useIndexNames && name != "" {
-		return typ + "_by_" + name
+		return tableName + "_by_" + name
 	}
-	names := []string{typ, "by"}
+	names := []string{tableName, "by"}
 	// add param names
 	for _, field := range index.Fields {
 		names = append(names, field.Name)

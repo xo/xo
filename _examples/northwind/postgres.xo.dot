@@ -166,19 +166,30 @@ digraph public {
 		<tr><td align="left" PORT="state_region">state_region: character varying</td></tr>
 		</table>> ]
 	
-
 	"public.customer_customer_demo":"customer_id":e -> "public.customers":"customer_id":w [
-		headlabel="customer"]"public.customer_customer_demo":"customer_type_id":e -> "public.customer_demographics":"customer_type_id":w [
-		headlabel="customer_demographic"]"public.employee_territories":"employee_id":e -> "public.employees":"employee_id":w [
-		headlabel="employee"]"public.employee_territories":"territory_id":e -> "public.territories":"territory_id":w [
-		headlabel="territory"]"public.employees":"reports_to":e -> "public.employees":"employee_id":w [
-		headlabel="employee"]"public.order_details":"order_id":e -> "public.orders":"order_id":w [
-		headlabel="order"]"public.order_details":"product_id":e -> "public.products":"product_id":w [
-		headlabel="product"]"public.orders":"customer_id":e -> "public.customers":"customer_id":w [
-		headlabel="customer"]"public.orders":"employee_id":e -> "public.employees":"employee_id":w [
-		headlabel="employee"]"public.orders":"ship_via":e -> "public.shippers":"shipper_id":w [
-		headlabel="shipper"]"public.products":"category_id":e -> "public.categories":"category_id":w [
-		headlabel="category"]"public.products":"supplier_id":e -> "public.suppliers":"supplier_id":w [
-		headlabel="supplier"]"public.territories":"region_id":e -> "public.region":"region_id":w [
+		headlabel="customer"]
+	"public.customer_customer_demo":"customer_type_id":e -> "public.customer_demographics":"customer_type_id":w [
+		headlabel="customer_demographic"]
+	"public.employee_territories":"employee_id":e -> "public.employees":"employee_id":w [
+		headlabel="employee"]
+	"public.employee_territories":"territory_id":e -> "public.territories":"territory_id":w [
+		headlabel="territory"]
+	"public.employees":"reports_to":e -> "public.employees":"employee_id":w [
+		headlabel="employee"]
+	"public.order_details":"order_id":e -> "public.orders":"order_id":w [
+		headlabel="order"]
+	"public.order_details":"product_id":e -> "public.products":"product_id":w [
+		headlabel="product"]
+	"public.orders":"customer_id":e -> "public.customers":"customer_id":w [
+		headlabel="customer"]
+	"public.orders":"employee_id":e -> "public.employees":"employee_id":w [
+		headlabel="employee"]
+	"public.orders":"ship_via":e -> "public.shippers":"shipper_id":w [
+		headlabel="shipper"]
+	"public.products":"category_id":e -> "public.categories":"category_id":w [
+		headlabel="category"]
+	"public.products":"supplier_id":e -> "public.suppliers":"supplier_id":w [
+		headlabel="supplier"]
+	"public.territories":"region_id":e -> "public.region":"region_id":w [
 		headlabel="region"]
 }

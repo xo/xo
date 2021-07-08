@@ -216,22 +216,26 @@
             {
               "name": "books_author_id_fkey",
               "resolved_name": "author",
-              "column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "int",
-                  "prec": 10
+              "column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 10
+                  }
                 }
-              },
+              ],
               "ref_table": "authors",
-              "ref_column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "int",
-                  "prec": 10
-                },
-                "is_primary": true
-              },
+              "ref_column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 10
+                  },
+                  "is_primary": true
+                }
+              ],
               "ref_func_name": "author_by_author_id"
             }
           ]

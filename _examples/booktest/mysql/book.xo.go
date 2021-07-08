@@ -220,7 +220,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	return &b, nil
 }
 
-// Author returns the Author associated with the Book's AuthorID (author_id).
+// Author returns the Author associated with the Book's (AuthorID).
 //
 // Generated from foreign key 'books_ibfk_1'.
 func (b *Book) Author(ctx context.Context, db DB) (*Author, error) {

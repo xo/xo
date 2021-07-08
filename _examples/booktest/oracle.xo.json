@@ -98,7 +98,8 @@
             {
               "name": "available",
               "datatype": {
-                "type": "timestamp(6) with time zone"
+                "type": "timestamp with time zone",
+                "prec": 6
               }
             },
             {
@@ -168,21 +169,24 @@
             {
               "name": "books_author_id_fkey",
               "resolved_name": "author",
-              "column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "number"
+              "column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "number"
+                  }
                 }
-              },
-              "ref_index": "authors_pkey",
+              ],
               "ref_table": "authors",
-              "ref_column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "number"
-                },
-                "is_primary": true
-              },
+              "ref_column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true
+                }
+              ],
               "ref_func_name": "author_by_author_id"
             }
           ]

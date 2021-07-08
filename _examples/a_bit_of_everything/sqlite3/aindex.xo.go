@@ -12,15 +12,15 @@ type AIndex struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
 }
 
-// AIndicesByAKey retrieves a row from 'a_index' as a AIndex.
+// AIndexByAKey retrieves a row from 'a_index' as a AIndex.
 //
 // Generated from index 'a_index_idx'.
-func AIndicesByAKey(ctx context.Context, db DB, aKey sql.NullInt64) ([]*AIndex, error) {
+func AIndexByAKey(ctx context.Context, db DB, aKey sql.NullInt64) ([]*AIndex, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`a_key ` +
 		`FROM a_index ` +
-		`WHERE a_key = ?`
+		`WHERE a_key = $1`
 	// run
 	logf(sqlstr, aKey)
 	rows, err := db.QueryContext(ctx, sqlstr, aKey)

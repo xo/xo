@@ -252,22 +252,26 @@
             {
               "name": "books_ibfk_1",
               "resolved_name": "author",
-              "column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11
+              "column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11
+                  }
                 }
-              },
+              ],
               "ref_table": "authors",
-              "ref_column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11
-                },
-                "is_primary": true
-              },
+              "ref_column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11
+                  },
+                  "is_primary": true
+                }
+              ],
               "ref_func_name": "author_by_author_id"
             }
           ]

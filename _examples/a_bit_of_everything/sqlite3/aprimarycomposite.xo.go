@@ -33,15 +33,15 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 	case apc._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_primary_composite (` +
 		`a_key1, a_key2` +
 		`) VALUES (` +
-		`?, ?` +
+		`$1, $2` +
 		`)`
 	// run
 	logf(sqlstr, apc.AKey1, apc.AKey2)
-	if err := db.QueryRowContext(ctx, sqlstr, apc.AKey1, apc.AKey2).Scan(&apc.AKey2); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,7 +60,8 @@ func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM a_primary_composite WHERE a_key1 = ? AND a_key2 = ?`
+	const sqlstr = `DELETE FROM a_primary_composite ` +
+		`WHERE a_key1 = $1 AND a_key2 = $2`
 	// run
 	logf(sqlstr, apc.AKey1, apc.AKey2)
 	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {
@@ -79,7 +80,7 @@ func APrimaryCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 int)
 	const sqlstr = `SELECT ` +
 		`a_key1, a_key2 ` +
 		`FROM a_primary_composite ` +
-		`WHERE a_key1 = ? AND a_key2 = ?`
+		`WHERE a_key1 = $1 AND a_key2 = $2`
 	// run
 	logf(sqlstr, aKey1, aKey2)
 	apc := APrimaryComposite{

@@ -34,19 +34,17 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	case apm._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary_multi (` +
-		`a_text` +
+		`a_key, a_text` +
 		`) VALUES (` +
-		`:1` +
-		`) RETURNING a_key /*LASTINSERTID*/ INTO :pk`
+		`:1, :2` +
+		`)`
 	// run
-	logf(sqlstr, apm.AText, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, apm.AText, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	apm.AKey = int(id)
+	logf(sqlstr, apm.AKey, apm.AText)
+	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	apm._exists = true
 	return nil
@@ -62,8 +60,8 @@ func (apm *APrimaryMulti) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE a_bit_of_everything.a_primary_multi SET ` +
-		`a_text = :1` +
-		` WHERE a_key = :2`
+		`a_text = :1 ` +
+		`WHERE a_key = :2`
 	// run
 	logf(sqlstr, apm.AText, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AText, apm.AKey); err != nil {
@@ -89,7 +87,8 @@ func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_multi WHERE a_key = :1`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_multi ` +
+		`WHERE a_key = :1`
 	// run
 	logf(sqlstr, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey); err != nil {

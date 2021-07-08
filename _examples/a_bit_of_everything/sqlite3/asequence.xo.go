@@ -66,7 +66,8 @@ func (as *ASequence) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_sequence WHERE a_seq = ?`
+	const sqlstr = `DELETE FROM a_sequence ` +
+		`WHERE a_seq = $1`
 	// run
 	logf(sqlstr, as.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, as.ASeq); err != nil {
@@ -85,7 +86,7 @@ func ASequenceByASeq(ctx context.Context, db DB, aSeq int) (*ASequence, error) {
 	const sqlstr = `SELECT ` +
 		`a_seq ` +
 		`FROM a_sequence ` +
-		`WHERE a_seq = ?`
+		`WHERE a_seq = $1`
 	// run
 	logf(sqlstr, aSeq)
 	as := ASequence{

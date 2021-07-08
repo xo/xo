@@ -34,7 +34,7 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	case apm._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO public.a_primary_multi (` +
 		`a_key, a_text` +
 		`) VALUES (` +
@@ -42,7 +42,7 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, apm.AKey, apm.AText)
-	if err := db.QueryRowContext(ctx, sqlstr, apm.AKey, apm.AText).Scan(&apm.AKey); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -59,11 +59,9 @@ func (apm *APrimaryMulti) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.a_primary_multi SET (` +
-		`a_text` +
-		`) = ( ` +
-		`$1` +
-		`) WHERE a_key = $2`
+	const sqlstr = `UPDATE public.a_primary_multi SET ` +
+		`a_text = $1 ` +
+		`WHERE a_key = $2`
 	// run
 	logf(sqlstr, apm.AText, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AText, apm.AKey); err != nil {
@@ -90,14 +88,13 @@ func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.a_primary_multi (` +
-		`a_key, a_text` +
+		`a_text` +
 		`) VALUES (` +
-		`$1, $2` +
-		`) ON CONFLICT (a_key) DO UPDATE SET (` +
-		`a_key, a_text` +
-		`) = (` +
-		`EXCLUDED.a_key, EXCLUDED.a_text` +
-		`)`
+		`$1` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`a_text = EXCLUDED.a_text `
 	// run
 	logf(sqlstr, apm.AKey, apm.AText)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
@@ -117,7 +114,8 @@ func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.a_primary_multi WHERE a_key = $1`
+	const sqlstr = `DELETE FROM public.a_primary_multi ` +
+		`WHERE a_key = $1`
 	// run
 	logf(sqlstr, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey); err != nil {

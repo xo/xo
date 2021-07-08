@@ -92,14 +92,14 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	return &et, nil
 }
 
-// Employee returns the Employee associated with the EmployeeTerritory's EmployeeID (employee_id).
+// Employee returns the Employee associated with the EmployeeTerritory's (EmployeeID).
 //
 // Generated from foreign key 'employee_territories_employee_id_fkey'.
 func (et *EmployeeTerritory) Employee(ctx context.Context, db DB) (*Employee, error) {
 	return EmployeeByEmployeeID(ctx, db, et.EmployeeID)
 }
 
-// Territory returns the Territory associated with the EmployeeTerritory's TerritoryID (territory_id).
+// Territory returns the Territory associated with the EmployeeTerritory's (TerritoryID).
 //
 // Generated from foreign key 'employee_territories_territory_id_fkey'.
 func (et *EmployeeTerritory) Territory(ctx context.Context, db DB) (*Territory, error) {

@@ -87,7 +87,7 @@ $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -
 SELECT
   p.proname::varchar AS proc_name,
   pg_get_function_result(p.oid)::varchar AS return_type,
-	''::varchar AS return_name
+  ''::varchar AS return_name
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = %%schema string%%
@@ -171,28 +171,42 @@ ENDSQL
 COMMENT='{{ . }} is a foreign key.'
 $XOBIN query $PGDB -M -B -2 -T ForeignKey -F PostgresTableForeignKeys --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  r.conname::varchar AS foreign_key_name,
-  b.attname::varchar AS column_name,
-  i.relname::varchar AS ref_index_name,
-  c.relname::varchar AS ref_table_name,
-  d.attname::varchar AS ref_column_name,
-  0::integer AS key_id,
-  0::integer AS seq_no
-FROM pg_constraint r
-  JOIN ONLY pg_class a ON a.oid = r.conrelid
-  JOIN ONLY pg_attribute b ON b.attisdropped = false
-    AND b.attnum = ANY(r.conkey)
-    AND b.attrelid = r.conrelid
-  JOIN ONLY pg_class i ON i.oid = r.conindid
-  JOIN ONLY pg_class c ON c.oid = r.confrelid
-  JOIN ONLY pg_attribute d ON d.attisdropped = false
-    AND d.attnum = ANY(r.confkey)
-    AND d.attrelid = r.confrelid
-  JOIN ONLY pg_namespace n ON n.oid = r.connamespace
-WHERE r.contype = 'f'
-  AND n.nspname = %%schema string%%
-  AND a.relname = %%table string%%
-ORDER BY r.conname, b.attname
+  tc.constraint_name::varchar AS foreign_key_name,
+  kcu.column_name::varchar AS column_name,
+  ccu.table_name::varchar AS ref_table_name,
+  ccu.column_name::varchar AS ref_column_name,
+  0::integer AS key_id
+FROM information_schema.table_constraints tc
+  JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
+    AND tc.table_schema = kcu.table_schema
+  JOIN (
+    SELECT
+      ROW_NUMBER() OVER (
+        PARTITION BY
+          table_schema,
+          table_name,
+          constraint_name
+        ORDER BY row_num
+      ) AS ordinal_position,
+      table_schema,
+      table_name,
+      column_name,
+      constraint_name
+    FROM (
+      SELECT
+        ROW_NUMBER() OVER (ORDER BY 1) AS row_num,
+        table_schema,
+        table_name,
+        column_name,
+        constraint_name
+      FROM information_schema.constraint_column_usage
+    ) t
+  ) AS ccu ON ccu.constraint_name = tc.constraint_name
+    AND ccu.table_schema = tc.table_schema
+    AND ccu.ordinal_position = kcu.ordinal_position
+WHERE tc.constraint_type = 'FOREIGN KEY'
+  AND tc.table_schema = %%schema string%%
+  AND tc.table_name = %%table string%%
 ENDSQL
 
 # postgres table index list query
@@ -298,7 +312,7 @@ ENDSQL
 # mysql proc parameter list query
 $XOBIN query $MYDB -M -B -2 -T ProcParam -F MysqlProcParams -a -o $DEST $@ << ENDSQL
 SELECT
-  parameter_name as param_name,
+  parameter_name AS param_name,
   dtd_identifier AS param_type
 FROM information_schema.parameters
 WHERE ordinal_position > 0
@@ -445,7 +459,6 @@ $XOBIN query $SQDB -M -B -2 -T ForeignKey -F Sqlite3TableForeignKeys -I -a -o $D
 /* %%schema string,interpolate%% */
 SELECT
   id AS key_id,
-  seq AS seq_no,
   "table" AS ref_table_name,
   "from" AS column_name,
   "to" AS ref_column_name
@@ -498,24 +511,24 @@ $XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
 SELECT
   o.name AS proc_name,
   TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') AS return_type,
-	SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name
+  SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name
 FROM sys.objects o
-	INNER JOIN sys.parameters p ON o.object_id = p.object_id
+  INNER JOIN sys.parameters p ON o.object_id = p.object_id
 WHERE o.type = 'P'
   AND p.is_output = 'true'
-	AND SCHEMA_NAME(o.schema_id) = %%schema string%%
+  AND SCHEMA_NAME(o.schema_id) = %%schema string%%
 ENDSQL
 
 # sqlserver proc parameter list query
 $XOBIN query $MSDB -M -B -2 -T ProcParam -F SqlserverProcParams -a -o $DEST $@ << ENDSQL
 SELECT
-	SUBSTRING(p.name, 2, LEN(p.name)-1) AS param_name,
+  SUBSTRING(p.name, 2, LEN(p.name)-1) AS param_name,
   TYPE_NAME(p.user_type_id) AS param_type
 FROM sys.objects o
   INNER JOIN sys.parameters p ON o.object_id = p.object_id
 WHERE SCHEMA_NAME(schema_id) = %%schema string%%
   AND o.name = %%proc string%%
-	AND p.is_output = 'false'
+  AND p.is_output = 'false'
 ORDER BY p.parameter_id
 ENDSQL
 
@@ -576,7 +589,8 @@ ENDSQL
 
 # sqlserver table foreign key list query
 $XOBIN query $MSDB -M -B -2 -T ForeignKey -F SqlserverTableForeignKeys -a -o $DEST $@ << ENDSQL
-SELECT fk.name AS foreign_key_name,
+SELECT
+  fk.name AS foreign_key_name,
   col.name AS column_name,
   pk_tab.name AS ref_table_name,
   pk_col.name AS ref_column_name
@@ -725,13 +739,15 @@ $XOBIN query $ORDB -M -B -2 -T ForeignKey -F OracleTableForeignKeys -a -o $DEST 
 SELECT
   LOWER(a.constraint_name) AS foreign_key_name,
   LOWER(a.column_name) AS column_name,
-  LOWER(r.constraint_name) AS ref_index_name,
-  LOWER(r.table_name) AS ref_table_name
-FROM all_cons_columns a
-  JOIN all_constraints c ON a.owner = c.owner
-    AND a.constraint_name = c.constraint_name
-  JOIN all_constraints r ON c.r_owner = r.owner
-    AND c.r_constraint_name = r.constraint_name
+  LOWER(c_pk.table_name) AS ref_table_name,
+  LOWER(b.column_name) AS ref_column_name
+FROM user_cons_columns a
+  JOIN user_constraints c ON a.owner = c.owner
+       AND a.constraint_name = c.constraint_name
+  JOIN user_constraints c_pk ON c.r_owner = c_pk.owner
+       AND c.r_constraint_name = c_pk.constraint_name
+  JOIN user_cons_columns b ON C_PK.owner = b.owner
+       AND  C_PK.CONSTRAINT_NAME = b.constraint_name AND b.POSITION = a.POSITION
 WHERE c.constraint_type = 'R'
   AND a.owner = UPPER(%%schema string%%)
   AND a.table_name = UPPER(%%table string%%)

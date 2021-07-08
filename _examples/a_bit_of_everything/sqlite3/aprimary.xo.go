@@ -32,15 +32,15 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 	case ap._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_primary (` +
 		`a_key` +
 		`) VALUES (` +
-		`?` +
+		`$1` +
 		`)`
 	// run
 	logf(sqlstr, ap.AKey)
-	if err := db.QueryRowContext(ctx, sqlstr, ap.AKey).Scan(&ap.AKey); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -59,7 +59,8 @@ func (ap *APrimary) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_primary WHERE a_key = ?`
+	const sqlstr = `DELETE FROM a_primary ` +
+		`WHERE a_key = $1`
 	// run
 	logf(sqlstr, ap.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {
@@ -78,7 +79,7 @@ func APrimaryByAKey(ctx context.Context, db DB, aKey int) (*APrimary, error) {
 	const sqlstr = `SELECT ` +
 		`a_key ` +
 		`FROM a_primary ` +
-		`WHERE a_key = ?`
+		`WHERE a_key = $1`
 	// run
 	logf(sqlstr, aKey)
 	ap := APrimary{

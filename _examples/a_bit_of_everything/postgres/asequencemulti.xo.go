@@ -59,11 +59,9 @@ func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
 	}
 	// update with composite primary key
-	const sqlstr = `UPDATE public.a_sequence_multi SET (` +
-		`a_text` +
-		`) = ( ` +
-		`$1` +
-		`) WHERE a_seq = $2`
+	const sqlstr = `UPDATE public.a_sequence_multi SET ` +
+		`a_text = $1 ` +
+		`WHERE a_seq = $2`
 	// run
 	logf(sqlstr, asm.AText, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, asm.ASeq); err != nil {
@@ -90,14 +88,13 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.a_sequence_multi (` +
-		`a_seq, a_text` +
+		`a_text` +
 		`) VALUES (` +
-		`$1, $2` +
-		`) ON CONFLICT (a_seq) DO UPDATE SET (` +
-		`a_seq, a_text` +
-		`) = (` +
-		`EXCLUDED.a_seq, EXCLUDED.a_text` +
-		`)`
+		`$1` +
+		`)` +
+		` ON CONFLICT DO ` +
+		`UPDATE SET ` +
+		`a_text = EXCLUDED.a_text `
 	// run
 	logf(sqlstr, asm.ASeq, asm.AText)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText); err != nil {
@@ -117,7 +114,8 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM public.a_sequence_multi WHERE a_seq = $1`
+	const sqlstr = `DELETE FROM public.a_sequence_multi ` +
+		`WHERE a_seq = $1`
 	// run
 	logf(sqlstr, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq); err != nil {

@@ -24,7 +24,6 @@ digraph public {
 		<tr><td align="left" PORT="tags">tags: character varying</td></tr>
 		</table>> ]
 	
-
 	"public.books":"author_id":e -> "public.authors":"author_id":w [
 		headlabel="author"]
 }

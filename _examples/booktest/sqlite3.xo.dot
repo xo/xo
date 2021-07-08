@@ -23,7 +23,6 @@ digraph booktest.db {
 		<tr><td align="left" PORT="tags">tags: text</td></tr>
 		</table>> ]
 	
-
 	"books":"author_id":e -> "authors":"author_id":w [
 		headlabel="author"]
 }

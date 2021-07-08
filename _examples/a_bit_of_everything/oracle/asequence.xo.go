@@ -5,22 +5,12 @@ package oracle
 import (
 	"context"
 	"database/sql"
-	"database/sql/driver"
-	"encoding/csv"
-	"errors"
-	"fmt"
-	"io"
-	"io/ioutil"
-	"regexp"
-	"strings"
-	"time"
-	"github.com/google/uuid"
 )
 
 // ASequence represents a row from 'a_bit_of_everything.a_sequence'.
 type ASequence struct {
-ASeq int `json:"a_seq"` // a_seq
-// xo fields
+	ASeq int `json:"a_seq"` // a_seq
+	// xo fields
 	_exists, _deleted bool
 }
 
@@ -43,38 +33,37 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 	case as._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-// insert (primary key generated and returned by database)
+	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_sequence (` +
 		`` +
 		`) VALUES (` +
 		`` +
 		`) RETURNING a_seq /*LASTINSERTID*/ INTO :pk`
 	// run
-	logf(sqlstr, , nil)
-var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, , sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	logf(sqlstr)
+	var id int64
+	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err
-	}// set primary key
+	} // set primary key
 	as.ASeq = int(id)
 	// set exists
 	as._exists = true
 	return nil
 }
 
-
-
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
 // Delete deletes the ASequence from the database.
-func (as *ASequence) Delete( ctx context.Context, db DB) error {
+func (as *ASequence) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !as._exists: // doesn't exist
 		return nil
 	case as._deleted: // deleted
 		return nil
 	}
-// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence WHERE a_seq = :1`
+	// delete with single primary key
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence ` +
+		`WHERE a_seq = :1`
 	// run
 	logf(sqlstr, as.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, as.ASeq); err != nil {
@@ -84,7 +73,6 @@ func (as *ASequence) Delete( ctx context.Context, db DB) error {
 	as._deleted = true
 	return nil
 }
-
 
 // ASequenceByASeq retrieves a row from 'a_bit_of_everything.a_sequence' as a ASequence.
 //
@@ -97,7 +85,7 @@ func ASequenceByASeq(ctx context.Context, db DB, aSeq int) (*ASequence, error) {
 		`WHERE a_seq = :1`
 	// run
 	logf(sqlstr, aSeq)
-as := ASequence{
+	as := ASequence{
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, aSeq).Scan(&as.ASeq); err != nil {
@@ -105,6 +93,3 @@ as := ASequence{
 	}
 	return &as, nil
 }
-
-
-

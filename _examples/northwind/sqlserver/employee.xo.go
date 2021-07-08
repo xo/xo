@@ -135,7 +135,7 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int16) (*Employ
 	return &e, nil
 }
 
-// Employee returns the Employee associated with the Employee's ReportsTo (reports_to).
+// Employee returns the Employee associated with the Employee's (ReportsTo).
 //
 // Generated from foreign key 'employees_reports_to_fkey'.
 func (e *Employee) Employee(ctx context.Context, db DB) (*Employee, error) {

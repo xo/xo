@@ -184,20 +184,24 @@
             {
               "name": "books_author_id_fkey",
               "resolved_name": "author",
-              "column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "integer"
+              "column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "integer"
+                  }
                 }
-              },
+              ],
               "ref_table": "authors",
-              "ref_column": {
-                "name": "author_id",
-                "datatype": {
-                  "type": "integer"
-                },
-                "is_primary": true
-              },
+              "ref_column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ],
               "ref_func_name": "author_by_author_id"
             }
           ]

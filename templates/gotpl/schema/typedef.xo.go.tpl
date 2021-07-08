@@ -175,7 +175,6 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	return {{ short $t }}.UpsertContext(context.Background(), db)
 }
 {{- end -}}
-{{- end -}}
 {{- end }}
 
 // {{ func_name_context "Delete" }} deletes the {{ $t.GoName }} from the database.
@@ -213,4 +212,5 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 {{ recv $t "Delete" }} {
 	return {{ short $t }}.DeleteContext(context.Background(), db)
 }
+{{- end -}}
 {{- end }}

@@ -39,7 +39,7 @@ func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 		`a_text` +
 		`) VALUES (` +
 		`@p1` +
-		`); select ID = convert(bigint, SCOPE_IDENTITY())`
+		`); SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())`
 	// run
 	logf(sqlstr, asm.AText)
 	rows, err := db.QueryContext(ctx, sqlstr, asm.AText)
@@ -73,8 +73,8 @@ func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE a_bit_of_everything.a_sequence_multi SET ` +
-		`a_text = @p1` +
-		` WHERE a_seq = @p2`
+		`a_text = @p1 ` +
+		`WHERE a_seq = @p2`
 	// run
 	logf(sqlstr, asm.AText, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, asm.ASeq); err != nil {
@@ -100,7 +100,8 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence_multi WHERE a_seq = @p1`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence_multi ` +
+		`WHERE a_seq = @p1`
 	// run
 	logf(sqlstr, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq); err != nil {

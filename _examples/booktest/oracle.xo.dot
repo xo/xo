@@ -19,11 +19,10 @@ digraph booktest {
 		<tr><td align="left" PORT="isbn">isbn: nvarchar2</td></tr>
 		<tr><td align="left" PORT="title">title: nvarchar2</td></tr>
 		<tr><td align="left" PORT="year">year: number</td></tr>
-		<tr><td align="left" PORT="available">available: timestamp(6) with time zone</td></tr>
+		<tr><td align="left" PORT="available">available: timestamp with time zone</td></tr>
 		<tr><td align="left" PORT="tags">tags: nclob</td></tr>
 		</table>> ]
 	
-
 	"booktest.books":"author_id":e -> "booktest.authors":"author_id":w [
 		headlabel="author"]
 }

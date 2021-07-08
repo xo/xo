@@ -11,10 +11,10 @@ import (
 type AEnum uint16
 
 const (
-	// AEnumOne is the 'ONE' AEnum.
-	AEnumOne = AEnum(1)
-	// AEnumTwo is the 'TWO' AEnum.
-	AEnumTwo = AEnum(2)
+	// AEnumOne is the 'ONE' a_enum.
+	AEnumOne AEnum = 1
+	// AEnumTwo is the 'TWO' a_enum.
+	AEnumTwo AEnum = 2
 )
 
 // String satisfies the fmt.Stringer interface.
@@ -46,12 +46,12 @@ func (ae *AEnum) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the sql/driver.Valuer interface.
+// Value satisfies the driver.Valuer interface.
 func (ae AEnum) Value() (driver.Value, error) {
 	return ae.String(), nil
 }
 
-// Scan satisfies the database/sql.Scanner interface.
+// Scan satisfies the sql.Scanner interface.
 func (ae *AEnum) Scan(v interface{}) error {
 	if buf, ok := v.([]byte); ok {
 		return ae.UnmarshalText(buf)
@@ -64,5 +64,5 @@ type ErrInvalidAEnum string
 
 // Error satisfies the error interface.
 func (err ErrInvalidAEnum) Error() string {
-	return fmt.Sprintf("invalid AEnum (%s)", string(err))
+	return fmt.Sprintf("invalid AEnum(%s)", string(err))
 }

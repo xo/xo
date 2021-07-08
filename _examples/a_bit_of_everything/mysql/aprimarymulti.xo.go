@@ -34,7 +34,7 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	case apm._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary_multi (` +
 		`a_key, a_text` +
 		`) VALUES (` +
@@ -42,7 +42,7 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, apm.AKey, apm.AText)
-	if err := db.QueryRowContext(ctx, sqlstr, apm.AKey, apm.AText).Scan(&apm.AKey); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,8 +60,8 @@ func (apm *APrimaryMulti) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE a_bit_of_everything.a_primary_multi SET ` +
-		`a_text = ?` +
-		` WHERE a_key = ?`
+		`a_text = ? ` +
+		`WHERE a_key = ?`
 	// run
 	logf(sqlstr, apm.AText, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AText, apm.AKey); err != nil {
@@ -87,7 +87,8 @@ func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_multi WHERE a_key = ?`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_multi ` +
+		`WHERE a_key = ?`
 	// run
 	logf(sqlstr, apm.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey); err != nil {

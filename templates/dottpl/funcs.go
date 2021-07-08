@@ -71,10 +71,12 @@ func (f *Funcs) rowfn(field xo.Field) string {
 	return fmt.Sprintf(`<td align="left" PORT=%q>%s</td>`, field.Name, buf.String())
 }
 
-func (f *Funcs) edge(node, row, toNode, toRow string) string {
-	dirFrom, dirTo := ":e", ":w"
-	if !f.direction {
-		dirFrom, dirTo = "", ""
+func (f *Funcs) edge(table xo.Table, fkey xo.ForeignKey, i int) string {
+	node, toNode := f.schemafn(table.Name), f.schemafn(fkey.RefTable)
+	row, toRow := f.quotes(fkey.Fields[i].Name), f.quotes(fkey.RefFields[i].Name)
+	var dirFrom, dirTo string
+	if f.direction {
+		dirFrom, dirTo = ":e", ":w"
 	}
 	// "table":"col":e -> "reftable":"refcol":w
 	return fmt.Sprintf("%s:%s%s -> %s:%s%s", node, row, dirFrom, toNode, toRow, dirTo)
@@ -96,6 +98,6 @@ func (f *Funcs) defaultsfn() []string {
 	return f.defaults
 }
 
-func (f *Funcs) quotes(v interface{}) string {
+func (f *Funcs) quotes(v string) string {
 	return fmt.Sprintf("%q", v)
 }

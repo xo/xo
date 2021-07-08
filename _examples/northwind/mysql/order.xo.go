@@ -233,21 +233,21 @@ func OrdersByShipVia(ctx context.Context, db DB, shipVia sql.NullInt64) ([]*Orde
 	return res, nil
 }
 
-// Customer returns the Customer associated with the Order's CustomerID (customer_id).
+// Customer returns the Customer associated with the Order's (CustomerID).
 //
 // Generated from foreign key 'orders_ibfk_1'.
 func (o *Order) Customer(ctx context.Context, db DB) (*Customer, error) {
 	return CustomerByCustomerID(ctx, db, o.CustomerID.String)
 }
 
-// Employee returns the Employee associated with the Order's EmployeeID (employee_id).
+// Employee returns the Employee associated with the Order's (EmployeeID).
 //
 // Generated from foreign key 'orders_ibfk_2'.
 func (o *Order) Employee(ctx context.Context, db DB) (*Employee, error) {
 	return EmployeeByEmployeeID(ctx, db, int16(o.EmployeeID.Int64))
 }
 
-// Shipper returns the Shipper associated with the Order's ShipVia (ship_via).
+// Shipper returns the Shipper associated with the Order's (ShipVia).
 //
 // Generated from foreign key 'orders_ibfk_3'.
 func (o *Order) Shipper(ctx context.Context, db DB) (*Shipper, error) {

@@ -119,7 +119,7 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	return &t, nil
 }
 
-// Region returns the Region associated with the Territory's RegionID (region_id).
+// Region returns the Region associated with the Territory's (RegionID).
 //
 // Generated from foreign key 'territories_region_id_fkey'.
 func (t *Territory) Region(ctx context.Context, db DB) (*Region, error) {

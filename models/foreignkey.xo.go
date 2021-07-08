@@ -10,7 +10,6 @@ import (
 type ForeignKey struct {
 	ForeignKeyName string `json:"foreign_key_name"` // foreign_key_name
 	ColumnName     string `json:"column_name"`      // column_name
-	RefIndexName   string `json:"ref_index_name"`   // ref_index_name
 	RefTableName   string `json:"ref_table_name"`   // ref_table_name
 	RefColumnName  string `json:"ref_column_name"`  // ref_column_name
 	KeyID          int    `json:"key_id"`           // key_id
@@ -21,28 +20,25 @@ type ForeignKey struct {
 func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`r.conname, ` + // ::varchar AS foreign_key_name
-		`b.attname, ` + // ::varchar AS column_name
-		`i.relname, ` + // ::varchar AS ref_index_name
-		`c.relname, ` + // ::varchar AS ref_table_name
-		`d.attname, ` + // ::varchar AS ref_column_name
+		`tc.constraint_name, ` + // ::varchar as foreign_key_name
+		`kcu.column_name, ` + // ::varchar as column_name
+		`ccu.table_name, ` + // ::varchar AS ref_table_name
+		`ccu.column_name, ` + // ::varchar AS ref_column_name
 		`0, ` + // ::integer AS key_id
 		`0 ` + // ::integer AS seq_no
-		`FROM pg_constraint r ` +
-		`JOIN ONLY pg_class a ON a.oid = r.conrelid ` +
-		`JOIN ONLY pg_attribute b ON b.attisdropped = false ` +
-		`AND b.attnum = ANY(r.conkey) ` +
-		`AND b.attrelid = r.conrelid ` +
-		`JOIN ONLY pg_class i ON i.oid = r.conindid ` +
-		`JOIN ONLY pg_class c ON c.oid = r.confrelid ` +
-		`JOIN ONLY pg_attribute d ON d.attisdropped = false ` +
-		`AND d.attnum = ANY(r.confkey) ` +
-		`AND d.attrelid = r.confrelid ` +
-		`JOIN ONLY pg_namespace n ON n.oid = r.connamespace ` +
-		`WHERE r.contype = 'f' ` +
-		`AND n.nspname = $1 ` +
-		`AND a.relname = $2 ` +
-		`ORDER BY r.conname, b.attname`
+		`FROM information_schema.table_constraints tc ` +
+		`JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name ` +
+		`AND tc.table_schema = kcu.table_schema ` +
+		`JOIN (select row_number() over (partition by table_schema, table_name, constraint_name order by row_num) ordinal_position, ` +
+		`table_schema, table_name, column_name, constraint_name ` +
+		`from (select row_number() over (order by 1) row_num, table_schema, table_name, column_name, constraint_name ` +
+		`from information_schema.constraint_column_usage) t) AS ccu ` +
+		`ON ccu.constraint_name = tc.constraint_name ` +
+		`AND ccu.table_schema = tc.table_schema ` +
+		`AND ccu.ordinal_position = kcu.ordinal_position ` +
+		`WHERE tc.constraint_type = 'FOREIGN KEY' ` +
+		`AND tc.table_schema = $1 ` +
+		`AND tc.table_name = $2;`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
@@ -55,7 +51,7 @@ func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) 
 	for rows.Next() {
 		var fk ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo); err != nil {
+		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName, &fk.KeyID, &fk.SeqNo); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &fk)
@@ -182,13 +178,15 @@ func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([
 	const sqlstr = `SELECT ` +
 		`LOWER(a.constraint_name) AS foreign_key_name, ` +
 		`LOWER(a.column_name) AS column_name, ` +
-		`LOWER(r.constraint_name) AS ref_index_name, ` +
-		`LOWER(r.table_name) AS ref_table_name ` +
-		`FROM all_cons_columns a ` +
-		`JOIN all_constraints c ON a.owner = c.owner ` +
+		`LOWER(c_pk.table_name) AS ref_table_name, ` +
+		`LOWER(b.column_name) AS ref_column_name ` +
+		`FROM user_cons_columns a ` +
+		`JOIN user_constraints c ON a.owner = c.owner ` +
 		`AND a.constraint_name = c.constraint_name ` +
-		`JOIN all_constraints r ON c.r_owner = r.owner ` +
-		`AND c.r_constraint_name = r.constraint_name ` +
+		`JOIN user_constraints c_pk ON c.r_owner = c_pk.owner ` +
+		`AND c.r_constraint_name = c_pk.constraint_name ` +
+		`JOIN user_cons_columns b ON C_PK.owner = b.owner ` +
+		`AND  C_PK.CONSTRAINT_NAME = b.constraint_name AND b.POSITION = a.POSITION ` +
 		`WHERE c.constraint_type = 'R' ` +
 		`AND a.owner = UPPER(:1) ` +
 		`AND a.table_name = UPPER(:2)`
@@ -204,7 +202,7 @@ func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([
 	for rows.Next() {
 		var fk ForeignKey
 		// scan
-		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefIndexName, &fk.RefTableName); err != nil {
+		if err := rows.Scan(&fk.ForeignKeyName, &fk.ColumnName, &fk.RefTableName, &fk.RefColumnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &fk)

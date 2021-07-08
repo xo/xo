@@ -20,7 +20,7 @@ func AUniqueIndexByAKey(ctx context.Context, db DB, aKey sql.NullInt64) (*AUniqu
 	const sqlstr = `SELECT ` +
 		`a_key ` +
 		`FROM a_unique_index ` +
-		`WHERE a_key = ?`
+		`WHERE a_key = $1`
 	// run
 	logf(sqlstr, aKey)
 	aui := AUniqueIndex{}

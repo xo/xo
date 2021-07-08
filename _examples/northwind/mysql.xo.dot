@@ -166,19 +166,30 @@ digraph northwind {
 		<tr><td align="left" PORT="state_region">state_region: varchar</td></tr>
 		</table>> ]
 	
-
 	"northwind.customer_customer_demo":"customer_id":e -> "northwind.customers":"customer_id":w [
-		headlabel="customer"]"northwind.customer_customer_demo":"customer_type_id":e -> "northwind.customer_demographics":"customer_type_id":w [
-		headlabel="customer_demographic"]"northwind.employee_territories":"employee_id":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]"northwind.employee_territories":"territory_id":e -> "northwind.territories":"territory_id":w [
-		headlabel="territory"]"northwind.employees":"reports_to":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]"northwind.order_details":"order_id":e -> "northwind.orders":"order_id":w [
-		headlabel="order"]"northwind.order_details":"product_id":e -> "northwind.products":"product_id":w [
-		headlabel="product"]"northwind.orders":"customer_id":e -> "northwind.customers":"customer_id":w [
-		headlabel="customer"]"northwind.orders":"employee_id":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]"northwind.orders":"ship_via":e -> "northwind.shippers":"shipper_id":w [
-		headlabel="shipper"]"northwind.products":"supplier_id":e -> "northwind.suppliers":"supplier_id":w [
-		headlabel="supplier"]"northwind.products":"category_id":e -> "northwind.categories":"category_id":w [
-		headlabel="category"]"northwind.territories":"region_id":e -> "northwind.region":"region_id":w [
+		headlabel="customer"]
+	"northwind.customer_customer_demo":"customer_type_id":e -> "northwind.customer_demographics":"customer_type_id":w [
+		headlabel="customer_demographic"]
+	"northwind.employee_territories":"employee_id":e -> "northwind.employees":"employee_id":w [
+		headlabel="employee"]
+	"northwind.employee_territories":"territory_id":e -> "northwind.territories":"territory_id":w [
+		headlabel="territory"]
+	"northwind.employees":"reports_to":e -> "northwind.employees":"employee_id":w [
+		headlabel="employee"]
+	"northwind.order_details":"order_id":e -> "northwind.orders":"order_id":w [
+		headlabel="order"]
+	"northwind.order_details":"product_id":e -> "northwind.products":"product_id":w [
+		headlabel="product"]
+	"northwind.orders":"ship_via":e -> "northwind.shippers":"shipper_id":w [
+		headlabel="shipper"]
+	"northwind.orders":"customer_id":e -> "northwind.customers":"customer_id":w [
+		headlabel="customer"]
+	"northwind.orders":"employee_id":e -> "northwind.employees":"employee_id":w [
+		headlabel="employee"]
+	"northwind.products":"supplier_id":e -> "northwind.suppliers":"supplier_id":w [
+		headlabel="supplier"]
+	"northwind.products":"category_id":e -> "northwind.categories":"category_id":w [
+		headlabel="category"]
+	"northwind.territories":"region_id":e -> "northwind.region":"region_id":w [
 		headlabel="region"]
 }

@@ -13,15 +13,15 @@ type AIndexComposite struct {
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
 }
 
-// AIndexCompositesByAKey1AKey2 retrieves a row from 'a_index_composite' as a AIndexComposite.
+// AIndexCompositeByAKey1AKey2 retrieves a row from 'a_index_composite' as a AIndexComposite.
 //
 // Generated from index 'a_index_composite_idx'.
-func AIndexCompositesByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 sql.NullInt64) ([]*AIndexComposite, error) {
+func AIndexCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 sql.NullInt64) ([]*AIndexComposite, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`a_key1, a_key2 ` +
 		`FROM a_index_composite ` +
-		`WHERE a_key1 = ? AND a_key2 = ?`
+		`WHERE a_key1 = $1 AND a_key2 = $2`
 	// run
 	logf(sqlstr, aKey1, aKey2)
 	rows, err := db.QueryContext(ctx, sqlstr, aKey1, aKey2)

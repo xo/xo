@@ -130,14 +130,14 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
 	return &o, nil
 }
 
-// Customer returns the Customer associated with the Order's CustomerID (customer_id).
+// Customer returns the Customer associated with the Order's (CustomerID).
 //
 // Generated from foreign key 'orders_customer_id_fkey'.
 func (o *Order) Customer(ctx context.Context, db DB) (*Customer, error) {
 	return CustomerByCustomerID(ctx, db, o.CustomerID.String)
 }
 
-// Employee returns the Employee associated with the Order's EmployeeID (employee_id).
+// Employee returns the Employee associated with the Order's (EmployeeID).
 //
 // Generated from foreign key 'orders_employee_id_fkey'.
 func (o *Order) Employee(ctx context.Context, db DB) (*Employee, error) {

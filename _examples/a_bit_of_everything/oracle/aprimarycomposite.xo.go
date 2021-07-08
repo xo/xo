@@ -4,7 +4,6 @@ package oracle
 
 import (
 	"context"
-	"database/sql"
 )
 
 // APrimaryComposite represents a row from 'a_bit_of_everything.a_primary_composite'.
@@ -34,19 +33,17 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 	case apc._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary_composite (` +
-		`a_key1` +
+		`a_key1, a_key2` +
 		`) VALUES (` +
-		`:1` +
-		`) RETURNING a_key2 /*LASTINSERTID*/ INTO :pk`
+		`:1, :2` +
+		`)`
 	// run
-	logf(sqlstr, apc.AKey1, nil)
-	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	} // set primary key
-	apc.AKey2 = int(id)
+	logf(sqlstr, apc.AKey1, apc.AKey2)
+	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	apc._exists = true
 	return nil
@@ -63,7 +60,8 @@ func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_composite WHERE a_key1 = :1 AND a_key2 = :2`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_composite ` +
+		`WHERE a_key1 = :1 AND a_key2 = :2`
 	// run
 	logf(sqlstr, apc.AKey1, apc.AKey2)
 	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {

@@ -169,7 +169,7 @@ func EmployeesByReportsTo(ctx context.Context, db DB, reportsTo sql.NullInt64) (
 	return res, nil
 }
 
-// Employee returns the Employee associated with the Employee's ReportsTo (reports_to).
+// Employee returns the Employee associated with the Employee's (ReportsTo).
 //
 // Generated from foreign key 'employees_ibfk_1'.
 func (e *Employee) Employee(ctx context.Context, db DB) (*Employee, error) {

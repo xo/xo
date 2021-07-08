@@ -404,7 +404,7 @@ func (f *Funcs) foreign_key_context(v interface{}) string {
 			name += "Context"
 		}
 		// add params
-		p = append(p, "db", f.convext(x))
+		p = append(p, "db", f.convertTypes(x))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
 	}
@@ -417,7 +417,7 @@ func (f *Funcs) foreign_key_none(v interface{}) string {
 	switch x := v.(type) {
 	case ForeignKey:
 		name = x.RefFuncName
-		p = append(p, "context.Background()", "db", f.convext(x))
+		p = append(p, "context.Background()", "db", f.convertTypes(x))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE %T ]]", v)
 	}
@@ -454,7 +454,12 @@ func (f *Funcs) db_prefix(name string, skip bool, vs ...interface{}) string {
 					ignore = append(ignore, pk.GoName)
 				}
 			}
-			params = append(params, f.names_ignore(prefix, v, ignore...))
+			p := f.names_ignore(prefix, v, ignore...)
+			// p is "" when no columns are present except for primary key
+			// params
+			if p != "" {
+				params = append(params, p)
+			}
 		default:
 			return fmt.Sprintf("[[ UNSUPPORTED TYPE %d: %T ]]", i, v)
 		}
@@ -859,21 +864,31 @@ func (f *Funcs) sqlstr_proc(v interface{}) []string {
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-// convext generates the Go conversion for a to be assignable to b.
-func (f *Funcs) convext(fkey ForeignKey) string {
-	expr := f.short(fkey.Table) + "." + fkey.Field.GoName
-	if fkey.Field.Type == fkey.RefField.Type {
-		return expr
+// convertTypes generates the conversions to convert the foreign key field
+// types to their respective referenced field types.
+func (f *Funcs) convertTypes(fkey ForeignKey) string {
+	var p []string
+	for i := range fkey.Fields {
+		field := fkey.Fields[i]
+		refField := fkey.RefFields[i]
+		expr := f.short(fkey.Table) + "." + field.GoName
+		// types match, can match
+		if field.Type == refField.Type {
+			p = append(p, expr)
+			continue
+		}
+		// convert types
+		typ, refType := field.Type, refField.Type
+		if strings.HasPrefix(typ, "sql.Null") {
+			expr = expr + "." + typ[8:]
+			typ = strings.ToLower(typ[8:])
+		}
+		if strings.ToLower(refType) != typ {
+			expr = refType + "(" + expr + ")"
+		}
+		p = append(p, expr)
 	}
-	typ, refType := fkey.Field.Type, fkey.RefField.Type
-	if strings.HasPrefix(typ, "sql.Null") {
-		expr = expr + "." + typ[8:]
-		typ = strings.ToLower(typ[8:])
-	}
-	if strings.ToLower(refType) != typ {
-		expr = refType + "(" + expr + ")"
-	}
-	return expr
+	return strings.Join(p, ", ")
 }
 
 // params converts a list of fields into their named Go parameters, skipping

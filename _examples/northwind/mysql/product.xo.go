@@ -195,14 +195,14 @@ func ProductsBySupplierID(ctx context.Context, db DB, supplierID sql.NullInt64) 
 	return res, nil
 }
 
-// Supplier returns the Supplier associated with the Product's SupplierID (supplier_id).
+// Supplier returns the Supplier associated with the Product's (SupplierID).
 //
 // Generated from foreign key 'products_ibfk_1'.
 func (p *Product) Supplier(ctx context.Context, db DB) (*Supplier, error) {
 	return SupplierBySupplierID(ctx, db, int16(p.SupplierID.Int64))
 }
 
-// Category returns the Category associated with the Product's CategoryID (category_id).
+// Category returns the Category associated with the Product's (CategoryID).
 //
 // Generated from foreign key 'products_ibfk_2'.
 func (p *Product) Category(ctx context.Context, db DB) (*Category, error) {

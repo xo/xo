@@ -37,7 +37,7 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 		`` +
 		`) VALUES (` +
 		`` +
-		`); select ID = convert(bigint, SCOPE_IDENTITY())`
+		`); SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())`
 	// run
 	logf(sqlstr)
 	rows, err := db.QueryContext(ctx, sqlstr)
@@ -72,7 +72,8 @@ func (as *ASequence) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence WHERE a_seq = @p1`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence ` +
+		`WHERE a_seq = @p1`
 	// run
 	logf(sqlstr, as.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, as.ASeq); err != nil {

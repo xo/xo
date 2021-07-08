@@ -54,9 +54,9 @@ type ForeignKey struct {
 	GoName      string
 	SQLName     string
 	Table       Table
-	Field       Field
+	Fields      []Field
 	RefTable    string
-	RefField    Field
+	RefFields   []Field
 	RefFuncName string
 	Comment     string
 }

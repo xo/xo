@@ -21,7 +21,7 @@ func AUniqueIndexCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 
 	const sqlstr = `SELECT ` +
 		`a_key1, a_key2 ` +
 		`FROM a_unique_index_composite ` +
-		`WHERE a_key1 = ? AND a_key2 = ?`
+		`WHERE a_key1 = $1 AND a_key2 = $2`
 	// run
 	logf(sqlstr, aKey1, aKey2)
 	auic := AUniqueIndexComposite{}

@@ -33,7 +33,7 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 	case apc._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary_composite (` +
 		`a_key1, a_key2` +
 		`) VALUES (` +
@@ -41,7 +41,7 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, apc.AKey1, apc.AKey2)
-	if err := db.QueryRowContext(ctx, sqlstr, apc.AKey1, apc.AKey2).Scan(&apc.AKey2); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -60,7 +60,8 @@ func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with composite primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_composite WHERE a_key1 = ? AND a_key2 = ?`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary_composite ` +
+		`WHERE a_key1 = ? AND a_key2 = ?`
 	// run
 	logf(sqlstr, apc.AKey1, apc.AKey2)
 	if _, err := db.ExecContext(ctx, sqlstr, apc.AKey1, apc.AKey2); err != nil {
@@ -71,21 +72,21 @@ func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// APrimaryCompositeByAKey2 retrieves a row from 'a_bit_of_everything.a_primary_composite' as a APrimaryComposite.
+// APrimaryCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_primary_composite' as a APrimaryComposite.
 //
-// Generated from index 'a_primary_composite_a_key2_pkey'.
-func APrimaryCompositeByAKey2(ctx context.Context, db DB, aKey2 int) (*APrimaryComposite, error) {
+// Generated from index 'a_primary_composite_a_key1_a_key2_pkey'.
+func APrimaryCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 int) (*APrimaryComposite, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`a_key1, a_key2 ` +
 		`FROM a_bit_of_everything.a_primary_composite ` +
-		`WHERE a_key2 = ?`
+		`WHERE a_key1 = ? AND a_key2 = ?`
 	// run
-	logf(sqlstr, aKey2)
+	logf(sqlstr, aKey1, aKey2)
 	apc := APrimaryComposite{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, aKey2).Scan(&apc.AKey1, &apc.AKey2); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, aKey1, aKey2).Scan(&apc.AKey1, &apc.AKey2); err != nil {
 		return nil, logerror(err)
 	}
 	return &apc, nil

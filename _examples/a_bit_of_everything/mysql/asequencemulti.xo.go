@@ -67,8 +67,8 @@ func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE a_bit_of_everything.a_sequence_multi SET ` +
-		`a_text = ?` +
-		` WHERE a_seq = ?`
+		`a_text = ? ` +
+		`WHERE a_seq = ?`
 	// run
 	logf(sqlstr, asm.AText, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, asm.ASeq); err != nil {
@@ -94,7 +94,8 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence_multi WHERE a_seq = ?`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_sequence_multi ` +
+		`WHERE a_seq = ?`
 	// run
 	logf(sqlstr, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq); err != nil {

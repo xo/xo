@@ -508,23 +508,32 @@ func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 
 func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, error) {
 	name := snaker.SnakeToCamelIdentifier(fk.ResolvedName)
-	field, err := convertField(ctx, true, fk.Field)
-	if err != nil {
-		return ForeignKey{}, err
-	}
 	refName := snaker.ForceCamelIdentifier(singularize(fk.RefTable))
-	refField, err := convertField(ctx, true, fk.RefField)
-	if err != nil {
-		return ForeignKey{}, err
-	}
 	refFunc := snaker.ForceCamelIdentifier(fk.RefFuncName)
+	var fields, refFields []Field
+	// convert fields
+	for _, f := range fk.Fields {
+		field, err := convertField(ctx, true, f)
+		if err != nil {
+			return ForeignKey{}, err
+		}
+		fields = append(fields, field)
+	}
+	// convert ref fields
+	for _, f := range fk.RefFields {
+		refField, err := convertField(ctx, true, f)
+		if err != nil {
+			return ForeignKey{}, err
+		}
+		refFields = append(refFields, refField)
+	}
 	return ForeignKey{
 		GoName:      name,
 		SQLName:     fk.Name,
 		Table:       t,
-		Field:       field,
+		Fields:      fields,
 		RefTable:    refName,
-		RefField:    refField,
+		RefFields:   refFields,
 		RefFuncName: refFunc,
 	}, nil
 }

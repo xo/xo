@@ -11,10 +11,10 @@ import (
 type AEnumNullable uint16
 
 const (
-	// AEnumNullableOne is the 'ONE' AEnumNullable.
-	AEnumNullableOne = AEnumNullable(1)
-	// AEnumNullableTwo is the 'TWO' AEnumNullable.
-	AEnumNullableTwo = AEnumNullable(2)
+	// AEnumNullableOne is the 'ONE' a_enum_nullable.
+	AEnumNullableOne AEnumNullable = 1
+	// AEnumNullableTwo is the 'TWO' a_enum_nullable.
+	AEnumNullableTwo AEnumNullable = 2
 )
 
 // String satisfies the fmt.Stringer interface.
@@ -46,12 +46,12 @@ func (aen *AEnumNullable) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the sql/driver.Valuer interface.
+// Value satisfies the driver.Valuer interface.
 func (aen AEnumNullable) Value() (driver.Value, error) {
 	return aen.String(), nil
 }
 
-// Scan satisfies the database/sql.Scanner interface.
+// Scan satisfies the sql.Scanner interface.
 func (aen *AEnumNullable) Scan(v interface{}) error {
 	if buf, ok := v.([]byte); ok {
 		return aen.UnmarshalText(buf)
@@ -64,5 +64,5 @@ type ErrInvalidAEnumNullable string
 
 // Error satisfies the error interface.
 func (err ErrInvalidAEnumNullable) Error() string {
-	return fmt.Sprintf("invalid AEnumNullable (%s)", string(err))
+	return fmt.Sprintf("invalid AEnumNullable(%s)", string(err))
 }

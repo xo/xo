@@ -19,11 +19,14 @@ digraph {{ $s.Name }} {
 		</table>> ]
 	{{ end }}
 
-	{{ range $s.Tables -}}
+	{{- range $s.Tables }}
 	{{- $t := .  -}}
 	{{- range $t.ForeignKeys -}}
-		{{ edge (schema $t.Name) (quotes .Field.Name) (schema .RefTable) (quotes .RefField.Name) }} [
-		headlabel={{ quotes .ResolvedName }}]
+	{{- $fkey := . -}}
+	{{- range $i, $field := .Fields }}
+	{{ edge $t $fkey $i }} [
+		headlabel={{ quotes $fkey.ResolvedName }}]
 	{{- end }}
+	{{- end -}}
 	{{- end }}
 }

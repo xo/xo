@@ -4,23 +4,12 @@ package oracle
 
 import (
 	"context"
-	"database/sql"
-	"database/sql/driver"
-	"encoding/csv"
-	"errors"
-	"fmt"
-	"io"
-	"io/ioutil"
-	"regexp"
-	"strings"
-	"time"
-	"github.com/google/uuid"
 )
 
 // APrimary represents a row from 'a_bit_of_everything.a_primary'.
 type APrimary struct {
-AKey int `json:"a_key"` // a_key
-// xo fields
+	AKey int `json:"a_key"` // a_key
+	// xo fields
 	_exists, _deleted bool
 }
 
@@ -43,38 +32,35 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 	case ap._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-// insert (primary key generated and returned by database)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary (` +
-		`` +
+		`a_key` +
 		`) VALUES (` +
-		`` +
-		`) RETURNING a_key /*LASTINSERTID*/ INTO :pk`
+		`:1` +
+		`)`
 	// run
-	logf(sqlstr, , nil)
-var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, , sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
-	}// set primary key
-	ap.AKey = int(id)
+	logf(sqlstr, ap.AKey)
+	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {
+		return logerror(err)
+	}
 	// set exists
 	ap._exists = true
 	return nil
 }
 
-
-
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
 // Delete deletes the APrimary from the database.
-func (ap *APrimary) Delete( ctx context.Context, db DB) error {
+func (ap *APrimary) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ap._exists: // doesn't exist
 		return nil
 	case ap._deleted: // deleted
 		return nil
 	}
-// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary WHERE a_key = :1`
+	// delete with single primary key
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary ` +
+		`WHERE a_key = :1`
 	// run
 	logf(sqlstr, ap.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {
@@ -84,7 +70,6 @@ func (ap *APrimary) Delete( ctx context.Context, db DB) error {
 	ap._deleted = true
 	return nil
 }
-
 
 // APrimaryByAKey retrieves a row from 'a_bit_of_everything.a_primary' as a APrimary.
 //
@@ -97,7 +82,7 @@ func APrimaryByAKey(ctx context.Context, db DB, aKey int) (*APrimary, error) {
 		`WHERE a_key = :1`
 	// run
 	logf(sqlstr, aKey)
-ap := APrimary{
+	ap := APrimary{
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, aKey).Scan(&ap.AKey); err != nil {
@@ -105,6 +90,3 @@ ap := APrimary{
 	}
 	return &ap, nil
 }
-
-
-

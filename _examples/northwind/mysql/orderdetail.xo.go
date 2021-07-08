@@ -155,14 +155,14 @@ func OrderDetailsByProductID(ctx context.Context, db DB, productID int16) ([]*Or
 	return res, nil
 }
 
-// Order returns the Order associated with the OrderDetail's OrderID (order_id).
+// Order returns the Order associated with the OrderDetail's (OrderID).
 //
 // Generated from foreign key 'order_details_ibfk_1'.
 func (od *OrderDetail) Order(ctx context.Context, db DB) (*Order, error) {
 	return OrderByOrderID(ctx, db, od.OrderID)
 }
 
-// Product returns the Product associated with the OrderDetail's ProductID (product_id).
+// Product returns the Product associated with the OrderDetail's (ProductID).
 //
 // Generated from foreign key 'order_details_ibfk_2'.
 func (od *OrderDetail) Product(ctx context.Context, db DB) (*Product, error) {

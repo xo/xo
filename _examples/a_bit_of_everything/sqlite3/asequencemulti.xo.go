@@ -38,7 +38,7 @@ func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 	const sqlstr = `INSERT INTO a_sequence_multi (` +
 		`a_text` +
 		`) VALUES (` +
-		`?` +
+		`$1` +
 		`)`
 	// run
 	logf(sqlstr, asm.AText)
@@ -67,8 +67,8 @@ func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE a_sequence_multi SET ` +
-		`a_text = ?` +
-		` WHERE a_seq = ?`
+		`a_text = $1 ` +
+		`WHERE a_seq = $2`
 	// run
 	logf(sqlstr, asm.AText, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, asm.ASeq); err != nil {
@@ -94,7 +94,8 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_sequence_multi WHERE a_seq = ?`
+	const sqlstr = `DELETE FROM a_sequence_multi ` +
+		`WHERE a_seq = $1`
 	// run
 	logf(sqlstr, asm.ASeq)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq); err != nil {
@@ -113,7 +114,7 @@ func ASequenceMultiByASeq(ctx context.Context, db DB, aSeq int) (*ASequenceMulti
 	const sqlstr = `SELECT ` +
 		`a_seq, a_text ` +
 		`FROM a_sequence_multi ` +
-		`WHERE a_seq = ?`
+		`WHERE a_seq = $1`
 	// run
 	logf(sqlstr, aSeq)
 	asm := ASequenceMulti{

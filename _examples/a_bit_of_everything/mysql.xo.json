@@ -586,24 +586,28 @@
             {
               "name": "a_foreign_key_ibfk_1",
               "resolved_name": "a_primary",
-              "column": {
-                "name": "a_key",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11,
-                  "nullable": true
-                },
-                "default": "NULL"
-              },
+              "column": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11,
+                    "nullable": true
+                  },
+                  "default": "NULL"
+                }
+              ],
               "ref_table": "a_primary",
-              "ref_column": {
-                "name": "a_key",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11
-                },
-                "is_primary": true
-              },
+              "ref_column": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11
+                  },
+                  "is_primary": true
+                }
+              ],
               "ref_func_name": "a_primary_by_a_key"
             }
           ],
@@ -662,48 +666,46 @@
             {
               "name": "a_foreign_key_composite_ibfk_1",
               "resolved_name": "a_primary_composite",
-              "column": {
-                "name": "a_key1",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11,
-                  "nullable": true
+              "column": [
+                {
+                  "name": "a_key1",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11,
+                    "nullable": true
+                  },
+                  "default": "NULL"
                 },
-                "default": "NULL"
-              },
+                {
+                  "name": "a_key2",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11,
+                    "nullable": true
+                  },
+                  "default": "NULL"
+                }
+              ],
               "ref_table": "a_primary_composite",
-              "ref_column": {
-                "name": "a_key1",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11
+              "ref_column": [
+                {
+                  "name": "a_key1",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11
+                  },
+                  "is_primary": true
                 },
-                "is_primary": true
-              },
-              "ref_func_name": "a_primary_composite_by_a_key1"
-            },
-            {
-              "name": "a_foreign_key_composite_ibfk_1",
-              "resolved_name": "a_primary_composite",
-              "column": {
-                "name": "a_key2",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11,
-                  "nullable": true
-                },
-                "default": "NULL"
-              },
-              "ref_table": "a_primary_composite",
-              "ref_column": {
-                "name": "a_key2",
-                "datatype": {
-                  "type": "int",
-                  "prec": 11
-                },
-                "is_primary": true
-              },
-              "ref_func_name": "a_primary_composite_by_a_key2"
+                {
+                  "name": "a_key2",
+                  "datatype": {
+                    "type": "int",
+                    "prec": 11
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "a_primary_composite_by_a_key1_a_key2"
             }
           ],
           "manual": true

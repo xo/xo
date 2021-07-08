@@ -56,12 +56,12 @@ func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 		if nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
-	case "date", "timestamp", "timestamp with time zone":
+	case "date", "timestamp", "timestamp with time zone", "timestamp with local time zone":
 		goType, zero = "time.Time", "time.Time{}"
 		if nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
-	case "blob", "long raw", "raw":
+	case "blob", "long raw", "raw", "xmltype":
 		goType, zero = "[]byte", "nil"
 	default:
 		goType, zero = schemaGoType(ctx, typ)

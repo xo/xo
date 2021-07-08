@@ -157,11 +157,10 @@ digraph public {
 		<tr><td align="left" PORT="a_key2">a_key2: integer</td></tr>
 		</table>> ]
 	
-
 	"public.a_foreign_key":"a_key":e -> "public.a_primary":"a_key":w [
-		headlabel="a_primary"]"public.a_foreign_key_composite":"a_key1":e -> "public.a_primary_composite":"a_key1":w [
-		headlabel="a_primary_composite"]"public.a_foreign_key_composite":"a_key1":e -> "public.a_primary_composite":"a_key2":w [
-		headlabel="a_primary_composite"]"public.a_foreign_key_composite":"a_key2":e -> "public.a_primary_composite":"a_key1":w [
-		headlabel="a_primary_composite"]"public.a_foreign_key_composite":"a_key2":e -> "public.a_primary_composite":"a_key2":w [
+		headlabel="a_primary"]
+	"public.a_foreign_key_composite":"a_key1":e -> "public.a_primary_composite":"a_key1":w [
+		headlabel="a_primary_composite"]
+	"public.a_foreign_key_composite":"a_key2":e -> "public.a_primary_composite":"a_key2":w [
 		headlabel="a_primary_composite"]
 }

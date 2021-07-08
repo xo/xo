@@ -32,7 +32,7 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 	case ap._deleted: // deleted
 		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
 	}
-	// insert (basic)
+	// insert (manual)
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_primary (` +
 		`a_key` +
 		`) VALUES (` +
@@ -40,7 +40,7 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 		`)`
 	// run
 	logf(sqlstr, ap.AKey)
-	if err := db.QueryRowContext(ctx, sqlstr, ap.AKey).Scan(&ap.AKey); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -59,7 +59,8 @@ func (ap *APrimary) Delete(ctx context.Context, db DB) error {
 		return nil
 	}
 	// delete with single primary key
-	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary WHERE a_key = @p1`
+	const sqlstr = `DELETE FROM a_bit_of_everything.a_primary ` +
+		`WHERE a_key = @p1`
 	// run
 	logf(sqlstr, ap.AKey)
 	if _, err := db.ExecContext(ctx, sqlstr, ap.AKey); err != nil {

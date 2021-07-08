@@ -126,14 +126,14 @@ func CustomerCustomerDemoByCustomerTypeID(ctx context.Context, db DB, customerTy
 	return res, nil
 }
 
-// Customer returns the Customer associated with the CustomerCustomerDemo's CustomerID (customer_id).
+// Customer returns the Customer associated with the CustomerCustomerDemo's (CustomerID).
 //
 // Generated from foreign key 'customer_customer_demo_ibfk_1'.
 func (ccd *CustomerCustomerDemo) Customer(ctx context.Context, db DB) (*Customer, error) {
 	return CustomerByCustomerID(ctx, db, ccd.CustomerID)
 }
 
-// CustomerDemographic returns the CustomerDemographic associated with the CustomerCustomerDemo's CustomerTypeID (customer_type_id).
+// CustomerDemographic returns the CustomerDemographic associated with the CustomerCustomerDemo's (CustomerTypeID).
 //
 // Generated from foreign key 'customer_customer_demo_ibfk_2'.
 func (ccd *CustomerCustomerDemo) CustomerDemographic(ctx context.Context, db DB) (*CustomerDemographic, error) {

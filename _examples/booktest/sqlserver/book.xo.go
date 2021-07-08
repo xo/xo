@@ -191,7 +191,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	return res, nil
 }
 
-// Author returns the Author associated with the Book's AuthorID (author_id).
+// Author returns the Author associated with the Book's (AuthorID).
 //
 // Generated from foreign key 'books_author_id_fkey'.
 func (b *Book) Author(ctx context.Context, db DB) (*Author, error) {
