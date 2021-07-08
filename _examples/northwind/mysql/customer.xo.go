@@ -87,6 +87,30 @@ func (c *Customer) Save(ctx context.Context, db DB) error {
 	return c.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Customer.
+func (c *Customer) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case c._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.customers (` +
+		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
+		`) VALUES (` +
+		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`customer_id = ?, company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?`
+	// run
+	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
+	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
+		return err
+	}
+	// set exists
+	c._exists = true
+	return nil
+}
+
 // Delete deletes the Customer from the database.
 func (c *Customer) Delete(ctx context.Context, db DB) error {
 	switch {

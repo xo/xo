@@ -79,8 +79,6 @@ func (asm *ASequenceMulti) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for ASequenceMulti.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case asm._deleted: // deleted
@@ -92,7 +90,7 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 		`) VALUES (` +
 		`$1` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (a_seq) DO ` +
 		`UPDATE SET ` +
 		`a_text = EXCLUDED.a_text `
 	// run

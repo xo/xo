@@ -86,6 +86,31 @@ func (p *Product) Save(ctx context.Context, db DB) error {
 	return p.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Product.
+func (p *Product) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case p._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO products (` +
+		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (product_id) DO ` +
+		`UPDATE SET ` +
+		`product_name = EXCLUDED.product_name, supplier_id = EXCLUDED.supplier_id, category_id = EXCLUDED.category_id, quantity_per_unit = EXCLUDED.quantity_per_unit, unit_price = EXCLUDED.unit_price, units_in_stock = EXCLUDED.units_in_stock, units_on_order = EXCLUDED.units_on_order, reorder_level = EXCLUDED.reorder_level, discontinued = EXCLUDED.discontinued `
+	// run
+	logf(sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued)
+	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
+		return err
+	}
+	// set exists
+	p._exists = true
+	return nil
+}
+
 // Delete deletes the Product from the database.
 func (p *Product) Delete(ctx context.Context, db DB) error {
 	switch {

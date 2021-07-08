@@ -52,7 +52,7 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`parameter_name as param_name, ` +
+		`parameter_name AS param_name, ` +
 		`dtd_identifier AS param_type ` +
 		`FROM information_schema.parameters ` +
 		`WHERE ordinal_position > 0 ` +

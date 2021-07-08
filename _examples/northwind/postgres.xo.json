@@ -806,32 +806,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "order_details_product_id_fkey",
-              "resolved_name": "product",
-              "column": [
-                {
-                  "name": "product_id",
-                  "datatype": {
-                    "type": "integer"
-                  },
-                  "default": "",
-                  "is_primary": true
-                }
-              ],
-              "ref_table": "products",
-              "ref_column": [
-                {
-                  "name": "product_id",
-                  "datatype": {
-                    "type": "integer"
-                  },
-                  "default": "",
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "product_by_product_id"
-            },
-            {
               "name": "order_details_order_id_fkey",
               "resolved_name": "order",
               "column": [
@@ -856,6 +830,32 @@
                 }
               ],
               "ref_func_name": "order_by_order_id"
+            },
+            {
+              "name": "order_details_product_id_fkey",
+              "resolved_name": "product",
+              "column": [
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "ref_table": "products",
+              "ref_column": [
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "product_by_product_id"
             }
           ],
           "manual": true
@@ -1013,32 +1013,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "orders_customer_id_fkey",
-              "resolved_name": "customer",
-              "column": [
-                {
-                  "name": "customer_id",
-                  "datatype": {
-                    "type": "bpchar",
-                    "nullable": true
-                  },
-                  "default": ""
-                }
-              ],
-              "ref_table": "customers",
-              "ref_column": [
-                {
-                  "name": "customer_id",
-                  "datatype": {
-                    "type": "bpchar"
-                  },
-                  "default": "",
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "customer_by_customer_id"
-            },
-            {
               "name": "orders_employee_id_fkey",
               "resolved_name": "employee",
               "column": [
@@ -1089,6 +1063,32 @@
                 }
               ],
               "ref_func_name": "shipper_by_shipper_id"
+            },
+            {
+              "name": "orders_customer_id_fkey",
+              "resolved_name": "customer",
+              "column": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "bpchar",
+                    "nullable": true
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "customers",
+              "ref_column": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "bpchar"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "customer_by_customer_id"
             }
           ],
           "manual": true

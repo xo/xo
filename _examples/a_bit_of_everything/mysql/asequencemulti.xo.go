@@ -85,6 +85,30 @@ func (asm *ASequenceMulti) Save(ctx context.Context, db DB) error {
 	return asm.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for ASequenceMulti.
+func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case asm._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO a_bit_of_everything.a_sequence_multi (` +
+		`a_text` +
+		`) VALUES (` +
+		`?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`a_seq = ?, a_text = ?`
+	// run
+	logf(sqlstr, asm.ASeq, asm.AText)
+	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText, asm.ASeq, asm.AText); err != nil {
+		return err
+	}
+	// set exists
+	asm._exists = true
+	return nil
+}
+
 // Delete deletes the ASequenceMulti from the database.
 func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 	switch {

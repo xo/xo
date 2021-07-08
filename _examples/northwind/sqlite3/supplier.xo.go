@@ -88,6 +88,31 @@ func (s *Supplier) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Supplier.
+func (s *Supplier) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case s._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO suppliers (` +
+		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)` +
+		` ON CONFLICT (supplier_id) DO ` +
+		`UPDATE SET ` +
+		`company_name = EXCLUDED.company_name, contact_name = EXCLUDED.contact_name, contact_title = EXCLUDED.contact_title, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, phone = EXCLUDED.phone, fax = EXCLUDED.fax, homepage = EXCLUDED.homepage `
+	// run
+	logf(sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage)
+	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage); err != nil {
+		return err
+	}
+	// set exists
+	s._exists = true
+	return nil
+}
+
 // Delete deletes the Supplier from the database.
 func (s *Supplier) Delete(ctx context.Context, db DB) error {
 	switch {

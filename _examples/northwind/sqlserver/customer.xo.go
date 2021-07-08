@@ -87,6 +87,37 @@ func (c *Customer) Save(ctx context.Context, db DB) error {
 	return c.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Customer.
+func (c *Customer) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case c._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.customers AS t ` +
+		`USING (` +
+		`SELECT @p1 customer_id, @p2 company_name, @p3 contact_name, @p4 contact_title, @p5 address, @p6 city, @p7 region, @p8 postal_code, @p9 country, @p10 phone, @p11 fax ` +
+		`) AS s ` +
+		`ON s.customer_id = t.customer_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.company_name = s.company_name, t.contact_name = s.contact_name, t.contact_title = s.contact_title, t.address = s.address, t.city = s.city, t.region = s.region, t.postal_code = s.postal_code, t.country = s.country, t.phone = s.phone, t.fax = s.fax ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
+		`) VALUES (` +
+		`s.customer_id, s.company_name, s.contact_name, s.contact_title, s.address, s.city, s.region, s.postal_code, s.country, s.phone, s.fax` +
+		`);`
+	// run
+	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
+	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
+		return err
+	}
+	// set exists
+	c._exists = true
+	return nil
+}
+
 // Delete deletes the Customer from the database.
 func (c *Customer) Delete(ctx context.Context, db DB) error {
 	switch {

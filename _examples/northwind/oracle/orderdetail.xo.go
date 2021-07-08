@@ -80,6 +80,37 @@ func (od *OrderDetail) Save(ctx context.Context, db DB) error {
 	return od.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for OrderDetail.
+func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case od._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.order_detailst ` +
+		`USING (` +
+		`SELECT :1 order_id, :2 product_id, :3 unit_price, :4 quantity, :5 discount ` +
+		`FROM DUAL ) s ` +
+		`ON s.order_id = t.order_id AND s.product_id = t.product_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.unit_price = s.unit_price, t.quantity = s.quantity, t.discount = s.discount ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`order_id, product_id, unit_price, quantity, discount` +
+		`) VALUES (` +
+		`s.order_id, s.product_id, s.unit_price, s.quantity, s.discount` +
+		`);`
+	// run
+	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
+		return err
+	}
+	// set exists
+	od._exists = true
+	return nil
+}
+
 // Delete deletes the OrderDetail from the database.
 func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 	switch {

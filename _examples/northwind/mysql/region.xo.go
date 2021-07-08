@@ -77,6 +77,30 @@ func (r *Region) Save(ctx context.Context, db DB) error {
 	return r.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Region.
+func (r *Region) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case r._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.region (` +
+		`region_id, region_description` +
+		`) VALUES (` +
+		`?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`region_id = ?, region_description = ?`
+	// run
+	logf(sqlstr, r.RegionID, r.RegionDescription)
+	if _, err := db.ExecContext(ctx, sqlstr, r.RegionID, r.RegionDescription, r.RegionID, r.RegionDescription); err != nil {
+		return err
+	}
+	// set exists
+	r._exists = true
+	return nil
+}
+
 // Delete deletes the Region from the database.
 func (r *Region) Delete(ctx context.Context, db DB) error {
 	switch {

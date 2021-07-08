@@ -157,14 +157,15 @@ ENDSQL
 COMMENT='{{ . }} is a sequence.'
 $XOBIN query $PGDB -M -B -2 -T Sequence -F PostgresTableSequences --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  t.relname::varchar AS table_name
+  a.attname::varchar as column_name
 FROM pg_class s
   JOIN pg_depend d ON d.objid = s.oid
-  JOIN pg_class t ON d.objid = s.oid
-    AND d.refobjid = t.oid
+  JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
+  JOIN pg_attribute a ON (d.refobjid, d.refobjsubid) = (a.attrelid, a.attnum)
   JOIN pg_namespace n ON n.oid = s.relnamespace
 WHERE s.relkind = 'S'
   AND n.nspname = %%schema string%%
+  AND t.relname = %%table string%%
 ENDSQL
 
 # postgres table foreign key list query
@@ -355,10 +356,11 @@ ENDSQL
 # mysql sequence list query
 $XOBIN query $MYDB -M -B -2 -T Sequence -F MysqlTableSequences -a -o $DEST $@ << ENDSQL
 SELECT
-  table_name
-FROM information_schema.tables
-WHERE auto_increment IS NOT NULL
-  AND table_schema = %%schema string%%
+  column_name
+FROM information_schema.columns c
+WHERE c.extra = 'auto_increment'
+  AND c.table_schema = %%schema string%%
+  AND c.table_name = %%table string%%
 ENDSQL
 
 # mysql table foreign key list query
@@ -446,12 +448,35 @@ ENDSQL
 # sqlite3 sequence list query
 $XOBIN query $SQDB -M -B -2 -T Sequence -F Sqlite3TableSequences -I -a -o $DEST $@ << ENDSQL
 /* %%schema string,interpolate%% */
-SELECT
-  name AS table_name
-FROM sqlite_master
-WHERE type='table'
-  AND LOWER(sql) LIKE '%autoincrement%'
-ORDER BY name
+WITH RECURSIVE
+  a AS (
+    SELECT name, lower(replace(replace(sql, char(13), ' '), char(10), ' ')) AS sql
+    FROM sqlite_master
+    WHERE lower(sql) LIKE '%integer% autoincrement%'
+  ),
+  b AS (
+    SELECT name, trim(substr(sql, instr(sql, '(') + 1)) AS sql
+    FROM a
+  ),
+  c AS (
+    SELECT b.name, sql, '' AS col
+    FROM b
+    UNION ALL
+    SELECT
+      c.name,
+      trim(substr(c.sql, ifnull(nullif(instr(c.sql, ','), 0), instr(c.sql, ')')) + 1)) AS sql,
+      trim(substr(c.sql, 1, ifnull(nullif(instr(c.sql, ','), 0), instr(c.sql, ')')) - 1)) AS col
+    FROM c JOIN b ON c.name = b.name
+    WHERE c.sql != ''
+  ),
+  d AS (
+    SELECT name, substr(col, 1, instr(col, ' ') - 1) AS col
+    FROM c
+    WHERE col LIKE '%autoincrement%'
+  )
+SELECT col AS column_name
+FROM d
+WHERE name = %%table string%%;
 ENDSQL
 
 # sqlite3 table foreign key list query
@@ -579,12 +604,13 @@ ENDSQL
 # sqlserver sequence list query
 $XOBIN query $MSDB -M -B -2 -T Sequence -F SqlserverTableSequences -a -o $DEST $@ << ENDSQL
 SELECT
-  o.name AS table_name
+  COL_NAME(o.object_id, c.column_id) AS column_name
 FROM sys.objects o
   INNER JOIN sys.columns c ON o.object_id = c.object_id
 WHERE c.is_identity = 1
   AND o.type = 'U'
   AND SCHEMA_NAME(o.schema_id) = %%schema string%%
+  AND o.name = %%table string%%;
 ENDSQL
 
 # sqlserver table foreign key list query
@@ -728,10 +754,11 @@ ENDSQL
 # oracle sequence list query
 $XOBIN query $ORDB -M -B -2 -T Sequence -F OracleTableSequences -a -o $DEST $@ << ENDSQL
 SELECT
-  LOWER(c.table_name) AS table_name
+  LOWER(c.column_name) as column_name
 FROM all_tab_columns c
 WHERE c.identity_column='YES'
   AND c.owner = UPPER(%%schema string%%)
+  AND c.table_name  = UPPER(%%table string%%)
 ENDSQL
 
 # oracle table foreign key list query

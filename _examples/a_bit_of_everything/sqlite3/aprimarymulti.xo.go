@@ -78,6 +78,31 @@ func (apm *APrimaryMulti) Save(ctx context.Context, db DB) error {
 	return apm.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for APrimaryMulti.
+func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case apm._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO a_primary_multi (` +
+		`a_key, a_text` +
+		`) VALUES (` +
+		`$1, $2` +
+		`)` +
+		` ON CONFLICT (a_key) DO ` +
+		`UPDATE SET ` +
+		`a_text = EXCLUDED.a_text `
+	// run
+	logf(sqlstr, apm.AKey, apm.AText)
+	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
+		return err
+	}
+	// set exists
+	apm._exists = true
+	return nil
+}
+
 // Delete deletes the APrimaryMulti from the database.
 func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 	switch {

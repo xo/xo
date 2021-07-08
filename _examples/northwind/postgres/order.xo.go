@@ -91,8 +91,6 @@ func (o *Order) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Order.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (o *Order) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case o._deleted: // deleted
@@ -100,11 +98,11 @@ func (o *Order) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.orders (` +
-		`customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
+		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (order_id) DO ` +
 		`UPDATE SET ` +
 		`customer_id = EXCLUDED.customer_id, employee_id = EXCLUDED.employee_id, order_date = EXCLUDED.order_date, required_date = EXCLUDED.required_date, shipped_date = EXCLUDED.shipped_date, ship_via = EXCLUDED.ship_via, freight = EXCLUDED.freight, ship_name = EXCLUDED.ship_name, ship_address = EXCLUDED.ship_address, ship_city = EXCLUDED.ship_city, ship_region = EXCLUDED.ship_region, ship_postal_code = EXCLUDED.ship_postal_code, ship_country = EXCLUDED.ship_country `
 	// run

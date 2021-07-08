@@ -747,7 +747,8 @@
               "datatype": {
                 "type": "integer"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "primary_keys": [
@@ -756,7 +757,8 @@
               "datatype": {
                 "type": "integer"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -769,7 +771,8 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,
@@ -786,7 +789,8 @@
               "datatype": {
                 "type": "integer"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "a_text",
@@ -803,7 +807,8 @@
               "datatype": {
                 "type": "integer"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -816,7 +821,8 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,

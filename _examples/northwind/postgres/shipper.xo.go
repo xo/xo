@@ -80,8 +80,6 @@ func (s *Shipper) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Shipper.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case s._deleted: // deleted
@@ -89,11 +87,11 @@ func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.shippers (` +
-		`company_name, phone` +
+		`shipper_id, company_name, phone` +
 		`) VALUES (` +
-		`$1, $2` +
+		`$1, $2, $3` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (shipper_id) DO ` +
 		`UPDATE SET ` +
 		`company_name = EXCLUDED.company_name, phone = EXCLUDED.phone `
 	// run

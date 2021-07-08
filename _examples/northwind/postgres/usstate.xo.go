@@ -81,8 +81,6 @@ func (us *UsState) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for UsState.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case us._deleted: // deleted
@@ -90,11 +88,11 @@ func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.us_states (` +
-		`state_name, state_abbr, state_region` +
+		`state_id, state_name, state_abbr, state_region` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (state_id) DO ` +
 		`UPDATE SET ` +
 		`state_name = EXCLUDED.state_name, state_abbr = EXCLUDED.state_abbr, state_region = EXCLUDED.state_region `
 	// run

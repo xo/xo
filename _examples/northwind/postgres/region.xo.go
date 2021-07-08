@@ -78,8 +78,6 @@ func (r *Region) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Region.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (r *Region) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case r._deleted: // deleted
@@ -87,11 +85,11 @@ func (r *Region) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.region (` +
-		`region_description` +
+		`region_id, region_description` +
 		`) VALUES (` +
-		`$1` +
+		`$1, $2` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (region_id) DO ` +
 		`UPDATE SET ` +
 		`region_description = EXCLUDED.region_description `
 	// run

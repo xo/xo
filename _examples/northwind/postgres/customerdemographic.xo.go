@@ -79,8 +79,6 @@ func (cd *CustomerDemographic) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for CustomerDemographic.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case cd._deleted: // deleted
@@ -88,11 +86,11 @@ func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.customer_demographics (` +
-		`customer_desc` +
+		`customer_type_id, customer_desc` +
 		`) VALUES (` +
-		`$1` +
+		`$1, $2` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (customer_type_id) DO ` +
 		`UPDATE SET ` +
 		`customer_desc = EXCLUDED.customer_desc `
 	// run

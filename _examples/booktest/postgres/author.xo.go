@@ -78,8 +78,6 @@ func (a *Author) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Author.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (a *Author) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case a._deleted: // deleted
@@ -91,7 +89,7 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 		`) VALUES (` +
 		`$1` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (author_id) DO ` +
 		`UPDATE SET ` +
 		`name = EXCLUDED.name `
 	// run

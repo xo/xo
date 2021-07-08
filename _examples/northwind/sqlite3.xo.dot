@@ -176,10 +176,10 @@ digraph northwind.db {
 		headlabel="employee"]
 	"employees":"reports_to":e -> "employees":"employee_id":w [
 		headlabel="employee"]
-	"order_details":"product_id":e -> "products":"product_id":w [
-		headlabel="product"]
 	"order_details":"order_id":e -> "orders":"order_id":w [
 		headlabel="order"]
+	"order_details":"product_id":e -> "products":"product_id":w [
+		headlabel="product"]
 	"orders":"ship_via":e -> "shippers":"shipper_id":w [
 		headlabel="shipper"]
 	"orders":"employee_id":e -> "employees":"employee_id":w [

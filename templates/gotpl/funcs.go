@@ -450,8 +450,10 @@ func (f *Funcs) db_prefix(name string, skip bool, vs ...interface{}) string {
 			prefix = f.short(x.GoName) + "."
 			// skip primary keys
 			if skip {
-				for _, pk := range x.PrimaryKeys {
-					ignore = append(ignore, pk.GoName)
+				for _, field := range x.Fields {
+					if field.IsSequence {
+						ignore = append(ignore, field.GoName)
+					}
 				}
 			}
 			p := f.names_ignore(prefix, v, ignore...)
@@ -686,16 +688,15 @@ func (f *Funcs) sqlstr(typ string, v interface{}) string {
 	return fmt.Sprintf("const sqlstr = `%s`", strings.Join(lines, "` +\n\t`"))
 }
 
-// sqlstr_insert_manual builds an INSERT query skipping primary keys when
-// skipPrimary is true.
-func (f *Funcs) sqlstr_insert_base(skipPrimary bool, v interface{}) []string {
+// sqlstr_insert_manual builds an INSERT query
+func (f *Funcs) sqlstr_insert_base(v interface{}) []string {
 	switch x := v.(type) {
 	case Table:
 		// build names and values
 		var fields, vals []string
 		var i int
 		for _, z := range x.Fields {
-			if skipPrimary && z.IsPrimary {
+			if z.IsSequence {
 				continue
 			}
 			fields, vals = append(fields, f.colname(z)), append(vals, f.nth(i))
@@ -714,21 +715,27 @@ func (f *Funcs) sqlstr_insert_base(skipPrimary bool, v interface{}) []string {
 
 // sqlstr_insert_manual builds an INSERT query that inserts all fields.
 func (f *Funcs) sqlstr_insert_manual(v interface{}) []string {
-	return f.sqlstr_insert_base(false, v)
+	return f.sqlstr_insert_base(v)
 }
 
-// sqlstr_insert builds an INSERT query, skipping primary key fields with
+// sqlstr_insert builds an INSERT query, skipping the sequence field with
 // applicable RETURNING clause for generated primary key fields.
 func (f *Funcs) sqlstr_insert(v interface{}) []string {
 	switch x := v.(type) {
 	case Table:
-		lines := f.sqlstr_insert_base(true, v)
+		var seq Field
+		for _, field := range x.Fields {
+			if field.IsSequence {
+				seq = field
+			}
+		}
+		lines := f.sqlstr_insert_base(v)
 		// add return clause
 		switch f.driver {
 		case "oracle":
-			lines[len(lines)-1] += ` RETURNING ` + f.colname(x.PrimaryKeys[0]) + ` /*LASTINSERTID*/ INTO :pk`
+			lines[len(lines)-1] += ` RETURNING ` + f.colname(seq) + ` /*LASTINSERTID*/ INTO :pk`
 		case "postgres":
-			lines[len(lines)-1] += ` RETURNING ` + f.colname(x.PrimaryKeys[0])
+			lines[len(lines)-1] += ` RETURNING ` + f.colname(seq)
 		case "sqlserver":
 			lines[len(lines)-1] += "; SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())"
 		}
@@ -737,7 +744,7 @@ func (f *Funcs) sqlstr_insert(v interface{}) []string {
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-// sqlstr_update builds an UPDATE query, using primary key fields as the WHERE
+// sqlstr_update_base builds an UPDATE query, using primary key fields as the WHERE
 // clause, adding prefix.
 //
 // When prefix is empty, the WHERE clause will be in the form of name = $1.
@@ -790,17 +797,120 @@ func (f *Funcs) sqlstr_update(v interface{}) []string {
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }
 
-// sqlstr_upsert builds an uspert query (effectively an INSERT with CONFLICT
-// clause).
 func (f *Funcs) sqlstr_upsert(v interface{}) []string {
 	switch v.(type) {
 	case Table:
 		// build insert
-		lines := f.sqlstr_insert_base(true, v)
+		lines := f.sqlstr_insert_base(v)
+		switch f.driver {
+		case "postgres", "sqlite3":
+			return append(lines, f.sqlstr_upsert_postgres_sqlite(v)...)
+		case "mysql":
+			return append(lines, f.sqlstr_upsert_mysql(v)...)
+		case "sqlserver", "oracle":
+			return f.sqlstr_upsert_sqlserver_oracle(v)
+		}
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_upsert_postgres_sqlite builds an uspert query for postgres and sqlite
+//
+// INSERT (..) VALUES (..) ON CONFLICT DO UPDATE SET ...
+func (f *Funcs) sqlstr_upsert_postgres_sqlite(v interface{}) []string {
+	switch x := v.(type) {
+	case Table:
 		// add conflict and update
-		lines = append(lines, ` ON CONFLICT DO `)
+		var conflicts []string
+		for _, f := range x.PrimaryKeys {
+			conflicts = append(conflicts, f.SQLName)
+		}
+		lines := []string{` ON CONFLICT (` + strings.Join(conflicts, ", ") + `) DO `}
 		_, update := f.sqlstr_update_base("EXCLUDED.", v)
 		return append(lines, update...)
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_upsert_mysql builds an uspert query for mysql
+//
+// INSERT (..) VALUES (..) ON DUPLICATE KEY UPDATE SET ...
+func (f *Funcs) sqlstr_upsert_mysql(v interface{}) []string {
+	switch x := v.(type) {
+	case Table:
+		lines := []string{` ON DUPLICATE KEY UPDATE `}
+		var list []string
+		i := len(x.Fields)
+		for _, z := range x.Fields {
+			name, param := f.colname(z), f.nth(i)
+			list = append(list, fmt.Sprintf("%s = %s", name, param))
+			i++
+		}
+		return append(lines, strings.Join(list, ", "))
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+// sqlstr_upsert_sqlserver_oracle builds an upsert query for sqlserver
+//
+// MERGE [table] AS target USING (SELECT [pkeys]) AS source ...
+func (f *Funcs) sqlstr_upsert_sqlserver_oracle(v interface{}) []string {
+	switch x := v.(type) {
+	case Table:
+		var lines []string
+		// merge [table]...
+		switch f.driver {
+		case "sqlserver":
+			lines = []string{`MERGE ` + f.schemafn(x.SQLName) + ` AS t `}
+		case "oracle":
+			lines = []string{`MERGE ` + f.schemafn(x.SQLName) + `t `}
+		}
+		// using (select ..)
+		var fields, predicate []string
+		for i, field := range x.Fields {
+			fields = append(fields, fmt.Sprintf("%s %s", f.nth(i), field.SQLName))
+		}
+		for _, field := range x.PrimaryKeys {
+			predicate = append(predicate, fmt.Sprintf("s.%s = t.%s", field.SQLName, field.SQLName))
+		}
+		// closing part for select
+		var closing string
+		switch f.driver {
+		case "sqlserver":
+			closing = `) AS s `
+		case "oracle":
+			closing = `FROM DUAL ) s `
+		}
+		lines = append(lines, `USING (`,
+			`SELECT `+strings.Join(fields, ", ")+" ",
+			closing,
+			`ON `+strings.Join(predicate, " AND ")+" ")
+		// build param lists
+		var updateParams, insertParams, insertVals []string
+		for _, field := range x.Fields {
+			// sequences are always managed by db
+			if field.IsSequence {
+				continue
+			}
+			// primary keys
+			if !field.IsPrimary {
+				updateParams = append(updateParams, fmt.Sprintf("t.%s = s.%s", field.SQLName, field.SQLName))
+			}
+			insertParams = append(insertParams, field.SQLName)
+			insertVals = append(insertVals, "s."+field.SQLName)
+		}
+		// when matched then update...
+		lines = append(lines,
+			`WHEN MATCHED THEN `, `UPDATE SET `,
+			strings.Join(updateParams, ", ")+" ",
+			`WHEN NOT MATCHED THEN `,
+			`INSERT (`,
+			strings.Join(insertParams, ", "),
+			`) VALUES (`,
+			strings.Join(insertVals, ", "),
+			`);`,
+		)
+		return lines
 	}
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
 }

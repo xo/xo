@@ -94,6 +94,31 @@ func (e *Employee) Save(ctx context.Context, db DB) error {
 	return e.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Employee.
+func (e *Employee) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case e._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO employees (` +
+		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18` +
+		`)` +
+		` ON CONFLICT (employee_id) DO ` +
+		`UPDATE SET ` +
+		`last_name = EXCLUDED.last_name, first_name = EXCLUDED.first_name, title = EXCLUDED.title, title_of_courtesy = EXCLUDED.title_of_courtesy, birth_date = EXCLUDED.birth_date, hire_date = EXCLUDED.hire_date, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, home_phone = EXCLUDED.home_phone, extension = EXCLUDED.extension, photo = EXCLUDED.photo, notes = EXCLUDED.notes, reports_to = EXCLUDED.reports_to, photo_path = EXCLUDED.photo_path `
+	// run
+	logf(sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath)
+	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath); err != nil {
+		return err
+	}
+	// set exists
+	e._exists = true
+	return nil
+}
+
 // Delete deletes the Employee from the database.
 func (e *Employee) Delete(ctx context.Context, db DB) error {
 	switch {

@@ -80,6 +80,30 @@ func (us *UsState) Save(ctx context.Context, db DB) error {
 	return us.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for UsState.
+func (us *UsState) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case us._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.us_states (` +
+		`state_id, state_name, state_abbr, state_region` +
+		`) VALUES (` +
+		`?, ?, ?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`state_id = ?, state_name = ?, state_abbr = ?, state_region = ?`
+	// run
+	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
+		return err
+	}
+	// set exists
+	us._exists = true
+	return nil
+}
+
 // Delete deletes the UsState from the database.
 func (us *UsState) Delete(ctx context.Context, db DB) error {
 	switch {

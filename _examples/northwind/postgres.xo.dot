@@ -170,10 +170,10 @@ digraph public {
 		headlabel="customer"]
 	"public.customer_customer_demo":"customer_type_id":e -> "public.customer_demographics":"customer_type_id":w [
 		headlabel="customer_demographic"]
-	"public.employee_territories":"employee_id":e -> "public.employees":"employee_id":w [
-		headlabel="employee"]
 	"public.employee_territories":"territory_id":e -> "public.territories":"territory_id":w [
 		headlabel="territory"]
+	"public.employee_territories":"employee_id":e -> "public.employees":"employee_id":w [
+		headlabel="employee"]
 	"public.employees":"reports_to":e -> "public.employees":"employee_id":w [
 		headlabel="employee"]
 	"public.order_details":"order_id":e -> "public.orders":"order_id":w [

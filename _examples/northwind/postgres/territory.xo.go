@@ -79,8 +79,6 @@ func (t *Territory) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Territory.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case t._deleted: // deleted
@@ -88,11 +86,11 @@ func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.territories (` +
-		`territory_description, region_id` +
+		`territory_id, territory_description, region_id` +
 		`) VALUES (` +
-		`$1, $2` +
+		`$1, $2, $3` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (territory_id) DO ` +
 		`UPDATE SET ` +
 		`territory_description = EXCLUDED.territory_description, region_id = EXCLUDED.region_id `
 	// run

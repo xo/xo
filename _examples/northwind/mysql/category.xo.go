@@ -80,6 +80,30 @@ func (c *Category) Save(ctx context.Context, db DB) error {
 	return c.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Category.
+func (c *Category) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case c._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.categories (` +
+		`category_id, category_name, description, picture` +
+		`) VALUES (` +
+		`?, ?, ?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`category_id = ?, category_name = ?, description = ?, picture = ?`
+	// run
+	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
+	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
+		return err
+	}
+	// set exists
+	c._exists = true
+	return nil
+}
+
 // Delete deletes the Category from the database.
 func (c *Category) Delete(ctx context.Context, db DB) error {
 	switch {

@@ -549,11 +549,12 @@ func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, erro
 		return Field{}, err
 	}
 	return Field{
-		GoName:    name,
-		SQLName:   f.Name,
-		Type:      typ,
-		Zero:      zero,
-		IsPrimary: f.IsPrimary,
+		GoName:     name,
+		SQLName:    f.Name,
+		Type:       typ,
+		Zero:       zero,
+		IsPrimary:  f.IsPrimary,
+		IsSequence: f.IsSequence,
 	}, nil
 }
 

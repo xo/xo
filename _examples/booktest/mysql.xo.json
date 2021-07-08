@@ -51,7 +51,8 @@
                 "type": "int",
                 "prec": 11
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "name",
@@ -69,7 +70,8 @@
                 "type": "int",
                 "prec": 11
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -97,7 +99,8 @@
                     "type": "int",
                     "prec": 11
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,
@@ -115,7 +118,8 @@
                 "type": "int",
                 "prec": 11
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "author_id",
@@ -177,7 +181,8 @@
                 "type": "int",
                 "prec": 11
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -241,7 +246,8 @@
                     "type": "int",
                     "prec": 11
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,
@@ -269,7 +275,8 @@
                     "type": "int",
                     "prec": 11
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "ref_func_name": "author_by_author_id"

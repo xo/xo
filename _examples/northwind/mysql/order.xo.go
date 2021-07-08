@@ -90,6 +90,30 @@ func (o *Order) Save(ctx context.Context, db DB) error {
 	return o.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Order.
+func (o *Order) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case o._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.orders (` +
+		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
+		`) VALUES (` +
+		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`order_id = ?, customer_id = ?, employee_id = ?, order_date = ?, required_date = ?, shipped_date = ?, ship_via = ?, freight = ?, ship_name = ?, ship_address = ?, ship_city = ?, ship_region = ?, ship_postal_code = ?, ship_country = ?`
+	// run
+	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
+		return err
+	}
+	// set exists
+	o._exists = true
+	return nil
+}
+
 // Delete deletes the Order from the database.
 func (o *Order) Delete(ctx context.Context, db DB) error {
 	switch {

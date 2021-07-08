@@ -86,6 +86,37 @@ func (b *Book) Save(ctx context.Context, db DB) error {
 	return b.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Book.
+func (b *Book) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case b._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE booktest.bookst ` +
+		`USING (` +
+		`SELECT :1 book_id, :2 author_id, :3 isbn, :4 title, :5 year, :6 available, :7 tags ` +
+		`FROM DUAL ) s ` +
+		`ON s.book_id = t.book_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.author_id = s.author_id, t.isbn = s.isbn, t.title = s.title, t.year = s.year, t.available = s.available, t.tags = s.tags ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`author_id, isbn, title, year, available, tags` +
+		`) VALUES (` +
+		`s.author_id, s.isbn, s.title, s.year, s.available, s.tags` +
+		`);`
+	// run
+	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags); err != nil {
+		return err
+	}
+	// set exists
+	b._exists = true
+	return nil
+}
+
 // Delete deletes the Book from the database.
 func (b *Book) Delete(ctx context.Context, db DB) error {
 	switch {

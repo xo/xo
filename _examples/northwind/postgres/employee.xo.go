@@ -95,8 +95,6 @@ func (e *Employee) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Employee.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (e *Employee) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case e._deleted: // deleted
@@ -104,11 +102,11 @@ func (e *Employee) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.employees (` +
-		`last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
+		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (employee_id) DO ` +
 		`UPDATE SET ` +
 		`last_name = EXCLUDED.last_name, first_name = EXCLUDED.first_name, title = EXCLUDED.title, title_of_courtesy = EXCLUDED.title_of_courtesy, birth_date = EXCLUDED.birth_date, hire_date = EXCLUDED.hire_date, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, home_phone = EXCLUDED.home_phone, extension = EXCLUDED.extension, photo = EXCLUDED.photo, notes = EXCLUDED.notes, reports_to = EXCLUDED.reports_to, photo_path = EXCLUDED.photo_path `
 	// run

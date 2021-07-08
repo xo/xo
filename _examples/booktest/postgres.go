@@ -112,7 +112,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		}
 		fmt.Printf("Book %d author: %q\n", book.BookID, author.Name)
 	}
-	// find a book with either "cool" or "other" tag
+	// find a book with either "cool", "other", or "someother" tag
 	fmt.Printf("---------\nTag search results:\n")
 	res, err := models.AuthorBookResultsByTags(ctx, db, models.StringSlice{"cool", "other", "someother"})
 	if err != nil {

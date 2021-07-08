@@ -88,8 +88,6 @@ func (c *Customer) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Customer.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case c._deleted: // deleted
@@ -97,11 +95,11 @@ func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.customers (` +
-		`company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
+		`customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (customer_id) DO ` +
 		`UPDATE SET ` +
 		`company_name = EXCLUDED.company_name, contact_name = EXCLUDED.contact_name, contact_title = EXCLUDED.contact_title, address = EXCLUDED.address, city = EXCLUDED.city, region = EXCLUDED.region, postal_code = EXCLUDED.postal_code, country = EXCLUDED.country, phone = EXCLUDED.phone, fax = EXCLUDED.fax `
 	// run

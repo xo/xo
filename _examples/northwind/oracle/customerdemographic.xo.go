@@ -78,6 +78,37 @@ func (cd *CustomerDemographic) Save(ctx context.Context, db DB) error {
 	return cd.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for CustomerDemographic.
+func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case cd._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.customer_demographicst ` +
+		`USING (` +
+		`SELECT :1 customer_type_id, :2 customer_desc ` +
+		`FROM DUAL ) s ` +
+		`ON s.customer_type_id = t.customer_type_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.customer_desc = s.customer_desc ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`customer_type_id, customer_desc` +
+		`) VALUES (` +
+		`s.customer_type_id, s.customer_desc` +
+		`);`
+	// run
+	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
+		return err
+	}
+	// set exists
+	cd._exists = true
+	return nil
+}
+
 // Delete deletes the CustomerDemographic from the database.
 func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 	switch {

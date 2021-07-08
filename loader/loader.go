@@ -69,7 +69,7 @@ type Loader struct {
 	ProcParams       func(context.Context, models.DB, string, string) ([]*models.ProcParam, error)
 	Tables           func(context.Context, models.DB, string, string) ([]*models.Table, error)
 	TableColumns     func(context.Context, models.DB, string, string) ([]*models.Column, error)
-	TableSequences   func(context.Context, models.DB, string) ([]*models.Sequence, error)
+	TableSequences   func(context.Context, models.DB, string, string) ([]*models.Sequence, error)
 	TableForeignKeys func(context.Context, models.DB, string, string) ([]*models.ForeignKey, error)
 	TableIndexes     func(context.Context, models.DB, string, string) ([]*models.Index, error)
 	IndexColumns     func(context.Context, models.DB, string, string, string) ([]*models.IndexColumn, error)

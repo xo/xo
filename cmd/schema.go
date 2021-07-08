@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/gedex/inflector"
-	"github.com/xo/xo/models"
 	xo "github.com/xo/xo/types"
 )
 
@@ -29,10 +28,10 @@ func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
 	if s.Procs, err = LoadProcs(ctx, args); err != nil {
 		return err
 	}
-	if s.Tables, err = LoadTypes(ctx, args, "table"); err != nil {
+	if s.Tables, err = LoadTables(ctx, args, "table"); err != nil {
 		return err
 	}
-	if s.Views, err = LoadTypes(ctx, args, "view"); err != nil {
+	if s.Views, err = LoadTables(ctx, args, "view"); err != nil {
 		return err
 	}
 	// emit
@@ -159,10 +158,11 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 	return nil
 }
 
-// LoadTypes loads types for the kind (ie, table/view definitions).
-func LoadTypes(ctx context.Context, args *Args, kind string) ([]xo.Table, error) {
+// LoadTables loads types for the kind (ie, table/view definitions).
+func LoadTables(ctx context.Context, args *Args, kind string) ([]xo.Table, error) {
+	db, l, schema := DbLoaderSchema(ctx)
 	// load tables
-	tables, err := LoadTables(ctx, args, kind)
+	tables, err := l.Tables(ctx, db, schema, kind)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +174,7 @@ func LoadTypes(ctx context.Context, args *Args, kind string) ([]xo.Table, error)
 		table := &xo.Table{
 			Type:   kind,
 			Name:   t.TableName,
-			Manual: t.ManualPk,
+			Manual: true,
 		}
 		// process columns
 		if err := LoadColumns(ctx, args, table); err != nil {
@@ -215,37 +215,19 @@ func LoadTypes(ctx context.Context, args *Args, kind string) ([]xo.Table, error)
 	return m, nil
 }
 
-// LoadTables loads tables.
-func LoadTables(ctx context.Context, args *Args, kind string) ([]*models.Table, error) {
-	db, l, schema := DbLoaderSchema(ctx)
-	// load tables
-	tables, err := l.Tables(ctx, db, schema, kind)
-	if err != nil {
-		return nil, err
-	}
-	if l.TableSequences == nil {
-		return tables, nil
-	}
-	// load sequences
-	sequences, err := l.TableSequences(ctx, db, schema)
-	if err != nil {
-		return nil, err
-	}
-	// build sequence map
-	sequenceMap := make(map[string]bool)
-	for _, sequence := range sequences {
-		sequenceMap[sequence.TableName] = true
-	}
-	// force manual pk if not defined in sequences
-	for _, table := range tables {
-		table.ManualPk = table.ManualPk || !sequenceMap[table.TableName]
-	}
-	return tables, nil
-}
-
 // LoadColumns loads table/view columns.
 func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 	db, l, schema := DbLoaderSchema(ctx)
+	// load sequences
+	sequences, err := l.TableSequences(ctx, db, schema, table.Name)
+	if err != nil {
+		return err
+	}
+	sqMap := make(map[string]bool)
+	for _, s := range sequences {
+		table.Manual = false
+		sqMap[s.ColumnName] = true
+	}
 	// load columns
 	columns, err := l.TableColumns(ctx, db, schema, table.Name)
 	if err != nil {
@@ -286,8 +268,9 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 				Scale:    scale,
 				Array:    array,
 			},
-			Default:   d,
-			IsPrimary: c.IsPrimaryKey,
+			Default:    d,
+			IsPrimary:  c.IsPrimaryKey,
+			IsSequence: sqMap[c.ColumnName],
 		}
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {

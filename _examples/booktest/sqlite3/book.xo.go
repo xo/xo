@@ -89,6 +89,31 @@ func (b *Book) Save(ctx context.Context, db DB) error {
 	return b.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Book.
+func (b *Book) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case b._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO books (` +
+		`author_id, isbn, title, year, available, tags` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6` +
+		`)` +
+		` ON CONFLICT (book_id) DO ` +
+		`UPDATE SET ` +
+		`author_id = EXCLUDED.author_id, isbn = EXCLUDED.isbn, title = EXCLUDED.title, year = EXCLUDED.year, available = EXCLUDED.available, tags = EXCLUDED.tags `
+	// run
+	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags); err != nil {
+		return err
+	}
+	// set exists
+	b._exists = true
+	return nil
+}
+
 // Delete deletes the Book from the database.
 func (b *Book) Delete(ctx context.Context, db DB) error {
 	switch {

@@ -80,6 +80,31 @@ func (od *OrderDetail) Save(ctx context.Context, db DB) error {
 	return od.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for OrderDetail.
+func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case od._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO order_details (` +
+		`order_id, product_id, unit_price, quantity, discount` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5` +
+		`)` +
+		` ON CONFLICT (order_id, product_id) DO ` +
+		`UPDATE SET ` +
+		`unit_price = EXCLUDED.unit_price, quantity = EXCLUDED.quantity, discount = EXCLUDED.discount `
+	// run
+	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
+		return err
+	}
+	// set exists
+	od._exists = true
+	return nil
+}
+
 // Delete deletes the OrderDetail from the database.
 func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 	switch {

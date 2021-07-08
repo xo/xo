@@ -78,6 +78,31 @@ func (t *Territory) Save(ctx context.Context, db DB) error {
 	return t.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Territory.
+func (t *Territory) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case t._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO territories (` +
+		`territory_id, territory_description, region_id` +
+		`) VALUES (` +
+		`$1, $2, $3` +
+		`)` +
+		` ON CONFLICT (territory_id) DO ` +
+		`UPDATE SET ` +
+		`territory_description = EXCLUDED.territory_description, region_id = EXCLUDED.region_id `
+	// run
+	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
+	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
+		return err
+	}
+	// set exists
+	t._exists = true
+	return nil
+}
+
 // Delete deletes the Territory from the database.
 func (t *Territory) Delete(ctx context.Context, db DB) error {
 	switch {

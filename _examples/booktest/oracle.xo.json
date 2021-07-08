@@ -13,7 +13,8 @@
               "datatype": {
                 "type": "number"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "name",
@@ -28,7 +29,8 @@
               "datatype": {
                 "type": "number"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -53,7 +55,8 @@
                   "datatype": {
                     "type": "number"
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true
@@ -69,7 +72,8 @@
               "datatype": {
                 "type": "number"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "author_id",
@@ -115,7 +119,8 @@
               "datatype": {
                 "type": "number"
               },
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -141,7 +146,8 @@
                   "datatype": {
                     "type": "number"
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true
@@ -184,7 +190,8 @@
                   "datatype": {
                     "type": "number"
                   },
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "ref_func_name": "author_by_author_id"

@@ -130,6 +130,21 @@ func (err *ErrUpdateFailed) Unwrap() error {
 	return err.Err
 }
 
+// ErrUpsertFailed is the upsert failed error.
+type ErrUpsertFailed struct {
+	Err error
+}
+
+// Error satisfies the error interface.
+func (err *ErrUpsertFailed) Error() string {
+	return fmt.Sprintf("upsert failed: %v", err.Err)
+}
+
+// Unwrap satisfies the unwrap interface.
+func (err *ErrUpsertFailed) Unwrap() error {
+	return err.Err
+}
+
 // ErrInvalidTime is the invalid Time error.
 type ErrInvalidTime string
 

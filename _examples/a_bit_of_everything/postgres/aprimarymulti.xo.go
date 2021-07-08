@@ -79,8 +79,6 @@ func (apm *APrimaryMulti) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for APrimaryMulti.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case apm._deleted: // deleted
@@ -88,11 +86,11 @@ func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.a_primary_multi (` +
-		`a_text` +
+		`a_key, a_text` +
 		`) VALUES (` +
-		`$1` +
+		`$1, $2` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (a_key) DO ` +
 		`UPDATE SET ` +
 		`a_text = EXCLUDED.a_text `
 	// run

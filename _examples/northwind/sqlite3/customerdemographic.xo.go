@@ -78,6 +78,31 @@ func (cd *CustomerDemographic) Save(ctx context.Context, db DB) error {
 	return cd.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for CustomerDemographic.
+func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case cd._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO customer_demographics (` +
+		`customer_type_id, customer_desc` +
+		`) VALUES (` +
+		`$1, $2` +
+		`)` +
+		` ON CONFLICT (customer_type_id) DO ` +
+		`UPDATE SET ` +
+		`customer_desc = EXCLUDED.customer_desc `
+	// run
+	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
+		return err
+	}
+	// set exists
+	cd._exists = true
+	return nil
+}
+
 // Delete deletes the CustomerDemographic from the database.
 func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 	switch {

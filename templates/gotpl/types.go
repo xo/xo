@@ -26,18 +26,6 @@ type Proc struct {
 	Comment    string
 }
 
-// Field is a field template.
-type Field struct {
-	GoName    string
-	SQLName   string
-	Type      string
-	Zero      string
-	Prec      int
-	Array     bool
-	IsPrimary bool
-	Comment   string
-}
-
 // Table is a type (ie, table/view/custom query) template.
 type Table struct {
 	GoName      string
@@ -70,6 +58,19 @@ type Index struct {
 	IsUnique  bool
 	IsPrimary bool
 	Comment   string
+}
+
+// Field is a field template.
+type Field struct {
+	GoName     string
+	SQLName    string
+	Type       string
+	Zero       string
+	Prec       int
+	Array      bool
+	IsPrimary  bool
+	IsSequence bool
+	Comment    string
 }
 
 // QueryParam is a custom query parameter template.

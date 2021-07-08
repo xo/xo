@@ -88,6 +88,37 @@ func (s *Supplier) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Supplier.
+func (s *Supplier) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case s._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.supplierst ` +
+		`USING (` +
+		`SELECT :1 supplier_id, :2 company_name, :3 contact_name, :4 contact_title, :5 address, :6 city, :7 region, :8 postal_code, :9 country, :10 phone, :11 fax, :12 homepage ` +
+		`FROM DUAL ) s ` +
+		`ON s.supplier_id = t.supplier_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.company_name = s.company_name, t.contact_name = s.contact_name, t.contact_title = s.contact_title, t.address = s.address, t.city = s.city, t.region = s.region, t.postal_code = s.postal_code, t.country = s.country, t.phone = s.phone, t.fax = s.fax, t.homepage = s.homepage ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`supplier_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax, homepage` +
+		`) VALUES (` +
+		`s.supplier_id, s.company_name, s.contact_name, s.contact_title, s.address, s.city, s.region, s.postal_code, s.country, s.phone, s.fax, s.homepage` +
+		`);`
+	// run
+	logf(sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage)
+	if _, err := db.ExecContext(ctx, sqlstr, s.SupplierID, s.CompanyName, s.ContactName, s.ContactTitle, s.Address, s.City, s.Region, s.PostalCode, s.Country, s.Phone, s.Fax, s.Homepage); err != nil {
+		return err
+	}
+	// set exists
+	s._exists = true
+	return nil
+}
+
 // Delete deletes the Supplier from the database.
 func (s *Supplier) Delete(ctx context.Context, db DB) error {
 	switch {

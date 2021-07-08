@@ -81,8 +81,6 @@ func (c *Category) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Category.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (c *Category) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case c._deleted: // deleted
@@ -90,11 +88,11 @@ func (c *Category) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.categories (` +
-		`category_name, description, picture` +
+		`category_id, category_name, description, picture` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (category_id) DO ` +
 		`UPDATE SET ` +
 		`category_name = EXCLUDED.category_name, description = EXCLUDED.description, picture = EXCLUDED.picture `
 	// run

@@ -60,14 +60,16 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('a_bit_of_everything_a_bigserial_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_bigserial_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_bigserial_nullable",
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('a_bit_of_everything_a_bigserial_nullable_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_bigserial_nullable_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_bit",
@@ -395,14 +397,16 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_bit_of_everything_a_serial_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_serial_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_serial_nullable",
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_bit_of_everything_a_serial_nullable_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_serial_nullable_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_smallint",
@@ -424,14 +428,16 @@
               "datatype": {
                 "type": "smallint"
               },
-              "default": "nextval('a_bit_of_everything_a_smallserial_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_smallserial_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_smallserial_nullable",
               "datatype": {
                 "type": "smallint"
               },
-              "default": "nextval('a_bit_of_everything_a_smallserial_nullable_seq'::regclass)"
+              "default": "nextval('a_bit_of_everything_a_smallserial_nullable_seq'::regclass)",
+              "is_sequence": true
             },
             {
               "name": "a_text",
@@ -931,7 +937,8 @@
                 "type": "integer"
               },
               "default": "nextval('a_sequence_a_seq_seq'::regclass)",
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "primary_keys": [
@@ -941,7 +948,8 @@
                 "type": "integer"
               },
               "default": "nextval('a_sequence_a_seq_seq'::regclass)",
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -955,7 +963,8 @@
                     "type": "integer"
                   },
                   "default": "nextval('a_sequence_a_seq_seq'::regclass)",
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,
@@ -973,7 +982,8 @@
                 "type": "integer"
               },
               "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             },
             {
               "name": "a_text",
@@ -992,7 +1002,8 @@
                 "type": "integer"
               },
               "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
-              "is_primary": true
+              "is_primary": true,
+              "is_sequence": true
             }
           ],
           "indexes": [
@@ -1006,7 +1017,8 @@
                     "type": "integer"
                   },
                   "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
-                  "is_primary": true
+                  "is_primary": true,
+                  "is_sequence": true
                 }
               ],
               "is_unique": true,

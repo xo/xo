@@ -81,8 +81,6 @@ func (od *OrderDetail) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for OrderDetail.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case od._deleted: // deleted
@@ -90,11 +88,11 @@ func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO public.order_details (` +
-		`unit_price, quantity, discount` +
+		`order_id, product_id, unit_price, quantity, discount` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4, $5` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (order_id, product_id) DO ` +
 		`UPDATE SET ` +
 		`unit_price = EXCLUDED.unit_price, quantity = EXCLUDED.quantity, discount = EXCLUDED.discount `
 	// run

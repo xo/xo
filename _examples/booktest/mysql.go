@@ -85,22 +85,20 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	/*
-		// upsert, changing ISBN and title
-		b4 := models.Book{
-			BookID:    b3.BookID,
-			AuthorID:  a.AuthorID,
-			Isbn:      "NEW ISBN",
-			BookType:  b3.BookType,
-			Title:     "never ever gonna finish, a quatrain",
-			Year:      b3.Year,
-			Available: b3.Available,
-			Tags:      "someother",
-		}
-		if err := b4.Upsert(ctx, db); err != nil {
-			return err
-		}
-	*/
+	// upsert, changing ISBN and title
+	b4 := models.Book{
+		BookID:    b3.BookID,
+		AuthorID:  a.AuthorID,
+		Isbn:      "NEW ISBN",
+		BookType:  b3.BookType,
+		Title:     "never ever gonna finish, a quatrain",
+		Year:      b3.Year,
+		Available: b3.Available,
+		Tags:      "someother",
+	}
+	if err := b4.Upsert(ctx, db); err != nil {
+		return err
+	}
 	// retrieve first book
 	books0, err := models.BooksByTitleYear(ctx, db, "my book title", 2016)
 	if err != nil {
@@ -114,9 +112,9 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 		}
 		fmt.Printf("Book %d author: %q\n", book.BookID, author.Name)
 	}
-	// find a book with either "cool" or "other" tag
+	// find a book with the "someeother" tag
 	fmt.Printf("---------\nTag search results:\n")
-	res, err := models.AuthorBookResultsByTag(ctx, db, "cool")
+	res, err := models.AuthorBookResultsByTag(ctx, db, "someother")
 	if err != nil {
 		return err
 	}

@@ -86,6 +86,37 @@ func (p *Product) Save(ctx context.Context, db DB) error {
 	return p.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Product.
+func (p *Product) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case p._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.products AS t ` +
+		`USING (` +
+		`SELECT @p1 product_id, @p2 product_name, @p3 supplier_id, @p4 category_id, @p5 quantity_per_unit, @p6 unit_price, @p7 units_in_stock, @p8 units_on_order, @p9 reorder_level, @p10 discontinued ` +
+		`) AS s ` +
+		`ON s.product_id = t.product_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.product_name = s.product_name, t.supplier_id = s.supplier_id, t.category_id = s.category_id, t.quantity_per_unit = s.quantity_per_unit, t.unit_price = s.unit_price, t.units_in_stock = s.units_in_stock, t.units_on_order = s.units_on_order, t.reorder_level = s.reorder_level, t.discontinued = s.discontinued ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`product_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued` +
+		`) VALUES (` +
+		`s.product_id, s.product_name, s.supplier_id, s.category_id, s.quantity_per_unit, s.unit_price, s.units_in_stock, s.units_on_order, s.reorder_level, s.discontinued` +
+		`);`
+	// run
+	logf(sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued)
+	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
+		return err
+	}
+	// set exists
+	p._exists = true
+	return nil
+}
+
 // Delete deletes the Product from the database.
 func (p *Product) Delete(ctx context.Context, db DB) error {
 	switch {

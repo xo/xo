@@ -256,8 +256,6 @@ type TemplateParams struct {
 	Suffix string
 	// Src is the src directory of the template.
 	Src string
-	// Esc indicates which types to escape (none, schema, table, column, all).
-	Esc []string
 	// Flags are additional template flags.
 	Flags map[xo.ContextKey]interface{}
 }

@@ -79,6 +79,37 @@ func (s *Shipper) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Shipper.
+func (s *Shipper) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case s._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.shippers AS t ` +
+		`USING (` +
+		`SELECT @p1 shipper_id, @p2 company_name, @p3 phone ` +
+		`) AS s ` +
+		`ON s.shipper_id = t.shipper_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.company_name = s.company_name, t.phone = s.phone ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`shipper_id, company_name, phone` +
+		`) VALUES (` +
+		`s.shipper_id, s.company_name, s.phone` +
+		`);`
+	// run
+	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
+	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone); err != nil {
+		return err
+	}
+	// set exists
+	s._exists = true
+	return nil
+}
+
 // Delete deletes the Shipper from the database.
 func (s *Shipper) Delete(ctx context.Context, db DB) error {
 	switch {

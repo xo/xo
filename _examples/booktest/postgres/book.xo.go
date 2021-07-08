@@ -85,8 +85,6 @@ func (b *Book) Save(ctx context.Context, db DB) error {
 }
 
 // Upsert performs an upsert for Book.
-//
-// NOTE: PostgreSQL 9.5+ only
 func (b *Book) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case b._deleted: // deleted
@@ -98,7 +96,7 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 		`) VALUES (` +
 		`$1, $2, $3, $4, $5, $6, $7` +
 		`)` +
-		` ON CONFLICT DO ` +
+		` ON CONFLICT (book_id) DO ` +
 		`UPDATE SET ` +
 		`author_id = EXCLUDED.author_id, isbn = EXCLUDED.isbn, book_type = EXCLUDED.book_type, title = EXCLUDED.title, year = EXCLUDED.year, available = EXCLUDED.available, tags = EXCLUDED.tags `
 	// run

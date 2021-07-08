@@ -94,6 +94,37 @@ func (e *Employee) Save(ctx context.Context, db DB) error {
 	return e.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Employee.
+func (e *Employee) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case e._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.employeest ` +
+		`USING (` +
+		`SELECT :1 employee_id, :2 last_name, :3 first_name, :4 title, :5 title_of_courtesy, :6 birth_date, :7 hire_date, :8 address, :9 city, :10 region, :11 postal_code, :12 country, :13 home_phone, :14 extension, :15 photo, :16 notes, :17 reports_to, :18 photo_path ` +
+		`FROM DUAL ) s ` +
+		`ON s.employee_id = t.employee_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.last_name = s.last_name, t.first_name = s.first_name, t.title = s.title, t.title_of_courtesy = s.title_of_courtesy, t.birth_date = s.birth_date, t.hire_date = s.hire_date, t.address = s.address, t.city = s.city, t.region = s.region, t.postal_code = s.postal_code, t.country = s.country, t.home_phone = s.home_phone, t.extension = s.extension, t.photo = s.photo, t.notes = s.notes, t.reports_to = s.reports_to, t.photo_path = s.photo_path ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path` +
+		`) VALUES (` +
+		`s.employee_id, s.last_name, s.first_name, s.title, s.title_of_courtesy, s.birth_date, s.hire_date, s.address, s.city, s.region, s.postal_code, s.country, s.home_phone, s.extension, s.photo, s.notes, s.reports_to, s.photo_path` +
+		`);`
+	// run
+	logf(sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath)
+	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath); err != nil {
+		return err
+	}
+	// set exists
+	e._exists = true
+	return nil
+}
+
 // Delete deletes the Employee from the database.
 func (e *Employee) Delete(ctx context.Context, db DB) error {
 	switch {

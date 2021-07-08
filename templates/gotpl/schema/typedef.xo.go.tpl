@@ -147,10 +147,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 {{- end }}
 
-{{ if (driver "postgres") -}}
 // {{ func_name_context "Upsert" }} performs an upsert for {{ $t.GoName }}.
-//
-// NOTE: PostgreSQL 9.5+ only
 {{ recv_context $t "Upsert" }} {
 	switch {
 	case {{ short $t }}._deleted: // deleted
@@ -160,14 +157,17 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	{{ sqlstr "upsert" $t }}
 	// run
 	{{ logf $t }}
+	{{ if driver "mysql" -}}
+	if _, err := {{ db_prefix "Exec" false $t $t }}; err != nil {
+	{{- else -}}
 	if _, err := {{ db_prefix "Exec" false $t }}; err != nil {
+	{{- end }}
 		return err
 	}
 	// set exists
 	{{ short $t }}._exists = true
 	return nil
 }
-{{- end -}}
 
 {{ if context_both -}}
 // Upsert performs an upsert for {{ $t.GoName }}.

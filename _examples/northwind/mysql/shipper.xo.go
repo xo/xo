@@ -79,6 +79,30 @@ func (s *Shipper) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Shipper.
+func (s *Shipper) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case s._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO northwind.shippers (` +
+		`shipper_id, company_name, phone` +
+		`) VALUES (` +
+		`?, ?, ?` +
+		`)` +
+		` ON DUPLICATE KEY UPDATE ` +
+		`shipper_id = ?, company_name = ?, phone = ?`
+	// run
+	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
+	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone, s.ShipperID, s.CompanyName, s.Phone); err != nil {
+		return err
+	}
+	// set exists
+	s._exists = true
+	return nil
+}
+
 // Delete deletes the Shipper from the database.
 func (s *Shipper) Delete(ctx context.Context, db DB) error {
 	switch {

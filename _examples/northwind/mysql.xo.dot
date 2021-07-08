@@ -180,12 +180,12 @@ digraph northwind {
 		headlabel="order"]
 	"northwind.order_details":"product_id":e -> "northwind.products":"product_id":w [
 		headlabel="product"]
-	"northwind.orders":"ship_via":e -> "northwind.shippers":"shipper_id":w [
-		headlabel="shipper"]
 	"northwind.orders":"customer_id":e -> "northwind.customers":"customer_id":w [
 		headlabel="customer"]
 	"northwind.orders":"employee_id":e -> "northwind.employees":"employee_id":w [
 		headlabel="employee"]
+	"northwind.orders":"ship_via":e -> "northwind.shippers":"shipper_id":w [
+		headlabel="shipper"]
 	"northwind.products":"supplier_id":e -> "northwind.suppliers":"supplier_id":w [
 		headlabel="supplier"]
 	"northwind.products":"category_id":e -> "northwind.categories":"category_id":w [

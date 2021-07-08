@@ -80,6 +80,37 @@ func (us *UsState) Save(ctx context.Context, db DB) error {
 	return us.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for UsState.
+func (us *UsState) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case us._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.us_states AS t ` +
+		`USING (` +
+		`SELECT @p1 state_id, @p2 state_name, @p3 state_abbr, @p4 state_region ` +
+		`) AS s ` +
+		`ON s.state_id = t.state_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.state_name = s.state_name, t.state_abbr = s.state_abbr, t.state_region = s.state_region ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`state_id, state_name, state_abbr, state_region` +
+		`) VALUES (` +
+		`s.state_id, s.state_name, s.state_abbr, s.state_region` +
+		`);`
+	// run
+	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
+		return err
+	}
+	// set exists
+	us._exists = true
+	return nil
+}
+
 // Delete deletes the UsState from the database.
 func (us *UsState) Delete(ctx context.Context, db DB) error {
 	switch {

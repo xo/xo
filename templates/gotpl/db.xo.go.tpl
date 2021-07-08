@@ -122,7 +122,6 @@ func (err *ErrUpdateFailed) Unwrap() error {
 	return err.Err
 }
 
-{{ if driver "postgres" -}}
 // ErrUpsertFailed is the upsert failed error.
 type ErrUpsertFailed struct {
 	Err error
@@ -138,6 +137,7 @@ func (err *ErrUpsertFailed) Unwrap() error {
 	return err.Err
 }
 
+{{ if driver "postgres" -}}
 // ErrDecodeFailed is the decode failed error.
 type ErrDecodeFailed struct {
 	Err error

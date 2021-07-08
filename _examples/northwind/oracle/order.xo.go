@@ -90,6 +90,37 @@ func (o *Order) Save(ctx context.Context, db DB) error {
 	return o.Insert(ctx, db)
 }
 
+// Upsert performs an upsert for Order.
+func (o *Order) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case o._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `MERGE northwind.orderst ` +
+		`USING (` +
+		`SELECT :1 order_id, :2 customer_id, :3 employee_id, :4 order_date, :5 required_date, :6 shipped_date, :7 ship_via, :8 freight, :9 ship_name, :10 ship_address, :11 ship_city, :12 ship_region, :13 ship_postal_code, :14 ship_country ` +
+		`FROM DUAL ) s ` +
+		`ON s.order_id = t.order_id ` +
+		`WHEN MATCHED THEN ` +
+		`UPDATE SET ` +
+		`t.customer_id = s.customer_id, t.employee_id = s.employee_id, t.order_date = s.order_date, t.required_date = s.required_date, t.shipped_date = s.shipped_date, t.ship_via = s.ship_via, t.freight = s.freight, t.ship_name = s.ship_name, t.ship_address = s.ship_address, t.ship_city = s.ship_city, t.ship_region = s.ship_region, t.ship_postal_code = s.ship_postal_code, t.ship_country = s.ship_country ` +
+		`WHEN NOT MATCHED THEN ` +
+		`INSERT (` +
+		`order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country` +
+		`) VALUES (` +
+		`s.order_id, s.customer_id, s.employee_id, s.order_date, s.required_date, s.shipped_date, s.ship_via, s.freight, s.ship_name, s.ship_address, s.ship_city, s.ship_region, s.ship_postal_code, s.ship_country` +
+		`);`
+	// run
+	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
+		return err
+	}
+	// set exists
+	o._exists = true
+	return nil
+}
+
 // Delete deletes the Order from the database.
 func (o *Order) Delete(ctx context.Context, db DB) error {
 	switch {
