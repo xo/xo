@@ -3,6 +3,29 @@
     {
       "type": "oracle",
       "name": "booktest",
+      "procs": [
+        {
+          "name": "say_hello",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "datatype": {
+                "type": "nvarchar2"
+              }
+            }
+          ],
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "number",
+                "prec": 38
+              }
+            }
+          ]
+        }
+      ],
       "tables": [
         {
           "type": "table",

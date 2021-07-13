@@ -99,15 +99,15 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO booktest.books (` +
-		`author_id, isbn, book_type, title, year, available, tags` +
+		`book_id, author_id, isbn, book_type, title, year, available, tags` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?` +
+		`?, ?, ?, ?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`book_id = ?, author_id = ?, isbn = ?, book_type = ?, title = ?, year = ?, available = ?, tags = ?`
+		`author_id = VALUES(author_id), isbn = VALUES(isbn), book_type = VALUES(book_type), title = VALUES(title), year = VALUES(year), available = VALUES(available), tags = VALUES(tags)`
 	// run
 	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags)
-	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Tags); err != nil {
 		return err
 	}
 	// set exists

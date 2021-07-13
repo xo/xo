@@ -6,6 +6,7 @@
       "procs": [
         {
           "name": "say_hello",
+          "kind": "procedure",
           "params": [
             {
               "name": "name",
@@ -14,12 +15,14 @@
               }
             }
           ],
-          "return": {
-            "name": "result",
-            "datatype": {
-              "type": "nvarchar"
+          "return": [
+            {
+              "name": "result",
+              "datatype": {
+                "type": "nvarchar"
+              }
             }
-          }
+          ]
         }
       ],
       "tables": [

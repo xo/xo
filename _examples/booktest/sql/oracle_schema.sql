@@ -17,7 +17,7 @@ CREATE TABLE books (
 
 CREATE INDEX books_title_idx ON books(title, year);
 
-CREATE PROCEDURE say_hello(name IN NVARCHAR2, res OUT NVARCHAR2) AS
+CREATE FUNCTION say_hello(name IN NVARCHAR2) RETURN INTEGER AS
 BEGIN
-    SELECT 'hello ' || name INTO res FROM dual\;
+  RETURN 'hello ' || name\;
 END\;;

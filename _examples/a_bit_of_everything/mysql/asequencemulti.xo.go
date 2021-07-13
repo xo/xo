@@ -93,15 +93,15 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO a_bit_of_everything.a_sequence_multi (` +
-		`a_text` +
+		`a_seq, a_text` +
 		`) VALUES (` +
-		`?` +
+		`?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`a_seq = ?, a_text = ?`
+		`a_text = VALUES(a_text)`
 	// run
 	logf(sqlstr, asm.ASeq, asm.AText)
-	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText, asm.ASeq, asm.AText); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText); err != nil {
 		return err
 	}
 	// set exists

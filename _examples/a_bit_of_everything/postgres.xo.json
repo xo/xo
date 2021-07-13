@@ -20,6 +20,148 @@
           ]
         }
       ],
+      "procs": [
+        {
+          "name": "a_0_in_0_out",
+          "kind": "procedure",
+          "void": true
+        },
+        {
+          "name": "a_0_in_1_out",
+          "kind": "function",
+          "return": [
+            {
+              "name": "a_return",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
+          "name": "a_1_in_0_out",
+          "kind": "procedure",
+          "params": [
+            {
+              "name": "a_param",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "void": true
+        },
+        {
+          "name": "a_1_in_1_out",
+          "kind": "function",
+          "params": [
+            {
+              "name": "a_param",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "return": [
+            {
+              "name": "a_return",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
+          "name": "a_2_in_2_out",
+          "kind": "function",
+          "params": [
+            {
+              "name": "param_one",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "param_two",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "return": [
+            {
+              "name": "return_one",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "return_two",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
+          "name": "a_func_0_in",
+          "kind": "function",
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
+          "name": "a_func_1_in",
+          "kind": "function",
+          "params": [
+            {
+              "name": "a_param",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
+          "name": "a_func_2_in",
+          "kind": "function",
+          "params": [
+            {
+              "name": "param_one",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "param_two",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ]
+        }
+      ],
       "tables": [
         {
           "type": "table",

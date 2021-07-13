@@ -12,10 +12,10 @@ func SayHello(ctx context.Context, db DB, name string) (string, error) {
 	// call booktest.say_hello
 	const sqlstr = `booktest.say_hello`
 	// run
-	var s string
+	var result string
 	logf(sqlstr, name)
-	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("name", name), sql.Named("result", sql.Out{Dest: &s})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("name", name), sql.Named("result", sql.Out{Dest: &result})); err != nil {
 		return "", logerror(err)
 	}
-	return s, nil
+	return result, nil
 }

@@ -9,6 +9,7 @@ import (
 // Proc is a stored procedure.
 type Proc struct {
 	ProcName   string `json:"proc_name"`   // proc_name
+	ProcKind   string `json:"proc_kind"`   // proc_kind
 	ReturnType string `json:"return_type"` // return_type
 	ReturnName string `json:"return_name"` // return_name
 }
@@ -17,12 +18,43 @@ type Proc struct {
 func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`p.proname, ` + // ::varchar AS proc_name
-		`pg_get_function_result(p.oid), ` + // ::varchar AS return_type
-		`'' ` + // ::varchar AS return_name
-		`FROM pg_proc p ` +
-		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
-		`WHERE n.nspname = $1`
+		`p.proname, ` + // ::varchar as proc_name
+		`pp.proc_kind, ` + // ::varchar AS proc_kind
+		`format_type(pp.return_type, NULL), ` + // ::varchar AS return_type
+		`pp.return_name ` + // ::varchar AS return_name
+		`FROM pg_catalog.pg_proc p ` +
+		`JOIN pg_catalog.pg_namespace n ON (p.pronamespace = n.oid) ` +
+		`JOIN ( ` +
+		`SELECT ` +
+		`p.proname, ` +
+		`(CASE WHEN EXISTS( ` +
+		`SELECT ` +
+		`column_name ` +
+		`FROM information_schema.columns ` +
+		`WHERE table_name = 'pg_proc' ` +
+		`AND column_name = 'prokind' ` +
+		`) ` +
+		`THEN (CASE p.prokind ` +
+		`WHEN 'p' THEN 'procedure' ` +
+		`WHEN 'f' THEN 'function' ` +
+		`END) ` +
+		`ELSE 'procedure' ` +
+		`END) AS proc_kind, ` +
+		`UNNEST(COALESCE(p.proallargtypes, ARRAY[p.prorettype])) AS return_type, ` +
+		`UNNEST(CASE ` +
+		`WHEN p.proargmodes IS NULL THEN ARRAY[''] ` +
+		`ELSE p.proargnames ` +
+		`END) AS return_name, ` +
+		`UNNEST(COALESCE(p.proargmodes, ARRAY['o'])) AS param_type ` +
+		`FROM pg_catalog.pg_proc p ` +
+		`) AS pp ON p.proname = pp.proname ` +
+		`WHERE p.prorettype <> 'pg_catalog.cstring'::pg_catalog.regtype ` +
+		`AND (p.proargtypes[0] IS NULL ` +
+		`OR p.proargtypes[0] <> 'pg_catalog.cstring'::pg_catalog.regtype) ` +
+		`AND (pp.proc_kind = 'function' ` +
+		`OR pp.proc_kind = 'procedure') ` +
+		`AND pp.param_type = 'o' ` +
+		`AND n.nspname = $1`
 	// run
 	logf(sqlstr, schema)
 	rows, err := db.QueryContext(ctx, sqlstr, schema)
@@ -35,7 +67,7 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType, &p.ReturnName); err != nil {
+		if err := rows.Scan(&p.ProcName, &p.ProcKind, &p.ReturnType, &p.ReturnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -51,12 +83,15 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`r.routine_name AS proc_name, ` +
-		`p.dtd_identifier AS return_type ` +
+		`LOWER(r.routine_type) AS proc_kind, ` +
+		`COALESCE(p.dtd_identifier, 'void') AS return_type, ` +
+		`COALESCE(p.parameter_name, '') AS return_name ` +
 		`FROM information_schema.routines r ` +
-		`INNER JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema ` +
+		`LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema ` +
 		`AND p.specific_name = r.routine_name ` +
-		`AND p.ordinal_position = 0 ` +
-		`WHERE r.routine_schema = ?`
+		`AND (p.parameter_mode = 'OUT' OR p.ordinal_position = 0) ` +
+		`WHERE r.routine_schema = ? ` +
+		`ORDER BY r.routine_name, p.ordinal_position`
 	// run
 	logf(sqlstr, schema)
 	rows, err := db.QueryContext(ctx, sqlstr, schema)
@@ -69,7 +104,7 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType); err != nil {
+		if err := rows.Scan(&p.ProcName, &p.ProcKind, &p.ReturnType, &p.ReturnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -85,13 +120,27 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	// query
 	const sqlstr = `SELECT ` +
 		`o.name AS proc_name, ` +
-		`TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') AS return_type, ` +
-		`SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name ` +
+		`(CASE o.type ` +
+		`WHEN 'P' THEN 'procedure' ` +
+		`WHEN 'FN' THEN 'function' ` +
+		`END) AS proc_kind, ` +
+		`CASE ` +
+		`WHEN p.object_id IS NOT NULL ` +
+		`THEN TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') ` +
+		`ELSE 'void' ` +
+		`END AS return_type, ` +
+		`CASE ` +
+		`WHEN p.object_id IS NOT NULL AND p.name <> '' ` +
+		`THEN SUBSTRING(p.name, 2, LEN(p.name)-1) ` +
+		`ELSE '' ` +
+		`END AS return_name ` +
 		`FROM sys.objects o ` +
-		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
+		`LEFT JOIN sys.parameters p ON o.object_id = p.object_id ` +
+		`AND (p.object_id IS NULL OR p.is_output = 'true') ` +
 		`WHERE o.type = 'P' ` +
-		`AND p.is_output = 'true' ` +
-		`AND SCHEMA_NAME(o.schema_id) = @p1`
+		`OR o.type = 'FN' ` +
+		`AND SCHEMA_NAME(o.schema_id) = @p1 ` +
+		`ORDER BY o.object_id`
 	// run
 	logf(sqlstr, schema)
 	rows, err := db.QueryContext(ctx, sqlstr, schema)
@@ -104,7 +153,51 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcName, &p.ReturnType, &p.ReturnName); err != nil {
+		if err := rows.Scan(&p.ProcName, &p.ProcKind, &p.ReturnType, &p.ReturnName); err != nil {
+			return nil, logerror(err)
+		}
+		res = append(res, &p)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, logerror(err)
+	}
+	return res, nil
+}
+
+// OracleProcs runs a custom query, returning results as Proc.
+func OracleProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`LOWER(o.object_name) AS proc_name, ` +
+		`LOWER(o.object_type) AS proc_kind, ` +
+		`LOWER(CASE ` +
+		`WHEN a.data_type IS NULL THEN 'void' ` +
+		`WHEN a.data_type = 'CHAR' THEN 'CHAR(' || a.data_length || ')' ` +
+		`WHEN a.data_type = 'VARCHAR2' THEN 'VARCHAR2(' || a.data_length || ')' ` +
+		`WHEN a.data_type = 'NUMBER' THEN 'NUMBER(' || NVL(a.data_precision, 0) || ',' || NVL(a.data_scale, 0) || ')' ` +
+		`ELSE a.data_type END) AS return_type, ` +
+		`LOWER(CASE ` +
+		`WHEN a.argument_name IS NULL THEN '-' ` +
+		`ELSE a.argument_name END) AS return_name ` +
+		`FROM all_objects o ` +
+		`LEFT JOIN sys.all_arguments a ON a.object_id = o.object_id ` +
+		`AND a.in_out = 'OUT' ` +
+		`WHERE o.object_type IN ('FUNCTION','PROCEDURE') ` +
+		`AND o.owner = UPPER(:1) ` +
+		`ORDER BY o.object_id`
+	// run
+	logf(sqlstr, schema)
+	rows, err := db.QueryContext(ctx, sqlstr, schema)
+	if err != nil {
+		return nil, logerror(err)
+	}
+	defer rows.Close()
+	// load results
+	var res []*Proc
+	for rows.Next() {
+		var p Proc
+		// scan
+		if err := rows.Scan(&p.ProcName, &p.ProcKind, &p.ReturnType, &p.ReturnName); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)

@@ -159,3 +159,44 @@ CREATE TABLE a_bit_of_everything (
 -- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
+
+-- procs
+CREATE PROCEDURE a_0_in_0_out AS
+BEGIN
+  null\;
+END\;;
+
+CREATE PROCEDURE a_1_in_0_out(a_param IN INTEGER) AS
+BEGIN
+  null\;
+END\;;
+
+CREATE PROCEDURE a_0_in_1_out(a_return OUT INTEGER) AS
+BEGIN
+  SELECT 10 INTO a_return FROM dual\;
+END\;;
+
+CREATE PROCEDURE a_1_in_1_out(a_param IN INTEGER, a_return OUT INTEGER) AS
+BEGIN
+  SELECT a_param INTO a_return FROM dual\;
+END\;;
+
+CREATE PROCEDURE a_2_in_2_out(param_one IN INTEGER, param_two IN INTEGER, return_one OUT INTEGER, return_two OUT INTEGER) AS
+BEGIN
+  SELECT param_one, param_two INTO return_one, return_two FROM dual\;
+END\;;
+
+CREATE FUNCTION a_func_0_in RETURN INTEGER AS
+BEGIN
+return 10\;
+end\;;
+
+CREATE FUNCTION a_func_1_in(a_param IN INTEGER) RETURN INTEGER AS
+BEGIN
+  RETURN a_param\;
+END\;;
+
+CREATE FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS
+BEGIN
+  RETURN param_one+param_two\;
+END\;;

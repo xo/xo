@@ -92,6 +92,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 		Tags:      "someother",
 	}
 	if err := b4.Upsert(ctx, db); err != nil {
+		fmt.Println("here")
 		return err
 	}
 	// retrieve first book

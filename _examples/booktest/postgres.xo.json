@@ -23,6 +23,7 @@
       "procs": [
         {
           "name": "say_hello",
+          "kind": "function",
           "params": [
             {
               "name": "name",
@@ -31,11 +32,14 @@
               }
             }
           ],
-          "return": {
-            "datatype": {
-              "type": "character varying"
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "character varying"
+              }
             }
-          }
+          ]
         }
       ],
       "tables": [

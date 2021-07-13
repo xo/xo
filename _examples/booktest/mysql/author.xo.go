@@ -92,15 +92,15 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO booktest.authors (` +
-		`name` +
+		`author_id, name` +
 		`) VALUES (` +
-		`?` +
+		`?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`author_id = ?, name = ?`
+		`name = VALUES(name)`
 	// run
 	logf(sqlstr, a.AuthorID, a.Name)
-	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID, a.Name, a.AuthorID, a.Name); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID, a.Name); err != nil {
 		return err
 	}
 	// set exists

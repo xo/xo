@@ -16,15 +16,20 @@ type ProcParam struct {
 func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`LEFT( ` +
-		`PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid), ` +
-		`-LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))) - 1 ` +
-		`), ` + // ::varchar AS param_name
-		`UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', ')) ` + // ::varchar AS param_type
+		`pp.param_name, ` + // ::varchar AS param_name
+		`pp.param_type ` + // ::varchar AS param_type
 		`FROM pg_proc p ` +
 		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
+		`JOIN ( ` +
+		`SELECT ` +
+		`p.proname, ` +
+		`UNNEST(p.proargnames) AS param_name, ` +
+		`format_type(UNNEST(p.proargtypes), NULL) AS param_type ` +
+		`FROM pg_proc p ` +
+		`) AS pp ON p.proname = pp.proname ` +
 		`WHERE n.nspname = $1 ` +
-		`AND p.proname = $2`
+		`AND p.proname = $2 ` +
+		`AND pp.param_type IS NOT NULL`
 	// run
 	logf(sqlstr, schema, proc)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
@@ -52,13 +57,15 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`parameter_name AS param_name, ` +
-		`dtd_identifier AS param_type ` +
-		`FROM information_schema.parameters ` +
-		`WHERE ordinal_position > 0 ` +
-		`AND specific_schema = ? ` +
-		`AND specific_name = ? ` +
-		`ORDER BY ordinal_position`
+		`p.parameter_name AS param_name, ` +
+		`p.dtd_identifier AS param_type ` +
+		`FROM information_schema.routines r ` +
+		`INNER JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema ` +
+		`AND p.specific_name = r.routine_name ` +
+		`AND p.parameter_mode = 'IN' ` +
+		`WHERE r.routine_schema = ? ` +
+		`AND r.routine_name = ? ` +
+		`ORDER BY p.ordinal_position`
 	// run
 	logf(sqlstr, schema, proc)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
@@ -94,6 +101,46 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pr
 		`AND o.name = @p2 ` +
 		`AND p.is_output = 'false' ` +
 		`ORDER BY p.parameter_id`
+	// run
+	logf(sqlstr, schema, proc)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	if err != nil {
+		return nil, logerror(err)
+	}
+	defer rows.Close()
+	// load results
+	var res []*ProcParam
+	for rows.Next() {
+		var pp ProcParam
+		// scan
+		if err := rows.Scan(&pp.ParamName, &pp.ParamType); err != nil {
+			return nil, logerror(err)
+		}
+		res = append(res, &pp)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, logerror(err)
+	}
+	return res, nil
+}
+
+// OracleProcParams runs a custom query, returning results as ProcParam.
+func OracleProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`LOWER(a.argument_name) AS param_name, ` +
+		`LOWER(CASE a.data_type ` +
+		`WHEN 'CHAR' THEN 'CHAR(' || a.data_length || ')' ` +
+		`WHEN 'VARCHAR2' THEN 'VARCHAR2(' || a.data_length || ')' ` +
+		`WHEN 'NUMBER' THEN 'NUMBER(' || NVL(a.data_precision, 0) || ',' || NVL(a.data_scale, 0) || ')' ` +
+		`ELSE a.data_type END) AS param_type ` +
+		`FROM all_objects o ` +
+		`JOIN sys.all_arguments a ON a.object_id = o.object_id ` +
+		`AND a.in_out = 'IN' ` +
+		`WHERE o.object_type IN ('FUNCTION','PROCEDURE') ` +
+		`AND o.owner = UPPER(:1) ` +
+		`AND o.object_name = UPPER(:2) ` +
+		`ORDER BY a.position`
 	// run
 	logf(sqlstr, schema, proc)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)

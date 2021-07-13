@@ -23,6 +23,7 @@
       "procs": [
         {
           "name": "say_hello",
+          "kind": "function",
           "params": [
             {
               "name": "name",
@@ -32,12 +33,15 @@
               }
             }
           ],
-          "return": {
-            "datatype": {
-              "type": "varchar",
-              "prec": 255
+          "return": [
+            {
+              "name": "r0",
+              "datatype": {
+                "type": "varchar",
+                "prec": 255
+              }
             }
-          }
+          ]
         }
       ],
       "tables": [

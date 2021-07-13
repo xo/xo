@@ -93,9 +93,9 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO a_sequence_multi (` +
-		`a_text` +
+		`a_seq, a_text` +
 		`) VALUES (` +
-		`$1` +
+		`$1, $2` +
 		`)` +
 		` ON CONFLICT (a_seq) DO ` +
 		`UPDATE SET ` +

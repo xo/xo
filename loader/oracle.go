@@ -14,6 +14,8 @@ func init() {
 		Mask:             ":%d",
 		GoType:           OracleGoType,
 		Schema:           models.OracleSchema,
+		Procs:            models.OracleProcs,
+		ProcParams:       models.OracleProcParams,
 		Tables:           models.OracleTables,
 		TableColumns:     models.OracleTableColumns,
 		TableSequences:   models.OracleTableSequences,

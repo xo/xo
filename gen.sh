@@ -85,27 +85,63 @@ ENDSQL
 COMMENT='{{ . }} is a stored procedure.'
 $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  p.proname::varchar AS proc_name,
-  pg_get_function_result(p.oid)::varchar AS return_type,
-  ''::varchar AS return_name
-FROM pg_proc p
-  JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
-WHERE n.nspname = %%schema string%%
+  p.proname::varchar as proc_name,
+  pp.proc_kind::varchar AS proc_kind,
+  format_type(pp.return_type, NULL)::varchar AS return_type,
+  pp.return_name::varchar AS return_name
+FROM pg_catalog.pg_proc p
+  JOIN pg_catalog.pg_namespace n ON (p.pronamespace = n.oid)
+  JOIN (
+    SELECT
+      p.proname,
+      (CASE WHEN EXISTS(
+          SELECT
+            column_name
+          FROM information_schema.columns
+          WHERE table_name = 'pg_proc'
+            AND column_name = 'prokind'
+        )
+        THEN (CASE p.prokind
+          WHEN 'p' THEN 'procedure'
+          WHEN 'f' THEN 'function'
+        END)
+        ELSE 'procedure'
+      END) AS proc_kind,
+      UNNEST(COALESCE(p.proallargtypes, ARRAY[p.prorettype])) AS return_type,
+      UNNEST(CASE
+        WHEN p.proargmodes IS NULL THEN ARRAY['']
+        ELSE p.proargnames
+      END) AS return_name,
+      UNNEST(COALESCE(p.proargmodes, ARRAY['o'])) AS param_type
+    FROM pg_catalog.pg_proc p
+  ) AS pp ON p.proname = pp.proname
+WHERE p.prorettype <> 'pg_catalog.cstring'::pg_catalog.regtype
+  AND (p.proargtypes[0] IS NULL
+    OR p.proargtypes[0] <> 'pg_catalog.cstring'::pg_catalog.regtype)
+  AND (pp.proc_kind = 'function'
+    OR pp.proc_kind = 'procedure')
+  AND pp.param_type = 'o'
+  AND n.nspname = %%schema string%%
 ENDSQL
 
 # postgres proc parameter list query
 COMMENT='{{ . }} is a stored procedure param.'
 $XOBIN query $PGDB -M -B -2 -T ProcParam -F PostgresProcParams --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  LEFT(
-    PG_GET_FUNCTION_IDENTITY_ARGUMENTS(p.oid),
-    -LENGTH(UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))) - 1
-  )::varchar AS param_name,
-  UNNEST(STRING_TO_ARRAY(OIDVECTORTYPES(p.proargtypes), ', '))::varchar AS param_type
+  pp.param_name::varchar AS param_name,
+  pp.param_type::varchar AS param_type
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
+  JOIN (
+    SELECT
+      p.proname,
+      UNNEST(p.proargnames) AS param_name,
+      format_type(UNNEST(p.proargtypes), NULL) AS param_type
+    FROM pg_proc p
+  ) AS pp ON p.proname = pp.proname
 WHERE n.nspname = %%schema string%%
   AND p.proname = %%proc string%%
+  AND pp.param_type IS NOT NULL
 ENDSQL
 
 # postgres table list query
@@ -302,24 +338,29 @@ ENDSQL
 $XOBIN query $MYDB -M -B -2 -T Proc -F MysqlProcs -a -o $DEST $@ << ENDSQL
 SELECT
   r.routine_name AS proc_name,
-  p.dtd_identifier AS return_type
+  LOWER(r.routine_type) AS proc_kind,
+  COALESCE(p.dtd_identifier, 'void') AS return_type,
+  COALESCE(p.parameter_name, '') AS return_name
 FROM information_schema.routines r
-  INNER JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
+  LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
     AND p.specific_name = r.routine_name
-    AND p.ordinal_position = 0
+    AND (p.parameter_mode = 'OUT' OR p.ordinal_position = 0)
 WHERE r.routine_schema = %%schema string%%
+ORDER BY r.routine_name, p.ordinal_position
 ENDSQL
 
 # mysql proc parameter list query
 $XOBIN query $MYDB -M -B -2 -T ProcParam -F MysqlProcParams -a -o $DEST $@ << ENDSQL
 SELECT
-  parameter_name AS param_name,
-  dtd_identifier AS param_type
-FROM information_schema.parameters
-WHERE ordinal_position > 0
-  AND specific_schema = %%schema string%%
-  AND specific_name = %%proc string%%
-ORDER BY ordinal_position
+  p.parameter_name AS param_name,
+  p.dtd_identifier AS param_type
+FROM information_schema.routines r
+  INNER JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
+    AND p.specific_name = r.routine_name
+    AND p.parameter_mode = 'IN'
+WHERE r.routine_schema = %%schema string%%
+  AND r.routine_name = %%proc string%%
+ORDER BY p.ordinal_position
 ENDSQL
 
 # mysql table list query
@@ -476,7 +517,7 @@ WITH RECURSIVE
   )
 SELECT col AS column_name
 FROM d
-WHERE name = %%table string%%;
+WHERE name = %%table string%%
 ENDSQL
 
 # sqlite3 table foreign key list query
@@ -535,13 +576,27 @@ ENDSQL
 $XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
 SELECT
   o.name AS proc_name,
-  TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '') AS return_type,
-  SUBSTRING(p.name, 2, LEN(p.name)-1) AS return_name
+  (CASE o.type
+    WHEN 'P' THEN 'procedure'
+    WHEN 'FN' THEN 'function'
+  END) AS proc_kind,
+  CASE
+    WHEN p.object_id IS NOT NULL
+      THEN TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '')
+    ELSE 'void'
+  END AS return_type,
+  CASE
+  WHEN p.object_id IS NOT NULL AND p.name <> ''
+      THEN SUBSTRING(p.name, 2, LEN(p.name)-1)
+    ELSE ''
+  END AS return_name
 FROM sys.objects o
-  INNER JOIN sys.parameters p ON o.object_id = p.object_id
+  LEFT JOIN sys.parameters p ON o.object_id = p.object_id
+    AND (p.object_id IS NULL OR p.is_output = 'true')
 WHERE o.type = 'P'
-  AND p.is_output = 'true'
+   OR o.type = 'FN'
   AND SCHEMA_NAME(o.schema_id) = %%schema string%%
+ORDER BY o.object_id
 ENDSQL
 
 # sqlserver proc parameter list query
@@ -610,7 +665,7 @@ FROM sys.objects o
 WHERE c.is_identity = 1
   AND o.type = 'U'
   AND SCHEMA_NAME(o.schema_id) = %%schema string%%
-  AND o.name = %%table string%%;
+  AND o.name = %%table string%%
 ENDSQL
 
 # sqlserver table foreign key list query
@@ -696,17 +751,44 @@ FROM dual
 ENDSQL
 
 # oracle proc list query
-#$XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
-#SELECT
-#  p.object_name AS proc_name
-#FROM all_procedures p
-#  JOIN
-#WHERE p.owner = UPPER(%%schema string%%)
-#ENDSQL
+$XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
+SELECT
+  LOWER(o.object_name) AS proc_name,
+  LOWER(o.object_type) AS proc_kind,
+  LOWER(CASE
+    WHEN a.data_type IS NULL THEN 'void'
+    WHEN a.data_type = 'CHAR' THEN 'CHAR(' || a.data_length || ')'
+    WHEN a.data_type = 'VARCHAR2' THEN 'VARCHAR2(' || a.data_length || ')'
+    WHEN a.data_type = 'NUMBER' THEN 'NUMBER(' || NVL(a.data_precision, 0) || ',' || NVL(a.data_scale, 0) || ')'
+    ELSE a.data_type END) AS return_type,
+  LOWER(CASE
+    WHEN a.argument_name IS NULL THEN '-'
+    ELSE a.argument_name END) AS return_name
+FROM all_objects o
+  LEFT JOIN sys.all_arguments a ON a.object_id = o.object_id
+    AND a.in_out = 'OUT'
+WHERE o.object_type IN ('FUNCTION','PROCEDURE')
+  AND o.owner = UPPER(%%schema string%%)
+ORDER BY o.object_id
+ENDSQL
 
 # oracle proc parameter list query
-#$XOBIN query $ORDB -M -B -2 -T ProcParam -F OracleProcParams -a -o $DEST $@ << ENDSQL
-#ENDSQL
+$XOBIN query $ORDB -M -B -2 -T ProcParam -F OracleProcParams -a -o $DEST $@ << ENDSQL
+SELECT
+  LOWER(a.argument_name) AS param_name,
+  LOWER(CASE a.data_type
+    WHEN 'CHAR' THEN 'CHAR(' || a.data_length || ')'
+    WHEN 'VARCHAR2' THEN 'VARCHAR2(' || a.data_length || ')'
+    WHEN 'NUMBER' THEN 'NUMBER(' || NVL(a.data_precision, 0) || ',' || NVL(a.data_scale, 0) || ')'
+    ELSE a.data_type END) AS param_type
+FROM all_objects o
+  JOIN sys.all_arguments a ON a.object_id = o.object_id
+    AND a.in_out = 'IN'
+WHERE o.object_type IN ('FUNCTION','PROCEDURE')
+  AND o.owner = UPPER(%%schema string%%)
+  AND o.object_name = UPPER(%%proc string%%)
+ORDER BY a.position
+ENDSQL
 
 # oracle table list query
 $XOBIN query $ORDB -M -B -2 -T Table -F OracleTables -a -o $DEST $@ << ENDSQL

@@ -10,6 +10,7 @@ schemas:
         datatype:
           type: integer
         is_primary: true
+        is_sequence: true
       - name: name
         datatype:
           type: text
@@ -19,6 +20,7 @@ schemas:
         datatype:
           type: integer
         is_primary: true
+        is_sequence: true
       indexes:
       - name: authors_name_idx
         func_name: authors_by_name
@@ -34,6 +36,7 @@ schemas:
           datatype:
             type: integer
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
     - type: table
@@ -43,6 +46,7 @@ schemas:
         datatype:
           type: integer
         is_primary: true
+        is_sequence: true
       - name: author_id
         datatype:
           type: integer
@@ -73,6 +77,7 @@ schemas:
         datatype:
           type: integer
         is_primary: true
+        is_sequence: true
       indexes:
       - name: books_title_idx
         func_name: books_by_title_year
@@ -102,19 +107,21 @@ schemas:
           datatype:
             type: integer
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
       foreign_keys:
       - name: books_author_id_fkey
         resolved_name: author
         column:
-          name: author_id
+        - name: author_id
           datatype:
             type: integer
         ref_table: authors
         ref_column:
-          name: author_id
+        - name: author_id
           datatype:
             type: integer
           is_primary: true
+          is_sequence: true
         ref_func_name: author_by_author_id

@@ -162,3 +162,45 @@ CREATE TABLE a_bit_of_everything (
 -- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
+
+-- procs
+CREATE PROCEDURE a_0_in_0_out AS
+BEGIN
+  INSERT INTO a_manual_table (a_text) values ('')\;
+END;
+
+CREATE PROCEDURE a_0_in_1_out(@a_return INTEGER OUTPUT) AS
+BEGIN
+  SET @a_return = '10'\;
+END;
+
+CREATE PROCEDURE a_1_in_0_out (@a_param INTEGER) AS
+BEGIN
+  INSERT INTO a_manual_table (a_text) values ('')\;
+END;
+
+CREATE PROCEDURE a_1_in_1_out(@a_param INTEGER, @a_return INTEGER OUTPUT) AS
+BEGIN
+  SET @a_return = @a_param\;
+END;
+
+CREATE PROCEDURE a_2_in_2_out(@param_one INTEGER, @param_two INTEGER, @return_one INTEGER OUTPUT, @return_two INTEGER OUTPUT) AS
+BEGIN
+  SET @return_one = @param_one\;
+  SET @return_two = @param_two\;
+END;
+
+CREATE FUNCTION a_func_0_in() RETURNS INTEGER AS
+BEGIN
+  RETURN 10\;
+END;
+
+CREATE FUNCTION a_func_1_in(@a_param INTEGER) RETURNS INTEGER AS
+BEGIN
+  RETURN @a_param\;
+END;
+
+CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER
+BEGIN
+  RETURN @param_one+@param_two\;
+END;

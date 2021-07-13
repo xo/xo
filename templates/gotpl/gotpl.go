@@ -348,10 +348,14 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 		if err != nil {
 			return err
 		}
+		prefix := "sp_"
+		if proc.Kind == "function" {
+			prefix = "sf_"
+		}
 		if err := set.Emit(ctx, &templates.Template{
 			Set:      "schema",
 			Template: "proc",
-			Type:     "sp_" + proc.GoName,
+			Type:     prefix + proc.GoName,
 			Data:     proc,
 		}); err != nil {
 			return err
@@ -432,34 +436,50 @@ func convertEnum(e xo.Enum) Enum {
 }
 
 func convertProc(ctx context.Context, p xo.Proc) (Proc, error) {
-	var typeList []string
+	var paramList, retList []string
 	var params []Field
-	var ret Field
+	var returns []Field
 	// proc params
 	for _, z := range p.Params {
 		f, err := convertField(ctx, false, z)
 		if err != nil {
 			return Proc{}, err
 		}
-		typeList = append(typeList, z.Datatype.Type)
+		paramList = append(paramList, z.Datatype.Type)
 		params = append(params, f)
 	}
 	// proc return
-	ret, err := convertField(ctx, false, p.Return)
-	if err != nil {
-		return Proc{}, err
+	for _, z := range p.Returns {
+		f, err := convertField(ctx, false, z)
+		if err != nil {
+			return Proc{}, err
+		}
+		retList = append(retList, z.Datatype.Type)
+		returns = append(returns, f)
 	}
-	signature := fmt.Sprintf("%s.%s(%s) %s",
-		templates.Schema(ctx),
-		p.Name,
-		strings.Join(typeList, ", "),
-		p.Return.Datatype.Type)
+	// signature used for comment
+	var format string
+	switch {
+	case p.Void:
+		format = "%s.%s(%s)%s"
+	case len(p.Returns) == 1:
+		format = "%s.%s(%s) %s"
+	default:
+		format = "%s.%s(%s) (%s)"
+	}
+	signature := fmt.Sprintf(format,
+		templates.Schema(ctx), p.Name,
+		strings.Join(paramList, ", "),
+		strings.Join(retList, ", "))
 	return Proc{
 		GoName:    snaker.SnakeToCamelIdentifier(p.Name),
 		SQLName:   p.Name,
+		Kind:      p.Kind,
 		Signature: signature,
 		Params:    params,
-		Return:    ret,
+		Returns:   returns,
+		Void:      p.Void,
+		Comment:   "",
 	}, nil
 }
 
@@ -540,9 +560,9 @@ func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, er
 
 func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, error) {
 	l := Loader(ctx)
-	name := snaker.SnakeToCamel(f.Name)
-	if identifier {
-		name = snaker.SnakeToCamelIdentifier(f.Name)
+	name := snaker.ForceCamelIdentifier(f.Name)
+	if !identifier {
+		name = snaker.ForceLowerCamelIdentifier(f.Name)
 	}
 	typ, zero, err := l.GoType(ctx, f.Datatype)
 	if err != nil {

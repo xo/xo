@@ -4,12 +4,13 @@ schemas:
     name: booktest
     procs:
     - name: say_hello
+      kind: procedure
       params:
       - name: name
         datatype:
           type: nvarchar
       return:
-        name: result
+      - name: result
         datatype:
           type: nvarchar
     tables:
@@ -21,6 +22,7 @@ schemas:
           type: int
           prec: 10
         is_primary: true
+        is_sequence: true
       - name: name
         datatype:
           type: varchar
@@ -32,6 +34,7 @@ schemas:
           type: int
           prec: 10
         is_primary: true
+        is_sequence: true
       indexes:
       - name: authors_name_idx
         func_name: authors_by_name
@@ -49,6 +52,7 @@ schemas:
             type: int
             prec: 10
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
     - type: table
@@ -59,6 +63,7 @@ schemas:
           type: int
           prec: 10
         is_primary: true
+        is_sequence: true
       - name: author_id
         datatype:
           type: int
@@ -94,6 +99,7 @@ schemas:
           type: int
           prec: 10
         is_primary: true
+        is_sequence: true
       indexes:
       - name: books_isbn_key
         func_name: book_by_isbn
@@ -112,6 +118,7 @@ schemas:
             type: int
             prec: 10
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
       - name: books_title_idx
@@ -131,15 +138,16 @@ schemas:
       - name: books_author_id_fkey
         resolved_name: author
         column:
-          name: author_id
+        - name: author_id
           datatype:
             type: int
             prec: 10
         ref_table: authors
         ref_column:
-          name: author_id
+        - name: author_id
           datatype:
             type: int
             prec: 10
           is_primary: true
+          is_sequence: true
         ref_func_name: author_by_author_id

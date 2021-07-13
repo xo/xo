@@ -111,7 +111,7 @@ func Sqlite3TableSequences(ctx context.Context, db DB, schema, table string) ([]
 		`) ` +
 		`SELECT col AS column_name ` +
 		`FROM d ` +
-		`WHERE name = $1;`
+		`WHERE name = $1`
 	// run
 	logf(sqlstr, table)
 	rows, err := db.QueryContext(ctx, sqlstr, table)
@@ -145,7 +145,7 @@ func SqlserverTableSequences(ctx context.Context, db DB, schema, table string) (
 		`WHERE c.is_identity = 1 ` +
 		`AND o.type = 'U' ` +
 		`AND SCHEMA_NAME(o.schema_id) = @p1 ` +
-		`AND o.name = @p2;`
+		`AND o.name = @p2`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)

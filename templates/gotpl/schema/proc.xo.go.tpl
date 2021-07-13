@@ -1,35 +1,44 @@
 {{- $p := .Data -}}
-{{- if ne $p.Return.GoName "trigger" -}}
-// {{ func_name_context $p }} calls the stored procedure '{{ $p.Signature }}' on db.
+// {{ func_name_context $p }} calls the stored {{ $p.Kind }} '{{ $p.Signature }}' on db.
 {{ func_context $p }} {
+{{- if and (driver "mysql") (eq $p.Kind "procedure") (not $p.Void) }}
+	// At the moment, the Go MySQL driver does not support stored procedures
+	// with out parameters
+	return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}fmt.Errorf("unsupported")
+{{- else }}
 	// call {{ schema $p.SQLName }}
 	{{ sqlstr "proc" $p }}
 	// run
-{{- if ne $p.Return.Type "void" }}
-	var {{ short $p.Return.Type }} {{ type $p.Return.Type }}
+{{- if not $p.Void }}
+{{- range $p.Returns }}
+	var {{ .GoName }} {{ type .Type }}
+{{- end }}
 	logf(sqlstr, {{ params $p.Params false }})
-{{- if driver "sqlserver" }}
+{{- if and (driver "sqlserver" "oracle") (eq $p.Kind "procedure")}}
 	if _, err := {{ db_named "Exec" $p }}; err != nil {
 {{- else }}
-	if err := {{ db "QueryRow" $p }}.Scan(&{{ short $p.Return.Type}}); err != nil {
-{{- end }}	
-		return {{ zero $p.Return.Zero }}, logerror(err)
+	if err := {{ db "QueryRow" $p }}.Scan({{ names "&" $p.Returns }}); err != nil {
+{{- end }}
+		return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}logerror(err)
 	}
-	return {{ short $p.Return.Type }}, nil
+	return {{ range $p.Returns }}{{ .GoName }}, {{ end }}nil
 {{- else -}}
 	logf(sqlstr)
-	if _, err := {{ db "Exec" }}
+{{- if driver "sqlserver" "oracle" }}
+	if _, err := {{ db_named "Exec" $p }}; err != nil {
+{{- else }}
+	if _, err := {{ db "Exec" $p }}; err != nil {
+{{- end }}
 		return logerror(err)
 	}
 	return nil
-{{- end -}}
+{{- end }}
+{{- end }}
 }
 
 {{ if context_both -}}
-// {{ func_name $p }} calls the stored procedure '{{ $p.Signature }}' on db.
+// {{ func_name $p }} calls the {{ $p.Kind }} '{{ $p.Signature }}' on db.
 {{ func $p }} {
 	return {{ func_name_context $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }
 {{- end }}
-{{- end }}
-

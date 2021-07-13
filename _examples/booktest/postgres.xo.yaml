@@ -11,11 +11,13 @@ schemas:
         const_value: 2
     procs:
     - name: say_hello
+      kind: function
       params:
       - name: name
         datatype:
           type: character varying
       return:
+      - name: r0
         datatype:
           type: character varying
     tables:
@@ -27,6 +29,7 @@ schemas:
           type: integer
         default: nextval('authors_author_id_seq'::regclass)
         is_primary: true
+        is_sequence: true
       - name: name
         datatype:
           type: text
@@ -37,6 +40,7 @@ schemas:
           type: integer
         default: nextval('authors_author_id_seq'::regclass)
         is_primary: true
+        is_sequence: true
       indexes:
       - name: authors_name_idx
         func_name: authors_by_name
@@ -53,6 +57,7 @@ schemas:
             type: integer
           default: nextval('authors_author_id_seq'::regclass)
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
     - type: table
@@ -63,6 +68,7 @@ schemas:
           type: integer
         default: nextval('books_book_id_seq'::regclass)
         is_primary: true
+        is_sequence: true
       - name: author_id
         datatype:
           type: integer
@@ -100,6 +106,7 @@ schemas:
           type: integer
         default: nextval('books_book_id_seq'::regclass)
         is_primary: true
+        is_sequence: true
       indexes:
       - name: books_isbn_key
         func_name: book_by_isbn
@@ -118,6 +125,7 @@ schemas:
             type: integer
           default: nextval('books_book_id_seq'::regclass)
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
       - name: books_title_idx
@@ -136,16 +144,16 @@ schemas:
       - name: books_author_id_fkey
         resolved_name: author
         column:
-          name: author_id
+        - name: author_id
           datatype:
             type: integer
           default: ""
-        ref_index: authors_pkey
         ref_table: authors
         ref_column:
-          name: author_id
+        - name: author_id
           datatype:
             type: integer
           default: nextval('authors_author_id_seq'::regclass)
           is_primary: true
+          is_sequence: true
         ref_func_name: author_by_author_id

@@ -97,9 +97,9 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO books (` +
-		`author_id, isbn, title, year, available, tags` +
+		`book_id, author_id, isbn, title, year, available, tags` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6` +
+		`$1, $2, $3, $4, $5, $6, $7` +
 		`)` +
 		` ON CONFLICT (book_id) DO ` +
 		`UPDATE SET ` +

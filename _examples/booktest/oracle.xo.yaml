@@ -2,6 +2,18 @@
 schemas:
   - type: oracle
     name: booktest
+    procs:
+    - name: say_hello
+      kind: function
+      params:
+      - name: name
+        datatype:
+          type: nvarchar2
+      return:
+      - name: r0
+        datatype:
+          type: number
+          prec: 38
     tables:
     - type: table
       name: authors
@@ -10,6 +22,7 @@ schemas:
         datatype:
           type: number
         is_primary: true
+        is_sequence: true
       - name: name
         datatype:
           type: nvarchar2
@@ -18,6 +31,7 @@ schemas:
         datatype:
           type: number
         is_primary: true
+        is_sequence: true
       indexes:
       - name: authors_name_idx
         func_name: authors_by_name
@@ -32,6 +46,7 @@ schemas:
           datatype:
             type: number
           is_primary: true
+          is_sequence: true
         is_unique: true
     - type: table
       name: books
@@ -40,6 +55,7 @@ schemas:
         datatype:
           type: number
         is_primary: true
+        is_sequence: true
       - name: author_id
         datatype:
           type: number
@@ -54,7 +70,8 @@ schemas:
           type: number
       - name: available
         datatype:
-          type: timestamp(6) with time zone
+          type: timestamp with time zone
+          prec: 6
       - name: tags
         datatype:
           type: nclob
@@ -63,6 +80,7 @@ schemas:
         datatype:
           type: number
         is_primary: true
+        is_sequence: true
       indexes:
       - name: books_isbn_key
         func_name: book_by_isbn
@@ -78,6 +96,7 @@ schemas:
           datatype:
             type: number
           is_primary: true
+          is_sequence: true
         is_unique: true
       - name: books_title_idx
         func_name: books_by_title_year
@@ -92,14 +111,14 @@ schemas:
       - name: books_author_id_fkey
         resolved_name: author
         column:
-          name: author_id
+        - name: author_id
           datatype:
             type: number
-        ref_index: authors_pkey
         ref_table: authors
         ref_column:
-          name: author_id
+        - name: author_id
           datatype:
             type: number
           is_primary: true
+          is_sequence: true
         ref_func_name: author_by_author_id

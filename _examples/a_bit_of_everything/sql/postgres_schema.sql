@@ -192,3 +192,53 @@ CREATE TABLE a_bit_of_everything (
 -- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
+
+-- procs
+CREATE PROCEDURE a_0_in_0_out() AS $$
+BEGIN
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE PROCEDURE a_1_in_0_out(a_param INTEGER) AS $$
+BEGIN
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION a_0_in_1_out(OUT a_return INTEGER) AS $$
+BEGIN
+  a_return := 10;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION a_1_in_1_out(a_param INTEGER, OUT a_return INTEGER) AS $$
+BEGIN
+  a_return := a_param;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE FUNCTION a_2_in_2_out(param_one INTEGER, param_two INTEGER, OUT return_one INTEGER, OUT return_two INTEGER) AS $$
+BEGIN
+  return_one := param_one;
+  return_two := param_two;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION a_func_0_in() RETURNS INTEGER AS $$
+BEGIN
+  RETURN 10;
+END;
+$$ LANGUAGE plpgsql;
+
+-- provided to keep schema output in parity with other databases
+CREATE FUNCTION a_func_1_in(a_param INTEGER) RETURNS INTEGER AS $$
+BEGIN
+  RETURN a_param;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION a_func_2_in(param_one INTEGER, param_two INTEGER) RETURNS INTEGER AS $$
+BEGIN
+  RETURN param_one+param_two;
+END;
+$$ LANGUAGE plpgsql;

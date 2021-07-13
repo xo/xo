@@ -157,11 +157,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	{{ sqlstr "upsert" $t }}
 	// run
 	{{ logf $t }}
-	{{ if driver "mysql" -}}
-	if _, err := {{ db_prefix "Exec" false $t $t }}; err != nil {
-	{{- else -}}
 	if _, err := {{ db_prefix "Exec" false $t }}; err != nil {
-	{{- end }}
 		return err
 	}
 	// set exists

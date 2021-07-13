@@ -91,10 +91,10 @@ func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 		`?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`a_key = ?, a_text = ?`
+		`a_key = VALUES(a_key), a_text = VALUES(a_text)`
 	// run
 	logf(sqlstr, apm.AKey, apm.AText)
-	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText, apm.AKey, apm.AText); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
 		return err
 	}
 	// set exists

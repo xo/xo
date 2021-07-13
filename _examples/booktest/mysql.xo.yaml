@@ -11,12 +11,14 @@ schemas:
         const_value: 2
     procs:
     - name: say_hello
+      kind: function
       params:
       - name: name
         datatype:
           type: varchar
           prec: 255
       return:
+      - name: r0
         datatype:
           type: varchar
           prec: 255
@@ -29,6 +31,7 @@ schemas:
           type: int
           prec: 11
         is_primary: true
+        is_sequence: true
       - name: name
         datatype:
           type: varchar
@@ -40,6 +43,7 @@ schemas:
           type: int
           prec: 11
         is_primary: true
+        is_sequence: true
       indexes:
       - name: authors_name_idx
         func_name: authors_by_name
@@ -57,6 +61,7 @@ schemas:
             type: int
             prec: 11
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
     - type: table
@@ -67,6 +72,7 @@ schemas:
           type: int
           prec: 11
         is_primary: true
+        is_sequence: true
       - name: author_id
         datatype:
           type: int
@@ -104,6 +110,7 @@ schemas:
           type: int
           prec: 11
         is_primary: true
+        is_sequence: true
       indexes:
       - name: author_id
         func_name: books_by_author_id
@@ -142,21 +149,23 @@ schemas:
             type: int
             prec: 11
           is_primary: true
+          is_sequence: true
         is_unique: true
         is_primary: true
       foreign_keys:
       - name: books_ibfk_1
         resolved_name: author
         column:
-          name: author_id
+        - name: author_id
           datatype:
             type: int
             prec: 11
         ref_table: authors
         ref_column:
-          name: author_id
+        - name: author_id
           datatype:
             type: int
             prec: 11
           is_primary: true
+          is_sequence: true
         ref_func_name: author_by_author_id

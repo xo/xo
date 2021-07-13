@@ -92,9 +92,9 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO authors (` +
-		`name` +
+		`author_id, name` +
 		`) VALUES (` +
-		`$1` +
+		`$1, $2` +
 		`)` +
 		` ON CONFLICT (author_id) DO ` +
 		`UPDATE SET ` +

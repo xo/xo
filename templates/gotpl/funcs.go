@@ -326,8 +326,10 @@ func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 		// params
 		p = append(p, f.params(x.Params, true))
 		// returns
-		if x.Return.Type != "void" {
-			r = append(r, f.typefn(x.Return.Type))
+		if !x.Void {
+			for _, ret := range x.Returns {
+				r = append(r, f.typefn(ret.Type))
+			}
 		}
 	case Index:
 		// params
@@ -492,9 +494,11 @@ func (f *Funcs) db_named(name string, v interface{}) string {
 	switch x := v.(type) {
 	case Proc:
 		for _, z := range x.Params {
-			p = append(p, f.named(z.SQLName, f.param(z, false), false))
+			p = append(p, f.named(z.SQLName, z.GoName, false))
 		}
-		p = append(p, f.named(x.Return.SQLName, "&"+f.short(x.Return.Type), true))
+		for _, z := range x.Returns {
+			p = append(p, f.named(z.SQLName, "&"+z.GoName, true))
+		}
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)
 	}
@@ -689,14 +693,15 @@ func (f *Funcs) sqlstr(typ string, v interface{}) string {
 }
 
 // sqlstr_insert_manual builds an INSERT query
-func (f *Funcs) sqlstr_insert_base(v interface{}) []string {
+// If not all, sequence columns are skipped.
+func (f *Funcs) sqlstr_insert_base(all bool, v interface{}) []string {
 	switch x := v.(type) {
 	case Table:
 		// build names and values
 		var fields, vals []string
 		var i int
 		for _, z := range x.Fields {
-			if z.IsSequence {
+			if z.IsSequence && !all {
 				continue
 			}
 			fields, vals = append(fields, f.colname(z)), append(vals, f.nth(i))
@@ -715,7 +720,7 @@ func (f *Funcs) sqlstr_insert_base(v interface{}) []string {
 
 // sqlstr_insert_manual builds an INSERT query that inserts all fields.
 func (f *Funcs) sqlstr_insert_manual(v interface{}) []string {
-	return f.sqlstr_insert_base(v)
+	return f.sqlstr_insert_base(true, v)
 }
 
 // sqlstr_insert builds an INSERT query, skipping the sequence field with
@@ -729,7 +734,7 @@ func (f *Funcs) sqlstr_insert(v interface{}) []string {
 				seq = field
 			}
 		}
-		lines := f.sqlstr_insert_base(v)
+		lines := f.sqlstr_insert_base(false, v)
 		// add return clause
 		switch f.driver {
 		case "oracle":
@@ -801,7 +806,7 @@ func (f *Funcs) sqlstr_upsert(v interface{}) []string {
 	switch v.(type) {
 	case Table:
 		// build insert
-		lines := f.sqlstr_insert_base(v)
+		lines := f.sqlstr_insert_base(true, v)
 		switch f.driver {
 		case "postgres", "sqlite3":
 			return append(lines, f.sqlstr_upsert_postgres_sqlite(v)...)
@@ -842,8 +847,11 @@ func (f *Funcs) sqlstr_upsert_mysql(v interface{}) []string {
 		var list []string
 		i := len(x.Fields)
 		for _, z := range x.Fields {
-			name, param := f.colname(z), f.nth(i)
-			list = append(list, fmt.Sprintf("%s = %s", name, param))
+			if z.IsSequence {
+				continue
+			}
+			name := f.colname(z)
+			list = append(list, fmt.Sprintf("%s = VALUES(%s)", name, name))
 			i++
 		}
 		return append(lines, strings.Join(list, ", "))
@@ -960,15 +968,65 @@ func (f *Funcs) sqlstr_index(v interface{}) []string {
 func (f *Funcs) sqlstr_proc(v interface{}) []string {
 	switch x := v.(type) {
 	case Proc:
-		if f.driver == "sqlserver" {
-			return []string{f.schemafn(x.SQLName)}
+		if x.Kind == "function" {
+			return f.sqlstr_func(v)
+		}
+		// sql string format
+		var format string
+		switch f.driver {
+		case "postgres", "mysql":
+			format = "CALL %s(%s)"
+		case "sqlserver":
+			format = "%[1]s"
+		case "oracle":
+			format = "BEGIN %s(%s); END;"
+		}
+		// build params list; add return fields for orcle
+		l := x.Params
+		if f.driver == "oracle" {
+			l = append(l, x.Returns...)
 		}
 		var list []string
-		for i := range x.Params {
+		for i, field := range l {
+			s := f.nth(i)
+			if f.driver == "oracle" {
+				s = ":" + field.SQLName
+			}
+			list = append(list, s)
+		}
+		// dont prefix with schema for oracle
+		name := f.schemafn(x.SQLName)
+		if f.driver == "oracle" {
+			name = x.SQLName
+		}
+		return []string{
+			fmt.Sprintf(format, name, strings.Join(list, ", ")),
+		}
+	}
+	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
+}
+
+func (f *Funcs) sqlstr_func(v interface{}) []string {
+	switch x := v.(type) {
+	case Proc:
+		var format string
+		switch f.driver {
+		case "postgres":
+			format = "SELECT * FROM %s(%s)"
+		case "mysql":
+			format = "SELECT %s(%s)"
+		case "sqlserver":
+			format = "SELECT %s(%s) AS OUT"
+		case "oracle":
+			format = "SELECT %s(%s) FROM dual"
+		}
+		var list []string
+		l := x.Params
+		for i := range l {
 			list = append(list, f.nth(i))
 		}
 		return []string{
-			"SELECT " + f.schemafn(x.SQLName) + "(" + strings.Join(list, ", ") + ")",
+			fmt.Sprintf(format, f.schemafn(x.SQLName), strings.Join(list, ", ")),
 		}
 	}
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE: %T ]]", v)}
