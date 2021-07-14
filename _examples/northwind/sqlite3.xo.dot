@@ -170,16 +170,16 @@ digraph northwind.db {
 		headlabel="customer_demographic"]
 	"customer_customer_demo":"customer_id":e -> "customers":"customer_id":w [
 		headlabel="customer"]
-	"employee_territories":"territory_id":e -> "territories":"territory_id":w [
-		headlabel="territory"]
 	"employee_territories":"employee_id":e -> "employees":"employee_id":w [
 		headlabel="employee"]
+	"employee_territories":"territory_id":e -> "territories":"territory_id":w [
+		headlabel="territory"]
 	"employees":"reports_to":e -> "employees":"employee_id":w [
 		headlabel="employee"]
-	"order_details":"order_id":e -> "orders":"order_id":w [
-		headlabel="order"]
 	"order_details":"product_id":e -> "products":"product_id":w [
 		headlabel="product"]
+	"order_details":"order_id":e -> "orders":"order_id":w [
+		headlabel="order"]
 	"orders":"ship_via":e -> "shippers":"shipper_id":w [
 		headlabel="shipper"]
 	"orders":"employee_id":e -> "employees":"employee_id":w [

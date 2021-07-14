@@ -107,10 +107,10 @@ func (e *Employee) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`employee_id = ?, last_name = ?, first_name = ?, title = ?, title_of_courtesy = ?, birth_date = ?, hire_date = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, home_phone = ?, extension = ?, photo = ?, notes = ?, reports_to = ?, photo_path = ?`
+		`employee_id = VALUES(employee_id), last_name = VALUES(last_name), first_name = VALUES(first_name), title = VALUES(title), title_of_courtesy = VALUES(title_of_courtesy), birth_date = VALUES(birth_date), hire_date = VALUES(hire_date), address = VALUES(address), city = VALUES(city), region = VALUES(region), postal_code = VALUES(postal_code), country = VALUES(country), home_phone = VALUES(home_phone), extension = VALUES(extension), photo = VALUES(photo), notes = VALUES(notes), reports_to = VALUES(reports_to), photo_path = VALUES(photo_path)`
 	// run
 	logf(sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath)
-	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, e.EmployeeID, e.LastName, e.FirstName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Photo, e.Notes, e.ReportsTo, e.PhotoPath); err != nil {
 		return err
 	}
 	// set exists

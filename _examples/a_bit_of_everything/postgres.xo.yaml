@@ -1102,3 +1102,17 @@ schemas:
           nullable: true
         default: ""
       manual: true
+    - type: view
+      name: a_view_of_everything_some
+      columns:
+      - name: a_bool
+        datatype:
+          type: boolean
+          nullable: true
+        default: ""
+      - name: a_text
+        datatype:
+          type: text
+          nullable: true
+        default: ""
+      manual: true

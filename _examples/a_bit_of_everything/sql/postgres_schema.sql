@@ -77,7 +77,6 @@ CREATE TYPE a_enum AS ENUM (
 );
 
 /*
-
 a_enum
 bigint
 bigserial
@@ -193,6 +192,9 @@ CREATE TABLE a_bit_of_everything (
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
 
+CREATE VIEW a_view_of_everything_some AS
+  SELECT a_bool, a_text FROM a_bit_of_everything;
+
 -- procs
 CREATE PROCEDURE a_0_in_0_out() AS $$
 BEGIN
@@ -210,12 +212,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- funcs
 CREATE FUNCTION a_1_in_1_out(a_param INTEGER, OUT a_return INTEGER) AS $$
 BEGIN
   a_return := a_param;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE FUNCTION a_2_in_2_out(param_one INTEGER, param_two INTEGER, OUT return_one INTEGER, OUT return_two INTEGER) AS $$
 BEGIN

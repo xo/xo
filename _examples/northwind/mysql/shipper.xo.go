@@ -92,10 +92,10 @@ func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`shipper_id = ?, company_name = ?, phone = ?`
+		`shipper_id = VALUES(shipper_id), company_name = VALUES(company_name), phone = VALUES(phone)`
 	// run
 	logf(sqlstr, s.ShipperID, s.CompanyName, s.Phone)
-	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone, s.ShipperID, s.CompanyName, s.Phone); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, s.ShipperID, s.CompanyName, s.Phone); err != nil {
 		return err
 	}
 	// set exists

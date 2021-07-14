@@ -99,10 +99,10 @@ func (p *Product) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`product_id = ?, product_name = ?, supplier_id = ?, category_id = ?, quantity_per_unit = ?, unit_price = ?, units_in_stock = ?, units_on_order = ?, reorder_level = ?, discontinued = ?`
+		`product_id = VALUES(product_id), product_name = VALUES(product_name), supplier_id = VALUES(supplier_id), category_id = VALUES(category_id), quantity_per_unit = VALUES(quantity_per_unit), unit_price = VALUES(unit_price), units_in_stock = VALUES(units_in_stock), units_on_order = VALUES(units_on_order), reorder_level = VALUES(reorder_level), discontinued = VALUES(discontinued)`
 	// run
 	logf(sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued)
-	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, p.ProductID, p.ProductName, p.SupplierID, p.CategoryID, p.QuantityPerUnit, p.UnitPrice, p.UnitsInStock, p.UnitsOnOrder, p.ReorderLevel, p.Discontinued); err != nil {
 		return err
 	}
 	// set exists

@@ -12,9 +12,9 @@ func runOracle(ctx context.Context, db *sql.DB) error {
 	var res1, res2 int64
 	var err error
 	// run procs
-	// if err := models.A0In0Out(ctx, db); err != nil {
-	// 	return fmt.Errorf("0 in 0 out: %v", err)
-	// }
+	if err := models.A0In0Out(ctx, db); err != nil {
+		return fmt.Errorf("0 in 0 out: %v", err)
+	}
 	// 1 in 0 out
 	if err := models.A1In0Out(ctx, db, 10); err != nil {
 		return fmt.Errorf("1 in 0 out: %v", err)

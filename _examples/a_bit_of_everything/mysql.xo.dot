@@ -15,6 +15,8 @@ digraph a_bit_of_everything {
 		<tr><td align="left" PORT="a_bit_nullable">a_bit_nullable: bit</td></tr>
 		<tr><td align="left" PORT="a_blob">a_blob: blob</td></tr>
 		<tr><td align="left" PORT="a_blob_nullable">a_blob_nullable: blob</td></tr>
+		<tr><td align="left" PORT="a_bool">a_bool: tinyint</td></tr>
+		<tr><td align="left" PORT="a_bool_nullable">a_bool_nullable: tinyint</td></tr>
 		<tr><td align="left" PORT="a_char">a_char: char</td></tr>
 		<tr><td align="left" PORT="a_char_nullable">a_char_nullable: char</td></tr>
 		<tr><td align="left" PORT="a_date">a_date: date</td></tr>

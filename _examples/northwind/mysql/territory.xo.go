@@ -91,10 +91,10 @@ func (t *Territory) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`territory_id = ?, territory_description = ?, region_id = ?`
+		`territory_id = VALUES(territory_id), territory_description = VALUES(territory_description), region_id = VALUES(region_id)`
 	// run
 	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
-	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
 		return err
 	}
 	// set exists

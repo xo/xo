@@ -100,10 +100,10 @@ func (c *Customer) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`customer_id = ?, company_name = ?, contact_name = ?, contact_title = ?, address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, fax = ?`
+		`customer_id = VALUES(customer_id), company_name = VALUES(company_name), contact_name = VALUES(contact_name), contact_title = VALUES(contact_title), address = VALUES(address), city = VALUES(city), region = VALUES(region), postal_code = VALUES(postal_code), country = VALUES(country), phone = VALUES(phone), fax = VALUES(fax)`
 	// run
 	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
-	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
 		return err
 	}
 	// set exists

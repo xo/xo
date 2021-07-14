@@ -770,3 +770,14 @@ schemas:
           type: xmltype
           nullable: true
       manual: true
+    - type: view
+      name: a_view_of_everything_some
+      columns:
+      - name: a_bool
+        datatype:
+          type: number
+          prec: 1
+      - name: a_nclob
+        datatype:
+          type: nclob
+      manual: true

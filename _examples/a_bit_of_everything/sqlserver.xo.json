@@ -1528,6 +1528,26 @@
             }
           ],
           "manual": true
+        },
+        {
+          "type": "view",
+          "name": "a_view_of_everything_some",
+          "columns": [
+            {
+              "name": "a_bit",
+              "datatype": {
+                "type": "bit",
+                "prec": 1
+              }
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "text"
+              }
+            }
+          ],
+          "manual": true
         }
       ]
     }

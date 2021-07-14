@@ -93,10 +93,10 @@ func (us *UsState) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`state_id = ?, state_name = ?, state_abbr = ?, state_region = ?`
+		`state_id = VALUES(state_id), state_name = VALUES(state_name), state_abbr = VALUES(state_abbr), state_region = VALUES(state_region)`
 	// run
 	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
-	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
 		return err
 	}
 	// set exists

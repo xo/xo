@@ -91,10 +91,10 @@ func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 		`?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`customer_type_id = ?, customer_desc = ?`
+		`customer_type_id = VALUES(customer_type_id), customer_desc = VALUES(customer_desc)`
 	// run
 	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
-	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
 		return err
 	}
 	// set exists

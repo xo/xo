@@ -160,6 +160,9 @@ CREATE TABLE a_bit_of_everything (
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
 
+CREATE VIEW a_view_of_everything_some AS
+  SELECT a_bool, a_nclob FROM a_bit_of_everything;
+
 -- procs
 CREATE PROCEDURE a_0_in_0_out AS
 BEGIN

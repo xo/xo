@@ -93,10 +93,10 @@ func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`order_id = ?, product_id = ?, unit_price = ?, quantity = ?, discount = ?`
+		`order_id = VALUES(order_id), product_id = VALUES(product_id), unit_price = VALUES(unit_price), quantity = VALUES(quantity), discount = VALUES(discount)`
 	// run
 	logf(sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount)
-	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, od.OrderID, od.ProductID, od.UnitPrice, od.Quantity, od.Discount); err != nil {
 		return err
 	}
 	// set exists

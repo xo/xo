@@ -93,10 +93,10 @@ func (c *Category) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`category_id = ?, category_name = ?, description = ?, picture = ?`
+		`category_id = VALUES(category_id), category_name = VALUES(category_name), description = VALUES(description), picture = VALUES(picture)`
 	// run
 	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
-	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
 		return err
 	}
 	// set exists

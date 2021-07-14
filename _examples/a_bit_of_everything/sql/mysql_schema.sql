@@ -120,6 +120,8 @@ CREATE TABLE a_bit_of_everything (
   a_bit_nullable BIT,
   a_blob BLOB NOT NULL,
   a_blob_nullable BLOB,
+  a_bool BOOL NOT NULL,
+  a_bool_nullable BOOL,
   a_char CHAR NOT NULL,
   a_char_nullable CHAR,
   a_date DATE NOT NULL,
@@ -185,6 +187,9 @@ CREATE TABLE a_bit_of_everything (
 -- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
+
+CREATE VIEW a_view_of_everything_some AS
+  SELECT a_bool, a_text FROM a_bit_of_everything;
 
 -- procs
 CREATE PROCEDURE a_0_in_0_out()

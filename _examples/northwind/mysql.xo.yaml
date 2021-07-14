@@ -95,14 +95,14 @@ schemas:
       - name: customer_customer_demo_ibfk_1
         resolved_name: customer
         column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
           is_primary: true
         ref_table: customers
         ref_column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
@@ -111,14 +111,14 @@ schemas:
       - name: customer_customer_demo_ibfk_2
         resolved_name: customer_demographic
         column:
-          name: customer_type_id
+        - name: customer_type_id
           datatype:
             type: char
             prec: 255
           is_primary: true
         ref_table: customer_demographics
         ref_column:
-          name: customer_type_id
+        - name: customer_type_id
           datatype:
             type: char
             prec: 255
@@ -292,14 +292,14 @@ schemas:
       - name: employee_territories_ibfk_1
         resolved_name: employee
         column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 6
           is_primary: true
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 6
@@ -308,14 +308,14 @@ schemas:
       - name: employee_territories_ibfk_2
         resolved_name: territory
         column:
-          name: territory_id
+        - name: territory_id
           datatype:
             type: varchar
             prec: 20
           is_primary: true
         ref_table: territories
         ref_column:
-          name: territory_id
+        - name: territory_id
           datatype:
             type: varchar
             prec: 20
@@ -454,7 +454,7 @@ schemas:
       - name: employees_ibfk_1
         resolved_name: employee
         column:
-          name: reports_to
+        - name: reports_to
           datatype:
             type: smallint
             prec: 6
@@ -462,7 +462,7 @@ schemas:
           default: "NULL"
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 6
@@ -531,14 +531,14 @@ schemas:
       - name: order_details_ibfk_1
         resolved_name: order
         column:
-          name: order_id
+        - name: order_id
           datatype:
             type: smallint
             prec: 6
           is_primary: true
         ref_table: orders
         ref_column:
-          name: order_id
+        - name: order_id
           datatype:
             type: smallint
             prec: 6
@@ -547,14 +547,14 @@ schemas:
       - name: order_details_ibfk_2
         resolved_name: product
         column:
-          name: product_id
+        - name: product_id
           datatype:
             type: smallint
             prec: 6
           is_primary: true
         ref_table: products
         ref_column:
-          name: product_id
+        - name: product_id
           datatype:
             type: smallint
             prec: 6
@@ -691,7 +691,7 @@ schemas:
       - name: orders_ibfk_1
         resolved_name: customer
         column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
@@ -699,7 +699,7 @@ schemas:
           default: "NULL"
         ref_table: customers
         ref_column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
@@ -708,7 +708,7 @@ schemas:
       - name: orders_ibfk_2
         resolved_name: employee
         column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 6
@@ -716,7 +716,7 @@ schemas:
           default: "NULL"
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 6
@@ -725,7 +725,7 @@ schemas:
       - name: orders_ibfk_3
         resolved_name: shipper
         column:
-          name: ship_via
+        - name: ship_via
           datatype:
             type: smallint
             prec: 6
@@ -733,7 +733,7 @@ schemas:
           default: "NULL"
         ref_table: shippers
         ref_column:
-          name: shipper_id
+        - name: shipper_id
           datatype:
             type: smallint
             prec: 6
@@ -836,7 +836,7 @@ schemas:
       - name: products_ibfk_1
         resolved_name: supplier
         column:
-          name: supplier_id
+        - name: supplier_id
           datatype:
             type: smallint
             prec: 6
@@ -844,7 +844,7 @@ schemas:
           default: "NULL"
         ref_table: suppliers
         ref_column:
-          name: supplier_id
+        - name: supplier_id
           datatype:
             type: smallint
             prec: 6
@@ -853,7 +853,7 @@ schemas:
       - name: products_ibfk_2
         resolved_name: category
         column:
-          name: category_id
+        - name: category_id
           datatype:
             type: smallint
             prec: 6
@@ -861,7 +861,7 @@ schemas:
           default: "NULL"
         ref_table: categories
         ref_column:
-          name: category_id
+        - name: category_id
           datatype:
             type: smallint
             prec: 6
@@ -1067,13 +1067,13 @@ schemas:
       - name: territories_ibfk_1
         resolved_name: region
         column:
-          name: region_id
+        - name: region_id
           datatype:
             type: smallint
             prec: 6
         ref_table: region
         ref_column:
-          name: region_id
+        - name: region_id
           datatype:
             type: smallint
             prec: 6

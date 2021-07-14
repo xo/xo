@@ -936,30 +936,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "orders_ship_via_fkey",
-              "resolved_name": "shipper",
-              "column": [
-                {
-                  "name": "ship_via",
-                  "datatype": {
-                    "type": "smallint",
-                    "nullable": true
-                  }
-                }
-              ],
-              "ref_table": "shippers",
-              "ref_column": [
-                {
-                  "name": "shipper_id",
-                  "datatype": {
-                    "type": "smallint"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "shipper_by_shipper_id"
-            },
-            {
               "name": "orders_employee_id_fkey",
               "resolved_name": "employee",
               "column": [
@@ -1008,6 +984,30 @@
                 }
               ],
               "ref_func_name": "customer_by_customer_id"
+            },
+            {
+              "name": "orders_ship_via_fkey",
+              "resolved_name": "shipper",
+              "column": [
+                {
+                  "name": "ship_via",
+                  "datatype": {
+                    "type": "smallint",
+                    "nullable": true
+                  }
+                }
+              ],
+              "ref_table": "shippers",
+              "ref_column": [
+                {
+                  "name": "shipper_id",
+                  "datatype": {
+                    "type": "smallint"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "shipper_by_shipper_id"
             }
           ],
           "manual": true

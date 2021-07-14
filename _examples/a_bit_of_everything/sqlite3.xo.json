@@ -1332,6 +1332,27 @@
             }
           ],
           "manual": true
+        },
+        {
+          "type": "view",
+          "name": "a_view_of_everything_some",
+          "columns": [
+            {
+              "name": "a_bool",
+              "datatype": {
+                "type": "bool",
+                "nullable": true
+              }
+            },
+            {
+              "name": "a_text",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              }
+            }
+          ],
+          "manual": true
         }
       ]
     }

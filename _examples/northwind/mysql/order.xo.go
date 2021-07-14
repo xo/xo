@@ -103,10 +103,10 @@ func (o *Order) Upsert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`order_id = ?, customer_id = ?, employee_id = ?, order_date = ?, required_date = ?, shipped_date = ?, ship_via = ?, freight = ?, ship_name = ?, ship_address = ?, ship_city = ?, ship_region = ?, ship_postal_code = ?, ship_country = ?`
+		`order_id = VALUES(order_id), customer_id = VALUES(customer_id), employee_id = VALUES(employee_id), order_date = VALUES(order_date), required_date = VALUES(required_date), shipped_date = VALUES(shipped_date), ship_via = VALUES(ship_via), freight = VALUES(freight), ship_name = VALUES(ship_name), ship_address = VALUES(ship_address), ship_city = VALUES(ship_city), ship_region = VALUES(ship_region), ship_postal_code = VALUES(ship_postal_code), ship_country = VALUES(ship_country)`
 	// run
 	logf(sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry)
-	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, o.OrderID, o.CustomerID, o.EmployeeID, o.OrderDate, o.RequiredDate, o.ShippedDate, o.ShipVia, o.Freight, o.ShipName, o.ShipAddress, o.ShipCity, o.ShipRegion, o.ShipPostalCode, o.ShipCountry); err != nil {
 		return err
 	}
 	// set exists

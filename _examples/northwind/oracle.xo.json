@@ -387,30 +387,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "employee_territories_territory_id_fkey",
-              "resolved_name": "territory",
-              "column": [
-                {
-                  "name": "territory_id",
-                  "datatype": {
-                    "type": "nvarchar2"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_table": "territories",
-              "ref_column": [
-                {
-                  "name": "territory_id",
-                  "datatype": {
-                    "type": "nvarchar2"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "territory_by_territory_id"
-            },
-            {
               "name": "employee_territories_employee_id_fkey",
               "resolved_name": "employee",
               "column": [
@@ -433,6 +409,30 @@
                 }
               ],
               "ref_func_name": "employee_by_employee_id"
+            },
+            {
+              "name": "employee_territories_territory_id_fkey",
+              "resolved_name": "territory",
+              "column": [
+                {
+                  "name": "territory_id",
+                  "datatype": {
+                    "type": "nvarchar2"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_table": "territories",
+              "ref_column": [
+                {
+                  "name": "territory_id",
+                  "datatype": {
+                    "type": "nvarchar2"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "territory_by_territory_id"
             }
           ],
           "manual": true
@@ -697,30 +697,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "order_details_order_id_fkey",
-              "resolved_name": "order",
-              "column": [
-                {
-                  "name": "order_id",
-                  "datatype": {
-                    "type": "number"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_table": "orders",
-              "ref_column": [
-                {
-                  "name": "order_id",
-                  "datatype": {
-                    "type": "number"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "order_by_order_id"
-            },
-            {
               "name": "order_details_product_id_fkey",
               "resolved_name": "product",
               "column": [
@@ -743,6 +719,30 @@
                 }
               ],
               "ref_func_name": "product_by_product_id"
+            },
+            {
+              "name": "order_details_order_id_fkey",
+              "resolved_name": "order",
+              "column": [
+                {
+                  "name": "order_id",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_table": "orders",
+              "ref_column": [
+                {
+                  "name": "order_id",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "order_by_order_id"
             }
           ],
           "manual": true

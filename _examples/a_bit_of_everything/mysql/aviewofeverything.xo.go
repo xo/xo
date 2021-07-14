@@ -17,6 +17,8 @@ type AViewOfEverything struct {
 	ABitNullable             sql.NullBool    `json:"a_bit_nullable"`              // a_bit_nullable
 	ABlob                    []byte          `json:"a_blob"`                      // a_blob
 	ABlobNullable            []byte          `json:"a_blob_nullable"`             // a_blob_nullable
+	ABool                    bool            `json:"a_bool"`                      // a_bool
+	ABoolNullable            sql.NullBool    `json:"a_bool_nullable"`             // a_bool_nullable
 	AChar                    string          `json:"a_char"`                      // a_char
 	ACharNullable            sql.NullString  `json:"a_char_nullable"`             // a_char_nullable
 	ADate                    time.Time       `json:"a_date"`                      // a_date

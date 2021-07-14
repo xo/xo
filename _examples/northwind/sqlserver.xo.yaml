@@ -85,14 +85,14 @@ schemas:
       - name: customer_customer_demo_customer_id_fkey
         resolved_name: customer
         column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
           is_primary: true
         ref_table: customers
         ref_column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
@@ -101,14 +101,14 @@ schemas:
       - name: customer_customer_demo_customer_type_id_fkey
         resolved_name: customer_demographic
         column:
-          name: customer_type_id
+        - name: customer_type_id
           datatype:
             type: char
             prec: 255
           is_primary: true
         ref_table: customer_demographics
         ref_column:
-          name: customer_type_id
+        - name: customer_type_id
           datatype:
             type: char
             prec: 255
@@ -264,14 +264,14 @@ schemas:
       - name: employee_territories_employee_id_fkey
         resolved_name: employee
         column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 5
           is_primary: true
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 5
@@ -280,14 +280,14 @@ schemas:
       - name: employee_territories_territory_id_fkey
         resolved_name: territory
         column:
-          name: territory_id
+        - name: territory_id
           datatype:
             type: varchar
             prec: 20
           is_primary: true
         ref_table: territories
         ref_column:
-          name: territory_id
+        - name: territory_id
           datatype:
             type: varchar
             prec: 20
@@ -404,14 +404,14 @@ schemas:
       - name: employees_reports_to_fkey
         resolved_name: employee
         column:
-          name: reports_to
+        - name: reports_to
           datatype:
             type: smallint
             prec: 5
             nullable: true
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 5
@@ -474,14 +474,14 @@ schemas:
       - name: order_details_order_id_fkey
         resolved_name: order
         column:
-          name: order_id
+        - name: order_id
           datatype:
             type: smallint
             prec: 5
           is_primary: true
         ref_table: orders
         ref_column:
-          name: order_id
+        - name: order_id
           datatype:
             type: smallint
             prec: 5
@@ -490,14 +490,14 @@ schemas:
       - name: order_details_product_id_fkey
         resolved_name: product
         column:
-          name: product_id
+        - name: product_id
           datatype:
             type: smallint
             prec: 5
           is_primary: true
         ref_table: products
         ref_column:
-          name: product_id
+        - name: product_id
           datatype:
             type: smallint
             prec: 5
@@ -593,14 +593,14 @@ schemas:
       - name: orders_customer_id_fkey
         resolved_name: customer
         column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
             nullable: true
         ref_table: customers
         ref_column:
-          name: customer_id
+        - name: customer_id
           datatype:
             type: char
             prec: 255
@@ -609,14 +609,14 @@ schemas:
       - name: orders_employee_id_fkey
         resolved_name: employee
         column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 5
             nullable: true
         ref_table: employees
         ref_column:
-          name: employee_id
+        - name: employee_id
           datatype:
             type: smallint
             prec: 5
@@ -695,14 +695,14 @@ schemas:
       - name: products_category_id_fkey
         resolved_name: category
         column:
-          name: category_id
+        - name: category_id
           datatype:
             type: smallint
             prec: 5
             nullable: true
         ref_table: categories
         ref_column:
-          name: category_id
+        - name: category_id
           datatype:
             type: smallint
             prec: 5
@@ -711,14 +711,14 @@ schemas:
       - name: products_suplier_id_fkey
         resolved_name: supplier
         column:
-          name: supplier_id
+        - name: supplier_id
           datatype:
             type: smallint
             prec: 5
             nullable: true
         ref_table: suppliers
         ref_column:
-          name: supplier_id
+        - name: supplier_id
           datatype:
             type: smallint
             prec: 5
@@ -906,13 +906,13 @@ schemas:
       - name: territories_region_id_fkey
         resolved_name: region
         column:
-          name: region_id
+        - name: region_id
           datatype:
             type: smallint
             prec: 5
         ref_table: region
         ref_column:
-          name: region_id
+        - name: region_id
           datatype:
             type: smallint
             prec: 5

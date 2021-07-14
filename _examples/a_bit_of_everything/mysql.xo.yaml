@@ -143,6 +143,16 @@ schemas:
           type: blob
           nullable: true
         default: "NULL"
+      - name: a_bool
+        datatype:
+          type: tinyint
+          prec: 1
+      - name: a_bool_nullable
+        datatype:
+          type: tinyint
+          prec: 1
+          nullable: true
+        default: "NULL"
       - name: a_char
         datatype:
           type: char
@@ -828,6 +838,16 @@ schemas:
           type: blob
           nullable: true
         default: "NULL"
+      - name: a_bool
+        datatype:
+          type: tinyint
+          prec: 1
+      - name: a_bool_nullable
+        datatype:
+          type: tinyint
+          prec: 1
+          nullable: true
+        default: "NULL"
       - name: a_char
         datatype:
           type: char
@@ -1094,4 +1114,15 @@ schemas:
           prec: 4
           nullable: true
         default: "NULL"
+      manual: true
+    - type: view
+      name: a_view_of_everything_some
+      columns:
+      - name: a_bool
+        datatype:
+          type: tinyint
+          prec: 1
+      - name: a_text
+        datatype:
+          type: text
       manual: true
