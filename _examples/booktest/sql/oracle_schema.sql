@@ -17,7 +17,7 @@ CREATE TABLE books (
 
 CREATE INDEX books_title_idx ON books(title, year);
 
-CREATE FUNCTION say_hello(name IN NVARCHAR2) RETURN INTEGER AS
+CREATE FUNCTION say_hello(name IN NVARCHAR2) RETURN NVARCHAR2 AS
 BEGIN
   RETURN 'hello ' || name\;
 END\;;

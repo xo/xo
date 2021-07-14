@@ -6,15 +6,15 @@ import (
 	"context"
 )
 
-// SayHello calls the stored function 'booktest.say_hello(nvarchar2) number' on db.
-func SayHello(ctx context.Context, db DB, name string) (int64, error) {
+// SayHello calls the stored function 'booktest.say_hello(nvarchar2) nvarchar2' on db.
+func SayHello(ctx context.Context, db DB, name string) (string, error) {
 	// call booktest.say_hello
 	const sqlstr = `SELECT booktest.say_hello(:1) FROM dual`
 	// run
-	var r0 int64
+	var r0 string
 	logf(sqlstr, name)
 	if err := db.QueryRowContext(ctx, sqlstr, name).Scan(&r0); err != nil {
-		return 0, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }

@@ -12,8 +12,7 @@ schemas:
       return:
       - name: r0
         datatype:
-          type: number
-          prec: 38
+          type: nvarchar2
     tables:
     - type: table
       name: authors
