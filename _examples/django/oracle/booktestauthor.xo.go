@@ -134,7 +134,7 @@ func (ba *BooktestAuthor) Delete(ctx context.Context, db DB) error {
 
 // BooktestAuthorByAuthorID retrieves a row from 'django.booktest_author' as a BooktestAuthor.
 //
-// Generated from index 'sys_c0010338'.
+// Generated from index 'sys_c0010913'.
 func BooktestAuthorByAuthorID(ctx context.Context, db DB, authorID int64) (*BooktestAuthor, error) {
 	// query
 	const sqlstr = `SELECT ` +

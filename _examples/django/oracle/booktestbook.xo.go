@@ -174,7 +174,7 @@ func BooktestBookByAuthorID(ctx context.Context, db DB, authorID int64) ([]*Book
 
 // BooktestBookByBookID retrieves a row from 'django.booktest_book' as a BooktestBook.
 //
-// Generated from index 'sys_c0010344'.
+// Generated from index 'sys_c0010919'.
 func BooktestBookByBookID(ctx context.Context, db DB, bookID int64) (*BooktestBook, error) {
 	// query
 	const sqlstr = `SELECT ` +

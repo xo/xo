@@ -146,7 +146,7 @@ func (ap *AuthPermission) Delete(ctx context.Context, db DB) error {
 
 // AuthPermissionByID retrieves a row from 'django.auth_permission' as a AuthPermission.
 //
-// Generated from index 'PK__auth_per__3213E83FF5A0FE8E'.
+// Generated from index 'PK__auth_per__3213E83FA54D36B9'.
 func AuthPermissionByID(ctx context.Context, db DB, id int) (*AuthPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +

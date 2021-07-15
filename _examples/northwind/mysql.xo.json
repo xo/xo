@@ -1109,6 +1109,33 @@
           ],
           "foreign_keys": [
             {
+              "name": "orders_ibfk_1",
+              "resolved_name": "customer",
+              "column": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "char",
+                    "prec": 255,
+                    "nullable": true
+                  },
+                  "default": "NULL"
+                }
+              ],
+              "ref_table": "customers",
+              "ref_column": [
+                {
+                  "name": "customer_id",
+                  "datatype": {
+                    "type": "char",
+                    "prec": 255
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "customer_by_customer_id"
+            },
+            {
               "name": "orders_ibfk_2",
               "resolved_name": "employee",
               "column": [
@@ -1161,33 +1188,6 @@
                 }
               ],
               "ref_func_name": "shipper_by_shipper_id"
-            },
-            {
-              "name": "orders_ibfk_1",
-              "resolved_name": "customer",
-              "column": [
-                {
-                  "name": "customer_id",
-                  "datatype": {
-                    "type": "char",
-                    "prec": 255,
-                    "nullable": true
-                  },
-                  "default": "NULL"
-                }
-              ],
-              "ref_table": "customers",
-              "ref_column": [
-                {
-                  "name": "customer_id",
-                  "datatype": {
-                    "type": "char",
-                    "prec": 255
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "customer_by_customer_id"
             }
           ],
           "manual": true

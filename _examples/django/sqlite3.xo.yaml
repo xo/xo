@@ -88,19 +88,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: auth_group_permissions_permission_id_fkey
-        resolved_name: auth_permission
-        column:
-        - name: permission_id
-          datatype:
-            type: integer
-        ref_table: auth_permission
-        ref_column:
-        - name: id
-          datatype:
-            type: integer
-          is_primary: true
-        ref_func_name: auth_permission_by_id
       - name: auth_group_permissions_group_id_fkey
         resolved_name: auth_group
         column:
@@ -114,6 +101,19 @@ schemas:
             type: integer
           is_primary: true
         ref_func_name: auth_group_by_id
+      - name: auth_group_permissions_permission_id_fkey
+        resolved_name: auth_permission
+        column:
+        - name: permission_id
+          datatype:
+            type: integer
+        ref_table: auth_permission
+        ref_column:
+        - name: id
+          datatype:
+            type: integer
+          is_primary: true
+        ref_func_name: auth_permission_by_id
     - type: table
       name: auth_permission
       columns:
@@ -295,19 +295,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: auth_user_groups_user_id_fkey
-        resolved_name: auth_user
-        column:
-        - name: user_id
-          datatype:
-            type: integer
-        ref_table: auth_user
-        ref_column:
-        - name: id
-          datatype:
-            type: integer
-          is_primary: true
-        ref_func_name: auth_user_by_id
       - name: auth_user_groups_group_id_fkey
         resolved_name: auth_group
         column:
@@ -321,6 +308,19 @@ schemas:
             type: integer
           is_primary: true
         ref_func_name: auth_group_by_id
+      - name: auth_user_groups_user_id_fkey
+        resolved_name: auth_user
+        column:
+        - name: user_id
+          datatype:
+            type: integer
+        ref_table: auth_user
+        ref_column:
+        - name: id
+          datatype:
+            type: integer
+          is_primary: true
+        ref_func_name: auth_user_by_id
     - type: table
       name: auth_user_user_permissions
       columns:
@@ -536,19 +536,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: booktest_book_tags_tag_id_fkey
-        resolved_name: booktest_tag
-        column:
-        - name: tag_id
-          datatype:
-            type: bigint
-        ref_table: booktest_tag
-        ref_column:
-        - name: tag_id
-          datatype:
-            type: integer
-          is_primary: true
-        ref_func_name: booktest_tag_by_tag_id
       - name: booktest_book_tags_book_id_fkey
         resolved_name: booktest_book
         column:
@@ -562,6 +549,19 @@ schemas:
             type: integer
           is_primary: true
         ref_func_name: booktest_book_by_book_id
+      - name: booktest_book_tags_tag_id_fkey
+        resolved_name: booktest_tag
+        column:
+        - name: tag_id
+          datatype:
+            type: bigint
+        ref_table: booktest_tag
+        ref_column:
+        - name: tag_id
+          datatype:
+            type: integer
+          is_primary: true
+        ref_func_name: booktest_tag_by_tag_id
     - type: table
       name: booktest_tag
       columns:
@@ -648,19 +648,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: django_admin_log_user_id_fkey
-        resolved_name: auth_user
-        column:
-        - name: user_id
-          datatype:
-            type: integer
-        ref_table: auth_user
-        ref_column:
-        - name: id
-          datatype:
-            type: integer
-          is_primary: true
-        ref_func_name: auth_user_by_id
       - name: django_admin_log_content_type_id_fkey
         resolved_name: django_content_type
         column:
@@ -675,6 +662,19 @@ schemas:
             type: integer
           is_primary: true
         ref_func_name: django_content_type_by_id
+      - name: django_admin_log_user_id_fkey
+        resolved_name: auth_user
+        column:
+        - name: user_id
+          datatype:
+            type: integer
+        ref_table: auth_user
+        ref_column:
+        - name: id
+          datatype:
+            type: integer
+          is_primary: true
+        ref_func_name: auth_user_by_id
     - type: table
       name: django_content_type
       columns:

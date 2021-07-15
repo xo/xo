@@ -137,7 +137,7 @@ func (dm *DjangoMigration) Delete(ctx context.Context, db DB) error {
 
 // DjangoMigrationByID retrieves a row from 'django.django_migrations' as a DjangoMigration.
 //
-// Generated from index 'sys_c0010285'.
+// Generated from index 'sys_c0010860'.
 func DjangoMigrationByID(ctx context.Context, db DB, id int64) (*DjangoMigration, error) {
 	// query
 	const sqlstr = `SELECT ` +

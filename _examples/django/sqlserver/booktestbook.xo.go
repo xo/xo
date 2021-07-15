@@ -150,7 +150,7 @@ func (bb *BooktestBook) Delete(ctx context.Context, db DB) error {
 
 // BooktestBookByBookID retrieves a row from 'django.booktest_book' as a BooktestBook.
 //
-// Generated from index 'PK__booktest__490D1AE1744F8AAE'.
+// Generated from index 'PK__booktest__490D1AE15546F217'.
 func BooktestBookByBookID(ctx context.Context, db DB, bookID int64) (*BooktestBook, error) {
 	// query
 	const sqlstr = `SELECT ` +

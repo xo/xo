@@ -85,22 +85,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: customer_customer_demo_customer_type_id_fkey
-        resolved_name: customer_demographic
-        column:
-        - name: customer_type_id
-          datatype:
-            type: bpchar
-          default: ""
-          is_primary: true
-        ref_table: customer_demographics
-        ref_column:
-        - name: customer_type_id
-          datatype:
-            type: bpchar
-          default: ""
-          is_primary: true
-        ref_func_name: customer_demographic_by_customer_type_id
       - name: customer_customer_demo_customer_id_fkey
         resolved_name: customer
         column:
@@ -117,6 +101,22 @@ schemas:
           default: ""
           is_primary: true
         ref_func_name: customer_by_customer_id
+      - name: customer_customer_demo_customer_type_id_fkey
+        resolved_name: customer_demographic
+        column:
+        - name: customer_type_id
+          datatype:
+            type: bpchar
+          default: ""
+          is_primary: true
+        ref_table: customer_demographics
+        ref_column:
+        - name: customer_type_id
+          datatype:
+            type: bpchar
+          default: ""
+          is_primary: true
+        ref_func_name: customer_demographic_by_customer_type_id
       manual: true
     - type: table
       name: customer_demographics

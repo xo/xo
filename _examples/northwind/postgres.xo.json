@@ -445,6 +445,32 @@
           ],
           "foreign_keys": [
             {
+              "name": "employee_territories_employee_id_fkey",
+              "resolved_name": "employee",
+              "column": [
+                {
+                  "name": "employee_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "ref_table": "employees",
+              "ref_column": [
+                {
+                  "name": "employee_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "employee_by_employee_id"
+            },
+            {
               "name": "employee_territories_territory_id_fkey",
               "resolved_name": "territory",
               "column": [
@@ -471,32 +497,6 @@
                 }
               ],
               "ref_func_name": "territory_by_territory_id"
-            },
-            {
-              "name": "employee_territories_employee_id_fkey",
-              "resolved_name": "employee",
-              "column": [
-                {
-                  "name": "employee_id",
-                  "datatype": {
-                    "type": "integer"
-                  },
-                  "default": "",
-                  "is_primary": true
-                }
-              ],
-              "ref_table": "employees",
-              "ref_column": [
-                {
-                  "name": "employee_id",
-                  "datatype": {
-                    "type": "integer"
-                  },
-                  "default": "",
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "employee_by_employee_id"
             }
           ],
           "manual": true

@@ -223,7 +223,7 @@ func BooktestBookTagsByTagID(ctx context.Context, db DB, tagID int64) ([]*Bookte
 
 // BooktestBookTagByID retrieves a row from 'django.booktest_book_tags' as a BooktestBookTag.
 //
-// Generated from index 'sys_c0010350'.
+// Generated from index 'sys_c0010925'.
 func BooktestBookTagByID(ctx context.Context, db DB, id int64) (*BooktestBookTag, error) {
 	// query
 	const sqlstr = `SELECT ` +

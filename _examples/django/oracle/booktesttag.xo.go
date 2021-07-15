@@ -134,7 +134,7 @@ func (bt *BooktestTag) Delete(ctx context.Context, db DB) error {
 
 // BooktestTagByTagID retrieves a row from 'django.booktest_tag' as a BooktestTag.
 //
-// Generated from index 'sys_c0010346'.
+// Generated from index 'sys_c0010921'.
 func BooktestTagByTagID(ctx context.Context, db DB, tagID int64) (*BooktestTag, error) {
 	// query
 	const sqlstr = `SELECT ` +

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
 )
@@ -43,12 +44,13 @@ func NewFuncs(ctx context.Context) (*Funcs, error) {
 // FuncMap returns the func map.
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
-		"schema":   f.schemafn,
-		"defaults": f.defaultsfn,
-		"header":   f.header,
-		"row":      f.rowfn,
-		"edge":     f.edge,
-		"quotes":   f.quotes,
+		"schema":    f.schemafn,
+		"defaults":  f.defaultsfn,
+		"header":    f.header,
+		"row":       f.rowfn,
+		"edge":      f.edge,
+		"quotes":    f.quotes,
+		"normalize": f.normalize,
 	}
 }
 
@@ -100,4 +102,8 @@ func (f *Funcs) defaultsfn() []string {
 
 func (f *Funcs) quotes(v string) string {
 	return fmt.Sprintf("%q", v)
+}
+
+func (f *Funcs) normalize(v string) string {
+	return snaker.CamelToSnakeIdentifier(snaker.ForceCamelIdentifier(v))
 }

@@ -51,7 +51,9 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 	if err != nil {
 		return nil, err
 	}
-	sort.Slice(enumNames, func(i, j int) bool { return enumNames[i].EnumName < enumNames[j].EnumName })
+	sort.Slice(enumNames, func(i, j int) bool {
+		return enumNames[i].EnumName < enumNames[j].EnumName
+	})
 	// process enums
 	var enums []xo.Enum
 	for _, name := range enumNames {
@@ -145,7 +147,9 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 		}
 		m = append(m, proc)
 	}
-	sort.Slice(m, func(i, j int) bool { return m[i].Name < m[j].Name })
+	sort.Slice(m, func(i, j int) bool {
+		return m[i].Name < m[j].Name
+	})
 	return m, nil
 }
 
@@ -188,7 +192,9 @@ func LoadTables(ctx context.Context, args *Args, kind string) ([]xo.Table, error
 	if err != nil {
 		return nil, err
 	}
-	sort.Slice(tables, func(i, j int) bool { return tables[i].TableName < tables[j].TableName })
+	sort.Slice(tables, func(i, j int) bool {
+		return tables[i].TableName < tables[j].TableName
+	})
 	// create types
 	var m []xo.Table
 	for _, t := range tables {
@@ -232,6 +238,9 @@ func LoadTables(ctx context.Context, args *Args, kind string) ([]xo.Table, error
 			fkey.ResolvedName = resolveFkName(args.SchemaParams.FkMode, table, fkey)
 			table.ForeignKeys = append(table.ForeignKeys, fkey)
 		}
+		sort.Slice(table.ForeignKeys, func(i, j int) bool {
+			return table.ForeignKeys[i].Name < table.ForeignKeys[j].Name
+		})
 		m[i] = table
 	}
 	return m, nil
@@ -310,7 +319,9 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 	if err != nil {
 		return err
 	}
-	sort.Slice(indexes, func(i, j int) bool { return indexes[i].IndexName < indexes[j].IndexName })
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i].IndexName < indexes[j].IndexName
+	})
 	// process indexes
 	var priIxLoaded bool
 	for _, index := range indexes {
@@ -388,7 +399,9 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 	if err != nil {
 		return nil, err
 	}
-	sort.Slice(fkeys, func(i, j int) bool { return fkeys[i].ForeignKeyName < fkeys[j].ForeignKeyName })
+	sort.Slice(fkeys, func(i, j int) bool {
+		return fkeys[i].ForeignKeyName < fkeys[j].ForeignKeyName
+	})
 	fkMap := make(map[string]xo.ForeignKey)
 	// loop over foreign keys for table
 	for _, fkey := range fkeys {

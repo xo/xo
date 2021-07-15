@@ -821,22 +821,6 @@ schemas:
             type: integer
           default: ""
       foreign_keys:
-      - name: django_admin_log_user_id_c564eba6_fk_auth_user_id
-        resolved_name: auth_user
-        column:
-        - name: user_id
-          datatype:
-            type: integer
-          default: ""
-        ref_table: auth_user
-        ref_column:
-        - name: id
-          datatype:
-            type: integer
-          default: nextval('auth_user_id_seq'::regclass)
-          is_primary: true
-          is_sequence: true
-        ref_func_name: auth_user_by_id
       - name: django_admin_log_content_type_id_c4bce8eb_fk_django_co
         resolved_name: django_content_type
         column:
@@ -854,6 +838,22 @@ schemas:
           is_primary: true
           is_sequence: true
         ref_func_name: django_content_type_by_id
+      - name: django_admin_log_user_id_c564eba6_fk_auth_user_id
+        resolved_name: auth_user
+        column:
+        - name: user_id
+          datatype:
+            type: integer
+          default: ""
+        ref_table: auth_user
+        ref_column:
+        - name: id
+          datatype:
+            type: integer
+          default: nextval('auth_user_id_seq'::regclass)
+          is_primary: true
+          is_sequence: true
+        ref_func_name: auth_user_by_id
     - type: table
       name: django_content_type
       columns:

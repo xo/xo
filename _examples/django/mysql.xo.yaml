@@ -334,22 +334,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: auth_user_groups_user_id_6a12ed8b_fk_auth_user_id
-        resolved_name: auth_user
-        column:
-        - name: user_id
-          datatype:
-            type: int
-            prec: 11
-        ref_table: auth_user
-        ref_column:
-        - name: id
-          datatype:
-            type: int
-            prec: 11
-          is_primary: true
-          is_sequence: true
-        ref_func_name: auth_user_by_id
       - name: auth_user_groups_group_id_97559544_fk_auth_group_id
         resolved_name: auth_group
         column:
@@ -366,6 +350,22 @@ schemas:
           is_primary: true
           is_sequence: true
         ref_func_name: auth_group_by_id
+      - name: auth_user_groups_user_id_6a12ed8b_fk_auth_user_id
+        resolved_name: auth_user
+        column:
+        - name: user_id
+          datatype:
+            type: int
+            prec: 11
+        ref_table: auth_user
+        ref_column:
+        - name: id
+          datatype:
+            type: int
+            prec: 11
+          is_primary: true
+          is_sequence: true
+        ref_func_name: auth_user_by_id
     - type: table
       name: auth_user_user_permissions
       columns:

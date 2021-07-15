@@ -38,7 +38,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_gro__3213E83F4002C63B",
+              "name": "PK__auth_gro__3213E83F0FAE7535",
               "func_name": "auth_group_by_id",
               "fields": [
                 {
@@ -55,7 +55,7 @@
               "is_primary": true
             },
             {
-              "name": "UQ__auth_gro__72E12F1B5D86C9BE",
+              "name": "UQ__auth_gro__72E12F1B7338C910",
               "func_name": "auth_group_by_name",
               "fields": [
                 {
@@ -111,7 +111,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_gro__3213E83F1EE57FA4",
+              "name": "PK__auth_gro__3213E83F85BEC30F",
               "func_name": "auth_group_permission_by_id",
               "fields": [
                 {
@@ -278,7 +278,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_per__3213E83FF5A0FE8E",
+              "name": "PK__auth_per__3213E83FA54D36B9",
               "func_name": "auth_permission_by_id",
               "fields": [
                 {
@@ -458,7 +458,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83F8AEE7B37",
+              "name": "PK__auth_use__3213E83FD4C4C227",
               "func_name": "auth_user_by_id",
               "fields": [
                 {
@@ -531,7 +531,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83FF8FEC3B5",
+              "name": "PK__auth_use__3213E83FDAF1E4F6",
               "func_name": "auth_user_group_by_id",
               "fields": [
                 {
@@ -691,7 +691,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83F84F3CB08",
+              "name": "PK__auth_use__3213E83F38D97C9A",
               "func_name": "auth_user_user_permission_by_id",
               "fields": [
                 {
@@ -843,7 +843,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__booktest__86516BCF0C05250B",
+              "name": "PK__booktest__86516BCF0309D01F",
               "func_name": "booktest_author_by_author_id",
               "fields": [
                 {
@@ -931,7 +931,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__booktest__490D1AE1744F8AAE",
+              "name": "PK__booktest__490D1AE15546F217",
               "func_name": "booktest_book_by_book_id",
               "fields": [
                 {
@@ -1031,7 +1031,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__booktest__3213E83F05F28D94",
+              "name": "PK__booktest__3213E83FA838ED7A",
               "func_name": "booktest_book_tag_by_id",
               "fields": [
                 {
@@ -1184,7 +1184,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__booktest__4296A2B68A7CF470",
+              "name": "PK__booktest__4296A2B6CFE0DB87",
               "func_name": "booktest_tag_by_tag_id",
               "fields": [
                 {
@@ -1279,7 +1279,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_a__3213E83F7366F747",
+              "name": "PK__django_a__3213E83F51310007",
               "func_name": "django_admin_log_by_id",
               "fields": [
                 {
@@ -1420,7 +1420,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_c__3213E83F8BDC15B8",
+              "name": "PK__django_c__3213E83FB5B11C08",
               "func_name": "django_content_type_by_id",
               "fields": [
                 {
@@ -1508,7 +1508,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_m__3213E83F9BD7B22A",
+              "name": "PK__django_m__3213E83FBDC2448F",
               "func_name": "django_migration_by_id",
               "fields": [
                 {
@@ -1565,7 +1565,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_s__B3BA0F1F3BBEA486",
+              "name": "PK__django_s__B3BA0F1F1D82FF58",
               "func_name": "django_session_by_session_key",
               "fields": [
                 {

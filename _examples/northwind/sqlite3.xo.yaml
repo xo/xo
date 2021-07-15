@@ -79,22 +79,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: customer_customer_demo_customer_type_id_fkey
-        resolved_name: customer_demographic
-        column:
-        - name: customer_type_id
-          datatype:
-            type: char
-            prec: 255
-          is_primary: true
-        ref_table: customer_demographics
-        ref_column:
-        - name: customer_type_id
-          datatype:
-            type: char
-            prec: 255
-          is_primary: true
-        ref_func_name: customer_demographic_by_customer_type_id
       - name: customer_customer_demo_customer_id_fkey
         resolved_name: customer
         column:
@@ -111,6 +95,22 @@ schemas:
             prec: 255
           is_primary: true
         ref_func_name: customer_by_customer_id
+      - name: customer_customer_demo_customer_type_id_fkey
+        resolved_name: customer_demographic
+        column:
+        - name: customer_type_id
+          datatype:
+            type: char
+            prec: 255
+          is_primary: true
+        ref_table: customer_demographics
+        ref_column:
+        - name: customer_type_id
+          datatype:
+            type: char
+            prec: 255
+          is_primary: true
+        ref_func_name: customer_demographic_by_customer_type_id
       manual: true
     - type: table
       name: customer_demographics
@@ -255,6 +255,20 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
+      - name: employee_territories_employee_id_fkey
+        resolved_name: employee
+        column:
+        - name: employee_id
+          datatype:
+            type: smallint
+          is_primary: true
+        ref_table: employees
+        ref_column:
+        - name: employee_id
+          datatype:
+            type: smallint
+          is_primary: true
+        ref_func_name: employee_by_employee_id
       - name: employee_territories_territory_id_fkey
         resolved_name: territory
         column:
@@ -271,20 +285,6 @@ schemas:
             prec: 20
           is_primary: true
         ref_func_name: territory_by_territory_id
-      - name: employee_territories_employee_id_fkey
-        resolved_name: employee
-        column:
-        - name: employee_id
-          datatype:
-            type: smallint
-          is_primary: true
-        ref_table: employees
-        ref_column:
-        - name: employee_id
-          datatype:
-            type: smallint
-          is_primary: true
-        ref_func_name: employee_by_employee_id
       manual: true
     - type: table
       name: employees
@@ -446,20 +446,6 @@ schemas:
         is_unique: true
         is_primary: true
       foreign_keys:
-      - name: order_details_product_id_fkey
-        resolved_name: product
-        column:
-        - name: product_id
-          datatype:
-            type: smallint
-          is_primary: true
-        ref_table: products
-        ref_column:
-        - name: product_id
-          datatype:
-            type: smallint
-          is_primary: true
-        ref_func_name: product_by_product_id
       - name: order_details_order_id_fkey
         resolved_name: order
         column:
@@ -474,6 +460,20 @@ schemas:
             type: smallint
           is_primary: true
         ref_func_name: order_by_order_id
+      - name: order_details_product_id_fkey
+        resolved_name: product
+        column:
+        - name: product_id
+          datatype:
+            type: smallint
+          is_primary: true
+        ref_table: products
+        ref_column:
+        - name: product_id
+          datatype:
+            type: smallint
+          is_primary: true
+        ref_func_name: product_by_product_id
       manual: true
     - type: table
       name: orders
@@ -573,20 +573,6 @@ schemas:
             prec: 255
           is_primary: true
         ref_func_name: customer_by_customer_id
-      - name: orders_ship_via_fkey
-        resolved_name: shipper
-        column:
-        - name: ship_via
-          datatype:
-            type: smallint
-            nullable: true
-        ref_table: shippers
-        ref_column:
-        - name: shipper_id
-          datatype:
-            type: smallint
-          is_primary: true
-        ref_func_name: shipper_by_shipper_id
       - name: orders_employee_id_fkey
         resolved_name: employee
         column:
@@ -601,6 +587,20 @@ schemas:
             type: smallint
           is_primary: true
         ref_func_name: employee_by_employee_id
+      - name: orders_ship_via_fkey
+        resolved_name: shipper
+        column:
+        - name: ship_via
+          datatype:
+            type: smallint
+            nullable: true
+        ref_table: shippers
+        ref_column:
+        - name: shipper_id
+          datatype:
+            type: smallint
+          is_primary: true
+        ref_func_name: shipper_by_shipper_id
       manual: true
     - type: table
       name: products

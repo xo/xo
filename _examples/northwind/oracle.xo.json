@@ -697,30 +697,6 @@
           ],
           "foreign_keys": [
             {
-              "name": "order_details_product_id_fkey",
-              "resolved_name": "product",
-              "column": [
-                {
-                  "name": "product_id",
-                  "datatype": {
-                    "type": "number"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_table": "products",
-              "ref_column": [
-                {
-                  "name": "product_id",
-                  "datatype": {
-                    "type": "number"
-                  },
-                  "is_primary": true
-                }
-              ],
-              "ref_func_name": "product_by_product_id"
-            },
-            {
               "name": "order_details_order_id_fkey",
               "resolved_name": "order",
               "column": [
@@ -743,6 +719,30 @@
                 }
               ],
               "ref_func_name": "order_by_order_id"
+            },
+            {
+              "name": "order_details_product_id_fkey",
+              "resolved_name": "product",
+              "column": [
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_table": "products",
+              "ref_column": [
+                {
+                  "name": "product_id",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true
+                }
+              ],
+              "ref_func_name": "product_by_product_id"
             }
           ],
           "manual": true

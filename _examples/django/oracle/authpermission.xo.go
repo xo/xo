@@ -190,7 +190,7 @@ func AuthPermissionByContentTypeID(ctx context.Context, db DB, contentTypeID int
 
 // AuthPermissionByID retrieves a row from 'django.auth_permission' as a AuthPermission.
 //
-// Generated from index 'sys_c0010291'.
+// Generated from index 'sys_c0010866'.
 func AuthPermissionByID(ctx context.Context, db DB, id int64) (*AuthPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +

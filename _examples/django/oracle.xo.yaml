@@ -24,7 +24,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: sys_c0010293
+      - name: sys_c0010868
         func_name: auth_group_by_id
         fields:
         - name: id
@@ -34,7 +34,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
-      - name: sys_c0010294
+      - name: sys_c0010869
         func_name: auth_group_by_name
         fields:
         - name: name
@@ -93,7 +93,7 @@ schemas:
           datatype:
             type: number
             prec: 11
-      - name: sys_c0010298
+      - name: sys_c0010873
         func_name: auth_group_permission_by_id
         fields:
         - name: id
@@ -104,22 +104,6 @@ schemas:
           is_sequence: true
         is_unique: true
       foreign_keys:
-      - name: auth_grou_permissio_84c5c92e_f
-        resolved_name: auth_permission
-        column:
-        - name: permission_id
-          datatype:
-            type: number
-            prec: 11
-        ref_table: auth_permission
-        ref_column:
-        - name: id
-          datatype:
-            type: number
-            prec: 11
-          is_primary: true
-          is_sequence: true
-        ref_func_name: auth_permission_by_id
       - name: auth_grou_group_id_b120cbf9_f
         resolved_name: auth_group
         column:
@@ -136,6 +120,22 @@ schemas:
           is_primary: true
           is_sequence: true
         ref_func_name: auth_group_by_id
+      - name: auth_grou_permissio_84c5c92e_f
+        resolved_name: auth_permission
+        column:
+        - name: permission_id
+          datatype:
+            type: number
+            prec: 11
+        ref_table: auth_permission
+        ref_column:
+        - name: id
+          datatype:
+            type: number
+            prec: 11
+          is_primary: true
+          is_sequence: true
+        ref_func_name: auth_permission_by_id
     - type: table
       name: auth_permission
       columns:
@@ -184,7 +184,7 @@ schemas:
           datatype:
             type: number
             prec: 11
-      - name: sys_c0010291
+      - name: sys_c0010866
         func_name: auth_permission_by_id
         fields:
         - name: id
@@ -269,7 +269,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: sys_c0010308
+      - name: sys_c0010883
         func_name: auth_user_by_id
         fields:
         - name: id
@@ -279,7 +279,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
-      - name: sys_c0010309
+      - name: sys_c0010884
         func_name: auth_user_by_username
         fields:
         - name: username
@@ -338,7 +338,7 @@ schemas:
             type: number
             prec: 11
         is_unique: true
-      - name: sys_c0010313
+      - name: sys_c0010888
         func_name: auth_user_group_by_id
         fields:
         - name: id
@@ -432,7 +432,7 @@ schemas:
             type: number
             prec: 11
         is_unique: true
-      - name: sys_c0010317
+      - name: sys_c0010892
         func_name: auth_user_user_permission_by_id
         fields:
         - name: id
@@ -496,7 +496,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: sys_c0010338
+      - name: sys_c0010913
         func_name: booktest_author_by_author_id
         fields:
         - name: author_id
@@ -554,7 +554,7 @@ schemas:
           datatype:
             type: number
             prec: 19
-      - name: sys_c0010344
+      - name: sys_c0010919
         func_name: booktest_book_by_book_id
         fields:
         - name: book_id
@@ -632,7 +632,7 @@ schemas:
           datatype:
             type: number
             prec: 19
-      - name: sys_c0010350
+      - name: sys_c0010925
         func_name: booktest_book_tag_by_id
         fields:
         - name: id
@@ -696,7 +696,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: sys_c0010346
+      - name: sys_c0010921
         func_name: booktest_tag_by_tag_id
         fields:
         - name: tag_id
@@ -767,7 +767,7 @@ schemas:
           datatype:
             type: number
             prec: 11
-      - name: sys_c0010334
+      - name: sys_c0010909
         func_name: django_admin_log_by_id
         fields:
         - name: id
@@ -848,7 +848,7 @@ schemas:
             type: nvarchar2
             nullable: true
         is_unique: true
-      - name: sys_c0010287
+      - name: sys_c0010862
         func_name: django_content_type_by_id
         fields:
         - name: id
@@ -887,7 +887,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: sys_c0010285
+      - name: sys_c0010860
         func_name: django_migration_by_id
         fields:
         - name: id
@@ -925,7 +925,7 @@ schemas:
           datatype:
             type: timestamp
             prec: 6
-      - name: sys_c0010357
+      - name: sys_c0010932
         func_name: django_session_by_session_key
         fields:
         - name: session_key
