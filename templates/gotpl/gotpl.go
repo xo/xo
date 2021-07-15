@@ -612,7 +612,7 @@ func Pkg(ctx context.Context) string {
 	if s == "" {
 		s = filepath.Base(templates.Out(ctx))
 	}
-	return strings.ToLower(s)
+	return s
 }
 
 // Tags returns tags from the context.

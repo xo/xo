@@ -1,3 +1,4 @@
+// Package types contains xo internal types.
 package types
 
 // ContextKey is a context key.
