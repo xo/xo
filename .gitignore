@@ -7,6 +7,7 @@
 *.db
 *.dot
 *.json
+*.yaml
 *.sqlite3
 *.sqlite3-journal
 *.svg

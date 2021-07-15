@@ -1,32 +1,31 @@
 # About django examples
 
-The django examples are the result of running `xo` against all the supported
-databases that django supports. It is helpful for comparing generated code
-against the supported databases, as well because django has a non-trivial
-schema with more realistic database relationships than the [simple booktest
-examples](../booktest).
+The `django` example is the result of running `xo` against all the supported
+databases that Django and `xo` supports, with Django models similar to the `xo`
+booktest schema.
 
-## Running
+## Setup
 
-The [`gen.sh`](gen.sh) script will generate all the models for the supported
-databases in each database's subfolder:
-
-* [mysql](mysql/)
-* [oracle](oracle/)
-* [postgres](postgres/)
-* [sqlite3](sqlite3/)
-* [sqlserver](sqlserver/)
-
-## Installing django
-
-You can install/update to the latest version of Django on Debian/Ubuntu by
-doing the following:
+Install packages:
 
 ```sh
-# install django globally
-$ sudo pip3 install -U Django
+# install mysql, postgres, sqlite3 dependencies
+$ sudo aptitude install libpq-dev libmysqlclient-dev libsqlite3-dev
 
-# install support for sqlserver via odbc
-$ sudo aptitude install unixodbc unixodbc-dev
-$ sudo pip3 install -U django-pyodbc-azure
+# install sqlserver dependenices
+# manually add the microsoft-prod ppa
+$ sudo aptitude install unixodbc-dev msodbcsql17
+
+# install oracle dependencies
+$ cd /path/to/usql/contrib/godror
+$ sudo ./grab-instantclient.sh
+
+# install pipenv
+$ pip install --user pipenv
+
+# install packages
+$ pipenv install
+
+# update packages
+$ pipenv update
 ```

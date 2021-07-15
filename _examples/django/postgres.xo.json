@@ -1,0 +1,1667 @@
+{
+  "schemas": [
+    {
+      "type": "postgres",
+      "name": "public",
+      "tables": [
+        {
+          "type": "table",
+          "name": "auth_group",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_group_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 80
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_group_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_group_name_a6ea08ec_like",
+              "func_name": "auth_group_by_name",
+              "fields": [
+                {
+                  "name": "name",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 80
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_group_name_key",
+              "func_name": "auth_group_by_name",
+              "fields": [
+                {
+                  "name": "name",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 80
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "auth_group_pkey",
+              "func_name": "auth_group_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_group_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "auth_group_permissions",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_group_permissions_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "group_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "permission_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_group_permissions_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_group_permissions_group_id_b120cbf9",
+              "func_name": "auth_group_permissions_by_group_id",
+              "fields": [
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_group_permissions_group_id_permission_id_0cd325b0_uniq",
+              "func_name": "auth_group_permission_by_group_id_permission_id",
+              "fields": [
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "auth_group_permissions_permission_id_84c5c92e",
+              "func_name": "auth_group_permissions_by_permission_id",
+              "fields": [
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_group_permissions_pkey",
+              "func_name": "auth_group_permission_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_group_permissions_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm",
+              "resolved_name": "auth_permission",
+              "column": [
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_permission",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_permission_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_permission_by_id"
+            },
+            {
+              "name": "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id",
+              "resolved_name": "auth_group",
+              "column": [
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_group",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_group_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_group_by_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "auth_permission",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_permission_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255
+              },
+              "default": ""
+            },
+            {
+              "name": "content_type_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "codename",
+              "datatype": {
+                "type": "character varying",
+                "prec": 100
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_permission_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_permission_content_type_id_2f476e4b",
+              "func_name": "auth_permission_by_content_type_id",
+              "fields": [
+                {
+                  "name": "content_type_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_permission_content_type_id_codename_01ab375a_uniq",
+              "func_name": "auth_permission_by_content_type_id_codename",
+              "fields": [
+                {
+                  "name": "content_type_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "codename",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 100
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "auth_permission_pkey",
+              "func_name": "auth_permission_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_permission_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "auth_permission_content_type_id_2f476e4b_fk_django_co",
+              "resolved_name": "django_content_type",
+              "column": [
+                {
+                  "name": "content_type_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "django_content_type",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('django_content_type_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "django_content_type_by_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "auth_user",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "password",
+              "datatype": {
+                "type": "character varying",
+                "prec": 128
+              },
+              "default": ""
+            },
+            {
+              "name": "last_login",
+              "datatype": {
+                "type": "timestamp with time zone",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "is_superuser",
+              "datatype": {
+                "type": "boolean"
+              },
+              "default": ""
+            },
+            {
+              "name": "username",
+              "datatype": {
+                "type": "character varying",
+                "prec": 150
+              },
+              "default": ""
+            },
+            {
+              "name": "first_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 30
+              },
+              "default": ""
+            },
+            {
+              "name": "last_name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 150
+              },
+              "default": ""
+            },
+            {
+              "name": "email",
+              "datatype": {
+                "type": "character varying",
+                "prec": 254
+              },
+              "default": ""
+            },
+            {
+              "name": "is_staff",
+              "datatype": {
+                "type": "boolean"
+              },
+              "default": ""
+            },
+            {
+              "name": "is_active",
+              "datatype": {
+                "type": "boolean"
+              },
+              "default": ""
+            },
+            {
+              "name": "date_joined",
+              "datatype": {
+                "type": "timestamp with time zone"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_user_pkey",
+              "func_name": "auth_user_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "auth_user_username_6821ab7c_like",
+              "func_name": "auth_user_by_username",
+              "fields": [
+                {
+                  "name": "username",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 150
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_user_username_key",
+              "func_name": "auth_user_by_username",
+              "fields": [
+                {
+                  "name": "username",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 150
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "auth_user_groups",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_groups_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "user_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "group_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_groups_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_user_groups_group_id_97559544",
+              "func_name": "auth_user_groups_by_group_id",
+              "fields": [
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_user_groups_pkey",
+              "func_name": "auth_user_group_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_groups_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "auth_user_groups_user_id_6a12ed8b",
+              "func_name": "auth_user_groups_by_user_id",
+              "fields": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_user_groups_user_id_group_id_94350c0c_uniq",
+              "func_name": "auth_user_group_by_user_id_group_id",
+              "fields": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "auth_user_groups_group_id_97559544_fk_auth_group_id",
+              "resolved_name": "auth_group",
+              "column": [
+                {
+                  "name": "group_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_group",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_group_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_group_by_id"
+            },
+            {
+              "name": "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id",
+              "resolved_name": "auth_user",
+              "column": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_user",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_user_by_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "auth_user_user_permissions",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "user_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "permission_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "auth_user_user_permissions_permission_id_1fbb5f2c",
+              "func_name": "auth_user_user_permissions_by_permission_id",
+              "fields": [
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_user_user_permissions_pkey",
+              "func_name": "auth_user_user_permission_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "auth_user_user_permissions_user_id_a95ead1b",
+              "func_name": "auth_user_user_permissions_by_user_id",
+              "fields": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq",
+              "func_name": "auth_user_user_permission_by_user_id_permission_id",
+              "fields": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm",
+              "resolved_name": "auth_permission",
+              "column": [
+                {
+                  "name": "permission_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_permission",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_permission_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_permission_by_id"
+            },
+            {
+              "name": "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id",
+              "resolved_name": "auth_user",
+              "column": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_user",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_user_by_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "booktest_author",
+          "columns": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_author_author_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "text"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_author_author_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "booktest_author_pkey",
+              "func_name": "booktest_author_by_author_id",
+              "fields": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_author_author_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "booktest_book",
+          "columns": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_book_book_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "isbn",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255
+              },
+              "default": ""
+            },
+            {
+              "name": "book_type",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "title",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255
+              },
+              "default": ""
+            },
+            {
+              "name": "year",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            },
+            {
+              "name": "available",
+              "datatype": {
+                "type": "timestamp with time zone"
+              },
+              "default": ""
+            },
+            {
+              "name": "author_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_book_book_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "booktest_book_author_id_d11194af",
+              "func_name": "booktest_book_by_author_id",
+              "fields": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "booktest_book_pkey",
+              "func_name": "booktest_book_by_book_id",
+              "fields": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_book_book_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "booktest_book_author_id_d11194af_fk_booktest_author_author_id",
+              "resolved_name": "booktest_author",
+              "column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "booktest_author",
+              "ref_column": [
+                {
+                  "name": "author_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_author_author_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "booktest_author_by_author_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "booktest_book_tags",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('booktest_book_tags_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "book_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": ""
+            },
+            {
+              "name": "tag_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('booktest_book_tags_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "booktest_book_tags_book_id_04f02754",
+              "func_name": "booktest_book_tags_by_book_id",
+              "fields": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "booktest_book_tags_book_id_tag_id_83102575_uniq",
+              "func_name": "booktest_book_tag_by_book_id_tag_id",
+              "fields": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "booktest_book_tags_pkey",
+              "func_name": "booktest_book_tag_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('booktest_book_tags_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "booktest_book_tags_tag_id_858da6e5",
+              "func_name": "booktest_book_tags_by_tag_id",
+              "fields": [
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ]
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "booktest_book_tags_book_id_04f02754_fk_booktest_book_book_id",
+              "resolved_name": "booktest_book",
+              "column": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "booktest_book",
+              "ref_column": [
+                {
+                  "name": "book_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_book_book_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "booktest_book_by_book_id"
+            },
+            {
+              "name": "booktest_book_tags_tag_id_858da6e5_fk_booktest_tag_tag_id",
+              "resolved_name": "booktest_tag",
+              "column": [
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "booktest_tag",
+              "ref_column": [
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_tag_tag_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "booktest_tag_by_tag_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "booktest_tag",
+          "columns": [
+            {
+              "name": "tag_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_tag_tag_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "tag",
+              "datatype": {
+                "type": "character varying",
+                "prec": 50
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "tag_id",
+              "datatype": {
+                "type": "bigint"
+              },
+              "default": "nextval('booktest_tag_tag_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "booktest_tag_pkey",
+              "func_name": "booktest_tag_by_tag_id",
+              "fields": [
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint"
+                  },
+                  "default": "nextval('booktest_tag_tag_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "django_admin_log",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_admin_log_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "action_time",
+              "datatype": {
+                "type": "timestamp with time zone"
+              },
+              "default": ""
+            },
+            {
+              "name": "object_id",
+              "datatype": {
+                "type": "text",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "object_repr",
+              "datatype": {
+                "type": "character varying",
+                "prec": 200
+              },
+              "default": ""
+            },
+            {
+              "name": "action_flag",
+              "datatype": {
+                "type": "smallint"
+              },
+              "default": ""
+            },
+            {
+              "name": "change_message",
+              "datatype": {
+                "type": "text"
+              },
+              "default": ""
+            },
+            {
+              "name": "content_type_id",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              },
+              "default": ""
+            },
+            {
+              "name": "user_id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_admin_log_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "django_admin_log_content_type_id_c4bce8eb",
+              "func_name": "django_admin_log_by_content_type_id",
+              "fields": [
+                {
+                  "name": "content_type_id",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "django_admin_log_pkey",
+              "func_name": "django_admin_log_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('django_admin_log_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "django_admin_log_user_id_c564eba6",
+              "func_name": "django_admin_log_by_user_id",
+              "fields": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ]
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "django_admin_log_content_type_id_c4bce8eb_fk_django_co",
+              "resolved_name": "django_content_type",
+              "column": [
+                {
+                  "name": "content_type_id",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "django_content_type",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('django_content_type_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "django_content_type_by_id"
+            },
+            {
+              "name": "django_admin_log_user_id_c564eba6_fk_auth_user_id",
+              "resolved_name": "auth_user",
+              "column": [
+                {
+                  "name": "user_id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": ""
+                }
+              ],
+              "ref_table": "auth_user",
+              "ref_column": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('auth_user_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "ref_func_name": "auth_user_by_id"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "django_content_type",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_content_type_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "app_label",
+              "datatype": {
+                "type": "character varying",
+                "prec": 100
+              },
+              "default": ""
+            },
+            {
+              "name": "model",
+              "datatype": {
+                "type": "character varying",
+                "prec": 100
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_content_type_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "django_content_type_app_label_model_76bd3d3b_uniq",
+              "func_name": "django_content_type_by_app_label_model",
+              "fields": [
+                {
+                  "name": "app_label",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 100
+                  },
+                  "default": ""
+                },
+                {
+                  "name": "model",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 100
+                  },
+                  "default": ""
+                }
+              ],
+              "is_unique": true
+            },
+            {
+              "name": "django_content_type_pkey",
+              "func_name": "django_content_type_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('django_content_type_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "django_migrations",
+          "columns": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_migrations_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "app",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255
+              },
+              "default": ""
+            },
+            {
+              "name": "name",
+              "datatype": {
+                "type": "character varying",
+                "prec": 255
+              },
+              "default": ""
+            },
+            {
+              "name": "applied",
+              "datatype": {
+                "type": "timestamp with time zone"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "id",
+              "datatype": {
+                "type": "integer"
+              },
+              "default": "nextval('django_migrations_id_seq'::regclass)",
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "django_migrations_pkey",
+              "func_name": "django_migration_by_id",
+              "fields": [
+                {
+                  "name": "id",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "default": "nextval('django_migrations_id_seq'::regclass)",
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "name": "django_session",
+          "columns": [
+            {
+              "name": "session_key",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": "",
+              "is_primary": true
+            },
+            {
+              "name": "session_data",
+              "datatype": {
+                "type": "text"
+              },
+              "default": ""
+            },
+            {
+              "name": "expire_date",
+              "datatype": {
+                "type": "timestamp with time zone"
+              },
+              "default": ""
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "session_key",
+              "datatype": {
+                "type": "character varying",
+                "prec": 40
+              },
+              "default": "",
+              "is_primary": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "django_session_expire_date_a5c62663",
+              "func_name": "django_session_by_expire_date",
+              "fields": [
+                {
+                  "name": "expire_date",
+                  "datatype": {
+                    "type": "timestamp with time zone"
+                  },
+                  "default": ""
+                }
+              ]
+            },
+            {
+              "name": "django_session_pkey",
+              "func_name": "django_session_by_session_key",
+              "fields": [
+                {
+                  "name": "session_key",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 40
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            },
+            {
+              "name": "django_session_session_key_c0390e0f_like",
+              "func_name": "django_session_by_session_key",
+              "fields": [
+                {
+                  "name": "session_key",
+                  "datatype": {
+                    "type": "character varying",
+                    "prec": 40
+                  },
+                  "default": "",
+                  "is_primary": true
+                }
+              ]
+            }
+          ],
+          "manual": true
+        }
+      ]
+    }
+  ]
+}

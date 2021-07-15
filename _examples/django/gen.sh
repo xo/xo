@@ -62,7 +62,7 @@ for TYPE in $DATABASES; do
     fi
     (set -ex;
       $SRC/../createdb.sh -d $TYPE -n $TEST
-      usql -f sql/${TYPE}_schema.sql $DB
+      ./init.sh -d $TYPE
     )
     if [ -f sql/${TYPE}_data.sql ]; then
       (set -ex;
