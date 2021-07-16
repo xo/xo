@@ -13,6 +13,11 @@ schemas:
       - name: result
         datatype:
           type: nvarchar
+      body: |-
+        CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS
+        BEGIN
+          SELECT @result = CONCAT('hello ', @name);
+        END;
     tables:
     - type: table
       name: authors

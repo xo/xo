@@ -20,4 +20,6 @@ CREATE INDEX books_title_idx ON books(title, year);
 
 CREATE FUNCTION say_hello(name VARCHAR(255)) RETURNS VARCHAR(255)
   DETERMINISTIC
-  RETURN CONCAT('hello ', name);
+BEGIN
+  RETURN CONCAT('hello ', name)\;
+END;

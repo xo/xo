@@ -85,15 +85,17 @@ ENDSQL
 COMMENT='{{ . }} is a stored procedure.'
 $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  p.proname::varchar as proc_name,
+  p.oid::varchar AS proc_id,
+  p.proname::varchar AS proc_name,
   pp.proc_kind::varchar AS proc_kind,
   format_type(pp.return_type, NULL)::varchar AS return_type,
-  pp.return_name::varchar AS return_name
+  pp.return_name::varchar AS return_name,
+  p.prosrc::varchar AS proc_src
 FROM pg_catalog.pg_proc p
   JOIN pg_catalog.pg_namespace n ON (p.pronamespace = n.oid)
   JOIN (
     SELECT
-      p.proname,
+      p.oid,
       (CASE WHEN EXISTS(
           SELECT
             column_name
@@ -105,7 +107,7 @@ FROM pg_catalog.pg_proc p
           WHEN 'p' THEN 'procedure'
           WHEN 'f' THEN 'function'
         END)
-        ELSE 'procedure'
+        ELSE ''
       END) AS proc_kind,
       UNNEST(COALESCE(p.proallargtypes, ARRAY[p.prorettype])) AS return_type,
       UNNEST(CASE
@@ -114,7 +116,7 @@ FROM pg_catalog.pg_proc p
       END) AS return_name,
       UNNEST(COALESCE(p.proargmodes, ARRAY['o'])) AS param_type
     FROM pg_catalog.pg_proc p
-  ) AS pp ON p.proname = pp.proname
+  ) AS pp ON p.oid = pp.oid
 WHERE p.prorettype <> 'pg_catalog.cstring'::pg_catalog.regtype
   AND (p.proargtypes[0] IS NULL
     OR p.proargtypes[0] <> 'pg_catalog.cstring'::pg_catalog.regtype)
@@ -128,19 +130,19 @@ ENDSQL
 COMMENT='{{ . }} is a stored procedure param.'
 $XOBIN query $PGDB -M -B -2 -T ProcParam -F PostgresProcParams --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  pp.param_name::varchar AS param_name,
+  COALESCE(pp.param_name, '')::varchar AS param_name,
   pp.param_type::varchar AS param_type
 FROM pg_proc p
   JOIN ONLY pg_namespace n ON p.pronamespace = n.oid
   JOIN (
     SELECT
-      p.proname,
+      p.oid,
       UNNEST(p.proargnames) AS param_name,
       format_type(UNNEST(p.proargtypes), NULL) AS param_type
     FROM pg_proc p
-  ) AS pp ON p.proname = pp.proname
+  ) AS pp ON p.oid = pp.oid
 WHERE n.nspname = %%schema string%%
-  AND p.proname = %%proc string%%
+  AND p.oid::varchar = %%id string%%
   AND pp.param_type IS NOT NULL
 ENDSQL
 
@@ -334,13 +336,16 @@ WHERE data_type = 'enum'
   AND column_name = %%enum string%%
 ENDSQL
 
+# SELECT * FROM information_schema.routines WHERE routine_schema = 'a_bit_of_everything';
 # mysql proc list query
 $XOBIN query $MYDB -M -B -2 -T Proc -F MysqlProcs -a -o $DEST $@ << ENDSQL
 SELECT
+  r.routine_name AS proc_id,
   r.routine_name AS proc_name,
   LOWER(r.routine_type) AS proc_kind,
   COALESCE(p.dtd_identifier, 'void') AS return_type,
-  COALESCE(p.parameter_name, '') AS return_name
+  COALESCE(p.parameter_name, '') AS return_name,
+  r.routine_definition AS proc_src
 FROM information_schema.routines r
   LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
     AND p.specific_name = r.routine_name
@@ -359,7 +364,7 @@ FROM information_schema.routines r
     AND p.specific_name = r.routine_name
     AND p.parameter_mode = 'IN'
 WHERE r.routine_schema = %%schema string%%
-  AND r.routine_name = %%proc string%%
+  AND r.routine_name = %%id string%%
 ORDER BY p.ordinal_position
 ENDSQL
 
@@ -572,9 +577,11 @@ SELECT
   SCHEMA_NAME() AS schema_name
 ENDSQL
 
+# SELECT *, Object_definition(object_id) FROM sys.procedures
 # sqlserver proc list query
 $XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
 SELECT
+  STR(o.object_id) AS proc_id,
   o.name AS proc_name,
   (CASE o.type
     WHEN 'P' THEN 'procedure'
@@ -589,7 +596,8 @@ SELECT
   WHEN p.object_id IS NOT NULL AND p.name <> ''
       THEN SUBSTRING(p.name, 2, LEN(p.name)-1)
     ELSE ''
-  END AS return_name
+  END AS return_name,
+  OBJECT_DEFINITION(o.object_id) AS proc_src
 FROM sys.objects o
   LEFT JOIN sys.parameters p ON o.object_id = p.object_id
     AND (p.object_id IS NULL OR p.is_output = 'true')
@@ -607,7 +615,7 @@ SELECT
 FROM sys.objects o
   INNER JOIN sys.parameters p ON o.object_id = p.object_id
 WHERE SCHEMA_NAME(schema_id) = %%schema string%%
-  AND o.name = %%proc string%%
+  AND STR(o.object_id) = %%id string%%
   AND p.is_output = 'false'
 ORDER BY p.parameter_id
 ENDSQL
@@ -750,9 +758,11 @@ SELECT
 FROM dual
 ENDSQL
 
+# SELECT NAME AS name, listagg(TEXT) WITHIN GROUP (ORDER BY LINE) AS text FROM all_source WHERE owner='A_BIT_OF_EVERYTHING' GROUP BY name;
 # oracle proc list query
 $XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
 SELECT
+  CAST(o.object_id AS NVARCHAR2(255)) AS proc_id,
   LOWER(o.object_name) AS proc_name,
   LOWER(o.object_type) AS proc_kind,
   LOWER(CASE
@@ -763,10 +773,20 @@ SELECT
     ELSE a.data_type END) AS return_type,
   LOWER(CASE
     WHEN a.argument_name IS NULL THEN '-'
-    ELSE a.argument_name END) AS return_name
+    ELSE a.argument_name END) AS return_name,
+  s.src AS proc_src
 FROM all_objects o
   LEFT JOIN sys.all_arguments a ON a.object_id = o.object_id
     AND a.in_out = 'OUT'
+  JOIN (
+    SELECT
+      s.owner,
+      s.name,
+      listagg(s.text) WITHIN GROUP (ORDER BY s.line) AS src
+    FROM all_source s
+    GROUP BY s.owner, s.name
+  ) s ON s.owner = o.owner
+  AND s.name = o.object_name
 WHERE o.object_type IN ('FUNCTION','PROCEDURE')
   AND o.owner = UPPER(%%schema string%%)
 ORDER BY o.object_id
@@ -786,7 +806,7 @@ FROM all_objects o
     AND a.in_out = 'IN'
 WHERE o.object_type IN ('FUNCTION','PROCEDURE')
   AND o.owner = UPPER(%%schema string%%)
-  AND o.object_name = UPPER(%%proc string%%)
+  AND CAST(o.object_id AS NVARCHAR2(255)) = UPPER(%%id string%%)
 ORDER BY a.position
 ENDSQL
 
@@ -836,7 +856,7 @@ ENDSQL
 # oracle sequence list query
 $XOBIN query $ORDB -M -B -2 -T Sequence -F OracleTableSequences -a -o $DEST $@ << ENDSQL
 SELECT
-  LOWER(c.column_name) as column_name
+  LOWER(c.column_name) AS column_name
 FROM all_tab_columns c
 WHERE c.identity_column='YES'
   AND c.owner = UPPER(%%schema string%%)

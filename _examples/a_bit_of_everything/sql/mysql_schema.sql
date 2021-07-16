@@ -217,10 +217,16 @@ BEGIN
 END;
 
 CREATE FUNCTION a_func_0_in() RETURNS INTEGER
-  RETURN 10;
+BEGIN
+  RETURN 10\;
+END;
 
 CREATE FUNCTION a_func_1_in(a_param INTEGER) RETURNS INTEGER
-  RETURN a_param;
+BEGIN
+  RETURN a_param\;
+END;
 
 CREATE FUNCTION a_func_2_in(param_one INTEGER, param_two INTEGER) RETURNS INTEGER
-  RETURN param_one+param_two;
+BEGIN
+  RETURN param_one+param_two\;
+END;

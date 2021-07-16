@@ -7,7 +7,8 @@
         {
           "name": "a_0_in_0_out",
           "kind": "procedure",
-          "void": true
+          "void": true,
+          "body": "-- procs\nCREATE PROCEDURE a_0_in_0_out AS\nBEGIN\n  INSERT INTO a_manual_table (a_text) values ('');\nEND;"
         },
         {
           "name": "a_0_in_1_out",
@@ -20,7 +21,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE PROCEDURE a_0_in_1_out(@a_return INTEGER OUTPUT) AS\nBEGIN\n  SET @a_return = '10';\nEND;"
         },
         {
           "name": "a_1_in_0_out",
@@ -33,7 +35,8 @@
               }
             }
           ],
-          "void": true
+          "void": true,
+          "body": "CREATE PROCEDURE a_1_in_0_out (@a_param INTEGER) AS\nBEGIN\n  INSERT INTO a_manual_table (a_text) values ('');\nEND;"
         },
         {
           "name": "a_1_in_1_out",
@@ -54,7 +57,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE PROCEDURE a_1_in_1_out(@a_param INTEGER, @a_return INTEGER OUTPUT) AS\nBEGIN\n  SET @a_return = @a_param;\nEND;"
         },
         {
           "name": "a_2_in_2_out",
@@ -88,7 +92,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE PROCEDURE a_2_in_2_out(@param_one INTEGER, @param_two INTEGER, @return_one INTEGER OUTPUT, @return_two INTEGER OUTPUT) AS\nBEGIN\n  SET @return_one = @param_one;\n  SET @return_two = @param_two;\nEND;"
         },
         {
           "name": "a_func_0_in",
@@ -101,7 +106,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE FUNCTION a_func_0_in() RETURNS INTEGER AS\nBEGIN\n  RETURN 10;\nEND;"
         },
         {
           "name": "a_func_1_in",
@@ -122,7 +128,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE FUNCTION a_func_1_in(@a_param INTEGER) RETURNS INTEGER AS\nBEGIN\n  RETURN @a_param;\nEND;"
         },
         {
           "name": "a_func_2_in",
@@ -149,7 +156,8 @@
                 "prec": 10
               }
             }
-          ]
+          ],
+          "body": "CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER\nBEGIN\n  RETURN @param_one+@param_two;\nEND;"
         }
       ],
       "tables": [

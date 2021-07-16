@@ -7,7 +7,8 @@
         {
           "name": "a_0_in_0_out",
           "kind": "procedure",
-          "void": true
+          "void": true,
+          "body": "PROCEDURE a_0_in_0_out AS\nBEGIN\n  null;\nEND;"
         },
         {
           "name": "a_0_in_1_out",
@@ -20,7 +21,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "PROCEDURE a_0_in_1_out(a_return OUT INTEGER) AS\nBEGIN\n  SELECT 10 INTO a_return FROM dual;\nEND;"
         },
         {
           "name": "a_1_in_0_out",
@@ -34,7 +36,8 @@
               }
             }
           ],
-          "void": true
+          "void": true,
+          "body": "PROCEDURE a_1_in_0_out(a_param IN INTEGER) AS\nBEGIN\n  null;\nEND;"
         },
         {
           "name": "a_1_in_1_out",
@@ -56,7 +59,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "PROCEDURE a_1_in_1_out(a_param IN INTEGER, a_return OUT INTEGER) AS\nBEGIN\n  SELECT a_param INTO a_return FROM dual;\nEND;"
         },
         {
           "name": "a_2_in_2_out",
@@ -92,7 +96,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "PROCEDURE a_2_in_2_out(param_one IN INTEGER, param_two IN INTEGER, return_one OUT INTEGER, return_two OUT INTEGER) AS\nBEGIN\n  SELECT param_one, param_two INTO return_one, return_two FROM dual;\nEND;"
         },
         {
           "name": "a_func_0_in",
@@ -105,7 +110,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "FUNCTION a_func_0_in RETURN INTEGER AS\nBEGIN\nreturn 10;\nend;"
         },
         {
           "name": "a_func_1_in",
@@ -127,7 +133,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "FUNCTION a_func_1_in(a_param IN INTEGER) RETURN INTEGER AS\nBEGIN\n  RETURN a_param;\nEND;"
         },
         {
           "name": "a_func_2_in",
@@ -156,7 +163,8 @@
                 "prec": 38
               }
             }
-          ]
+          ],
+          "body": "FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS\nBEGIN\n  RETURN param_one+param_two;\nEND;"
         }
       ],
       "tables": [

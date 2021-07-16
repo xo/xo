@@ -19,6 +19,9 @@ schemas:
     - name: a_0_in_0_out
       kind: procedure
       void: true
+      body: |-
+        BEGIN
+        END
     - name: a_0_in_1_out
       kind: procedure
       return:
@@ -26,6 +29,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          SELECT 10 INTO a_return;
+        END
     - name: a_1_in_0_out
       kind: procedure
       params:
@@ -34,6 +41,9 @@ schemas:
           type: int
           prec: 11
       void: true
+      body: |-
+        BEGIN
+        END
     - name: a_1_in_1_out
       kind: procedure
       params:
@@ -46,6 +56,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          SELECT a_param INTO a_return;
+        END
     - name: a_2_in_2_out
       kind: procedure
       params:
@@ -66,6 +80,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          SELECT param_one, param_two INTO return_one, return_two;
+        END
     - name: a_func_0_in
       kind: function
       return:
@@ -73,6 +91,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          RETURN 10;
+        END
     - name: a_func_1_in
       kind: function
       params:
@@ -85,6 +107,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          RETURN a_param;
+        END
     - name: a_func_2_in
       kind: function
       params:
@@ -101,6 +127,10 @@ schemas:
         datatype:
           type: int
           prec: 11
+      body: |-
+        BEGIN
+          RETURN param_one+param_two;
+        END
     tables:
     - type: table
       name: a_bit_of_everything

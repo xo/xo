@@ -22,7 +22,8 @@
                 "type": "nvarchar2"
               }
             }
-          ]
+          ],
+          "body": "FUNCTION say_hello(name IN NVARCHAR2) RETURN NVARCHAR2 AS\nBEGIN\n  RETURN 'hello ' || name;\nEND;"
         }
       ],
       "tables": [

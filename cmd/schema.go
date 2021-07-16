@@ -101,10 +101,6 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	// process procs
 	procMap := make(map[string]xo.Proc)
 	for _, proc := range procs {
-		// skip triggers
-		if proc.ReturnType == "trigger" {
-			continue
-		}
 		// parse return type into template
 		// TODO: fix this so that nullable types can be returned
 		typ, prec, scale, array, err := parseType(l.Driver, proc.ReturnType)
@@ -113,7 +109,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 		}
 		var returnFields []xo.Field
 		// if already in map, proc has >1 return value
-		if p, ok := procMap[proc.ProcName]; ok {
+		if p, ok := procMap[proc.ProcID]; ok {
 			returnFields = p.Returns
 		}
 		name := proc.ReturnName
@@ -121,6 +117,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 			name = fmt.Sprintf("r%d", len(returnFields))
 		}
 		p := &xo.Proc{
+			ID:   proc.ProcID,
 			Name: proc.ProcName,
 			Kind: proc.ProcKind,
 			Returns: append(returnFields, xo.Field{
@@ -132,12 +129,13 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 					Array: array,
 				},
 			}),
+			Body: strings.TrimSpace(proc.ProcSrc),
 		}
 		// load proc parameters
 		if err := LoadProcParams(ctx, args, p); err != nil {
 			return nil, err
 		}
-		procMap[proc.ProcName] = *p
+		procMap[proc.ProcID] = *p
 	}
 	var m []xo.Proc
 	for _, proc := range procMap {
@@ -157,7 +155,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 	db, l, schema := DbLoaderSchema(ctx)
 	// load proc params
-	params, err := l.ProcParams(ctx, db, schema, proc.Name)
+	params, err := l.ProcParams(ctx, db, schema, proc.ID)
 	if err != nil {
 		return err
 	}

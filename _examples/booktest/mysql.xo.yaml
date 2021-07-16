@@ -22,6 +22,10 @@ schemas:
         datatype:
           type: varchar
           prec: 255
+      body: |-
+        BEGIN
+          RETURN CONCAT('hello ', name);
+        END
     tables:
     - type: table
       name: authors

@@ -27,6 +27,7 @@ case "$opt" in
   v) ARGS+=(-v) ;;
 esac
 done
+shift $(($OPTIND-1))
 
 if [ "$BUILD" = "1" ]; then
   pushd $SRC/../../ &> /dev/null

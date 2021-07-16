@@ -13,26 +13,26 @@ type ProcParam struct {
 }
 
 // PostgresProcParams runs a custom query, returning results as ProcParam.
-func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+func PostgresProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`pp.param_name, ` + // ::varchar AS param_name
+		`COALESCE(pp.param_name, ''), ` + // ::varchar AS param_name
 		`pp.param_type ` + // ::varchar AS param_type
 		`FROM pg_proc p ` +
 		`JOIN ONLY pg_namespace n ON p.pronamespace = n.oid ` +
 		`JOIN ( ` +
 		`SELECT ` +
-		`p.proname, ` +
+		`p.oid, ` +
 		`UNNEST(p.proargnames) AS param_name, ` +
 		`format_type(UNNEST(p.proargtypes), NULL) AS param_type ` +
 		`FROM pg_proc p ` +
-		`) AS pp ON p.proname = pp.proname ` +
+		`) AS pp ON p.oid = pp.oid ` +
 		`WHERE n.nspname = $1 ` +
-		`AND p.proname = $2 ` +
+		`AND p.oid::varchar = $2 ` +
 		`AND pp.param_type IS NOT NULL`
 	// run
-	logf(sqlstr, schema, proc)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	logf(sqlstr, schema, id)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, id)
 	if err != nil {
 		return nil, logerror(err)
 	}
@@ -54,7 +54,7 @@ func PostgresProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pro
 }
 
 // MysqlProcParams runs a custom query, returning results as ProcParam.
-func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+func MysqlProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`p.parameter_name AS param_name, ` +
@@ -67,8 +67,8 @@ func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcPa
 		`AND r.routine_name = ? ` +
 		`ORDER BY p.ordinal_position`
 	// run
-	logf(sqlstr, schema, proc)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	logf(sqlstr, schema, id)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, id)
 	if err != nil {
 		return nil, logerror(err)
 	}
@@ -90,7 +90,7 @@ func MysqlProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcPa
 }
 
 // SqlserverProcParams runs a custom query, returning results as ProcParam.
-func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+func SqlserverProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`SUBSTRING(p.name, 2, LEN(p.name)-1) AS param_name, ` +
@@ -98,12 +98,12 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pr
 		`FROM sys.objects o ` +
 		`INNER JOIN sys.parameters p ON o.object_id = p.object_id ` +
 		`WHERE SCHEMA_NAME(schema_id) = @p1 ` +
-		`AND o.name = @p2 ` +
+		`AND STR(o.object_id) = @p2 ` +
 		`AND p.is_output = 'false' ` +
 		`ORDER BY p.parameter_id`
 	// run
-	logf(sqlstr, schema, proc)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	logf(sqlstr, schema, id)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, id)
 	if err != nil {
 		return nil, logerror(err)
 	}
@@ -125,7 +125,7 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, proc string) ([]*Pr
 }
 
 // OracleProcParams runs a custom query, returning results as ProcParam.
-func OracleProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcParam, error) {
+func OracleProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`LOWER(a.argument_name) AS param_name, ` +
@@ -139,11 +139,11 @@ func OracleProcParams(ctx context.Context, db DB, schema, proc string) ([]*ProcP
 		`AND a.in_out = 'IN' ` +
 		`WHERE o.object_type IN ('FUNCTION','PROCEDURE') ` +
 		`AND o.owner = UPPER(:1) ` +
-		`AND o.object_name = UPPER(:2) ` +
+		`AND CAST(o.object_id AS NVARCHAR2(255)) = UPPER(:2) ` +
 		`ORDER BY a.position`
 	// run
-	logf(sqlstr, schema, proc)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, proc)
+	logf(sqlstr, schema, id)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, id)
 	if err != nil {
 		return nil, logerror(err)
 	}

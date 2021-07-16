@@ -244,3 +244,15 @@ BEGIN
   RETURN param_one+param_two;
 END;
 $$ LANGUAGE plpgsql;
+
+-- overloading (postgres only)
+
+CREATE PROCEDURE a_overloaded(param_one INTEGER) AS $$
+BEGIN
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE PROCEDURE a_overloaded(param_one INTEGER, param_two INTEGER) AS $$
+BEGIN
+END;
+$$ LANGUAGE plpgsql;

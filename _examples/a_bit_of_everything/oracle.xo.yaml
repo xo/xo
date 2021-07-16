@@ -6,6 +6,11 @@ schemas:
     - name: a_0_in_0_out
       kind: procedure
       void: true
+      body: |-
+        PROCEDURE a_0_in_0_out AS
+        BEGIN
+          null;
+        END;
     - name: a_0_in_1_out
       kind: procedure
       return:
@@ -13,6 +18,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        PROCEDURE a_0_in_1_out(a_return OUT INTEGER) AS
+        BEGIN
+          SELECT 10 INTO a_return FROM dual;
+        END;
     - name: a_1_in_0_out
       kind: procedure
       params:
@@ -21,6 +31,11 @@ schemas:
           type: number
           prec: 38
       void: true
+      body: |-
+        PROCEDURE a_1_in_0_out(a_param IN INTEGER) AS
+        BEGIN
+          null;
+        END;
     - name: a_1_in_1_out
       kind: procedure
       params:
@@ -33,6 +48,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        PROCEDURE a_1_in_1_out(a_param IN INTEGER, a_return OUT INTEGER) AS
+        BEGIN
+          SELECT a_param INTO a_return FROM dual;
+        END;
     - name: a_2_in_2_out
       kind: procedure
       params:
@@ -53,6 +73,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        PROCEDURE a_2_in_2_out(param_one IN INTEGER, param_two IN INTEGER, return_one OUT INTEGER, return_two OUT INTEGER) AS
+        BEGIN
+          SELECT param_one, param_two INTO return_one, return_two FROM dual;
+        END;
     - name: a_func_0_in
       kind: function
       return:
@@ -60,6 +85,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        FUNCTION a_func_0_in RETURN INTEGER AS
+        BEGIN
+        return 10;
+        end;
     - name: a_func_1_in
       kind: function
       params:
@@ -72,6 +102,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        FUNCTION a_func_1_in(a_param IN INTEGER) RETURN INTEGER AS
+        BEGIN
+          RETURN a_param;
+        END;
     - name: a_func_2_in
       kind: function
       params:
@@ -88,6 +123,11 @@ schemas:
         datatype:
           type: number
           prec: 38
+      body: |-
+        FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS
+        BEGIN
+          RETURN param_one+param_two;
+        END;
     tables:
     - type: table
       name: a_bit_of_everything

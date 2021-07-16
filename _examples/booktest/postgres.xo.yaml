@@ -20,6 +20,10 @@ schemas:
       - name: r0
         datatype:
           type: character varying
+      body: |-
+        BEGIN
+          RETURN 'hello ' || name;
+        END;
     tables:
     - type: table
       name: authors

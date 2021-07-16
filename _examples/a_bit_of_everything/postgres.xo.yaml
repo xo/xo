@@ -13,12 +13,19 @@ schemas:
     - name: a_0_in_0_out
       kind: procedure
       void: true
+      body: |-
+        BEGIN
+        END;
     - name: a_0_in_1_out
       kind: function
       return:
       - name: a_return
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          a_return := 10;
+        END;
     - name: a_1_in_0_out
       kind: procedure
       params:
@@ -26,6 +33,9 @@ schemas:
         datatype:
           type: integer
       void: true
+      body: |-
+        BEGIN
+        END;
     - name: a_1_in_1_out
       kind: function
       params:
@@ -36,6 +46,10 @@ schemas:
       - name: a_return
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          a_return := a_param;
+        END;
     - name: a_2_in_2_out
       kind: function
       params:
@@ -52,12 +66,21 @@ schemas:
       - name: return_two
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          return_one := param_one;
+          return_two := param_two;
+        END;
     - name: a_func_0_in
       kind: function
       return:
       - name: r0
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          RETURN 10;
+        END;
     - name: a_func_1_in
       kind: function
       params:
@@ -68,6 +91,10 @@ schemas:
       - name: r0
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          RETURN a_param;
+        END;
     - name: a_func_2_in
       kind: function
       params:
@@ -81,6 +108,33 @@ schemas:
       - name: r0
         datatype:
           type: integer
+      body: |-
+        BEGIN
+          RETURN param_one+param_two;
+        END;
+    - name: a_overloaded
+      kind: procedure
+      params:
+      - name: param_one
+        datatype:
+          type: integer
+      void: true
+      body: |-
+        BEGIN
+        END;
+    - name: a_overloaded
+      kind: procedure
+      params:
+      - name: param_one
+        datatype:
+          type: integer
+      - name: param_two
+        datatype:
+          type: integer
+      void: true
+      body: |-
+        BEGIN
+        END;
     tables:
     - type: table
       name: a_bit_of_everything

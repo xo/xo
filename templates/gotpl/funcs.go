@@ -126,6 +126,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"type":         f.typefn,
 		"field":        f.field,
 		"short":        f.short,
+		"check_name":   f.checkName,
 		// sqlstr funcs
 		"querystr": f.querystr,
 		"sqlstr":   f.sqlstr,
@@ -581,14 +582,16 @@ func (f *Funcs) namesfn(all bool, prefix string, z ...interface{}) string {
 			}
 		case Table:
 			for _, p := range x.Fields {
-				names = append(names, prefix+p.GoName)
+				names = append(names, prefix+f.checkName(p.GoName))
 			}
 		case []Field:
 			for _, p := range x {
-				names = append(names, prefix+p.GoName)
+				names = append(names, prefix+f.checkName(p.GoName))
 			}
 		case Proc:
-			names = append(names, f.params(x.Params, false))
+			if params := f.params(x.Params, false); params != "" {
+				names = append(names, params)
+			}
 		case Index:
 			names = append(names, f.params(x.Fields, false))
 		default:
@@ -1070,17 +1073,9 @@ func (f *Funcs) convertTypes(fkey ForeignKey) string {
 // Used to present a comma separated list of Go variable names for use with as
 // either a Go func parameter list, or in a call to another Go func.
 // (ie, ", a, b, c, ..." or ", a T1, b T2, c T3, ...").
-func (f *Funcs) params(fields []Field, addType bool, ignore ...string) string {
-	m := map[string]bool{}
-	for _, n := range ignore {
-		m[n] = true
-	}
+func (f *Funcs) params(fields []Field, addType bool) string {
 	var vals []string
 	for _, field := range fields {
-		if m[field.GoName] {
-			continue
-		}
-		// add to vals
 		vals = append(vals, f.param(field, addType))
 	}
 	return strings.Join(vals, ", ")
@@ -1191,11 +1186,8 @@ func (f *Funcs) short(v interface{}) string {
 				u = append(u, s[:1])
 			}
 		}
-		name = strings.Join(u, "")
-		// check go reserved names
-		if n, ok := goReservedNames[name]; ok {
-			name = n
-		}
+		// ensure no name conflict
+		name = f.checkName(strings.Join(u, ""))
 		// store back to short name map
 		f.shorts[n] = name
 	}
@@ -1206,7 +1198,14 @@ func (f *Funcs) short(v interface{}) string {
 	return name
 }
 
-// column returns the ColumnName of a field escaped if needed.
+func (f *Funcs) checkName(name string) string {
+	if n, ok := goReservedNames[name]; ok {
+		return n
+	}
+	return name
+}
+
+// colname returns the ColumnName of a field escaped if needed.
 func (f *Funcs) colname(z Field) string {
 	if f.escColumn {
 		return f.escfn(z.SQLName)

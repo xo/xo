@@ -24,7 +24,8 @@
         {
           "name": "a_0_in_0_out",
           "kind": "procedure",
-          "void": true
+          "void": true,
+          "body": "BEGIN\nEND;"
         },
         {
           "name": "a_0_in_1_out",
@@ -36,7 +37,8 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  a_return := 10;\nEND;"
         },
         {
           "name": "a_1_in_0_out",
@@ -49,7 +51,8 @@
               }
             }
           ],
-          "void": true
+          "void": true,
+          "body": "BEGIN\nEND;"
         },
         {
           "name": "a_1_in_1_out",
@@ -69,7 +72,8 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  a_return := a_param;\nEND;"
         },
         {
           "name": "a_2_in_2_out",
@@ -101,7 +105,8 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  return_one := param_one;\n  return_two := param_two;\nEND;"
         },
         {
           "name": "a_func_0_in",
@@ -113,7 +118,8 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  RETURN 10;\nEND;"
         },
         {
           "name": "a_func_1_in",
@@ -133,7 +139,8 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  RETURN a_param;\nEND;"
         },
         {
           "name": "a_func_2_in",
@@ -159,7 +166,42 @@
                 "type": "integer"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  RETURN param_one+param_two;\nEND;"
+        },
+        {
+          "name": "a_overloaded",
+          "kind": "procedure",
+          "params": [
+            {
+              "name": "param_one",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "void": true,
+          "body": "BEGIN\nEND;"
+        },
+        {
+          "name": "a_overloaded",
+          "kind": "procedure",
+          "params": [
+            {
+              "name": "param_one",
+              "datatype": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "param_two",
+              "datatype": {
+                "type": "integer"
+              }
+            }
+          ],
+          "void": true,
+          "body": "BEGIN\nEND;"
         }
       ],
       "tables": [

@@ -173,7 +173,7 @@ func SqlserverTableSequences(ctx context.Context, db DB, schema, table string) (
 func OracleTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`LOWER(c.column_name) as column_name ` +
+		`LOWER(c.column_name) AS column_name ` +
 		`FROM all_tab_columns c ` +
 		`WHERE c.identity_column='YES' ` +
 		`AND c.owner = UPPER(:1) ` +

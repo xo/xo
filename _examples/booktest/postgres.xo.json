@@ -39,7 +39,8 @@
                 "type": "character varying"
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  RETURN 'hello ' || name;\nEND;"
         }
       ],
       "tables": [

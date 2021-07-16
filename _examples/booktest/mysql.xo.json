@@ -41,7 +41,8 @@
                 "prec": 255
               }
             }
-          ]
+          ],
+          "body": "BEGIN\n  RETURN CONCAT('hello ', name);\nEND"
         }
       ],
       "tables": [

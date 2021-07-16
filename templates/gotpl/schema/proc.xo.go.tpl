@@ -11,7 +11,7 @@
 	// run
 {{- if not $p.Void }}
 {{- range $p.Returns }}
-	var {{ .GoName }} {{ type .Type }}
+	var {{ check_name .GoName }} {{ type .Type }}
 {{- end }}
 	logf(sqlstr, {{ params $p.Params false }})
 {{- if and (driver "sqlserver" "oracle") (eq $p.Kind "procedure")}}
@@ -21,7 +21,7 @@
 {{- end }}
 		return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}logerror(err)
 	}
-	return {{ range $p.Returns }}{{ .GoName }}, {{ end }}nil
+	return {{ range $p.Returns }}{{ check_name .GoName }}, {{ end }}nil
 {{- else -}}
 	logf(sqlstr)
 {{- if driver "sqlserver" "oracle" }}

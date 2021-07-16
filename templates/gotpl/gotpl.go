@@ -342,11 +342,20 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 			return err
 		}
 	}
-	// emit procs
-	for _, p := range s.Procs {
-		proc, err := convertProc(ctx, p)
+	// build procs
+	overloadMap := make(map[string]bool)
+	procs := make([]Proc, len(s.Procs))
+	for i, p := range s.Procs {
+		proc, err := convertProc(ctx, overloadMap, p)
 		if err != nil {
 			return err
+		}
+		procs[i] = proc
+	}
+	// emit procs
+	for i, proc := range procs {
+		if overloadMap[proc.GoName] {
+			proc.GoName = procName(s.Procs[i], proc)
 		}
 		prefix := "sp_"
 		if proc.Kind == "function" {
@@ -435,10 +444,10 @@ func convertEnum(e xo.Enum) Enum {
 	}
 }
 
-func convertProc(ctx context.Context, p xo.Proc) (Proc, error) {
+func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (Proc, error) {
+	// build
 	var paramList, retList []string
-	var params []Field
-	var returns []Field
+	var params, returns []Field
 	// proc params
 	for _, z := range p.Params {
 		f, err := convertField(ctx, false, z)
@@ -471,8 +480,12 @@ func convertProc(ctx context.Context, p xo.Proc) (Proc, error) {
 		templates.Schema(ctx), p.Name,
 		strings.Join(paramList, ", "),
 		strings.Join(retList, ", "))
+	name := snaker.SnakeToCamelIdentifier(p.Name)
+	// if not present in overloadMap, add false, otherwise add true
+	_, ok := overloadMap[name]
+	overloadMap[name] = ok
 	return Proc{
-		GoName:    snaker.SnakeToCamelIdentifier(p.Name),
+		GoName:    name,
 		SQLName:   p.Name,
 		Kind:      p.Kind,
 		Signature: signature,
@@ -576,6 +589,31 @@ func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, erro
 		IsPrimary:  f.IsPrimary,
 		IsSequence: f.IsSequence,
 	}, nil
+}
+
+func procName(xoProc xo.Proc, p Proc) string {
+	if len(p.Params) == 0 {
+		return p.GoName
+	}
+	useNames := true
+	var names, types []string
+	for i, param := range p.Params {
+		if param.SQLName == fmt.Sprintf("p%d", i) {
+			useNames = false
+		}
+		name := snaker.ForceCamelIdentifier(param.GoName)
+		dt := xoProc.Params[i].Datatype.Type
+		typ := snaker.ForceCamelIdentifier(strings.Join(strings.Split(dt, " "), "_"))
+		names, types = append(names, name), append(types, typ)
+	}
+	fields, sep := types, "By"
+	if useNames {
+		fields = names
+	}
+	if len(types) == 1 {
+		return fmt.Sprintf("%sBy%s", p.GoName, fields[0])
+	}
+	return fmt.Sprintf("%s%s%sAnd%s", p.GoName, sep, strings.Join(fields[:len(fields)-1], ""), fields[len(fields)-1])
 }
 
 // Context keys.

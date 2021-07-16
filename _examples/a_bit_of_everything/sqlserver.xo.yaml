@@ -6,6 +6,12 @@ schemas:
     - name: a_0_in_0_out
       kind: procedure
       void: true
+      body: |-
+        -- procs
+        CREATE PROCEDURE a_0_in_0_out AS
+        BEGIN
+          INSERT INTO a_manual_table (a_text) values ('');
+        END;
     - name: a_0_in_1_out
       kind: procedure
       return:
@@ -13,6 +19,11 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE PROCEDURE a_0_in_1_out(@a_return INTEGER OUTPUT) AS
+        BEGIN
+          SET @a_return = '10';
+        END;
     - name: a_1_in_0_out
       kind: procedure
       params:
@@ -20,6 +31,11 @@ schemas:
         datatype:
           type: int
       void: true
+      body: |-
+        CREATE PROCEDURE a_1_in_0_out (@a_param INTEGER) AS
+        BEGIN
+          INSERT INTO a_manual_table (a_text) values ('');
+        END;
     - name: a_1_in_1_out
       kind: procedure
       params:
@@ -31,6 +47,11 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE PROCEDURE a_1_in_1_out(@a_param INTEGER, @a_return INTEGER OUTPUT) AS
+        BEGIN
+          SET @a_return = @a_param;
+        END;
     - name: a_2_in_2_out
       kind: procedure
       params:
@@ -49,6 +70,12 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE PROCEDURE a_2_in_2_out(@param_one INTEGER, @param_two INTEGER, @return_one INTEGER OUTPUT, @return_two INTEGER OUTPUT) AS
+        BEGIN
+          SET @return_one = @param_one;
+          SET @return_two = @param_two;
+        END;
     - name: a_func_0_in
       kind: function
       return:
@@ -56,6 +83,11 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE FUNCTION a_func_0_in() RETURNS INTEGER AS
+        BEGIN
+          RETURN 10;
+        END;
     - name: a_func_1_in
       kind: function
       params:
@@ -67,6 +99,11 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE FUNCTION a_func_1_in(@a_param INTEGER) RETURNS INTEGER AS
+        BEGIN
+          RETURN @a_param;
+        END;
     - name: a_func_2_in
       kind: function
       params:
@@ -81,6 +118,11 @@ schemas:
         datatype:
           type: int
           prec: 10
+      body: |-
+        CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER
+        BEGIN
+          RETURN @param_one+@param_two;
+        END;
     tables:
     - type: table
       name: a_bit_of_everything
