@@ -267,7 +267,11 @@ func (f *Funcs) func_name_none(v interface{}) string {
 	case ForeignKey:
 		return x.GoName
 	case Proc:
-		return x.GoName
+		n := x.GoName
+		if x.Overloaded {
+			n = x.OverloadedName
+		}
+		return n
 	case Index:
 		return x.FuncName
 	default:
@@ -288,7 +292,11 @@ func (f *Funcs) func_name_context(v interface{}) string {
 	case ForeignKey:
 		name = nameContext(f.context_both(), x.GoName)
 	case Proc:
-		name = nameContext(f.context_both(), x.GoName)
+		n := x.GoName
+		if x.Overloaded {
+			n = x.OverloadedName
+		}
+		name = nameContext(f.context_both(), n)
 	case Index:
 		name = nameContext(f.context_both(), x.FuncName)
 	default:

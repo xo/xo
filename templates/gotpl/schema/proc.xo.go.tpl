@@ -1,4 +1,5 @@
-{{- $p := .Data -}}
+{{- $ps := .Data -}}
+{{- range $p := $ps -}}
 // {{ func_name_context $p }} calls the stored {{ $p.Type }} '{{ $p.Signature }}' on db.
 {{ func_context $p }} {
 {{- if and (driver "mysql") (eq $p.Type "procedure") (not $p.Void) }}
@@ -41,4 +42,5 @@
 {{ func $p }} {
 	return {{ func_name_context $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }
+{{- end -}}
 {{- end }}

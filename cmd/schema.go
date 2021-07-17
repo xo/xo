@@ -146,6 +146,9 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 		m = append(m, proc)
 	}
 	sort.Slice(m, func(i, j int) bool {
+		if m[i].Name == m[j].Name {
+			return m[i].ID < m[j].ID
+		}
 		return m[i].Name < m[j].Name
 	})
 	return m, nil

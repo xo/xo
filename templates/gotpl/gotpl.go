@@ -343,29 +343,32 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 		}
 	}
 	// build procs
-	overloadMap := make(map[string]bool)
-	procs := make([]Proc, len(s.Procs))
-	for i, p := range s.Procs {
-		proc, err := convertProc(ctx, overloadMap, p)
-		if err != nil {
+	overloadMap := make(map[string][]Proc)
+	// procOrder ensures procs are always emitted in alphabetic order for
+	// consistency in single mode
+	var procOrder []string
+	for _, p := range s.Procs {
+		var err error
+		if procOrder, err = convertProc(ctx, overloadMap, procOrder, p); err != nil {
 			return err
 		}
-		procs[i] = proc
 	}
 	// emit procs
-	for i, proc := range procs {
-		if overloadMap[proc.GoName] {
-			proc.GoName = procName(s.Procs[i], proc)
-		}
+	for _, name := range procOrder {
+		procs := overloadMap[name]
 		prefix := "sp_"
-		if proc.Type == "function" {
+		if procs[0].Type == "function" {
 			prefix = "sf_"
+		}
+		// change GoName to their overloaded versions if needed
+		for i := range procs {
+			procs[i].Overloaded = len(procs) > 1
 		}
 		if err := set.Emit(ctx, &templates.Template{
 			Set:      "schema",
 			Template: "proc",
-			Type:     prefix + proc.GoName,
-			Data:     proc,
+			Type:     prefix + name,
+			Data:     procs,
 		}); err != nil {
 			return err
 		}
@@ -444,7 +447,7 @@ func convertEnum(e xo.Enum) Enum {
 	}
 }
 
-func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (Proc, error) {
+func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []string, p xo.Proc) ([]string, error) {
 	// build
 	var paramList, retList []string
 	var params, returns []Field
@@ -452,7 +455,7 @@ func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (P
 	for _, z := range p.Params {
 		f, err := convertField(ctx, false, z)
 		if err != nil {
-			return Proc{}, err
+			return nil, err
 		}
 		paramList = append(paramList, z.Datatype.Type)
 		params = append(params, f)
@@ -461,7 +464,7 @@ func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (P
 	for _, z := range p.Returns {
 		f, err := convertField(ctx, false, z)
 		if err != nil {
-			return Proc{}, err
+			return nil, err
 		}
 		retList = append(retList, z.Datatype.Type)
 		returns = append(returns, f)
@@ -481,19 +484,23 @@ func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (P
 		strings.Join(paramList, ", "),
 		strings.Join(retList, ", "))
 	name := snaker.SnakeToCamelIdentifier(p.Name)
-	// if not present in overloadMap, add false, otherwise add true
-	_, ok := overloadMap[name]
-	overloadMap[name] = ok
-	return Proc{
-		GoName:    name,
-		SQLName:   p.Name,
-		Type:      p.Type,
-		Signature: signature,
-		Params:    params,
-		Returns:   returns,
-		Void:      p.Void,
-		Comment:   "",
-	}, nil
+	// add proc to emit order
+	procs, ok := overloadMap[name]
+	if !ok {
+		order = append(order, name)
+	}
+	overloadMap[name] = append(procs, Proc{
+		Type:           p.Type,
+		GoName:         name,
+		OverloadedName: overloadedName(p.Params, params, name),
+		SQLName:        p.Name,
+		Signature:      signature,
+		Params:         params,
+		Returns:        returns,
+		Void:           p.Void,
+		Comment:        "",
+	})
+	return order, nil
 }
 
 func convertTable(ctx context.Context, t xo.Table) (Table, error) {
@@ -591,29 +598,31 @@ func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, erro
 	}, nil
 }
 
-func procName(xoProc xo.Proc, p Proc) string {
-	if len(p.Params) == 0 {
-		return p.GoName
+func overloadedName(xoParams []xo.Field, goParams []Field, name string) string {
+	if len(goParams) == 0 {
+		return name
 	}
-	useNames := true
+	var useTypes bool
 	var names, types []string
-	for i, param := range p.Params {
-		if param.SQLName == fmt.Sprintf("p%d", i) {
-			useNames = false
+	// build parameters for proc.
+	// if the proc's parameter has no name, use the types of the proc instead
+	for i, f := range goParams {
+		if f.SQLName == fmt.Sprintf("p%d", i) {
+			useTypes = true
 		}
-		name := snaker.ForceCamelIdentifier(param.GoName)
-		dt := xoProc.Params[i].Datatype.Type
+		name := snaker.ForceCamelIdentifier(f.GoName)
+		dt := xoParams[i].Datatype.Type
 		typ := snaker.ForceCamelIdentifier(strings.Join(strings.Split(dt, " "), "_"))
 		names, types = append(names, name), append(types, typ)
 	}
-	fields, sep := types, "By"
-	if useNames {
-		fields = names
+	fields := names
+	if useTypes {
+		fields = types
 	}
 	if len(types) == 1 {
-		return fmt.Sprintf("%sBy%s", p.GoName, fields[0])
+		return fmt.Sprintf("%sBy%s", name, fields[0])
 	}
-	return fmt.Sprintf("%s%s%sAnd%s", p.GoName, sep, strings.Join(fields[:len(fields)-1], ""), fields[len(fields)-1])
+	return fmt.Sprintf("%sBy%sAnd%s", name, strings.Join(fields[:len(fields)-1], ""), fields[len(fields)-1])
 }
 
 // Context keys.
