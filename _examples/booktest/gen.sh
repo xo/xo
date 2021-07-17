@@ -81,7 +81,7 @@ for TYPE in $DATABASES; do
       -B \
       -2 \
       -T AuthorBookResult \
-      --type-comment='AuthorBookResult is the result of a search.'
+      --type-comment='{{ . }} is the result of a search.'
     go build ./$TYPE
     go build
     ./$TEST -dsn $DB ${ARGS[@]}
