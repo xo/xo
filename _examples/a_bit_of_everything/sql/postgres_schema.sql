@@ -77,6 +77,7 @@ CREATE TYPE a_enum AS ENUM (
 );
 
 /*
+
 a_enum
 bigint
 bigserial
@@ -112,6 +113,7 @@ timetz
 uuid
 varchar
 xml
+
 */
 
 -- table with all field types and all nullable field types
@@ -241,7 +243,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE FUNCTION a_func_2_in(param_one INTEGER, param_two INTEGER) RETURNS INTEGER AS $$
 BEGIN
-  RETURN param_one+param_two;
+  RETURN param_one + param_two;
 END;
 $$ LANGUAGE plpgsql;
 

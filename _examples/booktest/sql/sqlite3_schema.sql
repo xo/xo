@@ -1,6 +1,6 @@
 CREATE TABLE authors (
   author_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name TEXT DEFAULT '' NOT NULL
+  name VARCHAR(255) DEFAULT '' NOT NULL
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
@@ -12,6 +12,7 @@ CREATE TABLE books (
   title VARCHAR(255) DEFAULT '' NOT NULL,
   year INTEGER DEFAULT 2000 NOT NULL,
   available TIMESTAMP DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'NOW')) NOT NULL,
+  description TEXT DEFAULT '' NOT NULL,
   tags TEXT NOT NULL DEFAULT '{}'
 );
 

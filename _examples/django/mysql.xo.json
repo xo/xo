@@ -759,7 +759,7 @@
         },
         {
           "type": "table",
-          "name": "booktest_author",
+          "name": "authors",
           "columns": [
             {
               "name": "author_id",
@@ -790,8 +790,8 @@
           ],
           "indexes": [
             {
-              "name": "booktest_author_author_id_pkey",
-              "func_name": "booktest_author_by_author_id",
+              "name": "authors_author_id_pkey",
+              "func_name": "author_by_author_id",
               "fields": [
                 {
                   "name": "author_id",
@@ -810,7 +810,7 @@
         },
         {
           "type": "table",
-          "name": "booktest_book",
+          "name": "books",
           "columns": [
             {
               "name": "book_id",
@@ -857,7 +857,7 @@
               }
             },
             {
-              "name": "author_id",
+              "name": "books_author_id_fkey",
               "datatype": {
                 "type": "bigint",
                 "prec": 20
@@ -877,11 +877,11 @@
           ],
           "indexes": [
             {
-              "name": "booktest_book_author_id_d11194af_fk_booktest_author_author_id",
-              "func_name": "booktest_book_by_author_id",
+              "name": "books_books_author_id_fkey_73ac0c26_fk_authors_author_id",
+              "func_name": "books_by_books_author_id_fkey",
               "fields": [
                 {
-                  "name": "author_id",
+                  "name": "books_author_id_fkey",
                   "datatype": {
                     "type": "bigint",
                     "prec": 20
@@ -890,8 +890,8 @@
               ]
             },
             {
-              "name": "booktest_book_book_id_pkey",
-              "func_name": "booktest_book_by_book_id",
+              "name": "books_book_id_pkey",
+              "func_name": "book_by_book_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -909,18 +909,18 @@
           ],
           "foreign_keys": [
             {
-              "name": "booktest_book_author_id_d11194af_fk_booktest_author_author_id",
-              "resolved_name": "booktest_author",
+              "name": "books_books_author_id_fkey_73ac0c26_fk_authors_author_id",
+              "resolved_name": "author",
               "column": [
                 {
-                  "name": "author_id",
+                  "name": "books_author_id_fkey",
                   "datatype": {
                     "type": "bigint",
                     "prec": 20
                   }
                 }
               ],
-              "ref_table": "booktest_author",
+              "ref_table": "authors",
               "ref_column": [
                 {
                   "name": "author_id",
@@ -932,13 +932,13 @@
                   "is_sequence": true
                 }
               ],
-              "ref_func_name": "booktest_author_by_author_id"
+              "ref_func_name": "author_by_author_id"
             }
           ]
         },
         {
           "type": "table",
-          "name": "booktest_book_tags",
+          "name": "books_tags",
           "columns": [
             {
               "name": "id",
@@ -977,8 +977,8 @@
           ],
           "indexes": [
             {
-              "name": "booktest_book_tags_book_id_tag_id_83102575_uniq",
-              "func_name": "booktest_book_tag_by_book_id_tag_id",
+              "name": "books_tags_book_id_tag_id_29db9e39_uniq",
+              "func_name": "books_tag_by_book_id_tag_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -998,8 +998,8 @@
               "is_unique": true
             },
             {
-              "name": "booktest_book_tags_tag_id_858da6e5_fk_booktest_tag_tag_id",
-              "func_name": "booktest_book_tags_by_tag_id",
+              "name": "books_tags_tag_id_8d70b40a_fk_tags_tag_id",
+              "func_name": "books_tags_by_tag_id",
               "fields": [
                 {
                   "name": "tag_id",
@@ -1011,8 +1011,8 @@
               ]
             },
             {
-              "name": "booktest_book_tags_id_pkey",
-              "func_name": "booktest_book_tag_by_id",
+              "name": "books_tags_id_pkey",
+              "func_name": "books_tag_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -1030,8 +1030,8 @@
           ],
           "foreign_keys": [
             {
-              "name": "booktest_book_tags_book_id_04f02754_fk_booktest_book_book_id",
-              "resolved_name": "booktest_book",
+              "name": "books_tags_book_id_73d7d8e8_fk_books_book_id",
+              "resolved_name": "book",
               "column": [
                 {
                   "name": "book_id",
@@ -1041,7 +1041,7 @@
                   }
                 }
               ],
-              "ref_table": "booktest_book",
+              "ref_table": "books",
               "ref_column": [
                 {
                   "name": "book_id",
@@ -1053,11 +1053,11 @@
                   "is_sequence": true
                 }
               ],
-              "ref_func_name": "booktest_book_by_book_id"
+              "ref_func_name": "book_by_book_id"
             },
             {
-              "name": "booktest_book_tags_tag_id_858da6e5_fk_booktest_tag_tag_id",
-              "resolved_name": "booktest_tag",
+              "name": "books_tags_tag_id_8d70b40a_fk_tags_tag_id",
+              "resolved_name": "tag",
               "column": [
                 {
                   "name": "tag_id",
@@ -1067,7 +1067,7 @@
                   }
                 }
               ],
-              "ref_table": "booktest_tag",
+              "ref_table": "tags",
               "ref_column": [
                 {
                   "name": "tag_id",
@@ -1079,59 +1079,7 @@
                   "is_sequence": true
                 }
               ],
-              "ref_func_name": "booktest_tag_by_tag_id"
-            }
-          ]
-        },
-        {
-          "type": "table",
-          "name": "booktest_tag",
-          "columns": [
-            {
-              "name": "tag_id",
-              "datatype": {
-                "type": "bigint",
-                "prec": 20
-              },
-              "is_primary": true,
-              "is_sequence": true
-            },
-            {
-              "name": "tag",
-              "datatype": {
-                "type": "varchar",
-                "prec": 50
-              }
-            }
-          ],
-          "primary_keys": [
-            {
-              "name": "tag_id",
-              "datatype": {
-                "type": "bigint",
-                "prec": 20
-              },
-              "is_primary": true,
-              "is_sequence": true
-            }
-          ],
-          "indexes": [
-            {
-              "name": "booktest_tag_tag_id_pkey",
-              "func_name": "booktest_tag_by_tag_id",
-              "fields": [
-                {
-                  "name": "tag_id",
-                  "datatype": {
-                    "type": "bigint",
-                    "prec": 20
-                  },
-                  "is_primary": true,
-                  "is_sequence": true
-                }
-              ],
-              "is_unique": true,
-              "is_primary": true
+              "ref_func_name": "tag_by_tag_id"
             }
           ]
         },
@@ -1528,6 +1476,58 @@
             }
           ],
           "manual": true
+        },
+        {
+          "type": "table",
+          "name": "tags",
+          "columns": [
+            {
+              "name": "tag_id",
+              "datatype": {
+                "type": "bigint",
+                "prec": 20
+              },
+              "is_primary": true,
+              "is_sequence": true
+            },
+            {
+              "name": "tag",
+              "datatype": {
+                "type": "varchar",
+                "prec": 50
+              }
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "tag_id",
+              "datatype": {
+                "type": "bigint",
+                "prec": 20
+              },
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "tags_tag_id_pkey",
+              "func_name": "tag_by_tag_id",
+              "fields": [
+                {
+                  "name": "tag_id",
+                  "datatype": {
+                    "type": "bigint",
+                    "prec": 20
+                  },
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true,
+              "is_primary": true
+            }
+          ]
         }
       ]
     }

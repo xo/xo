@@ -130,6 +130,13 @@
               }
             },
             {
+              "name": "description",
+              "datatype": {
+                "type": "nclob",
+                "nullable": true
+              }
+            },
+            {
               "name": "tags",
               "datatype": {
                 "type": "nclob"

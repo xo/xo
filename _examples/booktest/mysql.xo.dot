@@ -21,6 +21,7 @@ digraph booktest {
 		<tr><td align="left" PORT="title">title: varchar</td></tr>
 		<tr><td align="left" PORT="year">year: int</td></tr>
 		<tr><td align="left" PORT="available">available: datetime</td></tr>
+		<tr><td align="left" PORT="description">description: text</td></tr>
 		<tr><td align="left" PORT="tags">tags: text</td></tr>
 		</table>> ]
 	

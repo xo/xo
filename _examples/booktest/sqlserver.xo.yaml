@@ -94,6 +94,10 @@ schemas:
           prec: 27
           scale: 7
         default: (getdate())
+      - name: description
+        datatype:
+          type: ntext
+        default: ('')
       - name: tags
         datatype:
           type: text

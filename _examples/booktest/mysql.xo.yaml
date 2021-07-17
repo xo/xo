@@ -104,6 +104,10 @@ schemas:
         datatype:
           type: datetime
         default: current_timestamp()
+      - name: description
+        datatype:
+          type: text
+        default: "''"
       - name: tags
         datatype:
           type: text

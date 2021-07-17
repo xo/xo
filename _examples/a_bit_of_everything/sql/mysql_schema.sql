@@ -210,7 +210,6 @@ BEGIN
   SELECT a_param INTO a_return\;
 END;
 
-
 CREATE PROCEDURE a_2_in_2_out(param_one INTEGER, param_two INTEGER, OUT return_one INTEGER, OUT return_two INTEGER)
 BEGIN
   SELECT param_one, param_two INTO return_one, return_two\;
@@ -228,5 +227,5 @@ END;
 
 CREATE FUNCTION a_func_2_in(param_one INTEGER, param_two INTEGER) RETURNS INTEGER
 BEGIN
-  RETURN param_one+param_two\;
+  RETURN param_one + param_two\;
 END;

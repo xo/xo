@@ -110,7 +110,7 @@ schemas:
           type: integer
       body: |-
         BEGIN
-          RETURN param_one+param_two;
+          RETURN param_one + param_two;
         END;
     - name: a_overloaded
       kind: procedure

@@ -205,5 +205,5 @@ END;
 
 CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER
 BEGIN
-  RETURN @param_one+@param_two\;
+  RETURN @param_one + @param_two\;
 END;

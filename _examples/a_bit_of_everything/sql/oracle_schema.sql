@@ -191,7 +191,7 @@ END\;;
 
 CREATE FUNCTION a_func_0_in RETURN INTEGER AS
 BEGIN
-return 10\;
+  RETURN 10\;
 end\;;
 
 CREATE FUNCTION a_func_1_in(a_param IN INTEGER) RETURN INTEGER AS
@@ -201,5 +201,5 @@ END\;;
 
 CREATE FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS
 BEGIN
-  RETURN param_one+param_two\;
+  RETURN param_one + param_two\;
 END\;;

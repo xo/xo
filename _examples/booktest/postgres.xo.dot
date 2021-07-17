@@ -8,7 +8,7 @@ digraph public {
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
 		<tr><td bgcolor="lightblue">"public.authors"</td></tr>
 		<tr><td align="left" PORT="author_id">author_id: integer</td></tr>
-		<tr><td align="left" PORT="name">name: text</td></tr>
+		<tr><td align="left" PORT="name">name: character varying</td></tr>
 		</table>> ]
 	
 	"public.books" [ label=<
@@ -21,6 +21,7 @@ digraph public {
 		<tr><td align="left" PORT="title">title: character varying</td></tr>
 		<tr><td align="left" PORT="year">year: integer</td></tr>
 		<tr><td align="left" PORT="available">available: timestamp with time zone</td></tr>
+		<tr><td align="left" PORT="description">description: text</td></tr>
 		<tr><td align="left" PORT="tags">tags: character varying</td></tr>
 		</table>> ]
 	

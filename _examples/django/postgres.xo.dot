@@ -60,38 +60,31 @@ digraph public {
 		<tr><td align="left" PORT="permission_id">permission_id: integer</td></tr>
 		</table>> ]
 	
-	"public.booktest_author" [ label=<
+	"public.authors" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"public.booktest_author"</td></tr>
+		<tr><td bgcolor="lightblue">"public.authors"</td></tr>
 		<tr><td align="left" PORT="author_id">author_id: bigint</td></tr>
 		<tr><td align="left" PORT="name">name: text</td></tr>
 		</table>> ]
 	
-	"public.booktest_book" [ label=<
+	"public.books" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"public.booktest_book"</td></tr>
+		<tr><td bgcolor="lightblue">"public.books"</td></tr>
 		<tr><td align="left" PORT="book_id">book_id: bigint</td></tr>
 		<tr><td align="left" PORT="isbn">isbn: character varying</td></tr>
 		<tr><td align="left" PORT="book_type">book_type: integer</td></tr>
 		<tr><td align="left" PORT="title">title: character varying</td></tr>
 		<tr><td align="left" PORT="year">year: integer</td></tr>
 		<tr><td align="left" PORT="available">available: timestamp with time zone</td></tr>
-		<tr><td align="left" PORT="author_id">author_id: bigint</td></tr>
+		<tr><td align="left" PORT="books_author_id_fkey">books_author_id_fkey: bigint</td></tr>
 		</table>> ]
 	
-	"public.booktest_book_tags" [ label=<
+	"public.books_tags" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"public.booktest_book_tags"</td></tr>
+		<tr><td bgcolor="lightblue">"public.books_tags"</td></tr>
 		<tr><td align="left" PORT="id">id: integer</td></tr>
 		<tr><td align="left" PORT="book_id">book_id: bigint</td></tr>
 		<tr><td align="left" PORT="tag_id">tag_id: bigint</td></tr>
-		</table>> ]
-	
-	"public.booktest_tag" [ label=<
-		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"public.booktest_tag"</td></tr>
-		<tr><td align="left" PORT="tag_id">tag_id: bigint</td></tr>
-		<tr><td align="left" PORT="tag">tag: character varying</td></tr>
 		</table>> ]
 	
 	"public.django_admin_log" [ label=<
@@ -132,6 +125,13 @@ digraph public {
 		<tr><td align="left" PORT="expire_date">expire_date: timestamp with time zone</td></tr>
 		</table>> ]
 	
+	"public.tags" [ label=<
+		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+		<tr><td bgcolor="lightblue">"public.tags"</td></tr>
+		<tr><td align="left" PORT="tag_id">tag_id: bigint</td></tr>
+		<tr><td align="left" PORT="tag">tag: character varying</td></tr>
+		</table>> ]
+	
 	"public.auth_group_permissions":"permission_id":e -> "public.auth_permission":"id":w [
 		headlabel="auth_permission"]
 	"public.auth_group_permissions":"group_id":e -> "public.auth_group":"id":w [
@@ -146,12 +146,12 @@ digraph public {
 		headlabel="auth_permission"]
 	"public.auth_user_user_permissions":"user_id":e -> "public.auth_user":"id":w [
 		headlabel="auth_user"]
-	"public.booktest_book":"author_id":e -> "public.booktest_author":"author_id":w [
-		headlabel="booktest_author"]
-	"public.booktest_book_tags":"book_id":e -> "public.booktest_book":"book_id":w [
-		headlabel="booktest_book"]
-	"public.booktest_book_tags":"tag_id":e -> "public.booktest_tag":"tag_id":w [
-		headlabel="booktest_tag"]
+	"public.books":"books_author_id_fkey":e -> "public.authors":"author_id":w [
+		headlabel="author"]
+	"public.books_tags":"book_id":e -> "public.books":"book_id":w [
+		headlabel="book"]
+	"public.books_tags":"tag_id":e -> "public.tags":"tag_id":w [
+		headlabel="tag"]
 	"public.django_admin_log":"content_type_id":e -> "public.django_content_type":"id":w [
 		headlabel="django_content_type"]
 	"public.django_admin_log":"user_id":e -> "public.auth_user":"id":w [

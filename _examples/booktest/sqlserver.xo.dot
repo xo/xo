@@ -20,6 +20,7 @@ digraph booktest {
 		<tr><td align="left" PORT="title">title: nvarchar</td></tr>
 		<tr><td align="left" PORT="year">year: int</td></tr>
 		<tr><td align="left" PORT="available">available: datetime2</td></tr>
+		<tr><td align="left" PORT="description">description: ntext</td></tr>
 		<tr><td align="left" PORT="tags">tags: text</td></tr>
 		</table>> ]
 	

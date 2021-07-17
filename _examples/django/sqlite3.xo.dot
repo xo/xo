@@ -60,38 +60,31 @@ digraph django_db {
 		<tr><td align="left" PORT="permission_id">permission_id: integer</td></tr>
 		</table>> ]
 	
-	"booktest_author" [ label=<
+	"authors" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"booktest_author"</td></tr>
+		<tr><td bgcolor="lightblue">"authors"</td></tr>
 		<tr><td align="left" PORT="author_id">author_id: integer</td></tr>
 		<tr><td align="left" PORT="name">name: text</td></tr>
 		</table>> ]
 	
-	"booktest_book" [ label=<
+	"books" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"booktest_book"</td></tr>
+		<tr><td bgcolor="lightblue">"books"</td></tr>
 		<tr><td align="left" PORT="book_id">book_id: integer</td></tr>
 		<tr><td align="left" PORT="isbn">isbn: varchar</td></tr>
 		<tr><td align="left" PORT="book_type">book_type: integer</td></tr>
 		<tr><td align="left" PORT="title">title: varchar</td></tr>
 		<tr><td align="left" PORT="year">year: integer</td></tr>
 		<tr><td align="left" PORT="available">available: datetime</td></tr>
-		<tr><td align="left" PORT="author_id">author_id: bigint</td></tr>
+		<tr><td align="left" PORT="books_author_id_fkey">books_author_id_fkey: bigint</td></tr>
 		</table>> ]
 	
-	"booktest_book_tags" [ label=<
+	"books_tags" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"booktest_book_tags"</td></tr>
+		<tr><td bgcolor="lightblue">"books_tags"</td></tr>
 		<tr><td align="left" PORT="id">id: integer</td></tr>
 		<tr><td align="left" PORT="book_id">book_id: bigint</td></tr>
 		<tr><td align="left" PORT="tag_id">tag_id: bigint</td></tr>
-		</table>> ]
-	
-	"booktest_tag" [ label=<
-		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-		<tr><td bgcolor="lightblue">"booktest_tag"</td></tr>
-		<tr><td align="left" PORT="tag_id">tag_id: integer</td></tr>
-		<tr><td align="left" PORT="tag">tag: varchar</td></tr>
 		</table>> ]
 	
 	"django_admin_log" [ label=<
@@ -132,6 +125,13 @@ digraph django_db {
 		<tr><td align="left" PORT="expire_date">expire_date: datetime</td></tr>
 		</table>> ]
 	
+	"tags" [ label=<
+		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+		<tr><td bgcolor="lightblue">"tags"</td></tr>
+		<tr><td align="left" PORT="tag_id">tag_id: integer</td></tr>
+		<tr><td align="left" PORT="tag">tag: varchar</td></tr>
+		</table>> ]
+	
 	"auth_group_permissions":"group_id":e -> "auth_group":"id":w [
 		headlabel="auth_group"]
 	"auth_group_permissions":"permission_id":e -> "auth_permission":"id":w [
@@ -146,12 +146,12 @@ digraph django_db {
 		headlabel="auth_permission"]
 	"auth_user_user_permissions":"user_id":e -> "auth_user":"id":w [
 		headlabel="auth_user"]
-	"booktest_book":"author_id":e -> "booktest_author":"author_id":w [
-		headlabel="booktest_author"]
-	"booktest_book_tags":"book_id":e -> "booktest_book":"book_id":w [
-		headlabel="booktest_book"]
-	"booktest_book_tags":"tag_id":e -> "booktest_tag":"tag_id":w [
-		headlabel="booktest_tag"]
+	"books":"books_author_id_fkey":e -> "authors":"author_id":w [
+		headlabel="author"]
+	"books_tags":"book_id":e -> "books":"book_id":w [
+		headlabel="book"]
+	"books_tags":"tag_id":e -> "tags":"tag_id":w [
+		headlabel="tag"]
 	"django_admin_log":"content_type_id":e -> "django_content_type":"id":w [
 		headlabel="django_content_type"]
 	"django_admin_log":"user_id":e -> "auth_user":"id":w [

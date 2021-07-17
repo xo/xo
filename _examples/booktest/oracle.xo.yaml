@@ -76,6 +76,10 @@ schemas:
         datatype:
           type: timestamp with time zone
           prec: 6
+      - name: description
+        datatype:
+          type: nclob
+          nullable: true
       - name: tags
         datatype:
           type: nclob

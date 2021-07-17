@@ -148,6 +148,13 @@
               "default": "(getdate())"
             },
             {
+              "name": "description",
+              "datatype": {
+                "type": "ntext"
+              },
+              "default": "('')"
+            },
+            {
               "name": "tags",
               "datatype": {
                 "type": "text"

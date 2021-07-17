@@ -8,13 +8,14 @@ import (
 
 // Book represents a row from 'books'.
 type Book struct {
-	BookID    int    `json:"book_id"`   // book_id
-	AuthorID  int    `json:"author_id"` // author_id
-	Isbn      string `json:"isbn"`      // isbn
-	Title     string `json:"title"`     // title
-	Year      int    `json:"year"`      // year
-	Available Time   `json:"available"` // available
-	Tags      string `json:"tags"`      // tags
+	BookID      int    `json:"book_id"`     // book_id
+	AuthorID    int    `json:"author_id"`   // author_id
+	Isbn        string `json:"isbn"`        // isbn
+	Title       string `json:"title"`       // title
+	Year        int    `json:"year"`        // year
+	Available   Time   `json:"available"`   // available
+	Description string `json:"description"` // description
+	Tags        string `json:"tags"`        // tags
 	// xo fields
 	_exists, _deleted bool
 }
@@ -40,13 +41,13 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO books (` +
-		`author_id, isbn, title, year, available, tags` +
+		`author_id, isbn, title, year, available, description, tags` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6` +
+		`$1, $2, $3, $4, $5, $6, $7` +
 		`)`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
-	res, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
+	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	res, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags)
 	if err != nil {
 		return err
 	}
@@ -71,11 +72,11 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE books SET ` +
-		`author_id = $1, isbn = $2, title = $3, year = $4, available = $5, tags = $6 ` +
-		`WHERE book_id = $7`
+		`author_id = $1, isbn = $2, title = $3, year = $4, available = $5, description = $6, tags = $7 ` +
+		`WHERE book_id = $8`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
-	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID); err != nil {
+	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID)
+	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -97,16 +98,16 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO books (` +
-		`book_id, author_id, isbn, title, year, available, tags` +
+		`book_id, author_id, isbn, title, year, available, description, tags` +
 		`) VALUES (` +
-		`$1, $2, $3, $4, $5, $6, $7` +
+		`$1, $2, $3, $4, $5, $6, $7, $8` +
 		`)` +
 		` ON CONFLICT (book_id) DO ` +
 		`UPDATE SET ` +
-		`author_id = EXCLUDED.author_id, isbn = EXCLUDED.isbn, title = EXCLUDED.title, year = EXCLUDED.year, available = EXCLUDED.available, tags = EXCLUDED.tags `
+		`author_id = EXCLUDED.author_id, isbn = EXCLUDED.isbn, title = EXCLUDED.title, year = EXCLUDED.year, available = EXCLUDED.available, description = EXCLUDED.description, tags = EXCLUDED.tags `
 	// run
-	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
-	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags); err != nil {
+	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags); err != nil {
 		return err
 	}
 	// set exists
@@ -141,7 +142,7 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM books ` +
 		`WHERE book_id = $1`
 	// run
@@ -149,7 +150,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -161,7 +162,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM books ` +
 		`WHERE title = $1 AND year = $2`
 	// run
@@ -178,7 +179,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &b)
@@ -195,7 +196,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM books ` +
 		`WHERE isbn = $1`
 	// run
@@ -203,7 +204,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil

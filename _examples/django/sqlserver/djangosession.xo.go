@@ -133,7 +133,7 @@ func (ds *DjangoSession) Delete(ctx context.Context, db DB) error {
 
 // DjangoSessionBySessionKey retrieves a row from 'django.django_session' as a DjangoSession.
 //
-// Generated from index 'PK__django_s__B3BA0F1F1D82FF58'.
+// Generated from index 'PK__django_s__B3BA0F1F7543EF7B'.
 func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*DjangoSession, error) {
 	// query
 	const sqlstr = `SELECT ` +

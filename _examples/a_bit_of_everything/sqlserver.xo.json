@@ -157,7 +157,7 @@
               }
             }
           ],
-          "body": "CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER\nBEGIN\n  RETURN @param_one+@param_two;\nEND;"
+          "body": "CREATE FUNCTION a_func_2_in(@param_one INTEGER, @param_two INTEGER) RETURNS INTEGER\nBEGIN\n  RETURN @param_one + @param_two;\nEND;"
         }
       ],
       "tables": [

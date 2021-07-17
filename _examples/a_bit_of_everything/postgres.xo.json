@@ -167,7 +167,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN param_one+param_two;\nEND;"
+          "body": "BEGIN\n  RETURN param_one + param_two;\nEND;"
         },
         {
           "name": "a_overloaded",

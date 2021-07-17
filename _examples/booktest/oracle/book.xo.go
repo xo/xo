@@ -10,13 +10,14 @@ import (
 
 // Book represents a row from 'booktest.books'.
 type Book struct {
-	BookID    int       `json:"book_id"`   // book_id
-	AuthorID  int       `json:"author_id"` // author_id
-	Isbn      string    `json:"isbn"`      // isbn
-	Title     string    `json:"title"`     // title
-	Year      int       `json:"year"`      // year
-	Available time.Time `json:"available"` // available
-	Tags      string    `json:"tags"`      // tags
+	BookID      int            `json:"book_id"`     // book_id
+	AuthorID    int            `json:"author_id"`   // author_id
+	Isbn        string         `json:"isbn"`        // isbn
+	Title       string         `json:"title"`       // title
+	Year        int            `json:"year"`        // year
+	Available   time.Time      `json:"available"`   // available
+	Description sql.NullString `json:"description"` // description
+	Tags        string         `json:"tags"`        // tags
 	// xo fields
 	_exists, _deleted bool
 }
@@ -42,14 +43,14 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO booktest.books (` +
-		`author_id, isbn, title, year, available, tags` +
+		`author_id, isbn, title, year, available, description, tags` +
 		`) VALUES (` +
-		`:1, :2, :3, :4, :5, :6` +
+		`:1, :2, :3, :4, :5, :6, :7` +
 		`) RETURNING book_id /*LASTINSERTID*/ INTO :pk`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
+	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
 		return err
 	} // set primary key
 	b.BookID = int(id)
@@ -68,11 +69,11 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE booktest.books SET ` +
-		`author_id = :1, isbn = :2, title = :3, year = :4, available = :5, tags = :6 ` +
-		`WHERE book_id = :7`
+		`author_id = :1, isbn = :2, title = :3, year = :4, available = :5, description = :6, tags = :7 ` +
+		`WHERE book_id = :8`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID)
-	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags, b.BookID); err != nil {
+	logf(sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID)
+	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -95,21 +96,21 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	// upsert
 	const sqlstr = `MERGE booktest.bookst ` +
 		`USING (` +
-		`SELECT :1 book_id, :2 author_id, :3 isbn, :4 title, :5 year, :6 available, :7 tags ` +
+		`SELECT :1 book_id, :2 author_id, :3 isbn, :4 title, :5 year, :6 available, :7 description, :8 tags ` +
 		`FROM DUAL ) s ` +
 		`ON s.book_id = t.book_id ` +
 		`WHEN MATCHED THEN ` +
 		`UPDATE SET ` +
-		`t.author_id = s.author_id, t.isbn = s.isbn, t.title = s.title, t.year = s.year, t.available = s.available, t.tags = s.tags ` +
+		`t.author_id = s.author_id, t.isbn = s.isbn, t.title = s.title, t.year = s.year, t.available = s.available, t.description = s.description, t.tags = s.tags ` +
 		`WHEN NOT MATCHED THEN ` +
 		`INSERT (` +
-		`author_id, isbn, title, year, available, tags` +
+		`author_id, isbn, title, year, available, description, tags` +
 		`) VALUES (` +
-		`s.author_id, s.isbn, s.title, s.year, s.available, s.tags` +
+		`s.author_id, s.isbn, s.title, s.year, s.available, s.description, s.tags` +
 		`);`
 	// run
-	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags)
-	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Tags); err != nil {
+	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.Title, b.Year, b.Available, b.Description, b.Tags); err != nil {
 		return err
 	}
 	// set exists
@@ -144,7 +145,7 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM booktest.books ` +
 		`WHERE isbn = :1`
 	// run
@@ -152,7 +153,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -164,7 +165,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM booktest.books ` +
 		`WHERE book_id = :1`
 	// run
@@ -172,7 +173,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -184,7 +185,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`book_id, author_id, isbn, title, year, available, tags ` +
+		`book_id, author_id, isbn, title, year, available, description, tags ` +
 		`FROM booktest.books ` +
 		`WHERE title = :1 AND year = :2`
 	// run
@@ -201,7 +202,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Tags); err != nil {
+		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &b)

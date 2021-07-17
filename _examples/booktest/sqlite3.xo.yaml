@@ -13,7 +13,8 @@ schemas:
         is_sequence: true
       - name: name
         datatype:
-          type: text
+          type: varchar
+          prec: 255
         default: "''"
       primary_keys:
       - name: author_id
@@ -27,7 +28,8 @@ schemas:
         fields:
         - name: name
           datatype:
-            type: text
+            type: varchar
+            prec: 255
           default: "''"
       - name: authors_author_id_pkey
         func_name: author_by_author_id
@@ -68,6 +70,10 @@ schemas:
         datatype:
           type: timestamp
         default: STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'NOW')
+      - name: description
+        datatype:
+          type: text
+        default: "''"
       - name: tags
         datatype:
           type: text

@@ -60,9 +60,10 @@
             {
               "name": "name",
               "datatype": {
-                "type": "text"
+                "type": "character varying",
+                "prec": 255
               },
-              "default": "''::text"
+              "default": "''::character varying"
             }
           ],
           "primary_keys": [
@@ -84,9 +85,10 @@
                 {
                   "name": "name",
                   "datatype": {
-                    "type": "text"
+                    "type": "character varying",
+                    "prec": 255
                   },
-                  "default": "''::text"
+                  "default": "''::character varying"
                 }
               ]
             },
@@ -165,6 +167,13 @@
                 "type": "timestamp with time zone"
               },
               "default": "now()"
+            },
+            {
+              "name": "description",
+              "datatype": {
+                "type": "text"
+              },
+              "default": "''::text"
             },
             {
               "name": "tags",

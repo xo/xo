@@ -36,8 +36,9 @@ schemas:
         is_sequence: true
       - name: name
         datatype:
-          type: text
-        default: "''::text"
+          type: character varying
+          prec: 255
+        default: "''::character varying"
       primary_keys:
       - name: author_id
         datatype:
@@ -51,8 +52,9 @@ schemas:
         fields:
         - name: name
           datatype:
-            type: text
-          default: "''::text"
+            type: character varying
+            prec: 255
+          default: "''::character varying"
       - name: authors_pkey
         func_name: author_by_author_id
         fields:
@@ -99,6 +101,10 @@ schemas:
         datatype:
           type: timestamp with time zone
         default: now()
+      - name: description
+        datatype:
+          type: text
+        default: "''::text"
       - name: tags
         datatype:
           type: character varying

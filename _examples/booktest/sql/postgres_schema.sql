@@ -1,6 +1,6 @@
 CREATE TABLE authors (
   author_id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL DEFAULT ''
+  name VARCHAR(255) NOT NULL DEFAULT ''
 );
 
 CREATE INDEX authors_name_idx ON authors(name);
@@ -18,6 +18,7 @@ CREATE TABLE books (
   title VARCHAR(255) DEFAULT '' NOT NULL,
   year INTEGER DEFAULT 2000 NOT NULL,
   available TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+  description TEXT DEFAULT '' NOT NULL,
   tags VARCHAR[] DEFAULT '{}' NOT NULL
 );
 

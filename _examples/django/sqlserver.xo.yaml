@@ -24,7 +24,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_gro__3213E83F0FAE7535
+      - name: PK__auth_gro__3213E83F883FA4F3
         func_name: auth_group_by_id
         fields:
         - name: id
@@ -35,7 +35,7 @@ schemas:
           is_sequence: true
         is_unique: true
         is_primary: true
-      - name: UQ__auth_gro__72E12F1B7338C910
+      - name: UQ__auth_gro__72E12F1B88861B91
         func_name: auth_group_by_name
         fields:
         - name: name
@@ -68,7 +68,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_gro__3213E83F85BEC30F
+      - name: PK__auth_gro__3213E83FB371D477
         func_name: auth_group_permission_by_id
         fields:
         - name: id
@@ -167,7 +167,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_per__3213E83FA54D36B9
+      - name: PK__auth_per__3213E83F08B2C5E0
         func_name: auth_permission_by_id
         fields:
         - name: id
@@ -274,7 +274,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_use__3213E83FD4C4C227
+      - name: PK__auth_use__3213E83FF80572AE
         func_name: auth_user_by_id
         fields:
         - name: id
@@ -318,7 +318,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_use__3213E83FDAF1E4F6
+      - name: PK__auth_use__3213E83F27B4ED53
         func_name: auth_user_group_by_id
         fields:
         - name: id
@@ -413,7 +413,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__auth_use__3213E83F38D97C9A
+      - name: PK__auth_use__3213E83F88165C95
         func_name: auth_user_user_permission_by_id
         fields:
         - name: id
@@ -484,7 +484,7 @@ schemas:
           is_sequence: true
         ref_func_name: auth_user_by_id
     - type: table
-      name: booktest_author
+      name: authors
       columns:
       - name: author_id
         datatype:
@@ -503,8 +503,8 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__booktest__86516BCF0309D01F
-        func_name: booktest_author_by_author_id
+      - name: PK__authors__86516BCF82139C87
+        func_name: author_by_author_id
         fields:
         - name: author_id
           datatype:
@@ -515,7 +515,7 @@ schemas:
         is_unique: true
         is_primary: true
     - type: table
-      name: booktest_book
+      name: books
       columns:
       - name: book_id
         datatype:
@@ -544,7 +544,7 @@ schemas:
           type: datetime2
           prec: 27
           scale: 7
-      - name: author_id
+      - name: books_author_id_fkey
         datatype:
           type: bigint
           prec: 19
@@ -556,8 +556,8 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__booktest__490D1AE15546F217
-        func_name: booktest_book_by_book_id
+      - name: PK__books__490D1AE188F975D8
+        func_name: book_by_book_id
         fields:
         - name: book_id
           datatype:
@@ -567,22 +567,22 @@ schemas:
           is_sequence: true
         is_unique: true
         is_primary: true
-      - name: booktest_book_author_id_d11194af
-        func_name: booktest_book_by_author_id
+      - name: books_books_author_id_fkey_73ac0c26
+        func_name: books_by_books_author_id_fkey
         fields:
-        - name: author_id
+        - name: books_author_id_fkey
           datatype:
             type: bigint
             prec: 19
       foreign_keys:
-      - name: booktest_book_author_id_d11194af_fk_booktest_author_author_id
-        resolved_name: booktest_author
+      - name: books_books_author_id_fkey_73ac0c26_fk_authors_author_id
+        resolved_name: author
         column:
-        - name: author_id
+        - name: books_author_id_fkey
           datatype:
             type: bigint
             prec: 19
-        ref_table: booktest_author
+        ref_table: authors
         ref_column:
         - name: author_id
           datatype:
@@ -590,9 +590,9 @@ schemas:
             prec: 19
           is_primary: true
           is_sequence: true
-        ref_func_name: booktest_author_by_author_id
+        ref_func_name: author_by_author_id
     - type: table
-      name: booktest_book_tags
+      name: books_tags
       columns:
       - name: id
         datatype:
@@ -616,8 +616,8 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__booktest__3213E83FA838ED7A
-        func_name: booktest_book_tag_by_id
+      - name: PK__books_ta__3213E83FEF21E54E
+        func_name: books_tag_by_id
         fields:
         - name: id
           datatype:
@@ -627,15 +627,15 @@ schemas:
           is_sequence: true
         is_unique: true
         is_primary: true
-      - name: booktest_book_tags_book_id_04f02754
-        func_name: booktest_book_tags_by_book_id
+      - name: books_tags_book_id_73d7d8e8
+        func_name: books_tags_by_book_id
         fields:
         - name: book_id
           datatype:
             type: bigint
             prec: 19
-      - name: booktest_book_tags_book_id_tag_id_83102575_uniq
-        func_name: booktest_book_tag_by_book_id_tag_id
+      - name: books_tags_book_id_tag_id_29db9e39_uniq
+        func_name: books_tag_by_book_id_tag_id
         fields:
         - name: book_id
           datatype:
@@ -646,22 +646,22 @@ schemas:
             type: bigint
             prec: 19
         is_unique: true
-      - name: booktest_book_tags_tag_id_858da6e5
-        func_name: booktest_book_tags_by_tag_id
+      - name: books_tags_tag_id_8d70b40a
+        func_name: books_tags_by_tag_id
         fields:
         - name: tag_id
           datatype:
             type: bigint
             prec: 19
       foreign_keys:
-      - name: booktest_book_tags_book_id_04f02754_fk_booktest_book_book_id
-        resolved_name: booktest_book
+      - name: books_tags_book_id_73d7d8e8_fk_books_book_id
+        resolved_name: book
         column:
         - name: book_id
           datatype:
             type: bigint
             prec: 19
-        ref_table: booktest_book
+        ref_table: books
         ref_column:
         - name: book_id
           datatype:
@@ -669,15 +669,15 @@ schemas:
             prec: 19
           is_primary: true
           is_sequence: true
-        ref_func_name: booktest_book_by_book_id
-      - name: booktest_book_tags_tag_id_858da6e5_fk_booktest_tag_tag_id
-        resolved_name: booktest_tag
+        ref_func_name: book_by_book_id
+      - name: books_tags_tag_id_8d70b40a_fk_tags_tag_id
+        resolved_name: tag
         column:
         - name: tag_id
           datatype:
             type: bigint
             prec: 19
-        ref_table: booktest_tag
+        ref_table: tags
         ref_column:
         - name: tag_id
           datatype:
@@ -685,39 +685,7 @@ schemas:
             prec: 19
           is_primary: true
           is_sequence: true
-        ref_func_name: booktest_tag_by_tag_id
-    - type: table
-      name: booktest_tag
-      columns:
-      - name: tag_id
-        datatype:
-          type: bigint
-          prec: 19
-        is_primary: true
-        is_sequence: true
-      - name: tag
-        datatype:
-          type: nvarchar
-          prec: 50
-      primary_keys:
-      - name: tag_id
-        datatype:
-          type: bigint
-          prec: 19
-        is_primary: true
-        is_sequence: true
-      indexes:
-      - name: PK__booktest__4296A2B6CFE0DB87
-        func_name: booktest_tag_by_tag_id
-        fields:
-        - name: tag_id
-          datatype:
-            type: bigint
-            prec: 19
-          is_primary: true
-          is_sequence: true
-        is_unique: true
-        is_primary: true
+        ref_func_name: tag_by_tag_id
     - type: table
       name: django_admin_log
       columns:
@@ -764,7 +732,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__django_a__3213E83F51310007
+      - name: PK__django_a__3213E83F63077528
         func_name: django_admin_log_by_id
         fields:
         - name: id
@@ -849,7 +817,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__django_c__3213E83FB5B11C08
+      - name: PK__django_c__3213E83FAAA57F17
         func_name: django_content_type_by_id
         fields:
         - name: id
@@ -902,7 +870,7 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: PK__django_m__3213E83FBDC2448F
+      - name: PK__django_m__3213E83F5A3B0F23
         func_name: django_migration_by_id
         fields:
         - name: id
@@ -936,7 +904,7 @@ schemas:
           prec: 40
         is_primary: true
       indexes:
-      - name: PK__django_s__B3BA0F1F1D82FF58
+      - name: PK__django_s__B3BA0F1F7543EF7B
         func_name: django_session_by_session_key
         fields:
         - name: session_key
@@ -955,3 +923,35 @@ schemas:
             prec: 27
             scale: 7
       manual: true
+    - type: table
+      name: tags
+      columns:
+      - name: tag_id
+        datatype:
+          type: bigint
+          prec: 19
+        is_primary: true
+        is_sequence: true
+      - name: tag
+        datatype:
+          type: nvarchar
+          prec: 50
+      primary_keys:
+      - name: tag_id
+        datatype:
+          type: bigint
+          prec: 19
+        is_primary: true
+        is_sequence: true
+      indexes:
+      - name: PK__tags__4296A2B6DA4C0EC1
+        func_name: tag_by_tag_id
+        fields:
+        - name: tag_id
+          datatype:
+            type: bigint
+            prec: 19
+          is_primary: true
+          is_sequence: true
+        is_unique: true
+        is_primary: true

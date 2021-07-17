@@ -19,7 +19,8 @@
             {
               "name": "name",
               "datatype": {
-                "type": "text"
+                "type": "varchar",
+                "prec": 255
               },
               "default": "''"
             }
@@ -42,7 +43,8 @@
                 {
                   "name": "name",
                   "datatype": {
-                    "type": "text"
+                    "type": "varchar",
+                    "prec": 255
                   },
                   "default": "''"
                 }
@@ -113,6 +115,13 @@
                 "type": "timestamp"
               },
               "default": "STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'NOW')"
+            },
+            {
+              "name": "description",
+              "datatype": {
+                "type": "text"
+              },
+              "default": "''"
             },
             {
               "name": "tags",

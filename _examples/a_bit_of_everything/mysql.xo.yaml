@@ -129,7 +129,7 @@ schemas:
           prec: 11
       body: |-
         BEGIN
-          RETURN param_one+param_two;
+          RETURN param_one + param_two;
         END
     tables:
     - type: table

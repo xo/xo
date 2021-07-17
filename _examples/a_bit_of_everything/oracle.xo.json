@@ -111,7 +111,7 @@
               }
             }
           ],
-          "body": "FUNCTION a_func_0_in RETURN INTEGER AS\nBEGIN\nreturn 10;\nend;"
+          "body": "FUNCTION a_func_0_in RETURN INTEGER AS\nBEGIN\n  RETURN 10;\nend;"
         },
         {
           "name": "a_func_1_in",
@@ -164,7 +164,7 @@
               }
             }
           ],
-          "body": "FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS\nBEGIN\n  RETURN param_one+param_two;\nEND;"
+          "body": "FUNCTION a_func_2_in(param_one IN INTEGER, param_two IN INTEGER) RETURN INTEGER AS\nBEGIN\n  RETURN param_one + param_two;\nEND;"
         }
       ],
       "tables": [
