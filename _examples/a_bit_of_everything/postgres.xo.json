@@ -22,14 +22,14 @@
       ],
       "procs": [
         {
+          "type": "procedure",
           "name": "a_0_in_0_out",
-          "kind": "procedure",
           "void": true,
           "body": "BEGIN\nEND;"
         },
         {
+          "type": "function",
           "name": "a_0_in_1_out",
-          "kind": "function",
           "return": [
             {
               "name": "a_return",
@@ -41,8 +41,8 @@
           "body": "BEGIN\n  a_return := 10;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_0_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -55,8 +55,8 @@
           "body": "BEGIN\nEND;"
         },
         {
+          "type": "function",
           "name": "a_1_in_1_out",
-          "kind": "function",
           "params": [
             {
               "name": "a_param",
@@ -76,8 +76,8 @@
           "body": "BEGIN\n  a_return := a_param;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_2_in_2_out",
-          "kind": "function",
           "params": [
             {
               "name": "param_one",
@@ -109,8 +109,8 @@
           "body": "BEGIN\n  return_one := param_one;\n  return_two := param_two;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_0_in",
-          "kind": "function",
           "return": [
             {
               "name": "r0",
@@ -122,8 +122,8 @@
           "body": "BEGIN\n  RETURN 10;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_1_in",
-          "kind": "function",
           "params": [
             {
               "name": "a_param",
@@ -143,8 +143,8 @@
           "body": "BEGIN\n  RETURN a_param;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_2_in",
-          "kind": "function",
           "params": [
             {
               "name": "param_one",
@@ -170,8 +170,8 @@
           "body": "BEGIN\n  RETURN param_one + param_two;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_overloaded",
-          "kind": "procedure",
           "params": [
             {
               "name": "param_one",
@@ -184,8 +184,8 @@
           "body": "BEGIN\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_overloaded",
-          "kind": "procedure",
           "params": [
             {
               "name": "param_one",

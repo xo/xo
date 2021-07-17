@@ -87,7 +87,7 @@ $XOBIN query $PGDB -M -B -2 -T Proc -F PostgresProcs --type-comment "$COMMENT" -
 SELECT
   p.oid::varchar AS proc_id,
   p.proname::varchar AS proc_name,
-  pp.proc_kind::varchar AS proc_kind,
+  pp.proc_type::varchar AS proc_type,
   format_type(pp.return_type, NULL)::varchar AS return_type,
   pp.return_name::varchar AS return_name,
   p.prosrc::varchar AS proc_src
@@ -108,7 +108,7 @@ FROM pg_catalog.pg_proc p
           WHEN 'f' THEN 'function'
         END)
         ELSE ''
-      END) AS proc_kind,
+      END) AS proc_type,
       UNNEST(COALESCE(p.proallargtypes, ARRAY[p.prorettype])) AS return_type,
       UNNEST(CASE
         WHEN p.proargmodes IS NULL THEN ARRAY['']
@@ -120,8 +120,8 @@ FROM pg_catalog.pg_proc p
 WHERE p.prorettype <> 'pg_catalog.cstring'::pg_catalog.regtype
   AND (p.proargtypes[0] IS NULL
     OR p.proargtypes[0] <> 'pg_catalog.cstring'::pg_catalog.regtype)
-  AND (pp.proc_kind = 'function'
-    OR pp.proc_kind = 'procedure')
+  AND (pp.proc_type = 'function'
+    OR pp.proc_type = 'procedure')
   AND pp.param_type = 'o'
   AND n.nspname = %%schema string%%
 ENDSQL
@@ -162,7 +162,7 @@ WHERE n.nspname = %%schema string%%
   AND (CASE c.relkind
     WHEN 'r' THEN 'table'
     WHEN 'v' THEN 'view'
-  END) = LOWER(%%kind string%%)
+  END) = LOWER(%%typ string%%)
 ENDSQL
 
 # postgres table column list query
@@ -342,7 +342,7 @@ $XOBIN query $MYDB -M -B -2 -T Proc -F MysqlProcs -a -o $DEST $@ << ENDSQL
 SELECT
   r.routine_name AS proc_id,
   r.routine_name AS proc_name,
-  LOWER(r.routine_type) AS proc_kind,
+  LOWER(r.routine_type) AS proc_type,
   COALESCE(p.dtd_identifier, 'void') AS return_type,
   COALESCE(p.parameter_name, '') AS return_name,
   r.routine_definition AS proc_src
@@ -381,7 +381,7 @@ WHERE table_schema = %%schema string%%
   AND (CASE table_type
     WHEN 'BASE TABLE' THEN 'table'
     WHEN 'VIEW' THEN 'view'
-  END) = LOWER(%%kind string%%)
+  END) = LOWER(%%typ string%%)
 ENDSQL
 
 # mysql table column list query
@@ -475,7 +475,7 @@ SELECT
   tbl_name AS table_name
 FROM sqlite_master
 WHERE tbl_name NOT LIKE 'sqlite_%'
-  AND LOWER(type) = LOWER(%%kind string%%)
+  AND LOWER(type) = LOWER(%%typ string%%)
 ENDSQL
 
 # sqlite3 table column list query
@@ -586,7 +586,7 @@ SELECT
   (CASE o.type
     WHEN 'P' THEN 'procedure'
     WHEN 'FN' THEN 'function'
-  END) AS proc_kind,
+  END) AS proc_type,
   CASE
     WHEN p.object_id IS NOT NULL
       THEN TYPE_NAME(p.system_type_id)+IIF(p.precision > 0, '('+CAST(p.precision AS varchar)+IIF(p.scale > 0,','+CAST(p.scale AS varchar),'')+')', '')
@@ -633,7 +633,7 @@ WHERE SCHEMA_NAME(uid) = %%schema string%%
   AND (CASE xtype
     WHEN 'U' THEN 'table'
     WHEN 'V' THEN 'view'
-  END) = LOWER(%%kind string%%)
+  END) = LOWER(%%typ string%%)
 ENDSQL
 
 # sqlserver table column list query
@@ -764,7 +764,7 @@ $XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
 SELECT
   CAST(o.object_id AS NVARCHAR2(255)) AS proc_id,
   LOWER(o.object_name) AS proc_name,
-  LOWER(o.object_type) AS proc_kind,
+  LOWER(o.object_type) AS proc_type,
   LOWER(CASE
     WHEN a.data_type IS NULL THEN 'void'
     WHEN a.data_type = 'CHAR' THEN 'CHAR(' || a.data_length || ')'
@@ -822,7 +822,7 @@ WHERE object_name NOT LIKE '%$%'
   AND object_name NOT LIKE 'SCHEDULER_%_TBL'
   AND object_name NOT LIKE 'SQLPLUS_%'
   AND owner = UPPER(%%schema string%%)
-  AND object_type = UPPER(%%kind string%%)
+  AND object_type = UPPER(%%typ string%%)
 ENDSQL
 
 # oracle table column list query

@@ -72,8 +72,8 @@ type Enum struct {
 // Proc is a stored procedure.
 type Proc struct {
 	ID      string  `json:"-"`
+	Type    string  `json:"type,omitempty"` // 'procedure' or 'function'
 	Name    string  `json:"name,omitempty"`
-	Kind    string  `json:"kind,omitempty"`
 	Params  []Field `json:"params,omitempty"`
 	Returns []Field `json:"return,omitempty"`
 	Void    bool    `json:"void,omitempty"`

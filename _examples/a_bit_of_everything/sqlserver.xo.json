@@ -5,14 +5,14 @@
       "name": "a_bit_of_everything",
       "procs": [
         {
+          "type": "procedure",
           "name": "a_0_in_0_out",
-          "kind": "procedure",
           "void": true,
           "body": "-- procs\nCREATE PROCEDURE a_0_in_0_out AS\nBEGIN\n  INSERT INTO a_manual_table (a_text) values ('');\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_0_in_1_out",
-          "kind": "procedure",
           "return": [
             {
               "name": "a_return",
@@ -25,8 +25,8 @@
           "body": "CREATE PROCEDURE a_0_in_1_out(@a_return INTEGER OUTPUT) AS\nBEGIN\n  SET @a_return = '10';\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_0_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -39,8 +39,8 @@
           "body": "CREATE PROCEDURE a_1_in_0_out (@a_param INTEGER) AS\nBEGIN\n  INSERT INTO a_manual_table (a_text) values ('');\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_1_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -61,8 +61,8 @@
           "body": "CREATE PROCEDURE a_1_in_1_out(@a_param INTEGER, @a_return INTEGER OUTPUT) AS\nBEGIN\n  SET @a_return = @a_param;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_2_in_2_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "param_one",
@@ -96,8 +96,8 @@
           "body": "CREATE PROCEDURE a_2_in_2_out(@param_one INTEGER, @param_two INTEGER, @return_one INTEGER OUTPUT, @return_two INTEGER OUTPUT) AS\nBEGIN\n  SET @return_one = @param_one;\n  SET @return_two = @param_two;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_0_in",
-          "kind": "function",
           "return": [
             {
               "name": "r0",
@@ -110,8 +110,8 @@
           "body": "CREATE FUNCTION a_func_0_in() RETURNS INTEGER AS\nBEGIN\n  RETURN 10;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_1_in",
-          "kind": "function",
           "params": [
             {
               "name": "a_param",
@@ -132,8 +132,8 @@
           "body": "CREATE FUNCTION a_func_1_in(@a_param INTEGER) RETURNS INTEGER AS\nBEGIN\n  RETURN @a_param;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_2_in",
-          "kind": "function",
           "params": [
             {
               "name": "param_one",

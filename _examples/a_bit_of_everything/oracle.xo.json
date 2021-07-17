@@ -5,14 +5,14 @@
       "name": "a_bit_of_everything",
       "procs": [
         {
+          "type": "procedure",
           "name": "a_0_in_0_out",
-          "kind": "procedure",
           "void": true,
           "body": "PROCEDURE a_0_in_0_out AS\nBEGIN\n  null;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_0_in_1_out",
-          "kind": "procedure",
           "return": [
             {
               "name": "a_return",
@@ -25,8 +25,8 @@
           "body": "PROCEDURE a_0_in_1_out(a_return OUT INTEGER) AS\nBEGIN\n  SELECT 10 INTO a_return FROM dual;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_0_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -40,8 +40,8 @@
           "body": "PROCEDURE a_1_in_0_out(a_param IN INTEGER) AS\nBEGIN\n  null;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_1_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -63,8 +63,8 @@
           "body": "PROCEDURE a_1_in_1_out(a_param IN INTEGER, a_return OUT INTEGER) AS\nBEGIN\n  SELECT a_param INTO a_return FROM dual;\nEND;"
         },
         {
+          "type": "procedure",
           "name": "a_2_in_2_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "param_one",
@@ -100,8 +100,8 @@
           "body": "PROCEDURE a_2_in_2_out(param_one IN INTEGER, param_two IN INTEGER, return_one OUT INTEGER, return_two OUT INTEGER) AS\nBEGIN\n  SELECT param_one, param_two INTO return_one, return_two FROM dual;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_0_in",
-          "kind": "function",
           "return": [
             {
               "name": "r0",
@@ -114,8 +114,8 @@
           "body": "FUNCTION a_func_0_in RETURN INTEGER AS\nBEGIN\n  RETURN 10;\nend;"
         },
         {
+          "type": "function",
           "name": "a_func_1_in",
-          "kind": "function",
           "params": [
             {
               "name": "a_param",
@@ -137,8 +137,8 @@
           "body": "FUNCTION a_func_1_in(a_param IN INTEGER) RETURN INTEGER AS\nBEGIN\n  RETURN a_param;\nEND;"
         },
         {
+          "type": "function",
           "name": "a_func_2_in",
-          "kind": "function",
           "params": [
             {
               "name": "param_one",

@@ -37,14 +37,14 @@
       ],
       "procs": [
         {
+          "type": "procedure",
           "name": "a_0_in_0_out",
-          "kind": "procedure",
           "void": true,
           "body": "BEGIN\nEND"
         },
         {
+          "type": "procedure",
           "name": "a_0_in_1_out",
-          "kind": "procedure",
           "return": [
             {
               "name": "a_return",
@@ -57,8 +57,8 @@
           "body": "BEGIN\n  SELECT 10 INTO a_return;\nEND"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_0_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -72,8 +72,8 @@
           "body": "BEGIN\nEND"
         },
         {
+          "type": "procedure",
           "name": "a_1_in_1_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "a_param",
@@ -95,8 +95,8 @@
           "body": "BEGIN\n  SELECT a_param INTO a_return;\nEND"
         },
         {
+          "type": "procedure",
           "name": "a_2_in_2_out",
-          "kind": "procedure",
           "params": [
             {
               "name": "param_one",
@@ -132,8 +132,8 @@
           "body": "BEGIN\n  SELECT param_one, param_two INTO return_one, return_two;\nEND"
         },
         {
+          "type": "function",
           "name": "a_func_0_in",
-          "kind": "function",
           "return": [
             {
               "name": "r0",
@@ -146,8 +146,8 @@
           "body": "BEGIN\n  RETURN 10;\nEND"
         },
         {
+          "type": "function",
           "name": "a_func_1_in",
-          "kind": "function",
           "params": [
             {
               "name": "a_param",
@@ -169,8 +169,8 @@
           "body": "BEGIN\n  RETURN a_param;\nEND"
         },
         {
+          "type": "function",
           "name": "a_func_2_in",
-          "kind": "function",
           "params": [
             {
               "name": "param_one",

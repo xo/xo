@@ -1,7 +1,7 @@
 {{- $p := .Data -}}
-// {{ func_name_context $p }} calls the stored {{ $p.Kind }} '{{ $p.Signature }}' on db.
+// {{ func_name_context $p }} calls the stored {{ $p.Type }} '{{ $p.Signature }}' on db.
 {{ func_context $p }} {
-{{- if and (driver "mysql") (eq $p.Kind "procedure") (not $p.Void) }}
+{{- if and (driver "mysql") (eq $p.Type "procedure") (not $p.Void) }}
 	// At the moment, the Go MySQL driver does not support stored procedures
 	// with out parameters
 	return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}fmt.Errorf("unsupported")
@@ -14,7 +14,7 @@
 	var {{ check_name .GoName }} {{ type .Type }}
 {{- end }}
 	logf(sqlstr, {{ params $p.Params false }})
-{{- if and (driver "sqlserver" "oracle") (eq $p.Kind "procedure")}}
+{{- if and (driver "sqlserver" "oracle") (eq $p.Type "procedure")}}
 	if _, err := {{ db_named "Exec" $p }}; err != nil {
 {{- else }}
 	if err := {{ db "QueryRow" $p }}.Scan({{ names "&" $p.Returns }}); err != nil {
@@ -37,7 +37,7 @@
 }
 
 {{ if context_both -}}
-// {{ func_name $p }} calls the {{ $p.Kind }} '{{ $p.Signature }}' on db.
+// {{ func_name $p }} calls the {{ $p.Type }} '{{ $p.Signature }}' on db.
 {{ func $p }} {
 	return {{ func_name_context $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }

@@ -10,14 +10,14 @@ schemas:
       - name: TWO
         const_value: 2
     procs:
-    - name: a_0_in_0_out
-      kind: procedure
+    - type: procedure
+      name: a_0_in_0_out
       void: true
       body: |-
         BEGIN
         END;
-    - name: a_0_in_1_out
-      kind: function
+    - type: function
+      name: a_0_in_1_out
       return:
       - name: a_return
         datatype:
@@ -26,8 +26,8 @@ schemas:
         BEGIN
           a_return := 10;
         END;
-    - name: a_1_in_0_out
-      kind: procedure
+    - type: procedure
+      name: a_1_in_0_out
       params:
       - name: a_param
         datatype:
@@ -36,8 +36,8 @@ schemas:
       body: |-
         BEGIN
         END;
-    - name: a_1_in_1_out
-      kind: function
+    - type: function
+      name: a_1_in_1_out
       params:
       - name: a_param
         datatype:
@@ -50,8 +50,8 @@ schemas:
         BEGIN
           a_return := a_param;
         END;
-    - name: a_2_in_2_out
-      kind: function
+    - type: function
+      name: a_2_in_2_out
       params:
       - name: param_one
         datatype:
@@ -71,8 +71,8 @@ schemas:
           return_one := param_one;
           return_two := param_two;
         END;
-    - name: a_func_0_in
-      kind: function
+    - type: function
+      name: a_func_0_in
       return:
       - name: r0
         datatype:
@@ -81,8 +81,8 @@ schemas:
         BEGIN
           RETURN 10;
         END;
-    - name: a_func_1_in
-      kind: function
+    - type: function
+      name: a_func_1_in
       params:
       - name: a_param
         datatype:
@@ -95,8 +95,8 @@ schemas:
         BEGIN
           RETURN a_param;
         END;
-    - name: a_func_2_in
-      kind: function
+    - type: function
+      name: a_func_2_in
       params:
       - name: param_one
         datatype:
@@ -112,8 +112,8 @@ schemas:
         BEGIN
           RETURN param_one + param_two;
         END;
-    - name: a_overloaded
-      kind: procedure
+    - type: procedure
+      name: a_overloaded
       params:
       - name: param_one
         datatype:
@@ -122,8 +122,8 @@ schemas:
       body: |-
         BEGIN
         END;
-    - name: a_overloaded
-      kind: procedure
+    - type: procedure
+      name: a_overloaded
       params:
       - name: param_one
         datatype:

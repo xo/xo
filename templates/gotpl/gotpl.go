@@ -358,7 +358,7 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 			proc.GoName = procName(s.Procs[i], proc)
 		}
 		prefix := "sp_"
-		if proc.Kind == "function" {
+		if proc.Type == "function" {
 			prefix = "sf_"
 		}
 		if err := set.Emit(ctx, &templates.Template{
@@ -487,7 +487,7 @@ func convertProc(ctx context.Context, overloadMap map[string]bool, p xo.Proc) (P
 	return Proc{
 		GoName:    name,
 		SQLName:   p.Name,
-		Kind:      p.Kind,
+		Type:      p.Type,
 		Signature: signature,
 		Params:    params,
 		Returns:   returns,
@@ -510,9 +510,9 @@ func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 	}
 	name := snaker.ForceCamelIdentifier(singularize(t.Name))
 	return Table{
+		Type:        t.Type,
 		GoName:      name,
 		SQLName:     t.Name,
-		Kind:        t.Type,
 		Fields:      cols,
 		PrimaryKeys: pkCols,
 		Manual:      t.Manual,
@@ -582,9 +582,9 @@ func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, erro
 		return Field{}, err
 	}
 	return Field{
+		Type:       typ,
 		GoName:     name,
 		SQLName:    f.Name,
-		Type:       typ,
 		Zero:       zero,
 		IsPrimary:  f.IsPrimary,
 		IsSequence: f.IsSequence,

@@ -10,8 +10,8 @@ schemas:
       - name: NONFICTION
         const_value: 2
     procs:
-    - name: say_hello
-      kind: function
+    - type: function
+      name: say_hello
       params:
       - name: name
         datatype:

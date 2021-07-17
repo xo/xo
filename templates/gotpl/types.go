@@ -17,9 +17,9 @@ type Enum struct {
 
 // Proc is a stored procedure template.
 type Proc struct {
+	Type      string
 	GoName    string
 	SQLName   string
-	Kind      string
 	Signature string
 	Params    []Field
 	Returns   []Field
@@ -29,9 +29,9 @@ type Proc struct {
 
 // Table is a type (ie, table/view/custom query) template.
 type Table struct {
+	Type        string
 	GoName      string
 	SQLName     string
-	Kind        string
 	PrimaryKeys []Field
 	Fields      []Field
 	Manual      bool

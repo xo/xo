@@ -3,8 +3,8 @@ schemas:
   - type: sqlserver
     name: booktest
     procs:
-    - name: say_hello
-      kind: procedure
+    - type: procedure
+      name: say_hello
       params:
       - name: name
         datatype:

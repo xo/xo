@@ -117,9 +117,9 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 			name = fmt.Sprintf("r%d", len(returnFields))
 		}
 		p := &xo.Proc{
+			Type: proc.ProcType,
 			ID:   proc.ProcID,
 			Name: proc.ProcName,
-			Kind: proc.ProcKind,
 			Returns: append(returnFields, xo.Field{
 				Name: name,
 				Datatype: xo.Datatype{
@@ -182,11 +182,11 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 	return nil
 }
 
-// LoadTables loads types for the kind (ie, table/view definitions).
-func LoadTables(ctx context.Context, args *Args, kind string) ([]xo.Table, error) {
+// LoadTables loads types for the type (ie, table/view definitions).
+func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error) {
 	db, l, schema := DbLoaderSchema(ctx)
 	// load tables
-	tables, err := l.Tables(ctx, db, schema, kind)
+	tables, err := l.Tables(ctx, db, schema, typ)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func LoadTables(ctx context.Context, args *Args, kind string) ([]xo.Table, error
 	for _, t := range tables {
 		// create template
 		table := &xo.Table{
-			Type:   kind,
+			Type:   typ,
 			Name:   t.TableName,
 			Manual: true,
 		}

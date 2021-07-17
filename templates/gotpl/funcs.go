@@ -971,7 +971,7 @@ func (f *Funcs) sqlstr_index(v interface{}) []string {
 func (f *Funcs) sqlstr_proc(v interface{}) []string {
 	switch x := v.(type) {
 	case Proc:
-		if x.Kind == "function" {
+		if x.Type == "function" {
 			return f.sqlstr_func(v)
 		}
 		// sql string format

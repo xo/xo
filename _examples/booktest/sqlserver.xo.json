@@ -5,8 +5,8 @@
       "name": "booktest",
       "procs": [
         {
+          "type": "procedure",
           "name": "say_hello",
-          "kind": "procedure",
           "params": [
             {
               "name": "name",

@@ -3,16 +3,16 @@ schemas:
   - type: oracle
     name: a_bit_of_everything
     procs:
-    - name: a_0_in_0_out
-      kind: procedure
+    - type: procedure
+      name: a_0_in_0_out
       void: true
       body: |-
         PROCEDURE a_0_in_0_out AS
         BEGIN
           null;
         END;
-    - name: a_0_in_1_out
-      kind: procedure
+    - type: procedure
+      name: a_0_in_1_out
       return:
       - name: a_return
         datatype:
@@ -23,8 +23,8 @@ schemas:
         BEGIN
           SELECT 10 INTO a_return FROM dual;
         END;
-    - name: a_1_in_0_out
-      kind: procedure
+    - type: procedure
+      name: a_1_in_0_out
       params:
       - name: a_param
         datatype:
@@ -36,8 +36,8 @@ schemas:
         BEGIN
           null;
         END;
-    - name: a_1_in_1_out
-      kind: procedure
+    - type: procedure
+      name: a_1_in_1_out
       params:
       - name: a_param
         datatype:
@@ -53,8 +53,8 @@ schemas:
         BEGIN
           SELECT a_param INTO a_return FROM dual;
         END;
-    - name: a_2_in_2_out
-      kind: procedure
+    - type: procedure
+      name: a_2_in_2_out
       params:
       - name: param_one
         datatype:
@@ -78,8 +78,8 @@ schemas:
         BEGIN
           SELECT param_one, param_two INTO return_one, return_two FROM dual;
         END;
-    - name: a_func_0_in
-      kind: function
+    - type: function
+      name: a_func_0_in
       return:
       - name: r0
         datatype:
@@ -90,8 +90,8 @@ schemas:
         BEGIN
           RETURN 10;
         end;
-    - name: a_func_1_in
-      kind: function
+    - type: function
+      name: a_func_1_in
       params:
       - name: a_param
         datatype:
@@ -107,8 +107,8 @@ schemas:
         BEGIN
           RETURN a_param;
         END;
-    - name: a_func_2_in
-      kind: function
+    - type: function
+      name: a_func_2_in
       params:
       - name: param_one
         datatype:
