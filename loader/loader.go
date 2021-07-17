@@ -150,10 +150,13 @@ var precRE = regexp.MustCompile(`\(([0-9]+)(\s*,\s*[0-9]+\s*)?\)$`)
 
 // schemaGoType returns Go type and zero for a type, removing a "<schema>."
 // prefix when the type is determined to be in the same package.
-func schemaGoType(ctx context.Context, typ string) (string, string) {
+func schemaGoType(ctx context.Context, typ string, nullable bool) (string, string) {
 	if schema := templates.Schema(ctx); strings.HasPrefix(typ, schema+".") {
 		// in the same schema, so chop off
 		typ = typ[len(schema)+1:]
+	}
+	if nullable {
+		typ = "null_" + typ
 	}
 	s := snaker.SnakeToCamelIdentifier(typ)
 	return s, s + "{}"

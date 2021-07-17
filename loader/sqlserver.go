@@ -77,7 +77,7 @@ func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error)
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	default:
-		goType, zero = schemaGoType(ctx, typ)
+		goType, zero = schemaGoType(ctx, typ, nullable)
 	}
 	return goType, zero, nil
 }

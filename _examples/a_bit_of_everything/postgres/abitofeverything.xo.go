@@ -12,7 +12,7 @@ import (
 // ABitOfEverything represents a row from 'public.a_bit_of_everything'.
 type ABitOfEverything struct {
 	AEnum                     AEnum           `json:"a_enum"`                       // a_enum
-	AEnumNullable             AEnum           `json:"a_enum_nullable"`              // a_enum_nullable
+	AEnumNullable             NullAEnum       `json:"a_enum_nullable"`              // a_enum_nullable
 	ABigint                   int64           `json:"a_bigint"`                     // a_bigint
 	ABigintNullable           sql.NullInt64   `json:"a_bigint_nullable"`            // a_bigint_nullable
 	ABigserial                int64           `json:"a_bigserial"`                  // a_bigserial
@@ -76,7 +76,7 @@ type ABitOfEverything struct {
 	ATimetz                   time.Time       `json:"a_timetz"`                     // a_timetz
 	ATimetzNullable           sql.NullTime    `json:"a_timetz_nullable"`            // a_timetz_nullable
 	AUUID                     uuid.UUID       `json:"a_uuid"`                       // a_uuid
-	AUUIDNullable             *uuid.UUID      `json:"a_uuid_nullable"`              // a_uuid_nullable
+	AUUIDNullable             uuid.NullUUID   `json:"a_uuid_nullable"`              // a_uuid_nullable
 	AVarchar                  string          `json:"a_varchar"`                    // a_varchar
 	AVarcharNullable          sql.NullString  `json:"a_varchar_nullable"`           // a_varchar_nullable
 	AXML                      []byte          `json:"a_xml"`                        // a_xml

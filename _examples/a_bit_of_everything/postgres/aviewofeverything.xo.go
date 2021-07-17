@@ -10,8 +10,8 @@ import (
 
 // AViewOfEverything represents a row from 'public.a_view_of_everything'.
 type AViewOfEverything struct {
-	AEnum                     AEnum           `json:"a_enum"`                       // a_enum
-	AEnumNullable             AEnum           `json:"a_enum_nullable"`              // a_enum_nullable
+	AEnum                     NullAEnum       `json:"a_enum"`                       // a_enum
+	AEnumNullable             NullAEnum       `json:"a_enum_nullable"`              // a_enum_nullable
 	ABigint                   sql.NullInt64   `json:"a_bigint"`                     // a_bigint
 	ABigintNullable           sql.NullInt64   `json:"a_bigint_nullable"`            // a_bigint_nullable
 	ABigserial                sql.NullInt64   `json:"a_bigserial"`                  // a_bigserial
@@ -74,8 +74,8 @@ type AViewOfEverything struct {
 	ATimestamptzNullable      sql.NullTime    `json:"a_timestamptz_nullable"`       // a_timestamptz_nullable
 	ATimetz                   sql.NullTime    `json:"a_timetz"`                     // a_timetz
 	ATimetzNullable           sql.NullTime    `json:"a_timetz_nullable"`            // a_timetz_nullable
-	AUUID                     *uuid.UUID      `json:"a_uuid"`                       // a_uuid
-	AUUIDNullable             *uuid.UUID      `json:"a_uuid_nullable"`              // a_uuid_nullable
+	AUUID                     uuid.NullUUID   `json:"a_uuid"`                       // a_uuid
+	AUUIDNullable             uuid.NullUUID   `json:"a_uuid_nullable"`              // a_uuid_nullable
 	AVarchar                  sql.NullString  `json:"a_varchar"`                    // a_varchar
 	AVarcharNullable          sql.NullString  `json:"a_varchar_nullable"`           // a_varchar_nullable
 	AXML                      []byte          `json:"a_xml"`                        // a_xml

@@ -117,10 +117,10 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 	case "uuid":
 		goType, zero = "uuid.UUID", "uuid.UUID{}"
 		if nullable {
-			goType, zero = "*uuid.UUID", "nil"
+			goType, zero = "uuid.NullUUID", "uuid.NullUUID{}"
 		}
 	default:
-		goType, zero = schemaGoType(ctx, typ)
+		goType, zero = schemaGoType(ctx, typ, nullable)
 	}
 	// handle slices
 	switch {

@@ -178,6 +178,12 @@
               "datatype": {
                 "type": "integer"
               }
+            },
+            {
+              "name": "param_two",
+              "datatype": {
+                "type": "integer"
+              }
             }
           ],
           "void": true,
@@ -189,12 +195,6 @@
           "params": [
             {
               "name": "param_one",
-              "datatype": {
-                "type": "integer"
-              }
-            },
-            {
-              "name": "param_two",
               "datatype": {
                 "type": "integer"
               }

@@ -10,6 +10,7 @@ import (
 // AEnumNullable is the 'a_enum_nullable' enum type from schema 'a_bit_of_everything'.
 type AEnumNullable uint16
 
+// AEnumNullable values.
 const (
 	// AEnumNullableOne is the 'ONE' a_enum_nullable.
 	AEnumNullableOne AEnumNullable = 1
@@ -57,6 +58,32 @@ func (aen *AEnumNullable) Scan(v interface{}) error {
 		return aen.UnmarshalText(buf)
 	}
 	return ErrInvalidAEnumNullable(fmt.Sprintf("%T", v))
+}
+
+// NullAEnumNullable represents a null 'a_enum_nullable' enum for schema 'a_bit_of_everything'.
+type NullAEnumNullable struct {
+	AEnumNullable AEnumNullable
+	// Valid is true if AEnumNullable is not null.
+	Valid bool
+}
+
+// Value satisfies the driver.Valuer interface.
+func (naen NullAEnumNullable) Value() (driver.Value, error) {
+	if !naen.Valid {
+		return nil, nil
+	}
+	return naen.AEnumNullable.Value()
+}
+
+// Scan satisfies the sql.Scanner interface.
+func (naen *NullAEnumNullable) Scan(v interface{}) error {
+	if v == nil {
+		naen.AEnumNullable, naen.Valid = 0, false
+		return nil
+	}
+	err := naen.AEnumNullable.Scan(v)
+	naen.Valid = err == nil
+	return err
 }
 
 // ErrInvalidAEnumNullable is the invalid AEnumNullable error.

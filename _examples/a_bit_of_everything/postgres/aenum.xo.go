@@ -10,6 +10,7 @@ import (
 // AEnum is the 'a_enum' enum type from schema 'public'.
 type AEnum uint16
 
+// AEnum values.
 const (
 	// AEnumOne is the 'ONE' a_enum.
 	AEnumOne AEnum = 1
@@ -57,6 +58,32 @@ func (ae *AEnum) Scan(v interface{}) error {
 		return ae.UnmarshalText(buf)
 	}
 	return ErrInvalidAEnum(fmt.Sprintf("%T", v))
+}
+
+// NullAEnum represents a null 'a_enum' enum for schema 'public'.
+type NullAEnum struct {
+	AEnum AEnum
+	// Valid is true if AEnum is not null.
+	Valid bool
+}
+
+// Value satisfies the driver.Valuer interface.
+func (nae NullAEnum) Value() (driver.Value, error) {
+	if !nae.Valid {
+		return nil, nil
+	}
+	return nae.AEnum.Value()
+}
+
+// Scan satisfies the sql.Scanner interface.
+func (nae *NullAEnum) Scan(v interface{}) error {
+	if v == nil {
+		nae.AEnum, nae.Valid = 0, false
+		return nil
+	}
+	err := nae.AEnum.Scan(v)
+	nae.Valid = err == nil
+	return err
 }
 
 // ErrInvalidAEnum is the invalid AEnum error.

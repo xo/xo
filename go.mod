@@ -15,7 +15,7 @@ require (
 	github.com/kenshaw/snaker v0.1.3
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-isatty v0.0.13 // indirect
-	github.com/mattn/go-sqlite3 v1.14.7
+	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/sijms/go-ora v1.2.0
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/xo/dburl v0.8.4
