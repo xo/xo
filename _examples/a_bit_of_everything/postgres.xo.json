@@ -1863,7 +1863,8 @@
               "default": ""
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "SELECT a_bit_of_everything.a_enum,\n    a_bit_of_everything.a_enum_nullable,\n    a_bit_of_everything.a_bigint,\n    a_bit_of_everything.a_bigint_nullable,\n    a_bit_of_everything.a_bigserial,\n    a_bit_of_everything.a_bigserial_nullable,\n    a_bit_of_everything.a_bit,\n    a_bit_of_everything.a_bit_nullable,\n    a_bit_of_everything.a_bit_varying,\n    a_bit_of_everything.a_bit_varying_nullable,\n    a_bit_of_everything.a_bool,\n    a_bit_of_everything.a_bool_nullable,\n    a_bit_of_everything.a_boolean,\n    a_bit_of_everything.a_boolean_nullable,\n    a_bit_of_everything.a_bpchar,\n    a_bit_of_everything.a_bpchar_nullable,\n    a_bit_of_everything.a_bytea,\n    a_bit_of_everything.a_bytea_nullable,\n    a_bit_of_everything.a_char,\n    a_bit_of_everything.a_char_nullable,\n    a_bit_of_everything.a_character,\n    a_bit_of_everything.a_character_nullable,\n    a_bit_of_everything.a_character_varying,\n    a_bit_of_everything.a_character_varying_nullable,\n    a_bit_of_everything.a_date,\n    a_bit_of_everything.a_date_nullable,\n    a_bit_of_everything.a_decimal,\n    a_bit_of_everything.a_decimal_nullable,\n    a_bit_of_everything.a_double_precision,\n    a_bit_of_everything.a_double_precision_nullable,\n    a_bit_of_everything.a_inet,\n    a_bit_of_everything.a_inet_nullable,\n    a_bit_of_everything.a_int,\n    a_bit_of_everything.a_int_nullable,\n    a_bit_of_everything.a_integer,\n    a_bit_of_everything.a_integer_nullable,\n    a_bit_of_everything.a_interval,\n    a_bit_of_everything.a_interval_nullable,\n    a_bit_of_everything.a_json,\n    a_bit_of_everything.a_json_nullable,\n    a_bit_of_everything.a_jsonb,\n    a_bit_of_everything.a_jsonb_nullable,\n    a_bit_of_everything.a_money,\n    a_bit_of_everything.a_money_nullable,\n    a_bit_of_everything.a_numeric,\n    a_bit_of_everything.a_numeric_nullable,\n    a_bit_of_everything.a_real,\n    a_bit_of_everything.a_real_nullable,\n    a_bit_of_everything.a_serial,\n    a_bit_of_everything.a_serial_nullable,\n    a_bit_of_everything.a_smallint,\n    a_bit_of_everything.a_smallint_nullable,\n    a_bit_of_everything.a_smallserial,\n    a_bit_of_everything.a_smallserial_nullable,\n    a_bit_of_everything.a_text,\n    a_bit_of_everything.a_text_nullable,\n    a_bit_of_everything.a_time,\n    a_bit_of_everything.a_time_nullable,\n    a_bit_of_everything.a_timestamp,\n    a_bit_of_everything.a_timestamp_nullable,\n    a_bit_of_everything.a_timestamptz,\n    a_bit_of_everything.a_timestamptz_nullable,\n    a_bit_of_everything.a_timetz,\n    a_bit_of_everything.a_timetz_nullable,\n    a_bit_of_everything.a_uuid,\n    a_bit_of_everything.a_uuid_nullable,\n    a_bit_of_everything.a_varchar,\n    a_bit_of_everything.a_varchar_nullable,\n    a_bit_of_everything.a_xml,\n    a_bit_of_everything.a_xml_nullable\n   FROM a_bit_of_everything;"
         },
         {
           "type": "view",
@@ -1886,7 +1887,8 @@
               "default": ""
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "SELECT a_bit_of_everything.a_bool,\n    a_bit_of_everything.a_text\n   FROM a_bit_of_everything;"
         }
       ]
     }

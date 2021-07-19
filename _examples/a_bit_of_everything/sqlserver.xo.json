@@ -1535,7 +1535,8 @@
               }
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "-- views\nCREATE VIEW a_view_of_everything AS\n  SELECT * FROM a_bit_of_everything;"
         },
         {
           "type": "view",
@@ -1555,7 +1556,8 @@
               }
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "CREATE VIEW a_view_of_everything_some AS\n  SELECT a_bit, a_text FROM a_bit_of_everything;"
         }
       ]
     }

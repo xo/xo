@@ -71,14 +71,14 @@ type Enum struct {
 
 // Proc is a stored procedure.
 type Proc struct {
-	ID      string  `json:"-"`
-	Type    string  `json:"type,omitempty"` // 'procedure' or 'function'
-	Name    string  `json:"name,omitempty"`
-	Params  []Field `json:"params,omitempty"`
-	Returns []Field `json:"return,omitempty"`
-	Void    bool    `json:"void,omitempty"`
-	Body    string  `json:"body"`
-	Comment string  `json:"comment,omitempty"`
+	ID         string  `json:"-"`
+	Type       string  `json:"type,omitempty"` // 'procedure' or 'function'
+	Name       string  `json:"name,omitempty"`
+	Params     []Field `json:"params,omitempty"`
+	Returns    []Field `json:"return,omitempty"`
+	Void       bool    `json:"void,omitempty"`
+	Definition string  `json:"body"`
+	Comment    string  `json:"comment,omitempty"`
 }
 
 // Table is a table or view.
@@ -90,6 +90,7 @@ type Table struct {
 	Indexes     []Index      `json:"indexes,omitempty"`
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
 	Manual      bool         `json:"manual,omitempty"`
+	Definition  string       `json:"definition,omitempty"` // empty for tables
 	Comment     string       `json:"comment,omitempty"`
 }
 

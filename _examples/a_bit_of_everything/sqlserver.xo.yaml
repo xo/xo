@@ -956,6 +956,10 @@ schemas:
           type: xml
           nullable: true
       manual: true
+      definition: |-
+        -- views
+        CREATE VIEW a_view_of_everything AS
+          SELECT * FROM a_bit_of_everything;
     - type: view
       name: a_view_of_everything_some
       columns:
@@ -967,3 +971,6 @@ schemas:
         datatype:
           type: text
       manual: true
+      definition: |-
+        CREATE VIEW a_view_of_everything_some AS
+          SELECT a_bit, a_text FROM a_bit_of_everything;

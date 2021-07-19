@@ -752,6 +752,9 @@ schemas:
           type: varying character
           nullable: true
       manual: true
+      definition: |-
+        CREATE VIEW a_view_of_everything AS
+          SELECT * FROM a_bit_of_everything
     - type: view
       name: a_view_of_everything_some
       columns:
@@ -764,3 +767,6 @@ schemas:
           type: text
           nullable: true
       manual: true
+      definition: |-
+        CREATE VIEW a_view_of_everything_some AS
+          SELECT a_bool, a_text FROM a_bit_of_everything

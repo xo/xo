@@ -129,7 +129,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 					Array: array,
 				},
 			}),
-			Body: strings.TrimSpace(proc.ProcSrc),
+			Definition: strings.TrimSpace(proc.ProcDef),
 		}
 		// load proc parameters
 		if err := LoadProcParams(ctx, args, p); err != nil {
@@ -199,11 +199,12 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 	// create types
 	var m []xo.Table
 	for _, t := range tables {
-		// create template
+		// create table
 		table := &xo.Table{
-			Type:   typ,
-			Name:   t.TableName,
-			Manual: true,
+			Type:       typ,
+			Name:       t.TableName,
+			Manual:     true,
+			Definition: strings.TrimSpace(t.ViewDef),
 		}
 		// process columns
 		if err := LoadColumns(ctx, args, table); err != nil {

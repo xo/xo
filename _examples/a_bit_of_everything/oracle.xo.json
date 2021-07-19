@@ -1374,7 +1374,8 @@
               }
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "SELECT \"A_BOOL\",\"A_BOOL_NULLABLE\",\"A_BLOB\",\"A_BLOB_NULLABLE\",\"A_CHAR\",\"A_CHAR_NULLABLE\",\"A_CHARACTER\",\"A_CHARACTER_NULLABLE\",\"A_CLOB\",\"A_CLOB_NULLABLE\",\"A_DATE\",\"A_DATE_NULLABLE\",\"A_DOUBLE_PRECISION\",\"A_DOUBLE_PRECISION_NULLABLE\",\"A_DECIMAL\",\"A_DECIMAL_NULLABLE\",\"A_FLOAT\",\"A_FLOAT_NULLABLE\",\"A_INT\",\"A_INT_NULLABLE\",\"A_INTEGER\",\"A_INTEGER_NULLABLE\",\"A_LONG_RAW\",\"A_NCHAR\",\"A_NCHAR_NULLABLE\",\"A_NCLOB\",\"A_NCLOB_NULLABLE\",\"A_NUMBER\",\"A_NUMBER_NULLABLE\",\"A_NUMERIC\",\"A_NUMERIC_NULLABLE\",\"A_NVARCHAR2\",\"A_NVARCHAR2_NULLABLE\",\"A_RAW\",\"A_RAW_NULLABLE\",\"A_REAL\",\"A_REAL_NULLABLE\",\"A_ROWID\",\"A_ROWID_NULLABLE\",\"A_SMALLINT\",\"A_SMALLINT_NULLABLE\",\"A_TIMESTAMP\",\"A_TIMESTAMP_NULLABLE\",\"A_TIMESTAMP_WITH_LOCAL_TIME_ZONE\",\"A_TIMESTAMP_WITH_LOCAL_TIME_ZONE_NULLABLE\",\"A_TIMESTAMP_WITH_TIME_ZONE\",\"A_TIMESTAMP_WITH_TIME_ZONE_NULLABLE\",\"A_VARCHAR\",\"A_VARCHAR_NULLABLE\",\"A_VARCHAR2\",\"A_VARCHAR2_NULLABLE\",\"A_XMLTYPE\",\"A_XMLTYPE_NULLABLE\" FROM a_bit_of_everything"
         },
         {
           "type": "view",
@@ -1394,7 +1395,8 @@
               }
             }
           ],
-          "manual": true
+          "manual": true,
+          "definition": "SELECT a_bool, a_nclob FROM a_bit_of_everything"
         }
       ]
     }

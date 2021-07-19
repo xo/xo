@@ -13,7 +13,7 @@ type Proc struct {
 	ProcType   string `json:"proc_type"`   // proc_type
 	ReturnType string `json:"return_type"` // return_type
 	ReturnName string `json:"return_name"` // return_name
-	ProcSrc    string `json:"proc_src"`    // proc_src
+	ProcDef    string `json:"proc_def"`    // proc_def
 }
 
 // PostgresProcs runs a custom query, returning results as Proc.
@@ -25,7 +25,7 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 		`pp.proc_type, ` + // ::varchar AS proc_type
 		`format_type(pp.return_type, NULL), ` + // ::varchar AS return_type
 		`pp.return_name, ` + // ::varchar AS return_name
-		`p.prosrc ` + // ::varchar AS proc_src
+		`p.prosrc ` + // ::varchar AS proc_def
 		`FROM pg_catalog.pg_proc p ` +
 		`JOIN pg_catalog.pg_namespace n ON (p.pronamespace = n.oid) ` +
 		`JOIN ( ` +
@@ -71,7 +71,7 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcSrc); err != nil {
+		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcDef); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -91,7 +91,7 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 		`LOWER(r.routine_type) AS proc_type, ` +
 		`COALESCE(p.dtd_identifier, 'void') AS return_type, ` +
 		`COALESCE(p.parameter_name, '') AS return_name, ` +
-		`r.routine_definition AS proc_src ` +
+		`r.routine_definition AS proc_def ` +
 		`FROM information_schema.routines r ` +
 		`LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema ` +
 		`AND p.specific_name = r.routine_name ` +
@@ -110,7 +110,7 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcSrc); err != nil {
+		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcDef); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -141,7 +141,7 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 		`THEN SUBSTRING(p.name, 2, LEN(p.name)-1) ` +
 		`ELSE '' ` +
 		`END AS return_name, ` +
-		`OBJECT_DEFINITION(o.object_id) AS proc_src ` +
+		`OBJECT_DEFINITION(o.object_id) AS proc_def ` +
 		`FROM sys.objects o ` +
 		`LEFT JOIN sys.parameters p ON o.object_id = p.object_id ` +
 		`AND (p.object_id IS NULL OR p.is_output = 'true') ` +
@@ -161,7 +161,7 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcSrc); err != nil {
+		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcDef); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)
@@ -188,7 +188,7 @@ func OracleProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 		`LOWER(CASE ` +
 		`WHEN a.argument_name IS NULL THEN '-' ` +
 		`ELSE a.argument_name END) AS return_name, ` +
-		`s.src AS proc_src ` +
+		`s.src AS proc_def ` +
 		`FROM all_objects o ` +
 		`LEFT JOIN sys.all_arguments a ON a.object_id = o.object_id ` +
 		`AND a.in_out = 'OUT' ` +
@@ -216,7 +216,7 @@ func OracleProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	for rows.Next() {
 		var p Proc
 		// scan
-		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcSrc); err != nil {
+		if err := rows.Scan(&p.ProcID, &p.ProcName, &p.ProcType, &p.ReturnType, &p.ReturnName, &p.ProcDef); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &p)

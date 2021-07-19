@@ -90,7 +90,7 @@ SELECT
   pp.proc_type::varchar AS proc_type,
   format_type(pp.return_type, NULL)::varchar AS return_type,
   pp.return_name::varchar AS return_name,
-  p.prosrc::varchar AS proc_src
+  p.prosrc::varchar AS proc_def
 FROM pg_catalog.pg_proc p
   JOIN pg_catalog.pg_namespace n ON (p.pronamespace = n.oid)
   JOIN (
@@ -155,9 +155,15 @@ SELECT
     WHEN 'v' THEN 'view'
   END)::varchar AS type,
   c.relname::varchar AS table_name,
-  false::boolean AS manual_pk
+  false::boolean AS manual_pk,
+  CASE c.relkind
+    WHEN 'r' THEN ''
+    WHEN 'v' THEN v.definition
+  END AS view_def
 FROM pg_class c
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
+  LEFT JOIN pg_views v ON n.nspname = v.schemaname
+    AND v.viewname = c.relname
 WHERE n.nspname = %%schema string%%
   AND (CASE c.relkind
     WHEN 'r' THEN 'table'
@@ -336,7 +342,6 @@ WHERE data_type = 'enum'
   AND column_name = %%enum string%%
 ENDSQL
 
-# SELECT * FROM information_schema.routines WHERE routine_schema = 'a_bit_of_everything';
 # mysql proc list query
 $XOBIN query $MYDB -M -B -2 -T Proc -F MysqlProcs -a -o $DEST $@ << ENDSQL
 SELECT
@@ -345,7 +350,7 @@ SELECT
   LOWER(r.routine_type) AS proc_type,
   COALESCE(p.dtd_identifier, 'void') AS return_type,
   COALESCE(p.parameter_name, '') AS return_name,
-  r.routine_definition AS proc_src
+  r.routine_definition AS proc_def
 FROM information_schema.routines r
   LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
     AND p.specific_name = r.routine_name
@@ -371,14 +376,20 @@ ENDSQL
 # mysql table list query
 $XOBIN query $MYDB -M -B -2 -T Table -F MysqlTables -a -o $DEST $@ << ENDSQL
 SELECT
-  (CASE table_type
+  (CASE t.table_type
     WHEN 'BASE TABLE' THEN 'table'
     WHEN 'VIEW' THEN 'view'
   END) AS type,
-  table_name
-FROM information_schema.tables
-WHERE table_schema = %%schema string%%
-  AND (CASE table_type
+  t.table_name,
+  CASE t.table_type
+    WHEN 'BASE TABLE' THEN ''
+    WHEN 'VIEW' then v.view_definition
+  END AS view_def
+FROM information_schema.tables t
+  LEFT JOIN information_schema.views v ON t.table_schema = v.table_schema
+    AND t.table_name = v.table_name
+WHERE t.table_schema = %%schema string%%
+  AND (CASE t.table_type
     WHEN 'BASE TABLE' THEN 'table'
     WHEN 'VIEW' THEN 'view'
   END) = LOWER(%%typ string%%)
@@ -472,7 +483,11 @@ $XOBIN query $SQDB -M -B -2 -T Table -F Sqlite3Tables -I -a -o $DEST $@ << ENDSQ
 /* %%schema string,interpolate%% */
 SELECT
   type,
-  tbl_name AS table_name
+  tbl_name AS table_name,
+  CASE LOWER(type)
+    WHEN 'table' THEN ''
+    WHEN 'view' THEN sql
+  END AS view_def
 FROM sqlite_master
 WHERE tbl_name NOT LIKE 'sqlite_%'
   AND LOWER(type) = LOWER(%%typ string%%)
@@ -577,7 +592,6 @@ SELECT
   SCHEMA_NAME() AS schema_name
 ENDSQL
 
-# SELECT *, Object_definition(object_id) FROM sys.procedures
 # sqlserver proc list query
 $XOBIN query $MSDB -M -B -2 -T Proc -F SqlserverProcs -a -o $DEST $@ << ENDSQL
 SELECT
@@ -597,7 +611,7 @@ SELECT
       THEN SUBSTRING(p.name, 2, LEN(p.name)-1)
     ELSE ''
   END AS return_name,
-  OBJECT_DEFINITION(o.object_id) AS proc_src
+  OBJECT_DEFINITION(o.object_id) AS proc_def
 FROM sys.objects o
   LEFT JOIN sys.parameters p ON o.object_id = p.object_id
     AND (p.object_id IS NULL OR p.is_output = 'true')
@@ -627,7 +641,11 @@ SELECT
     WHEN 'U' THEN 'table'
     WHEN 'V' THEN 'view'
   END) AS type,
-  name AS table_name
+  name AS table_name,
+  CASE xtype
+    WHEN 'U' THEN ''
+    WHEN 'V' THEN OBJECT_DEFINITION(id)
+  END AS view_def
 FROM sysobjects
 WHERE SCHEMA_NAME(uid) = %%schema string%%
   AND (CASE xtype
@@ -758,7 +776,6 @@ SELECT
 FROM dual
 ENDSQL
 
-# SELECT NAME AS name, listagg(TEXT) WITHIN GROUP (ORDER BY LINE) AS text FROM all_source WHERE owner='A_BIT_OF_EVERYTHING' GROUP BY name;
 # oracle proc list query
 $XOBIN query $ORDB -M -B -2 -T Proc -F OracleProcs -a -o $DEST $@ << ENDSQL
 SELECT
@@ -774,7 +791,7 @@ SELECT
   LOWER(CASE
     WHEN a.argument_name IS NULL THEN '-'
     ELSE a.argument_name END) AS return_name,
-  s.src AS proc_src
+  s.src AS proc_def
 FROM all_objects o
   LEFT JOIN sys.all_arguments a ON a.object_id = o.object_id
     AND a.in_out = 'OUT'
@@ -813,16 +830,22 @@ ENDSQL
 # oracle table list query
 $XOBIN query $ORDB -M -B -2 -T Table -F OracleTables -a -o $DEST $@ << ENDSQL
 SELECT
-  LOWER(object_type) AS type,
-  LOWER(object_name) AS table_name
-FROM all_objects
-WHERE object_name NOT LIKE '%$%'
-  AND object_name NOT LIKE 'LOGMNR%_%'
-  AND object_name NOT LIKE 'REDO_%'
-  AND object_name NOT LIKE 'SCHEDULER_%_TBL'
-  AND object_name NOT LIKE 'SQLPLUS_%'
-  AND owner = UPPER(%%schema string%%)
-  AND object_type = UPPER(%%typ string%%)
+  LOWER(o.object_type) AS type,
+  LOWER(o.object_name) AS table_name,
+  CASE o.object_type
+    WHEN 'TABLE' THEN ' '
+    WHEN 'VIEW' THEN v.text_vc
+  END AS view_def
+FROM all_objects o
+  LEFT JOIN all_views v ON o.owner = v.owner
+    AND o.object_name = v.view_name
+WHERE o.object_name NOT LIKE '%$%'
+  AND o.object_name NOT LIKE 'LOGMNR%_%'
+  AND o.object_name NOT LIKE 'REDO_%'
+  AND o.object_name NOT LIKE 'SCHEDULER_%_TBL'
+  AND o.object_name NOT LIKE 'SQLPLUS_%'
+  AND o.owner = UPPER(%%schema string%%)
+  AND o.object_type = UPPER(%%typ string%%)
 ENDSQL
 
 # oracle table column list query
