@@ -13,7 +13,7 @@ schemas:
       - name: r0
         datatype:
           type: nvarchar2
-      body: |-
+      definition: |-
         FUNCTION say_hello(name IN NVARCHAR2) RETURN NVARCHAR2 AS
         BEGIN
           RETURN 'hello ' || name;

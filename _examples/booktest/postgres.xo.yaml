@@ -20,7 +20,7 @@ schemas:
       - name: r0
         datatype:
           type: character varying
-      body: |-
+      definition: |-
         BEGIN
           RETURN 'hello ' || name;
         END;

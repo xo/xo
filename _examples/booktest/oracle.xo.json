@@ -23,7 +23,7 @@
               }
             }
           ],
-          "body": "FUNCTION say_hello(name IN NVARCHAR2) RETURN NVARCHAR2 AS\nBEGIN\n  RETURN 'hello ' || name;\nEND;"
+          "definition": "FUNCTION say_hello(name IN NVARCHAR2) RETURN NVARCHAR2 AS\nBEGIN\n  RETURN 'hello ' || name;\nEND;"
         }
       ],
       "tables": [

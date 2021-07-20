@@ -10,6 +10,7 @@ import (
 // BookType is the 'book_type' enum type from schema 'public'.
 type BookType uint16
 
+// BookType values.
 const (
 	// BookTypeFiction is the 'FICTION' book_type.
 	BookTypeFiction BookType = 1
@@ -57,6 +58,32 @@ func (bt *BookType) Scan(v interface{}) error {
 		return bt.UnmarshalText(buf)
 	}
 	return ErrInvalidBookType(fmt.Sprintf("%T", v))
+}
+
+// NullBookType represents a null 'book_type' enum for schema 'public'.
+type NullBookType struct {
+	BookType BookType
+	// Valid is true if BookType is not null.
+	Valid bool
+}
+
+// Value satisfies the driver.Valuer interface.
+func (nbt NullBookType) Value() (driver.Value, error) {
+	if !nbt.Valid {
+		return nil, nil
+	}
+	return nbt.BookType.Value()
+}
+
+// Scan satisfies the sql.Scanner interface.
+func (nbt *NullBookType) Scan(v interface{}) error {
+	if v == nil {
+		nbt.BookType, nbt.Valid = 0, false
+		return nil
+	}
+	err := nbt.BookType.Scan(v)
+	nbt.Valid = err == nil
+	return err
 }
 
 // ErrInvalidBookType is the invalid BookType error.

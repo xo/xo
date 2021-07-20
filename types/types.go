@@ -1,6 +1,12 @@
 // Package types contains xo internal types.
 package types
 
+import (
+	"fmt"
+	"reflect"
+	"strings"
+)
+
 // ContextKey is a context key.
 type ContextKey string
 
@@ -52,6 +58,13 @@ type Query struct {
 	Comments     []string `json:"comments,omitempty"`
 }
 
+// MarshalYAML satisfies the yaml.Marshaler interface.
+func (q Query) MarshalYAML() (interface{}, error) {
+	v := q
+	v.Comment, v.TypeComment = forceLineEnd(v.Comment), (v.TypeComment)
+	return reflectStruct(v)
+}
+
 // Schema is a SQL schema.
 type Schema struct {
 	Driver string  `json:"type,omitempty"`
@@ -64,9 +77,8 @@ type Schema struct {
 
 // Enum is a enum type.
 type Enum struct {
-	Name    string  `json:"name,omitempty"`
-	Values  []Field `json:"values,omitempty"`
-	Comment string  `json:"comment,omitempty"`
+	Name   string  `json:"name,omitempty"`
+	Values []Field `json:"values,omitempty"`
 }
 
 // Proc is a stored procedure.
@@ -77,8 +89,14 @@ type Proc struct {
 	Params     []Field `json:"params,omitempty"`
 	Returns    []Field `json:"return,omitempty"`
 	Void       bool    `json:"void,omitempty"`
-	Definition string  `json:"body"`
-	Comment    string  `json:"comment,omitempty"`
+	Definition string  `json:"definition,omitempty"`
+}
+
+// MarshalYAML satisfies the yaml.Marshaler interface.
+func (p Proc) MarshalYAML() (interface{}, error) {
+	v := p
+	v.Definition = forceLineEnd(v.Definition)
+	return reflectStruct(v)
 }
 
 // Table is a table or view.
@@ -91,7 +109,13 @@ type Table struct {
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
 	Manual      bool         `json:"manual,omitempty"`
 	Definition  string       `json:"definition,omitempty"` // empty for tables
-	Comment     string       `json:"comment,omitempty"`
+}
+
+// MarshalYAML satisfies the yaml.Marshaler interface.
+func (t Table) MarshalYAML() (interface{}, error) {
+	v := t
+	v.Definition = forceLineEnd(v.Definition)
+	return reflectStruct(v)
 }
 
 // Index is a index.
@@ -118,7 +142,6 @@ type Field struct {
 	Name        string   `json:"name,omitempty"`
 	Datatype    Datatype `json:"datatype,omitempty"`
 	Default     *string  `json:"default,omitempty"`
-	Comment     string   `json:"comment,omitempty"`
 	IsPrimary   bool     `json:"is_primary,omitempty"`
 	IsSequence  bool     `json:"is_sequence,omitempty"`
 	ConstValue  *int     `json:"const_value,omitempty"`
@@ -133,4 +156,46 @@ type Datatype struct {
 	Scale    int    `json:"scale,omitempty"`
 	Nullable bool   `json:"nullable,omitempty"`
 	Array    bool   `json:"array,omitempty"`
+}
+
+// forceLineEnd forces a \n on a string that doesn't contain one and is
+// non-empty.
+func forceLineEnd(s string) string {
+	if strings.TrimSpace(s) != "" && !strings.Contains(s, "\n") {
+		return s + "\n"
+	}
+	return s
+}
+
+// reflectStruct reflects a struct without its json tag.
+func reflectStruct(z interface{}) (interface{}, error) {
+	v := reflect.ValueOf(z)
+	n, typ := v.NumField(), v.Type()
+	// build fields
+	var fields []reflect.StructField
+	var values []reflect.Value
+	for i := 0; i < n; i++ {
+		f := typ.Field(i)
+		// lookup json tag
+		name, ok := f.Tag.Lookup("json")
+		if !ok {
+			return nil, fmt.Errorf("missing json tag on %T field %s (%d)", z, f.Name, i)
+		}
+		if j := strings.Index(name, ","); j != -1 {
+			name = name[:j]
+		}
+		// skip
+		if name == "-" {
+			continue
+		}
+		field := f
+		field.Tag = reflect.StructTag(`json:"` + name + `,omitempty"`)
+		fields, values = append(fields, field), append(values, v.Field(i))
+	}
+	// build value
+	s := reflect.New(reflect.StructOf(fields))
+	for i := 0; i < len(values); i++ {
+		s.Elem().Field(i).Set(values[i])
+	}
+	return s.Elem().Interface(), nil
 }

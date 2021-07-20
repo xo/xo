@@ -40,7 +40,7 @@
           "type": "procedure",
           "name": "a_0_in_0_out",
           "void": true,
-          "body": "BEGIN\nEND"
+          "definition": "BEGIN\nEND"
         },
         {
           "type": "procedure",
@@ -54,7 +54,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  SELECT 10 INTO a_return;\nEND"
+          "definition": "BEGIN\n  SELECT 10 INTO a_return;\nEND"
         },
         {
           "type": "procedure",
@@ -69,7 +69,7 @@
             }
           ],
           "void": true,
-          "body": "BEGIN\nEND"
+          "definition": "BEGIN\nEND"
         },
         {
           "type": "procedure",
@@ -92,7 +92,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  SELECT a_param INTO a_return;\nEND"
+          "definition": "BEGIN\n  SELECT a_param INTO a_return;\nEND"
         },
         {
           "type": "procedure",
@@ -129,7 +129,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  SELECT param_one, param_two INTO return_one, return_two;\nEND"
+          "definition": "BEGIN\n  SELECT param_one, param_two INTO return_one, return_two;\nEND"
         },
         {
           "type": "function",
@@ -143,7 +143,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN 10;\nEND"
+          "definition": "BEGIN\n  RETURN 10;\nEND"
         },
         {
           "type": "function",
@@ -166,7 +166,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN a_param;\nEND"
+          "definition": "BEGIN\n  RETURN a_param;\nEND"
         },
         {
           "type": "function",
@@ -196,7 +196,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN param_one + param_two;\nEND"
+          "definition": "BEGIN\n  RETURN param_one + param_two;\nEND"
         }
       ],
       "tables": [

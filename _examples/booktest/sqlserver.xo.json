@@ -23,7 +23,7 @@
               }
             }
           ],
-          "body": "CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS\nBEGIN\n  SELECT @result = CONCAT('hello ', @name);\nEND;"
+          "definition": "CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS\nBEGIN\n  SELECT @result = CONCAT('hello ', @name);\nEND;"
         }
       ],
       "tables": [

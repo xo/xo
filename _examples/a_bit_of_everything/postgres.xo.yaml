@@ -13,7 +13,7 @@ schemas:
     - type: procedure
       name: a_0_in_0_out
       void: true
-      body: |-
+      definition: |-
         BEGIN
         END;
     - type: function
@@ -22,7 +22,7 @@ schemas:
       - name: a_return
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           a_return := 10;
         END;
@@ -33,7 +33,7 @@ schemas:
         datatype:
           type: integer
       void: true
-      body: |-
+      definition: |-
         BEGIN
         END;
     - type: function
@@ -46,7 +46,7 @@ schemas:
       - name: a_return
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           a_return := a_param;
         END;
@@ -66,7 +66,7 @@ schemas:
       - name: return_two
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           return_one := param_one;
           return_two := param_two;
@@ -77,7 +77,7 @@ schemas:
       - name: r0
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           RETURN 10;
         END;
@@ -91,7 +91,7 @@ schemas:
       - name: r0
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           RETURN a_param;
         END;
@@ -108,7 +108,7 @@ schemas:
       - name: r0
         datatype:
           type: integer
-      body: |-
+      definition: |-
         BEGIN
           RETURN param_one + param_two;
         END;
@@ -119,7 +119,7 @@ schemas:
         datatype:
           type: integer
       void: true
-      body: |-
+      definition: |-
         BEGIN
         END;
     - type: procedure
@@ -132,7 +132,7 @@ schemas:
         datatype:
           type: integer
       void: true
-      body: |-
+      definition: |-
         BEGIN
         END;
     tables:

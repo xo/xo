@@ -40,7 +40,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN 'hello ' || name;\nEND;"
+          "definition": "BEGIN\n  RETURN 'hello ' || name;\nEND;"
         }
       ],
       "tables": [

@@ -42,7 +42,7 @@
               }
             }
           ],
-          "body": "BEGIN\n  RETURN CONCAT('hello ', name);\nEND"
+          "definition": "BEGIN\n  RETURN CONCAT('hello ', name);\nEND"
         }
       ],
       "tables": [

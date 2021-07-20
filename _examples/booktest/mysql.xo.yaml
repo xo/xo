@@ -22,7 +22,7 @@ schemas:
         datatype:
           type: varchar
           prec: 255
-      body: |-
+      definition: |-
         BEGIN
           RETURN CONCAT('hello ', name);
         END
