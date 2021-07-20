@@ -72,10 +72,11 @@ for TYPE in $DATABASES; do
     fi
   fi
   (set -ex;
-    $XOBIN schema $DB -o $TYPE ${ARGS[@]}
-    $XOBIN schema $DB -o . --single=$TYPE.xo.json -t json ${ARGS[@]}
-    $XOBIN schema $DB -o . --single=$TYPE.xo.yaml -t yaml ${ARGS[@]}
-    $XOBIN schema $DB -o . --single=$TYPE.xo.dot  -t dot  ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE               ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t sql-schema ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t json       ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t yaml       ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t dot        ${ARGS[@]}
     go build ./$TYPE
     go build
     ./$TEST -dsn $DB ${ARGS[@]}

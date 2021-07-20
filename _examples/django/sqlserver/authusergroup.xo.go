@@ -145,7 +145,7 @@ func (aug *AuthUserGroup) Delete(ctx context.Context, db DB) error {
 
 // AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
 //
-// Generated from index 'PK__auth_use__3213E83F27B4ED53'.
+// Generated from index 'PK__auth_use__3213E83FC0D8F91A'.
 func AuthUserGroupByID(ctx context.Context, db DB, id int) (*AuthUserGroup, error) {
 	// query
 	const sqlstr = `SELECT ` +

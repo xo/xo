@@ -11,3 +11,4 @@
 *.sqlite3
 *.sqlite3-journal
 *.svg
+*.xo.sql

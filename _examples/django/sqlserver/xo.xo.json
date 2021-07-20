@@ -38,7 +38,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_gro__3213E83F883FA4F3",
+              "name": "PK__auth_gro__3213E83F303D2787",
               "func_name": "auth_group_by_id",
               "fields": [
                 {
@@ -55,7 +55,7 @@
               "is_primary": true
             },
             {
-              "name": "UQ__auth_gro__72E12F1B88861B91",
+              "name": "UQ__auth_gro__72E12F1BACF0C4AA",
               "func_name": "auth_group_by_name",
               "fields": [
                 {
@@ -111,7 +111,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_gro__3213E83FB371D477",
+              "name": "PK__auth_gro__3213E83FBD0BC743",
               "func_name": "auth_group_permission_by_id",
               "fields": [
                 {
@@ -278,7 +278,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_per__3213E83F08B2C5E0",
+              "name": "PK__auth_per__3213E83F3B766E0D",
               "func_name": "auth_permission_by_id",
               "fields": [
                 {
@@ -458,7 +458,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83FF80572AE",
+              "name": "PK__auth_use__3213E83FAD63B813",
               "func_name": "auth_user_by_id",
               "fields": [
                 {
@@ -531,7 +531,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83F27B4ED53",
+              "name": "PK__auth_use__3213E83FC0D8F91A",
               "func_name": "auth_user_group_by_id",
               "fields": [
                 {
@@ -691,7 +691,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__auth_use__3213E83F88165C95",
+              "name": "PK__auth_use__3213E83FF96CAC97",
               "func_name": "auth_user_user_permission_by_id",
               "fields": [
                 {
@@ -843,7 +843,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__authors__86516BCF82139C87",
+              "name": "PK__authors__86516BCF8B6E070E",
               "func_name": "author_by_author_id",
               "fields": [
                 {
@@ -931,7 +931,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__books__490D1AE188F975D8",
+              "name": "PK__books__490D1AE104824C98",
               "func_name": "book_by_book_id",
               "fields": [
                 {
@@ -1031,7 +1031,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__books_ta__3213E83FEF21E54E",
+              "name": "PK__books_ta__3213E83F26E5FEDD",
               "func_name": "books_tag_by_id",
               "fields": [
                 {
@@ -1227,7 +1227,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_a__3213E83F63077528",
+              "name": "PK__django_a__3213E83F4B0E7733",
               "func_name": "django_admin_log_by_id",
               "fields": [
                 {
@@ -1368,7 +1368,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_c__3213E83FAAA57F17",
+              "name": "PK__django_c__3213E83F485C190F",
               "func_name": "django_content_type_by_id",
               "fields": [
                 {
@@ -1456,7 +1456,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_m__3213E83F5A3B0F23",
+              "name": "PK__django_m__3213E83FEDEFBAA1",
               "func_name": "django_migration_by_id",
               "fields": [
                 {
@@ -1513,7 +1513,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__django_s__B3BA0F1F7543EF7B",
+              "name": "PK__django_s__B3BA0F1F6903E844",
               "func_name": "django_session_by_session_key",
               "fields": [
                 {
@@ -1579,7 +1579,7 @@
           ],
           "indexes": [
             {
-              "name": "PK__tags__4296A2B6DA4C0EC1",
+              "name": "PK__tags__4296A2B69148430E",
               "func_name": "tag_by_tag_id",
               "fields": [
                 {

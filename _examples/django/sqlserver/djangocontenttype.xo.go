@@ -145,7 +145,7 @@ func (dct *DjangoContentType) Delete(ctx context.Context, db DB) error {
 
 // DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a DjangoContentType.
 //
-// Generated from index 'PK__django_c__3213E83FAAA57F17'.
+// Generated from index 'PK__django_c__3213E83F485C190F'.
 func DjangoContentTypeByID(ctx context.Context, db DB, id int) (*DjangoContentType, error) {
 	// query
 	const sqlstr = `SELECT ` +

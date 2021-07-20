@@ -209,7 +209,7 @@ func DjangoAdminLogByUserID(ctx context.Context, db DB, userID int64) ([]*Django
 
 // DjangoAdminLogByID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.
 //
-// Generated from index 'sys_c0011177'.
+// Generated from index 'sys_c0013467'.
 func DjangoAdminLogByID(ctx context.Context, db DB, id int64) (*DjangoAdminLog, error) {
 	// query
 	const sqlstr = `SELECT ` +
