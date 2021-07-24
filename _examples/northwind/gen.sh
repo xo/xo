@@ -51,7 +51,7 @@ for TYPE in $DATABASES; do
     exit 1
   fi
   mkdir -p $TYPE
-  rm -f $TYPE/*.xo.go
+  rm -f $TYPE/*.xo.*
   echo "------------------------------------------------------"
   echo "$TYPE: $DB"
   if [ "$APPLY" = "1" ]; then
@@ -71,11 +71,11 @@ for TYPE in $DATABASES; do
     fi
   fi
   (set -ex;
-    $XOBIN schema $DB -o $TYPE               ${ARGS[@]}
-    $XOBIN schema $DB -o $TYPE -t sql-schema ${ARGS[@]}
-    $XOBIN schema $DB -o $TYPE -t json       ${ARGS[@]}
-    $XOBIN schema $DB -o $TYPE -t yaml       ${ARGS[@]}
-    $XOBIN schema $DB -o $TYPE -t dot        ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE             ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t createdb ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t json     ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t yaml     ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t dot      ${ARGS[@]}
     go build ./$TYPE
     go build
     ./$TEST -dsn $DB ${ARGS[@]}

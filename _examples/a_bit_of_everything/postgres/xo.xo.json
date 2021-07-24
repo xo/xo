@@ -213,38 +213,33 @@
               "name": "a_enum",
               "datatype": {
                 "type": "a_enum"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_enum_nullable",
               "datatype": {
                 "type": "a_enum",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigint",
               "datatype": {
                 "type": "bigint"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigint_nullable",
               "datatype": {
                 "type": "bigint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigserial",
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('a_bit_of_everything_a_bigserial_seq'::regclass)",
               "is_sequence": true
             },
             {
@@ -252,7 +247,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('a_bit_of_everything_a_bigserial_nullable_seq'::regclass)",
               "is_sequence": true
             },
             {
@@ -260,8 +254,7 @@
               "datatype": {
                 "type": "bit",
                 "prec": 1
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_nullable",
@@ -269,91 +262,79 @@
                 "type": "bit",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_varying",
               "datatype": {
                 "type": "bit varying"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_varying_nullable",
               "datatype": {
                 "type": "bit varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bool",
               "datatype": {
                 "type": "boolean"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bool_nullable",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_boolean",
               "datatype": {
                 "type": "boolean"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_boolean_nullable",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bpchar",
               "datatype": {
                 "type": "bpchar"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bpchar_nullable",
               "datatype": {
                 "type": "bpchar",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bytea",
               "datatype": {
                 "type": "bytea"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bytea_nullable",
               "datatype": {
                 "type": "bytea",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_char",
               "datatype": {
                 "type": "character",
                 "prec": 1
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_char_nullable",
@@ -361,16 +342,14 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character",
               "datatype": {
                 "type": "character",
                 "prec": 1
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_nullable",
@@ -378,210 +357,182 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_varying",
               "datatype": {
                 "type": "character varying"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_varying_nullable",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_date",
               "datatype": {
                 "type": "date"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_date_nullable",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_decimal",
               "datatype": {
                 "type": "numeric"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_decimal_nullable",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_double_precision",
               "datatype": {
                 "type": "double precision"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_double_precision_nullable",
               "datatype": {
                 "type": "double precision",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_inet",
               "datatype": {
                 "type": "inet"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_inet_nullable",
               "datatype": {
                 "type": "inet",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_int",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_int_nullable",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_integer",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_integer_nullable",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_interval",
               "datatype": {
                 "type": "interval"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_interval_nullable",
               "datatype": {
                 "type": "interval",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_json",
               "datatype": {
                 "type": "json"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_json_nullable",
               "datatype": {
                 "type": "json",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_jsonb",
               "datatype": {
                 "type": "jsonb"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_jsonb_nullable",
               "datatype": {
                 "type": "jsonb",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_money",
               "datatype": {
                 "type": "money"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_money_nullable",
               "datatype": {
                 "type": "money",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_numeric",
               "datatype": {
                 "type": "numeric"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_numeric_nullable",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_real",
               "datatype": {
                 "type": "real"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_real_nullable",
               "datatype": {
                 "type": "real",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_serial",
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_bit_of_everything_a_serial_seq'::regclass)",
               "is_sequence": true
             },
             {
@@ -589,30 +540,26 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_bit_of_everything_a_serial_nullable_seq'::regclass)",
               "is_sequence": true
             },
             {
               "name": "a_smallint",
               "datatype": {
                 "type": "smallint"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallint_nullable",
               "datatype": {
                 "type": "smallint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallserial",
               "datatype": {
                 "type": "smallint"
               },
-              "default": "nextval('a_bit_of_everything_a_smallserial_seq'::regclass)",
               "is_sequence": true
             },
             {
@@ -620,128 +567,111 @@
               "datatype": {
                 "type": "smallint"
               },
-              "default": "nextval('a_bit_of_everything_a_smallserial_nullable_seq'::regclass)",
               "is_sequence": true
             },
             {
               "name": "a_text",
               "datatype": {
                 "type": "text"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_text_nullable",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_time",
               "datatype": {
                 "type": "time without time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_time_nullable",
               "datatype": {
                 "type": "time without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamp",
               "datatype": {
                 "type": "timestamp without time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamp_nullable",
               "datatype": {
                 "type": "timestamp without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamptz",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamptz_nullable",
               "datatype": {
                 "type": "timestamp with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timetz",
               "datatype": {
                 "type": "time with time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timetz_nullable",
               "datatype": {
                 "type": "time with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_uuid",
               "datatype": {
                 "type": "uuid"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_uuid_nullable",
               "datatype": {
                 "type": "uuid",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_varchar",
               "datatype": {
                 "type": "character varying"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_varchar_nullable",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_xml",
               "datatype": {
                 "type": "xml"
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_xml_nullable",
               "datatype": {
                 "type": "xml",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ]
         },
@@ -754,8 +684,7 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "foreign_keys": [
@@ -768,8 +697,7 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "a_primary",
@@ -779,7 +707,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -797,16 +724,14 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_key2",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "foreign_keys": [
@@ -819,16 +744,14 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "a_key2",
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "a_primary_composite",
@@ -838,7 +761,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 },
                 {
@@ -846,7 +768,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -864,8 +785,7 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "indexes": [
@@ -878,8 +798,7 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ]
             }
@@ -895,16 +814,14 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_key2",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "indexes": [
@@ -917,16 +834,14 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "a_key2",
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ]
             }
@@ -943,8 +858,7 @@
                 "type": "character varying",
                 "prec": 255,
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "manual": true
@@ -958,7 +872,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -968,7 +881,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -982,7 +894,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -1001,7 +912,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             },
             {
@@ -1009,7 +919,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -1019,7 +928,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             },
             {
@@ -1027,7 +935,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -1041,7 +948,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 },
                 {
@@ -1049,7 +955,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -1068,7 +973,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             },
             {
@@ -1077,8 +981,7 @@
                 "type": "character varying",
                 "prec": 255,
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1087,7 +990,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -1101,7 +1003,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -1120,7 +1021,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_sequence_a_seq_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1131,14 +1031,13 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_sequence_a_seq_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
           ],
           "indexes": [
             {
-              "name": "a_sequence_pkey",
+              "name": "a_seq_pkey",
               "func_name": "a_sequence_by_a_seq",
               "fields": [
                 {
@@ -1146,7 +1045,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('a_sequence_a_seq_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1165,7 +1063,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1175,8 +1072,7 @@
                 "type": "character varying",
                 "prec": 255,
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1185,7 +1081,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1200,7 +1095,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('a_sequence_multi_a_seq_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1219,8 +1113,7 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "indexes": [
@@ -1233,8 +1126,7 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -1251,16 +1143,14 @@
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_key2",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "indexes": [
@@ -1273,16 +1163,14 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "a_key2",
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -1301,48 +1189,42 @@
               "datatype": {
                 "type": "a_enum",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_enum_nullable",
               "datatype": {
                 "type": "a_enum",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigint",
               "datatype": {
                 "type": "bigint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigint_nullable",
               "datatype": {
                 "type": "bigint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigserial",
               "datatype": {
                 "type": "bigint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bigserial_nullable",
               "datatype": {
                 "type": "bigint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit",
@@ -1350,8 +1232,7 @@
                 "type": "bit",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_nullable",
@@ -1359,88 +1240,77 @@
                 "type": "bit",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_varying",
               "datatype": {
                 "type": "bit varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bit_varying_nullable",
               "datatype": {
                 "type": "bit varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bool",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bool_nullable",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_boolean",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_boolean_nullable",
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bpchar",
               "datatype": {
                 "type": "bpchar",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bpchar_nullable",
               "datatype": {
                 "type": "bpchar",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bytea",
               "datatype": {
                 "type": "bytea",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_bytea_nullable",
               "datatype": {
                 "type": "bytea",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_char",
@@ -1448,8 +1318,7 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_char_nullable",
@@ -1457,8 +1326,7 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character",
@@ -1466,8 +1334,7 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_nullable",
@@ -1475,392 +1342,343 @@
                 "type": "character",
                 "prec": 1,
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_varying",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_character_varying_nullable",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_date_nullable",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_decimal",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_decimal_nullable",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_double_precision",
               "datatype": {
                 "type": "double precision",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_double_precision_nullable",
               "datatype": {
                 "type": "double precision",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_inet",
               "datatype": {
                 "type": "inet",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_inet_nullable",
               "datatype": {
                 "type": "inet",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_int",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_int_nullable",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_integer",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_integer_nullable",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_interval",
               "datatype": {
                 "type": "interval",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_interval_nullable",
               "datatype": {
                 "type": "interval",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_json",
               "datatype": {
                 "type": "json",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_json_nullable",
               "datatype": {
                 "type": "json",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_jsonb",
               "datatype": {
                 "type": "jsonb",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_jsonb_nullable",
               "datatype": {
                 "type": "jsonb",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_money",
               "datatype": {
                 "type": "money",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_money_nullable",
               "datatype": {
                 "type": "money",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_numeric",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_numeric_nullable",
               "datatype": {
                 "type": "numeric",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_real",
               "datatype": {
                 "type": "real",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_real_nullable",
               "datatype": {
                 "type": "real",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_serial",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_serial_nullable",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallint",
               "datatype": {
                 "type": "smallint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallint_nullable",
               "datatype": {
                 "type": "smallint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallserial",
               "datatype": {
                 "type": "smallint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_smallserial_nullable",
               "datatype": {
                 "type": "smallint",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_text",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_text_nullable",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_time",
               "datatype": {
                 "type": "time without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_time_nullable",
               "datatype": {
                 "type": "time without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamp",
               "datatype": {
                 "type": "timestamp without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamp_nullable",
               "datatype": {
                 "type": "timestamp without time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamptz",
               "datatype": {
                 "type": "timestamp with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timestamptz_nullable",
               "datatype": {
                 "type": "timestamp with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timetz",
               "datatype": {
                 "type": "time with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_timetz_nullable",
               "datatype": {
                 "type": "time with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_uuid",
               "datatype": {
                 "type": "uuid",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_uuid_nullable",
               "datatype": {
                 "type": "uuid",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_varchar",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_varchar_nullable",
               "datatype": {
                 "type": "character varying",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_xml",
               "datatype": {
                 "type": "xml",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_xml_nullable",
               "datatype": {
                 "type": "xml",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "manual": true,
@@ -1875,16 +1693,14 @@
               "datatype": {
                 "type": "boolean",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "a_text",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": ""
+              }
             }
           ],
           "manual": true,

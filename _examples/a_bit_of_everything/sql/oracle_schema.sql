@@ -17,7 +17,8 @@ CREATE TABLE a_sequence_multi (
 
 -- table with primary key
 CREATE TABLE a_primary (
-  a_key INTEGER NOT NULL CONSTRAINT a_primary_pkey PRIMARY KEY
+  a_key INTEGER NOT NULL,
+  CONSTRAINT a_primary_pkey PRIMARY KEY (a_key)
 );
 
 CREATE TABLE a_primary_multi (

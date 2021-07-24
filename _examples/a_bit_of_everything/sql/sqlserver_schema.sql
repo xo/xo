@@ -6,21 +6,22 @@ CREATE TABLE a_manual_table (
 
 -- table with auto increment
 CREATE TABLE a_sequence (
-  a_seq INTEGER IDENTITY(1, 1) NOT NULL CONSTRAINT a_sequence_pkey PRIMARY KEY
+  a_seq INTEGER IDENTITY(1, 1),
+  CONSTRAINT a_sequence_pkey PRIMARY KEY (a_seq)
 );
 
 CREATE TABLE a_sequence_multi (
-  a_seq INTEGER IDENTITY(1, 1) NOT NULL CONSTRAINT a_sequence_multi_pkey PRIMARY KEY,
+  a_seq INTEGER IDENTITY(1, 1) CONSTRAINT a_sequence_multi_pkey PRIMARY KEY,
   a_text NVARCHAR(255)
 );
 
 -- table with primary key
 CREATE TABLE a_primary (
-  a_key INTEGER NOT NULL CONSTRAINT a_primary_pkey PRIMARY KEY
+  a_key INTEGER CONSTRAINT a_primary_pkey PRIMARY KEY
 );
 
 CREATE TABLE a_primary_multi (
-  a_key INTEGER NOT NULL CONSTRAINT a_primary_multi_pkey PRIMARY KEY,
+  a_key INTEGER CONSTRAINT a_primary_multi_pkey PRIMARY KEY,
   a_text NVARCHAR(255)
 );
 

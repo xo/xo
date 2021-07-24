@@ -35,10 +35,10 @@ FLAGS=(
   --go-uuid github.com/google/uuid
 )
 (set -ex;
-  $XOBIN schema ${FLAGS[@]} -o pgcatalog         -s pg_catalog         -S pgcatalog.xo.go         $DB $@
-  $XOBIN schema ${FLAGS[@]} -o pgcatalog -t yaml -s pg_catalog         -S pgcatalog.xo.yaml       $DB $@
-  $XOBIN schema ${FLAGS[@]} -o ischema           -s information_schema                            $DB $@
-  $XOBIN schema ${FLAGS[@]} -o ischema   -t yaml -s information_schema -S information_schema.yaml $DB $@
+  $XOBIN schema ${FLAGS[@]} -o pgcatalog         -s pg_catalog         -S pgcatalog.xo.go   $DB $@
+  $XOBIN schema ${FLAGS[@]} -o pgcatalog -t yaml -s pg_catalog         -S pgcatalog.xo.yaml $DB $@
+  $XOBIN schema ${FLAGS[@]} -o ischema           -s information_schema                      $DB $@
+  $XOBIN schema ${FLAGS[@]} -o ischema   -t yaml -s information_schema -S ischema.xo.yaml   $DB $@
   go build ./pgcatalog/
   go build ./ischema/
 )

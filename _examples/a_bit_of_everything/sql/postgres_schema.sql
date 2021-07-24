@@ -6,7 +6,8 @@ CREATE TABLE a_manual_table (
 
 -- table with sequence
 CREATE TABLE a_sequence (
-  a_seq SERIAL PRIMARY KEY
+  a_seq SERIAL,
+  CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
 );
 
 CREATE TABLE a_sequence_multi (

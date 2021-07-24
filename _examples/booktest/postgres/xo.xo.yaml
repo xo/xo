@@ -31,7 +31,6 @@ schemas:
       - name: author_id
         datatype:
           type: integer
-        default: nextval('authors_author_id_seq'::regclass)
         is_primary: true
         is_sequence: true
       - name: name
@@ -43,7 +42,6 @@ schemas:
       - name: author_id
         datatype:
           type: integer
-        default: nextval('authors_author_id_seq'::regclass)
         is_primary: true
         is_sequence: true
       indexes:
@@ -61,7 +59,6 @@ schemas:
         - name: author_id
           datatype:
             type: integer
-          default: nextval('authors_author_id_seq'::regclass)
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -72,13 +69,11 @@ schemas:
       - name: book_id
         datatype:
           type: integer
-        default: nextval('books_book_id_seq'::regclass)
         is_primary: true
         is_sequence: true
       - name: author_id
         datatype:
           type: integer
-        default: ""
       - name: isbn
         datatype:
           type: character varying
@@ -114,7 +109,6 @@ schemas:
       - name: book_id
         datatype:
           type: integer
-        default: nextval('books_book_id_seq'::regclass)
         is_primary: true
         is_sequence: true
       indexes:
@@ -133,7 +127,6 @@ schemas:
         - name: book_id
           datatype:
             type: integer
-          default: nextval('books_book_id_seq'::regclass)
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -157,13 +150,11 @@ schemas:
         - name: author_id
           datatype:
             type: integer
-          default: ""
         ref_table: authors
         ref_column:
         - name: author_id
           datatype:
             type: integer
-          default: nextval('authors_author_id_seq'::regclass)
           is_primary: true
           is_sequence: true
         ref_func_name: author_by_author_id

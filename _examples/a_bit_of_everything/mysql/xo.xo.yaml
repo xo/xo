@@ -144,7 +144,6 @@ schemas:
           type: bigint
           prec: 20
           nullable: true
-        default: "NULL"
       - name: a_binary
         datatype:
           type: binary
@@ -154,7 +153,6 @@ schemas:
           type: binary
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_bit
         datatype:
           type: bit
@@ -164,7 +162,6 @@ schemas:
           type: bit
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_blob
         datatype:
           type: blob
@@ -172,7 +169,6 @@ schemas:
         datatype:
           type: blob
           nullable: true
-        default: "NULL"
       - name: a_bool
         datatype:
           type: tinyint
@@ -182,7 +178,6 @@ schemas:
           type: tinyint
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_char
         datatype:
           type: char
@@ -192,7 +187,6 @@ schemas:
           type: char
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_date
         datatype:
           type: date
@@ -200,7 +194,6 @@ schemas:
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: a_datetime
         datatype:
           type: datetime
@@ -208,7 +201,6 @@ schemas:
         datatype:
           type: datetime
           nullable: true
-        default: "NULL"
       - name: a_dec
         datatype:
           type: decimal
@@ -218,7 +210,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_fixed
         datatype:
           type: decimal
@@ -228,7 +219,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_decimal
         datatype:
           type: decimal
@@ -238,7 +228,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_double_precision
         datatype:
           type: double
@@ -246,7 +235,6 @@ schemas:
         datatype:
           type: double
           nullable: true
-        default: "NULL"
       - name: a_enum
         datatype:
           type: a_enum
@@ -254,7 +242,6 @@ schemas:
         datatype:
           type: a_enum_nullable
           nullable: true
-        default: "NULL"
       - name: a_float
         datatype:
           type: float
@@ -262,7 +249,6 @@ schemas:
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: a_int
         datatype:
           type: int
@@ -272,7 +258,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_integer
         datatype:
           type: int
@@ -282,7 +267,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_json
         datatype:
           type: longtext
@@ -290,7 +274,6 @@ schemas:
         datatype:
           type: longtext
           nullable: true
-        default: "NULL"
       - name: a_longblob
         datatype:
           type: longblob
@@ -298,7 +281,6 @@ schemas:
         datatype:
           type: longblob
           nullable: true
-        default: "NULL"
       - name: a_longtext
         datatype:
           type: longtext
@@ -306,7 +288,6 @@ schemas:
         datatype:
           type: longtext
           nullable: true
-        default: "NULL"
       - name: a_mediumblob
         datatype:
           type: mediumblob
@@ -314,7 +295,6 @@ schemas:
         datatype:
           type: mediumblob
           nullable: true
-        default: "NULL"
       - name: a_mediumint
         datatype:
           type: mediumint
@@ -324,7 +304,6 @@ schemas:
           type: mediumint
           prec: 9
           nullable: true
-        default: "NULL"
       - name: a_mediumtext
         datatype:
           type: mediumtext
@@ -332,7 +311,6 @@ schemas:
         datatype:
           type: mediumtext
           nullable: true
-        default: "NULL"
       - name: a_numeric
         datatype:
           type: decimal
@@ -342,7 +320,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_real
         datatype:
           type: float
@@ -350,7 +327,6 @@ schemas:
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: a_set
         datatype:
           type: set('one','two')
@@ -358,7 +334,6 @@ schemas:
         datatype:
           type: set('one','two')
           nullable: true
-        default: "NULL"
       - name: a_smallint
         datatype:
           type: smallint
@@ -368,7 +343,6 @@ schemas:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: a_text
         datatype:
           type: text
@@ -376,7 +350,6 @@ schemas:
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       - name: a_time
         datatype:
           type: time
@@ -384,7 +357,6 @@ schemas:
         datatype:
           type: time
           nullable: true
-        default: "NULL"
       - name: a_timestamp
         datatype:
           type: timestamp
@@ -400,7 +372,6 @@ schemas:
         datatype:
           type: tinyblob
           nullable: true
-        default: "NULL"
       - name: a_tinyint
         datatype:
           type: tinyint
@@ -410,7 +381,6 @@ schemas:
           type: tinyint
           prec: 4
           nullable: true
-        default: "NULL"
       - name: a_tinytext
         datatype:
           type: tinytext
@@ -418,7 +388,6 @@ schemas:
         datatype:
           type: tinytext
           nullable: true
-        default: "NULL"
       - name: a_varbinary
         datatype:
           type: varbinary
@@ -428,7 +397,6 @@ schemas:
           type: varbinary
           prec: 255
           nullable: true
-        default: "NULL"
       - name: a_varchar
         datatype:
           type: varchar
@@ -438,7 +406,6 @@ schemas:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       - name: a_year
         datatype:
           type: year
@@ -448,7 +415,6 @@ schemas:
           type: year
           prec: 4
           nullable: true
-        default: "NULL"
       manual: true
     - type: table
       name: a_foreign_key
@@ -458,7 +424,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_key
         func_name: a_foreign_key_by_a_key
@@ -468,7 +433,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
       foreign_keys:
       - name: a_foreign_key_ibfk_1
         resolved_name: a_primary
@@ -478,7 +442,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         ref_table: a_primary
         ref_column:
         - name: a_key
@@ -496,13 +459,11 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_key2
         datatype:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_key1
         func_name: a_foreign_key_composite_by_a_key1_a_key2
@@ -512,13 +473,11 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         - name: a_key2
           datatype:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
       foreign_keys:
       - name: a_foreign_key_composite_ibfk_1
         resolved_name: a_primary_composite
@@ -528,13 +487,11 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         - name: a_key2
           datatype:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         ref_table: a_primary_composite
         ref_column:
         - name: a_key1
@@ -557,7 +514,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_index_idx
         func_name: a_index_by_a_key
@@ -567,7 +523,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
       manual: true
     - type: table
       name: a_index_composite
@@ -577,13 +532,11 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_key2
         datatype:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_index_composite_idx
         func_name: a_index_composite_by_a_key1_a_key2
@@ -593,13 +546,11 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         - name: a_key2
           datatype:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
       manual: true
     - type: table
       name: a_manual_table
@@ -609,7 +560,6 @@ schemas:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       manual: true
     - type: table
       name: a_primary
@@ -691,7 +641,6 @@ schemas:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: a_key
         datatype:
@@ -752,7 +701,6 @@ schemas:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: a_seq
         datatype:
@@ -780,7 +728,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_key
         func_name: a_unique_index_by_a_key
@@ -790,7 +737,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         is_unique: true
       manual: true
     - type: table
@@ -801,13 +747,11 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_key2
         datatype:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       indexes:
       - name: a_key1
         func_name: a_unique_index_composite_by_a_key1_a_key2
@@ -817,13 +761,11 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         - name: a_key2
           datatype:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         is_unique: true
       manual: true
     views:
@@ -839,7 +781,6 @@ schemas:
           type: bigint
           prec: 20
           nullable: true
-        default: "NULL"
       - name: a_binary
         datatype:
           type: binary
@@ -849,7 +790,6 @@ schemas:
           type: binary
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_bit
         datatype:
           type: bit
@@ -859,7 +799,6 @@ schemas:
           type: bit
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_blob
         datatype:
           type: blob
@@ -867,7 +806,6 @@ schemas:
         datatype:
           type: blob
           nullable: true
-        default: "NULL"
       - name: a_bool
         datatype:
           type: tinyint
@@ -877,7 +815,6 @@ schemas:
           type: tinyint
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_char
         datatype:
           type: char
@@ -887,7 +824,6 @@ schemas:
           type: char
           prec: 1
           nullable: true
-        default: "NULL"
       - name: a_date
         datatype:
           type: date
@@ -895,7 +831,6 @@ schemas:
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: a_datetime
         datatype:
           type: datetime
@@ -903,7 +838,6 @@ schemas:
         datatype:
           type: datetime
           nullable: true
-        default: "NULL"
       - name: a_dec
         datatype:
           type: decimal
@@ -913,7 +847,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_fixed
         datatype:
           type: decimal
@@ -923,7 +856,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_decimal
         datatype:
           type: decimal
@@ -933,7 +865,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_double_precision
         datatype:
           type: double
@@ -941,7 +872,6 @@ schemas:
         datatype:
           type: double
           nullable: true
-        default: "NULL"
       - name: a_enum
         datatype:
           type: a_enum
@@ -949,7 +879,6 @@ schemas:
         datatype:
           type: a_enum_nullable
           nullable: true
-        default: "NULL"
       - name: a_float
         datatype:
           type: float
@@ -957,7 +886,6 @@ schemas:
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: a_int
         datatype:
           type: int
@@ -967,7 +895,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_integer
         datatype:
           type: int
@@ -977,7 +904,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: a_json
         datatype:
           type: longtext
@@ -985,7 +911,6 @@ schemas:
         datatype:
           type: longtext
           nullable: true
-        default: "NULL"
       - name: a_longblob
         datatype:
           type: longblob
@@ -993,7 +918,6 @@ schemas:
         datatype:
           type: longblob
           nullable: true
-        default: "NULL"
       - name: a_longtext
         datatype:
           type: longtext
@@ -1001,7 +925,6 @@ schemas:
         datatype:
           type: longtext
           nullable: true
-        default: "NULL"
       - name: a_mediumblob
         datatype:
           type: mediumblob
@@ -1009,7 +932,6 @@ schemas:
         datatype:
           type: mediumblob
           nullable: true
-        default: "NULL"
       - name: a_mediumint
         datatype:
           type: mediumint
@@ -1019,7 +941,6 @@ schemas:
           type: mediumint
           prec: 9
           nullable: true
-        default: "NULL"
       - name: a_mediumtext
         datatype:
           type: mediumtext
@@ -1027,7 +948,6 @@ schemas:
         datatype:
           type: mediumtext
           nullable: true
-        default: "NULL"
       - name: a_numeric
         datatype:
           type: decimal
@@ -1037,7 +957,6 @@ schemas:
           type: decimal
           prec: 10
           nullable: true
-        default: "NULL"
       - name: a_real
         datatype:
           type: float
@@ -1045,7 +964,6 @@ schemas:
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: a_set
         datatype:
           type: set('one','two')
@@ -1053,7 +971,6 @@ schemas:
         datatype:
           type: set('one','two')
           nullable: true
-        default: "NULL"
       - name: a_smallint
         datatype:
           type: smallint
@@ -1063,7 +980,6 @@ schemas:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: a_text
         datatype:
           type: text
@@ -1071,7 +987,6 @@ schemas:
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       - name: a_time
         datatype:
           type: time
@@ -1079,7 +994,6 @@ schemas:
         datatype:
           type: time
           nullable: true
-        default: "NULL"
       - name: a_timestamp
         datatype:
           type: timestamp
@@ -1095,7 +1009,6 @@ schemas:
         datatype:
           type: tinyblob
           nullable: true
-        default: "NULL"
       - name: a_tinyint
         datatype:
           type: tinyint
@@ -1105,7 +1018,6 @@ schemas:
           type: tinyint
           prec: 4
           nullable: true
-        default: "NULL"
       - name: a_tinytext
         datatype:
           type: tinytext
@@ -1113,7 +1025,6 @@ schemas:
         datatype:
           type: tinytext
           nullable: true
-        default: "NULL"
       - name: a_varbinary
         datatype:
           type: varbinary
@@ -1123,7 +1034,6 @@ schemas:
           type: varbinary
           prec: 255
           nullable: true
-        default: "NULL"
       - name: a_varchar
         datatype:
           type: varchar
@@ -1133,7 +1043,6 @@ schemas:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       - name: a_year
         datatype:
           type: year
@@ -1143,7 +1052,6 @@ schemas:
           type: year
           prec: 4
           nullable: true
-        default: "NULL"
       manual: true
       definition: |
         select `a_bit_of_everything`.`a_bit_of_everything`.`a_bigint` AS `a_bigint`,`a_bit_of_everything`.`a_bit_of_everything`.`a_bigint_nullable` AS `a_bigint_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_binary` AS `a_binary`,`a_bit_of_everything`.`a_bit_of_everything`.`a_binary_nullable` AS `a_binary_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_bit` AS `a_bit`,`a_bit_of_everything`.`a_bit_of_everything`.`a_bit_nullable` AS `a_bit_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_blob` AS `a_blob`,`a_bit_of_everything`.`a_bit_of_everything`.`a_blob_nullable` AS `a_blob_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_bool` AS `a_bool`,`a_bit_of_everything`.`a_bit_of_everything`.`a_bool_nullable` AS `a_bool_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_char` AS `a_char`,`a_bit_of_everything`.`a_bit_of_everything`.`a_char_nullable` AS `a_char_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_date` AS `a_date`,`a_bit_of_everything`.`a_bit_of_everything`.`a_date_nullable` AS `a_date_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_datetime` AS `a_datetime`,`a_bit_of_everything`.`a_bit_of_everything`.`a_datetime_nullable` AS `a_datetime_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_dec` AS `a_dec`,`a_bit_of_everything`.`a_bit_of_everything`.`a_dec_nullable` AS `a_dec_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_fixed` AS `a_fixed`,`a_bit_of_everything`.`a_bit_of_everything`.`a_fixed_nullable` AS `a_fixed_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_decimal` AS `a_decimal`,`a_bit_of_everything`.`a_bit_of_everything`.`a_decimal_nullable` AS `a_decimal_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_double_precision` AS `a_double_precision`,`a_bit_of_everything`.`a_bit_of_everything`.`a_double_precision_nullable` AS `a_double_precision_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_enum` AS `a_enum`,`a_bit_of_everything`.`a_bit_of_everything`.`a_enum_nullable` AS `a_enum_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_float` AS `a_float`,`a_bit_of_everything`.`a_bit_of_everything`.`a_float_nullable` AS `a_float_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_int` AS `a_int`,`a_bit_of_everything`.`a_bit_of_everything`.`a_int_nullable` AS `a_int_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_integer` AS `a_integer`,`a_bit_of_everything`.`a_bit_of_everything`.`a_integer_nullable` AS `a_integer_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_json` AS `a_json`,`a_bit_of_everything`.`a_bit_of_everything`.`a_json_nullable` AS `a_json_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_longblob` AS `a_longblob`,`a_bit_of_everything`.`a_bit_of_everything`.`a_longblob_nullable` AS `a_longblob_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_longtext` AS `a_longtext`,`a_bit_of_everything`.`a_bit_of_everything`.`a_longtext_nullable` AS `a_longtext_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumblob` AS `a_mediumblob`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumblob_nullable` AS `a_mediumblob_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumint` AS `a_mediumint`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumint_nullable` AS `a_mediumint_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumtext` AS `a_mediumtext`,`a_bit_of_everything`.`a_bit_of_everything`.`a_mediumtext_nullable` AS `a_mediumtext_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_numeric` AS `a_numeric`,`a_bit_of_everything`.`a_bit_of_everything`.`a_numeric_nullable` AS `a_numeric_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_real` AS `a_real`,`a_bit_of_everything`.`a_bit_of_everything`.`a_real_nullable` AS `a_real_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_set` AS `a_set`,`a_bit_of_everything`.`a_bit_of_everything`.`a_set_nullable` AS `a_set_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_smallint` AS `a_smallint`,`a_bit_of_everything`.`a_bit_of_everything`.`a_smallint_nullable` AS `a_smallint_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_text` AS `a_text`,`a_bit_of_everything`.`a_bit_of_everything`.`a_text_nullable` AS `a_text_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_time` AS `a_time`,`a_bit_of_everything`.`a_bit_of_everything`.`a_time_nullable` AS `a_time_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_timestamp` AS `a_timestamp`,`a_bit_of_everything`.`a_bit_of_everything`.`a_timestamp_nullable` AS `a_timestamp_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinyblob` AS `a_tinyblob`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinyblob_nullable` AS `a_tinyblob_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinyint` AS `a_tinyint`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinyint_nullable` AS `a_tinyint_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinytext` AS `a_tinytext`,`a_bit_of_everything`.`a_bit_of_everything`.`a_tinytext_nullable` AS `a_tinytext_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_varbinary` AS `a_varbinary`,`a_bit_of_everything`.`a_bit_of_everything`.`a_varbinary_nullable` AS `a_varbinary_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_varchar` AS `a_varchar`,`a_bit_of_everything`.`a_bit_of_everything`.`a_varchar_nullable` AS `a_varchar_nullable`,`a_bit_of_everything`.`a_bit_of_everything`.`a_year` AS `a_year`,`a_bit_of_everything`.`a_bit_of_everything`.`a_year_nullable` AS `a_year_nullable` from `a_bit_of_everything`.`a_bit_of_everything`

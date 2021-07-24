@@ -12,8 +12,8 @@ CREATE TYPE book_type AS ENUM (
 
 CREATE TABLE books (
   book_id SERIAL PRIMARY KEY,
-  author_id INTEGER NOT NULL CONSTRAINT books_author_id_fkey REFERENCES authors(author_id),
-  isbn VARCHAR(255) NOT NULL DEFAULT '' CONSTRAINT books_isbn_key UNIQUE,
+  author_id INTEGER NOT NULL REFERENCES authors(author_id),
+  isbn VARCHAR(255) DEFAULT '' NOT NULL UNIQUE,
   book_type book_type DEFAULT 'FICTION' NOT NULL,
   title VARCHAR(255) DEFAULT '' NOT NULL,
   year INTEGER DEFAULT 2000 NOT NULL,

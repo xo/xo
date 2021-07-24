@@ -9,28 +9,23 @@ schemas:
       - name: category_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: category_name
         datatype:
           type: character varying
           prec: 15
-        default: ""
       - name: description
         datatype:
           type: text
           nullable: true
-        default: ""
       - name: picture
         datatype:
           type: bytea
           nullable: true
-        default: ""
       primary_keys:
       - name: category_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: categories_pkey
@@ -39,7 +34,6 @@ schemas:
         - name: category_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -50,23 +44,19 @@ schemas:
       - name: customer_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       - name: customer_type_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       primary_keys:
       - name: customer_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       - name: customer_type_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       indexes:
       - name: customer_customer_demo_pkey
@@ -75,12 +65,10 @@ schemas:
         - name: customer_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         - name: customer_type_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -91,14 +79,12 @@ schemas:
         - name: customer_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         ref_table: customers
         ref_column:
         - name: customer_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: customer_customer_demo_customer_type_id_fkey
@@ -107,14 +93,12 @@ schemas:
         - name: customer_type_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         ref_table: customer_demographics
         ref_column:
         - name: customer_type_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         ref_func_name: customer_demographic_by_customer_type_id
       manual: true
@@ -124,18 +108,15 @@ schemas:
       - name: customer_type_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       - name: customer_desc
         datatype:
           type: text
           nullable: true
-        default: ""
       primary_keys:
       - name: customer_type_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       indexes:
       - name: customer_demographics_pkey
@@ -144,7 +125,6 @@ schemas:
         - name: customer_type_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -155,72 +135,60 @@ schemas:
       - name: customer_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       - name: company_name
         datatype:
           type: character varying
           prec: 40
-        default: ""
       - name: contact_name
         datatype:
           type: character varying
           prec: 30
           nullable: true
-        default: ""
       - name: contact_title
         datatype:
           type: character varying
           prec: 30
           nullable: true
-        default: ""
       - name: address
         datatype:
           type: character varying
           prec: 60
           nullable: true
-        default: ""
       - name: city
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: region
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: postal_code
         datatype:
           type: character varying
           prec: 10
           nullable: true
-        default: ""
       - name: country
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: phone
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       - name: fax
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       primary_keys:
       - name: customer_id
         datatype:
           type: bpchar
-        default: ""
         is_primary: true
       indexes:
       - name: customers_pkey
@@ -229,7 +197,6 @@ schemas:
         - name: customer_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -240,25 +207,21 @@ schemas:
       - name: employee_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: territory_id
         datatype:
           type: character varying
           prec: 20
-        default: ""
         is_primary: true
       primary_keys:
       - name: employee_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: territory_id
         datatype:
           type: character varying
           prec: 20
-        default: ""
         is_primary: true
       indexes:
       - name: employee_territories_pkey
@@ -267,13 +230,11 @@ schemas:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         - name: territory_id
           datatype:
             type: character varying
             prec: 20
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -284,14 +245,12 @@ schemas:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_table: employees
         ref_column:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: employee_by_employee_id
       - name: employee_territories_territory_id_fkey
@@ -301,7 +260,6 @@ schemas:
           datatype:
             type: character varying
             prec: 20
-          default: ""
           is_primary: true
         ref_table: territories
         ref_column:
@@ -309,7 +267,6 @@ schemas:
           datatype:
             type: character varying
             prec: 20
-          default: ""
           is_primary: true
         ref_func_name: territory_by_territory_id
       manual: true
@@ -319,108 +276,89 @@ schemas:
       - name: employee_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: last_name
         datatype:
           type: character varying
           prec: 20
-        default: ""
       - name: first_name
         datatype:
           type: character varying
           prec: 10
-        default: ""
       - name: title
         datatype:
           type: character varying
           prec: 30
           nullable: true
-        default: ""
       - name: title_of_courtesy
         datatype:
           type: character varying
           prec: 25
           nullable: true
-        default: ""
       - name: birth_date
         datatype:
           type: date
           nullable: true
-        default: ""
       - name: hire_date
         datatype:
           type: date
           nullable: true
-        default: ""
       - name: address
         datatype:
           type: character varying
           prec: 60
           nullable: true
-        default: ""
       - name: city
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: region
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: postal_code
         datatype:
           type: character varying
           prec: 10
           nullable: true
-        default: ""
       - name: country
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: home_phone
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       - name: extension
         datatype:
           type: character varying
           prec: 4
           nullable: true
-        default: ""
       - name: photo
         datatype:
           type: bytea
           nullable: true
-        default: ""
       - name: notes
         datatype:
           type: text
           nullable: true
-        default: ""
       - name: reports_to
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: photo_path
         datatype:
           type: character varying
           prec: 255
           nullable: true
-        default: ""
       primary_keys:
       - name: employee_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: employees_pkey
@@ -429,7 +367,6 @@ schemas:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -441,13 +378,11 @@ schemas:
           datatype:
             type: integer
             nullable: true
-          default: ""
         ref_table: employees
         ref_column:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: employee_by_employee_id
       manual: true
@@ -457,35 +392,28 @@ schemas:
       - name: order_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: product_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: unit_price
         datatype:
           type: real
-        default: ""
       - name: quantity
         datatype:
           type: integer
-        default: ""
       - name: discount
         datatype:
           type: real
-        default: ""
       primary_keys:
       - name: order_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: product_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: order_details_pkey
@@ -494,12 +422,10 @@ schemas:
         - name: order_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         - name: product_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -510,14 +436,12 @@ schemas:
         - name: order_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_table: orders
         ref_column:
         - name: order_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: order_by_order_id
       - name: order_details_product_id_fkey
@@ -526,14 +450,12 @@ schemas:
         - name: product_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_table: products
         ref_column:
         - name: product_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: product_by_product_id
       manual: true
@@ -543,84 +465,69 @@ schemas:
       - name: order_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: customer_id
         datatype:
           type: bpchar
           nullable: true
-        default: ""
       - name: employee_id
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: order_date
         datatype:
           type: date
           nullable: true
-        default: ""
       - name: required_date
         datatype:
           type: date
           nullable: true
-        default: ""
       - name: shipped_date
         datatype:
           type: date
           nullable: true
-        default: ""
       - name: ship_via
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: freight
         datatype:
           type: real
           nullable: true
-        default: ""
       - name: ship_name
         datatype:
           type: character varying
           prec: 40
           nullable: true
-        default: ""
       - name: ship_address
         datatype:
           type: character varying
           prec: 60
           nullable: true
-        default: ""
       - name: ship_city
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: ship_region
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: ship_postal_code
         datatype:
           type: character varying
           prec: 10
           nullable: true
-        default: ""
       - name: ship_country
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       primary_keys:
       - name: order_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: orders_pkey
@@ -629,7 +536,6 @@ schemas:
         - name: order_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -641,13 +547,11 @@ schemas:
           datatype:
             type: bpchar
             nullable: true
-          default: ""
         ref_table: customers
         ref_column:
         - name: customer_id
           datatype:
             type: bpchar
-          default: ""
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: orders_employee_id_fkey
@@ -657,13 +561,11 @@ schemas:
           datatype:
             type: integer
             nullable: true
-          default: ""
         ref_table: employees
         ref_column:
         - name: employee_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: employee_by_employee_id
       - name: orders_ship_via_fkey
@@ -673,13 +575,11 @@ schemas:
           datatype:
             type: integer
             nullable: true
-          default: ""
         ref_table: shippers
         ref_column:
         - name: shipper_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: shipper_by_shipper_id
       manual: true
@@ -689,58 +589,47 @@ schemas:
       - name: product_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: product_name
         datatype:
           type: character varying
           prec: 40
-        default: ""
       - name: supplier_id
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: category_id
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: quantity_per_unit
         datatype:
           type: character varying
           prec: 20
           nullable: true
-        default: ""
       - name: unit_price
         datatype:
           type: real
           nullable: true
-        default: ""
       - name: units_in_stock
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: units_on_order
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: reorder_level
         datatype:
           type: integer
           nullable: true
-        default: ""
       - name: discontinued
         datatype:
           type: integer
-        default: ""
       primary_keys:
       - name: product_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: products_pkey
@@ -749,7 +638,6 @@ schemas:
         - name: product_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -761,13 +649,11 @@ schemas:
           datatype:
             type: integer
             nullable: true
-          default: ""
         ref_table: categories
         ref_column:
         - name: category_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: category_by_category_id
       - name: products_supplier_id_fkey
@@ -777,13 +663,11 @@ schemas:
           datatype:
             type: integer
             nullable: true
-          default: ""
         ref_table: suppliers
         ref_column:
         - name: supplier_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: supplier_by_supplier_id
       manual: true
@@ -793,17 +677,14 @@ schemas:
       - name: region_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: region_description
         datatype:
           type: bpchar
-        default: ""
       primary_keys:
       - name: region_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: region_pkey
@@ -812,7 +693,6 @@ schemas:
         - name: region_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -823,24 +703,20 @@ schemas:
       - name: shipper_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: company_name
         datatype:
           type: character varying
           prec: 40
-        default: ""
       - name: phone
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       primary_keys:
       - name: shipper_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: shippers_pkey
@@ -849,7 +725,6 @@ schemas:
         - name: shipper_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -860,77 +735,64 @@ schemas:
       - name: supplier_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: company_name
         datatype:
           type: character varying
           prec: 40
-        default: ""
       - name: contact_name
         datatype:
           type: character varying
           prec: 30
           nullable: true
-        default: ""
       - name: contact_title
         datatype:
           type: character varying
           prec: 30
           nullable: true
-        default: ""
       - name: address
         datatype:
           type: character varying
           prec: 60
           nullable: true
-        default: ""
       - name: city
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: region
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: postal_code
         datatype:
           type: character varying
           prec: 10
           nullable: true
-        default: ""
       - name: country
         datatype:
           type: character varying
           prec: 15
           nullable: true
-        default: ""
       - name: phone
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       - name: fax
         datatype:
           type: character varying
           prec: 24
           nullable: true
-        default: ""
       - name: homepage
         datatype:
           type: text
           nullable: true
-        default: ""
       primary_keys:
       - name: supplier_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: suppliers_pkey
@@ -939,7 +801,6 @@ schemas:
         - name: supplier_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -951,22 +812,18 @@ schemas:
         datatype:
           type: character varying
           prec: 20
-        default: ""
         is_primary: true
       - name: territory_description
         datatype:
           type: bpchar
-        default: ""
       - name: region_id
         datatype:
           type: integer
-        default: ""
       primary_keys:
       - name: territory_id
         datatype:
           type: character varying
           prec: 20
-        default: ""
         is_primary: true
       indexes:
       - name: territories_pkey
@@ -976,7 +833,6 @@ schemas:
           datatype:
             type: character varying
             prec: 20
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true
@@ -987,13 +843,11 @@ schemas:
         - name: region_id
           datatype:
             type: integer
-          default: ""
         ref_table: region
         ref_column:
         - name: region_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         ref_func_name: region_by_region_id
       manual: true
@@ -1003,31 +857,26 @@ schemas:
       - name: state_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       - name: state_name
         datatype:
           type: character varying
           prec: 100
           nullable: true
-        default: ""
       - name: state_abbr
         datatype:
           type: character varying
           prec: 2
           nullable: true
-        default: ""
       - name: state_region
         datatype:
           type: character varying
           prec: 50
           nullable: true
-        default: ""
       primary_keys:
       - name: state_id
         datatype:
           type: integer
-        default: ""
         is_primary: true
       indexes:
       - name: us_states_pkey
@@ -1036,7 +885,6 @@ schemas:
         - name: state_id
           datatype:
             type: integer
-          default: ""
           is_primary: true
         is_unique: true
         is_primary: true

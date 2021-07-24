@@ -28,16 +28,14 @@
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "picture",
               "datatype": {
                 "type": "blob",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -222,8 +220,7 @@
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -281,8 +278,7 @@
                 "type": "varchar",
                 "prec": 30,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "contact_title",
@@ -290,8 +286,7 @@
                 "type": "varchar",
                 "prec": 30,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "address",
@@ -299,8 +294,7 @@
                 "type": "varchar",
                 "prec": 60,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "city",
@@ -308,8 +302,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "region",
@@ -317,8 +310,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "postal_code",
@@ -326,8 +318,7 @@
                 "type": "varchar",
                 "prec": 10,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "country",
@@ -335,8 +326,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "phone",
@@ -344,8 +334,7 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "fax",
@@ -353,8 +342,7 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -554,8 +542,7 @@
                 "type": "varchar",
                 "prec": 30,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "title_of_courtesy",
@@ -563,24 +550,21 @@
                 "type": "varchar",
                 "prec": 25,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "birth_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "hire_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "address",
@@ -588,8 +572,7 @@
                 "type": "varchar",
                 "prec": 60,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "city",
@@ -597,8 +580,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "region",
@@ -606,8 +588,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "postal_code",
@@ -615,8 +596,7 @@
                 "type": "varchar",
                 "prec": 10,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "country",
@@ -624,8 +604,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "home_phone",
@@ -633,8 +612,7 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "extension",
@@ -642,24 +620,21 @@
                 "type": "varchar",
                 "prec": 4,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "photo",
               "datatype": {
                 "type": "blob",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "notes",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "reports_to",
@@ -667,8 +642,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "photo_path",
@@ -676,8 +650,7 @@
                 "type": "varchar",
                 "prec": 255,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -701,8 +674,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -734,8 +706,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "employees",
@@ -926,8 +897,7 @@
                 "type": "char",
                 "prec": 255,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "employee_id",
@@ -935,32 +905,28 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "order_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "required_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "shipped_date",
               "datatype": {
                 "type": "date",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_via",
@@ -968,16 +934,14 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "freight",
               "datatype": {
                 "type": "float",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_name",
@@ -985,8 +949,7 @@
                 "type": "varchar",
                 "prec": 40,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_address",
@@ -994,8 +957,7 @@
                 "type": "varchar",
                 "prec": 60,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_city",
@@ -1003,8 +965,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_region",
@@ -1012,8 +973,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_postal_code",
@@ -1021,8 +981,7 @@
                 "type": "varchar",
                 "prec": 10,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "ship_country",
@@ -1030,8 +989,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -1055,8 +1013,7 @@
                     "type": "char",
                     "prec": 255,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1070,8 +1027,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1085,8 +1041,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1118,8 +1073,7 @@
                     "type": "char",
                     "prec": 255,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "customers",
@@ -1145,8 +1099,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "employees",
@@ -1172,8 +1125,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "shippers",
@@ -1217,8 +1169,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "category_id",
@@ -1226,8 +1177,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "quantity_per_unit",
@@ -1235,16 +1185,14 @@
                 "type": "varchar",
                 "prec": 20,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "unit_price",
               "datatype": {
                 "type": "float",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "units_in_stock",
@@ -1252,8 +1200,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "units_on_order",
@@ -1261,8 +1208,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "reorder_level",
@@ -1270,8 +1216,7 @@
                 "type": "smallint",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "discontinued",
@@ -1302,8 +1247,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1317,8 +1261,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1350,8 +1293,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "suppliers",
@@ -1377,8 +1319,7 @@
                     "type": "smallint",
                     "prec": 6,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "categories",
@@ -1472,8 +1413,7 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -1531,8 +1471,7 @@
                 "type": "varchar",
                 "prec": 30,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "contact_title",
@@ -1540,8 +1479,7 @@
                 "type": "varchar",
                 "prec": 30,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "address",
@@ -1549,8 +1487,7 @@
                 "type": "varchar",
                 "prec": 60,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "city",
@@ -1558,8 +1495,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "region",
@@ -1567,8 +1503,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "postal_code",
@@ -1576,8 +1511,7 @@
                 "type": "varchar",
                 "prec": 10,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "country",
@@ -1585,8 +1519,7 @@
                 "type": "varchar",
                 "prec": 15,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "phone",
@@ -1594,8 +1527,7 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "fax",
@@ -1603,16 +1535,14 @@
                 "type": "varchar",
                 "prec": 24,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "homepage",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [
@@ -1760,8 +1690,7 @@
                 "type": "varchar",
                 "prec": 100,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "state_abbr",
@@ -1769,8 +1698,7 @@
                 "type": "varchar",
                 "prec": 2,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "state_region",
@@ -1778,8 +1706,7 @@
                 "type": "varchar",
                 "prec": 50,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             }
           ],
           "primary_keys": [

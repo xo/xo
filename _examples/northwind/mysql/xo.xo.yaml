@@ -19,12 +19,10 @@ schemas:
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       - name: picture
         datatype:
           type: blob
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: category_id
         datatype:
@@ -137,7 +135,6 @@ schemas:
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: customer_type_id
         datatype:
@@ -173,55 +170,46 @@ schemas:
           type: varchar
           prec: 30
           nullable: true
-        default: "NULL"
       - name: contact_title
         datatype:
           type: varchar
           prec: 30
           nullable: true
-        default: "NULL"
       - name: address
         datatype:
           type: varchar
           prec: 60
           nullable: true
-        default: "NULL"
       - name: city
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: region
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: postal_code
         datatype:
           type: varchar
           prec: 10
           nullable: true
-        default: "NULL"
       - name: country
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: phone
         datatype:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       - name: fax
         datatype:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: customer_id
         datatype:
@@ -343,87 +331,72 @@ schemas:
           type: varchar
           prec: 30
           nullable: true
-        default: "NULL"
       - name: title_of_courtesy
         datatype:
           type: varchar
           prec: 25
           nullable: true
-        default: "NULL"
       - name: birth_date
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: hire_date
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: address
         datatype:
           type: varchar
           prec: 60
           nullable: true
-        default: "NULL"
       - name: city
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: region
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: postal_code
         datatype:
           type: varchar
           prec: 10
           nullable: true
-        default: "NULL"
       - name: country
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: home_phone
         datatype:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       - name: extension
         datatype:
           type: varchar
           prec: 4
           nullable: true
-        default: "NULL"
       - name: photo
         datatype:
           type: blob
           nullable: true
-        default: "NULL"
       - name: notes
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       - name: reports_to
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: photo_path
         datatype:
           type: varchar
           prec: 255
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: employee_id
         datatype:
@@ -439,7 +412,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
       - name: employees_employee_id_pkey
         func_name: employee_by_employee_id
         fields:
@@ -459,7 +431,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
         ref_table: employees
         ref_column:
         - name: employee_id
@@ -574,75 +545,62 @@ schemas:
           type: char
           prec: 255
           nullable: true
-        default: "NULL"
       - name: employee_id
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: order_date
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: required_date
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: shipped_date
         datatype:
           type: date
           nullable: true
-        default: "NULL"
       - name: ship_via
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: freight
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: ship_name
         datatype:
           type: varchar
           prec: 40
           nullable: true
-        default: "NULL"
       - name: ship_address
         datatype:
           type: varchar
           prec: 60
           nullable: true
-        default: "NULL"
       - name: ship_city
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: ship_region
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: ship_postal_code
         datatype:
           type: varchar
           prec: 10
           nullable: true
-        default: "NULL"
       - name: ship_country
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: order_id
         datatype:
@@ -658,7 +616,6 @@ schemas:
             type: char
             prec: 255
             nullable: true
-          default: "NULL"
       - name: employee_id
         func_name: orders_by_employee_id
         fields:
@@ -667,7 +624,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
       - name: ship_via
         func_name: orders_by_ship_via
         fields:
@@ -676,7 +632,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
       - name: orders_order_id_pkey
         func_name: order_by_order_id
         fields:
@@ -696,7 +651,6 @@ schemas:
             type: char
             prec: 255
             nullable: true
-          default: "NULL"
         ref_table: customers
         ref_column:
         - name: customer_id
@@ -713,7 +667,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
         ref_table: employees
         ref_column:
         - name: employee_id
@@ -730,7 +683,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
         ref_table: shippers
         ref_column:
         - name: shipper_id
@@ -757,42 +709,35 @@ schemas:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: category_id
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: quantity_per_unit
         datatype:
           type: varchar
           prec: 20
           nullable: true
-        default: "NULL"
       - name: unit_price
         datatype:
           type: float
           nullable: true
-        default: "NULL"
       - name: units_in_stock
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: units_on_order
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: reorder_level
         datatype:
           type: smallint
           prec: 6
           nullable: true
-        default: "NULL"
       - name: discontinued
         datatype:
           type: int
@@ -812,7 +757,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
       - name: supplier_id
         func_name: products_by_supplier_id
         fields:
@@ -821,7 +765,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
       - name: products_product_id_pkey
         func_name: product_by_product_id
         fields:
@@ -841,7 +784,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
         ref_table: suppliers
         ref_column:
         - name: supplier_id
@@ -858,7 +800,6 @@ schemas:
             type: smallint
             prec: 6
             nullable: true
-          default: "NULL"
         ref_table: categories
         ref_column:
         - name: category_id
@@ -915,7 +856,6 @@ schemas:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: shipper_id
         datatype:
@@ -951,60 +891,50 @@ schemas:
           type: varchar
           prec: 30
           nullable: true
-        default: "NULL"
       - name: contact_title
         datatype:
           type: varchar
           prec: 30
           nullable: true
-        default: "NULL"
       - name: address
         datatype:
           type: varchar
           prec: 60
           nullable: true
-        default: "NULL"
       - name: city
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: region
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: postal_code
         datatype:
           type: varchar
           prec: 10
           nullable: true
-        default: "NULL"
       - name: country
         datatype:
           type: varchar
           prec: 15
           nullable: true
-        default: "NULL"
       - name: phone
         datatype:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       - name: fax
         datatype:
           type: varchar
           prec: 24
           nullable: true
-        default: "NULL"
       - name: homepage
         datatype:
           type: text
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: supplier_id
         datatype:
@@ -1093,19 +1023,16 @@ schemas:
           type: varchar
           prec: 100
           nullable: true
-        default: "NULL"
       - name: state_abbr
         datatype:
           type: varchar
           prec: 2
           nullable: true
-        default: "NULL"
       - name: state_region
         datatype:
           type: varchar
           prec: 50
           nullable: true
-        default: "NULL"
       primary_keys:
       - name: state_id
         datatype:

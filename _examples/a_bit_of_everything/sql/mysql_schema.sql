@@ -6,12 +6,14 @@ CREATE TABLE a_manual_table (
 
 -- table with sequence
 CREATE TABLE a_sequence (
-  a_seq INTEGER PRIMARY KEY AUTO_INCREMENT
+  a_seq INTEGER AUTO_INCREMENT, 
+  CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
 ) ENGINE=InnoDB;
 
 CREATE TABLE a_sequence_multi (
-  a_seq INTEGER PRIMARY KEY AUTO_INCREMENT,
-  a_text VARCHAR(255)
+  a_seq INTEGER AUTO_INCREMENT,
+  a_text VARCHAR(255),
+  CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
 ) ENGINE=InnoDB;
 
 -- table with primary key
