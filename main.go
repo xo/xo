@@ -17,6 +17,7 @@ import (
 	_ "github.com/sijms/go-ora"
 
 	// templates
+	_ "github.com/xo/xo/templates/createdbtpl"
 	_ "github.com/xo/xo/templates/dottpl"
 	_ "github.com/xo/xo/templates/gotpl"
 	_ "github.com/xo/xo/templates/jsontpl"

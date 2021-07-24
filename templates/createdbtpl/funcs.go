@@ -1,0 +1,333 @@
+package createdbtpl
+
+import (
+	"context"
+	"fmt"
+	"regexp"
+	"strings"
+	"text/template"
+	"time"
+
+	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
+)
+
+// Funcs is a set of template funcs.
+type Funcs struct {
+	driver      string
+	enumMap     map[string]xo.Enum
+	constraint  bool
+	escapeCols  bool
+	escapeTypes bool
+	engine      string
+}
+
+// NewFuncs creates a new Funcs.
+func NewFuncs(ctx context.Context) *Funcs {
+	return &Funcs{
+		driver:      templates.Driver(ctx),
+		enumMap:     make(map[string]xo.Enum),
+		constraint:  Constraint(ctx),
+		escapeCols:  Esc(ctx, "columns"),
+		escapeTypes: Esc(ctx, "types"),
+		engine:      Engine(ctx),
+	}
+}
+
+// FuncMap returns the func map.
+func (f *Funcs) FuncMap() template.FuncMap {
+	return template.FuncMap{
+		"addEnums":   f.addEnums,
+		"coldef":     f.coldef,
+		"indexdef":   f.indexdef,
+		"viewdef":    f.viewdef,
+		"procdef":    f.procdef,
+		"time":       f.timefn,
+		"driver":     f.driverfn,
+		"constraint": f.constraintfn,
+		"escType":    f.escType,
+		"fields":     f.fields,
+		"engine":     f.enginefn,
+		"strLiteral": f.strLiteral,
+		"comma":      f.comma,
+	}
+}
+
+func (f *Funcs) addEnums(enums []xo.Enum) string {
+	for _, e := range enums {
+		f.enumMap[e.Name] = e
+	}
+	return ""
+}
+
+func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
+	// normalize type
+	typ := f.normalize(field.Datatype)
+	// add sequence definition
+	if field.IsSequence {
+		typ = f.resolveSequence(typ, field)
+	}
+	// column def
+	def := []string{f.escCols(field.Name), typ}
+	// add default value
+	if field.Default != "" && !field.IsSequence {
+		def = append(def, "DEFAULT", f.parseDefault(field.Default))
+	}
+	if !field.Datatype.Nullable && !field.IsSequence {
+		def = append(def, "NOT NULL")
+	}
+	// add constraints
+	if fk := f.colFKey(table, field); fk != "" {
+		def = append(def, fk)
+	}
+	return strings.Join(def, " ")
+}
+
+func (f *Funcs) parseDefault(d string) string {
+	switch f.driver {
+	case "postgres":
+		if m := postgresDefaultCastRE.FindStringSubmatch(d); m != nil {
+			d = m[1]
+		}
+	}
+	return d
+}
+
+// postgresDefaultCastRE is the regexp to strip the datatype cast from the
+// postgres default value.
+var postgresDefaultCastRE = regexp.MustCompile(`(.*)::[a-zA-Z_ ]*(\[\])?$`)
+
+func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
+	switch f.driver {
+	case "postgres":
+		switch typ {
+		case "SMALLINT":
+			return "SMALLSERIAL"
+		case "INTEGER":
+			return "SERIAL"
+		case "BIGINT":
+			return "BIGSERIAL"
+		}
+	case "mysql":
+		return typ + " AUTO_INCREMENT"
+	case "sqlite3":
+		ext := " PRIMARY KEY AUTOINCREMENT"
+		if !field.Datatype.Nullable {
+			ext = " NOT NULL" + ext
+		}
+		return typ + ext
+	case "sqlserver":
+		return typ + " IDENTITY(1, 1)"
+	case "oracle":
+		return typ + " GENERATED ALWAYS AS IDENTITY"
+	}
+	return ""
+}
+
+func (f *Funcs) colFKey(table xo.Table, field xo.Field) string {
+	for _, fk := range table.ForeignKeys {
+		if len(fk.Fields) == 1 && fk.Fields[0] == field {
+			tblName, fieldName := f.escType(fk.RefTable), fk.Fields[0].Name
+			return fmt.Sprintf("%sREFERENCES %s (%s)", f.constraintfn(fk.Name), tblName, fieldName)
+		}
+	}
+	return ""
+}
+
+func (f *Funcs) indexdef(table xo.Table, idx xo.Index) string {
+	return fmt.Sprintf("CREATE INDEX %s ON %s (%s)", f.escType(idx.Name), f.escType(table.Name), f.fields(idx.Fields))
+}
+
+func (f *Funcs) viewdef(view xo.Table) string {
+	def := view.Definition
+	switch f.driver {
+	case "postgres", "mysql", "oracle":
+		def = fmt.Sprintf("CREATE VIEW %s AS\n%s", f.escType(view.Name), view.Definition)
+	}
+	if !strings.HasSuffix(def, ";") {
+		def += ";"
+	}
+	return def
+}
+
+func (f *Funcs) procdef(proc xo.Proc) string {
+	// don't escape trailing suffix for sqlserver
+	if f.driver == "sqlserver" {
+		proc.Definition = strings.TrimSuffix(proc.Definition, ";")
+	}
+	// escape semicolons
+	// FIXME: do not escape semicolons in string literals
+	if f.driver != "postgres" {
+		proc.Definition = strings.ReplaceAll(proc.Definition, ";", "\\;")
+	}
+	// definition already provided
+	switch f.driver {
+	case "oracle":
+		proc.Definition = "CREATE " + proc.Definition
+		fallthrough
+	case "sqlserver":
+		return proc.Definition
+	}
+	// specify query language when using postgres
+	var suffix string
+	if f.driver == "postgres" {
+		suffix = "\n$$ LANGUAGE plpgsql"
+	}
+	return f.procSignature(proc) + "\n" + proc.Definition + suffix
+}
+
+func (f *Funcs) procSignature(proc xo.Proc) string {
+	// create function signature
+	typ := "PROCEDURE"
+	if proc.Type == "function" {
+		typ = "FUNCTION"
+	}
+	var params []string
+	var end string
+	// add params
+	for _, field := range proc.Params {
+		params = append(params, fmt.Sprintf("%s %s", f.escCols(field.Name), f.normalize(field.Datatype)))
+	}
+	// add return values
+	if len(proc.Returns) == 1 {
+		end += " RETURNS " + f.normalize(proc.Returns[0].Datatype)
+	} else {
+		for _, field := range proc.Params {
+			params = append(params, fmt.Sprintf("OUT %s %s", f.escCols(field.Name), f.normalize(field.Datatype)))
+		}
+	}
+	signature := fmt.Sprintf("CREATE %s %s(%s)%s", typ, f.escType(proc.Name), strings.Join(params, ", "), end)
+	if f.driver == "postgres" {
+		signature += " AS $$"
+	}
+	return signature
+}
+
+func (f *Funcs) timefn() string {
+	return time.Now().Format(time.UnixDate)
+}
+
+func (f *Funcs) driverfn(allowed ...string) bool {
+	for _, d := range allowed {
+		if f.driver == d {
+			return true
+		}
+	}
+	return false
+}
+
+func (f *Funcs) constraintfn(name string) string {
+	if f.constraint || f.driver == "sqlserver" || f.driver == "oracle" {
+		return fmt.Sprintf("CONSTRAINT %s ", f.escType(name))
+	}
+	return ""
+}
+
+func (f *Funcs) fields(v interface{}) string {
+	switch x := v.(type) {
+	case []xo.Field:
+		var fs []string
+		for _, field := range x {
+			fs = append(fs, f.escCols(field.Name))
+		}
+		return strings.Join(fs, ", ")
+	}
+	return fmt.Sprintf("[[ UNKNOWN TYPE %T ]]", v)
+}
+
+func (f *Funcs) esc(value string, escape bool) string {
+	if !escape {
+		return value
+	}
+	var start, end string
+	switch f.driver {
+	case "postgres", "sqlite3", "oracle":
+		start, end = `"`, `"`
+	case "mysql":
+		start, end = "`", "`"
+	case "sqlserver":
+		start, end = "[", "]"
+	}
+	return start + value + end
+}
+
+func (f *Funcs) escType(value string) string {
+	return f.esc(value, f.escapeTypes)
+}
+
+func (f *Funcs) escCols(value string) string {
+	return f.esc(value, f.escapeCols)
+}
+
+func (f *Funcs) enginefn() string {
+	if f.driver != "mysql" || f.engine == "" {
+		return ""
+	}
+	return fmt.Sprintf(" ENGINE=%s", f.engine)
+}
+
+func (f *Funcs) normalize(datatype xo.Datatype) string {
+	typ := f.convert(datatype.Type)
+	if datatype.Scale > 0 {
+		typ += fmt.Sprintf("(%d, %d)", datatype.Prec, datatype.Scale)
+	} else if datatype.Prec > 0 {
+		typ += fmt.Sprintf("(%d)", datatype.Prec)
+	}
+	if datatype.Array {
+		typ += "[]"
+	}
+	return typ
+}
+
+func (f *Funcs) convert(typ string) string {
+	// mysql enums
+	if e, ok := f.enumMap[typ]; f.driver == "mysql" && ok {
+		var enums []string
+		for _, v := range e.Values {
+			enums = append(enums, fmt.Sprintf("'%s'", v.Name))
+		}
+		return fmt.Sprintf("ENUM(%s)", strings.Join(enums, ", "))
+	}
+	// check aliases
+	if alias, ok := typeAliases[f.driver][typ]; ok {
+		typ = alias
+	}
+	return strings.ToUpper(typ)
+}
+
+// strLiteral properly escapes string literals within single quotes
+// (Used for enum values in postgres)
+func (f *Funcs) strLiteral(literal string) string {
+	return fmt.Sprint("'", strings.ReplaceAll(literal, "'", "''"), "'")
+}
+
+func (f *Funcs) comma(i int, v interface{}) string {
+	var l int
+	switch x := v.(type) {
+	case []xo.Field:
+		l = len(x)
+	}
+	if i+1 < l {
+		return ","
+	}
+	return ""
+}
+
+var escapeValues = map[string][2]string{
+	"postgres":  {`"`, `"`},
+	"mysql":     {"`", "`"},
+	"sqlite3":   {"[", "]"},
+	"sqlserver": {`"`, `"`},
+	"oracle":    {`"`, `"`},
+}
+
+var typeAliases = map[string]map[string]string{
+	"postgres": {
+		"character varying":           "varchar",
+		"character":                   "char",
+		"time without time zone":      "time",
+		"timestamp without time zone": "timestamp",
+		"time with time zone":         "timetz",
+		"timestamp with time zone":    "timestamptz",
+	},
+}
