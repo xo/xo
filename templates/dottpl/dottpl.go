@@ -18,7 +18,7 @@ func init() {
 		Flags: []xo.Flag{
 			{
 				ContextKey:  DefaultsKey,
-				Desc:        "default statements, default: node [shape=none, margin=0]",
+				Desc:        "default statements (default: node [shape=none, margin=0])",
 				PlaceHolder: `""`,
 				Default:     "node [shape=none, margin=0]",
 				Value:       []string{},
@@ -30,14 +30,15 @@ func init() {
 				Value:      false,
 			},
 			{
-				ContextKey: ColorKey,
-				Desc:       "header color",
-				Default:    "lightblue",
-				Value:      "",
+				ContextKey:  ColorKey,
+				Desc:        "header color (default: lightblue)",
+				PlaceHolder: `""`,
+				Default:     "lightblue",
+				Value:       "",
 			},
 			{
 				ContextKey:  RowKey,
-				Desc:        "row value template, default:  {{ .Name }}: {{ .Datatype.Type }}",
+				Desc:        "row value template (default:  {{ .Name }}: {{ .Datatype.Type }})",
 				Default:     "{{ .Name }}: {{ .Datatype.Type }}",
 				PlaceHolder: `""`,
 				Value:       "",
