@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	"github.com/alecthomas/kingpin"
 )
 
@@ -24,10 +26,14 @@ type FlagSet struct {
 
 // Add adds the flag to the cmd.
 func (flag FlagSet) Add(cmd *kingpin.CmdClause, flags map[ContextKey]interface{}) {
+	def := []string{flag.Flag.Default}
+	if _, ok := flag.Flag.Value.([]string); ok {
+		def = strings.Split(flag.Flag.Default, ",")
+	}
 	f := cmd.Flag(flag.Type+"-"+flag.Name, flag.Flag.Desc).
 		PlaceHolder(flag.Flag.PlaceHolder).
 		Short(flag.Flag.Short).
-		Default(flag.Flag.Default)
+		Default(def...)
 	switch flag.Flag.Value.(type) {
 	case bool:
 		flags[flag.Flag.ContextKey] = newBool(f, flags[flag.Flag.ContextKey])

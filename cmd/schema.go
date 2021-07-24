@@ -288,9 +288,10 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 		if err != nil {
 			return err
 		}
-		var d *string = nil
-		if c.DefaultValue.Valid {
-			d = &c.DefaultValue.String
+		seq := sqMap[c.ColumnName]
+		d := c.DefaultValue.String
+		if d == "NULL" || seq {
+			d = ""
 		}
 		col := xo.Field{
 			Name: c.ColumnName,
@@ -303,7 +304,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			},
 			Default:    d,
 			IsPrimary:  c.IsPrimaryKey,
-			IsSequence: sqMap[c.ColumnName],
+			IsSequence: seq,
 		}
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {

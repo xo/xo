@@ -141,7 +141,7 @@ type ForeignKey struct {
 type Field struct {
 	Name        string   `json:"name,omitempty"`
 	Datatype    Datatype `json:"datatype,omitempty"`
-	Default     *string  `json:"default,omitempty"`
+	Default     string   `json:"default,omitempty"`
 	IsPrimary   bool     `json:"is_primary,omitempty"`
 	IsSequence  bool     `json:"is_sequence,omitempty"`
 	ConstValue  *int     `json:"const_value,omitempty"`
