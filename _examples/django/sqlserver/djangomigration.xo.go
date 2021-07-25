@@ -9,7 +9,7 @@ import (
 
 // DjangoMigration represents a row from 'django.django_migrations'.
 type DjangoMigration struct {
-	ID      int       `json:"id"`      // id
+	ID      int64     `json:"id"`      // id
 	App     string    `json:"app"`     // app
 	Name    string    `json:"name"`    // name
 	Applied time.Time `json:"applied"` // applied
@@ -59,7 +59,7 @@ func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 	if err := rows.Err(); err != nil {
 		return logerror(err)
 	} // set primary key
-	dm.ID = int(id)
+	dm.ID = int64(id)
 	// set exists
 	dm._exists = true
 	return nil
@@ -147,8 +147,8 @@ func (dm *DjangoMigration) Delete(ctx context.Context, db DB) error {
 
 // DjangoMigrationByID retrieves a row from 'django.django_migrations' as a DjangoMigration.
 //
-// Generated from index 'PK__django_m__3213E83FEDEFBAA1'.
-func DjangoMigrationByID(ctx context.Context, db DB, id int) (*DjangoMigration, error) {
+// Generated from index 'PK__django_m__3213E83F7AEDAF13'.
+func DjangoMigrationByID(ctx context.Context, db DB, id int64) (*DjangoMigration, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, app, name, applied ` +

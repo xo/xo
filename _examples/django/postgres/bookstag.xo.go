@@ -8,7 +8,7 @@ import (
 
 // BooksTag represents a row from 'public.books_tags'.
 type BooksTag struct {
-	ID     int   `json:"id"`      // id
+	ID     int64 `json:"id"`      // id
 	BookID int64 `json:"book_id"` // book_id
 	TagID  int64 `json:"tag_id"`  // tag_id
 	// xo fields
@@ -181,7 +181,7 @@ func BooksTagByBookIDTagID(ctx context.Context, db DB, bookID, tagID int64) (*Bo
 // BooksTagByID retrieves a row from 'public.books_tags' as a BooksTag.
 //
 // Generated from index 'books_tags_pkey'.
-func BooksTagByID(ctx context.Context, db DB, id int) (*BooksTag, error) {
+func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, book_id, tag_id ` +

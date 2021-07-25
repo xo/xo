@@ -168,7 +168,7 @@ func DjangoSessionByExpireDate(ctx context.Context, db DB, expireDate time.Time)
 
 // DjangoSessionBySessionKey retrieves a row from 'django.django_session' as a DjangoSession.
 //
-// Generated from index 'sys_c0013490'.
+// Generated from index 'sys_c0012497'.
 func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*DjangoSession, error) {
 	// query
 	const sqlstr = `SELECT ` +

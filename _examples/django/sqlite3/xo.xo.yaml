@@ -13,7 +13,7 @@ schemas:
       - name: name
         datatype:
           type: varchar
-          prec: 80
+          prec: 150
       primary_keys:
       - name: id
         datatype:
@@ -26,7 +26,7 @@ schemas:
         - name: name
           datatype:
             type: varchar
-            prec: 80
+            prec: 150
         is_unique: true
       - name: auth_group_id_pkey
         func_name: auth_group_by_id
@@ -200,10 +200,10 @@ schemas:
         datatype:
           type: varchar
           prec: 150
-      - name: first_name
+      - name: last_name
         datatype:
           type: varchar
-          prec: 30
+          prec: 150
       - name: email
         datatype:
           type: varchar
@@ -217,7 +217,7 @@ schemas:
       - name: date_joined
         datatype:
           type: datetime
-      - name: last_name
+      - name: first_name
         datatype:
           type: varchar
           prec: 150

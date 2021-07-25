@@ -260,18 +260,13 @@ func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]x
 	var fields []xo.Field
 	for _, col := range cols {
 		// get type
-		name, prec, scale, array, err := parseType(l.Driver, col.DataType)
+		d, err := xo.ParseType(ctx, col.DataType)
 		if err != nil {
 			return nil, err
 		}
 		fields = append(fields, xo.Field{
-			Name: col.ColumnName,
-			Datatype: xo.Datatype{
-				Type:  name,
-				Prec:  prec,
-				Scale: scale,
-				Array: array,
-			},
+			Name:     col.ColumnName,
+			Datatype: d,
 		})
 	}
 	return fields, nil

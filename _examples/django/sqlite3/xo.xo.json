@@ -19,7 +19,7 @@
               "name": "name",
               "datatype": {
                 "type": "varchar",
-                "prec": 80
+                "prec": 150
               }
             }
           ],
@@ -41,7 +41,7 @@
                   "name": "name",
                   "datatype": {
                     "type": "varchar",
-                    "prec": 80
+                    "prec": 150
                   }
                 }
               ],
@@ -361,10 +361,10 @@
               }
             },
             {
-              "name": "first_name",
+              "name": "last_name",
               "datatype": {
                 "type": "varchar",
-                "prec": 30
+                "prec": 150
               }
             },
             {
@@ -393,7 +393,7 @@
               }
             },
             {
-              "name": "last_name",
+              "name": "first_name",
               "datatype": {
                 "type": "varchar",
                 "prec": 150

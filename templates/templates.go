@@ -405,28 +405,10 @@ func Suffix(ctx context.Context) string {
 	return s
 }
 
-// Driver returns driver option from the context.
-func Driver(ctx context.Context) string {
-	s, _ := ctx.Value(xo.DriverKey).(string)
-	return s
-}
-
-// Schema returns schema option from the context.
-func Schema(ctx context.Context) string {
-	s, _ := ctx.Value(xo.SchemaKey).(string)
-	return s
-}
-
 // Src returns src option from the context.
 func Src(ctx context.Context) fs.FS {
 	v, _ := ctx.Value(SrcKey).(fs.FS)
 	return v
-}
-
-// NthParam returns the nth-param option from the context.
-func NthParam(ctx context.Context) func(int) string {
-	f, _ := ctx.Value(xo.NthParamKey).(func(int) string)
-	return f
 }
 
 // Out returns out option from the context.

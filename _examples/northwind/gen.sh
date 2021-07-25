@@ -72,7 +72,7 @@ for TYPE in $DATABASES; do
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE             ${ARGS[@]}
-    $XOBIN schema $DB -o $TYPE -t createdb ${ARGS[@]}
+    $XOBIN schema $DB -o $TYPE -t createdb ${ARGS[@]} --createdb-fmt=""
     $XOBIN schema $DB -o $TYPE -t json     ${ARGS[@]}
     $XOBIN schema $DB -o $TYPE -t yaml     ${ARGS[@]}
     $XOBIN schema $DB -o $TYPE -t dot      ${ARGS[@]}

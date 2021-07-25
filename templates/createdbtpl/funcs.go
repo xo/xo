@@ -8,7 +8,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
 )
 
@@ -24,8 +23,9 @@ type Funcs struct {
 
 // NewFuncs creates a new Funcs.
 func NewFuncs(ctx context.Context) *Funcs {
+	driver, _, _ := xo.DriverSchemaNthParam(ctx)
 	return &Funcs{
-		driver:      templates.Driver(ctx),
+		driver:      driver,
 		enumMap:     make(map[string]xo.Enum),
 		constraint:  Constraint(ctx),
 		escapeCols:  Esc(ctx, "columns"),
@@ -273,7 +273,7 @@ func (f *Funcs) normalize(datatype xo.Datatype) string {
 	} else if datatype.Prec > 0 {
 		typ += fmt.Sprintf("(%d)", datatype.Prec)
 	}
-	if datatype.Array {
+	if datatype.IsArray {
 		typ += "[]"
 	}
 	return typ

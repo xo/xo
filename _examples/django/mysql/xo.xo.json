@@ -21,7 +21,7 @@
               "name": "name",
               "datatype": {
                 "type": "varchar",
-                "prec": 80
+                "prec": 150
               }
             }
           ],
@@ -45,7 +45,7 @@
                   "name": "name",
                   "datatype": {
                     "type": "varchar",
-                    "prec": 80
+                    "prec": 150
                   }
                 }
               ],
@@ -77,8 +77,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -102,8 +102,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -151,8 +151,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "int",
-                    "prec": 11
+                    "type": "bigint",
+                    "prec": 20
                   },
                   "is_primary": true,
                   "is_sequence": true
@@ -358,8 +358,7 @@
                 "type": "datetime",
                 "prec": 6,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "is_superuser",
@@ -379,7 +378,7 @@
               "name": "first_name",
               "datatype": {
                 "type": "varchar",
-                "prec": 30
+                "prec": 150
               }
             },
             {
@@ -470,8 +469,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -495,8 +494,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -544,8 +543,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "int",
-                    "prec": 11
+                    "type": "bigint",
+                    "prec": 20
                   },
                   "is_primary": true,
                   "is_sequence": true
@@ -617,8 +616,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -642,8 +641,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -691,8 +690,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "int",
-                    "prec": 11
+                    "type": "bigint",
+                    "prec": 20
                   },
                   "is_primary": true,
                   "is_sequence": true
@@ -943,8 +942,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -968,8 +967,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -1017,8 +1016,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "int",
-                    "prec": 11
+                    "type": "bigint",
+                    "prec": 20
                   },
                   "is_primary": true,
                   "is_sequence": true
@@ -1108,8 +1107,7 @@
               "datatype": {
                 "type": "longtext",
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "object_repr",
@@ -1136,8 +1134,7 @@
                 "type": "int",
                 "prec": 11,
                 "nullable": true
-              },
-              "default": "NULL"
+              }
             },
             {
               "name": "user_id",
@@ -1169,8 +1166,7 @@
                     "type": "int",
                     "prec": 11,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ]
             },
@@ -1216,8 +1212,7 @@
                     "type": "int",
                     "prec": 11,
                     "nullable": true
-                  },
-                  "default": "NULL"
+                  }
                 }
               ],
               "ref_table": "django_content_type",
@@ -1349,8 +1344,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -1381,8 +1376,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "int",
-                "prec": 11
+                "type": "bigint",
+                "prec": 20
               },
               "is_primary": true,
               "is_sequence": true
@@ -1396,8 +1391,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "int",
-                    "prec": 11
+                    "type": "bigint",
+                    "prec": 20
                   },
                   "is_primary": true,
                   "is_sequence": true

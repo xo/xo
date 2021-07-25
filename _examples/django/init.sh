@@ -57,7 +57,7 @@ case $TYPE in
     ;;
   sqlserver)
     CONFIG+=(
-      [engine]=sql_server.pyodbc
+      [engine]=mssql
       [host]=127.0.0.1
       [user]=django
       [pass]=django

@@ -10,15 +10,15 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
 )
 
 // Funcs is a set of template funcs.
 type Funcs struct {
 	driver    string
 	schema    string
-	first     *bool
 	nth       func(int) string
+	first     *bool
 	pkg       string
 	tags      []string
 	imports   []string
@@ -58,11 +58,12 @@ func NewFuncs(ctx context.Context, knownTypes map[string]bool, shorts map[string
 		}
 		inject = string(buf)
 	}
+	driver, schema, nthParam := xo.DriverSchemaNthParam(ctx)
 	return &Funcs{
-		driver:     templates.Driver(ctx),
-		schema:     templates.Schema(ctx),
+		driver:     driver,
+		schema:     schema,
+		nth:        nthParam,
 		first:      first,
-		nth:        templates.NthParam(ctx),
 		pkg:        Pkg(ctx),
 		tags:       Tags(ctx),
 		imports:    Imports(ctx),

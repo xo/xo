@@ -2,41 +2,29 @@
 package types
 
 import (
+	"context"
 	"fmt"
 	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
-// ContextKey is a context key.
-type ContextKey string
-
-// Context key values.
-const (
-	// database and loader keys
-	DriverKey   ContextKey = "driver"
-	SchemaKey   ContextKey = "schema"
-	DbKey       ContextKey = "db"
-	EmitterKey  ContextKey = "emitter"
-	LoaderKey   ContextKey = "loader"
-	NthParamKey ContextKey = "nth-param"
-	// type keys
-	Int32Key  ContextKey = "int32"
-	Uint32Key ContextKey = "uint32"
-)
-
-// XO is the data from introspection.
+// XO wraps query and schema information.
 type XO struct {
 	Queries []Query  `json:"queries,omitempty"`
 	Schemas []Schema `json:"schemas,omitempty"`
 }
 
-// Emit adds v.
-func (xo *XO) Emit(v interface{}) {
-	switch x := v.(type) {
-	case Query:
-		xo.Queries = append(xo.Queries, x)
-	case Schema:
-		xo.Schemas = append(xo.Schemas, x)
+// Emit emits values.
+func (xo *XO) Emit(z ...interface{}) {
+	for _, v := range z {
+		switch x := v.(type) {
+		case Query:
+			xo.Queries = append(xo.Queries, x)
+		case Schema:
+			xo.Schemas = append(xo.Schemas, x)
+		}
 	}
 }
 
@@ -155,8 +143,69 @@ type Datatype struct {
 	Prec     int    `json:"prec,omitempty"`
 	Scale    int    `json:"scale,omitempty"`
 	Nullable bool   `json:"nullable,omitempty"`
-	Array    bool   `json:"array,omitempty"`
+	IsArray  bool   `json:"array,omitempty"`
 }
+
+// ParseType parses "type[ (precision[,scale])][\[\]]" strings returning the
+// parsed precision, scale, and if the type is an array or not.
+//
+// Expected formats:
+//
+//	type
+//	type(precision)
+//	type(precision, scale)
+//	type(precision, scale)[]
+//	timestamp(n) with [local] time zone (oracle only)
+//
+// The returned type is stripped of precision and scale.
+func ParseType(ctx context.Context, typ string) (Datatype, error) {
+	driver, _, _ := DriverSchemaNthParam(ctx)
+	// special case for oracle timestamp(n) with [local] time zone
+	if m := oracleTimestampRE.FindStringSubmatch(typ); driver == "oracle" && m != nil {
+		prec, err := strconv.Atoi(m[1])
+		if err != nil {
+			return Datatype{}, fmt.Errorf("could not parse precision: %w", err)
+		}
+		return Datatype{
+			Type: "timestamp " + m[2],
+			Prec: prec,
+		}, nil
+	}
+	// handle normal
+	var prec, scale int
+	if m := precRE.FindStringIndex(typ); m != nil {
+		s := typ[m[0]+1 : m[1]-1]
+		if i := strings.LastIndex(s, ","); i != -1 {
+			var err error
+			if scale, err = strconv.Atoi(strings.TrimSpace(s[i+1:])); err != nil {
+				return Datatype{}, fmt.Errorf("could not parse scale: %w", err)
+			}
+			s = s[:i]
+		}
+		// extract precision
+		var err error
+		if prec, err = strconv.Atoi(strings.TrimSpace(s)); err != nil {
+			return Datatype{}, fmt.Errorf("could not parse precision: %w", err)
+		}
+		typ = typ[:m[0]]
+	}
+	typ = strings.TrimSpace(typ)
+	isArray := strings.HasSuffix(typ, "[]")
+	return Datatype{
+		Type:    strings.ToLower(strings.TrimSuffix(typ, "[]")),
+		Prec:    prec,
+		Scale:   scale,
+		IsArray: isArray,
+	}, nil
+}
+
+// oracleTimestampRE is the regexp that matches "timestamp(precision) with [local]
+// time zone" definitions in oracle databases
+var oracleTimestampRE = regexp.MustCompile(`^timestamp\((\d)\) (with(?: local)? time zone)$`)
+
+// precRE is the regexp that matches "(precision[,scale])" definitions in a
+// database.
+var precRE = regexp.MustCompile(`\(([0-9]+)(\s*,\s*[0-9]+\s*)?\)$`)
 
 // forceLineEnd forces a \n on a string that doesn't contain one and is
 // non-empty.
@@ -198,4 +247,30 @@ func reflectStruct(z interface{}) (interface{}, error) {
 		s.Elem().Field(i).Set(values[i])
 	}
 	return s.Elem().Interface(), nil
+}
+
+// ContextKey is a context key.
+type ContextKey string
+
+// Context key values.
+const (
+	// database and loader keys
+	DriverKey   ContextKey = "driver"
+	SchemaKey   ContextKey = "schema"
+	DbKey       ContextKey = "db"
+	EmitterKey  ContextKey = "emitter"
+	LoaderKey   ContextKey = "loader"
+	NthParamKey ContextKey = "nth-param"
+	// type keys
+	Int32Key  ContextKey = "int32"
+	Uint32Key ContextKey = "uint32"
+)
+
+// DriverSchemaNthParam returns the driver, schema, and nth-param from the
+// context.
+func DriverSchemaNthParam(ctx context.Context) (string, string, func(int) string) {
+	driver, _ := ctx.Value(DriverKey).(string)
+	schema, _ := ctx.Value(SchemaKey).(string)
+	nthParam, _ := ctx.Value(NthParamKey).(func(int) string)
+	return driver, schema, nthParam
 }

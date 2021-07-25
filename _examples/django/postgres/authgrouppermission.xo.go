@@ -8,9 +8,9 @@ import (
 
 // AuthGroupPermission represents a row from 'public.auth_group_permissions'.
 type AuthGroupPermission struct {
-	ID           int `json:"id"`            // id
-	GroupID      int `json:"group_id"`      // group_id
-	PermissionID int `json:"permission_id"` // permission_id
+	ID           int64 `json:"id"`            // id
+	GroupID      int   `json:"group_id"`      // group_id
+	PermissionID int   `json:"permission_id"` // permission_id
 	// xo fields
 	_exists, _deleted bool
 }
@@ -215,7 +215,7 @@ func AuthGroupPermissionsByPermissionID(ctx context.Context, db DB, permissionID
 // AuthGroupPermissionByID retrieves a row from 'public.auth_group_permissions' as a AuthGroupPermission.
 //
 // Generated from index 'auth_group_permissions_pkey'.
-func AuthGroupPermissionByID(ctx context.Context, db DB, id int) (*AuthGroupPermission, error) {
+func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, group_id, permission_id ` +

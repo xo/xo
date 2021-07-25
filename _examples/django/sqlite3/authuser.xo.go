@@ -13,12 +13,12 @@ type AuthUser struct {
 	LastLogin   *Time  `json:"last_login"`   // last_login
 	IsSuperuser bool   `json:"is_superuser"` // is_superuser
 	Username    string `json:"username"`     // username
-	FirstName   string `json:"first_name"`   // first_name
+	LastName    string `json:"last_name"`    // last_name
 	Email       string `json:"email"`        // email
 	IsStaff     bool   `json:"is_staff"`     // is_staff
 	IsActive    bool   `json:"is_active"`    // is_active
 	DateJoined  Time   `json:"date_joined"`  // date_joined
-	LastName    string `json:"last_name"`    // last_name
+	FirstName   string `json:"first_name"`   // first_name
 	// xo fields
 	_exists, _deleted bool
 }
@@ -44,13 +44,13 @@ func (au *AuthUser) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO auth_user (` +
-		`id, password, last_login, is_superuser, username, first_name, email, is_staff, is_active, date_joined, last_name` +
+		`id, password, last_login, is_superuser, username, last_name, email, is_staff, is_active, date_joined, first_name` +
 		`) VALUES (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
 		`)`
 	// run
-	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName)
-	res, err := db.ExecContext(ctx, sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName)
+	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName)
+	res, err := db.ExecContext(ctx, sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName)
 	if err != nil {
 		return err
 	}
@@ -75,11 +75,11 @@ func (au *AuthUser) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE auth_user SET ` +
-		`password = $1, last_login = $2, is_superuser = $3, username = $4, first_name = $5, email = $6, is_staff = $7, is_active = $8, date_joined = $9, last_name = $10 ` +
+		`password = $1, last_login = $2, is_superuser = $3, username = $4, last_name = $5, email = $6, is_staff = $7, is_active = $8, date_joined = $9, first_name = $10 ` +
 		`WHERE id = $11`
 	// run
-	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName, au.ID)
-	if _, err := db.ExecContext(ctx, sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName, au.ID); err != nil {
+	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName, au.ID)
+	if _, err := db.ExecContext(ctx, sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName, au.ID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -101,16 +101,16 @@ func (au *AuthUser) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO auth_user (` +
-		`id, password, last_login, is_superuser, username, first_name, email, is_staff, is_active, date_joined, last_name` +
+		`id, password, last_login, is_superuser, username, last_name, email, is_staff, is_active, date_joined, first_name` +
 		`) VALUES (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
 		`)` +
 		` ON CONFLICT (id) DO ` +
 		`UPDATE SET ` +
-		`password = EXCLUDED.password, last_login = EXCLUDED.last_login, is_superuser = EXCLUDED.is_superuser, username = EXCLUDED.username, first_name = EXCLUDED.first_name, email = EXCLUDED.email, is_staff = EXCLUDED.is_staff, is_active = EXCLUDED.is_active, date_joined = EXCLUDED.date_joined, last_name = EXCLUDED.last_name `
+		`password = EXCLUDED.password, last_login = EXCLUDED.last_login, is_superuser = EXCLUDED.is_superuser, username = EXCLUDED.username, last_name = EXCLUDED.last_name, email = EXCLUDED.email, is_staff = EXCLUDED.is_staff, is_active = EXCLUDED.is_active, date_joined = EXCLUDED.date_joined, first_name = EXCLUDED.first_name `
 	// run
-	logf(sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName)
-	if _, err := db.ExecContext(ctx, sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.LastName); err != nil {
+	logf(sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName)
+	if _, err := db.ExecContext(ctx, sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, au.FirstName); err != nil {
 		return err
 	}
 	// set exists
@@ -145,7 +145,7 @@ func (au *AuthUser) Delete(ctx context.Context, db DB) error {
 func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, password, last_login, is_superuser, username, first_name, email, is_staff, is_active, date_joined, last_name ` +
+		`id, password, last_login, is_superuser, username, last_name, email, is_staff, is_active, date_joined, first_name ` +
 		`FROM auth_user ` +
 		`WHERE id = $1`
 	// run
@@ -153,7 +153,7 @@ func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 	au := AuthUser{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&au.ID, &au.Password, &au.LastLogin, &au.IsSuperuser, &au.Username, &au.FirstName, &au.Email, &au.IsStaff, &au.IsActive, &au.DateJoined, &au.LastName); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&au.ID, &au.Password, &au.LastLogin, &au.IsSuperuser, &au.Username, &au.LastName, &au.Email, &au.IsStaff, &au.IsActive, &au.DateJoined, &au.FirstName); err != nil {
 		return nil, logerror(err)
 	}
 	return &au, nil
@@ -165,7 +165,7 @@ func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 func AuthUserByUsername(ctx context.Context, db DB, username string) (*AuthUser, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, password, last_login, is_superuser, username, first_name, email, is_staff, is_active, date_joined, last_name ` +
+		`id, password, last_login, is_superuser, username, last_name, email, is_staff, is_active, date_joined, first_name ` +
 		`FROM auth_user ` +
 		`WHERE username = $1`
 	// run
@@ -173,7 +173,7 @@ func AuthUserByUsername(ctx context.Context, db DB, username string) (*AuthUser,
 	au := AuthUser{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, username).Scan(&au.ID, &au.Password, &au.LastLogin, &au.IsSuperuser, &au.Username, &au.FirstName, &au.Email, &au.IsStaff, &au.IsActive, &au.DateJoined, &au.LastName); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, username).Scan(&au.ID, &au.Password, &au.LastLogin, &au.IsSuperuser, &au.Username, &au.LastName, &au.Email, &au.IsStaff, &au.IsActive, &au.DateJoined, &au.FirstName); err != nil {
 		return nil, logerror(err)
 	}
 	return &au, nil

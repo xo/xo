@@ -8,14 +8,13 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
-	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
 )
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	schema    string
 	driver    string
+	schema    string
 	defaults  []string
 	bold      bool
 	color     string
@@ -25,14 +24,15 @@ type Funcs struct {
 
 // NewFuncs creates a new Funcs
 func NewFuncs(ctx context.Context) (*Funcs, error) {
+	driver, schema, _ := xo.DriverSchemaNthParam(ctx)
 	// parse row template
 	row, err := template.New("row").Parse(Row(ctx))
 	if err != nil {
 		return nil, err
 	}
 	return &Funcs{
-		schema:    templates.Schema(ctx),
-		driver:    templates.Driver(ctx),
+		driver:    driver,
+		schema:    schema,
 		defaults:  Defaults(ctx),
 		bold:      Bold(ctx),
 		color:     Color(ctx),

@@ -7,12 +7,10 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/models"
-	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
 )
 
@@ -118,40 +116,10 @@ func Uint32(ctx context.Context) string {
 	return s
 }
 
-// intRE matches Go int types.
-var intRE = regexp.MustCompile(`^int(32|64)?$`)
-
-// parsePrec parses "type[ (precision[,scale])]" strings returning the parsed
-// precision and scale.
-func parsePrec(typ string) (string, int, int, error) {
-	typ, prec, scale := strings.ToLower(typ), -1, -1
-	if m := precRE.FindStringIndex(typ); m != nil {
-		s := typ[m[0]+1 : m[1]-1]
-		if i := strings.LastIndex(s, ","); i != -1 {
-			var err error
-			if scale, err = strconv.Atoi(strings.TrimSpace(s[i+1:])); err != nil {
-				return "", 0, 0, fmt.Errorf("could not parse scale: %w", err)
-			}
-			s = s[:i]
-		}
-		// extract precision
-		var err error
-		if prec, err = strconv.Atoi(strings.TrimSpace(s)); err != nil {
-			return "", 0, 0, fmt.Errorf("could not parse precision: %w", err)
-		}
-		typ = typ[:m[0]]
-	}
-	return strings.TrimSpace(typ), prec, scale, nil
-}
-
-// precRE is the regexp that matches "(precision[,scale])" definitions in a
-// database.
-var precRE = regexp.MustCompile(`\(([0-9]+)(\s*,\s*[0-9]+\s*)?\)$`)
-
-// schemaGoType returns Go type and zero for a type, removing a "<schema>."
+// SchemaGoType returns Go type and zero for a type, removing a "<schema>."
 // prefix when the type is determined to be in the same package.
-func schemaGoType(ctx context.Context, typ string, nullable bool) (string, string) {
-	if schema := templates.Schema(ctx); strings.HasPrefix(typ, schema+".") {
+func SchemaGoType(ctx context.Context, typ string, nullable bool) (string, string) {
+	if _, schema, _ := xo.DriverSchemaNthParam(ctx); strings.HasPrefix(typ, schema+".") {
 		// in the same schema, so chop off
 		typ = typ[len(schema)+1:]
 	}
@@ -161,3 +129,6 @@ func schemaGoType(ctx context.Context, typ string, nullable bool) (string, strin
 	s := snaker.SnakeToCamelIdentifier(typ)
 	return s, s + "{}"
 }
+
+// intRE matches Go int types.
+var intRE = regexp.MustCompile(`^int(32|64)?$`)

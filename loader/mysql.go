@@ -118,7 +118,7 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	default:
-		goType, zero = schemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, typ, nullable)
 	}
 	// force []byte for SET('a',...)
 	if setRE.MatchString(typ) {

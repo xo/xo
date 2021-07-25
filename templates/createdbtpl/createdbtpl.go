@@ -26,27 +26,27 @@ func init() {
 		Flags: []xo.Flag{
 			{
 				ContextKey:  FmtKey,
-				Desc:        fmt.Sprintf("formatter command (default: %s)", formatterPath),
+				Desc:        fmt.Sprintf("fmt command (default: %s)", formatterPath),
 				Default:     formatterPath,
 				PlaceHolder: "<path>",
 				Value:       "",
 			},
 			{
 				ContextKey:  FmtOptsKey,
-				Desc:        fmt.Sprintf("formatter options (default: %s)", strings.Join(formatterOptions, ", ")),
+				Desc:        fmt.Sprintf("fmt options (default: %s)", strings.Join(formatterOptions, ", ")),
 				Default:     strings.Join(formatterOptions, ","),
 				PlaceHolder: "<opts>",
 				Value:       []string{},
 			},
 			{
 				ContextKey: ConstraintKey,
-				Desc:       "specify constraint name (Postgres, MySQL, SQLite only)",
+				Desc:       "enable constraint name in output (postgres, mysql, sqlite3)",
 				Default:    "false",
 				Value:      false,
 			},
 			{
 				ContextKey:  EscKey,
-				Desc:        "escape types and fields. 'types' will escape table, constraint, and procedure names (none, types, all; default: none)",
+				Desc:        "escape mode (none, types, all; default: none)",
 				PlaceHolder: "none",
 				Default:     "none",
 				Value:       "",
@@ -66,7 +66,33 @@ func init() {
 		FileName: func(ctx context.Context, tpl *templates.Template) string {
 			return tpl.Name
 		},
-		Post: format,
+		Post: func(ctx context.Context, buf []byte) ([]byte, error) {
+			formatterPath, lang := Fmt(ctx), Lang(ctx)
+			if formatterPath == "" {
+				return buf, nil
+			}
+			// build options
+			opts := FmtOpts(ctx)
+			for i, o := range opts {
+				tpl, err := template.New(fmt.Sprintf("option %d", i)).Parse(o)
+				if err != nil {
+					return nil, err
+				}
+				b := new(bytes.Buffer)
+				if err := tpl.Execute(b, lang); err != nil {
+					return nil, err
+				}
+				opts[i] = b.String()
+			}
+			// execute
+			stdout, stderr := new(bytes.Buffer), new(bytes.Buffer)
+			cmd := exec.Command(formatterPath, opts...)
+			cmd.Stdin, cmd.Stdout, cmd.Stderr = bytes.NewReader(buf), stdout, stderr
+			if err := cmd.Run(); err != nil {
+				return nil, fmt.Errorf("unable to execute %s: %v: %s", formatterPath, err, stderr.String())
+			}
+			return append(bytes.TrimSuffix(stdout.Bytes(), []byte{'\n'}), '\n'), nil
+		},
 		Process: func(ctx context.Context, _ bool, set *templates.TemplateSet, v *xo.XO) error {
 			if len(v.Schemas) == 0 {
 				return errors.New("createdb template must be passed at least one schema")
@@ -84,51 +110,6 @@ func init() {
 		},
 		Order: []string{"xo"},
 	})
-}
-
-// format formats the sql based on the context parameters.
-func format(ctx context.Context, buf []byte) ([]byte, error) {
-	formatterPath := Fmt(ctx)
-	if formatterPath == "" {
-		return buf, nil
-	}
-	lang := sqlLang(ctx)
-	// build options
-	opts := FmtOpts(ctx)
-	for i, o := range opts {
-		tpl, err := template.New(fmt.Sprintf("option %d", i)).Parse(o)
-		if err != nil {
-			return nil, err
-		}
-		b := new(bytes.Buffer)
-		if err := tpl.Execute(b, lang); err != nil {
-			return nil, err
-		}
-		opts[i] = b.String()
-	}
-	// execute
-	stdout, stderr := new(bytes.Buffer), new(bytes.Buffer)
-	cmd := exec.Command(formatterPath, opts...)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = bytes.NewReader(buf), stdout, stderr
-	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("unable to execute %s: %v: %s", formatterPath, err, stderr.String())
-	}
-	return append(bytes.TrimSuffix(stdout.Bytes(), []byte{'\n'}), '\n'), nil
-}
-
-func sqlLang(ctx context.Context) string {
-	driver := templates.Driver(ctx)
-	switch driver {
-	case "postgres", "sqlite3":
-		return "postgresql"
-	case "mysql":
-		return "mysql"
-	case "sqlserver":
-		return "tsql"
-	case "oracle":
-		return "plsql"
-	}
-	return "sql"
 }
 
 // Context keys.
@@ -152,13 +133,13 @@ func FmtOpts(ctx context.Context) []string {
 	return v
 }
 
-// Constraint returns constraint mode from the context.
+// Constraint returns constraint from the context.
 func Constraint(ctx context.Context) bool {
 	b, _ := ctx.Value(ConstraintKey).(bool)
 	return b
 }
 
-// Esc indicates if esc should be escaped based from the context.
+// Esc returns esc from the context.
 func Esc(ctx context.Context, esc string) bool {
 	v, _ := ctx.Value(EscKey).(string)
 	return v == "all" || v == esc
@@ -168,6 +149,23 @@ func Esc(ctx context.Context, esc string) bool {
 func Engine(ctx context.Context) string {
 	s, _ := ctx.Value(EngineKey).(string)
 	return s
+}
+
+// Lang returns the sql-formatter language to use from the context based on the
+// context driver.
+func Lang(ctx context.Context) string {
+	driver, _, _ := xo.DriverSchemaNthParam(ctx)
+	switch driver {
+	case "postgres", "sqlite3":
+		return "postgresql"
+	case "mysql":
+		return "mysql"
+	case "sqlserver":
+		return "tsql"
+	case "oracle":
+		return "plsql"
+	}
+	return "sql"
 }
 
 // Files are the embedded SQL templates.

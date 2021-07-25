@@ -60,7 +60,7 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 		return "[]" + goType, "nil", nil
 	}
 	// determine if it's a slice
-	asSlice := d.Array
+	asSlice := d.IsArray
 	var goType, zero string
 	switch typ {
 	case "boolean":
@@ -120,7 +120,7 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 			goType, zero = "uuid.NullUUID", "uuid.NullUUID{}"
 		}
 	default:
-		goType, zero = schemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, typ, nullable)
 	}
 	// handle slices
 	switch {

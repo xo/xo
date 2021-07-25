@@ -66,7 +66,7 @@ func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	case "blob", "long raw", "raw", "xmltype":
 		goType, zero = "[]byte", "nil"
 	default:
-		goType, zero = schemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, typ, nullable)
 	}
 	// handle bools
 	switch {

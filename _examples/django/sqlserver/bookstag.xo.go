@@ -8,7 +8,7 @@ import (
 
 // BooksTag represents a row from 'django.books_tags'.
 type BooksTag struct {
-	ID     int   `json:"id"`      // id
+	ID     int64 `json:"id"`      // id
 	BookID int64 `json:"book_id"` // book_id
 	TagID  int64 `json:"tag_id"`  // tag_id
 	// xo fields
@@ -57,7 +57,7 @@ func (bt *BooksTag) Insert(ctx context.Context, db DB) error {
 	if err := rows.Err(); err != nil {
 		return logerror(err)
 	} // set primary key
-	bt.ID = int(id)
+	bt.ID = int64(id)
 	// set exists
 	bt._exists = true
 	return nil
@@ -145,8 +145,8 @@ func (bt *BooksTag) Delete(ctx context.Context, db DB) error {
 
 // BooksTagByID retrieves a row from 'django.books_tags' as a BooksTag.
 //
-// Generated from index 'PK__books_ta__3213E83F26E5FEDD'.
-func BooksTagByID(ctx context.Context, db DB, id int) (*BooksTag, error) {
+// Generated from index 'PK__books_ta__3213E83F7238E299'.
+func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, book_id, tag_id ` +

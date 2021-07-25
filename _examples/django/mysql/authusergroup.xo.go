@@ -8,9 +8,9 @@ import (
 
 // AuthUserGroup represents a row from 'django.auth_user_groups'.
 type AuthUserGroup struct {
-	ID      int `json:"id"`       // id
-	UserID  int `json:"user_id"`  // user_id
-	GroupID int `json:"group_id"` // group_id
+	ID      int64 `json:"id"`       // id
+	UserID  int   `json:"user_id"`  // user_id
+	GroupID int   `json:"group_id"` // group_id
 	// xo fields
 	_exists, _deleted bool
 }
@@ -51,7 +51,7 @@ func (aug *AuthUserGroup) Insert(ctx context.Context, db DB) error {
 	if err != nil {
 		return err
 	} // set primary key
-	aug.ID = int(id)
+	aug.ID = int64(id)
 	// set exists
 	aug._exists = true
 	return nil
@@ -167,7 +167,7 @@ func AuthUserGroupsByGroupID(ctx context.Context, db DB, groupID int) ([]*AuthUs
 // AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
 //
 // Generated from index 'auth_user_groups_id_pkey'.
-func AuthUserGroupByID(ctx context.Context, db DB, id int) (*AuthUserGroup, error) {
+func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, user_id, group_id ` +

@@ -448,6 +448,7 @@ func convertEnum(e xo.Enum) Enum {
 }
 
 func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []string, p xo.Proc) ([]string, error) {
+	_, schema, _ := xo.DriverSchemaNthParam(ctx)
 	// build
 	var paramList, retList []string
 	var params, returns []Field
@@ -479,10 +480,7 @@ func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []str
 	default:
 		format = "%s.%s(%s) (%s)"
 	}
-	signature := fmt.Sprintf(format,
-		templates.Schema(ctx), p.Name,
-		strings.Join(paramList, ", "),
-		strings.Join(retList, ", "))
+	signature := fmt.Sprintf(format, schema, p.Name, strings.Join(paramList, ", "), strings.Join(retList, ", "))
 	name := snaker.SnakeToCamelIdentifier(p.Name)
 	// add proc to emit order
 	procs, ok := overloadMap[name]

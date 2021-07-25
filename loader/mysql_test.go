@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/xo/xo/templates"
+	xo "github.com/xo/xo/types"
 )
 
 func TestMysqlGoType(t *testing.T) {
@@ -15,6 +15,7 @@ func TestMysqlGoType(t *testing.T) {
 		goType   string
 		zero     string
 		prec     int
+		scale    int
 	}{
 		{
 			name:   "bit(1) parses",
@@ -117,22 +118,38 @@ func TestMysqlGoType(t *testing.T) {
 			zero:   "0",
 			prec:   4,
 		},
+		{
+			name:   "smallint with precision 5 parses into int16",
+			typ:    "smallint(5)",
+			goType: "int16",
+			zero:   "0",
+			prec:   5,
+		},
 	}
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, templates.SchemaKey, "mysql")
+	ctx = context.WithValue(ctx, xo.DriverKey, "mysql")
+	ctx = context.WithValue(ctx, xo.SchemaKey, "mysql")
 	for i, test := range tests {
-		goType, zero, prec, err := MysqlGoType(ctx, test.typ, test.nullable)
+		d, err := xo.ParseType(ctx, test.typ)
 		if err != nil {
 			t.Fatalf("test %d (%s) %q (nullable: %t) expected no error, got: %v", i, test.name, test.typ, test.nullable, err)
 		}
+		if d.Prec != test.prec {
+			t.Errorf("test %d (%s) %q (nullable: %t) expected d.Prec = %d, got: %d", i, test.name, test.typ, test.nullable, test.prec, d.Prec)
+		}
+		if d.Scale != test.scale {
+			t.Errorf("test %d (%s) %q (nullable: %t) expected d.Scale = %d, got: %d", i, test.name, test.typ, test.nullable, test.scale, d.Scale)
+		}
+		if d.IsArray {
+			t.Errorf("test %d (%s) %q (nullable: %t) expected d.IsArray = false", i, test.name, test.typ, test.nullable)
+		}
+		d.Nullable = test.nullable
+		goType, zero, err := MysqlGoType(ctx, d)
 		if goType != test.goType {
 			t.Errorf("test %d (%s) %q (nullable: %t) expected goType = %q, got: %q", i, test.name, test.typ, test.nullable, test.goType, goType)
 		}
 		if zero != test.zero {
 			t.Errorf("test %d (%s) %q (nullable: %t) expected zero = %q, got: %q", i, test.name, test.typ, test.nullable, test.zero, zero)
-		}
-		if prec != test.prec {
-			t.Errorf("test %d (%s) %q (nullable: %t) expected prec = %d, got: %d", i, test.name, test.typ, test.nullable, test.prec, prec)
 		}
 	}
 }

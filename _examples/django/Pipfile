@@ -4,14 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
-django-mssql-backend = "*"
+django = ">=3.2.5"
 cx-oracle = "*"
 psycopg2 = "*"
 mysqlclient = "*"
-django-pyodbc-azure-2019 = "*"
+mssql-django = "*"
+lock = "*"
+pyodbc = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

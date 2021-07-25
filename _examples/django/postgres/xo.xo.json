@@ -13,7 +13,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_group_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -21,9 +20,8 @@
               "name": "name",
               "datatype": {
                 "type": "character varying",
-                "prec": 80
-              },
-              "default": ""
+                "prec": 150
+              }
             }
           ],
           "primary_keys": [
@@ -32,7 +30,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_group_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -46,9 +43,8 @@
                   "name": "name",
                   "datatype": {
                     "type": "character varying",
-                    "prec": 80
-                  },
-                  "default": ""
+                    "prec": 150
+                  }
                 }
               ]
             },
@@ -60,9 +56,8 @@
                   "name": "name",
                   "datatype": {
                     "type": "character varying",
-                    "prec": 80
-                  },
-                  "default": ""
+                    "prec": 150
+                  }
                 }
               ],
               "is_unique": true
@@ -76,7 +71,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_group_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -93,9 +87,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_group_permissions_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -103,24 +96,21 @@
               "name": "group_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "permission_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_group_permissions_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -134,8 +124,7 @@
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -147,15 +136,13 @@
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -168,8 +155,7 @@
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -180,9 +166,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "integer"
+                    "type": "bigint"
                   },
-                  "default": "nextval('auth_group_permissions_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -200,8 +185,7 @@
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_permission",
@@ -211,7 +195,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_permission_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -226,8 +209,7 @@
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_group",
@@ -237,7 +219,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_group_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -255,7 +236,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_permission_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -264,23 +244,20 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 255
-              },
-              "default": ""
+              }
             },
             {
               "name": "content_type_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "codename",
               "datatype": {
                 "type": "character varying",
                 "prec": 100
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -289,7 +266,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_permission_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -303,8 +279,7 @@
                   "name": "content_type_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -316,16 +291,14 @@
                   "name": "content_type_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "codename",
                   "datatype": {
                     "type": "character varying",
                     "prec": 100
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -339,7 +312,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_permission_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -357,8 +329,7 @@
                   "name": "content_type_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "django_content_type",
@@ -368,7 +339,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('django_content_type_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -386,7 +356,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_user_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -395,76 +364,66 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 128
-              },
-              "default": ""
+              }
             },
             {
               "name": "last_login",
               "datatype": {
                 "type": "timestamp with time zone",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "is_superuser",
               "datatype": {
                 "type": "boolean"
-              },
-              "default": ""
+              }
             },
             {
               "name": "username",
               "datatype": {
                 "type": "character varying",
                 "prec": 150
-              },
-              "default": ""
+              }
             },
             {
               "name": "first_name",
               "datatype": {
                 "type": "character varying",
-                "prec": 30
-              },
-              "default": ""
+                "prec": 150
+              }
             },
             {
               "name": "last_name",
               "datatype": {
                 "type": "character varying",
                 "prec": 150
-              },
-              "default": ""
+              }
             },
             {
               "name": "email",
               "datatype": {
                 "type": "character varying",
                 "prec": 254
-              },
-              "default": ""
+              }
             },
             {
               "name": "is_staff",
               "datatype": {
                 "type": "boolean"
-              },
-              "default": ""
+              }
             },
             {
               "name": "is_active",
               "datatype": {
                 "type": "boolean"
-              },
-              "default": ""
+              }
             },
             {
               "name": "date_joined",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -473,7 +432,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('auth_user_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -488,7 +446,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_user_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -505,8 +462,7 @@
                   "datatype": {
                     "type": "character varying",
                     "prec": 150
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -519,8 +475,7 @@
                   "datatype": {
                     "type": "character varying",
                     "prec": 150
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -534,9 +489,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_user_groups_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -544,24 +498,21 @@
               "name": "user_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "group_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_user_groups_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -575,8 +526,7 @@
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -587,9 +537,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "integer"
+                    "type": "bigint"
                   },
-                  "default": "nextval('auth_user_groups_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -605,8 +554,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -618,15 +566,13 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -641,8 +587,7 @@
                   "name": "group_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_group",
@@ -652,7 +597,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_group_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -667,8 +611,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_user",
@@ -678,7 +621,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_user_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -694,9 +636,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -704,24 +645,21 @@
               "name": "user_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "permission_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -735,8 +673,7 @@
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -747,9 +684,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "integer"
+                    "type": "bigint"
                   },
-                  "default": "nextval('auth_user_user_permissions_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -765,8 +701,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -778,15 +713,13 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -801,8 +734,7 @@
                   "name": "permission_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_permission",
@@ -812,7 +744,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_permission_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -827,8 +758,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_user",
@@ -838,7 +768,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_user_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -856,7 +785,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('authors_author_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -864,8 +792,7 @@
               "name": "name",
               "datatype": {
                 "type": "text"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -874,7 +801,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('authors_author_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -889,7 +815,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('authors_author_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -908,7 +833,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('books_book_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -917,44 +841,38 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 255
-              },
-              "default": ""
+              }
             },
             {
               "name": "book_type",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "title",
               "datatype": {
                 "type": "character varying",
                 "prec": 255
-              },
-              "default": ""
+              }
             },
             {
               "name": "year",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             },
             {
               "name": "available",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "books_author_id_fkey",
               "datatype": {
                 "type": "bigint"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -963,7 +881,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('books_book_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -977,8 +894,7 @@
                   "name": "books_author_id_fkey",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -991,7 +907,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('books_book_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1009,8 +924,7 @@
                   "name": "books_author_id_fkey",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "authors",
@@ -1020,7 +934,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('authors_author_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1036,9 +949,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('books_tags_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1046,24 +958,21 @@
               "name": "book_id",
               "datatype": {
                 "type": "bigint"
-              },
-              "default": ""
+              }
             },
             {
               "name": "tag_id",
               "datatype": {
                 "type": "bigint"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('books_tags_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1077,8 +986,7 @@
                   "name": "book_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -1090,15 +998,13 @@
                   "name": "book_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "tag_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -1110,9 +1016,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "integer"
+                    "type": "bigint"
                   },
-                  "default": "nextval('books_tags_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1128,8 +1033,7 @@
                   "name": "tag_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             }
@@ -1143,8 +1047,7 @@
                   "name": "book_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "books",
@@ -1154,7 +1057,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('books_book_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1169,8 +1071,7 @@
                   "name": "tag_id",
                   "datatype": {
                     "type": "bigint"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "tags",
@@ -1180,7 +1081,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('tags_tag_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1198,7 +1098,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('django_admin_log_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1206,53 +1105,46 @@
               "name": "action_time",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             },
             {
               "name": "object_id",
               "datatype": {
                 "type": "text",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "object_repr",
               "datatype": {
                 "type": "character varying",
                 "prec": 200
-              },
-              "default": ""
+              }
             },
             {
               "name": "action_flag",
               "datatype": {
                 "type": "smallint"
-              },
-              "default": ""
+              }
             },
             {
               "name": "change_message",
               "datatype": {
                 "type": "text"
-              },
-              "default": ""
+              }
             },
             {
               "name": "content_type_id",
               "datatype": {
                 "type": "integer",
                 "nullable": true
-              },
-              "default": ""
+              }
             },
             {
               "name": "user_id",
               "datatype": {
                 "type": "integer"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1261,7 +1153,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('django_admin_log_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1276,8 +1167,7 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -1290,7 +1180,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('django_admin_log_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1306,8 +1195,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             }
@@ -1322,8 +1210,7 @@
                   "datatype": {
                     "type": "integer",
                     "nullable": true
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "django_content_type",
@@ -1333,7 +1220,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('django_content_type_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1348,8 +1234,7 @@
                   "name": "user_id",
                   "datatype": {
                     "type": "integer"
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "ref_table": "auth_user",
@@ -1359,7 +1244,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('auth_user_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1377,7 +1261,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('django_content_type_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1386,16 +1269,14 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 100
-              },
-              "default": ""
+              }
             },
             {
               "name": "model",
               "datatype": {
                 "type": "character varying",
                 "prec": 100
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1404,7 +1285,6 @@
               "datatype": {
                 "type": "integer"
               },
-              "default": "nextval('django_content_type_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1419,16 +1299,14 @@
                   "datatype": {
                     "type": "character varying",
                     "prec": 100
-                  },
-                  "default": ""
+                  }
                 },
                 {
                   "name": "model",
                   "datatype": {
                     "type": "character varying",
                     "prec": 100
-                  },
-                  "default": ""
+                  }
                 }
               ],
               "is_unique": true
@@ -1442,7 +1320,6 @@
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "nextval('django_content_type_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1459,9 +1336,8 @@
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('django_migrations_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1470,32 +1346,28 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 255
-              },
-              "default": ""
+              }
             },
             {
               "name": "name",
               "datatype": {
                 "type": "character varying",
                 "prec": 255
-              },
-              "default": ""
+              }
             },
             {
               "name": "applied",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
             {
               "name": "id",
               "datatype": {
-                "type": "integer"
+                "type": "bigint"
               },
-              "default": "nextval('django_migrations_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1508,9 +1380,8 @@
                 {
                   "name": "id",
                   "datatype": {
-                    "type": "integer"
+                    "type": "bigint"
                   },
-                  "default": "nextval('django_migrations_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }
@@ -1530,22 +1401,19 @@
                 "type": "character varying",
                 "prec": 40
               },
-              "default": "",
               "is_primary": true
             },
             {
               "name": "session_data",
               "datatype": {
                 "type": "text"
-              },
-              "default": ""
+              }
             },
             {
               "name": "expire_date",
               "datatype": {
                 "type": "timestamp with time zone"
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1555,7 +1423,6 @@
                 "type": "character varying",
                 "prec": 40
               },
-              "default": "",
               "is_primary": true
             }
           ],
@@ -1568,8 +1435,7 @@
                   "name": "expire_date",
                   "datatype": {
                     "type": "timestamp with time zone"
-                  },
-                  "default": ""
+                  }
                 }
               ]
             },
@@ -1583,7 +1449,6 @@
                     "type": "character varying",
                     "prec": 40
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ],
@@ -1600,7 +1465,6 @@
                     "type": "character varying",
                     "prec": 40
                   },
-                  "default": "",
                   "is_primary": true
                 }
               ]
@@ -1617,7 +1481,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('tags_tag_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             },
@@ -1626,8 +1489,7 @@
               "datatype": {
                 "type": "character varying",
                 "prec": 50
-              },
-              "default": ""
+              }
             }
           ],
           "primary_keys": [
@@ -1636,7 +1498,6 @@
               "datatype": {
                 "type": "bigint"
               },
-              "default": "nextval('tags_tag_id_seq'::regclass)",
               "is_primary": true,
               "is_sequence": true
             }
@@ -1651,7 +1512,6 @@
                   "datatype": {
                     "type": "bigint"
                   },
-                  "default": "nextval('tags_tag_id_seq'::regclass)",
                   "is_primary": true,
                   "is_sequence": true
                 }

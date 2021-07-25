@@ -103,7 +103,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	for _, proc := range procs {
 		// parse return type into template
 		// TODO: fix this so that nullable types can be returned
-		typ, prec, scale, array, err := parseType(l.Driver, proc.ReturnType)
+		d, err := xo.ParseType(ctx, proc.ReturnType)
 		if err != nil {
 			return nil, err
 		}
@@ -121,13 +121,8 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 			ID:   proc.ProcID,
 			Name: proc.ProcName,
 			Returns: append(returnFields, xo.Field{
-				Name: name,
-				Datatype: xo.Datatype{
-					Type:  typ,
-					Prec:  prec,
-					Scale: scale,
-					Array: array,
-				},
+				Name:     name,
+				Datatype: d,
 			}),
 			Definition: strings.TrimSpace(proc.ProcDef),
 		}
@@ -164,7 +159,7 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 	}
 	// process
 	for i, param := range params {
-		typ, prec, scale, array, err := parseType(l.Driver, param.ParamType)
+		d, err := xo.ParseType(ctx, param.ParamType)
 		if err != nil {
 			return err
 		}
@@ -173,13 +168,8 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 			name = fmt.Sprintf("p%d", i)
 		}
 		proc.Params = append(proc.Params, xo.Field{
-			Name: name,
-			Datatype: xo.Datatype{
-				Type:  typ,
-				Prec:  prec,
-				Scale: scale,
-				Array: array,
-			},
+			Name:     name,
+			Datatype: d,
 		})
 	}
 	return nil
@@ -284,27 +274,21 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			continue
 		}
 		// set col info
-		typ, prec, scale, array, err := parseType(l.Driver, c.DataType)
+		d, err := xo.ParseType(ctx, c.DataType)
 		if err != nil {
 			return err
 		}
-		seq := sqMap[c.ColumnName]
-		d := c.DefaultValue.String
-		if d == "NULL" || seq {
-			d = ""
+		d.Nullable = !c.NotNull
+		defaultValue := c.DefaultValue.String
+		if defaultValue == "NULL" || sqMap[c.ColumnName] {
+			defaultValue = ""
 		}
 		col := xo.Field{
-			Name: c.ColumnName,
-			Datatype: xo.Datatype{
-				Type:     typ,
-				Nullable: !c.NotNull,
-				Prec:     prec,
-				Scale:    scale,
-				Array:    array,
-			},
-			Default:    d,
+			Name:       c.ColumnName,
+			Datatype:   d,
+			Default:    defaultValue,
 			IsPrimary:  c.IsPrimaryKey,
-			IsSequence: seq,
+			IsSequence: sqMap[c.ColumnName],
 		}
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {
@@ -466,58 +450,6 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 	}
 	return fkMap, nil
 }
-
-// parseType parses "type[ (precision[,scale])][\[\]]" strings returning the
-// parsed precision, scale, and if the type is an array or not.
-//
-// Expected formats:
-//
-//	type
-//	type(precision)
-//	type(precision, scale)
-//	type(precision, scale)[]
-//	timestamp(n) with [local] time zone (oracle only)
-//
-// The returned type is stripped of precision and scale.
-func parseType(driver, typ string) (string, int, int, bool, error) {
-	// special case for oracle timestamp(n) with [local] time zone
-	if m := oracleTimestampRE.FindStringSubmatch(typ); driver == "oracle" && m != nil {
-		prec, err := strconv.Atoi(m[1])
-		if err != nil {
-			return "", 0, 0, false, fmt.Errorf("could not parse precision: %w", err)
-		}
-		return "timestamp " + m[2], prec, 0, false, nil
-	}
-	// handle normal
-	var prec, scale int
-	if m := precRE.FindStringIndex(typ); m != nil {
-		s := typ[m[0]+1 : m[1]-1]
-		if i := strings.LastIndex(s, ","); i != -1 {
-			var err error
-			if scale, err = strconv.Atoi(strings.TrimSpace(s[i+1:])); err != nil {
-				return "", 0, 0, false, fmt.Errorf("could not parse scale: %w", err)
-			}
-			s = s[:i]
-		}
-		// extract precision
-		var err error
-		if prec, err = strconv.Atoi(strings.TrimSpace(s)); err != nil {
-			return "", 0, 0, false, fmt.Errorf("could not parse precision: %w", err)
-		}
-		typ = typ[:m[0]]
-	}
-	typ = strings.TrimSpace(typ)
-	isArray := strings.HasSuffix(typ, "[]")
-	return strings.ToLower(strings.TrimSuffix(typ, "[]")), prec, scale, isArray, nil
-}
-
-// oracleTimestampRE is the regexp that matches "timestamp(precision) with [local]
-// time zone" definitions in oracle databases
-var oracleTimestampRE = regexp.MustCompile(`^timestamp\((\d)\) (with(?: local)? time zone)$`)
-
-// precRE is the regexp that matches "(precision[,scale])" definitions in a
-// database.
-var precRE = regexp.MustCompile(`\(([0-9]+)(\s*,\s*[0-9]+\s*)?\)$`)
 
 // resolveFkName returns the foreign key name for the passed foreign key.
 // The function converts all names to snake_case.

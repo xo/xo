@@ -15,7 +15,7 @@ schemas:
       - name: name
         datatype:
           type: varchar
-          prec: 80
+          prec: 150
       primary_keys:
       - name: id
         datatype:
@@ -30,7 +30,7 @@ schemas:
         - name: name
           datatype:
             type: varchar
-            prec: 80
+            prec: 150
         is_unique: true
       - name: auth_group_id_pkey
         func_name: auth_group_by_id
@@ -48,8 +48,8 @@ schemas:
       columns:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       - name: group_id
@@ -63,8 +63,8 @@ schemas:
       primary_keys:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       indexes:
@@ -92,8 +92,8 @@ schemas:
         fields:
         - name: id
           datatype:
-            type: int
-            prec: 11
+            type: bigint
+            prec: 20
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -218,7 +218,6 @@ schemas:
           type: datetime
           prec: 6
           nullable: true
-        default: "NULL"
       - name: is_superuser
         datatype:
           type: tinyint
@@ -230,7 +229,7 @@ schemas:
       - name: first_name
         datatype:
           type: varchar
-          prec: 30
+          prec: 150
       - name: last_name
         datatype:
           type: varchar
@@ -283,8 +282,8 @@ schemas:
       columns:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       - name: user_id
@@ -298,8 +297,8 @@ schemas:
       primary_keys:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       indexes:
@@ -327,8 +326,8 @@ schemas:
         fields:
         - name: id
           datatype:
-            type: int
-            prec: 11
+            type: bigint
+            prec: 20
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -371,8 +370,8 @@ schemas:
       columns:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       - name: user_id
@@ -386,8 +385,8 @@ schemas:
       primary_keys:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       indexes:
@@ -415,8 +414,8 @@ schemas:
         fields:
         - name: id
           datatype:
-            type: int
-            prec: 11
+            type: bigint
+            prec: 20
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -566,8 +565,8 @@ schemas:
       columns:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       - name: book_id
@@ -581,8 +580,8 @@ schemas:
       primary_keys:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       indexes:
@@ -610,8 +609,8 @@ schemas:
         fields:
         - name: id
           datatype:
-            type: int
-            prec: 11
+            type: bigint
+            prec: 20
           is_primary: true
           is_sequence: true
         is_unique: true
@@ -666,7 +665,6 @@ schemas:
         datatype:
           type: longtext
           nullable: true
-        default: "NULL"
       - name: object_repr
         datatype:
           type: varchar
@@ -682,7 +680,6 @@ schemas:
           type: int
           prec: 11
           nullable: true
-        default: "NULL"
       - name: user_id
         datatype:
           type: int
@@ -703,7 +700,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
       - name: django_admin_log_user_id_c564eba6_fk_auth_user_id
         func_name: django_admin_log_by_user_id
         fields:
@@ -731,7 +727,6 @@ schemas:
             type: int
             prec: 11
             nullable: true
-          default: "NULL"
         ref_table: django_content_type
         ref_column:
         - name: id
@@ -810,8 +805,8 @@ schemas:
       columns:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       - name: app
@@ -829,8 +824,8 @@ schemas:
       primary_keys:
       - name: id
         datatype:
-          type: int
-          prec: 11
+          type: bigint
+          prec: 20
         is_primary: true
         is_sequence: true
       indexes:
@@ -839,8 +834,8 @@ schemas:
         fields:
         - name: id
           datatype:
-            type: int
-            prec: 11
+            type: bigint
+            prec: 20
           is_primary: true
           is_sequence: true
         is_unique: true

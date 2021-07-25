@@ -9,7 +9,7 @@ import (
 
 // DjangoMigration represents a row from 'public.django_migrations'.
 type DjangoMigration struct {
-	ID      int       `json:"id"`      // id
+	ID      int64     `json:"id"`      // id
 	App     string    `json:"app"`     // app
 	Name    string    `json:"name"`    // name
 	Applied time.Time `json:"applied"` // applied
@@ -129,7 +129,7 @@ func (dm *DjangoMigration) Delete(ctx context.Context, db DB) error {
 // DjangoMigrationByID retrieves a row from 'public.django_migrations' as a DjangoMigration.
 //
 // Generated from index 'django_migrations_pkey'.
-func DjangoMigrationByID(ctx context.Context, db DB, id int) (*DjangoMigration, error) {
+func DjangoMigrationByID(ctx context.Context, db DB, id int64) (*DjangoMigration, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, app, name, applied ` +

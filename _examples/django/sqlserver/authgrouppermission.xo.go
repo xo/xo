@@ -8,9 +8,9 @@ import (
 
 // AuthGroupPermission represents a row from 'django.auth_group_permissions'.
 type AuthGroupPermission struct {
-	ID           int `json:"id"`            // id
-	GroupID      int `json:"group_id"`      // group_id
-	PermissionID int `json:"permission_id"` // permission_id
+	ID           int64 `json:"id"`            // id
+	GroupID      int   `json:"group_id"`      // group_id
+	PermissionID int   `json:"permission_id"` // permission_id
 	// xo fields
 	_exists, _deleted bool
 }
@@ -57,7 +57,7 @@ func (agp *AuthGroupPermission) Insert(ctx context.Context, db DB) error {
 	if err := rows.Err(); err != nil {
 		return logerror(err)
 	} // set primary key
-	agp.ID = int(id)
+	agp.ID = int64(id)
 	// set exists
 	agp._exists = true
 	return nil
@@ -145,8 +145,8 @@ func (agp *AuthGroupPermission) Delete(ctx context.Context, db DB) error {
 
 // AuthGroupPermissionByID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
 //
-// Generated from index 'PK__auth_gro__3213E83FBD0BC743'.
-func AuthGroupPermissionByID(ctx context.Context, db DB, id int) (*AuthGroupPermission, error) {
+// Generated from index 'PK__auth_gro__3213E83F96B7E0C9'.
+func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`id, group_id, permission_id ` +
