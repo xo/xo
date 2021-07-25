@@ -1119,7 +1119,9 @@
             {
               "name": "action_flag",
               "datatype": {
-                "type": "smallint(5) unsigned"
+                "type": "smallint",
+                "prec": 5,
+                "unsigned": true
               }
             },
             {

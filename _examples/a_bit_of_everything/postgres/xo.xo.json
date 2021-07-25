@@ -1037,7 +1037,7 @@
           ],
           "indexes": [
             {
-              "name": "a_seq_pkey",
+              "name": "a_sequence_pkey",
               "func_name": "a_sequence_by_a_seq",
               "fields": [
                 {

@@ -1079,7 +1079,8 @@
             {
               "name": "action_flag",
               "datatype": {
-                "type": "smallint unsigned"
+                "type": "smallint",
+                "unsigned": true
               }
             }
           ],

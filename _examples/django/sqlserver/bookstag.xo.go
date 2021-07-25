@@ -145,7 +145,7 @@ func (bt *BooksTag) Delete(ctx context.Context, db DB) error {
 
 // BooksTagByID retrieves a row from 'django.books_tags' as a BooksTag.
 //
-// Generated from index 'PK__books_ta__3213E83F7238E299'.
+// Generated from index 'PK__books_ta__3213E83F3CDA29F8'.
 func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
 	// query
 	const sqlstr = `SELECT ` +

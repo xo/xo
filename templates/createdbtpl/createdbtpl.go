@@ -7,8 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
@@ -20,6 +22,7 @@ func init() {
 	if formatterPath != "" {
 		formatterOptions = []string{"-u", "-l={{ . }}", "-i=2", "--lines-between-queries=2"}
 	}
+	var funcs *Funcs
 	templates.Register("createdb", &templates.TemplateSet{
 		Files:   Files,
 		FileExt: ".xo.sql",
@@ -61,15 +64,31 @@ func init() {
 			},
 		},
 		Funcs: func(ctx context.Context) (template.FuncMap, error) {
-			return NewFuncs(ctx).FuncMap(), nil
+			return funcs.FuncMap(), nil
 		},
 		FileName: func(ctx context.Context, tpl *templates.Template) string {
 			return tpl.Name
 		},
+		Process: func(ctx context.Context, _ bool, set *templates.TemplateSet, v *xo.XO) error {
+			if len(v.Schemas) == 0 {
+				return errors.New("createdb template must be passed at least one schema")
+			}
+			for _, schema := range v.Schemas {
+				funcs = NewFuncs(ctx, schema.Enums)
+				if err := set.Emit(ctx, &templates.Template{
+					Name:     "xo",
+					Template: "xo",
+					Data:     schema,
+				}); err != nil {
+					return err
+				}
+			}
+			return nil
+		},
 		Post: func(ctx context.Context, buf []byte) ([]byte, error) {
 			formatterPath, lang := Fmt(ctx), Lang(ctx)
 			if formatterPath == "" {
-				return buf, nil
+				return cleanEnd(cleanRE.ReplaceAll(buf, []byte("$1\n\n--"))), nil
 			}
 			// build options
 			opts := FmtOpts(ctx)
@@ -91,25 +110,19 @@ func init() {
 			if err := cmd.Run(); err != nil {
 				return nil, fmt.Errorf("unable to execute %s: %v: %s", formatterPath, err, stderr.String())
 			}
-			return append(bytes.TrimSuffix(stdout.Bytes(), []byte{'\n'}), '\n'), nil
-		},
-		Process: func(ctx context.Context, _ bool, set *templates.TemplateSet, v *xo.XO) error {
-			if len(v.Schemas) == 0 {
-				return errors.New("createdb template must be passed at least one schema")
-			}
-			for _, schema := range v.Schemas {
-				if err := set.Emit(ctx, &templates.Template{
-					Name:     "xo",
-					Template: "xo",
-					Data:     schema,
-				}); err != nil {
-					return err
-				}
-			}
-			return nil
+			return cleanEnd(stdout.Bytes()), nil
 		},
 		Order: []string{"xo"},
 	})
+}
+
+// cleanRE matches empty lines.
+var cleanRE = regexp.MustCompile(`([\.;])\n{2,}--`)
+
+// cleanEnd trims the end of any spaces, ensuring it ends with exactly one
+// newline.
+func cleanEnd(buf []byte) []byte {
+	return append(bytes.TrimRightFunc(buf, unicode.IsSpace), '\n')
 }
 
 // Context keys.

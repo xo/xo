@@ -894,7 +894,7 @@
           ],
           "indexes": [
             {
-              "name": "a_seq_pkey",
+              "name": "a_sequence_pkey",
               "func_name": "a_sequence_by_a_seq",
               "fields": [
                 {
@@ -919,6 +919,7 @@
               "datatype": {
                 "type": "number"
               },
+              "is_primary": true,
               "is_sequence": true
             },
             {
@@ -927,6 +928,33 @@
                 "type": "nvarchar2",
                 "nullable": true
               }
+            }
+          ],
+          "primary_keys": [
+            {
+              "name": "a_seq",
+              "datatype": {
+                "type": "number"
+              },
+              "is_primary": true,
+              "is_sequence": true
+            }
+          ],
+          "indexes": [
+            {
+              "name": "a_sequence_multi_pkey",
+              "func_name": "a_sequence_multi_by_a_seq",
+              "fields": [
+                {
+                  "name": "a_seq",
+                  "datatype": {
+                    "type": "number"
+                  },
+                  "is_primary": true,
+                  "is_sequence": true
+                }
+              ],
+              "is_unique": true
             }
           ]
         },

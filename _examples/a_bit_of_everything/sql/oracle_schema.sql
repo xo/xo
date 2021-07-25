@@ -7,12 +7,13 @@ CREATE TABLE a_manual_table (
 -- table with auto increment
 CREATE TABLE a_sequence (
   a_seq NUMBER GENERATED ALWAYS AS IDENTITY,
-  CONSTRAINT a_seq_pkey PRIMARY KEY (a_seq)
+  CONSTRAINT a_sequence_pkey PRIMARY KEY (a_seq)
 );
 
 CREATE TABLE a_sequence_multi (
   a_seq INTEGER GENERATED ALWAYS AS IDENTITY,
-  a_text NVARCHAR2(255)
+  a_text NVARCHAR2(255),
+  CONSTRAINT a_sequence_multi_pkey PRIMARY KEY (a_seq)
 );
 
 -- table with primary key
@@ -35,14 +36,14 @@ CREATE TABLE a_primary_composite (
 
 -- table with foreign key
 CREATE TABLE a_foreign_key (
-  a_key INTEGER CONSTRAINT a_key_fkey REFERENCES a_primary(a_key)
+  a_key INTEGER CONSTRAINT a_key_fkey REFERENCES a_primary (a_key)
 );
 
 -- table with composite foreign key
 CREATE TABLE a_foreign_key_composite (
   a_key1 INTEGER,
   a_key2 INTEGER,
-  CONSTRAINT a_foreign_key_composite_fkey FOREIGN KEY(a_key1, a_key2) REFERENCES a_primary_composite(a_key1, a_key2)
+  CONSTRAINT a_foreign_key_composite_fkey FOREIGN KEY(a_key1, a_key2) REFERENCES a_primary_composite (a_key1, a_key2)
 );
 
 -- table with index
@@ -50,7 +51,7 @@ CREATE TABLE a_index (
   a_key INTEGER
 );
 
-CREATE INDEX a_index_idx ON a_index(a_key);
+CREATE INDEX a_index_idx ON a_index (a_key);
 
 -- table with composite index
 CREATE TABLE a_index_composite (
@@ -58,7 +59,7 @@ CREATE TABLE a_index_composite (
   a_key2 INTEGER
 );
 
-CREATE INDEX a_index_composite_idx ON a_index_composite(a_key1, a_key2);
+CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 
 -- table with unique index
 CREATE TABLE a_unique_index (

@@ -144,6 +144,7 @@ type Datatype struct {
 	Scale    int    `json:"scale,omitempty"`
 	Nullable bool   `json:"nullable,omitempty"`
 	IsArray  bool   `json:"array,omitempty"`
+	Unsigned bool   `json:"unsigned,omitempty"`
 }
 
 // ParseType parses "type[ (precision[,scale])][\[\]]" strings returning the
@@ -154,7 +155,7 @@ type Datatype struct {
 //	type
 //	type(precision)
 //	type(precision, scale)
-//	type(precision, scale)[]
+//  type(precision, scale) unsigned
 //	timestamp(n) with [local] time zone (oracle only)
 //
 // The returned type is stripped of precision and scale.
@@ -170,6 +171,16 @@ func ParseType(ctx context.Context, typ string) (Datatype, error) {
 			Type: "timestamp " + m[2],
 			Prec: prec,
 		}, nil
+	}
+	// extract is array
+	isArray := false
+	if strings.HasSuffix(typ, "[]") {
+		typ, isArray = typ[:len(typ)-len("[]")], true
+	}
+	// extract unsigned
+	unsigned := false
+	if strings.HasSuffix(typ, " unsigned") {
+		typ, unsigned = typ[:len(typ)-len(" unsigned")], true
 	}
 	// handle normal
 	var prec, scale int
@@ -189,13 +200,12 @@ func ParseType(ctx context.Context, typ string) (Datatype, error) {
 		}
 		typ = typ[:m[0]]
 	}
-	typ = strings.TrimSpace(typ)
-	isArray := strings.HasSuffix(typ, "[]")
 	return Datatype{
-		Type:    strings.ToLower(strings.TrimSuffix(typ, "[]")),
-		Prec:    prec,
-		Scale:   scale,
-		IsArray: isArray,
+		Type:     strings.ToLower(strings.TrimSpace(typ)),
+		Prec:     prec,
+		Scale:    scale,
+		IsArray:  isArray,
+		Unsigned: unsigned,
 	}, nil
 }
 

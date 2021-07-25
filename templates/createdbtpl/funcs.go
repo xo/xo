@@ -6,58 +6,54 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
-	"time"
 
 	xo "github.com/xo/xo/types"
 )
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	driver      string
-	enumMap     map[string]xo.Enum
-	constraint  bool
-	escapeCols  bool
-	escapeTypes bool
-	engine      string
+	driver     string
+	enumMap    map[string]xo.Enum
+	constraint bool
+	escCols    bool
+	escTypes   bool
+	engine     string
 }
 
 // NewFuncs creates a new Funcs.
-func NewFuncs(ctx context.Context) *Funcs {
+func NewFuncs(ctx context.Context, enums []xo.Enum) *Funcs {
 	driver, _, _ := xo.DriverSchemaNthParam(ctx)
+	enumMap := make(map[string]xo.Enum)
+	if driver == "mysql" {
+		for _, e := range enums {
+			enumMap[e.Name] = e
+		}
+	}
 	return &Funcs{
-		driver:      driver,
-		enumMap:     make(map[string]xo.Enum),
-		constraint:  Constraint(ctx),
-		escapeCols:  Esc(ctx, "columns"),
-		escapeTypes: Esc(ctx, "types"),
-		engine:      Engine(ctx),
+		driver:     driver,
+		enumMap:    enumMap,
+		constraint: Constraint(ctx),
+		escCols:    Esc(ctx, "columns"),
+		escTypes:   Esc(ctx, "types"),
+		engine:     Engine(ctx),
 	}
 }
 
 // FuncMap returns the func map.
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
-		"addEnums":   f.addEnums,
-		"coldef":     f.coldef,
-		"indexdef":   f.indexdef,
-		"viewdef":    f.viewdef,
-		"procdef":    f.procdef,
-		"time":       f.timefn,
-		"driver":     f.driverfn,
-		"constraint": f.constraintfn,
-		"escType":    f.escType,
-		"fields":     f.fields,
-		"engine":     f.enginefn,
-		"strLiteral": f.strLiteral,
-		"comma":      f.comma,
+		"coldef":          f.coldef,
+		"viewdef":         f.viewdef,
+		"procdef":         f.procdef,
+		"driver":          f.driverfn,
+		"constraint":      f.constraintfn,
+		"esc":             f.escType,
+		"fields":          f.fields,
+		"engine":          f.enginefn,
+		"literal":         f.literal,
+		"comma":           f.comma,
+		"isEndConstraint": f.isEndConstraint,
 	}
-}
-
-func (f *Funcs) addEnums(enums []xo.Enum) string {
-	for _, e := range enums {
-		f.enumMap[e.Name] = e
-	}
-	return ""
 }
 
 func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
@@ -68,7 +64,7 @@ func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 		typ = f.resolveSequence(typ, field)
 	}
 	// column def
-	def := []string{f.escCols(field.Name), typ}
+	def := []string{f.escCol(field.Name), typ}
 	// add default value
 	if field.Default != "" && !field.IsSequence {
 		def = append(def, "DEFAULT", f.parseDefault(field.Default))
@@ -134,10 +130,6 @@ func (f *Funcs) colFKey(table xo.Table, field xo.Field) string {
 	return ""
 }
 
-func (f *Funcs) indexdef(table xo.Table, idx xo.Index) string {
-	return fmt.Sprintf("CREATE INDEX %s ON %s (%s)", f.escType(idx.Name), f.escType(table.Name), f.fields(idx.Fields))
-}
-
 func (f *Funcs) viewdef(view xo.Table) string {
 	def := view.Definition
 	switch f.driver {
@@ -186,14 +178,14 @@ func (f *Funcs) procSignature(proc xo.Proc) string {
 	var end string
 	// add params
 	for _, field := range proc.Params {
-		params = append(params, fmt.Sprintf("%s %s", f.escCols(field.Name), f.normalize(field.Datatype)))
+		params = append(params, fmt.Sprintf("%s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
 	}
 	// add return values
 	if len(proc.Returns) == 1 {
 		end += " RETURNS " + f.normalize(proc.Returns[0].Datatype)
 	} else {
 		for _, field := range proc.Params {
-			params = append(params, fmt.Sprintf("OUT %s %s", f.escCols(field.Name), f.normalize(field.Datatype)))
+			params = append(params, fmt.Sprintf("OUT %s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
 		}
 	}
 	signature := fmt.Sprintf("CREATE %s %s(%s)%s", typ, f.escType(proc.Name), strings.Join(params, ", "), end)
@@ -201,10 +193,6 @@ func (f *Funcs) procSignature(proc xo.Proc) string {
 		signature += " AS $$"
 	}
 	return signature
-}
-
-func (f *Funcs) timefn() string {
-	return time.Now().Format(time.UnixDate)
 }
 
 func (f *Funcs) driverfn(allowed ...string) bool {
@@ -228,7 +216,7 @@ func (f *Funcs) fields(v interface{}) string {
 	case []xo.Field:
 		var fs []string
 		for _, field := range x {
-			fs = append(fs, f.escCols(field.Name))
+			fs = append(fs, f.escCol(field.Name))
 		}
 		return strings.Join(fs, ", ")
 	}
@@ -252,11 +240,11 @@ func (f *Funcs) esc(value string, escape bool) string {
 }
 
 func (f *Funcs) escType(value string) string {
-	return f.esc(value, f.escapeTypes)
+	return f.esc(value, f.escTypes)
 }
 
-func (f *Funcs) escCols(value string) string {
-	return f.esc(value, f.escapeCols)
+func (f *Funcs) escCol(value string) string {
+	return f.esc(value, f.escCols)
 }
 
 func (f *Funcs) enginefn() string {
@@ -272,6 +260,9 @@ func (f *Funcs) normalize(datatype xo.Datatype) string {
 		typ += fmt.Sprintf("(%d, %d)", datatype.Prec, datatype.Scale)
 	} else if datatype.Prec > 0 {
 		typ += fmt.Sprintf("(%d)", datatype.Prec)
+	}
+	if datatype.Unsigned {
+		typ += " UNSIGNED"
 	}
 	if datatype.IsArray {
 		typ += "[]"
@@ -295,9 +286,9 @@ func (f *Funcs) convert(typ string) string {
 	return strings.ToUpper(typ)
 }
 
-// strLiteral properly escapes string literals within single quotes
+// literal properly escapes string literals within single quotes
 // (Used for enum values in postgres)
-func (f *Funcs) strLiteral(literal string) string {
+func (f *Funcs) literal(literal string) string {
 	return fmt.Sprint("'", strings.ReplaceAll(literal, "'", "''"), "'")
 }
 
@@ -311,6 +302,13 @@ func (f *Funcs) comma(i int, v interface{}) string {
 		return ","
 	}
 	return ""
+}
+
+func (f *Funcs) isEndConstraint(idx *xo.Index) bool {
+	if f.driver == "sqlite3" && idx.Fields[0].IsSequence {
+		return false
+	}
+	return idx.IsPrimary || idx.IsUnique
 }
 
 var escapeValues = map[string][2]string{

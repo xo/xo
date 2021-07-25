@@ -49,10 +49,9 @@ func PostgresFlags() []xo.Flag {
 
 // PostgresGoType parse a type into a Go type based on the database type definition.
 func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
-	typ, nullable := d.Type, d.Nullable
 	// SETOF -> []T
-	if strings.HasPrefix(typ, "SETOF ") {
-		d.Type = typ[len("SETOF "):]
+	if strings.HasPrefix(d.Type, "SETOF ") {
+		d.Type = d.Type[len("SETOF "):]
 		goType, _, err := PostgresGoType(ctx, d)
 		if err != nil {
 			return "", "", err
@@ -60,73 +59,72 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 		return "[]" + goType, "nil", nil
 	}
 	// determine if it's a slice
-	asSlice := d.IsArray
 	var goType, zero string
-	switch typ {
+	switch d.Type {
 	case "boolean":
 		goType, zero = "bool", "false"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "bpchar", "char", "character varying", "character", "inet", "money", "text":
 		goType, zero = "string", `""`
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	case "smallint":
 		goType, zero = "int16", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "integer":
 		goType, zero = Int32(ctx), "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "real":
 		goType, zero = "float32", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "double precision", "numeric":
 		goType, zero = "float64", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
 		goType, zero = "time.Time", "time.Time{}"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	case "bit":
 		goType, zero = "uint8", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "*uint8", "nil"
 		}
 	case "any", "bit varying", "bytea", "interval", "json", "jsonb", "xml":
 		// TODO: write custom type for interval marshaling
 		// TODO: marshalling for json types
-		goType, zero, asSlice = "byte", "nil", true
+		goType, zero = "[]byte", "nil"
 	case "hstore":
 		goType, zero = "hstore.Hstore", "nil"
 	case "uuid":
 		goType, zero = "uuid.UUID", "uuid.UUID{}"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "uuid.NullUUID", "uuid.NullUUID{}"
 		}
 	default:
-		goType, zero = SchemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
 	}
 	// handle slices
 	switch {
-	case asSlice && goType == "string":
+	case d.IsArray && goType == "string":
 		return "StringSlice", "StringSlice{}", nil
-	case asSlice:
+	case d.IsArray:
 		return "[]" + goType, "nil", nil
 	}
 	return goType, zero, nil

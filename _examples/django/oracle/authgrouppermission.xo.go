@@ -223,7 +223,7 @@ func AuthGroupPermissionsByPermissionID(ctx context.Context, db DB, permissionID
 
 // AuthGroupPermissionByID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
 //
-// Generated from index 'sys_c0012438'.
+// Generated from index 'sys_c0013692'.
 func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +

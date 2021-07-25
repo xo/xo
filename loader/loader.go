@@ -131,4 +131,4 @@ func SchemaGoType(ctx context.Context, typ string, nullable bool) (string, strin
 }
 
 // intRE matches Go int types.
-var intRE = regexp.MustCompile(`^int(32|64)?$`)
+var intRE = regexp.MustCompile(`^int(8|16|32|64)?$`)

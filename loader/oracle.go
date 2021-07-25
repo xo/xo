@@ -31,48 +31,47 @@ func init() {
 // OracleGoType parse a oracle type into a Go type based on the column
 // definition.
 func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
-	typ, nullable, prec, scale := d.Type, d.Nullable, d.Prec, d.Scale
 	var goType, zero string
 	// strip remaining length (on things like timestamp)
-	switch orLenRE.ReplaceAllString(typ, "") {
+	switch orLenRE.ReplaceAllString(d.Type, "") {
 	case "char", "nchar", "varchar", "varchar2", "nvarchar2", "clob", "nclob", "rowid":
 		goType, zero = "string", `""`
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	case "number":
 		switch {
-		case prec == 0 && scale == 0 && !nullable:
+		case d.Prec == 0 && d.Scale == 0 && !d.Nullable:
 			goType, zero = "int", "0"
-		case scale != 0 && !nullable:
+		case d.Scale != 0 && !d.Nullable:
 			goType, zero = "float64", "0.0"
-		case scale != 0 && nullable:
+		case d.Scale != 0 && d.Nullable:
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
-		case !nullable:
+		case !d.Nullable:
 			goType, zero = "int64", "0"
 		default:
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "float":
 		goType, zero = "float64", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "date", "timestamp", "timestamp with time zone", "timestamp with local time zone":
 		goType, zero = "time.Time", "time.Time{}"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	case "blob", "long raw", "raw", "xmltype":
 		goType, zero = "[]byte", "nil"
 	default:
-		goType, zero = SchemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
 	}
 	// handle bools
 	switch {
-	case goType == "int" && prec == 1 && !nullable:
+	case goType == "int" && d.Prec == 1 && !d.Nullable:
 		goType, zero = "bool", "false"
-	case goType == "int" && prec == 1 && nullable:
+	case goType == "int" && d.Prec == 1 && d.Nullable:
 		goType, zero = "sql.NullBool", "sql.NullBool{}"
 	}
 	return goType, zero, nil

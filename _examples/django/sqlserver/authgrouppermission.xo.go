@@ -145,7 +145,7 @@ func (agp *AuthGroupPermission) Delete(ctx context.Context, db DB) error {
 
 // AuthGroupPermissionByID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
 //
-// Generated from index 'PK__auth_gro__3213E83F96B7E0C9'.
+// Generated from index 'PK__auth_gro__3213E83F98B3D98E'.
 func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +

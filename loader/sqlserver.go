@@ -31,53 +31,52 @@ func init() {
 // SqlserverGoType parse a mssql type into a Go type based on the column
 // definition.
 func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
-	typ, nullable := d.Type, d.Nullable
 	var goType, zero string
-	switch typ {
+	switch d.Type {
 	case "tinyint", "bit":
 		goType, zero = "bool", "false"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "char", "money", "nchar", "ntext", "nvarchar", "smallmoney", "text", "varchar":
 		goType, zero = "string", `""`
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	case "smallint":
 		goType, zero = "int16", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "int":
 		goType, zero = Int32(ctx), "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "real":
 		goType, zero = "float32", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "numeric", "decimal", "float":
 		goType, zero = "float64", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "binary", "image", "varbinary", "xml":
 		goType, zero = "[]byte", "nil"
 	case "date", "time", "smalldatetime", "datetime", "datetime2", "datetimeoffset":
 		goType, zero = "time.Time", "time.Time{}"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	default:
-		goType, zero = SchemaGoType(ctx, typ, nullable)
+		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
 	}
 	return goType, zero, nil
 }

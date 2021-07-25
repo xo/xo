@@ -16,7 +16,7 @@ type DjangoAdminLog struct {
 	ChangeMessage string         `json:"change_message"`  // change_message
 	ContentTypeID sql.NullInt64  `json:"content_type_id"` // content_type_id
 	UserID        int            `json:"user_id"`         // user_id
-	ActionFlag    string         `json:"action_flag"`     // action_flag
+	ActionFlag    uint           `json:"action_flag"`     // action_flag
 	// xo fields
 	_exists, _deleted bool
 }

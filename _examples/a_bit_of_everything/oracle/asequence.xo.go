@@ -76,7 +76,7 @@ func (as *ASequence) Delete(ctx context.Context, db DB) error {
 
 // ASequenceByASeq retrieves a row from 'a_bit_of_everything.a_sequence' as a ASequence.
 //
-// Generated from index 'a_seq_pkey'.
+// Generated from index 'a_sequence_pkey'.
 func ASequenceByASeq(ctx context.Context, db DB, aSeq int) (*ASequence, error) {
 	// query
 	const sqlstr = `SELECT ` +

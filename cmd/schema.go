@@ -135,8 +135,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	var m []xo.Proc
 	for _, proc := range procMap {
 		if len(proc.Returns) == 1 && proc.Returns[0].Datatype.Type == "void" {
-			proc.Returns = nil
-			proc.Void = true
+			proc.Void, proc.Returns = true, proc.Returns[1:]
 		}
 		m = append(m, proc)
 	}

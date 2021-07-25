@@ -38,7 +38,7 @@
           ],
           "indexes": [
             {
-              "name": "sys_c0012433",
+              "name": "sys_c0013687",
               "func_name": "auth_group_by_id",
               "fields": [
                 {
@@ -54,7 +54,7 @@
               "is_unique": true
             },
             {
-              "name": "sys_c0012434",
+              "name": "sys_c0013688",
               "func_name": "auth_group_by_name",
               "fields": [
                 {
@@ -157,7 +157,7 @@
               ]
             },
             {
-              "name": "sys_c0012438",
+              "name": "sys_c0013692",
               "func_name": "auth_group_permission_by_id",
               "fields": [
                 {
@@ -310,7 +310,7 @@
               ]
             },
             {
-              "name": "sys_c0012431",
+              "name": "sys_c0013685",
               "func_name": "auth_permission_by_id",
               "fields": [
                 {
@@ -453,7 +453,7 @@
           ],
           "indexes": [
             {
-              "name": "sys_c0012448",
+              "name": "sys_c0013702",
               "func_name": "auth_user_by_id",
               "fields": [
                 {
@@ -469,7 +469,7 @@
               "is_unique": true
             },
             {
-              "name": "sys_c0012449",
+              "name": "sys_c0013703",
               "func_name": "auth_user_by_username",
               "fields": [
                 {
@@ -572,7 +572,7 @@
               "is_unique": true
             },
             {
-              "name": "sys_c0012453",
+              "name": "sys_c0013707",
               "func_name": "auth_user_group_by_id",
               "fields": [
                 {
@@ -731,7 +731,7 @@
               "is_unique": true
             },
             {
-              "name": "sys_c0012457",
+              "name": "sys_c0013711",
               "func_name": "auth_user_user_permission_by_id",
               "fields": [
                 {
@@ -836,7 +836,7 @@
           ],
           "indexes": [
             {
-              "name": "sys_c0012478",
+              "name": "sys_c0013732",
               "func_name": "author_by_author_id",
               "fields": [
                 {
@@ -935,7 +935,7 @@
               ]
             },
             {
-              "name": "sys_c0012486",
+              "name": "sys_c0013740",
               "func_name": "book_by_book_id",
               "fields": [
                 {
@@ -1068,7 +1068,7 @@
               ]
             },
             {
-              "name": "sys_c0012490",
+              "name": "sys_c0013744",
               "func_name": "books_tag_by_id",
               "fields": [
                 {
@@ -1243,7 +1243,7 @@
               ]
             },
             {
-              "name": "sys_c0012474",
+              "name": "sys_c0013728",
               "func_name": "django_admin_log_by_id",
               "fields": [
                 {
@@ -1377,7 +1377,7 @@
               "is_unique": true
             },
             {
-              "name": "sys_c0012427",
+              "name": "sys_c0013681",
               "func_name": "django_content_type_by_id",
               "fields": [
                 {
@@ -1442,7 +1442,7 @@
           ],
           "indexes": [
             {
-              "name": "sys_c0012425",
+              "name": "sys_c0013679",
               "func_name": "django_migration_by_id",
               "fields": [
                 {
@@ -1509,7 +1509,7 @@
               ]
             },
             {
-              "name": "sys_c0012497",
+              "name": "sys_c0013751",
               "func_name": "django_session_by_session_key",
               "fields": [
                 {
@@ -1559,7 +1559,7 @@
           ],
           "indexes": [
             {
-              "name": "sys_c0012480",
+              "name": "sys_c0013734",
               "func_name": "tag_by_tag_id",
               "fields": [
                 {

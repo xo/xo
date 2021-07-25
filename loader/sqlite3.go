@@ -28,51 +28,49 @@ func init() {
 // Sqlite3GoType parse a sqlite3 type into a Go type based on the column
 // definition.
 func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
-	typ, nullable := d.Type, d.Nullable
-	unsigned := false
-	if unsignedRE.MatchString(typ) {
-		unsigned = true
-		unsignedRE.ReplaceAllString(typ, "")
-	}
 	var goType, zero string
-	switch typ {
+	switch d.Type {
 	case "bool", "boolean":
 		goType, zero = "bool", "false"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "int", "integer", "tinyint", "smallint", "mediumint":
 		goType, zero = Int32(ctx), "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "numeric", "real", "double", "float", "decimal":
 		goType, zero = "float64", "0.0"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "blob":
 		goType, zero = "[]byte", "nil"
 	case "timestamp", "datetime", "date", "timestamp with timezone", "time with timezone", "time without timezone", "timestamp without timezone":
 		goType, zero = "Time", "Time{}"
-		if nullable {
+		if d.Nullable {
 			goType, zero = "*Time", "nil"
 		}
 	default:
 		// case "varchar", "character", "varying character", "nchar", "native character", "nvarchar", "text", "clob", "time":
 		goType, zero = "string", `""`
-		if nullable {
+		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	}
 	// if unsigned ...
-	if intRE.MatchString(goType) && unsigned && goType == Int32(ctx) {
-		goType, zero = Uint32(ctx), "0"
+	if intRE.MatchString(goType) && d.Unsigned {
+		if goType == Int32(ctx) {
+			goType, zero = Uint32(ctx), "0"
+		} else {
+			goType = "u" + goType
+		}
 	}
 	return goType, zero, nil
 }

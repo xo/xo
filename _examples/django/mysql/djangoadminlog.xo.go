@@ -14,7 +14,7 @@ type DjangoAdminLog struct {
 	ActionTime    time.Time      `json:"action_time"`     // action_time
 	ObjectID      sql.NullString `json:"object_id"`       // object_id
 	ObjectRepr    string         `json:"object_repr"`     // object_repr
-	ActionFlag    Smallint5      `json:"action_flag"`     // action_flag
+	ActionFlag    uint16         `json:"action_flag"`     // action_flag
 	ChangeMessage string         `json:"change_message"`  // change_message
 	ContentTypeID sql.NullInt64  `json:"content_type_id"` // content_type_id
 	UserID        int            `json:"user_id"`         // user_id

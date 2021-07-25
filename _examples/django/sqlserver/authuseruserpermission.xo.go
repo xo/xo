@@ -145,7 +145,7 @@ func (auup *AuthUserUserPermission) Delete(ctx context.Context, db DB) error {
 
 // AuthUserUserPermissionByID retrieves a row from 'django.auth_user_user_permissions' as a AuthUserUserPermission.
 //
-// Generated from index 'PK__auth_use__3213E83FE743C00D'.
+// Generated from index 'PK__auth_use__3213E83F6011A5A7'.
 func AuthUserUserPermissionByID(ctx context.Context, db DB, id int64) (*AuthUserUserPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +
