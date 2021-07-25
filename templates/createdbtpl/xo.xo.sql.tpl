@@ -35,7 +35,7 @@ CREATE INDEX {{ esc $idx.Name }} ON {{ esc $t.Name }} ({{ fields $idx.Fields }})
 {{- range $v := $s.Views }}
 -- view {{ $v.Name }}
 {{ viewdef $v }}
-{{- end }}
+{{ end }}
 {{ end -}}
 {{- if $s.Procs }}
 {{- range $p := $s.Procs }}

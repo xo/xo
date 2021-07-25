@@ -142,6 +142,7 @@ CREATE TABLE a_unique_index_composite (
 -- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
+
 -- view a_view_of_everything_some
 CREATE VIEW a_view_of_everything_some AS
   SELECT a_bit, a_text FROM a_bit_of_everything;

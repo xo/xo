@@ -233,6 +233,7 @@ SELECT a_bit_of_everything.a_enum,
     a_bit_of_everything.a_xml,
     a_bit_of_everything.a_xml_nullable
    FROM a_bit_of_everything;
+
 -- view a_view_of_everything_some
 CREATE VIEW a_view_of_everything_some AS
 SELECT a_bit_of_everything.a_bool,
