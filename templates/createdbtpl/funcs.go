@@ -123,7 +123,7 @@ func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 func (f *Funcs) colFKey(table xo.Table, field xo.Field) string {
 	for _, fk := range table.ForeignKeys {
 		if len(fk.Fields) == 1 && fk.Fields[0] == field {
-			tblName, fieldName := f.escType(fk.RefTable), fk.Fields[0].Name
+			tblName, fieldName := f.escType(fk.RefTable), fk.RefFields[0].Name
 			return fmt.Sprintf("%sREFERENCES %s (%s)", f.constraintfn(fk.Name), tblName, fieldName)
 		}
 	}
