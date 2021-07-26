@@ -37,7 +37,8 @@ The following is a matrix of the feature support for each database:
 | Primary Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
 | Foreign Keys |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
 | Indexes      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
-| Stored Procs |:white_check_mark:|:white_check_mark:|                  |                     |                  |
+| Stored Procs |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
+| Functions    |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:   |:white_check_mark:|
 | ENUM types   |:white_check_mark:|:white_check_mark:|                  |                     |                  |
 | Custom types |:white_check_mark:|                  |                  |                     |                  |
 
@@ -54,9 +55,6 @@ Then, install `xo` in the usual Go way:
 
 ```sh
 $ go get -u github.com/xo/xo
-
-# Install with oracle support (see notes below)
-$ go get -tags oracle -u github.com/xo/xo
 ```
 
 > **Note:** Go 1.16+ is needed for installing `xo` from source, as it makes use
@@ -105,46 +103,10 @@ $ xo --help-long
 usage: xo [<flags>] <command> [<args> ...]
 
 Flags:
-      --help                   Show context-sensitive help (also try --help-long
-                               and --help-man).
-  -v, --verbose                enable verbose output
-      --version                display version and exit
-  -s, --schema=<name>          database schema name
-  -t, --template=go            template type (go, graphviz; default: go)
-  -f, --suffix=<ext>           file extension suffix for generated files
-                               (otherwise set by template type)
-  -o, --out=models             out path (default: models)
-  -a, --append                 enable append mode
-  -S, --single=<file>          enable single file output
-  -D, --debug                  debug generated code (writes generated code to
-                               disk without post processing)
-  -k, --fk-mode=smart          foreign key resolution mode (smart, parent,
-                               field, key; default: smart)
-  -I, --ignore=<field> ...     fields to exclude from generated code
-  -j, --use-index-names        use index names as defined in schema for
-                               generated code
-  -d, --src=<path>             template source directory
-  -2, --go-not-first           disable package comment (ie, not first generated
-                               file)
-      --go-int32=int           int32 type (default: int)
-      --go-uint32=uint         uint32 type (default: uint)
-      --go-pkg=<name>          package name
-      --go-tag="" ...          build tags
-      --go-import="" ...       package imports
-      --go-uuid=<pkg>          uuid type package
-      --go-custom=<name>       package name for custom types
-      --go-conflict=Val        name conflict suffix (default: Val)
-      --go-esc=none ...        escape fields (none, schema, table, column, all;
-                               default: none)
-  -g, --go-field-tag=<tag>     field tag
-      --go-context=only        context mode (disable, both, only; default: only)
-      --go-inject=""           insert code into generated file headers
-      --go-inject-file=<file>  insert code into generated file headers from a
-                               file
-      --postgres-oids          enable postgres OIDs
-
-Args:
-  <DSN>  data source name
+      --help     Show context-sensitive help (also try --help-long and
+                 --help-man).
+  -v, --verbose  enable verbose output
+      --version  display version and exit
 
 Commands:
   help [<command>...]
@@ -155,7 +117,8 @@ Commands:
     Generate code for a database custom query from a template.
 
     -s, --schema=<name>          database schema name
-    -t, --template=go            template type (go, graphviz; default: go)
+    -t, --template=go            template type (createdb, dot, go, json, yaml;
+                                 default: go)
     -f, --suffix=<ext>           file extension suffix for generated files
                                  (otherwise set by template type)
     -o, --out=models             out path (default: models)
@@ -173,6 +136,7 @@ Commands:
     -B, --strip                  enable stripping type casts
     -1, --one                    enable returning single (only one) result
     -l, --flat                   enable returning unstructured values
+    -X, --exec                   enable exec (no introspection performed)
     -I, --interpolate            enable interpolation of embedded params
     -L, --delimiter=%%           delimiter used for embedded params (default:
                                  %%)
@@ -197,12 +161,15 @@ Commands:
         --go-inject=""           insert code into generated file headers
         --go-inject-file=<file>  insert code into generated file headers from a
                                  file
+        --json-indent="  "       indent spacing
+        --json-ugly              disable indentation
 
   schema [<flags>] <DSN>
     Generate code for a database schema from a template.
 
     -s, --schema=<name>          database schema name
-    -t, --template=go            template type (go, graphviz; default: go)
+    -t, --template=go            template type (createdb, dot, go, json, yaml;
+                                 default: go)
     -f, --suffix=<ext>           file extension suffix for generated files
                                  (otherwise set by template type)
     -o, --out=models             out path (default: models)
@@ -212,10 +179,27 @@ Commands:
                                  disk without post processing)
     -k, --fk-mode=smart          foreign key resolution mode (smart, parent,
                                  field, key; default: smart)
-    -I, --ignore=<field> ...     fields to exclude from generated code
+        --include=<glob> ...     specify included types ([<schema>.]<type>)
+        --exclude=<glob> ...     specify excluded types ([<schema>.]<type>)
+    -I, --exclude-field=<field> ...  
+                                 fields to exclude from generated code
     -j, --use-index-names        use index names as defined in schema for
                                  generated code
     -d, --src=<path>             template source directory
+        --createdb-fmt=<path>    fmt command (default: )
+        --createdb-fmt-opts=<opts> ...  
+                                 fmt options (default: )
+        --createdb-constraint    enable constraint name in output (postgres,
+                                 mysql, sqlite3)
+        --createdb-escape=none   escape mode (none, types, all; default: none)
+        --createdb-engine=""     mysql table engine (default: InnoDB)
+        --dot-defaults="" ...    default statements (default: node [shape=none,
+                                 margin=0])
+        --dot-bold               bold header row
+        --dot-color=""           header color (default: lightblue)
+        --dot-row=""             row value template (default: {{ .Name }}: {{
+                                 .Datatype.Type }})
+        --dot-direction          enable edge directions
     -2, --go-not-first           disable package comment (ie, not first
                                  generated file)
         --go-int32=int           int32 type (default: int)
@@ -234,12 +218,15 @@ Commands:
         --go-inject=""           insert code into generated file headers
         --go-inject-file=<file>  insert code into generated file headers from a
                                  file
+        --json-indent="  "       indent spacing
+        --json-ugly              disable indentation
         --postgres-oids          enable postgres OIDs
 
   dump [<flags>] <out>
     Dump internal templates to path.
 
-    -t, --template=go   template type (go, graphviz; default: go)
+    -t, --template=go   template type (createdb, dot, go, json, yaml; default:
+                        go)
     -f, --suffix=<ext>  file extension suffix for generated files (otherwise set
                         by template type)
 ```
@@ -498,11 +485,11 @@ reference, these are the expected drivers to use with the code generated by
 
 | Database (driver)            | Package                                                                      |
 |------------------------------|------------------------------------------------------------------------------|
-| Microsoft SQL Server (mssql) | [github.com/denisenkom/go-mssqldb](https://github.com/denisenkom/go-mssqldb) |
-| MySQL (mysql)                | [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)     |
-| Oracle (ora)                 | [gopkg.in/rana/ora.v4](https://gopkg.in/rana/ora.v4)                         |
 | PostgreSQL (postgres)        | [github.com/lib/pq](https://github.com/lib/pq)                               |
 | SQLite3 (sqlite3)            | [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)           |
+| MySQL (mysql)                | [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)     |
+| Microsoft SQL Server (mssql) | [github.com/denisenkom/go-mssqldb](https://github.com/denisenkom/go-mssqldb) |
+| Oracle (godror)              | [github.com/godror/godror](https://github/godror/godror)                     |
 
 Additionally, please see below for usage notes on specific SQL database
 drivers.
@@ -536,18 +523,20 @@ And when opening a database connection:
 db, err := dburl.Open("mysql://user:pass@host/dbname?parseTime=true")
 ```
 
-### Oracle (ora)
+### SQLite3 (sqlite3)
 
-Oracle support is disabled by default as the [Go Oracle driver](https://github.com/rana/ora)
-used by `xo` needs the Oracle `instantclient` libs to be installed/known by
-`pkg-config`. If you have already [installed rana's Oracle driver](https://github.com/rana/ora#installation)
-according to the installation instructions, you can simply pass `-tags oracle`
-to `go get`, `go install` or `go build` to enable Oracle support:
+While not required, one should specify the `loc=auto` option when using `xo`
+with a SQLite3 database:
 
 ```sh
-$ go get -tags oracle -u github.com/xo/xo
+$ xo 'file:mydatabase.sqlite3?loc=auto' -o models
 ```
 
+And when opening a database connection:
+
+```go
+db, err := dburl.Open("file:mydatabase.sqlite3?loc=auto")
+```
 #### Installing Oracle instantclient on Debian/Ubuntu
 
 On Ubuntu/Debian, you may download the instantclient RPMs
@@ -587,20 +576,6 @@ For reference, the `xo` developers use the
 [sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/) Docker image
 for testing `xo`'s Oracle database support.
 
-### SQLite3 (sqlite3)
-
-While not required, one should specify the `loc=auto` option when using `xo`
-with a SQLite3 database:
-
-```sh
-$ xo 'file:mydatabase.sqlite3?loc=auto' -o models
-```
-
-And when opening a database connection:
-
-```go
-db, err := dburl.Open("file:mydatabase.sqlite3?loc=auto")
-```
 
 ## About Primary Keys
 For row inserts `xo` determines whether the primary key is
@@ -616,12 +591,12 @@ application provide the primary key for the object passed to the Insert method.
 Below is information on how the logic works for each database type to determine
 if the DB automatically provides the PK.
 
+### PostgreSQL Auto PK Logic
+* Checks for a sequence that is owned by the table in question.
+
 ### MySQL Auto PK Logic
 * Checks for an autoincrement row in the information_schema for the table in
   question.
-
-### PostgreSQL Auto PK Logic
-* Checks for a sequence that is owned by the table in question.
 
 ### SQLite Auto PK Logic
 * Checks the SQL that is used to generate the table contains
@@ -649,9 +624,7 @@ table:
   question.
 
 ### Oracle Auto PK Logic
-There is currently no method provided for Oracle as there is no programmatic way
-to query for which sequences are associated with tables. All Primary Keys will
-be assumed to be provided by the database.
+`ALWAYS GENERATED` types will be parsed as Auto PK types for Oracle.
 
 ## About xo: Design, Origin, Philosophy, and History
 
