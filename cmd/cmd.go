@@ -141,21 +141,17 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 			flag.Add(cmd, args.TemplateParams.Flags)
 		}
 	}
-	// include, exclude flags
-	ef := func(cmd *kingpin.CmdClause, name, desc string) {
+	// glob flags
+	gf := func(cmd *kingpin.CmdClause, typ string, dest *[]glob.Glob, desc string) {
 		var globs []string
 		// add flag and compile
-		cmd.Flag(name, desc).PlaceHolder("<glob>").Action(func(_ *kingpin.ParseContext) error {
-			res := make([]glob.Glob, len(globs))
-			for i, pattern := range globs {
-				res[i] = glob.MustCompile(pattern)
-			}
-			// update args
-			switch name {
-			case "include":
-				args.SchemaParams.Include = res
-			case "exclude":
-				args.SchemaParams.Exclude = res
+		cmd.Flag(typ, desc).PlaceHolder("<glob>").Action(func(_ *kingpin.ParseContext) error {
+			*dest = make([]glob.Glob, len(globs))
+			for i, s := range globs {
+				var err error
+				if (*dest)[i], err = glob.Compile(s); err != nil {
+					return fmt.Errorf("--%s %d: %v", typ, i, err)
+				}
 			}
 			return nil
 		}).StringsVar(&globs)
@@ -187,9 +183,9 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	tc(schemaCmd)
 	oc(schemaCmd)
 	schemaCmd.Flag("fk-mode", "foreign key resolution mode (smart, parent, field, key; default: smart)").Short('k').Default("smart").EnumVar(&args.SchemaParams.FkMode, "smart", "parent", "field", "key")
-	ef(schemaCmd, "include", "specify included types ([<schema>.]<type>)")
-	ef(schemaCmd, "exclude", "specify excluded types ([<schema>.]<type>)")
-	schemaCmd.Flag("exclude-field", "fields to exclude from generated code").Short('I').PlaceHolder("<field>").StringsVar(&args.SchemaParams.ExcludeField)
+	gf(schemaCmd, "include", &args.SchemaParams.Include, "include types ([<schema>.]<type>)")
+	gf(schemaCmd, "exclude", &args.SchemaParams.Exclude, "exclude types ([<schema>.]<type>)")
+	gf(schemaCmd, "exclude-field", &args.SchemaParams.ExcludeField, "exclude fields")
 	schemaCmd.Flag("use-index-names", "use index names as defined in schema for generated code").Short('j').BoolVar(&args.SchemaParams.UseIndexNames)
 	tf(schemaCmd)
 	lf(schemaCmd)
@@ -336,7 +332,7 @@ type SchemaParams struct {
 	Exclude []glob.Glob
 	// ExcludeField allows the user to specify field names which should not be
 	// handled by xo in the generated code.
-	ExcludeField []string
+	ExcludeField []glob.Glob
 	// UseIndexNames toggles using index names.
 	//
 	// This is not enabled by default, because index names are often generated

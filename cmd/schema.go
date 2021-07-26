@@ -246,14 +246,10 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 	// process columns
 loop:
 	for _, c := range columns {
-		for _, ignoreField := range args.SchemaParams.ExcludeField {
-			if ignoreField == c.ColumnName {
-				// Skip adding this field if user has specified they are not
-				// interested.
-				//
-				// This could be useful for fields which are managed by the
-				// database (e.g. automatically updated timestamps) instead of
-				// via Go code.
+		for _, g := range args.SchemaParams.ExcludeField {
+			// Skip adding this field if user has specified they are not
+			// interested.
+			if g.Match(c.ColumnName) {
 				continue loop
 			}
 		}
