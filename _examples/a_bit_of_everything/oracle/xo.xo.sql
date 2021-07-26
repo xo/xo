@@ -57,9 +57,22 @@ CREATE TABLE a_bit_of_everything (
   a_xmltype_nullable XMLTYPE
 );
 
+-- table a_primary
+CREATE TABLE a_primary (
+  a_key NUMBER NOT NULL,
+  CONSTRAINT a_primary_pkey UNIQUE (a_key)
+);
+
 -- table a_foreign_key
 CREATE TABLE a_foreign_key (
   a_key NUMBER CONSTRAINT a_key_fkey REFERENCES a_primary (a_key)
+);
+
+-- table a_primary_composite
+CREATE TABLE a_primary_composite (
+  a_key1 NUMBER NOT NULL,
+  a_key2 NUMBER NOT NULL,
+  CONSTRAINT a_primary_composite_pkey UNIQUE (a_key1, a_key2)
 );
 
 -- table a_foreign_key_composite
@@ -89,19 +102,6 @@ CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 -- table a_manual_table
 CREATE TABLE a_manual_table (
   a_text NVARCHAR2
-);
-
--- table a_primary
-CREATE TABLE a_primary (
-  a_key NUMBER NOT NULL,
-  CONSTRAINT a_primary_pkey UNIQUE (a_key)
-);
-
--- table a_primary_composite
-CREATE TABLE a_primary_composite (
-  a_key1 NUMBER NOT NULL,
-  a_key2 NUMBER NOT NULL,
-  CONSTRAINT a_primary_composite_pkey UNIQUE (a_key1, a_key2)
 );
 
 -- table a_primary_multi

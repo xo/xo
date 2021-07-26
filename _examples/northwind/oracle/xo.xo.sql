@@ -9,20 +9,6 @@ CREATE TABLE categories (
   CONSTRAINT categories_pkey UNIQUE (category_id)
 );
 
--- table customer_customer_demo
-CREATE TABLE customer_customer_demo (
-  customer_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
-  customer_type_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
-  CONSTRAINT customer_customer_demo_pkey UNIQUE (customer_id, customer_type_id)
-);
-
--- table customer_demographics
-CREATE TABLE customer_demographics (
-  customer_type_id NCHAR NOT NULL,
-  customer_desc CLOB,
-  CONSTRAINT customer_demographics_pkey UNIQUE (customer_type_id)
-);
-
 -- table customers
 CREATE TABLE customers (
   customer_id NCHAR NOT NULL,
@@ -39,11 +25,18 @@ CREATE TABLE customers (
   CONSTRAINT customers_pkey UNIQUE (customer_id)
 );
 
--- table employee_territories
-CREATE TABLE employee_territories (
-  employee_id NUMBER NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
-  territory_id NVARCHAR2 NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
-  CONSTRAINT employee_territories_pkey UNIQUE (employee_id, territory_id)
+-- table customer_demographics
+CREATE TABLE customer_demographics (
+  customer_type_id NCHAR NOT NULL,
+  customer_desc CLOB,
+  CONSTRAINT customer_demographics_pkey UNIQUE (customer_type_id)
+);
+
+-- table customer_customer_demo
+CREATE TABLE customer_customer_demo (
+  customer_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
+  customer_type_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
+  CONSTRAINT customer_customer_demo_pkey UNIQUE (customer_id, customer_type_id)
 );
 
 -- table employees
@@ -69,14 +62,34 @@ CREATE TABLE employees (
   CONSTRAINT employees_pkey UNIQUE (employee_id)
 );
 
--- table order_details
-CREATE TABLE order_details (
-  order_id NUMBER NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
-  product_id NUMBER NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
-  unit_price FLOAT NOT NULL,
-  quantity NUMBER NOT NULL,
-  discount FLOAT NOT NULL,
-  CONSTRAINT order_details_pkey UNIQUE (order_id, product_id)
+-- table region
+CREATE TABLE region (
+  region_id NUMBER NOT NULL,
+  region_description NCHAR NOT NULL,
+  CONSTRAINT regions_pkey UNIQUE (region_id)
+);
+
+-- table territories
+CREATE TABLE territories (
+  territory_id NVARCHAR2 NOT NULL,
+  territory_description NCHAR NOT NULL,
+  region_id NUMBER NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
+  CONSTRAINT territories_pkey UNIQUE (territory_id)
+);
+
+-- table employee_territories
+CREATE TABLE employee_territories (
+  employee_id NUMBER NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
+  territory_id NVARCHAR2 NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
+  CONSTRAINT employee_territories_pkey UNIQUE (employee_id, territory_id)
+);
+
+-- table shippers
+CREATE TABLE shippers (
+  shipper_id NUMBER NOT NULL,
+  company_name NVARCHAR2 NOT NULL,
+  phone NVARCHAR2,
+  CONSTRAINT shippers_pkey UNIQUE (shipper_id)
 );
 
 -- table orders
@@ -98,36 +111,6 @@ CREATE TABLE orders (
   CONSTRAINT orders_pkey UNIQUE (order_id)
 );
 
--- table products
-CREATE TABLE products (
-  product_id NUMBER NOT NULL,
-  product_name NVARCHAR2 NOT NULL,
-  supplier_id NUMBER CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
-  category_id NUMBER CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
-  quantity_per_unit NVARCHAR2,
-  unit_price FLOAT,
-  units_in_stock NUMBER,
-  units_on_order NUMBER,
-  reorder_level NUMBER,
-  discontinued NUMBER NOT NULL,
-  CONSTRAINT products_pkey UNIQUE (product_id)
-);
-
--- table region
-CREATE TABLE region (
-  region_id NUMBER NOT NULL,
-  region_description NCHAR NOT NULL,
-  CONSTRAINT regions_pkey UNIQUE (region_id)
-);
-
--- table shippers
-CREATE TABLE shippers (
-  shipper_id NUMBER NOT NULL,
-  company_name NVARCHAR2 NOT NULL,
-  phone NVARCHAR2,
-  CONSTRAINT shippers_pkey UNIQUE (shipper_id)
-);
-
 -- table suppliers
 CREATE TABLE suppliers (
   supplier_id NUMBER NOT NULL,
@@ -145,12 +128,29 @@ CREATE TABLE suppliers (
   CONSTRAINT suppliers_pkey UNIQUE (supplier_id)
 );
 
--- table territories
-CREATE TABLE territories (
-  territory_id NVARCHAR2 NOT NULL,
-  territory_description NCHAR NOT NULL,
-  region_id NUMBER NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
-  CONSTRAINT territories_pkey UNIQUE (territory_id)
+-- table products
+CREATE TABLE products (
+  product_id NUMBER NOT NULL,
+  product_name NVARCHAR2 NOT NULL,
+  supplier_id NUMBER CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
+  category_id NUMBER CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
+  quantity_per_unit NVARCHAR2,
+  unit_price FLOAT,
+  units_in_stock NUMBER,
+  units_on_order NUMBER,
+  reorder_level NUMBER,
+  discontinued NUMBER NOT NULL,
+  CONSTRAINT products_pkey UNIQUE (product_id)
+);
+
+-- table order_details
+CREATE TABLE order_details (
+  order_id NUMBER NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
+  product_id NUMBER NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
+  unit_price FLOAT NOT NULL,
+  quantity NUMBER NOT NULL,
+  discount FLOAT NOT NULL,
+  CONSTRAINT order_details_pkey UNIQUE (order_id, product_id)
 );
 
 -- table us_states

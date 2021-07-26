@@ -9,20 +9,6 @@ CREATE TABLE categories (
   PRIMARY KEY (category_id)
 );
 
--- table customer_customer_demo
-CREATE TABLE customer_customer_demo (
-  customer_id CHAR(255) NOT NULL REFERENCES customers (customer_id),
-  customer_type_id CHAR(255) NOT NULL REFERENCES customer_demographics (customer_type_id),
-  PRIMARY KEY (customer_id, customer_type_id)
-);
-
--- table customer_demographics
-CREATE TABLE customer_demographics (
-  customer_type_id CHAR(255) NOT NULL,
-  customer_desc TEXT,
-  PRIMARY KEY (customer_type_id)
-);
-
 -- table customers
 CREATE TABLE customers (
   customer_id CHAR(255) NOT NULL,
@@ -39,11 +25,18 @@ CREATE TABLE customers (
   PRIMARY KEY (customer_id)
 );
 
--- table employee_territories
-CREATE TABLE employee_territories (
-  employee_id SMALLINT NOT NULL REFERENCES employees (employee_id),
-  territory_id VARCHAR(20) NOT NULL REFERENCES territories (territory_id),
-  PRIMARY KEY (employee_id, territory_id)
+-- table customer_demographics
+CREATE TABLE customer_demographics (
+  customer_type_id CHAR(255) NOT NULL,
+  customer_desc TEXT,
+  PRIMARY KEY (customer_type_id)
+);
+
+-- table customer_customer_demo
+CREATE TABLE customer_customer_demo (
+  customer_id CHAR(255) NOT NULL REFERENCES customers (customer_id),
+  customer_type_id CHAR(255) NOT NULL REFERENCES customer_demographics (customer_type_id),
+  PRIMARY KEY (customer_id, customer_type_id)
 );
 
 -- table employees
@@ -69,14 +62,34 @@ CREATE TABLE employees (
   PRIMARY KEY (employee_id)
 );
 
--- table order_details
-CREATE TABLE order_details (
-  order_id SMALLINT NOT NULL REFERENCES orders (order_id),
-  product_id SMALLINT NOT NULL REFERENCES products (product_id),
-  unit_price REAL NOT NULL,
-  quantity SMALLINT NOT NULL,
-  discount REAL NOT NULL,
-  PRIMARY KEY (order_id, product_id)
+-- table region
+CREATE TABLE region (
+  region_id SMALLINT NOT NULL,
+  region_description CHAR(255) NOT NULL,
+  PRIMARY KEY (region_id)
+);
+
+-- table territories
+CREATE TABLE territories (
+  territory_id VARCHAR(20) NOT NULL,
+  territory_description CHAR(255) NOT NULL,
+  region_id SMALLINT NOT NULL REFERENCES region (region_id),
+  PRIMARY KEY (territory_id)
+);
+
+-- table employee_territories
+CREATE TABLE employee_territories (
+  employee_id SMALLINT NOT NULL REFERENCES employees (employee_id),
+  territory_id VARCHAR(20) NOT NULL REFERENCES territories (territory_id),
+  PRIMARY KEY (employee_id, territory_id)
+);
+
+-- table shippers
+CREATE TABLE shippers (
+  shipper_id SMALLINT NOT NULL,
+  company_name VARCHAR(40) NOT NULL,
+  phone VARCHAR(24),
+  PRIMARY KEY (shipper_id)
 );
 
 -- table orders
@@ -98,36 +111,6 @@ CREATE TABLE orders (
   PRIMARY KEY (order_id)
 );
 
--- table products
-CREATE TABLE products (
-  product_id SMALLINT NOT NULL,
-  product_name VARCHAR(40) NOT NULL,
-  supplier_id SMALLINT REFERENCES suppliers (supplier_id),
-  category_id SMALLINT REFERENCES categories (category_id),
-  quantity_per_unit VARCHAR(20),
-  unit_price REAL,
-  units_in_stock SMALLINT,
-  units_on_order SMALLINT,
-  reorder_level SMALLINT,
-  discontinued INTEGER NOT NULL,
-  PRIMARY KEY (product_id)
-);
-
--- table region
-CREATE TABLE region (
-  region_id SMALLINT NOT NULL,
-  region_description CHAR(255) NOT NULL,
-  PRIMARY KEY (region_id)
-);
-
--- table shippers
-CREATE TABLE shippers (
-  shipper_id SMALLINT NOT NULL,
-  company_name VARCHAR(40) NOT NULL,
-  phone VARCHAR(24),
-  PRIMARY KEY (shipper_id)
-);
-
 -- table suppliers
 CREATE TABLE suppliers (
   supplier_id SMALLINT NOT NULL,
@@ -145,12 +128,29 @@ CREATE TABLE suppliers (
   PRIMARY KEY (supplier_id)
 );
 
--- table territories
-CREATE TABLE territories (
-  territory_id VARCHAR(20) NOT NULL,
-  territory_description CHAR(255) NOT NULL,
-  region_id SMALLINT NOT NULL REFERENCES region (region_id),
-  PRIMARY KEY (territory_id)
+-- table products
+CREATE TABLE products (
+  product_id SMALLINT NOT NULL,
+  product_name VARCHAR(40) NOT NULL,
+  supplier_id SMALLINT REFERENCES suppliers (supplier_id),
+  category_id SMALLINT REFERENCES categories (category_id),
+  quantity_per_unit VARCHAR(20),
+  unit_price REAL,
+  units_in_stock SMALLINT,
+  units_on_order SMALLINT,
+  reorder_level SMALLINT,
+  discontinued INTEGER NOT NULL,
+  PRIMARY KEY (product_id)
+);
+
+-- table order_details
+CREATE TABLE order_details (
+  order_id SMALLINT NOT NULL REFERENCES orders (order_id),
+  product_id SMALLINT NOT NULL REFERENCES products (product_id),
+  unit_price REAL NOT NULL,
+  quantity SMALLINT NOT NULL,
+  discount REAL NOT NULL,
+  PRIMARY KEY (order_id, product_id)
 );
 
 -- table us_states
