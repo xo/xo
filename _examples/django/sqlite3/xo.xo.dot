@@ -134,27 +134,27 @@ digraph django_db {
 		</table>> ]
 	
 	"auth_group_permissions":"group_id":e -> "auth_group":"id":w [
-		headlabel="auth_group"]
+		headlabel="auth_group_permissions_group_id_fkey"]
 	"auth_group_permissions":"permission_id":e -> "auth_permission":"id":w [
-		headlabel="auth_permission"]
+		headlabel="auth_group_permissions_permission_id_fkey"]
 	"auth_permission":"content_type_id":e -> "django_content_type":"id":w [
-		headlabel="django_content_type"]
+		headlabel="auth_permission_content_type_id_fkey"]
 	"auth_user_groups":"group_id":e -> "auth_group":"id":w [
-		headlabel="auth_group"]
+		headlabel="auth_user_groups_group_id_fkey"]
 	"auth_user_groups":"user_id":e -> "auth_user":"id":w [
-		headlabel="auth_user"]
+		headlabel="auth_user_groups_user_id_fkey"]
 	"auth_user_user_permissions":"permission_id":e -> "auth_permission":"id":w [
-		headlabel="auth_permission"]
+		headlabel="auth_user_user_permissions_permission_id_fkey"]
 	"auth_user_user_permissions":"user_id":e -> "auth_user":"id":w [
-		headlabel="auth_user"]
+		headlabel="auth_user_user_permissions_user_id_fkey"]
 	"books":"books_author_id_fkey":e -> "authors":"author_id":w [
-		headlabel="author"]
+		headlabel="books_books_author_id_fkey_fkey"]
 	"books_tags":"book_id":e -> "books":"book_id":w [
-		headlabel="book"]
+		headlabel="books_tags_book_id_fkey"]
 	"books_tags":"tag_id":e -> "tags":"tag_id":w [
-		headlabel="tag"]
+		headlabel="books_tags_tag_id_fkey"]
 	"django_admin_log":"content_type_id":e -> "django_content_type":"id":w [
-		headlabel="django_content_type"]
+		headlabel="django_admin_log_content_type_id_fkey"]
 	"django_admin_log":"user_id":e -> "auth_user":"id":w [
-		headlabel="auth_user"]
+		headlabel="django_admin_log_user_id_fkey"]
 }

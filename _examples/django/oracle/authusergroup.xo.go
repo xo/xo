@@ -223,7 +223,7 @@ func AuthUserGroupByUserIDGroupID(ctx context.Context, db DB, userID, groupID in
 
 // AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
 //
-// Generated from index 'sys_c0013707'.
+// Generated from index 'sys_c0014060'.
 func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, error) {
 	// query
 	const sqlstr = `SELECT ` +

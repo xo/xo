@@ -152,7 +152,7 @@ func (dal *DjangoAdminLog) Delete(ctx context.Context, db DB) error {
 
 // DjangoAdminLogByID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.
 //
-// Generated from index 'PK__django_a__3213E83FE1FFD022'.
+// Generated from index 'PK__django_a__3213E83FD8A9FA97'.
 func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, error) {
 	// query
 	const sqlstr = `SELECT ` +

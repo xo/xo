@@ -160,7 +160,7 @@
           "foreign_keys": [
             {
               "name": "auth_group_permissions_group_id_fkey",
-              "resolved_name": "auth_group",
+              "func_name": "auth_group",
               "column": [
                 {
                   "name": "group_id",
@@ -183,7 +183,7 @@
             },
             {
               "name": "auth_group_permissions_permission_id_fkey",
-              "resolved_name": "auth_permission",
+              "func_name": "auth_permission",
               "column": [
                 {
                   "name": "permission_id",
@@ -299,7 +299,7 @@
           "foreign_keys": [
             {
               "name": "auth_permission_content_type_id_fkey",
-              "resolved_name": "django_content_type",
+              "func_name": "django_content_type",
               "column": [
                 {
                   "name": "content_type_id",
@@ -537,7 +537,7 @@
           "foreign_keys": [
             {
               "name": "auth_user_groups_group_id_fkey",
-              "resolved_name": "auth_group",
+              "func_name": "auth_group",
               "column": [
                 {
                   "name": "group_id",
@@ -560,7 +560,7 @@
             },
             {
               "name": "auth_user_groups_user_id_fkey",
-              "resolved_name": "auth_user",
+              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",
@@ -679,7 +679,7 @@
           "foreign_keys": [
             {
               "name": "auth_user_user_permissions_permission_id_fkey",
-              "resolved_name": "auth_permission",
+              "func_name": "auth_permission",
               "column": [
                 {
                   "name": "permission_id",
@@ -702,7 +702,7 @@
             },
             {
               "name": "auth_user_user_permissions_user_id_fkey",
-              "resolved_name": "auth_user",
+              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",
@@ -861,7 +861,7 @@
           "foreign_keys": [
             {
               "name": "books_books_author_id_fkey_fkey",
-              "resolved_name": "author",
+              "func_name": "author",
               "column": [
                 {
                   "name": "books_author_id_fkey",
@@ -980,7 +980,7 @@
           "foreign_keys": [
             {
               "name": "books_tags_book_id_fkey",
-              "resolved_name": "book",
+              "func_name": "book",
               "column": [
                 {
                   "name": "book_id",
@@ -1003,7 +1003,7 @@
             },
             {
               "name": "books_tags_tag_id_fkey",
-              "resolved_name": "tag",
+              "func_name": "tag",
               "column": [
                 {
                   "name": "tag_id",
@@ -1138,7 +1138,7 @@
           "foreign_keys": [
             {
               "name": "django_admin_log_content_type_id_fkey",
-              "resolved_name": "django_content_type",
+              "func_name": "django_content_type",
               "column": [
                 {
                   "name": "content_type_id",
@@ -1162,7 +1162,7 @@
             },
             {
               "name": "django_admin_log_user_id_fkey",
-              "resolved_name": "auth_user",
+              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",

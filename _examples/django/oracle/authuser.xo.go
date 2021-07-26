@@ -144,7 +144,7 @@ func (au *AuthUser) Delete(ctx context.Context, db DB) error {
 
 // AuthUserByID retrieves a row from 'django.auth_user' as a AuthUser.
 //
-// Generated from index 'sys_c0013702'.
+// Generated from index 'sys_c0014055'.
 func AuthUserByID(ctx context.Context, db DB, id int64) (*AuthUser, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -164,7 +164,7 @@ func AuthUserByID(ctx context.Context, db DB, id int64) (*AuthUser, error) {
 
 // AuthUserByUsername retrieves a row from 'django.auth_user' as a AuthUser.
 //
-// Generated from index 'sys_c0013703'.
+// Generated from index 'sys_c0014056'.
 func AuthUserByUsername(ctx context.Context, db DB, username sql.NullString) (*AuthUser, error) {
 	// query
 	const sqlstr = `SELECT ` +

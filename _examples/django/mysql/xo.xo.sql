@@ -11,8 +11,8 @@ CREATE TABLE auth_group (
 -- table auth_group_permissions
 CREATE TABLE auth_group_permissions (
   id BIGINT(20) AUTO_INCREMENT,
-  group_id INT(11) NOT NULL REFERENCES auth_group (group_id),
-  permission_id INT(11) NOT NULL REFERENCES auth_permission (permission_id),
+  group_id INT(11) NOT NULL REFERENCES auth_group (id),
+  permission_id INT(11) NOT NULL REFERENCES auth_permission (id),
   UNIQUE (group_id, permission_id),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -24,7 +24,7 @@ CREATE INDEX auth_group_permissio_permission_id_84c5c92e_fk_auth_perm ON auth_gr
 CREATE TABLE auth_permission (
   id INT(11) AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
-  content_type_id INT(11) NOT NULL REFERENCES django_content_type (content_type_id),
+  content_type_id INT(11) NOT NULL REFERENCES django_content_type (id),
   codename VARCHAR(100) NOT NULL,
   UNIQUE (content_type_id, codename),
   PRIMARY KEY (id)
@@ -50,8 +50,8 @@ CREATE TABLE auth_user (
 -- table auth_user_groups
 CREATE TABLE auth_user_groups (
   id BIGINT(20) AUTO_INCREMENT,
-  user_id INT(11) NOT NULL REFERENCES auth_user (user_id),
-  group_id INT(11) NOT NULL REFERENCES auth_group (group_id),
+  user_id INT(11) NOT NULL REFERENCES auth_user (id),
+  group_id INT(11) NOT NULL REFERENCES auth_group (id),
   UNIQUE (user_id, group_id),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -62,8 +62,8 @@ CREATE INDEX auth_user_groups_group_id_97559544_fk_auth_group_id ON auth_user_gr
 -- table auth_user_user_permissions
 CREATE TABLE auth_user_user_permissions (
   id BIGINT(20) AUTO_INCREMENT,
-  user_id INT(11) NOT NULL REFERENCES auth_user (user_id),
-  permission_id INT(11) NOT NULL REFERENCES auth_permission (permission_id),
+  user_id INT(11) NOT NULL REFERENCES auth_user (id),
+  permission_id INT(11) NOT NULL REFERENCES auth_permission (id),
   UNIQUE (user_id, permission_id),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -86,7 +86,7 @@ CREATE TABLE books (
   title VARCHAR(255) NOT NULL,
   year INT(11) NOT NULL,
   available DATETIME(6) NOT NULL,
-  books_author_id_fkey BIGINT(20) NOT NULL REFERENCES authors (books_author_id_fkey),
+  books_author_id_fkey BIGINT(20) NOT NULL REFERENCES authors (author_id),
   PRIMARY KEY (book_id)
 ) ENGINE=InnoDB;
 
@@ -113,8 +113,8 @@ CREATE TABLE django_admin_log (
   object_repr VARCHAR(200) NOT NULL,
   action_flag SMALLINT(5) UNSIGNED NOT NULL,
   change_message LONGTEXT NOT NULL,
-  content_type_id INT(11) REFERENCES django_content_type (content_type_id),
-  user_id INT(11) NOT NULL REFERENCES auth_user (user_id),
+  content_type_id INT(11) REFERENCES django_content_type (id),
+  user_id INT(11) NOT NULL REFERENCES auth_user (id),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 

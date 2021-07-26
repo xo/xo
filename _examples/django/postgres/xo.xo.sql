@@ -14,8 +14,8 @@ CREATE INDEX auth_group_name_a6ea08ec_like ON auth_group (name);
 -- table auth_group_permissions
 CREATE TABLE auth_group_permissions (
   id BIGSERIAL,
-  group_id INTEGER NOT NULL REFERENCES auth_group (group_id),
-  permission_id INTEGER NOT NULL REFERENCES auth_permission (permission_id),
+  group_id INTEGER NOT NULL REFERENCES auth_group (id),
+  permission_id INTEGER NOT NULL REFERENCES auth_permission (id),
   UNIQUE (group_id, permission_id),
   PRIMARY KEY (id)
 );
@@ -30,7 +30,7 @@ CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permiss
 CREATE TABLE auth_permission (
   id SERIAL,
   name VARCHAR(255) NOT NULL,
-  content_type_id INTEGER NOT NULL REFERENCES django_content_type (content_type_id),
+  content_type_id INTEGER NOT NULL REFERENCES django_content_type (id),
   codename VARCHAR(100) NOT NULL,
   UNIQUE (content_type_id, codename),
   PRIMARY KEY (id)
@@ -62,8 +62,8 @@ CREATE INDEX auth_user_username_6821ab7c_like ON auth_user (username);
 -- table auth_user_groups
 CREATE TABLE auth_user_groups (
   id BIGSERIAL,
-  user_id INTEGER NOT NULL REFERENCES auth_user (user_id),
-  group_id INTEGER NOT NULL REFERENCES auth_group (group_id),
+  user_id INTEGER NOT NULL REFERENCES auth_user (id),
+  group_id INTEGER NOT NULL REFERENCES auth_group (id),
   PRIMARY KEY (id),
   UNIQUE (user_id, group_id)
 );
@@ -77,8 +77,8 @@ CREATE INDEX auth_user_groups_user_id_6a12ed8b ON auth_user_groups (user_id);
 -- table auth_user_user_permissions
 CREATE TABLE auth_user_user_permissions (
   id BIGSERIAL,
-  user_id INTEGER NOT NULL REFERENCES auth_user (user_id),
-  permission_id INTEGER NOT NULL REFERENCES auth_permission (permission_id),
+  user_id INTEGER NOT NULL REFERENCES auth_user (id),
+  permission_id INTEGER NOT NULL REFERENCES auth_permission (id),
   PRIMARY KEY (id),
   UNIQUE (user_id, permission_id)
 );
@@ -104,7 +104,7 @@ CREATE TABLE books (
   title VARCHAR(255) NOT NULL,
   year INTEGER NOT NULL,
   available TIMESTAMPTZ NOT NULL,
-  books_author_id_fkey BIGINT NOT NULL REFERENCES authors (books_author_id_fkey),
+  books_author_id_fkey BIGINT NOT NULL REFERENCES authors (author_id),
   PRIMARY KEY (book_id)
 );
 
@@ -134,8 +134,8 @@ CREATE TABLE django_admin_log (
   object_repr VARCHAR(200) NOT NULL,
   action_flag SMALLINT NOT NULL,
   change_message TEXT NOT NULL,
-  content_type_id INTEGER REFERENCES django_content_type (content_type_id),
-  user_id INTEGER NOT NULL REFERENCES auth_user (user_id),
+  content_type_id INTEGER REFERENCES django_content_type (id),
+  user_id INTEGER NOT NULL REFERENCES auth_user (id),
   PRIMARY KEY (id)
 );
 

@@ -134,7 +134,7 @@ func (ag *AuthGroup) Delete(ctx context.Context, db DB) error {
 
 // AuthGroupByID retrieves a row from 'django.auth_group' as a AuthGroup.
 //
-// Generated from index 'sys_c0013687'.
+// Generated from index 'sys_c0014040'.
 func AuthGroupByID(ctx context.Context, db DB, id int64) (*AuthGroup, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -154,7 +154,7 @@ func AuthGroupByID(ctx context.Context, db DB, id int64) (*AuthGroup, error) {
 
 // AuthGroupByName retrieves a row from 'django.auth_group' as a AuthGroup.
 //
-// Generated from index 'sys_c0013688'.
+// Generated from index 'sys_c0014041'.
 func AuthGroupByName(ctx context.Context, db DB, name sql.NullString) (*AuthGroup, error) {
 	// query
 	const sqlstr = `SELECT ` +
