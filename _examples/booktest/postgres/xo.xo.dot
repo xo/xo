@@ -27,5 +27,5 @@ digraph public {
 		</table>> ]
 	
 	"public.books":"author_id":e -> "public.authors":"author_id":w [
-		headlabel="author"]
+		headlabel="books_author_id_fkey"]
 }

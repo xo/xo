@@ -64,7 +64,7 @@ CREATE TABLE employees (
   extension NVARCHAR2,
   photo BLOB,
   notes CLOB,
-  reports_to NUMBER CONSTRAINT employees_reports_to_fkey REFERENCES employees (reports_to),
+  reports_to NUMBER CONSTRAINT employees_reports_to_fkey REFERENCES employees (employee_id),
   photo_path NVARCHAR2,
   CONSTRAINT employees_pkey UNIQUE (employee_id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE orders (
   order_date DATE,
   required_date DATE,
   shipped_date DATE,
-  ship_via NUMBER CONSTRAINT orders_ship_via_fkey REFERENCES shippers (ship_via),
+  ship_via NUMBER CONSTRAINT orders_ship_via_fkey REFERENCES shippers (shipper_id),
   freight FLOAT,
   ship_name NVARCHAR2,
   ship_address NVARCHAR2,

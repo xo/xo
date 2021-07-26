@@ -64,7 +64,7 @@ CREATE TABLE employees (
   extension VARCHAR(4),
   photo BLOB,
   notes TEXT,
-  reports_to SMALLINT REFERENCES employees (reports_to),
+  reports_to SMALLINT REFERENCES employees (employee_id),
   photo_path VARCHAR(255),
   PRIMARY KEY (employee_id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE orders (
   order_date DATE,
   required_date DATE,
   shipped_date DATE,
-  ship_via SMALLINT REFERENCES shippers (ship_via),
+  ship_via SMALLINT REFERENCES shippers (shipper_id),
   freight REAL,
   ship_name VARCHAR(40),
   ship_address VARCHAR(60),

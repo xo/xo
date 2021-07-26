@@ -64,7 +64,7 @@ CREATE TABLE employees (
   extension VARCHAR(4),
   photo BYTEA,
   notes TEXT,
-  reports_to INTEGER REFERENCES employees (reports_to),
+  reports_to INTEGER REFERENCES employees (employee_id),
   photo_path VARCHAR(255),
   PRIMARY KEY (employee_id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE orders (
   order_date DATE,
   required_date DATE,
   shipped_date DATE,
-  ship_via INTEGER REFERENCES shippers (ship_via),
+  ship_via INTEGER REFERENCES shippers (shipper_id),
   freight REAL,
   ship_name VARCHAR(40),
   ship_address VARCHAR(60),

@@ -729,7 +729,7 @@
           "foreign_keys": [
             {
               "name": "a_foreign_key_ibfk_1",
-              "resolved_name": "a_primary",
+              "func_name": "a_primary",
               "column": [
                 {
                   "name": "a_key",
@@ -804,7 +804,7 @@
           "foreign_keys": [
             {
               "name": "a_foreign_key_composite_ibfk_1",
-              "resolved_name": "a_primary_composite",
+              "func_name": "a_primary_composite",
               "column": [
                 {
                   "name": "a_key1",

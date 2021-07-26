@@ -168,29 +168,29 @@ digraph northwind {
 		</table>> ]
 	
 	"northwind.customer_customer_demo":"customer_id":e -> "northwind.customers":"customer_id":w [
-		headlabel="customer"]
+		headlabel="customer_customer_demo_customer_id_fkey"]
 	"northwind.customer_customer_demo":"customer_type_id":e -> "northwind.customer_demographics":"customer_type_id":w [
-		headlabel="customer_demographic"]
+		headlabel="customer_customer_demo_customer_type_id_fkey"]
 	"northwind.employee_territories":"employee_id":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]
+		headlabel="employee_territories_employee_id_fkey"]
 	"northwind.employee_territories":"territory_id":e -> "northwind.territories":"territory_id":w [
-		headlabel="territory"]
+		headlabel="employee_territories_territory_id_fkey"]
 	"northwind.employees":"reports_to":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]
+		headlabel="employees_reports_to_fkey"]
 	"northwind.order_details":"order_id":e -> "northwind.orders":"order_id":w [
-		headlabel="order"]
+		headlabel="order_details_order_id_fkey"]
 	"northwind.order_details":"product_id":e -> "northwind.products":"product_id":w [
-		headlabel="product"]
+		headlabel="order_details_product_id_fkey"]
 	"northwind.orders":"customer_id":e -> "northwind.customers":"customer_id":w [
-		headlabel="customer"]
+		headlabel="orders_customer_id_fkey"]
 	"northwind.orders":"employee_id":e -> "northwind.employees":"employee_id":w [
-		headlabel="employee"]
+		headlabel="orders_employee_id_fkey"]
 	"northwind.orders":"ship_via":e -> "northwind.shippers":"shipper_id":w [
-		headlabel="shipper"]
+		headlabel="orders_ship_via_fkey"]
 	"northwind.products":"category_id":e -> "northwind.categories":"category_id":w [
-		headlabel="category"]
+		headlabel="products_category_id_fkey"]
 	"northwind.products":"supplier_id":e -> "northwind.suppliers":"supplier_id":w [
-		headlabel="supplier"]
+		headlabel="products_suplier_id_fkey"]
 	"northwind.territories":"region_id":e -> "northwind.region":"region_id":w [
-		headlabel="region"]
+		headlabel="territories_region_id_fkey"]
 }

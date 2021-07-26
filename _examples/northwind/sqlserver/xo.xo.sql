@@ -64,7 +64,7 @@ CREATE TABLE employees (
   extension VARCHAR(4),
   photo VARBINARY,
   notes TEXT,
-  reports_to SMALLINT(5) CONSTRAINT employees_reports_to_fkey REFERENCES employees (reports_to),
+  reports_to SMALLINT(5) CONSTRAINT employees_reports_to_fkey REFERENCES employees (employee_id),
   photo_path VARCHAR(255),
   CONSTRAINT employees_pkey PRIMARY KEY (employee_id)
 );

@@ -204,7 +204,7 @@
           "foreign_keys": [
             {
               "name": "books_author_id_fkey",
-              "resolved_name": "author",
+              "func_name": "author",
               "column": [
                 {
                   "name": "author_id",

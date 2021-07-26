@@ -81,7 +81,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: customer_customer_demo_customer_id_fkey
-        resolved_name: customer
+        func_name: customer
         column:
         - name: customer_id
           datatype:
@@ -97,7 +97,7 @@ schemas:
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: customer_customer_demo_customer_type_id_fkey
-        resolved_name: customer_demographic
+        func_name: customer_demographic
         column:
         - name: customer_type_id
           datatype:
@@ -257,7 +257,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: employee_territories_employee_id_fkey
-        resolved_name: employee
+        func_name: employee
         column:
         - name: employee_id
           datatype:
@@ -271,7 +271,7 @@ schemas:
           is_primary: true
         ref_func_name: employee_by_employee_id
       - name: employee_territories_territory_id_fkey
-        resolved_name: territory
+        func_name: territory
         column:
         - name: territory_id
           datatype:
@@ -389,7 +389,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: employees_reports_to_fkey
-        resolved_name: employee
+        func_name: employee
         column:
         - name: reports_to
           datatype:
@@ -448,7 +448,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: order_details_order_id_fkey
-        resolved_name: order
+        func_name: order
         column:
         - name: order_id
           datatype:
@@ -462,7 +462,7 @@ schemas:
           is_primary: true
         ref_func_name: order_by_order_id
       - name: order_details_product_id_fkey
-        resolved_name: product
+        func_name: product
         column:
         - name: product_id
           datatype:
@@ -559,7 +559,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: orders_customer_id_fkey
-        resolved_name: customer
+        func_name: customer
         column:
         - name: customer_id
           datatype:
@@ -575,7 +575,7 @@ schemas:
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: orders_employee_id_fkey
-        resolved_name: employee
+        func_name: employee
         column:
         - name: employee_id
           datatype:
@@ -589,7 +589,7 @@ schemas:
           is_primary: true
         ref_func_name: employee_by_employee_id
       - name: orders_ship_via_fkey
-        resolved_name: shipper
+        func_name: shipper
         column:
         - name: ship_via
           datatype:
@@ -663,7 +663,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: products_category_id_fkey
-        resolved_name: category
+        func_name: category
         column:
         - name: category_id
           datatype:
@@ -677,7 +677,7 @@ schemas:
           is_primary: true
         ref_func_name: category_by_category_id
       - name: products_supplier_id_fkey
-        resolved_name: supplier
+        func_name: supplier
         column:
         - name: supplier_id
           datatype:
@@ -860,7 +860,7 @@ schemas:
         is_primary: true
       foreign_keys:
       - name: territories_region_id_fkey
-        resolved_name: region
+        func_name: region
         column:
         - name: region_id
           datatype:

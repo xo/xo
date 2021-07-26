@@ -269,7 +269,7 @@
           "foreign_keys": [
             {
               "name": "books_ibfk_1",
-              "resolved_name": "author",
+              "func_name": "author",
               "column": [
                 {
                   "name": "author_id",

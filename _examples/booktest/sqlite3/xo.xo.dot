@@ -26,5 +26,5 @@ digraph booktest_db {
 		</table>> ]
 	
 	"books":"author_id":e -> "authors":"author_id":w [
-		headlabel="author"]
+		headlabel="books_author_id_fkey"]
 }

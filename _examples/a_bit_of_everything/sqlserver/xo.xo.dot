@@ -143,9 +143,9 @@ digraph a_bit_of_everything {
 		</table>> ]
 	
 	"a_bit_of_everything.a_foreign_key":"a_key":e -> "a_bit_of_everything.a_primary":"a_key":w [
-		headlabel="a_primary"]
+		headlabel="a_key_fkey"]
 	"a_bit_of_everything.a_foreign_key_composite":"a_key1":e -> "a_bit_of_everything.a_primary_composite":"a_key1":w [
-		headlabel="a_primary_composite"]
+		headlabel="a_foreign_key_composite_fkey"]
 	"a_bit_of_everything.a_foreign_key_composite":"a_key2":e -> "a_bit_of_everything.a_primary_composite":"a_key2":w [
-		headlabel="a_primary_composite"]
+		headlabel="a_foreign_key_composite_fkey"]
 }

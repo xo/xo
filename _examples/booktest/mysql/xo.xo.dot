@@ -27,5 +27,5 @@ digraph booktest {
 		</table>> ]
 	
 	"booktest.books":"author_id":e -> "booktest.authors":"author_id":w [
-		headlabel="author"]
+		headlabel="books_ibfk_1"]
 }
