@@ -545,7 +545,7 @@ func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 }
 
 func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, error) {
-	name := snaker.SnakeToCamelIdentifier(fk.ResolvedName)
+	name := snaker.ForceCamelIdentifier(fk.FuncName)
 	refName := snaker.ForceCamelIdentifier(singularize(fk.RefTable))
 	refFunc := snaker.ForceCamelIdentifier(fk.RefFuncName)
 	var fields, refFields []Field

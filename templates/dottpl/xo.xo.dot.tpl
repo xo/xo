@@ -25,7 +25,7 @@ digraph {{ $s.Name|normalize }} {
 	{{- $fkey := . -}}
 	{{- range $i, $field := .Fields }}
 	{{ edge $t $fkey $i }} [
-		headlabel={{ quotes $fkey.ResolvedName }}]
+		headlabel={{ quotes $fkey.Name }}]
 	{{- end }}
 	{{- end -}}
 	{{- end }}

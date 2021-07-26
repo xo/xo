@@ -117,12 +117,12 @@ type Index struct {
 
 // ForeignKey is a foreign key.
 type ForeignKey struct {
-	Name         string  `json:"name,omitempty"`          // constraint name
-	ResolvedName string  `json:"resolved_name,omitempty"` // foreign key name (based on fkey mode)
-	Fields       []Field `json:"column,omitempty"`        // column that has the key on it
-	RefTable     string  `json:"ref_table,omitempty"`     // table the foreign key refers to
-	RefFields    []Field `json:"ref_column,omitempty"`    // column in ref table the index refers to
-	RefFuncName  string  `json:"ref_func_name"`           // func name from ref index
+	Name        string  `json:"name,omitempty"`       // constraint name
+	FuncName    string  `json:"func_name,omitempty"`  // foreign key func name (based on fkey mode)
+	Fields      []Field `json:"column,omitempty"`     // column that has the key on it
+	RefTable    string  `json:"ref_table,omitempty"`  // table the foreign key refers to
+	RefFields   []Field `json:"ref_column,omitempty"` // column in ref table the index refers to
+	RefFuncName string  `json:"ref_func_name"`        // func name from ref index
 }
 
 // Field is a column, index, enum value, or stored procedure parameter.
