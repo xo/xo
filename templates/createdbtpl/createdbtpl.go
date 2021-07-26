@@ -25,6 +25,7 @@ func init() {
 	var funcs *Funcs
 	templates.Register("createdb", &templates.TemplateSet{
 		Files:   Files,
+		For:     []string{"schema"},
 		FileExt: ".xo.sql",
 		Flags: []xo.Flag{
 			{

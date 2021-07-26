@@ -56,14 +56,17 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 	})
 	// process enums
 	var enums []xo.Enum
-	for _, name := range enumNames {
-		enum := &xo.Enum{
-			Name: name.EnumName,
+	for _, enum := range enumNames {
+		if !validType(args, schema, enum.EnumName) {
+			continue
 		}
-		if err := LoadEnumValues(ctx, args, enum); err != nil {
+		e := &xo.Enum{
+			Name: enum.EnumName,
+		}
+		if err := LoadEnumValues(ctx, args, e); err != nil {
 			return nil, err
 		}
-		enums = append(enums, *enum)
+		enums = append(enums, *e)
 	}
 	return enums, nil
 }
@@ -101,6 +104,9 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	// process procs
 	procMap := make(map[string]xo.Proc)
 	for _, proc := range procs {
+		if !validType(args, schema, proc.ProcName) {
+			continue
+		}
 		// parse return type into template
 		// TODO: fix this so that nullable types can be returned
 		d, err := xo.ParseType(ctx, proc.ReturnType)
@@ -187,23 +193,26 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 	})
 	// create types
 	var m []xo.Table
-	for _, t := range tables {
+	for _, table := range tables {
+		if !validType(args, schema, table.TableName) {
+			continue
+		}
 		// create table
-		table := &xo.Table{
+		t := &xo.Table{
 			Type:       typ,
-			Name:       t.TableName,
+			Name:       table.TableName,
 			Manual:     true,
-			Definition: strings.TrimSpace(t.ViewDef),
+			Definition: strings.TrimSpace(table.ViewDef),
 		}
 		// process columns
-		if err := LoadColumns(ctx, args, table); err != nil {
+		if err := LoadColumns(ctx, args, t); err != nil {
 			return nil, err
 		}
 		// load indexes
-		if err := LoadTableIndexes(ctx, args, table); err != nil {
+		if err := LoadTableIndexes(ctx, args, t); err != nil {
 			return nil, err
 		}
-		m = append(m, *table)
+		m = append(m, *t)
 	}
 	// load foreign keys
 	for i, table := range m {
@@ -256,9 +265,9 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 		return err
 	}
 	// process columns
+loop:
 	for _, c := range columns {
-		ignore := false
-		for _, ignoreField := range args.SchemaParams.Ignore {
+		for _, ignoreField := range args.SchemaParams.ExcludeField {
 			if ignoreField == c.ColumnName {
 				// Skip adding this field if user has specified they are not
 				// interested.
@@ -266,11 +275,8 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 				// This could be useful for fields which are managed by the
 				// database (e.g. automatically updated timestamps) instead of
 				// via Go code.
-				ignore = true
+				continue loop
 			}
-		}
-		if ignore {
-			continue
 		}
 		// set col info
 		d, err := xo.ParseType(ctx, c.DataType)
@@ -448,6 +454,30 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 		fkMap[mapKey] = f
 	}
 	return fkMap, nil
+}
+
+// validType returns whether the type name given is valid, given the --include
+// and --exclude options provided by the user.
+func validType(args *Args, schema, name string) bool {
+	include, exclude := args.SchemaParams.Include, args.SchemaParams.Exclude
+	if len(include) == 0 && len(exclude) == 0 {
+		return true
+	}
+	target := fmt.Sprintf("%s.%s", schema, name)
+	for _, pattern := range exclude {
+		if pattern.Match(target) || pattern.Match(name) {
+			return false
+		}
+	}
+	if len(include) == 0 {
+		return true
+	}
+	for _, pattern := range include {
+		if pattern.Match(target) || pattern.Match(name) {
+			return true
+		}
+	}
+	return false
 }
 
 // resolveFkName returns the foreign key name for the passed foreign key.

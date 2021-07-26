@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/kingpin"
+	"github.com/gobwas/glob"
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"
 	"github.com/xo/xo/loader"
@@ -140,6 +141,26 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 			flag.Add(cmd, args.TemplateParams.Flags)
 		}
 	}
+	// include, exclude flags
+	ef := func(cmd *kingpin.CmdClause, name, desc string) {
+		var globs []string
+		// add flag and compile
+		cmd.Flag(name, desc).PlaceHolder("<glob>").Action(func(_ *kingpin.ParseContext) error {
+			res := make([]glob.Glob, len(globs))
+			for i, pattern := range globs {
+				res[i] = glob.MustCompile(pattern)
+			}
+			// update args
+			switch name {
+			case "include":
+				args.SchemaParams.Include = res
+			case "exclude":
+				args.SchemaParams.Exclude = res
+			}
+			return nil
+		}).StringsVar(&globs)
+	}
+
 	// query command
 	queryCmd := kingpin.Command("query", "Generate code for a database custom query from a template.")
 	dc(queryCmd)
@@ -166,7 +187,9 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 	tc(schemaCmd)
 	oc(schemaCmd)
 	schemaCmd.Flag("fk-mode", "foreign key resolution mode (smart, parent, field, key; default: smart)").Short('k').Default("smart").EnumVar(&args.SchemaParams.FkMode, "smart", "parent", "field", "key")
-	schemaCmd.Flag("ignore", "fields to exclude from generated code").Short('I').PlaceHolder("<field>").StringsVar(&args.SchemaParams.Ignore)
+	ef(schemaCmd, "include", "specify included types ([<schema>.]<type>)")
+	ef(schemaCmd, "exclude", "specify excluded types ([<schema>.]<type>)")
+	schemaCmd.Flag("exclude-field", "fields to exclude from generated code").Short('I').PlaceHolder("<field>").StringsVar(&args.SchemaParams.ExcludeField)
 	schemaCmd.Flag("use-index-names", "use index names as defined in schema for generated code").Short('j').BoolVar(&args.SchemaParams.UseIndexNames)
 	tf(schemaCmd)
 	lf(schemaCmd)
@@ -298,9 +321,22 @@ type QueryParams struct {
 type SchemaParams struct {
 	// FkMode is the foreign resolution mode.
 	FkMode string
-	// Ignore allows the user to specify field names which should not be
+	// Include allows the user to specify which types should be included. Can
+	// match multiple types via regex patterns.
+	//
+	// - When unspecified, all types are included.
+	// - When specified, only types match will be included.
+	// - When a type matches an exclude entry and an include entry,
+	//   the exclude entry will take precedence.
+	Include []glob.Glob
+	// Exclude allows the user to specify which types should be skipped. Can
+	// match multiple types via regex patterns.
+	//
+	// When unspecified, all types are included in the schema.
+	Exclude []glob.Glob
+	// ExcludeField allows the user to specify field names which should not be
 	// handled by xo in the generated code.
-	Ignore []string
+	ExcludeField []string
 	// UseIndexNames toggles using index names.
 	//
 	// This is not enabled by default, because index names are often generated
