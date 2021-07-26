@@ -74,6 +74,12 @@ CREATE TABLE a_bit_of_everything (
   a_year_nullable YEAR(4)
 ) ENGINE=InnoDB;
 
+-- table a_primary
+CREATE TABLE a_primary (
+  a_key INT(11) NOT NULL,
+  PRIMARY KEY (a_key)
+) ENGINE=InnoDB;
+
 -- table a_foreign_key
 CREATE TABLE a_foreign_key (
   a_key INT(11) REFERENCES a_primary (a_key)
@@ -81,6 +87,13 @@ CREATE TABLE a_foreign_key (
 
 -- index a_key
 CREATE INDEX a_key ON a_foreign_key (a_key);
+
+-- table a_primary_composite
+CREATE TABLE a_primary_composite (
+  a_key1 INT(11) NOT NULL,
+  a_key2 INT(11) NOT NULL,
+  PRIMARY KEY (a_key1, a_key2)
+) ENGINE=InnoDB;
 
 -- table a_foreign_key_composite
 CREATE TABLE a_foreign_key_composite (
@@ -112,19 +125,6 @@ CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 -- table a_manual_table
 CREATE TABLE a_manual_table (
   a_text VARCHAR(255)
-) ENGINE=InnoDB;
-
--- table a_primary
-CREATE TABLE a_primary (
-  a_key INT(11) NOT NULL,
-  PRIMARY KEY (a_key)
-) ENGINE=InnoDB;
-
--- table a_primary_composite
-CREATE TABLE a_primary_composite (
-  a_key1 INT(11) NOT NULL,
-  a_key2 INT(11) NOT NULL,
-  PRIMARY KEY (a_key1, a_key2)
 ) ENGINE=InnoDB;
 
 -- table a_primary_multi

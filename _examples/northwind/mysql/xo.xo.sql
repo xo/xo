@@ -9,23 +9,6 @@ CREATE TABLE categories (
   PRIMARY KEY (category_id)
 ) ENGINE=InnoDB;
 
--- table customer_customer_demo
-CREATE TABLE customer_customer_demo (
-  customer_id CHAR(255) NOT NULL REFERENCES customers (customer_id),
-  customer_type_id CHAR(255) NOT NULL REFERENCES customer_demographics (customer_type_id),
-  PRIMARY KEY (customer_id, customer_type_id)
-) ENGINE=InnoDB;
-
--- index customer_type_id
-CREATE INDEX customer_type_id ON customer_customer_demo (customer_type_id);
-
--- table customer_demographics
-CREATE TABLE customer_demographics (
-  customer_type_id CHAR(255) NOT NULL,
-  customer_desc TEXT,
-  PRIMARY KEY (customer_type_id)
-) ENGINE=InnoDB;
-
 -- table customers
 CREATE TABLE customers (
   customer_id CHAR(255) NOT NULL,
@@ -42,15 +25,22 @@ CREATE TABLE customers (
   PRIMARY KEY (customer_id)
 ) ENGINE=InnoDB;
 
--- table employee_territories
-CREATE TABLE employee_territories (
-  employee_id SMALLINT(6) NOT NULL REFERENCES employees (employee_id),
-  territory_id VARCHAR(20) NOT NULL REFERENCES territories (territory_id),
-  PRIMARY KEY (employee_id, territory_id)
+-- table customer_demographics
+CREATE TABLE customer_demographics (
+  customer_type_id CHAR(255) NOT NULL,
+  customer_desc TEXT,
+  PRIMARY KEY (customer_type_id)
 ) ENGINE=InnoDB;
 
--- index territory_id
-CREATE INDEX territory_id ON employee_territories (territory_id);
+-- table customer_customer_demo
+CREATE TABLE customer_customer_demo (
+  customer_id CHAR(255) NOT NULL REFERENCES customers (customer_id),
+  customer_type_id CHAR(255) NOT NULL REFERENCES customer_demographics (customer_type_id),
+  PRIMARY KEY (customer_id, customer_type_id)
+) ENGINE=InnoDB;
+
+-- index customer_type_id
+CREATE INDEX customer_type_id ON customer_customer_demo (customer_type_id);
 
 -- table employees
 CREATE TABLE employees (
@@ -78,18 +68,41 @@ CREATE TABLE employees (
 -- index reports_to
 CREATE INDEX reports_to ON employees (reports_to);
 
--- table order_details
-CREATE TABLE order_details (
-  order_id SMALLINT(6) NOT NULL REFERENCES orders (order_id),
-  product_id SMALLINT(6) NOT NULL REFERENCES products (product_id),
-  unit_price FLOAT NOT NULL,
-  quantity SMALLINT(6) NOT NULL,
-  discount FLOAT NOT NULL,
-  PRIMARY KEY (order_id, product_id)
+-- table region
+CREATE TABLE region (
+  region_id SMALLINT(6) NOT NULL,
+  region_description CHAR(255) NOT NULL,
+  PRIMARY KEY (region_id)
 ) ENGINE=InnoDB;
 
--- index product_id
-CREATE INDEX product_id ON order_details (product_id);
+-- table territories
+CREATE TABLE territories (
+  territory_id VARCHAR(20) NOT NULL,
+  territory_description CHAR(255) NOT NULL,
+  region_id SMALLINT(6) NOT NULL REFERENCES region (region_id),
+  PRIMARY KEY (territory_id)
+) ENGINE=InnoDB;
+
+-- index region_id
+CREATE INDEX region_id ON territories (region_id);
+
+-- table employee_territories
+CREATE TABLE employee_territories (
+  employee_id SMALLINT(6) NOT NULL REFERENCES employees (employee_id),
+  territory_id VARCHAR(20) NOT NULL REFERENCES territories (territory_id),
+  PRIMARY KEY (employee_id, territory_id)
+) ENGINE=InnoDB;
+
+-- index territory_id
+CREATE INDEX territory_id ON employee_territories (territory_id);
+
+-- table shippers
+CREATE TABLE shippers (
+  shipper_id SMALLINT(6) NOT NULL,
+  company_name VARCHAR(40) NOT NULL,
+  phone VARCHAR(24),
+  PRIMARY KEY (shipper_id)
+) ENGINE=InnoDB;
 
 -- table orders
 CREATE TABLE orders (
@@ -119,6 +132,23 @@ CREATE INDEX employee_id ON orders (employee_id);
 -- index ship_via
 CREATE INDEX ship_via ON orders (ship_via);
 
+-- table suppliers
+CREATE TABLE suppliers (
+  supplier_id SMALLINT(6) NOT NULL,
+  company_name VARCHAR(40) NOT NULL,
+  contact_name VARCHAR(30),
+  contact_title VARCHAR(30),
+  address VARCHAR(60),
+  city VARCHAR(15),
+  region VARCHAR(15),
+  postal_code VARCHAR(10),
+  country VARCHAR(15),
+  phone VARCHAR(24),
+  fax VARCHAR(24),
+  homepage TEXT,
+  PRIMARY KEY (supplier_id)
+) ENGINE=InnoDB;
+
 -- table products
 CREATE TABLE products (
   product_id SMALLINT(6) NOT NULL,
@@ -140,48 +170,18 @@ CREATE INDEX category_id ON products (category_id);
 -- index supplier_id
 CREATE INDEX supplier_id ON products (supplier_id);
 
--- table region
-CREATE TABLE region (
-  region_id SMALLINT(6) NOT NULL,
-  region_description CHAR(255) NOT NULL,
-  PRIMARY KEY (region_id)
+-- table order_details
+CREATE TABLE order_details (
+  order_id SMALLINT(6) NOT NULL REFERENCES orders (order_id),
+  product_id SMALLINT(6) NOT NULL REFERENCES products (product_id),
+  unit_price FLOAT NOT NULL,
+  quantity SMALLINT(6) NOT NULL,
+  discount FLOAT NOT NULL,
+  PRIMARY KEY (order_id, product_id)
 ) ENGINE=InnoDB;
 
--- table shippers
-CREATE TABLE shippers (
-  shipper_id SMALLINT(6) NOT NULL,
-  company_name VARCHAR(40) NOT NULL,
-  phone VARCHAR(24),
-  PRIMARY KEY (shipper_id)
-) ENGINE=InnoDB;
-
--- table suppliers
-CREATE TABLE suppliers (
-  supplier_id SMALLINT(6) NOT NULL,
-  company_name VARCHAR(40) NOT NULL,
-  contact_name VARCHAR(30),
-  contact_title VARCHAR(30),
-  address VARCHAR(60),
-  city VARCHAR(15),
-  region VARCHAR(15),
-  postal_code VARCHAR(10),
-  country VARCHAR(15),
-  phone VARCHAR(24),
-  fax VARCHAR(24),
-  homepage TEXT,
-  PRIMARY KEY (supplier_id)
-) ENGINE=InnoDB;
-
--- table territories
-CREATE TABLE territories (
-  territory_id VARCHAR(20) NOT NULL,
-  territory_description CHAR(255) NOT NULL,
-  region_id SMALLINT(6) NOT NULL REFERENCES region (region_id),
-  PRIMARY KEY (territory_id)
-) ENGINE=InnoDB;
-
--- index region_id
-CREATE INDEX region_id ON territories (region_id);
+-- index product_id
+CREATE INDEX product_id ON order_details (product_id);
 
 -- table us_states
 CREATE TABLE us_states (

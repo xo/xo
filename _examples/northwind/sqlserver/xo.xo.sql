@@ -9,20 +9,6 @@ CREATE TABLE categories (
   CONSTRAINT categories_pkey PRIMARY KEY (category_id)
 );
 
--- table customer_customer_demo
-CREATE TABLE customer_customer_demo (
-  customer_id CHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
-  customer_type_id CHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
-  CONSTRAINT customer_customer_demo_pkey PRIMARY KEY (customer_id, customer_type_id)
-);
-
--- table customer_demographics
-CREATE TABLE customer_demographics (
-  customer_type_id CHAR(255) NOT NULL,
-  customer_desc TEXT,
-  CONSTRAINT customer_demographics_pkey PRIMARY KEY (customer_type_id)
-);
-
 -- table customers
 CREATE TABLE customers (
   customer_id CHAR(255) NOT NULL,
@@ -39,11 +25,18 @@ CREATE TABLE customers (
   CONSTRAINT customers_pkey PRIMARY KEY (customer_id)
 );
 
--- table employee_territories
-CREATE TABLE employee_territories (
-  employee_id SMALLINT(5) NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
-  territory_id VARCHAR(20) NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
-  CONSTRAINT employee_territories_pkey PRIMARY KEY (employee_id, territory_id)
+-- table customer_demographics
+CREATE TABLE customer_demographics (
+  customer_type_id CHAR(255) NOT NULL,
+  customer_desc TEXT,
+  CONSTRAINT customer_demographics_pkey PRIMARY KEY (customer_type_id)
+);
+
+-- table customer_customer_demo
+CREATE TABLE customer_customer_demo (
+  customer_id CHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
+  customer_type_id CHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
+  CONSTRAINT customer_customer_demo_pkey PRIMARY KEY (customer_id, customer_type_id)
 );
 
 -- table employees
@@ -69,14 +62,26 @@ CREATE TABLE employees (
   CONSTRAINT employees_pkey PRIMARY KEY (employee_id)
 );
 
--- table order_details
-CREATE TABLE order_details (
-  order_id SMALLINT(5) NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
-  product_id SMALLINT(5) NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
-  unit_price REAL(24) NOT NULL,
-  quantity SMALLINT(5) NOT NULL,
-  discount REAL(24) NOT NULL,
-  CONSTRAINT order_details_pkey PRIMARY KEY (order_id, product_id)
+-- table region
+CREATE TABLE region (
+  region_id SMALLINT(5) NOT NULL,
+  region_description CHAR(255) NOT NULL,
+  CONSTRAINT regions_pkey PRIMARY KEY (region_id)
+);
+
+-- table territories
+CREATE TABLE territories (
+  territory_id VARCHAR(20) NOT NULL,
+  territory_description CHAR(255) NOT NULL,
+  region_id SMALLINT(5) NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
+  CONSTRAINT territories_pkey PRIMARY KEY (territory_id)
+);
+
+-- table employee_territories
+CREATE TABLE employee_territories (
+  employee_id SMALLINT(5) NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
+  territory_id VARCHAR(20) NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
+  CONSTRAINT employee_territories_pkey PRIMARY KEY (employee_id, territory_id)
 );
 
 -- table orders
@@ -97,36 +102,6 @@ CREATE TABLE orders (
   CONSTRAINT orders_pkey PRIMARY KEY (order_id)
 );
 
--- table products
-CREATE TABLE products (
-  product_id SMALLINT(5) NOT NULL,
-  product_name VARCHAR(40) NOT NULL,
-  supplier_id SMALLINT(5) CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
-  category_id SMALLINT(5) CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
-  quantity_per_unit VARCHAR(20),
-  unit_price REAL(24),
-  units_in_stock SMALLINT(5),
-  units_on_order SMALLINT(5),
-  reorder_level SMALLINT(5),
-  discontinued INT(10) NOT NULL,
-  CONSTRAINT products_pkey PRIMARY KEY (product_id)
-);
-
--- table region
-CREATE TABLE region (
-  region_id SMALLINT(5) NOT NULL,
-  region_description CHAR(255) NOT NULL,
-  CONSTRAINT regions_pkey PRIMARY KEY (region_id)
-);
-
--- table shippers
-CREATE TABLE shippers (
-  shipper_id SMALLINT(5) NOT NULL,
-  company_name VARCHAR(40) NOT NULL,
-  phone VARCHAR(24),
-  CONSTRAINT shippers_pkey PRIMARY KEY (shipper_id)
-);
-
 -- table suppliers
 CREATE TABLE suppliers (
   supplier_id SMALLINT(5) NOT NULL,
@@ -144,12 +119,37 @@ CREATE TABLE suppliers (
   CONSTRAINT suppliers_pkey PRIMARY KEY (supplier_id)
 );
 
--- table territories
-CREATE TABLE territories (
-  territory_id VARCHAR(20) NOT NULL,
-  territory_description CHAR(255) NOT NULL,
-  region_id SMALLINT(5) NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
-  CONSTRAINT territories_pkey PRIMARY KEY (territory_id)
+-- table products
+CREATE TABLE products (
+  product_id SMALLINT(5) NOT NULL,
+  product_name VARCHAR(40) NOT NULL,
+  supplier_id SMALLINT(5) CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
+  category_id SMALLINT(5) CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
+  quantity_per_unit VARCHAR(20),
+  unit_price REAL(24),
+  units_in_stock SMALLINT(5),
+  units_on_order SMALLINT(5),
+  reorder_level SMALLINT(5),
+  discontinued INT(10) NOT NULL,
+  CONSTRAINT products_pkey PRIMARY KEY (product_id)
+);
+
+-- table order_details
+CREATE TABLE order_details (
+  order_id SMALLINT(5) NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
+  product_id SMALLINT(5) NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
+  unit_price REAL(24) NOT NULL,
+  quantity SMALLINT(5) NOT NULL,
+  discount REAL(24) NOT NULL,
+  CONSTRAINT order_details_pkey PRIMARY KEY (order_id, product_id)
+);
+
+-- table shippers
+CREATE TABLE shippers (
+  shipper_id SMALLINT(5) NOT NULL,
+  company_name VARCHAR(40) NOT NULL,
+  phone VARCHAR(24),
+  CONSTRAINT shippers_pkey PRIMARY KEY (shipper_id)
 );
 
 -- table us_states

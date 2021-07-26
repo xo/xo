@@ -75,6 +75,7 @@ func init() {
 				return errors.New("createdb template must be passed at least one schema")
 			}
 			for _, schema := range v.Schemas {
+				schema.Tables = sortTables(schema.Tables)
 				funcs = NewFuncs(ctx, schema.Enums)
 				if err := set.Emit(ctx, &templates.Template{
 					Name:     "xo",
@@ -124,6 +125,35 @@ var cleanRE = regexp.MustCompile(`([\.;])\n{2,}--`)
 // newline.
 func cleanEnd(buf []byte) []byte {
 	return append(bytes.TrimRightFunc(buf, unicode.IsSpace), '\n')
+}
+
+// sortTables sorts tables.
+func sortTables(tables []xo.Table) []xo.Table {
+	tableMap := make(map[string]xo.Table)
+	for _, table := range tables {
+		tableMap[table.Name] = table
+	}
+	seen := make(map[string]bool)
+	var sorted []xo.Table
+	for _, table := range tables {
+		sorted = sortAppendTable(tableMap, seen, sorted, table)
+	}
+	return sorted
+}
+
+// sortAppendTable appends and returns the list of foreign key dependencies for
+// the table if not already in seen.
+func sortAppendTable(tableMap map[string]xo.Table, seen map[string]bool, sorted []xo.Table, table xo.Table) []xo.Table {
+	if seen[table.Name] {
+		return sorted
+	}
+	for _, fk := range table.ForeignKeys {
+		if t := tableMap[fk.RefTable]; table.Name != t.Name && !seen[t.Name] {
+			sorted = sortAppendTable(tableMap, seen, sorted, t)
+		}
+	}
+	seen[table.Name] = true
+	return append(sorted, table)
 }
 
 // Context keys.

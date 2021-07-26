@@ -64,9 +64,22 @@ CREATE TABLE a_bit_of_everything (
   a_varying_character_nullable VARYING CHARACTER
 );
 
+-- table a_primary
+CREATE TABLE a_primary (
+  a_key INTEGER NOT NULL,
+  PRIMARY KEY (a_key)
+);
+
 -- table a_foreign_key
 CREATE TABLE a_foreign_key (
   a_key INTEGER REFERENCES a_primary (a_key)
+);
+
+-- table a_primary_composite
+CREATE TABLE a_primary_composite (
+  a_key1 INTEGER NOT NULL,
+  a_key2 INTEGER NOT NULL,
+  PRIMARY KEY (a_key1, a_key2)
 );
 
 -- table a_foreign_key_composite
@@ -96,19 +109,6 @@ CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 -- table a_manual_table
 CREATE TABLE a_manual_table (
   a_text VARCHAR(255)
-);
-
--- table a_primary
-CREATE TABLE a_primary (
-  a_key INTEGER NOT NULL,
-  PRIMARY KEY (a_key)
-);
-
--- table a_primary_composite
-CREATE TABLE a_primary_composite (
-  a_key1 INTEGER NOT NULL,
-  a_key2 INTEGER NOT NULL,
-  PRIMARY KEY (a_key1, a_key2)
 );
 
 -- table a_primary_multi
