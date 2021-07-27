@@ -3,28 +3,28 @@
 -- table auth_group
 CREATE TABLE auth_group (
   id NUMBER(11) GENERATED ALWAYS AS IDENTITY,
-  name NVARCHAR2,
-  CONSTRAINT auth_group_id_idx UNIQUE (id),
+  name NVARCHAR2(150),
+  CONSTRAINT auth_group_id_idx PRIMARY KEY (id),
   CONSTRAINT auth_group_name_idx UNIQUE (name)
 );
 
 -- table django_content_type
 CREATE TABLE django_content_type (
   id NUMBER(11) GENERATED ALWAYS AS IDENTITY,
-  app_label NVARCHAR2,
-  model NVARCHAR2,
+  app_label NVARCHAR2(100),
+  model NVARCHAR2(100),
   CONSTRAINT django_co_app_label_76bd3d3b_u UNIQUE (app_label, model),
-  CONSTRAINT django_content_type_id_idx UNIQUE (id)
+  CONSTRAINT django_content_type_id_idx PRIMARY KEY (id)
 );
 
 -- table auth_permission
 CREATE TABLE auth_permission (
   id NUMBER(11) GENERATED ALWAYS AS IDENTITY,
-  name NVARCHAR2,
+  name NVARCHAR2(255),
   content_type_id NUMBER(11) NOT NULL CONSTRAINT auth_perm_content_t_2f476e4b_f REFERENCES django_content_type (id),
-  codename NVARCHAR2,
+  codename NVARCHAR2(100),
   CONSTRAINT auth_perm_content_t_01ab375a_u UNIQUE (content_type_id, codename),
-  CONSTRAINT auth_permission_id_idx UNIQUE (id)
+  CONSTRAINT auth_permission_id_idx PRIMARY KEY (id)
 );
 
 -- index auth_permi_content_ty_2f476e4b
@@ -36,7 +36,7 @@ CREATE TABLE auth_group_permissions (
   group_id NUMBER(11) NOT NULL CONSTRAINT auth_grou_group_id_b120cbf9_f REFERENCES auth_group (id),
   permission_id NUMBER(11) NOT NULL CONSTRAINT auth_grou_permissio_84c5c92e_f REFERENCES auth_permission (id),
   CONSTRAINT auth_grou_group_id__0cd325b0_u UNIQUE (group_id, permission_id),
-  CONSTRAINT auth_group_permissions_id_idx UNIQUE (id)
+  CONSTRAINT auth_group_permissions_id_idx PRIMARY KEY (id)
 );
 
 -- index auth_group_group_id_b120cbf9
@@ -48,17 +48,17 @@ CREATE INDEX auth_group_permission_84c5c92e ON auth_group_permissions (permissio
 -- table auth_user
 CREATE TABLE auth_user (
   id NUMBER(11) GENERATED ALWAYS AS IDENTITY,
-  password NVARCHAR2,
-  last_login TIMESTAMP(6),
+  password NVARCHAR2(128),
+  last_login TIMESTAMP,
   is_superuser NUMBER(1) NOT NULL,
-  username NVARCHAR2,
-  first_name NVARCHAR2,
-  last_name NVARCHAR2,
-  email NVARCHAR2,
+  username NVARCHAR2(150),
+  first_name NVARCHAR2(150),
+  last_name NVARCHAR2(150),
+  email NVARCHAR2(254),
   is_staff NUMBER(1) NOT NULL,
   is_active NUMBER(1) NOT NULL,
-  date_joined TIMESTAMP(6) NOT NULL,
-  CONSTRAINT auth_user_id_idx UNIQUE (id),
+  date_joined TIMESTAMP NOT NULL,
+  CONSTRAINT auth_user_id_idx PRIMARY KEY (id),
   CONSTRAINT auth_user_username_idx UNIQUE (username)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE auth_user_groups (
   id NUMBER(19) GENERATED ALWAYS AS IDENTITY,
   user_id NUMBER(11) NOT NULL CONSTRAINT auth_user_user_id_6a12ed8b_f REFERENCES auth_user (id),
   group_id NUMBER(11) NOT NULL CONSTRAINT auth_user_group_id_97559544_f REFERENCES auth_group (id),
-  CONSTRAINT auth_user_groups_id_idx UNIQUE (id),
+  CONSTRAINT auth_user_groups_id_idx PRIMARY KEY (id),
   CONSTRAINT auth_user_user_id_g_94350c0c_u UNIQUE (user_id, group_id)
 );
 
@@ -83,7 +83,7 @@ CREATE TABLE auth_user_user_permissions (
   user_id NUMBER(11) NOT NULL CONSTRAINT auth_user_user_id_a95ead1b_f REFERENCES auth_user (id),
   permission_id NUMBER(11) NOT NULL CONSTRAINT auth_user_permissio_1fbb5f2c_f REFERENCES auth_permission (id),
   CONSTRAINT auth_user_user_id_p_14a6b632_u UNIQUE (user_id, permission_id),
-  CONSTRAINT auth_user_user_permissions_id_idx UNIQUE (id)
+  CONSTRAINT auth_user_user_permissions_id_idx PRIMARY KEY (id)
 );
 
 -- index auth_user__permission_1fbb5f2c
@@ -96,19 +96,19 @@ CREATE INDEX auth_user__user_id_a95ead1b ON auth_user_user_permissions (user_id)
 CREATE TABLE authors (
   author_id NUMBER(19) GENERATED ALWAYS AS IDENTITY,
   name NCLOB,
-  CONSTRAINT authors_author_id_idx UNIQUE (author_id)
+  CONSTRAINT authors_author_id_idx PRIMARY KEY (author_id)
 );
 
 -- table books
 CREATE TABLE books (
   book_id NUMBER(19) GENERATED ALWAYS AS IDENTITY,
-  isbn NVARCHAR2,
+  isbn NVARCHAR2(255),
   book_type NUMBER(11) NOT NULL,
-  title NVARCHAR2,
+  title NVARCHAR2(255),
   year NUMBER(11) NOT NULL,
-  available TIMESTAMP(6) NOT NULL,
+  available TIMESTAMP NOT NULL,
   books_author_id_fkey NUMBER(19) NOT NULL CONSTRAINT books_books_aut_73ac0c26_f REFERENCES authors (author_id),
-  CONSTRAINT books_book_id_idx UNIQUE (book_id)
+  CONSTRAINT books_book_id_idx PRIMARY KEY (book_id)
 );
 
 -- index books_books_auth_73ac0c26
@@ -117,8 +117,8 @@ CREATE INDEX books_books_auth_73ac0c26 ON books (books_author_id_fkey);
 -- table tags
 CREATE TABLE tags (
   tag_id NUMBER(19) GENERATED ALWAYS AS IDENTITY,
-  tag NVARCHAR2,
-  CONSTRAINT tags_tag_id_idx UNIQUE (tag_id)
+  tag NVARCHAR2(50),
+  CONSTRAINT tags_tag_id_idx PRIMARY KEY (tag_id)
 );
 
 -- table books_tags
@@ -127,7 +127,7 @@ CREATE TABLE books_tags (
   book_id NUMBER(19) NOT NULL CONSTRAINT books_tag_book_id_73d7d8e8_f REFERENCES books (book_id),
   tag_id NUMBER(19) NOT NULL CONSTRAINT books_tag_tag_id_8d70b40a_f REFERENCES tags (tag_id),
   CONSTRAINT books_tag_book_id_t_29db9e39_u UNIQUE (book_id, tag_id),
-  CONSTRAINT books_tags_id_idx UNIQUE (id)
+  CONSTRAINT books_tags_id_idx PRIMARY KEY (id)
 );
 
 -- index books_tags_book_id_73d7d8e8
@@ -139,14 +139,14 @@ CREATE INDEX books_tags_tag_id_8d70b40a ON books_tags (tag_id);
 -- table django_admin_log
 CREATE TABLE django_admin_log (
   id NUMBER(11) GENERATED ALWAYS AS IDENTITY,
-  action_time TIMESTAMP(6) NOT NULL,
+  action_time TIMESTAMP NOT NULL,
   object_id NCLOB,
-  object_repr NVARCHAR2,
+  object_repr NVARCHAR2(200),
   action_flag NUMBER(11) NOT NULL,
   change_message NCLOB,
   content_type_id NUMBER(11) CONSTRAINT django_ad_content_t_c4bce8eb_f REFERENCES django_content_type (id),
   user_id NUMBER(11) NOT NULL CONSTRAINT django_ad_user_id_c564eba6_f REFERENCES auth_user (id),
-  CONSTRAINT django_admin_log_id_idx UNIQUE (id)
+  CONSTRAINT django_admin_log_id_idx PRIMARY KEY (id)
 );
 
 -- index django_adm_content_ty_c4bce8eb
@@ -158,18 +158,18 @@ CREATE INDEX django_adm_user_id_c564eba6 ON django_admin_log (user_id);
 -- table django_migrations
 CREATE TABLE django_migrations (
   id NUMBER(19) GENERATED ALWAYS AS IDENTITY,
-  app NVARCHAR2,
-  name NVARCHAR2,
-  applied TIMESTAMP(6) NOT NULL,
-  CONSTRAINT django_migrations_id_idx UNIQUE (id)
+  app NVARCHAR2(255),
+  name NVARCHAR2(255),
+  applied TIMESTAMP NOT NULL,
+  CONSTRAINT django_migrations_id_idx PRIMARY KEY (id)
 );
 
 -- table django_session
 CREATE TABLE django_session (
-  session_key NVARCHAR2 NOT NULL,
+  session_key NVARCHAR2(40) NOT NULL,
   session_data NCLOB,
-  expire_date TIMESTAMP(6) NOT NULL,
-  CONSTRAINT django_session_session_key_idx UNIQUE (session_key)
+  expire_date TIMESTAMP NOT NULL,
+  CONSTRAINT django_session_session_key_idx PRIMARY KEY (session_key)
 );
 
 -- index django_ses_expire_dat_a5c62663

@@ -21,6 +21,7 @@
               "name": "name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 150,
                 "nullable": true
               }
             }
@@ -51,7 +52,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "auth_group_name_idx",
@@ -61,6 +63,7 @@
                   "name": "name",
                   "datatype": {
                     "type": "nvarchar2",
+                    "prec": 150,
                     "nullable": true
                   }
                 }
@@ -170,7 +173,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -245,6 +249,7 @@
               "name": "name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -259,6 +264,7 @@
               "name": "codename",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 100,
                 "nullable": true
               }
             }
@@ -290,6 +296,7 @@
                   "name": "codename",
                   "datatype": {
                     "type": "nvarchar2",
+                    "prec": 100,
                     "nullable": true
                   }
                 }
@@ -323,7 +330,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -372,6 +380,7 @@
               "name": "password",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 128,
                 "nullable": true
               }
             },
@@ -394,6 +403,7 @@
               "name": "username",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 150,
                 "nullable": true
               }
             },
@@ -401,6 +411,7 @@
               "name": "first_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 150,
                 "nullable": true
               }
             },
@@ -408,6 +419,7 @@
               "name": "last_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 150,
                 "nullable": true
               }
             },
@@ -415,6 +427,7 @@
               "name": "email",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 254,
                 "nullable": true
               }
             },
@@ -466,7 +479,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "auth_user_username_idx",
@@ -476,6 +490,7 @@
                   "name": "username",
                   "datatype": {
                     "type": "nvarchar2",
+                    "prec": 150,
                     "nullable": true
                   }
                 }
@@ -564,7 +579,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "auth_user_user_id_g_94350c0c_u",
@@ -744,7 +760,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -849,7 +866,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -870,6 +888,7 @@
               "name": "isbn",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -884,6 +903,7 @@
               "name": "title",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -935,7 +955,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "books_books_auth_73ac0c26",
@@ -1068,7 +1089,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "books_tags_tag_id_8d70b40a",
@@ -1170,6 +1192,7 @@
               "name": "object_repr",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 200,
                 "nullable": true
               }
             },
@@ -1256,7 +1279,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -1332,6 +1356,7 @@
               "name": "app_label",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 100,
                 "nullable": true
               }
             },
@@ -1339,6 +1364,7 @@
               "name": "model",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 100,
                 "nullable": true
               }
             }
@@ -1363,6 +1389,7 @@
                   "name": "app_label",
                   "datatype": {
                     "type": "nvarchar2",
+                    "prec": 100,
                     "nullable": true
                   }
                 },
@@ -1370,6 +1397,7 @@
                   "name": "model",
                   "datatype": {
                     "type": "nvarchar2",
+                    "prec": 100,
                     "nullable": true
                   }
                 }
@@ -1390,7 +1418,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -1411,6 +1440,7 @@
               "name": "app",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -1418,6 +1448,7 @@
               "name": "name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -1455,7 +1486,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -1466,7 +1498,8 @@
             {
               "name": "session_key",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               },
               "is_primary": true
             },
@@ -1489,7 +1522,8 @@
             {
               "name": "session_key",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               },
               "is_primary": true
             }
@@ -1515,12 +1549,14 @@
                 {
                   "name": "session_key",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 40
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -1542,6 +1578,7 @@
               "name": "tag",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 50,
                 "nullable": true
               }
             }
@@ -1572,7 +1609,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         }

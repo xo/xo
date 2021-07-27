@@ -28,7 +28,6 @@ CREATE TABLE books (
 CREATE INDEX books_title_idx ON books (title, year);
 
 -- procedure say_hello
--- procedure say_hello
 CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS
 BEGIN
   SELECT @result = CONCAT('hello ', @name)\;

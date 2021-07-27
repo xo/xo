@@ -2,7 +2,7 @@
 
 -- table auth_group
 CREATE TABLE auth_group (
-  id INT(10) IDENTITY(1, 1),
+  id INT IDENTITY(1, 1),
   name NVARCHAR(150) NOT NULL,
   CONSTRAINT auth_group_id_pkey PRIMARY KEY (id),
   CONSTRAINT auth_group_name_a6ea08ec_uniq UNIQUE (name)
@@ -10,7 +10,7 @@ CREATE TABLE auth_group (
 
 -- table django_content_type
 CREATE TABLE django_content_type (
-  id INT(10) IDENTITY(1, 1),
+  id INT IDENTITY(1, 1),
   app_label NVARCHAR(100) NOT NULL,
   model NVARCHAR(100) NOT NULL,
   CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model),
@@ -19,9 +19,9 @@ CREATE TABLE django_content_type (
 
 -- table auth_permission
 CREATE TABLE auth_permission (
-  id INT(10) IDENTITY(1, 1),
+  id INT IDENTITY(1, 1),
   name NVARCHAR(255) NOT NULL,
-  content_type_id INT(10) NOT NULL CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_content_type_id REFERENCES django_content_type (id),
+  content_type_id INT NOT NULL CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_content_type_id REFERENCES django_content_type (id),
   codename NVARCHAR(100) NOT NULL,
   CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename),
   CONSTRAINT auth_permission_id_pkey PRIMARY KEY (id)
@@ -32,9 +32,9 @@ CREATE INDEX auth_permission_content_type_id_2f476e4b ON auth_permission (conten
 
 -- table auth_group_permissions
 CREATE TABLE auth_group_permissions (
-  id BIGINT(19) IDENTITY(1, 1),
-  group_id INT(10) NOT NULL CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id REFERENCES auth_group (id),
-  permission_id INT(10) NOT NULL CONSTRAINT auth_group_permissions_permission_id_84c5c92e_fk_auth_permission_id REFERENCES auth_permission (id),
+  id BIGINT IDENTITY(1, 1),
+  group_id INT NOT NULL CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id REFERENCES auth_group (id),
+  permission_id INT NOT NULL CONSTRAINT auth_group_permissions_permission_id_84c5c92e_fk_auth_permission_id REFERENCES auth_permission (id),
   CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id),
   CONSTRAINT auth_group_permissions_id_pkey PRIMARY KEY (id)
 );
@@ -47,26 +47,26 @@ CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permiss
 
 -- table auth_user
 CREATE TABLE auth_user (
-  id INT(10) IDENTITY(1, 1),
+  id INT IDENTITY(1, 1),
   password NVARCHAR(128) NOT NULL,
-  last_login DATETIME2(27, 7),
-  is_superuser BIT(1) NOT NULL,
+  last_login DATETIME2,
+  is_superuser BIT NOT NULL,
   username NVARCHAR(150) NOT NULL,
   first_name NVARCHAR(150) NOT NULL,
   last_name NVARCHAR(150) NOT NULL,
   email NVARCHAR(254) NOT NULL,
-  is_staff BIT(1) NOT NULL,
-  is_active BIT(1) NOT NULL,
-  date_joined DATETIME2(27, 7) NOT NULL,
+  is_staff BIT NOT NULL,
+  is_active BIT NOT NULL,
+  date_joined DATETIME2 NOT NULL,
   CONSTRAINT auth_user_id_pkey PRIMARY KEY (id),
   CONSTRAINT auth_user_username_6821ab7c_uniq UNIQUE (username)
 );
 
 -- table auth_user_groups
 CREATE TABLE auth_user_groups (
-  id BIGINT(19) IDENTITY(1, 1),
-  user_id INT(10) NOT NULL CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id REFERENCES auth_user (id),
-  group_id INT(10) NOT NULL CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id REFERENCES auth_group (id),
+  id BIGINT IDENTITY(1, 1),
+  user_id INT NOT NULL CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id REFERENCES auth_user (id),
+  group_id INT NOT NULL CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id REFERENCES auth_group (id),
   CONSTRAINT auth_user_groups_id_pkey PRIMARY KEY (id),
   CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id)
 );
@@ -79,9 +79,9 @@ CREATE INDEX auth_user_groups_user_id_6a12ed8b ON auth_user_groups (user_id);
 
 -- table auth_user_user_permissions
 CREATE TABLE auth_user_user_permissions (
-  id BIGINT(19) IDENTITY(1, 1),
-  user_id INT(10) NOT NULL CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id REFERENCES auth_user (id),
-  permission_id INT(10) NOT NULL CONSTRAINT auth_user_user_permissions_permission_id_1fbb5f2c_fk_auth_permission_id REFERENCES auth_permission (id),
+  id BIGINT IDENTITY(1, 1),
+  user_id INT NOT NULL CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id REFERENCES auth_user (id),
+  permission_id INT NOT NULL CONSTRAINT auth_user_user_permissions_permission_id_1fbb5f2c_fk_auth_permission_id REFERENCES auth_permission (id),
   CONSTRAINT auth_user_user_permissions_id_pkey PRIMARY KEY (id),
   CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id)
 );
@@ -94,20 +94,20 @@ CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON auth_user_user_permi
 
 -- table authors
 CREATE TABLE authors (
-  author_id BIGINT(19) IDENTITY(1, 1),
+  author_id BIGINT IDENTITY(1, 1),
   name NVARCHAR NOT NULL,
   CONSTRAINT authors_author_id_pkey PRIMARY KEY (author_id)
 );
 
 -- table books
 CREATE TABLE books (
-  book_id BIGINT(19) IDENTITY(1, 1),
+  book_id BIGINT IDENTITY(1, 1),
   isbn NVARCHAR(255) NOT NULL,
-  book_type INT(10) NOT NULL,
+  book_type INT NOT NULL,
   title NVARCHAR(255) NOT NULL,
-  year INT(10) NOT NULL,
-  available DATETIME2(27, 7) NOT NULL,
-  books_author_id_fkey BIGINT(19) NOT NULL CONSTRAINT books_books_author_id_fkey_73ac0c26_fk_authors_author_id REFERENCES authors (author_id),
+  year INT NOT NULL,
+  available DATETIME2 NOT NULL,
+  books_author_id_fkey BIGINT NOT NULL CONSTRAINT books_books_author_id_fkey_73ac0c26_fk_authors_author_id REFERENCES authors (author_id),
   CONSTRAINT books_book_id_pkey PRIMARY KEY (book_id)
 );
 
@@ -116,16 +116,16 @@ CREATE INDEX books_books_author_id_fkey_73ac0c26 ON books (books_author_id_fkey)
 
 -- table tags
 CREATE TABLE tags (
-  tag_id BIGINT(19) IDENTITY(1, 1),
+  tag_id BIGINT IDENTITY(1, 1),
   tag NVARCHAR(50) NOT NULL,
   CONSTRAINT tags_tag_id_pkey PRIMARY KEY (tag_id)
 );
 
 -- table books_tags
 CREATE TABLE books_tags (
-  id BIGINT(19) IDENTITY(1, 1),
-  book_id BIGINT(19) NOT NULL CONSTRAINT books_tags_book_id_73d7d8e8_fk_books_book_id REFERENCES books (book_id),
-  tag_id BIGINT(19) NOT NULL CONSTRAINT books_tags_tag_id_8d70b40a_fk_tags_tag_id REFERENCES tags (tag_id),
+  id BIGINT IDENTITY(1, 1),
+  book_id BIGINT NOT NULL CONSTRAINT books_tags_book_id_73d7d8e8_fk_books_book_id REFERENCES books (book_id),
+  tag_id BIGINT NOT NULL CONSTRAINT books_tags_tag_id_8d70b40a_fk_tags_tag_id REFERENCES tags (tag_id),
   CONSTRAINT books_tags_book_id_tag_id_29db9e39_uniq UNIQUE (book_id, tag_id),
   CONSTRAINT books_tags_id_pkey PRIMARY KEY (id)
 );
@@ -138,14 +138,14 @@ CREATE INDEX books_tags_tag_id_8d70b40a ON books_tags (tag_id);
 
 -- table django_admin_log
 CREATE TABLE django_admin_log (
-  id INT(10) IDENTITY(1, 1),
-  action_time DATETIME2(27, 7) NOT NULL,
+  id INT IDENTITY(1, 1),
+  action_time DATETIME2 NOT NULL,
   object_id NVARCHAR,
   object_repr NVARCHAR(200) NOT NULL,
-  action_flag SMALLINT(5) NOT NULL,
+  action_flag SMALLINT NOT NULL,
   change_message NVARCHAR NOT NULL,
-  content_type_id INT(10) CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_content_type_id REFERENCES django_content_type (id),
-  user_id INT(10) NOT NULL CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id REFERENCES auth_user (id),
+  content_type_id INT CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_content_type_id REFERENCES django_content_type (id),
+  user_id INT NOT NULL CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id REFERENCES auth_user (id),
   CONSTRAINT django_admin_log_id_pkey PRIMARY KEY (id)
 );
 
@@ -157,10 +157,10 @@ CREATE INDEX django_admin_log_user_id_c564eba6 ON django_admin_log (user_id);
 
 -- table django_migrations
 CREATE TABLE django_migrations (
-  id BIGINT(19) IDENTITY(1, 1),
+  id BIGINT IDENTITY(1, 1),
   app NVARCHAR(255) NOT NULL,
   name NVARCHAR(255) NOT NULL,
-  applied DATETIME2(27, 7) NOT NULL,
+  applied DATETIME2 NOT NULL,
   CONSTRAINT django_migrations_id_pkey PRIMARY KEY (id)
 );
 
@@ -168,7 +168,7 @@ CREATE TABLE django_migrations (
 CREATE TABLE django_session (
   session_key NVARCHAR(40) NOT NULL,
   session_data NVARCHAR NOT NULL,
-  expire_date DATETIME2(27, 7) NOT NULL,
+  expire_date DATETIME2 NOT NULL,
   CONSTRAINT django_session_session_key_pkey PRIMARY KEY (session_key)
 );
 

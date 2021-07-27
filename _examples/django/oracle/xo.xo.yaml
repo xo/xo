@@ -16,6 +16,7 @@ schemas:
       - name: name
         datatype:
           type: nvarchar2
+          prec: 150
           nullable: true
       primary_keys:
       - name: id
@@ -35,12 +36,14 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: auth_group_name_idx
         func_name: auth_group_by_name
         fields:
         - name: name
           datatype:
             type: nvarchar2
+            prec: 150
             nullable: true
         is_unique: true
     - type: table
@@ -104,6 +107,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: auth_grou_group_id_b120cbf9_f
         func_name: auth_group
@@ -149,6 +153,7 @@ schemas:
       - name: name
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: content_type_id
         datatype:
@@ -157,6 +162,7 @@ schemas:
       - name: codename
         datatype:
           type: nvarchar2
+          prec: 100
           nullable: true
       primary_keys:
       - name: id
@@ -176,6 +182,7 @@ schemas:
         - name: codename
           datatype:
             type: nvarchar2
+            prec: 100
             nullable: true
         is_unique: true
       - name: auth_permi_content_ty_2f476e4b
@@ -195,6 +202,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: auth_perm_content_t_2f476e4b_f
         func_name: django_content_type
@@ -224,6 +232,7 @@ schemas:
       - name: password
         datatype:
           type: nvarchar2
+          prec: 128
           nullable: true
       - name: last_login
         datatype:
@@ -237,18 +246,22 @@ schemas:
       - name: username
         datatype:
           type: nvarchar2
+          prec: 150
           nullable: true
       - name: first_name
         datatype:
           type: nvarchar2
+          prec: 150
           nullable: true
       - name: last_name
         datatype:
           type: nvarchar2
+          prec: 150
           nullable: true
       - name: email
         datatype:
           type: nvarchar2
+          prec: 254
           nullable: true
       - name: is_staff
         datatype:
@@ -280,12 +293,14 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: auth_user_username_idx
         func_name: auth_user_by_username
         fields:
         - name: username
           datatype:
             type: nvarchar2
+            prec: 150
             nullable: true
         is_unique: true
     - type: table
@@ -337,6 +352,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: auth_user_user_id_g_94350c0c_u
         func_name: auth_user_group_by_user_id_group_id
         fields:
@@ -443,6 +459,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: auth_user_permissio_1fbb5f2c_f
         func_name: auth_permission
@@ -507,6 +524,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: books
       columns:
@@ -519,6 +537,7 @@ schemas:
       - name: isbn
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: book_type
         datatype:
@@ -527,6 +546,7 @@ schemas:
       - name: title
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: year
         datatype:
@@ -558,6 +578,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: books_books_auth_73ac0c26
         func_name: books_by_books_author_id_fkey
         fields:
@@ -636,6 +657,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: books_tags_tag_id_8d70b40a
         func_name: books_tags_by_tag_id
         fields:
@@ -696,6 +718,7 @@ schemas:
       - name: object_repr
         datatype:
           type: nvarchar2
+          prec: 200
           nullable: true
       - name: action_flag
         datatype:
@@ -747,6 +770,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: django_ad_content_t_c4bce8eb_f
         func_name: django_content_type
@@ -793,10 +817,12 @@ schemas:
       - name: app_label
         datatype:
           type: nvarchar2
+          prec: 100
           nullable: true
       - name: model
         datatype:
           type: nvarchar2
+          prec: 100
           nullable: true
       primary_keys:
       - name: id
@@ -812,10 +838,12 @@ schemas:
         - name: app_label
           datatype:
             type: nvarchar2
+            prec: 100
             nullable: true
         - name: model
           datatype:
             type: nvarchar2
+            prec: 100
             nullable: true
         is_unique: true
       - name: django_content_type_id_idx
@@ -828,6 +856,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: django_migrations
       columns:
@@ -840,10 +869,12 @@ schemas:
       - name: app
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: name
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: applied
         datatype:
@@ -867,12 +898,14 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: django_session
       columns:
       - name: session_key
         datatype:
           type: nvarchar2
+          prec: 40
         is_primary: true
       - name: session_data
         datatype:
@@ -886,6 +919,7 @@ schemas:
       - name: session_key
         datatype:
           type: nvarchar2
+          prec: 40
         is_primary: true
       indexes:
       - name: django_ses_expire_dat_a5c62663
@@ -901,8 +935,10 @@ schemas:
         - name: session_key
           datatype:
             type: nvarchar2
+            prec: 40
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: tags
@@ -916,6 +952,7 @@ schemas:
       - name: tag
         datatype:
           type: nvarchar2
+          prec: 50
           nullable: true
       primary_keys:
       - name: tag_id
@@ -935,3 +972,4 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true

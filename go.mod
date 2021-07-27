@@ -11,7 +11,7 @@ require (
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobwas/glob v0.2.3
-	github.com/goccy/go-yaml v1.9.1
+	github.com/goccy/go-yaml v1.9.2
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/kenshaw/snaker v0.1.3
 	github.com/lib/pq v1.10.2
