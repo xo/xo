@@ -67,7 +67,7 @@ func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 	def := []string{f.escCol(field.Name), typ}
 	// add default value
 	if field.Default != "" && !field.IsSequence {
-		def = append(def, "DEFAULT", f.parseDefault(field.Default))
+		def = append(def, "DEFAULT", f.alterDefault(field.Default))
 	}
 	if !field.Datatype.Nullable && !field.IsSequence {
 		def = append(def, "NOT NULL")
@@ -79,18 +79,23 @@ func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 	return strings.Join(def, " ")
 }
 
-func (f *Funcs) parseDefault(d string) string {
+// alterDefault parses and alters default column values based on the driver.
+func (f *Funcs) alterDefault(s string) string {
 	switch f.driver {
 	case "postgres":
-		if m := postgresDefaultCastRE.FindStringSubmatch(d); m != nil {
-			d = m[1]
+		if m := postgresDefaultCastRE.FindStringSubmatch(s); m != nil {
+			return m[1]
+		}
+	case "mysql":
+		if v := strings.ToUpper(s); v == "CURRENT_TIMESTAMP()" {
+			return "CURRENT_TIMESTAMP"
 		}
 	case "sqlite3":
-		if !sqliteDefaultNeedsParenRE.MatchString(d) {
-			d = "(" + d + ")"
+		if !sqliteDefaultNeedsParenRE.MatchString(s) {
+			return "(" + s + ")"
 		}
 	}
-	return d
+	return s
 }
 
 // postgresDefaultCastRE is the regexp to strip the datatype cast from the
