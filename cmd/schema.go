@@ -369,28 +369,29 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 	fkMap := make(map[string]xo.ForeignKey)
 	// loop over foreign keys for table
 	for _, fkey := range foreignKeys {
-		// If the referenced table is excluded, we don't want to omit it.
+		// if the referenced table is excluded, we don't want to omit it
 		if !validType(args, schema, fkey.RefTableName) {
-			fmt.Fprintf(os.Stdout, "Warn: Skipping foreign key %q on %q due to excluded type %q", fkey.ForeignKeyName, table.Name, fkey.RefTableName)
+			fmt.Fprintf(os.Stderr, "WARNING: skipping table %q foreign key %q (%q previously excluded)", table.Name, fkey.ForeignKeyName, fkey.RefTableName)
 			continue
 		}
-		partial, err := fkeyTypes(fkey, tables, table)
-		if err != nil {
+		// check foreign key
+		field, refTable, refField := xo.Field{}, xo.Table{}, xo.Field{}
+		if err := checkFk(tables, table, fkey, &field, &refTable, &refField); err != nil {
 			return nil, err
 		}
 		// ForeignKeyName should only be empty on SQLite. When this happens, we
 		// resort to using the keyid (which is unique to each foreign key, even
-		// if it references multiple columns) as the map for the foreign key.
-		mapKey := fkey.ForeignKeyName
+		// if it references multiple columns) as the map for the foreign key
+		key := fkey.ForeignKeyName
 		if fkey.ForeignKeyName == "" {
-			mapKey = strconv.Itoa(fkey.KeyID)
+			key = strconv.Itoa(fkey.KeyID)
 		}
-		f := fkMap[mapKey]
-		fkMap[mapKey] = xo.ForeignKey{
+		f := fkMap[key]
+		fkMap[key] = xo.ForeignKey{
 			Name:      fkey.ForeignKeyName,
-			Fields:    append(f.Fields, partial.Field),
-			RefTable:  partial.RefTable.Name,
-			RefFields: append(f.RefFields, partial.RefField),
+			Fields:    append(f.Fields, field),
+			RefTable:  refTable.Name,
+			RefFields: append(f.RefFields, refField),
 		}
 	}
 	// convert from map to slice
@@ -444,55 +445,40 @@ func validType(args *Args, schema, name string) bool {
 	return false
 }
 
-// fkeyTypes returns a partialFkey, with the field its on, the referenced
-// table, and the refereced table column.
-func fkeyTypes(fkey *models.ForeignKey, tables []xo.Table, table xo.Table) (partialFkey, error) {
-	var field, refField *xo.Field
-	var refTable *xo.Table
+// checkFk checks that the foreign key has a matching field, ref table, and ref
+// field
+func checkFk(tables []xo.Table, table xo.Table, fkey *models.ForeignKey, field *xo.Field, refTable *xo.Table, refField *xo.Field) error {
 	// find field from columns
+	var fieldFound, refTableFound, refFieldFound bool
 	for _, c := range table.Columns {
 		if c.Name == fkey.ColumnName {
-			field = &c
+			fieldFound, *field = true, c
 			break
 		}
 	}
 	// find ref table
 	for _, t := range tables {
 		if t.Name == fkey.RefTableName {
-			refTable = &t
+			refTableFound, *refTable = true, t
 			break
 		}
 	}
 	// find ref field from columns
 	for _, f := range refTable.Columns {
 		if f.Name == fkey.RefColumnName {
-			refField = &f
+			refFieldFound, *refField = true, f
 			break
 		}
 	}
 	// no ref field, but have ref table, so use primary key
 	if refTable != nil && refField == nil && len(refTable.PrimaryKeys) == 1 {
-		refField = &refTable.PrimaryKeys[0]
+		refFieldFound, *refField = true, refTable.PrimaryKeys[0]
 	}
 	// check everything was found
-	if field == nil || refTable == nil || refField == nil {
-		return partialFkey{}, fmt.Errorf(
-			"table %q: could not find field, refType, or refField for foreign key: %q",
-			table.Name,
-			fkey.ForeignKeyName,
-		)
+	if !fieldFound || !refTableFound || !refFieldFound {
+		return fmt.Errorf("could not find field, refTable, or refField for table %q foreign key %q", table.Name, fkey.ForeignKeyName)
 	}
-	return partialFkey{
-		Field:    *field,
-		RefTable: *refTable,
-		RefField: *refField,
-	}, nil
-}
-
-type partialFkey struct {
-	Field    xo.Field
-	RefTable xo.Table
-	RefField xo.Field
+	return nil
 }
 
 // resolveFkName returns the foreign key name for the passed foreign key.
