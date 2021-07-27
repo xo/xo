@@ -2,32 +2,32 @@
 
 -- table a_bit_of_everything
 CREATE TABLE a_bit_of_everything (
-  a_bigint BIGINT(19) NOT NULL,
-  a_bigint_nullable BIGINT(19),
+  a_bigint BIGINT NOT NULL,
+  a_bigint_nullable BIGINT,
   a_binary BINARY(1) NOT NULL,
   a_binary_nullable BINARY(1),
-  a_bit BIT(1) NOT NULL,
-  a_bit_nullable BIT(1),
+  a_bit BIT NOT NULL,
+  a_bit_nullable BIT,
   a_char CHAR(1) NOT NULL,
   a_char_nullable CHAR(1),
-  a_date DATE(10) NOT NULL,
-  a_date_nullable DATE(10),
-  a_datetime DATETIME(23, 3) NOT NULL,
-  a_datetime_nullable DATETIME(23, 3),
-  a_datetime2 DATETIME2(27, 7) NOT NULL,
-  a_datetime2_nullable DATETIME2(27, 7),
-  a_datetimeoffset DATETIMEOFFSET(34, 7) NOT NULL,
-  a_datetimeoffset_nullable DATETIMEOFFSET(34, 7),
+  a_date DATE NOT NULL,
+  a_date_nullable DATE,
+  a_datetime DATETIME NOT NULL,
+  a_datetime_nullable DATETIME,
+  a_datetime2 DATETIME2 NOT NULL,
+  a_datetime2_nullable DATETIME2,
+  a_datetimeoffset DATETIMEOFFSET NOT NULL,
+  a_datetimeoffset_nullable DATETIMEOFFSET,
   a_decimal DECIMAL(18) NOT NULL,
   a_decimal_nullable DECIMAL(18),
   a_float FLOAT(53) NOT NULL,
   a_float_nullable FLOAT(53),
   a_image IMAGE NOT NULL,
   a_image_nullable IMAGE,
-  a_int INT(10) NOT NULL,
-  a_int_nullable INT(10),
-  a_money MONEY(19, 4) NOT NULL,
-  a_money_nullable MONEY(19, 4),
+  a_int INT NOT NULL,
+  a_int_nullable INT,
+  a_money MONEY NOT NULL,
+  a_money_nullable MONEY,
   a_nchar NCHAR(1) NOT NULL,
   a_nchar_nullable NCHAR(1),
   a_ntext NTEXT NOT NULL,
@@ -36,20 +36,20 @@ CREATE TABLE a_bit_of_everything (
   a_numeric_nullable NUMERIC(18),
   a_nvarchar NVARCHAR(1) NOT NULL,
   a_nvarchar_nullable NVARCHAR(1),
-  a_real REAL(24) NOT NULL,
-  a_real_nullable REAL(24),
-  a_smalldatetime SMALLDATETIME(16) NOT NULL,
-  a_smalldatetime_nullable SMALLDATETIME(16),
-  a_smallint SMALLINT(5) NOT NULL,
-  a_smallint_nullable SMALLINT(5),
-  a_smallmoney SMALLMONEY(10, 4) NOT NULL,
-  a_smallmoney_nullable SMALLMONEY(10, 4),
+  a_real REAL NOT NULL,
+  a_real_nullable REAL,
+  a_smalldatetime SMALLDATETIME NOT NULL,
+  a_smalldatetime_nullable SMALLDATETIME,
+  a_smallint SMALLINT NOT NULL,
+  a_smallint_nullable SMALLINT,
+  a_smallmoney SMALLMONEY NOT NULL,
+  a_smallmoney_nullable SMALLMONEY,
   a_text TEXT NOT NULL,
   a_text_nullable TEXT,
-  a_time TIME(16, 7) NOT NULL,
-  a_time_nullable TIME(16, 7),
-  a_tinyint TINYINT(3) NOT NULL,
-  a_tinyint_nullable TINYINT(3),
+  a_time TIME NOT NULL,
+  a_time_nullable TIME,
+  a_tinyint TINYINT NOT NULL,
+  a_tinyint_nullable TINYINT,
   a_varbinary VARBINARY(1) NOT NULL,
   a_varbinary_nullable VARBINARY(1),
   a_varchar VARCHAR(1) NOT NULL,
@@ -60,32 +60,32 @@ CREATE TABLE a_bit_of_everything (
 
 -- table a_primary
 CREATE TABLE a_primary (
-  a_key INT(10) NOT NULL,
+  a_key INT NOT NULL,
   CONSTRAINT a_primary_pkey PRIMARY KEY (a_key)
 );
 
 -- table a_foreign_key
 CREATE TABLE a_foreign_key (
-  a_key INT(10) CONSTRAINT a_key_fkey REFERENCES a_primary (a_key)
+  a_key INT CONSTRAINT a_key_fkey REFERENCES a_primary (a_key)
 );
 
 -- table a_primary_composite
 CREATE TABLE a_primary_composite (
-  a_key1 INT(10) NOT NULL,
-  a_key2 INT(10) NOT NULL,
+  a_key1 INT NOT NULL,
+  a_key2 INT NOT NULL,
   CONSTRAINT a_primary_composite_pkey PRIMARY KEY (a_key1, a_key2)
 );
 
 -- table a_foreign_key_composite
 CREATE TABLE a_foreign_key_composite (
-  a_key1 INT(10),
-  a_key2 INT(10),
+  a_key1 INT,
+  a_key2 INT,
   CONSTRAINT a_foreign_key_composite_fkey FOREIGN KEY (a_key1, a_key2) REFERENCES a_primary_composite (a_key1, a_key2)
 );
 
 -- table a_index
 CREATE TABLE a_index (
-  a_key INT(10)
+  a_key INT
 );
 
 -- index a_index_idx
@@ -93,8 +93,8 @@ CREATE INDEX a_index_idx ON a_index (a_key);
 
 -- table a_index_composite
 CREATE TABLE a_index_composite (
-  a_key1 INT(10),
-  a_key2 INT(10)
+  a_key1 INT,
+  a_key2 INT
 );
 
 -- index a_index_composite_idx
@@ -107,34 +107,34 @@ CREATE TABLE a_manual_table (
 
 -- table a_primary_multi
 CREATE TABLE a_primary_multi (
-  a_key INT(10) NOT NULL,
+  a_key INT NOT NULL,
   a_text NVARCHAR(255),
   CONSTRAINT a_primary_multi_pkey PRIMARY KEY (a_key)
 );
 
 -- table a_sequence
 CREATE TABLE a_sequence (
-  a_seq INT(10) IDENTITY(1, 1),
+  a_seq INT IDENTITY(1, 1),
   CONSTRAINT a_sequence_pkey PRIMARY KEY (a_seq)
 );
 
 -- table a_sequence_multi
 CREATE TABLE a_sequence_multi (
-  a_seq INT(10) IDENTITY(1, 1),
+  a_seq INT IDENTITY(1, 1),
   a_text NVARCHAR(255),
   CONSTRAINT a_sequence_multi_pkey PRIMARY KEY (a_seq)
 );
 
 -- table a_unique_index
 CREATE TABLE a_unique_index (
-  a_key INT(10),
+  a_key INT,
   CONSTRAINT a_unique_index_idx UNIQUE (a_key)
 );
 
 -- table a_unique_index_composite
 CREATE TABLE a_unique_index_composite (
-  a_key1 INT(10),
-  a_key2 INT(10),
+  a_key1 INT,
+  a_key2 INT,
   CONSTRAINT a_unique_index_composite_idx UNIQUE (a_key1, a_key2)
 );
 

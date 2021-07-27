@@ -42,7 +42,8 @@
             {
               "name": "name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 255
               }
             }
           ],
@@ -64,7 +65,8 @@
                 {
                   "name": "name",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 255
                   }
                 }
               ]
@@ -82,7 +84,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -107,13 +110,15 @@
             {
               "name": "isbn",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 255
               }
             },
             {
               "name": "title",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 255
               }
             },
             {
@@ -161,7 +166,8 @@
                 {
                   "name": "isbn",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 255
                   }
                 }
               ],
@@ -180,7 +186,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             },
             {
               "name": "books_title_idx",
@@ -189,7 +196,8 @@
                 {
                   "name": "title",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 255
                   }
                 },
                 {

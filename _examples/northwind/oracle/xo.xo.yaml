@@ -14,6 +14,7 @@ schemas:
       - name: category_name
         datatype:
           type: nvarchar2
+          prec: 15
       - name: description
         datatype:
           type: clob
@@ -36,6 +37,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: customer_customer_demo
@@ -43,19 +45,23 @@ schemas:
       - name: customer_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       - name: customer_type_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       primary_keys:
       - name: customer_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       - name: customer_type_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       indexes:
       - name: customer_customer_demo_pkey
@@ -64,12 +70,15 @@ schemas:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         - name: customer_type_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: customer_customer_demo_customer_id_fkey
         func_name: customer
@@ -77,12 +86,14 @@ schemas:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         ref_table: customers
         ref_column:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: customer_customer_demo_customer_type_id_fkey
@@ -91,12 +102,14 @@ schemas:
         - name: customer_type_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         ref_table: customer_demographics
         ref_column:
         - name: customer_type_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         ref_func_name: customer_demographic_by_customer_type_id
       manual: true
@@ -106,6 +119,7 @@ schemas:
       - name: customer_type_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       - name: customer_desc
         datatype:
@@ -115,6 +129,7 @@ schemas:
       - name: customer_type_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       indexes:
       - name: customer_demographics_pkey
@@ -123,8 +138,10 @@ schemas:
         - name: customer_type_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: customers
@@ -132,50 +149,62 @@ schemas:
       - name: customer_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       - name: company_name
         datatype:
           type: nvarchar2
+          prec: 40
       - name: contact_name
         datatype:
           type: nvarchar2
+          prec: 30
           nullable: true
       - name: contact_title
         datatype:
           type: nvarchar2
+          prec: 30
           nullable: true
       - name: address
         datatype:
           type: nvarchar2
+          prec: 60
           nullable: true
       - name: city
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: region
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: postal_code
         datatype:
           type: nvarchar2
+          prec: 10
           nullable: true
       - name: country
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: phone
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       - name: fax
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       primary_keys:
       - name: customer_id
         datatype:
           type: nchar
+          prec: 255
         is_primary: true
       indexes:
       - name: customers_pkey
@@ -184,8 +213,10 @@ schemas:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: employee_territories
@@ -197,6 +228,7 @@ schemas:
       - name: territory_id
         datatype:
           type: nvarchar2
+          prec: 20
         is_primary: true
       primary_keys:
       - name: employee_id
@@ -206,6 +238,7 @@ schemas:
       - name: territory_id
         datatype:
           type: nvarchar2
+          prec: 20
         is_primary: true
       indexes:
       - name: employee_territories_pkey
@@ -218,8 +251,10 @@ schemas:
         - name: territory_id
           datatype:
             type: nvarchar2
+            prec: 20
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: employee_territories_employee_id_fkey
         func_name: employee
@@ -241,12 +276,14 @@ schemas:
         - name: territory_id
           datatype:
             type: nvarchar2
+            prec: 20
           is_primary: true
         ref_table: territories
         ref_column:
         - name: territory_id
           datatype:
             type: nvarchar2
+            prec: 20
           is_primary: true
         ref_func_name: territory_by_territory_id
       manual: true
@@ -260,16 +297,20 @@ schemas:
       - name: last_name
         datatype:
           type: nvarchar2
+          prec: 20
       - name: first_name
         datatype:
           type: nvarchar2
+          prec: 10
       - name: title
         datatype:
           type: nvarchar2
+          prec: 30
           nullable: true
       - name: title_of_courtesy
         datatype:
           type: nvarchar2
+          prec: 25
           nullable: true
       - name: birth_date
         datatype:
@@ -282,30 +323,37 @@ schemas:
       - name: address
         datatype:
           type: nvarchar2
+          prec: 60
           nullable: true
       - name: city
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: region
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: postal_code
         datatype:
           type: nvarchar2
+          prec: 10
           nullable: true
       - name: country
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: home_phone
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       - name: extension
         datatype:
           type: nvarchar2
+          prec: 4
           nullable: true
       - name: photo
         datatype:
@@ -322,6 +370,7 @@ schemas:
       - name: photo_path
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       primary_keys:
       - name: employee_id
@@ -337,6 +386,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: employees_reports_to_fkey
         func_name: employee
@@ -395,6 +445,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: order_details_order_id_fkey
         func_name: order
@@ -435,6 +486,7 @@ schemas:
       - name: customer_id
         datatype:
           type: nchar
+          prec: 255
           nullable: true
       - name: employee_id
         datatype:
@@ -463,26 +515,32 @@ schemas:
       - name: ship_name
         datatype:
           type: nvarchar2
+          prec: 40
           nullable: true
       - name: ship_address
         datatype:
           type: nvarchar2
+          prec: 60
           nullable: true
       - name: ship_city
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: ship_region
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: ship_postal_code
         datatype:
           type: nvarchar2
+          prec: 10
           nullable: true
       - name: ship_country
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       primary_keys:
       - name: order_id
@@ -498,6 +556,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: orders_customer_id_fkey
         func_name: customer
@@ -505,12 +564,14 @@ schemas:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
             nullable: true
         ref_table: customers
         ref_column:
         - name: customer_id
           datatype:
             type: nchar
+            prec: 255
           is_primary: true
         ref_func_name: customer_by_customer_id
       - name: orders_employee_id_fkey
@@ -552,6 +613,7 @@ schemas:
       - name: product_name
         datatype:
           type: nvarchar2
+          prec: 40
       - name: supplier_id
         datatype:
           type: number
@@ -563,6 +625,7 @@ schemas:
       - name: quantity_per_unit
         datatype:
           type: nvarchar2
+          prec: 20
           nullable: true
       - name: unit_price
         datatype:
@@ -597,6 +660,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: products_category_id_fkey
         func_name: category
@@ -637,6 +701,7 @@ schemas:
       - name: region_description
         datatype:
           type: nchar
+          prec: 255
       primary_keys:
       - name: region_id
         datatype:
@@ -651,6 +716,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: shippers
@@ -662,9 +728,11 @@ schemas:
       - name: company_name
         datatype:
           type: nvarchar2
+          prec: 40
       - name: phone
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       primary_keys:
       - name: shipper_id
@@ -680,6 +748,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: suppliers
@@ -691,41 +760,51 @@ schemas:
       - name: company_name
         datatype:
           type: nvarchar2
+          prec: 40
       - name: contact_name
         datatype:
           type: nvarchar2
+          prec: 30
           nullable: true
       - name: contact_title
         datatype:
           type: nvarchar2
+          prec: 30
           nullable: true
       - name: address
         datatype:
           type: nvarchar2
+          prec: 60
           nullable: true
       - name: city
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: region
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: postal_code
         datatype:
           type: nvarchar2
+          prec: 10
           nullable: true
       - name: country
         datatype:
           type: nvarchar2
+          prec: 15
           nullable: true
       - name: phone
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       - name: fax
         datatype:
           type: nvarchar2
+          prec: 24
           nullable: true
       - name: homepage
         datatype:
@@ -745,6 +824,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: territories
@@ -752,10 +832,12 @@ schemas:
       - name: territory_id
         datatype:
           type: nvarchar2
+          prec: 20
         is_primary: true
       - name: territory_description
         datatype:
           type: nchar
+          prec: 255
       - name: region_id
         datatype:
           type: number
@@ -763,6 +845,7 @@ schemas:
       - name: territory_id
         datatype:
           type: nvarchar2
+          prec: 20
         is_primary: true
       indexes:
       - name: territories_pkey
@@ -771,8 +854,10 @@ schemas:
         - name: territory_id
           datatype:
             type: nvarchar2
+            prec: 20
           is_primary: true
         is_unique: true
+        is_primary: true
       foreign_keys:
       - name: territories_region_id_fkey
         func_name: region
@@ -798,14 +883,17 @@ schemas:
       - name: state_name
         datatype:
           type: nvarchar2
+          prec: 100
           nullable: true
       - name: state_abbr
         datatype:
           type: nvarchar2
+          prec: 2
           nullable: true
       - name: state_region
         datatype:
           type: nvarchar2
+          prec: 50
           nullable: true
       primary_keys:
       - name: state_id
@@ -821,4 +909,5 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true

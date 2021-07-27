@@ -2,7 +2,7 @@
 
 -- table categories
 CREATE TABLE categories (
-  category_id SMALLINT(5) NOT NULL,
+  category_id SMALLINT NOT NULL,
   category_name VARCHAR(15) NOT NULL,
   description TEXT,
   picture VARBINARY,
@@ -41,13 +41,13 @@ CREATE TABLE customer_customer_demo (
 
 -- table employees
 CREATE TABLE employees (
-  employee_id SMALLINT(5) NOT NULL,
+  employee_id SMALLINT NOT NULL,
   last_name VARCHAR(20) NOT NULL,
   first_name VARCHAR(10) NOT NULL,
   title VARCHAR(30),
   title_of_courtesy VARCHAR(25),
-  birth_date DATE(10),
-  hire_date DATE(10),
+  birth_date DATE,
+  hire_date DATE,
   address VARCHAR(60),
   city VARCHAR(15),
   region VARCHAR(15),
@@ -57,14 +57,14 @@ CREATE TABLE employees (
   extension VARCHAR(4),
   photo VARBINARY,
   notes TEXT,
-  reports_to SMALLINT(5) CONSTRAINT employees_reports_to_fkey REFERENCES employees (employee_id),
+  reports_to SMALLINT CONSTRAINT employees_reports_to_fkey REFERENCES employees (employee_id),
   photo_path VARCHAR(255),
   CONSTRAINT employees_pkey PRIMARY KEY (employee_id)
 );
 
 -- table region
 CREATE TABLE region (
-  region_id SMALLINT(5) NOT NULL,
+  region_id SMALLINT NOT NULL,
   region_description CHAR(255) NOT NULL,
   CONSTRAINT regions_pkey PRIMARY KEY (region_id)
 );
@@ -73,26 +73,26 @@ CREATE TABLE region (
 CREATE TABLE territories (
   territory_id VARCHAR(20) NOT NULL,
   territory_description CHAR(255) NOT NULL,
-  region_id SMALLINT(5) NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
+  region_id SMALLINT NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
   CONSTRAINT territories_pkey PRIMARY KEY (territory_id)
 );
 
 -- table employee_territories
 CREATE TABLE employee_territories (
-  employee_id SMALLINT(5) NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
+  employee_id SMALLINT NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
   territory_id VARCHAR(20) NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
   CONSTRAINT employee_territories_pkey PRIMARY KEY (employee_id, territory_id)
 );
 
 -- table orders
 CREATE TABLE orders (
-  order_id SMALLINT(5) NOT NULL,
+  order_id SMALLINT NOT NULL,
   customer_id CHAR(255) CONSTRAINT orders_customer_id_fkey REFERENCES customers (customer_id),
-  employee_id SMALLINT(5) CONSTRAINT orders_employee_id_fkey REFERENCES employees (employee_id),
-  order_date DATE(10),
-  required_date DATE(10),
-  shipped_date DATE(10),
-  freight REAL(24),
+  employee_id SMALLINT CONSTRAINT orders_employee_id_fkey REFERENCES employees (employee_id),
+  order_date DATE,
+  required_date DATE,
+  shipped_date DATE,
+  freight REAL,
   ship_name VARCHAR(40),
   ship_address VARCHAR(60),
   ship_city VARCHAR(15),
@@ -104,7 +104,7 @@ CREATE TABLE orders (
 
 -- table suppliers
 CREATE TABLE suppliers (
-  supplier_id SMALLINT(5) NOT NULL,
+  supplier_id SMALLINT NOT NULL,
   company_name VARCHAR(40) NOT NULL,
   contact_name VARCHAR(30),
   contact_title VARCHAR(30),
@@ -121,32 +121,32 @@ CREATE TABLE suppliers (
 
 -- table products
 CREATE TABLE products (
-  product_id SMALLINT(5) NOT NULL,
+  product_id SMALLINT NOT NULL,
   product_name VARCHAR(40) NOT NULL,
-  supplier_id SMALLINT(5) CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
-  category_id SMALLINT(5) CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
+  supplier_id SMALLINT CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
+  category_id SMALLINT CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
   quantity_per_unit VARCHAR(20),
-  unit_price REAL(24),
-  units_in_stock SMALLINT(5),
-  units_on_order SMALLINT(5),
-  reorder_level SMALLINT(5),
-  discontinued INT(10) NOT NULL,
+  unit_price REAL,
+  units_in_stock SMALLINT,
+  units_on_order SMALLINT,
+  reorder_level SMALLINT,
+  discontinued INT NOT NULL,
   CONSTRAINT products_pkey PRIMARY KEY (product_id)
 );
 
 -- table order_details
 CREATE TABLE order_details (
-  order_id SMALLINT(5) NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
-  product_id SMALLINT(5) NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
-  unit_price REAL(24) NOT NULL,
-  quantity SMALLINT(5) NOT NULL,
-  discount REAL(24) NOT NULL,
+  order_id SMALLINT NOT NULL CONSTRAINT order_details_order_id_fkey REFERENCES orders (order_id),
+  product_id SMALLINT NOT NULL CONSTRAINT order_details_product_id_fkey REFERENCES products (product_id),
+  unit_price REAL NOT NULL,
+  quantity SMALLINT NOT NULL,
+  discount REAL NOT NULL,
   CONSTRAINT order_details_pkey PRIMARY KEY (order_id, product_id)
 );
 
 -- table shippers
 CREATE TABLE shippers (
-  shipper_id SMALLINT(5) NOT NULL,
+  shipper_id SMALLINT NOT NULL,
   company_name VARCHAR(40) NOT NULL,
   phone VARCHAR(24),
   CONSTRAINT shippers_pkey PRIMARY KEY (shipper_id)
@@ -154,7 +154,7 @@ CREATE TABLE shippers (
 
 -- table us_states
 CREATE TABLE us_states (
-  state_id SMALLINT(5) NOT NULL,
+  state_id SMALLINT NOT NULL,
   state_name VARCHAR(100),
   state_abbr VARCHAR(2),
   state_region VARCHAR(50),

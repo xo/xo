@@ -247,27 +247,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- function a_0_in_1_out
-CREATE FUNCTION a_0_in_1_out() RETURNS INTEGER AS $$
+CREATE FUNCTION a_0_in_1_out(OUT a_return INTEGER) AS $$
 BEGIN
   a_return := 10;
 END;
 $$ LANGUAGE plpgsql;
 
 -- procedure a_1_in_0_out
-CREATE PROCEDURE a_1_in_0_out(a_param INTEGER, OUT a_param INTEGER) AS $$
+CREATE PROCEDURE a_1_in_0_out(a_param INTEGER) AS $$
 BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
 -- function a_1_in_1_out
-CREATE FUNCTION a_1_in_1_out(a_param INTEGER) RETURNS INTEGER AS $$
+CREATE FUNCTION a_1_in_1_out(a_param INTEGER, OUT a_return INTEGER) AS $$
 BEGIN
   a_return := a_param;
 END;
 $$ LANGUAGE plpgsql;
 
 -- function a_2_in_2_out
-CREATE FUNCTION a_2_in_2_out(param_one INTEGER, param_two INTEGER, OUT param_one INTEGER, OUT param_two INTEGER) AS $$
+CREATE FUNCTION a_2_in_2_out(param_one INTEGER, param_two INTEGER, OUT return_one INTEGER, OUT return_two INTEGER) AS $$
 BEGIN
   return_one := param_one;
   return_two := param_two;
@@ -296,13 +296,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- procedure a_overloaded
-CREATE PROCEDURE a_overloaded(param_one INTEGER, OUT param_one INTEGER) AS $$
+CREATE PROCEDURE a_overloaded(param_one INTEGER) AS $$
 BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
 -- procedure a_overloaded
-CREATE PROCEDURE a_overloaded(param_one INTEGER, param_two INTEGER, OUT param_one INTEGER, OUT param_two INTEGER) AS $$
+CREATE PROCEDURE a_overloaded(param_one INTEGER, param_two INTEGER) AS $$
 BEGIN
 END;
 $$ LANGUAGE plpgsql;

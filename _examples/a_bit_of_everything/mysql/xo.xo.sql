@@ -174,24 +174,24 @@ BEGIN
 END;
 
 -- procedure a_0_in_1_out
-CREATE PROCEDURE a_0_in_1_out() RETURNS INT(11)
+CREATE PROCEDURE a_0_in_1_out(OUT a_return INT(11))
 BEGIN
   SELECT 10 INTO a_return\;
 END;
 
 -- procedure a_1_in_0_out
-CREATE PROCEDURE a_1_in_0_out(a_param INT(11), OUT a_param INT(11))
+CREATE PROCEDURE a_1_in_0_out(a_param INT(11))
 BEGIN
 END;
 
 -- procedure a_1_in_1_out
-CREATE PROCEDURE a_1_in_1_out(a_param INT(11)) RETURNS INT(11)
+CREATE PROCEDURE a_1_in_1_out(a_param INT(11), OUT a_return INT(11))
 BEGIN
   SELECT a_param INTO a_return\;
 END;
 
 -- procedure a_2_in_2_out
-CREATE PROCEDURE a_2_in_2_out(param_one INT(11), param_two INT(11), OUT param_one INT(11), OUT param_two INT(11))
+CREATE PROCEDURE a_2_in_2_out(param_one INT(11), param_two INT(11), OUT return_one INT(11), OUT return_two INT(11))
 BEGIN
   SELECT param_one, param_two INTO return_one, return_two\;
 END;

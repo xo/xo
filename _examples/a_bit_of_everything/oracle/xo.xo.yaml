@@ -222,9 +222,11 @@ schemas:
       - name: a_nchar
         datatype:
           type: nchar
+          prec: 255
       - name: a_nchar_nullable
         datatype:
           type: nchar
+          prec: 255
           nullable: true
       - name: a_nclob
         datatype:
@@ -252,16 +254,20 @@ schemas:
       - name: a_nvarchar2
         datatype:
           type: nvarchar2
+          prec: 255
       - name: a_nvarchar2_nullable
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: a_raw
         datatype:
           type: raw
+          prec: 2000
       - name: a_raw_nullable
         datatype:
           type: raw
+          prec: 2000
           nullable: true
       - name: a_real
         datatype:
@@ -441,6 +447,7 @@ schemas:
       - name: a_text
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       manual: true
     - type: table
@@ -464,6 +471,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: a_primary_composite
@@ -498,6 +506,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: a_primary_multi
@@ -509,6 +518,7 @@ schemas:
       - name: a_text
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       primary_keys:
       - name: a_key
@@ -524,6 +534,7 @@ schemas:
             type: number
           is_primary: true
         is_unique: true
+        is_primary: true
       manual: true
     - type: table
       name: a_sequence
@@ -549,6 +560,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: a_sequence_multi
       columns:
@@ -560,6 +572,7 @@ schemas:
       - name: a_text
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       primary_keys:
       - name: a_seq
@@ -577,6 +590,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: a_unique_index
       columns:
@@ -712,9 +726,11 @@ schemas:
       - name: a_nchar
         datatype:
           type: nchar
+          prec: 255
       - name: a_nchar_nullable
         datatype:
           type: nchar
+          prec: 255
           nullable: true
       - name: a_nclob
         datatype:
@@ -742,16 +758,20 @@ schemas:
       - name: a_nvarchar2
         datatype:
           type: nvarchar2
+          prec: 255
       - name: a_nvarchar2_nullable
         datatype:
           type: nvarchar2
+          prec: 255
           nullable: true
       - name: a_raw
         datatype:
           type: raw
+          prec: 2000
       - name: a_raw_nullable
         datatype:
           type: raw
+          prec: 2000
           nullable: true
       - name: a_real
         datatype:

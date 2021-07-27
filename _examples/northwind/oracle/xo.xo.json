@@ -18,7 +18,8 @@
             {
               "name": "category_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 15
               }
             },
             {
@@ -58,7 +59,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -70,14 +72,16 @@
             {
               "name": "customer_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             },
             {
               "name": "customer_type_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             }
@@ -86,14 +90,16 @@
             {
               "name": "customer_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             },
             {
               "name": "customer_type_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             }
@@ -106,19 +112,22 @@
                 {
                   "name": "customer_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 },
                 {
                   "name": "customer_type_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -129,7 +138,8 @@
                 {
                   "name": "customer_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
@@ -139,7 +149,8 @@
                 {
                   "name": "customer_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
@@ -153,7 +164,8 @@
                 {
                   "name": "customer_type_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
@@ -163,7 +175,8 @@
                 {
                   "name": "customer_type_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
@@ -180,7 +193,8 @@
             {
               "name": "customer_type_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             },
@@ -196,7 +210,8 @@
             {
               "name": "customer_type_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             }
@@ -209,12 +224,14 @@
                 {
                   "name": "customer_type_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -226,20 +243,23 @@
             {
               "name": "customer_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             },
             {
               "name": "company_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               }
             },
             {
               "name": "contact_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 30,
                 "nullable": true
               }
             },
@@ -247,6 +267,7 @@
               "name": "contact_title",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 30,
                 "nullable": true
               }
             },
@@ -254,6 +275,7 @@
               "name": "address",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 60,
                 "nullable": true
               }
             },
@@ -261,6 +283,7 @@
               "name": "city",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -268,6 +291,7 @@
               "name": "region",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -275,6 +299,7 @@
               "name": "postal_code",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 10,
                 "nullable": true
               }
             },
@@ -282,6 +307,7 @@
               "name": "country",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -289,6 +315,7 @@
               "name": "phone",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             },
@@ -296,6 +323,7 @@
               "name": "fax",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             }
@@ -304,7 +332,8 @@
             {
               "name": "customer_id",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               },
               "is_primary": true
             }
@@ -317,12 +346,14 @@
                 {
                   "name": "customer_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -341,7 +372,8 @@
             {
               "name": "territory_id",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 20
               },
               "is_primary": true
             }
@@ -357,7 +389,8 @@
             {
               "name": "territory_id",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 20
               },
               "is_primary": true
             }
@@ -377,12 +410,14 @@
                 {
                   "name": "territory_id",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 20
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -417,7 +452,8 @@
                 {
                   "name": "territory_id",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 20
                   },
                   "is_primary": true
                 }
@@ -427,7 +463,8 @@
                 {
                   "name": "territory_id",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 20
                   },
                   "is_primary": true
                 }
@@ -451,19 +488,22 @@
             {
               "name": "last_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 20
               }
             },
             {
               "name": "first_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 10
               }
             },
             {
               "name": "title",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 30,
                 "nullable": true
               }
             },
@@ -471,6 +511,7 @@
               "name": "title_of_courtesy",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 25,
                 "nullable": true
               }
             },
@@ -492,6 +533,7 @@
               "name": "address",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 60,
                 "nullable": true
               }
             },
@@ -499,6 +541,7 @@
               "name": "city",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -506,6 +549,7 @@
               "name": "region",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -513,6 +557,7 @@
               "name": "postal_code",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 10,
                 "nullable": true
               }
             },
@@ -520,6 +565,7 @@
               "name": "country",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -527,6 +573,7 @@
               "name": "home_phone",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             },
@@ -534,6 +581,7 @@
               "name": "extension",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 4,
                 "nullable": true
               }
             },
@@ -562,6 +610,7 @@
               "name": "photo_path",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             }
@@ -588,7 +637,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -692,7 +742,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -762,6 +813,7 @@
               "name": "customer_id",
               "datatype": {
                 "type": "nchar",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -811,6 +863,7 @@
               "name": "ship_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 40,
                 "nullable": true
               }
             },
@@ -818,6 +871,7 @@
               "name": "ship_address",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 60,
                 "nullable": true
               }
             },
@@ -825,6 +879,7 @@
               "name": "ship_city",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -832,6 +887,7 @@
               "name": "ship_region",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -839,6 +895,7 @@
               "name": "ship_postal_code",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 10,
                 "nullable": true
               }
             },
@@ -846,6 +903,7 @@
               "name": "ship_country",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             }
@@ -872,7 +930,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -884,6 +943,7 @@
                   "name": "customer_id",
                   "datatype": {
                     "type": "nchar",
+                    "prec": 255,
                     "nullable": true
                   }
                 }
@@ -893,7 +953,8 @@
                 {
                   "name": "customer_id",
                   "datatype": {
-                    "type": "nchar"
+                    "type": "nchar",
+                    "prec": 255
                   },
                   "is_primary": true
                 }
@@ -965,7 +1026,8 @@
             {
               "name": "product_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               }
             },
             {
@@ -986,6 +1048,7 @@
               "name": "quantity_per_unit",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 20,
                 "nullable": true
               }
             },
@@ -1046,7 +1109,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -1115,7 +1179,8 @@
             {
               "name": "region_description",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               }
             }
           ],
@@ -1141,7 +1206,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -1160,13 +1226,15 @@
             {
               "name": "company_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               }
             },
             {
               "name": "phone",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             }
@@ -1193,7 +1261,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -1212,13 +1281,15 @@
             {
               "name": "company_name",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 40
               }
             },
             {
               "name": "contact_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 30,
                 "nullable": true
               }
             },
@@ -1226,6 +1297,7 @@
               "name": "contact_title",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 30,
                 "nullable": true
               }
             },
@@ -1233,6 +1305,7 @@
               "name": "address",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 60,
                 "nullable": true
               }
             },
@@ -1240,6 +1313,7 @@
               "name": "city",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -1247,6 +1321,7 @@
               "name": "region",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -1254,6 +1329,7 @@
               "name": "postal_code",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 10,
                 "nullable": true
               }
             },
@@ -1261,6 +1337,7 @@
               "name": "country",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 15,
                 "nullable": true
               }
             },
@@ -1268,6 +1345,7 @@
               "name": "phone",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             },
@@ -1275,6 +1353,7 @@
               "name": "fax",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 24,
                 "nullable": true
               }
             },
@@ -1308,7 +1387,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -1320,14 +1400,16 @@
             {
               "name": "territory_id",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 20
               },
               "is_primary": true
             },
             {
               "name": "territory_description",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               }
             },
             {
@@ -1341,7 +1423,8 @@
             {
               "name": "territory_id",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 20
               },
               "is_primary": true
             }
@@ -1354,12 +1437,14 @@
                 {
                   "name": "territory_id",
                   "datatype": {
-                    "type": "nvarchar2"
+                    "type": "nvarchar2",
+                    "prec": 20
                   },
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "foreign_keys": [
@@ -1404,6 +1489,7 @@
               "name": "state_name",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 100,
                 "nullable": true
               }
             },
@@ -1411,6 +1497,7 @@
               "name": "state_abbr",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 2,
                 "nullable": true
               }
             },
@@ -1418,6 +1505,7 @@
               "name": "state_region",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 50,
                 "nullable": true
               }
             }
@@ -1444,7 +1532,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true

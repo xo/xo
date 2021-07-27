@@ -25,30 +25,30 @@ CREATE TABLE a_bit_of_everything (
   a_integer NUMBER NOT NULL,
   a_integer_nullable NUMBER,
   a_long_raw LONG RAW NOT NULL,
-  a_nchar NCHAR NOT NULL,
-  a_nchar_nullable NCHAR,
+  a_nchar NCHAR(255) NOT NULL,
+  a_nchar_nullable NCHAR(255),
   a_nclob NCLOB NOT NULL,
   a_nclob_nullable NCLOB,
   a_number NUMBER(6) NOT NULL,
   a_number_nullable NUMBER(6),
   a_numeric NUMBER NOT NULL,
   a_numeric_nullable NUMBER,
-  a_nvarchar2 NVARCHAR2 NOT NULL,
-  a_nvarchar2_nullable NVARCHAR2,
-  a_raw RAW NOT NULL,
-  a_raw_nullable RAW,
+  a_nvarchar2 NVARCHAR2(255) NOT NULL,
+  a_nvarchar2_nullable NVARCHAR2(255),
+  a_raw RAW(2000) NOT NULL,
+  a_raw_nullable RAW(2000),
   a_real FLOAT NOT NULL,
   a_real_nullable FLOAT,
   a_rowid ROWID NOT NULL,
   a_rowid_nullable ROWID,
   a_smallint NUMBER NOT NULL,
   a_smallint_nullable NUMBER,
-  a_timestamp TIMESTAMP(6) NOT NULL,
-  a_timestamp_nullable TIMESTAMP(6),
-  a_timestamp_with_local_time_zone TIMESTAMP WITH LOCAL TIME ZONE(6) NOT NULL,
-  a_timestamp_with_local_time_zone_nullable TIMESTAMP WITH LOCAL TIME ZONE(6),
-  a_timestamp_with_time_zone TIMESTAMP WITH TIME ZONE(6) NOT NULL,
-  a_timestamp_with_time_zone_nullable TIMESTAMP WITH TIME ZONE(6),
+  a_timestamp TIMESTAMP NOT NULL,
+  a_timestamp_nullable TIMESTAMP,
+  a_timestamp_with_local_time_zone TIMESTAMP WITH LOCAL TIME ZONE NOT NULL,
+  a_timestamp_with_local_time_zone_nullable TIMESTAMP WITH LOCAL TIME ZONE,
+  a_timestamp_with_time_zone TIMESTAMP WITH TIME ZONE NOT NULL,
+  a_timestamp_with_time_zone_nullable TIMESTAMP WITH TIME ZONE,
   a_varchar VARCHAR2(255) NOT NULL,
   a_varchar_nullable VARCHAR2(255),
   a_varchar2 VARCHAR2(255) NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE a_bit_of_everything (
 -- table a_primary
 CREATE TABLE a_primary (
   a_key NUMBER NOT NULL,
-  CONSTRAINT a_primary_pkey UNIQUE (a_key)
+  CONSTRAINT a_primary_pkey PRIMARY KEY (a_key)
 );
 
 -- table a_foreign_key
@@ -72,7 +72,7 @@ CREATE TABLE a_foreign_key (
 CREATE TABLE a_primary_composite (
   a_key1 NUMBER NOT NULL,
   a_key2 NUMBER NOT NULL,
-  CONSTRAINT a_primary_composite_pkey UNIQUE (a_key1, a_key2)
+  CONSTRAINT a_primary_composite_pkey PRIMARY KEY (a_key1, a_key2)
 );
 
 -- table a_foreign_key_composite
@@ -101,27 +101,27 @@ CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 
 -- table a_manual_table
 CREATE TABLE a_manual_table (
-  a_text NVARCHAR2
+  a_text NVARCHAR2(255)
 );
 
 -- table a_primary_multi
 CREATE TABLE a_primary_multi (
   a_key NUMBER NOT NULL,
-  a_text NVARCHAR2,
-  CONSTRAINT a_primary_multi_pkey UNIQUE (a_key)
+  a_text NVARCHAR2(255),
+  CONSTRAINT a_primary_multi_pkey PRIMARY KEY (a_key)
 );
 
 -- table a_sequence
 CREATE TABLE a_sequence (
   a_seq NUMBER GENERATED ALWAYS AS IDENTITY,
-  CONSTRAINT a_sequence_pkey UNIQUE (a_seq)
+  CONSTRAINT a_sequence_pkey PRIMARY KEY (a_seq)
 );
 
 -- table a_sequence_multi
 CREATE TABLE a_sequence_multi (
   a_seq NUMBER GENERATED ALWAYS AS IDENTITY,
-  a_text NVARCHAR2,
-  CONSTRAINT a_sequence_multi_pkey UNIQUE (a_seq)
+  a_text NVARCHAR2(255),
+  CONSTRAINT a_sequence_multi_pkey PRIMARY KEY (a_seq)
 );
 
 -- table a_unique_index

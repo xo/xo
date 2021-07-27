@@ -31,6 +31,7 @@ schemas:
       - name: name
         datatype:
           type: nvarchar2
+          prec: 255
       primary_keys:
       - name: author_id
         datatype:
@@ -44,6 +45,7 @@ schemas:
         - name: name
           datatype:
             type: nvarchar2
+            prec: 255
       - name: authors_pkey
         func_name: author_by_author_id
         fields:
@@ -53,6 +55,7 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
     - type: table
       name: books
       columns:
@@ -67,9 +70,11 @@ schemas:
       - name: isbn
         datatype:
           type: nvarchar2
+          prec: 255
       - name: title
         datatype:
           type: nvarchar2
+          prec: 255
       - name: year
         datatype:
           type: number
@@ -97,6 +102,7 @@ schemas:
         - name: isbn
           datatype:
             type: nvarchar2
+            prec: 255
         is_unique: true
       - name: books_pkey
         func_name: book_by_book_id
@@ -107,12 +113,14 @@ schemas:
           is_primary: true
           is_sequence: true
         is_unique: true
+        is_primary: true
       - name: books_title_idx
         func_name: books_by_title_year
         fields:
         - name: title
           datatype:
             type: nvarchar2
+            prec: 255
         - name: year
           datatype:
             type: number

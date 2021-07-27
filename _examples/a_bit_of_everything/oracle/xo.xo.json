@@ -330,13 +330,15 @@
             {
               "name": "a_nchar",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               }
             },
             {
               "name": "a_nchar_nullable",
               "datatype": {
                 "type": "nchar",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -384,26 +386,30 @@
             {
               "name": "a_nvarchar2",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 255
               }
             },
             {
               "name": "a_nvarchar2_nullable",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
             {
               "name": "a_raw",
               "datatype": {
-                "type": "raw"
+                "type": "raw",
+                "prec": 2000
               }
             },
             {
               "name": "a_raw_nullable",
               "datatype": {
                 "type": "raw",
+                "prec": 2000,
                 "nullable": true
               }
             },
@@ -718,6 +724,7 @@
               "name": "a_text",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             }
@@ -758,7 +765,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -818,7 +826,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -838,6 +847,7 @@
               "name": "a_text",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             }
@@ -864,7 +874,8 @@
                   "is_primary": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ],
           "manual": true
@@ -906,7 +917,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -926,6 +938,7 @@
               "name": "a_text",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             }
@@ -954,7 +967,8 @@
                   "is_sequence": true
                 }
               ],
-              "is_unique": true
+              "is_unique": true,
+              "is_primary": true
             }
           ]
         },
@@ -1196,13 +1210,15 @@
             {
               "name": "a_nchar",
               "datatype": {
-                "type": "nchar"
+                "type": "nchar",
+                "prec": 255
               }
             },
             {
               "name": "a_nchar_nullable",
               "datatype": {
                 "type": "nchar",
+                "prec": 255,
                 "nullable": true
               }
             },
@@ -1250,26 +1266,30 @@
             {
               "name": "a_nvarchar2",
               "datatype": {
-                "type": "nvarchar2"
+                "type": "nvarchar2",
+                "prec": 255
               }
             },
             {
               "name": "a_nvarchar2_nullable",
               "datatype": {
                 "type": "nvarchar2",
+                "prec": 255,
                 "nullable": true
               }
             },
             {
               "name": "a_raw",
               "datatype": {
-                "type": "raw"
+                "type": "raw",
+                "prec": 2000
               }
             },
             {
               "name": "a_raw_nullable",
               "datatype": {
                 "type": "raw",
+                "prec": 2000,
                 "nullable": true
               }
             },

@@ -3,8 +3,8 @@
 -- table authors
 CREATE TABLE authors (
   author_id NUMBER GENERATED ALWAYS AS IDENTITY,
-  name NVARCHAR2 NOT NULL,
-  CONSTRAINT authors_pkey UNIQUE (author_id)
+  name NVARCHAR2(255) NOT NULL,
+  CONSTRAINT authors_pkey PRIMARY KEY (author_id)
 );
 
 -- index authors_name_idx
@@ -14,14 +14,14 @@ CREATE INDEX authors_name_idx ON authors (name);
 CREATE TABLE books (
   book_id NUMBER GENERATED ALWAYS AS IDENTITY,
   author_id NUMBER NOT NULL CONSTRAINT books_author_id_fkey REFERENCES authors (author_id),
-  isbn NVARCHAR2 NOT NULL,
-  title NVARCHAR2 NOT NULL,
+  isbn NVARCHAR2(255) NOT NULL,
+  title NVARCHAR2(255) NOT NULL,
   year NUMBER NOT NULL,
-  available TIMESTAMP WITH TIME ZONE(6) NOT NULL,
+  available TIMESTAMP WITH TIME ZONE NOT NULL,
   description NCLOB,
   tags NCLOB NOT NULL,
   CONSTRAINT books_isbn_key UNIQUE (isbn),
-  CONSTRAINT books_pkey UNIQUE (book_id)
+  CONSTRAINT books_pkey PRIMARY KEY (book_id)
 );
 
 -- index books_title_idx

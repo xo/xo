@@ -3,144 +3,144 @@
 -- table categories
 CREATE TABLE categories (
   category_id NUMBER NOT NULL,
-  category_name NVARCHAR2 NOT NULL,
+  category_name NVARCHAR2(15) NOT NULL,
   description CLOB,
   picture BLOB,
-  CONSTRAINT categories_pkey UNIQUE (category_id)
+  CONSTRAINT categories_pkey PRIMARY KEY (category_id)
 );
 
 -- table customers
 CREATE TABLE customers (
-  customer_id NCHAR NOT NULL,
-  company_name NVARCHAR2 NOT NULL,
-  contact_name NVARCHAR2,
-  contact_title NVARCHAR2,
-  address NVARCHAR2,
-  city NVARCHAR2,
-  region NVARCHAR2,
-  postal_code NVARCHAR2,
-  country NVARCHAR2,
-  phone NVARCHAR2,
-  fax NVARCHAR2,
-  CONSTRAINT customers_pkey UNIQUE (customer_id)
+  customer_id NCHAR(255) NOT NULL,
+  company_name NVARCHAR2(40) NOT NULL,
+  contact_name NVARCHAR2(30),
+  contact_title NVARCHAR2(30),
+  address NVARCHAR2(60),
+  city NVARCHAR2(15),
+  region NVARCHAR2(15),
+  postal_code NVARCHAR2(10),
+  country NVARCHAR2(15),
+  phone NVARCHAR2(24),
+  fax NVARCHAR2(24),
+  CONSTRAINT customers_pkey PRIMARY KEY (customer_id)
 );
 
 -- table customer_demographics
 CREATE TABLE customer_demographics (
-  customer_type_id NCHAR NOT NULL,
+  customer_type_id NCHAR(255) NOT NULL,
   customer_desc CLOB,
-  CONSTRAINT customer_demographics_pkey UNIQUE (customer_type_id)
+  CONSTRAINT customer_demographics_pkey PRIMARY KEY (customer_type_id)
 );
 
 -- table customer_customer_demo
 CREATE TABLE customer_customer_demo (
-  customer_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
-  customer_type_id NCHAR NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
-  CONSTRAINT customer_customer_demo_pkey UNIQUE (customer_id, customer_type_id)
+  customer_id NCHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_id_fkey REFERENCES customers (customer_id),
+  customer_type_id NCHAR(255) NOT NULL CONSTRAINT customer_customer_demo_customer_type_id_fkey REFERENCES customer_demographics (customer_type_id),
+  CONSTRAINT customer_customer_demo_pkey PRIMARY KEY (customer_id, customer_type_id)
 );
 
 -- table employees
 CREATE TABLE employees (
   employee_id NUMBER NOT NULL,
-  last_name NVARCHAR2 NOT NULL,
-  first_name NVARCHAR2 NOT NULL,
-  title NVARCHAR2,
-  title_of_courtesy NVARCHAR2,
+  last_name NVARCHAR2(20) NOT NULL,
+  first_name NVARCHAR2(10) NOT NULL,
+  title NVARCHAR2(30),
+  title_of_courtesy NVARCHAR2(25),
   birth_date DATE,
   hire_date DATE,
-  address NVARCHAR2,
-  city NVARCHAR2,
-  region NVARCHAR2,
-  postal_code NVARCHAR2,
-  country NVARCHAR2,
-  home_phone NVARCHAR2,
-  extension NVARCHAR2,
+  address NVARCHAR2(60),
+  city NVARCHAR2(15),
+  region NVARCHAR2(15),
+  postal_code NVARCHAR2(10),
+  country NVARCHAR2(15),
+  home_phone NVARCHAR2(24),
+  extension NVARCHAR2(4),
   photo BLOB,
   notes CLOB,
   reports_to NUMBER CONSTRAINT employees_reports_to_fkey REFERENCES employees (employee_id),
-  photo_path NVARCHAR2,
-  CONSTRAINT employees_pkey UNIQUE (employee_id)
+  photo_path NVARCHAR2(255),
+  CONSTRAINT employees_pkey PRIMARY KEY (employee_id)
 );
 
 -- table region
 CREATE TABLE region (
   region_id NUMBER NOT NULL,
-  region_description NCHAR NOT NULL,
-  CONSTRAINT regions_pkey UNIQUE (region_id)
+  region_description NCHAR(255) NOT NULL,
+  CONSTRAINT regions_pkey PRIMARY KEY (region_id)
 );
 
 -- table territories
 CREATE TABLE territories (
-  territory_id NVARCHAR2 NOT NULL,
-  territory_description NCHAR NOT NULL,
+  territory_id NVARCHAR2(20) NOT NULL,
+  territory_description NCHAR(255) NOT NULL,
   region_id NUMBER NOT NULL CONSTRAINT territories_region_id_fkey REFERENCES region (region_id),
-  CONSTRAINT territories_pkey UNIQUE (territory_id)
+  CONSTRAINT territories_pkey PRIMARY KEY (territory_id)
 );
 
 -- table employee_territories
 CREATE TABLE employee_territories (
   employee_id NUMBER NOT NULL CONSTRAINT employee_territories_employee_id_fkey REFERENCES employees (employee_id),
-  territory_id NVARCHAR2 NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
-  CONSTRAINT employee_territories_pkey UNIQUE (employee_id, territory_id)
+  territory_id NVARCHAR2(20) NOT NULL CONSTRAINT employee_territories_territory_id_fkey REFERENCES territories (territory_id),
+  CONSTRAINT employee_territories_pkey PRIMARY KEY (employee_id, territory_id)
 );
 
 -- table shippers
 CREATE TABLE shippers (
   shipper_id NUMBER NOT NULL,
-  company_name NVARCHAR2 NOT NULL,
-  phone NVARCHAR2,
-  CONSTRAINT shippers_pkey UNIQUE (shipper_id)
+  company_name NVARCHAR2(40) NOT NULL,
+  phone NVARCHAR2(24),
+  CONSTRAINT shippers_pkey PRIMARY KEY (shipper_id)
 );
 
 -- table orders
 CREATE TABLE orders (
   order_id NUMBER NOT NULL,
-  customer_id NCHAR CONSTRAINT orders_customer_id_fkey REFERENCES customers (customer_id),
+  customer_id NCHAR(255) CONSTRAINT orders_customer_id_fkey REFERENCES customers (customer_id),
   employee_id NUMBER CONSTRAINT orders_employee_id_fkey REFERENCES employees (employee_id),
   order_date DATE,
   required_date DATE,
   shipped_date DATE,
   ship_via NUMBER CONSTRAINT orders_ship_via_fkey REFERENCES shippers (shipper_id),
   freight FLOAT,
-  ship_name NVARCHAR2,
-  ship_address NVARCHAR2,
-  ship_city NVARCHAR2,
-  ship_region NVARCHAR2,
-  ship_postal_code NVARCHAR2,
-  ship_country NVARCHAR2,
-  CONSTRAINT orders_pkey UNIQUE (order_id)
+  ship_name NVARCHAR2(40),
+  ship_address NVARCHAR2(60),
+  ship_city NVARCHAR2(15),
+  ship_region NVARCHAR2(15),
+  ship_postal_code NVARCHAR2(10),
+  ship_country NVARCHAR2(15),
+  CONSTRAINT orders_pkey PRIMARY KEY (order_id)
 );
 
 -- table suppliers
 CREATE TABLE suppliers (
   supplier_id NUMBER NOT NULL,
-  company_name NVARCHAR2 NOT NULL,
-  contact_name NVARCHAR2,
-  contact_title NVARCHAR2,
-  address NVARCHAR2,
-  city NVARCHAR2,
-  region NVARCHAR2,
-  postal_code NVARCHAR2,
-  country NVARCHAR2,
-  phone NVARCHAR2,
-  fax NVARCHAR2,
+  company_name NVARCHAR2(40) NOT NULL,
+  contact_name NVARCHAR2(30),
+  contact_title NVARCHAR2(30),
+  address NVARCHAR2(60),
+  city NVARCHAR2(15),
+  region NVARCHAR2(15),
+  postal_code NVARCHAR2(10),
+  country NVARCHAR2(15),
+  phone NVARCHAR2(24),
+  fax NVARCHAR2(24),
   homepage CLOB,
-  CONSTRAINT suppliers_pkey UNIQUE (supplier_id)
+  CONSTRAINT suppliers_pkey PRIMARY KEY (supplier_id)
 );
 
 -- table products
 CREATE TABLE products (
   product_id NUMBER NOT NULL,
-  product_name NVARCHAR2 NOT NULL,
+  product_name NVARCHAR2(40) NOT NULL,
   supplier_id NUMBER CONSTRAINT products_suplier_id_fkey REFERENCES suppliers (supplier_id),
   category_id NUMBER CONSTRAINT products_category_id_fkey REFERENCES categories (category_id),
-  quantity_per_unit NVARCHAR2,
+  quantity_per_unit NVARCHAR2(20),
   unit_price FLOAT,
   units_in_stock NUMBER,
   units_on_order NUMBER,
   reorder_level NUMBER,
   discontinued NUMBER NOT NULL,
-  CONSTRAINT products_pkey UNIQUE (product_id)
+  CONSTRAINT products_pkey PRIMARY KEY (product_id)
 );
 
 -- table order_details
@@ -150,14 +150,14 @@ CREATE TABLE order_details (
   unit_price FLOAT NOT NULL,
   quantity NUMBER NOT NULL,
   discount FLOAT NOT NULL,
-  CONSTRAINT order_details_pkey UNIQUE (order_id, product_id)
+  CONSTRAINT order_details_pkey PRIMARY KEY (order_id, product_id)
 );
 
 -- table us_states
 CREATE TABLE us_states (
   state_id NUMBER NOT NULL,
-  state_name NVARCHAR2,
-  state_abbr NVARCHAR2,
-  state_region NVARCHAR2,
-  CONSTRAINT us_states_pkey UNIQUE (state_id)
+  state_name NVARCHAR2(100),
+  state_abbr NVARCHAR2(2),
+  state_region NVARCHAR2(50),
+  CONSTRAINT us_states_pkey PRIMARY KEY (state_id)
 );
