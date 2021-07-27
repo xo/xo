@@ -3,20 +3,20 @@ CREATE TABLE authors (
   name VARCHAR(255) NOT NULL DEFAULT ''
 );
 
-CREATE INDEX authors_name_idx ON authors(name);
+CREATE INDEX authors_name_idx ON authors (name);
 
 CREATE TABLE books (
   book_id INTEGER NOT NULL IDENTITY CONSTRAINT books_pkey PRIMARY KEY,
-  author_id INTEGER NOT NULL CONSTRAINT books_author_id_fkey FOREIGN KEY REFERENCES authors(author_id),
+  author_id INTEGER NOT NULL CONSTRAINT books_author_id_fkey FOREIGN KEY REFERENCES authors (author_id),
   isbn NVARCHAR(255) NOT NULL DEFAULT '' CONSTRAINT books_isbn_key UNIQUE,
   title NVARCHAR(255) NOT NULL DEFAULT '',
   year INTEGER NOT NULL DEFAULT 2000,
-  available DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  available DATETIME2 DEFAULT CURRENT_TIMESTAMP NOT NULL,
   description NTEXT DEFAULT '' NOT NULL,
-  tags TEXT NOT NULL DEFAULT ''
+  tags TEXT DEFAULT '' NOT NULL
 );
 
-CREATE INDEX books_title_idx ON books(title, year);
+CREATE INDEX books_title_idx ON books (title, year);
 
 CREATE PROCEDURE say_hello @name NVARCHAR(255), @result NVARCHAR(255) OUTPUT AS
 BEGIN

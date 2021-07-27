@@ -96,7 +96,7 @@ schemas:
       - name: available
         datatype:
           type: timestamp with time zone
-        default: now()
+        default: CURRENT_TIMESTAMP
       - name: description
         datatype:
           type: text
