@@ -59,7 +59,7 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 	// process enums
 	var enums []xo.Enum
 	for _, enum := range enumNames {
-		if !validType(args, schema, enum.EnumName) {
+		if !validType(args, false, enum.EnumName) {
 			continue
 		}
 		e := &xo.Enum{
@@ -106,7 +106,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	// process procs
 	procMap := make(map[string]xo.Proc)
 	for _, proc := range procs {
-		if !validType(args, schema, proc.ProcName) {
+		if !validType(args, false, proc.ProcName) {
 			continue
 		}
 		// parse return type into template
@@ -196,7 +196,7 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 	// create types
 	var m []xo.Table
 	for _, table := range tables {
-		if !validType(args, schema, table.TableName) {
+		if !validType(args, false, table.TableName) {
 			continue
 		}
 		// create table
@@ -244,14 +244,9 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 		return err
 	}
 	// process columns
-loop:
 	for _, c := range columns {
-		for _, g := range args.SchemaParams.ExcludeField {
-			// Skip adding this field if user has specified they are not
-			// interested.
-			if g.Match(c.ColumnName) {
-				continue loop
-			}
+		if !validType(args, true, table.Name, c.ColumnName) {
+			continue
 		}
 		// set col info
 		d, err := xo.ParseType(ctx, c.DataType)
@@ -381,8 +376,8 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 	// loop over foreign keys for table
 	for _, fkey := range foreignKeys {
 		// if the referenced table is excluded, we don't want to omit it
-		if !validType(args, schema, fkey.RefTableName) {
-			fmt.Fprintf(os.Stderr, "WARNING: skipping table %q foreign key %q (%q previously excluded)", table.Name, fkey.ForeignKeyName, fkey.RefTableName)
+		if !validType(args, false, fkey.RefTableName) {
+			fmt.Fprintf(os.Stderr, "WARNING: skipping table %q foreign key %q (%q previously excluded)\n", table.Name, fkey.ForeignKeyName, fkey.RefTableName)
 			continue
 		}
 		// check foreign key
@@ -434,22 +429,22 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 
 // validType returns whether the type name given is valid, given the --include
 // and --exclude options provided by the user.
-func validType(args *Args, schema, name string) bool {
+func validType(args *Args, skipIncludes bool, names ...string) bool {
 	include, exclude := args.SchemaParams.Include, args.SchemaParams.Exclude
 	if len(include) == 0 && len(exclude) == 0 {
 		return true
 	}
-	target := fmt.Sprintf("%s.%s", schema, name)
+	target := strings.Join(names, ".")
 	for _, pattern := range exclude {
-		if pattern.Match(target) || pattern.Match(name) {
+		if pattern.Match(target) {
 			return false
 		}
 	}
-	if len(include) == 0 {
+	if len(include) == 0 || skipIncludes {
 		return true
 	}
 	for _, pattern := range include {
-		if pattern.Match(target) || pattern.Match(name) {
+		if pattern.Match(target) {
 			return true
 		}
 	}
