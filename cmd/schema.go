@@ -327,6 +327,17 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 		}
 		index.FuncName = indexFuncName(table.Name, index, args.SchemaParams.UseIndexNames)
 		table.Indexes = append(table.Indexes, index)
+	} else if l.Driver == "oracle" && len(table.PrimaryKeys) != 0 {
+	loop:
+		for i, index := range table.Indexes {
+			for _, field := range index.Fields {
+				if !field.IsPrimary {
+					continue loop
+				}
+			}
+			table.Indexes[i].IsPrimary = true
+			break
+		}
 	}
 	return nil
 }

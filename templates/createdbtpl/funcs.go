@@ -85,6 +85,10 @@ func (f *Funcs) parseDefault(d string) string {
 		if m := postgresDefaultCastRE.FindStringSubmatch(d); m != nil {
 			d = m[1]
 		}
+	case "sqlite3":
+		if !sqliteDefaultNeedsParenRE.MatchString(d) {
+			d = "(" + d + ")"
+		}
 	}
 	return d
 }
@@ -92,6 +96,13 @@ func (f *Funcs) parseDefault(d string) string {
 // postgresDefaultCastRE is the regexp to strip the datatype cast from the
 // postgres default value.
 var postgresDefaultCastRE = regexp.MustCompile(`(.*)::[a-zA-Z_ ]*(\[\])?$`)
+
+// sqliteDefaultNeedsParen is the regexp to test whether the given value is
+// correctly surrounded with parenthesis
+//
+// If it starts and ends with a parenthesis or a single or double quote, it
+// does not need to be quoted with parenthesis.
+var sqliteDefaultNeedsParenRE = regexp.MustCompile(`^([\('"].*[\)'"]|\d+)$`)
 
 func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 	switch f.driver {
@@ -181,10 +192,10 @@ func (f *Funcs) procSignature(proc xo.Proc) string {
 		params = append(params, fmt.Sprintf("%s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
 	}
 	// add return values
-	if len(proc.Returns) == 1 {
+	if len(proc.Returns) == 1 && proc.Returns[0].Name == "r0" {
 		end += " RETURNS " + f.normalize(proc.Returns[0].Datatype)
 	} else {
-		for _, field := range proc.Params {
+		for _, field := range proc.Returns {
 			params = append(params, fmt.Sprintf("OUT %s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
 		}
 	}
@@ -256,9 +267,9 @@ func (f *Funcs) enginefn() string {
 
 func (f *Funcs) normalize(datatype xo.Datatype) string {
 	typ := f.convert(datatype.Type)
-	if datatype.Scale > 0 {
+	if datatype.Scale > 0 && !omitPrecision[f.driver][typ] {
 		typ += fmt.Sprintf("(%d, %d)", datatype.Prec, datatype.Scale)
-	} else if datatype.Prec > 0 {
+	} else if datatype.Prec > 0 && !omitPrecision[f.driver][typ] {
 		typ += fmt.Sprintf("(%d)", datatype.Prec)
 	}
 	if datatype.Unsigned {
@@ -327,5 +338,29 @@ var typeAliases = map[string]map[string]string{
 		"timestamp without time zone": "timestamp",
 		"time with time zone":         "timetz",
 		"timestamp with time zone":    "timestamptz",
+	},
+}
+
+var omitPrecision = map[string]map[string]bool{
+	"sqlserver": {
+		"TINYINT":        true,
+		"SMALLINT":       true,
+		"INT":            true,
+		"BIGINT":         true,
+		"REAL":           true,
+		"SMALLMONEY":     true,
+		"MONEY":          true,
+		"BIT":            true,
+		"DATE":           true,
+		"TIME":           true,
+		"DATETIME":       true,
+		"DATETIME2":      true,
+		"SMALLDATETIME":  true,
+		"DATETIMEOFFSET": true,
+	},
+	"oracle": {
+		"TIMESTAMP":                      true,
+		"TIMESTAMP WITH TIME ZONE":       true,
+		"TIMESTAMP WITH LOCAL TIME ZONE": true,
 	},
 }

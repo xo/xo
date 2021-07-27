@@ -192,9 +192,12 @@ func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Co
 		`c.column_id AS field_ordinal, ` +
 		`LOWER(c.column_name) AS column_name, ` +
 		`LOWER(CASE c.data_type ` +
-		`WHEN 'CHAR' THEN 'CHAR(' || c.data_length || ')' ` +
-		`WHEN 'VARCHAR2' THEN 'VARCHAR2(' || data_length || ')' ` +
+		`WHEN 'CHAR' THEN 'CHAR(' || c.char_length || ')' ` +
+		`WHEN 'NCHAR' THEN 'NCHAR(' || c.char_length || ')' ` +
+		`WHEN 'VARCHAR2' THEN 'VARCHAR2(' || c.char_length || ')' ` +
+		`WHEN 'NVARCHAR2' THEN 'NVARCHAR2(' || c.char_length || ')' ` +
 		`WHEN 'NUMBER' THEN 'NUMBER(' || NVL(c.data_precision, 0) || ',' || NVL(c.data_scale, 0) || ')' ` +
+		`WHEN 'RAW' THEN 'RAW(' || c.data_length || ')' ` +
 		`ELSE c.data_type END) AS data_type, ` +
 		`CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null, ` +
 		`COALESCE(( ` +
