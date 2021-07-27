@@ -202,7 +202,7 @@ func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([
 		`JOIN user_constraints c_pk ON c.r_owner = c_pk.owner ` +
 		`AND c.r_constraint_name = c_pk.constraint_name ` +
 		`JOIN user_cons_columns b ON C_PK.owner = b.owner ` +
-		`AND  C_PK.CONSTRAINT_NAME = b.constraint_name AND b.POSITION = a.POSITION ` +
+		`AND C_PK.CONSTRAINT_NAME = b.constraint_name AND b.POSITION = a.POSITION ` +
 		`WHERE c.constraint_type = 'R' ` +
 		`AND a.owner = UPPER(:1) ` +
 		`AND a.table_name = UPPER(:2)`

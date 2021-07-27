@@ -143,26 +143,6 @@ func (dct *DjangoContentType) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a DjangoContentType.
-//
-// Generated from index 'PK__django_c__3213E83F56FD5A9D'.
-func DjangoContentTypeByID(ctx context.Context, db DB, id int) (*DjangoContentType, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, app_label, model ` +
-		`FROM django.django_content_type ` +
-		`WHERE id = @p1`
-	// run
-	logf(sqlstr, id)
-	dct := DjangoContentType{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dct.ID, &dct.AppLabel, &dct.Model); err != nil {
-		return nil, logerror(err)
-	}
-	return &dct, nil
-}
-
 // DjangoContentTypeByAppLabelModel retrieves a row from 'django.django_content_type' as a DjangoContentType.
 //
 // Generated from index 'django_content_type_app_label_model_76bd3d3b_uniq'.
@@ -178,6 +158,26 @@ func DjangoContentTypeByAppLabelModel(ctx context.Context, db DB, appLabel, mode
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, appLabel, model).Scan(&dct.ID, &dct.AppLabel, &dct.Model); err != nil {
+		return nil, logerror(err)
+	}
+	return &dct, nil
+}
+
+// DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a DjangoContentType.
+//
+// Generated from index 'django_content_type_id_pkey'.
+func DjangoContentTypeByID(ctx context.Context, db DB, id int) (*DjangoContentType, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, app_label, model ` +
+		`FROM django.django_content_type ` +
+		`WHERE id = @p1`
+	// run
+	logf(sqlstr, id)
+	dct := DjangoContentType{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dct.ID, &dct.AppLabel, &dct.Model); err != nil {
 		return nil, logerror(err)
 	}
 	return &dct, nil

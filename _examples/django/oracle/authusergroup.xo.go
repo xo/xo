@@ -201,6 +201,26 @@ func AuthUserGroupsByUserID(ctx context.Context, db DB, userID int64) ([]*AuthUs
 	return res, nil
 }
 
+// AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
+//
+// Generated from index 'auth_user_groups_id_idx'.
+func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, user_id, group_id ` +
+		`FROM django.auth_user_groups ` +
+		`WHERE id = :1`
+	// run
+	logf(sqlstr, id)
+	aug := AuthUserGroup{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&aug.ID, &aug.UserID, &aug.GroupID); err != nil {
+		return nil, logerror(err)
+	}
+	return &aug, nil
+}
+
 // AuthUserGroupByUserIDGroupID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
 //
 // Generated from index 'auth_user_user_id_g_94350c0c_u'.
@@ -216,26 +236,6 @@ func AuthUserGroupByUserIDGroupID(ctx context.Context, db DB, userID, groupID in
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, userID, groupID).Scan(&aug.ID, &aug.UserID, &aug.GroupID); err != nil {
-		return nil, logerror(err)
-	}
-	return &aug, nil
-}
-
-// AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
-//
-// Generated from index 'sys_c0014060'.
-func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, user_id, group_id ` +
-		`FROM django.auth_user_groups ` +
-		`WHERE id = :1`
-	// run
-	logf(sqlstr, id)
-	aug := AuthUserGroup{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&aug.ID, &aug.UserID, &aug.GroupID); err != nil {
 		return nil, logerror(err)
 	}
 	return &aug, nil

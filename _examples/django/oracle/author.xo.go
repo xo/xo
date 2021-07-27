@@ -134,7 +134,7 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 
 // AuthorByAuthorID retrieves a row from 'django.authors' as a Author.
 //
-// Generated from index 'sys_c0014085'.
+// Generated from index 'authors_author_id_idx'.
 func AuthorByAuthorID(ctx context.Context, db DB, authorID int64) (*Author, error) {
 	// query
 	const sqlstr = `SELECT ` +

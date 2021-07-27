@@ -144,26 +144,6 @@ func (ap *AuthPermission) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthPermissionByID retrieves a row from 'django.auth_permission' as a AuthPermission.
-//
-// Generated from index 'PK__auth_per__3213E83FB353E0FF'.
-func AuthPermissionByID(ctx context.Context, db DB, id int) (*AuthPermission, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, name, content_type_id, codename ` +
-		`FROM django.auth_permission ` +
-		`WHERE id = @p1`
-	// run
-	logf(sqlstr, id)
-	ap := AuthPermission{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&ap.ID, &ap.Name, &ap.ContentTypeID, &ap.Codename); err != nil {
-		return nil, logerror(err)
-	}
-	return &ap, nil
-}
-
 // AuthPermissionByContentTypeID retrieves a row from 'django.auth_permission' as a AuthPermission.
 //
 // Generated from index 'auth_permission_content_type_id_2f476e4b'.
@@ -213,6 +193,26 @@ func AuthPermissionByContentTypeIDCodename(ctx context.Context, db DB, contentTy
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, contentTypeID, codename).Scan(&ap.ID, &ap.Name, &ap.ContentTypeID, &ap.Codename); err != nil {
+		return nil, logerror(err)
+	}
+	return &ap, nil
+}
+
+// AuthPermissionByID retrieves a row from 'django.auth_permission' as a AuthPermission.
+//
+// Generated from index 'auth_permission_id_pkey'.
+func AuthPermissionByID(ctx context.Context, db DB, id int) (*AuthPermission, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, name, content_type_id, codename ` +
+		`FROM django.auth_permission ` +
+		`WHERE id = @p1`
+	// run
+	logf(sqlstr, id)
+	ap := AuthPermission{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&ap.ID, &ap.Name, &ap.ContentTypeID, &ap.Codename); err != nil {
 		return nil, logerror(err)
 	}
 	return &ap, nil

@@ -223,7 +223,7 @@ func AuthUserUserPermissionByUserIDPermissionID(ctx context.Context, db DB, user
 
 // AuthUserUserPermissionByID retrieves a row from 'django.auth_user_user_permissions' as a AuthUserUserPermission.
 //
-// Generated from index 'sys_c0014064'.
+// Generated from index 'auth_user_user_permissions_id_idx'.
 func AuthUserUserPermissionByID(ctx context.Context, db DB, id int64) (*AuthUserUserPermission, error) {
 	// query
 	const sqlstr = `SELECT ` +

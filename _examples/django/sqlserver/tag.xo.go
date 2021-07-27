@@ -144,7 +144,7 @@ func (t *Tag) Delete(ctx context.Context, db DB) error {
 
 // TagByTagID retrieves a row from 'django.tags' as a Tag.
 //
-// Generated from index 'PK__tags__4296A2B6306F5DF4'.
+// Generated from index 'tags_tag_id_pkey'.
 func TagByTagID(ctx context.Context, db DB, tagID int64) (*Tag, error) {
 	// query
 	const sqlstr = `SELECT ` +

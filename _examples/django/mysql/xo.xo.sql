@@ -8,6 +8,25 @@ CREATE TABLE auth_group (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+-- table django_content_type
+CREATE TABLE django_content_type (
+  id INT(11) AUTO_INCREMENT,
+  app_label VARCHAR(100) NOT NULL,
+  model VARCHAR(100) NOT NULL,
+  UNIQUE (app_label, model),
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+-- table auth_permission
+CREATE TABLE auth_permission (
+  id INT(11) AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  content_type_id INT(11) NOT NULL REFERENCES django_content_type (id),
+  codename VARCHAR(100) NOT NULL,
+  UNIQUE (content_type_id, codename),
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 -- table auth_group_permissions
 CREATE TABLE auth_group_permissions (
   id BIGINT(20) AUTO_INCREMENT,
@@ -19,16 +38,6 @@ CREATE TABLE auth_group_permissions (
 
 -- index auth_group_permissio_permission_id_84c5c92e_fk_auth_perm
 CREATE INDEX auth_group_permissio_permission_id_84c5c92e_fk_auth_perm ON auth_group_permissions (permission_id);
-
--- table auth_permission
-CREATE TABLE auth_permission (
-  id INT(11) AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  content_type_id INT(11) NOT NULL REFERENCES django_content_type (id),
-  codename VARCHAR(100) NOT NULL,
-  UNIQUE (content_type_id, codename),
-  PRIMARY KEY (id)
-) ENGINE=InnoDB;
 
 -- table auth_user
 CREATE TABLE auth_user (
@@ -93,6 +102,13 @@ CREATE TABLE books (
 -- index books_books_author_id_fkey_73ac0c26_fk_authors_author_id
 CREATE INDEX books_books_author_id_fkey_73ac0c26_fk_authors_author_id ON books (books_author_id_fkey);
 
+-- table tags
+CREATE TABLE tags (
+  tag_id BIGINT(20) AUTO_INCREMENT,
+  tag VARCHAR(50) NOT NULL,
+  PRIMARY KEY (tag_id)
+) ENGINE=InnoDB;
+
 -- table books_tags
 CREATE TABLE books_tags (
   id BIGINT(20) AUTO_INCREMENT,
@@ -124,15 +140,6 @@ CREATE INDEX django_admin_log_content_type_id_c4bce8eb_fk_django_co ON django_ad
 -- index django_admin_log_user_id_c564eba6_fk_auth_user_id
 CREATE INDEX django_admin_log_user_id_c564eba6_fk_auth_user_id ON django_admin_log (user_id);
 
--- table django_content_type
-CREATE TABLE django_content_type (
-  id INT(11) AUTO_INCREMENT,
-  app_label VARCHAR(100) NOT NULL,
-  model VARCHAR(100) NOT NULL,
-  UNIQUE (app_label, model),
-  PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
 -- table django_migrations
 CREATE TABLE django_migrations (
   id BIGINT(20) AUTO_INCREMENT,
@@ -152,10 +159,3 @@ CREATE TABLE django_session (
 
 -- index django_session_expire_date_a5c62663
 CREATE INDEX django_session_expire_date_a5c62663 ON django_session (expire_date);
-
--- table tags
-CREATE TABLE tags (
-  tag_id BIGINT(20) AUTO_INCREMENT,
-  tag VARCHAR(50) NOT NULL,
-  PRIMARY KEY (tag_id)
-) ENGINE=InnoDB;

@@ -187,6 +187,26 @@ func BooksTagsByBookID(ctx context.Context, db DB, bookID int64) ([]*BooksTag, e
 	return res, nil
 }
 
+// BooksTagByID retrieves a row from 'django.books_tags' as a BooksTag.
+//
+// Generated from index 'books_tags_id_idx'.
+func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, book_id, tag_id ` +
+		`FROM django.books_tags ` +
+		`WHERE id = :1`
+	// run
+	logf(sqlstr, id)
+	bt := BooksTag{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&bt.ID, &bt.BookID, &bt.TagID); err != nil {
+		return nil, logerror(err)
+	}
+	return &bt, nil
+}
+
 // BooksTagsByTagID retrieves a row from 'django.books_tags' as a BooksTag.
 //
 // Generated from index 'books_tags_tag_id_8d70b40a'.
@@ -219,26 +239,6 @@ func BooksTagsByTagID(ctx context.Context, db DB, tagID int64) ([]*BooksTag, err
 		return nil, logerror(err)
 	}
 	return res, nil
-}
-
-// BooksTagByID retrieves a row from 'django.books_tags' as a BooksTag.
-//
-// Generated from index 'sys_c0014097'.
-func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, book_id, tag_id ` +
-		`FROM django.books_tags ` +
-		`WHERE id = :1`
-	// run
-	logf(sqlstr, id)
-	bt := BooksTag{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&bt.ID, &bt.BookID, &bt.TagID); err != nil {
-		return nil, logerror(err)
-	}
-	return &bt, nil
 }
 
 // Book returns the Book associated with the BooksTag's (BookID).

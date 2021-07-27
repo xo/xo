@@ -138,6 +138,26 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
+// BookByBookID retrieves a row from 'django.books' as a Book.
+//
+// Generated from index 'books_book_id_idx'.
+func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`book_id, isbn, book_type, title, year, available, books_author_id_fkey ` +
+		`FROM django.books ` +
+		`WHERE book_id = :1`
+	// run
+	logf(sqlstr, bookID)
+	b := Book{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
+		return nil, logerror(err)
+	}
+	return &b, nil
+}
+
 // BooksByBooksAuthorIDFkey retrieves a row from 'django.books' as a Book.
 //
 // Generated from index 'books_books_auth_73ac0c26'.
@@ -170,26 +190,6 @@ func BooksByBooksAuthorIDFkey(ctx context.Context, db DB, booksAuthorIDFkey int6
 		return nil, logerror(err)
 	}
 	return res, nil
-}
-
-// BookByBookID retrieves a row from 'django.books' as a Book.
-//
-// Generated from index 'sys_c0014093'.
-func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`book_id, isbn, book_type, title, year, available, books_author_id_fkey ` +
-		`FROM django.books ` +
-		`WHERE book_id = :1`
-	// run
-	logf(sqlstr, bookID)
-	b := Book{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
-		return nil, logerror(err)
-	}
-	return &b, nil
 }
 
 // Author returns the Author associated with the Book's (BooksAuthorIDFkey).

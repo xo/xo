@@ -69,6 +69,11 @@ for TYPE in $DATABASES; do
         usql -f sql/${TYPE}_data.sql $DB
       )
     fi
+    if [ -f sql/${TYPE}_post.sql ]; then
+      (set -ex;
+        usql -f sql/${TYPE}_post.sql $DB
+      )
+    fi
   fi
   (set -ex;
     $XOBIN schema $DB -o $TYPE             ${ARGS[@]}

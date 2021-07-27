@@ -150,26 +150,6 @@ func (dal *DjangoAdminLog) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoAdminLogByID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.
-//
-// Generated from index 'PK__django_a__3213E83FD8A9FA97'.
-func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id ` +
-		`FROM django.django_admin_log ` +
-		`WHERE id = @p1`
-	// run
-	logf(sqlstr, id)
-	dal := DjangoAdminLog{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dal.ID, &dal.ActionTime, &dal.ObjectID, &dal.ObjectRepr, &dal.ActionFlag, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID); err != nil {
-		return nil, logerror(err)
-	}
-	return &dal, nil
-}
-
 // DjangoAdminLogByContentTypeID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.
 //
 // Generated from index 'django_admin_log_content_type_id_c4bce8eb'.
@@ -202,6 +182,26 @@ func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql
 		return nil, logerror(err)
 	}
 	return res, nil
+}
+
+// DjangoAdminLogByID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.
+//
+// Generated from index 'django_admin_log_id_pkey'.
+func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id ` +
+		`FROM django.django_admin_log ` +
+		`WHERE id = @p1`
+	// run
+	logf(sqlstr, id)
+	dal := DjangoAdminLog{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dal.ID, &dal.ActionTime, &dal.ObjectID, &dal.ObjectRepr, &dal.ActionFlag, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID); err != nil {
+		return nil, logerror(err)
+	}
+	return &dal, nil
 }
 
 // DjangoAdminLogByUserID retrieves a row from 'django.django_admin_log' as a DjangoAdminLog.

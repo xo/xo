@@ -155,7 +155,7 @@ func (au *AuthUser) Delete(ctx context.Context, db DB) error {
 
 // AuthUserByID retrieves a row from 'django.auth_user' as a AuthUser.
 //
-// Generated from index 'PK__auth_use__3213E83F1BBA0209'.
+// Generated from index 'auth_user_id_pkey'.
 func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 	// query
 	const sqlstr = `SELECT ` +

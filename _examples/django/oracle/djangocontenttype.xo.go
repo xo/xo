@@ -155,7 +155,7 @@ func DjangoContentTypeByAppLabelModel(ctx context.Context, db DB, appLabel, mode
 
 // DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a DjangoContentType.
 //
-// Generated from index 'sys_c0014034'.
+// Generated from index 'django_content_type_id_idx'.
 func DjangoContentTypeByID(ctx context.Context, db DB, id int64) (*DjangoContentType, error) {
 	// query
 	const sqlstr = `SELECT ` +

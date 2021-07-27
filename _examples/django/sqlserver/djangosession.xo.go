@@ -131,26 +131,6 @@ func (ds *DjangoSession) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoSessionBySessionKey retrieves a row from 'django.django_session' as a DjangoSession.
-//
-// Generated from index 'PK__django_s__B3BA0F1FC45FFD1B'.
-func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*DjangoSession, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`session_key, session_data, expire_date ` +
-		`FROM django.django_session ` +
-		`WHERE session_key = @p1`
-	// run
-	logf(sqlstr, sessionKey)
-	ds := DjangoSession{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, sessionKey).Scan(&ds.SessionKey, &ds.SessionData, &ds.ExpireDate); err != nil {
-		return nil, logerror(err)
-	}
-	return &ds, nil
-}
-
 // DjangoSessionByExpireDate retrieves a row from 'django.django_session' as a DjangoSession.
 //
 // Generated from index 'django_session_expire_date_a5c62663'.
@@ -183,4 +163,24 @@ func DjangoSessionByExpireDate(ctx context.Context, db DB, expireDate time.Time)
 		return nil, logerror(err)
 	}
 	return res, nil
+}
+
+// DjangoSessionBySessionKey retrieves a row from 'django.django_session' as a DjangoSession.
+//
+// Generated from index 'django_session_session_key_pkey'.
+func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*DjangoSession, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`session_key, session_data, expire_date ` +
+		`FROM django.django_session ` +
+		`WHERE session_key = @p1`
+	// run
+	logf(sqlstr, sessionKey)
+	ds := DjangoSession{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, sessionKey).Scan(&ds.SessionKey, &ds.SessionData, &ds.ExpireDate); err != nil {
+		return nil, logerror(err)
+	}
+	return &ds, nil
 }

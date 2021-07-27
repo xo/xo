@@ -143,26 +143,6 @@ func (agp *AuthGroupPermission) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthGroupPermissionByID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
-//
-// Generated from index 'PK__auth_gro__3213E83F286364DF'.
-func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, group_id, permission_id ` +
-		`FROM django.auth_group_permissions ` +
-		`WHERE id = @p1`
-	// run
-	logf(sqlstr, id)
-	agp := AuthGroupPermission{
-		_exists: true,
-	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&agp.ID, &agp.GroupID, &agp.PermissionID); err != nil {
-		return nil, logerror(err)
-	}
-	return &agp, nil
-}
-
 // AuthGroupPermissionsByGroupID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
 //
 // Generated from index 'auth_group_permissions_group_id_b120cbf9'.
@@ -212,6 +192,26 @@ func AuthGroupPermissionByGroupIDPermissionID(ctx context.Context, db DB, groupI
 		_exists: true,
 	}
 	if err := db.QueryRowContext(ctx, sqlstr, groupID, permissionID).Scan(&agp.ID, &agp.GroupID, &agp.PermissionID); err != nil {
+		return nil, logerror(err)
+	}
+	return &agp, nil
+}
+
+// AuthGroupPermissionByID retrieves a row from 'django.auth_group_permissions' as a AuthGroupPermission.
+//
+// Generated from index 'auth_group_permissions_id_pkey'.
+func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, group_id, permission_id ` +
+		`FROM django.auth_group_permissions ` +
+		`WHERE id = @p1`
+	// run
+	logf(sqlstr, id)
+	agp := AuthGroupPermission{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&agp.ID, &agp.GroupID, &agp.PermissionID); err != nil {
 		return nil, logerror(err)
 	}
 	return &agp, nil

@@ -8,6 +8,28 @@ CREATE TABLE auth_group (
   PRIMARY KEY (id)
 );
 
+-- table django_content_type
+CREATE TABLE django_content_type (
+  id INTEGER NOT NULL,
+  app_label VARCHAR(100) NOT NULL,
+  model VARCHAR(100) NOT NULL,
+  UNIQUE (app_label, model),
+  PRIMARY KEY (id)
+);
+
+-- table auth_permission
+CREATE TABLE auth_permission (
+  id INTEGER NOT NULL,
+  content_type_id INTEGER NOT NULL REFERENCES django_content_type (id),
+  codename VARCHAR(100) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  UNIQUE (content_type_id, codename),
+  PRIMARY KEY (id)
+);
+
+-- index auth_permission_content_type_id_2f476e4b
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON auth_permission (content_type_id);
+
 -- table auth_group_permissions
 CREATE TABLE auth_group_permissions (
   id INTEGER NOT NULL,
@@ -22,19 +44,6 @@ CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON auth_group_permissions 
 
 -- index auth_group_permissions_permission_id_84c5c92e
 CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permissions (permission_id);
-
--- table auth_permission
-CREATE TABLE auth_permission (
-  id INTEGER NOT NULL,
-  content_type_id INTEGER NOT NULL REFERENCES django_content_type (id),
-  codename VARCHAR(100) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  UNIQUE (content_type_id, codename),
-  PRIMARY KEY (id)
-);
-
--- index auth_permission_content_type_id_2f476e4b
-CREATE INDEX auth_permission_content_type_id_2f476e4b ON auth_permission (content_type_id);
 
 -- table auth_user
 CREATE TABLE auth_user (
@@ -105,6 +114,13 @@ CREATE TABLE books (
 -- index books_books_author_id_fkey_73ac0c26
 CREATE INDEX books_books_author_id_fkey_73ac0c26 ON books (books_author_id_fkey);
 
+-- table tags
+CREATE TABLE tags (
+  tag_id INTEGER NOT NULL,
+  tag VARCHAR(50) NOT NULL,
+  PRIMARY KEY (tag_id)
+);
+
 -- table books_tags
 CREATE TABLE books_tags (
   id INTEGER NOT NULL,
@@ -139,15 +155,6 @@ CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON django_admin_log (cont
 -- index django_admin_log_user_id_c564eba6
 CREATE INDEX django_admin_log_user_id_c564eba6 ON django_admin_log (user_id);
 
--- table django_content_type
-CREATE TABLE django_content_type (
-  id INTEGER NOT NULL,
-  app_label VARCHAR(100) NOT NULL,
-  model VARCHAR(100) NOT NULL,
-  UNIQUE (app_label, model),
-  PRIMARY KEY (id)
-);
-
 -- table django_migrations
 CREATE TABLE django_migrations (
   id INTEGER NOT NULL,
@@ -167,10 +174,3 @@ CREATE TABLE django_session (
 
 -- index django_session_expire_date_a5c62663
 CREATE INDEX django_session_expire_date_a5c62663 ON django_session (expire_date);
-
--- table tags
-CREATE TABLE tags (
-  tag_id INTEGER NOT NULL,
-  tag VARCHAR(50) NOT NULL,
-  PRIMARY KEY (tag_id)
-);
