@@ -307,23 +307,23 @@ func buildQueryType(ctx context.Context, query xo.Query) (Table, error) {
 	}, nil
 }
 
+// buildQueryName builds a name for the query.
 func buildQueryName(query xo.Query) string {
-	name := query.Name
-	if name == "" {
-		// no func name specified, so generate based on type
-		if query.One {
-			name = query.Type
-		} else {
-			name = inflector.Pluralize(query.Type)
-		}
-		// affix any params
-		if len(query.Params) == 0 {
-			name = "Get" + name
-		} else {
-			name += "By"
-			for _, p := range query.Params {
-				name += snaker.ForceCamelIdentifier(p.Name)
-			}
+	if query.Name != "" {
+		return query.Name
+	}
+	// generate name if not specified
+	name := query.Type
+	if !query.One {
+		name = inflector.Pluralize(name)
+	}
+	// add params
+	if len(query.Params) == 0 {
+		name = "Get" + name
+	} else {
+		name += "By"
+		for _, p := range query.Params {
+			name += snaker.ForceCamelIdentifier(p.Name)
 		}
 	}
 	return name
