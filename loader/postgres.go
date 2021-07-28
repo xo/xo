@@ -47,7 +47,8 @@ func PostgresFlags() []xo.Flag {
 	}
 }
 
-// PostgresGoType parse a type into a Go type based on the database type definition.
+// PostgresGoType parse a type into a Go type based on the database type
+// definition.
 func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	// SETOF -> []T
 	if strings.HasPrefix(d.Type, "SETOF ") {
@@ -58,15 +59,29 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 		}
 		return "[]" + goType, "nil", nil
 	}
-	// determine if it's a slice
+	// special type handling
+	typ := d.Type
+	switch {
+	case typ == `"char"`:
+		typ = "char"
+	case strings.HasPrefix(typ, "information_schema."):
+		switch strings.TrimPrefix(typ, "information_schema.") {
+		case "cardinal_number":
+			typ = "integer"
+		case "character_data", "sql_identifier", "yes_or_no":
+			typ = "character varying"
+		case "time_stamp":
+			typ = "timestamp with time zone"
+		}
+	}
 	var goType, zero string
-	switch d.Type {
+	switch typ {
 	case "boolean":
 		goType, zero = "bool", "false"
 		if d.Nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
-	case "bpchar", "char", "character varying", "character", "inet", "money", "text":
+	case "bpchar", "character varying", "character", "inet", "money", "text":
 		goType, zero = "string", `""`
 		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"

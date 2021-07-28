@@ -245,7 +245,7 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 		case !fi.IsDir():
 			return nil, nil, "", fmt.Errorf("out path %s is not a directory", out)
 		}
-		ctx = context.WithValue(ctx, templates.OutKey, args.OutParams.Out)
+		ctx = context.WithValue(ctx, templates.OutKey, out)
 	}
 	// enable verbose output for sql queries
 	if args.Verbose {
