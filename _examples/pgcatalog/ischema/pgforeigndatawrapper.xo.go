@@ -8,11 +8,11 @@ import (
 
 // PgForeignDataWrapper represents a row from 'information_schema._pg_foreign_data_wrappers'.
 type PgForeignDataWrapper struct {
-	Oid                        Oid              `json:"oid"`                           // oid
-	Fdwowner                   Oid              `json:"fdwowner"`                      // fdwowner
+	Oid                        NullOid          `json:"oid"`                           // oid
+	Fdwowner                   NullOid          `json:"fdwowner"`                      // fdwowner
 	Fdwoptions                 []sql.NullString `json:"fdwoptions"`                    // fdwoptions
-	ForeignDataWrapperCatalog  SQLIdentifier    `json:"foreign_data_wrapper_catalog"`  // foreign_data_wrapper_catalog
-	ForeignDataWrapperName     SQLIdentifier    `json:"foreign_data_wrapper_name"`     // foreign_data_wrapper_name
-	AuthorizationIdentifier    SQLIdentifier    `json:"authorization_identifier"`      // authorization_identifier
-	ForeignDataWrapperLanguage CharacterData    `json:"foreign_data_wrapper_language"` // foreign_data_wrapper_language
+	ForeignDataWrapperCatalog  sql.NullString   `json:"foreign_data_wrapper_catalog"`  // foreign_data_wrapper_catalog
+	ForeignDataWrapperName     sql.NullString   `json:"foreign_data_wrapper_name"`     // foreign_data_wrapper_name
+	AuthorizationIdentifier    sql.NullString   `json:"authorization_identifier"`      // authorization_identifier
+	ForeignDataWrapperLanguage sql.NullString   `json:"foreign_data_wrapper_language"` // foreign_data_wrapper_language
 }

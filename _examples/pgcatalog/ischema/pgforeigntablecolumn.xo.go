@@ -8,8 +8,8 @@ import (
 
 // PgForeignTableColumn represents a row from 'information_schema._pg_foreign_table_columns'.
 type PgForeignTableColumn struct {
-	Nspname       Name             `json:"nspname"`       // nspname
-	Relname       Name             `json:"relname"`       // relname
-	Attname       Name             `json:"attname"`       // attname
+	Nspname       sql.NullString   `json:"nspname"`       // nspname
+	Relname       sql.NullString   `json:"relname"`       // relname
+	Attname       sql.NullString   `json:"attname"`       // attname
 	Attfdwoptions []sql.NullString `json:"attfdwoptions"` // attfdwoptions
 }

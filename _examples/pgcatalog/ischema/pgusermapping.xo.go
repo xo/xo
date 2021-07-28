@@ -8,11 +8,11 @@ import (
 
 // PgUserMapping represents a row from 'information_schema._pg_user_mappings'.
 type PgUserMapping struct {
-	Oid                     Oid              `json:"oid"`                      // oid
+	Oid                     NullOid          `json:"oid"`                      // oid
 	Umoptions               []sql.NullString `json:"umoptions"`                // umoptions
-	Umuser                  Oid              `json:"umuser"`                   // umuser
-	AuthorizationIdentifier SQLIdentifier    `json:"authorization_identifier"` // authorization_identifier
-	ForeignServerCatalog    SQLIdentifier    `json:"foreign_server_catalog"`   // foreign_server_catalog
-	ForeignServerName       SQLIdentifier    `json:"foreign_server_name"`      // foreign_server_name
-	Srvowner                SQLIdentifier    `json:"srvowner"`                 // srvowner
+	Umuser                  NullOid          `json:"umuser"`                   // umuser
+	AuthorizationIdentifier sql.NullString   `json:"authorization_identifier"` // authorization_identifier
+	ForeignServerCatalog    sql.NullString   `json:"foreign_server_catalog"`   // foreign_server_catalog
+	ForeignServerName       sql.NullString   `json:"foreign_server_name"`      // foreign_server_name
+	Srvowner                sql.NullString   `json:"srvowner"`                 // srvowner
 }
