@@ -13,7 +13,7 @@ require (
 	github.com/gobwas/glob v0.2.3
 	github.com/goccy/go-yaml v1.9.2
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/kenshaw/snaker v0.1.3
+	github.com/kenshaw/snaker v0.1.6
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v1.14.8

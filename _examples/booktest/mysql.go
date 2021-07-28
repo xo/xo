@@ -27,7 +27,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	now := time.Now()
 	b0 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "1",
+		ISBN:      "1",
 		Title:     "my book title",
 		BookType:  models.BookTypeFiction,
 		Year:      2016,
@@ -39,7 +39,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	// save second book
 	b1 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "2",
+		ISBN:      "2",
 		Title:     "the second book",
 		BookType:  models.BookTypeFiction,
 		Year:      2016,
@@ -58,7 +58,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	// save third book
 	b2 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "3",
+		ISBN:      "3",
 		Title:     "the third book",
 		BookType:  models.BookTypeFiction,
 		Year:      2001,
@@ -71,7 +71,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	// save fourth book
 	b3 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "4",
+		ISBN:      "4",
 		Title:     "4th place finisher",
 		BookType:  models.BookTypeNonfiction,
 		Year:      2011,
@@ -89,7 +89,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 	b4 := models.Book{
 		BookID:    b3.BookID,
 		AuthorID:  a.AuthorID,
-		Isbn:      "NEW ISBN",
+		ISBN:      "NEW ISBN",
 		BookType:  b3.BookType,
 		Title:     "never ever gonna finish, a quatrain",
 		Year:      b3.Year,
@@ -119,7 +119,7 @@ func runMysql(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d: %q, Author: %q, ISBN: %q Tags: %q\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
+		fmt.Printf("Book %d: %q, Author: %q, ISBN: %q Tags: %q\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookISBN, ab.BookTags)
 	}
 	// call say_hello(varchar)
 	str, err := models.SayHello(ctx, db, "john")

@@ -27,7 +27,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 	now := models.NewTime(time.Now())
 	b0 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "1",
+		ISBN:      "1",
 		Title:     "my book title",
 		Year:      2016,
 		Available: now,
@@ -38,7 +38,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 	// save second book
 	b1 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "2",
+		ISBN:      "2",
 		Title:     "the second book",
 		Year:      2016,
 		Available: now,
@@ -56,7 +56,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 	// save third book
 	b2 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "3",
+		ISBN:      "3",
 		Title:     "the third book",
 		Year:      2001,
 		Available: now,
@@ -68,7 +68,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 	// save fourth book
 	b3 := models.Book{
 		AuthorID:  a.AuthorID,
-		Isbn:      "4",
+		ISBN:      "4",
 		Title:     "4th place finisher",
 		Year:      2011,
 		Available: now,
@@ -85,7 +85,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 	b4 := models.Book{
 		BookID:    b3.BookID,
 		AuthorID:  a.AuthorID,
-		Isbn:      "NEW ISBN",
+		ISBN:      "NEW ISBN",
 		Title:     "never ever gonna finish, a quatrain",
 		Year:      b3.Year,
 		Available: b3.Available,
@@ -115,7 +115,7 @@ func runSqlite3(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 	for _, ab := range res {
-		fmt.Printf("Book %d: %q, Author: %q, ISBN: %q Tags: %q\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookIsbn, ab.BookTags)
+		fmt.Printf("Book %d: %q, Author: %q, ISBN: %q Tags: %q\n", ab.BookID, ab.BookTitle, ab.AuthorName, ab.BookISBN, ab.BookTags)
 	}
 	/*
 		// call say_hello(varchar)
