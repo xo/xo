@@ -63,6 +63,13 @@ func init() {
 				PlaceHolder: `""`,
 				Value:       "",
 			},
+			{
+				ContextKey:  TrimCommentKey,
+				Desc:        "trim leading comment from views and procs (--no-createdb-trim-comment)",
+				Default:     "true",
+				PlaceHolder: ``,
+				Value:       false,
+			},
 		},
 		Funcs: func(ctx context.Context) (template.FuncMap, error) {
 			return funcs.FuncMap(), nil
@@ -158,11 +165,12 @@ func sortAppendTable(tableMap map[string]xo.Table, seen map[string]bool, sorted 
 
 // Context keys.
 const (
-	FmtKey        xo.ContextKey = "fmt"
-	FmtOptsKey    xo.ContextKey = "fmt-opts"
-	ConstraintKey xo.ContextKey = "constraint"
-	EscKey        xo.ContextKey = "escape"
-	EngineKey     xo.ContextKey = "engine"
+	FmtKey         xo.ContextKey = "fmt"
+	FmtOptsKey     xo.ContextKey = "fmt-opts"
+	ConstraintKey  xo.ContextKey = "constraint"
+	EscKey         xo.ContextKey = "escape"
+	EngineKey      xo.ContextKey = "engine"
+	TrimCommentKey xo.ContextKey = "trim-comment"
 )
 
 // Fmt returns fmt from the context.
@@ -193,6 +201,12 @@ func Esc(ctx context.Context, esc string) bool {
 func Engine(ctx context.Context) string {
 	s, _ := ctx.Value(EngineKey).(string)
 	return s
+}
+
+// TrimComment returns trim-comments from the context.
+func TrimComment(ctx context.Context) bool {
+	b, _ := ctx.Value(TrimCommentKey).(bool)
+	return b
 }
 
 // Lang returns the sql-formatter language to use from the context based on the

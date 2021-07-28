@@ -12,12 +12,13 @@ import (
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	driver     string
-	enumMap    map[string]xo.Enum
-	constraint bool
-	escCols    bool
-	escTypes   bool
-	engine     string
+	driver      string
+	enumMap     map[string]xo.Enum
+	constraint  bool
+	escCols     bool
+	escTypes    bool
+	engine      string
+	trimComment bool
 }
 
 // NewFuncs creates a new Funcs.
@@ -30,12 +31,13 @@ func NewFuncs(ctx context.Context, enums []xo.Enum) *Funcs {
 		}
 	}
 	return &Funcs{
-		driver:     driver,
-		enumMap:    enumMap,
-		constraint: Constraint(ctx),
-		escCols:    Esc(ctx, "columns"),
-		escTypes:   Esc(ctx, "types"),
-		engine:     Engine(ctx),
+		driver:      driver,
+		enumMap:     enumMap,
+		constraint:  Constraint(ctx),
+		escCols:     Esc(ctx, "columns"),
+		escTypes:    Esc(ctx, "types"),
+		engine:      Engine(ctx),
+		trimComment: TrimComment(ctx),
 	}
 }
 
@@ -152,36 +154,42 @@ func (f *Funcs) viewdef(view xo.Table) string {
 	case "postgres", "mysql", "oracle":
 		def = fmt.Sprintf("CREATE VIEW %s AS\n%s", f.escType(view.Name), view.Definition)
 	}
-	if !strings.HasSuffix(def, ";") {
-		def += ";"
+	if f.trimComment {
+		if strings.HasPrefix(def, "--") {
+			def = def[strings.Index(def, "\n")+1:]
+		}
+	}
+	return strings.TrimSuffix(def, ";")
+}
+
+func (f *Funcs) procdef(proc xo.Proc) string {
+	def := f.cleanProcDef(proc.Definition)
+	// prepend signature definition
+	if f.driver == "postgres" || f.driver == "mysql" {
+		def = f.procSignature(proc) + "\n" + def
 	}
 	return def
 }
 
-func (f *Funcs) procdef(proc xo.Proc) string {
-	// don't escape trailing suffix for sqlserver
-	if f.driver == "sqlserver" {
-		proc.Definition = strings.TrimSuffix(proc.Definition, ";")
-	}
-	// escape semicolons
-	// FIXME: do not escape semicolons in string literals
-	if f.driver != "postgres" {
-		proc.Definition = strings.ReplaceAll(proc.Definition, ";", "\\;")
-	}
-	// definition already provided
+func (f *Funcs) cleanProcDef(def string) string {
 	switch f.driver {
-	case "oracle":
-		proc.Definition = "CREATE " + proc.Definition
-		fallthrough
+	// nothing needs to be done for postgres
+	// only add the query language suffix
+	case "postgres":
+		return def + "\n$$ LANGUAGE plpgsql"
+	// the trailing semicolon shouldn't be escaped for sqlserver
 	case "sqlserver":
-		return proc.Definition
+		def = strings.TrimSuffix(def, ";")
+	// oracle only just needs the CREATE prefix
+	case "oracle":
+		def = "CREATE " + def
 	}
-	// specify query language when using postgres
-	var suffix string
-	if f.driver == "postgres" {
-		suffix = "\n$$ LANGUAGE plpgsql"
+	if f.trimComment {
+		if strings.HasPrefix(def, "--") {
+			def = def[strings.Index(def, "\n")+1:]
+		}
 	}
-	return f.procSignature(proc) + "\n" + proc.Definition + suffix
+	return strings.ReplaceAll(def, ";", "\\;")
 }
 
 func (f *Funcs) procSignature(proc xo.Proc) string {

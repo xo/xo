@@ -58,7 +58,7 @@ CREATE TABLE a_bit_of_everything (
   a_text_nullable TEXT,
   a_time TIME NOT NULL,
   a_time_nullable TIME,
-  a_timestamp TIMESTAMP DEFAULT current_timestamp() NOT NULL,
+  a_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   a_timestamp_nullable TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL,
   a_tinyblob TINYBLOB NOT NULL,
   a_tinyblob_nullable TINYBLOB,
