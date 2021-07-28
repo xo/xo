@@ -11,7 +11,7 @@ type AuthorBookResult struct {
 	AuthorID   int    `json:"author_id"`   // author_id
 	AuthorName string `json:"author_name"` // author_name
 	BookID     int    `json:"book_id"`     // book_id
-	BookIsbn   string `json:"book_isbn"`   // book_isbn
+	BookISBN   string `json:"book_isbn"`   // book_isbn
 	BookTitle  string `json:"book_title"`  // book_title
 	BookTags   string `json:"book_tags"`   // book_tags
 }
@@ -41,7 +41,7 @@ func AuthorBookResultsByTags(ctx context.Context, db DB, tags string) ([]*Author
 	for rows.Next() {
 		var abr AuthorBookResult
 		// scan
-		if err := rows.Scan(&abr.AuthorID, &abr.AuthorName, &abr.BookID, &abr.BookIsbn, &abr.BookTitle, &abr.BookTags); err != nil {
+		if err := rows.Scan(&abr.AuthorID, &abr.AuthorName, &abr.BookID, &abr.BookISBN, &abr.BookTitle, &abr.BookTags); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &abr)

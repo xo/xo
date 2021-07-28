@@ -125,6 +125,12 @@ func init() {
 				Value:       "",
 			},
 			{
+				ContextKey:  InitialismKey,
+				Desc:        "add initialism (i.e ID, API, URI)",
+				PlaceHolder: "<val>",
+				Value:       []string{},
+			},
+			{
 				ContextKey:  EscKey,
 				Desc:        "escape fields (none, schema, table, column, all; default: none)",
 				PlaceHolder: "none",
@@ -187,6 +193,9 @@ func init() {
 			}
 		},
 		Process: func(ctx context.Context, doAppend bool, set *templates.TemplateSet, v *xo.XO) error {
+			if err := Initialisms(ctx); err != nil {
+				return err
+			}
 			for _, q := range v.Queries {
 				if err := emitQuery(ctx, doAppend, set, q); err != nil {
 					return err
@@ -627,6 +636,7 @@ const (
 	UUIDKey       xo.ContextKey = "uuid"
 	CustomKey     xo.ContextKey = "custom"
 	ConflictKey   xo.ContextKey = "conflict"
+	InitialismKey xo.ContextKey = "initialism"
 	EscKey        xo.ContextKey = "esc"
 	FieldTagKey   xo.ContextKey = "field-tag"
 	ContextKey    xo.ContextKey = "context"
@@ -695,6 +705,17 @@ func Custom(ctx context.Context) string {
 func Conflict(ctx context.Context) string {
 	s, _ := ctx.Value(ConflictKey).(string)
 	return s
+}
+
+// Initialisms returns tags from the context.
+func Initialisms(ctx context.Context) error {
+	var v []string
+	for _, s := range ctx.Value(InitialismKey).([]string) {
+		if s != "" {
+			v = append(v, s)
+		}
+	}
+	return snaker.DefaultInitialisms.Add(v...)
 }
 
 // Esc indicates if esc should be escaped based from the context.

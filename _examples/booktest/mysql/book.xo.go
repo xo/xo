@@ -11,7 +11,7 @@ import (
 type Book struct {
 	BookID      int       `json:"book_id"`     // book_id
 	AuthorID    int       `json:"author_id"`   // author_id
-	Isbn        string    `json:"isbn"`        // isbn
+	ISBN        string    `json:"isbn"`        // isbn
 	BookType    BookType  `json:"book_type"`   // book_type
 	Title       string    `json:"title"`       // title
 	Year        int       `json:"year"`        // year
@@ -48,8 +48,8 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 		`?, ?, ?, ?, ?, ?, ?, ?` +
 		`)`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
-	res, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	logf(sqlstr, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	res, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
 	if err != nil {
 		return err
 	}
@@ -77,8 +77,8 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 		`author_id = ?, isbn = ?, book_type = ?, title = ?, year = ?, available = ?, description = ?, tags = ? ` +
 		`WHERE book_id = ?`
 	// run
-	logf(sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID)
-	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID); err != nil {
+	logf(sqlstr, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID)
+	if _, err := db.ExecContext(ctx, sqlstr, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags, b.BookID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -107,8 +107,8 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 		` ON DUPLICATE KEY UPDATE ` +
 		`author_id = VALUES(author_id), isbn = VALUES(isbn), book_type = VALUES(book_type), title = VALUES(title), year = VALUES(year), available = VALUES(available), description = VALUES(description), tags = VALUES(tags)`
 	// run
-	logf(sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
-	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags); err != nil {
+	logf(sqlstr, b.BookID, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.AuthorID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.Description, b.Tags); err != nil {
 		return err
 	}
 	// set exists
@@ -160,7 +160,7 @@ func BooksByAuthorID(ctx context.Context, db DB, authorID int) ([]*Book, error) 
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
+		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &b)
@@ -185,7 +185,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.AuthorID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -214,7 +214,7 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
+		if err := rows.Scan(&b.BookID, &b.AuthorID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &b)
@@ -225,10 +225,10 @@ func BooksByTitleYear(ctx context.Context, db DB, title string, year int) ([]*Bo
 	return res, nil
 }
 
-// BookByIsbn retrieves a row from 'booktest.books' as a Book.
+// BookByISBN retrieves a row from 'booktest.books' as a Book.
 //
 // Generated from index 'isbn'.
-func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
+func BookByISBN(ctx context.Context, db DB, isbn string) (*Book, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`book_id, author_id, isbn, book_type, title, year, available, description, tags ` +
@@ -239,7 +239,7 @@ func BookByIsbn(ctx context.Context, db DB, isbn string) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, isbn).Scan(&b.BookID, &b.AuthorID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.Description, &b.Tags); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
