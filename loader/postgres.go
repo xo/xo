@@ -81,7 +81,7 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 		if d.Nullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
-	case "bpchar", "character varying", "character", "inet", "money", "text":
+	case "bpchar", "character varying", "character", "inet", "money", "text", "name":
 		goType, zero = "string", `""`
 		if d.Nullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"

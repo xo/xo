@@ -249,7 +249,7 @@ type PgAm struct {
 	Xmin      Xid     `json:"xmin"`      // xmin
 	Ctid      Tid     `json:"ctid"`      // ctid
 	Oid       Oid     `json:"oid"`       // oid
-	Amname    Name    `json:"amname"`    // amname
+	Amname    string  `json:"amname"`    // amname
 	Amhandler Regproc `json:"amhandler"` // amhandler
 	Amtype    Char    `json:"amtype"`    // amtype
 }
@@ -312,7 +312,7 @@ type PgAttribute struct {
 	Xmin          Xid              `json:"xmin"`          // xmin
 	Ctid          Tid              `json:"ctid"`          // ctid
 	Attrelid      Oid              `json:"attrelid"`      // attrelid
-	Attname       Name             `json:"attname"`       // attname
+	Attname       string           `json:"attname"`       // attname
 	Atttypid      Oid              `json:"atttypid"`      // atttypid
 	Attstattarget int              `json:"attstattarget"` // attstattarget
 	Attlen        int16            `json:"attlen"`        // attlen
@@ -332,10 +332,10 @@ type PgAttribute struct {
 	Attislocal    bool             `json:"attislocal"`    // attislocal
 	Attinhcount   int              `json:"attinhcount"`   // attinhcount
 	Attcollation  Oid              `json:"attcollation"`  // attcollation
-	Attacl        []Aclitem        `json:"attacl"`        // attacl
+	Attacl        []NullAclitem    `json:"attacl"`        // attacl
 	Attoptions    []sql.NullString `json:"attoptions"`    // attoptions
 	Attfdwoptions []sql.NullString `json:"attfdwoptions"` // attfdwoptions
-	Attmissingval Anyarray         `json:"attmissingval"` // attmissingval
+	Attmissingval NullAnyarray     `json:"attmissingval"` // attmissingval
 }
 
 // PgAuthMember represents a row from 'pg_catalog.pg_auth_members'.
@@ -361,7 +361,7 @@ type PgAuthid struct {
 	Xmin           Xid            `json:"xmin"`           // xmin
 	Ctid           Tid            `json:"ctid"`           // ctid
 	Oid            Oid            `json:"oid"`            // oid
-	Rolname        Name           `json:"rolname"`        // rolname
+	Rolname        string         `json:"rolname"`        // rolname
 	Rolsuper       bool           `json:"rolsuper"`       // rolsuper
 	Rolinherit     bool           `json:"rolinherit"`     // rolinherit
 	Rolcreaterole  bool           `json:"rolcreaterole"`  // rolcreaterole
@@ -376,7 +376,7 @@ type PgAuthid struct {
 
 // PgAvailableExtension represents a row from 'pg_catalog.pg_available_extensions'.
 type PgAvailableExtension struct {
-	Name             Name           `json:"name"`              // name
+	Name             sql.NullString `json:"name"`              // name
 	DefaultVersion   sql.NullString `json:"default_version"`   // default_version
 	InstalledVersion sql.NullString `json:"installed_version"` // installed_version
 	Comment          sql.NullString `json:"comment"`           // comment
@@ -384,15 +384,15 @@ type PgAvailableExtension struct {
 
 // PgAvailableExtensionVersion represents a row from 'pg_catalog.pg_available_extension_versions'.
 type PgAvailableExtensionVersion struct {
-	Name        Name           `json:"name"`        // name
-	Version     sql.NullString `json:"version"`     // version
-	Installed   sql.NullBool   `json:"installed"`   // installed
-	Superuser   sql.NullBool   `json:"superuser"`   // superuser
-	Trusted     sql.NullBool   `json:"trusted"`     // trusted
-	Relocatable sql.NullBool   `json:"relocatable"` // relocatable
-	Schema      Name           `json:"schema"`      // schema
-	Requires    []Name         `json:"requires"`    // requires
-	Comment     sql.NullString `json:"comment"`     // comment
+	Name        sql.NullString   `json:"name"`        // name
+	Version     sql.NullString   `json:"version"`     // version
+	Installed   sql.NullBool     `json:"installed"`   // installed
+	Superuser   sql.NullBool     `json:"superuser"`   // superuser
+	Trusted     sql.NullBool     `json:"trusted"`     // trusted
+	Relocatable sql.NullBool     `json:"relocatable"` // relocatable
+	Schema      sql.NullString   `json:"schema"`      // schema
+	Requires    []sql.NullString `json:"requires"`    // requires
+	Comment     sql.NullString   `json:"comment"`     // comment
 }
 
 // PgCast represents a row from 'pg_catalog.pg_cast'.
@@ -420,7 +420,7 @@ type PgClass struct {
 	Xmin                Xid              `json:"xmin"`                // xmin
 	Ctid                Tid              `json:"ctid"`                // ctid
 	Oid                 Oid              `json:"oid"`                 // oid
-	Relname             Name             `json:"relname"`             // relname
+	Relname             string           `json:"relname"`             // relname
 	Relnamespace        Oid              `json:"relnamespace"`        // relnamespace
 	Reltype             Oid              `json:"reltype"`             // reltype
 	Reloftype           Oid              `json:"reloftype"`           // reloftype
@@ -449,9 +449,9 @@ type PgClass struct {
 	Relrewrite          Oid              `json:"relrewrite"`          // relrewrite
 	Relfrozenxid        Xid              `json:"relfrozenxid"`        // relfrozenxid
 	Relminmxid          Xid              `json:"relminmxid"`          // relminmxid
-	Relacl              []Aclitem        `json:"relacl"`              // relacl
+	Relacl              []NullAclitem    `json:"relacl"`              // relacl
 	Reloptions          []sql.NullString `json:"reloptions"`          // reloptions
-	Relpartbound        PgNodeTree       `json:"relpartbound"`        // relpartbound
+	Relpartbound        NullPgNodeTree   `json:"relpartbound"`        // relpartbound
 }
 
 // PgCollation represents a row from 'pg_catalog.pg_collation'.
@@ -463,14 +463,14 @@ type PgCollation struct {
 	Xmin                Xid            `json:"xmin"`                // xmin
 	Ctid                Tid            `json:"ctid"`                // ctid
 	Oid                 Oid            `json:"oid"`                 // oid
-	Collname            Name           `json:"collname"`            // collname
+	Collname            string         `json:"collname"`            // collname
 	Collnamespace       Oid            `json:"collnamespace"`       // collnamespace
 	Collowner           Oid            `json:"collowner"`           // collowner
 	Collprovider        Char           `json:"collprovider"`        // collprovider
 	Collisdeterministic bool           `json:"collisdeterministic"` // collisdeterministic
 	Collencoding        int            `json:"collencoding"`        // collencoding
-	Collcollate         Name           `json:"collcollate"`         // collcollate
-	Collctype           Name           `json:"collctype"`           // collctype
+	Collcollate         string         `json:"collcollate"`         // collcollate
+	Collctype           string         `json:"collctype"`           // collctype
 	Collversion         sql.NullString `json:"collversion"`         // collversion
 }
 
@@ -489,7 +489,7 @@ type PgConstraint struct {
 	Xmin          Xid             `json:"xmin"`          // xmin
 	Ctid          Tid             `json:"ctid"`          // ctid
 	Oid           Oid             `json:"oid"`           // oid
-	Conname       Name            `json:"conname"`       // conname
+	Conname       string          `json:"conname"`       // conname
 	Connamespace  Oid             `json:"connamespace"`  // connamespace
 	Contype       Char            `json:"contype"`       // contype
 	Condeferrable bool            `json:"condeferrable"` // condeferrable
@@ -508,11 +508,11 @@ type PgConstraint struct {
 	Connoinherit  bool            `json:"connoinherit"`  // connoinherit
 	Conkey        []sql.NullInt64 `json:"conkey"`        // conkey
 	Confkey       []sql.NullInt64 `json:"confkey"`       // confkey
-	Conpfeqop     []Oid           `json:"conpfeqop"`     // conpfeqop
-	Conppeqop     []Oid           `json:"conppeqop"`     // conppeqop
-	Conffeqop     []Oid           `json:"conffeqop"`     // conffeqop
-	Conexclop     []Oid           `json:"conexclop"`     // conexclop
-	Conbin        PgNodeTree      `json:"conbin"`        // conbin
+	Conpfeqop     []NullOid       `json:"conpfeqop"`     // conpfeqop
+	Conppeqop     []NullOid       `json:"conppeqop"`     // conppeqop
+	Conffeqop     []NullOid       `json:"conffeqop"`     // conffeqop
+	Conexclop     []NullOid       `json:"conexclop"`     // conexclop
+	Conbin        NullPgNodeTree  `json:"conbin"`        // conbin
 }
 
 // PgConversion represents a row from 'pg_catalog.pg_conversion'.
@@ -524,7 +524,7 @@ type PgConversion struct {
 	Xmin           Xid     `json:"xmin"`           // xmin
 	Ctid           Tid     `json:"ctid"`           // ctid
 	Oid            Oid     `json:"oid"`            // oid
-	Conname        Name    `json:"conname"`        // conname
+	Conname        string  `json:"conname"`        // conname
 	Connamespace   Oid     `json:"connamespace"`   // connamespace
 	Conowner       Oid     `json:"conowner"`       // conowner
 	Conforencoding int     `json:"conforencoding"` // conforencoding
@@ -545,26 +545,26 @@ type PgCursor struct {
 
 // PgDatabase represents a row from 'pg_catalog.pg_database'.
 type PgDatabase struct {
-	Tableoid      Oid       `json:"tableoid"`      // tableoid
-	Cmax          Cid       `json:"cmax"`          // cmax
-	Xmax          Xid       `json:"xmax"`          // xmax
-	Cmin          Cid       `json:"cmin"`          // cmin
-	Xmin          Xid       `json:"xmin"`          // xmin
-	Ctid          Tid       `json:"ctid"`          // ctid
-	Oid           Oid       `json:"oid"`           // oid
-	Datname       Name      `json:"datname"`       // datname
-	Datdba        Oid       `json:"datdba"`        // datdba
-	Encoding      int       `json:"encoding"`      // encoding
-	Datcollate    Name      `json:"datcollate"`    // datcollate
-	Datctype      Name      `json:"datctype"`      // datctype
-	Datistemplate bool      `json:"datistemplate"` // datistemplate
-	Datallowconn  bool      `json:"datallowconn"`  // datallowconn
-	Datconnlimit  int       `json:"datconnlimit"`  // datconnlimit
-	Datlastsysoid Oid       `json:"datlastsysoid"` // datlastsysoid
-	Datfrozenxid  Xid       `json:"datfrozenxid"`  // datfrozenxid
-	Datminmxid    Xid       `json:"datminmxid"`    // datminmxid
-	Dattablespace Oid       `json:"dattablespace"` // dattablespace
-	Datacl        []Aclitem `json:"datacl"`        // datacl
+	Tableoid      Oid           `json:"tableoid"`      // tableoid
+	Cmax          Cid           `json:"cmax"`          // cmax
+	Xmax          Xid           `json:"xmax"`          // xmax
+	Cmin          Cid           `json:"cmin"`          // cmin
+	Xmin          Xid           `json:"xmin"`          // xmin
+	Ctid          Tid           `json:"ctid"`          // ctid
+	Oid           Oid           `json:"oid"`           // oid
+	Datname       string        `json:"datname"`       // datname
+	Datdba        Oid           `json:"datdba"`        // datdba
+	Encoding      int           `json:"encoding"`      // encoding
+	Datcollate    string        `json:"datcollate"`    // datcollate
+	Datctype      string        `json:"datctype"`      // datctype
+	Datistemplate bool          `json:"datistemplate"` // datistemplate
+	Datallowconn  bool          `json:"datallowconn"`  // datallowconn
+	Datconnlimit  int           `json:"datconnlimit"`  // datconnlimit
+	Datlastsysoid Oid           `json:"datlastsysoid"` // datlastsysoid
+	Datfrozenxid  Xid           `json:"datfrozenxid"`  // datfrozenxid
+	Datminmxid    Xid           `json:"datminmxid"`    // datminmxid
+	Dattablespace Oid           `json:"dattablespace"` // dattablespace
+	Datacl        []NullAclitem `json:"datacl"`        // datacl
 }
 
 // PgDbRoleSetting represents a row from 'pg_catalog.pg_db_role_setting'.
@@ -637,7 +637,7 @@ type PgEnum struct {
 	Oid           Oid     `json:"oid"`           // oid
 	Enumtypid     Oid     `json:"enumtypid"`     // enumtypid
 	Enumsortorder float32 `json:"enumsortorder"` // enumsortorder
-	Enumlabel     Name    `json:"enumlabel"`     // enumlabel
+	Enumlabel     string  `json:"enumlabel"`     // enumlabel
 }
 
 // PgEventTrigger represents a row from 'pg_catalog.pg_event_trigger'.
@@ -649,8 +649,8 @@ type PgEventTrigger struct {
 	Xmin       Xid              `json:"xmin"`       // xmin
 	Ctid       Tid              `json:"ctid"`       // ctid
 	Oid        Oid              `json:"oid"`        // oid
-	Evtname    Name             `json:"evtname"`    // evtname
-	Evtevent   Name             `json:"evtevent"`   // evtevent
+	Evtname    string           `json:"evtname"`    // evtname
+	Evtevent   string           `json:"evtevent"`   // evtevent
 	Evtowner   Oid              `json:"evtowner"`   // evtowner
 	Evtfoid    Oid              `json:"evtfoid"`    // evtfoid
 	Evtenabled Char             `json:"evtenabled"` // evtenabled
@@ -666,12 +666,12 @@ type PgExtension struct {
 	Xmin           Xid              `json:"xmin"`           // xmin
 	Ctid           Tid              `json:"ctid"`           // ctid
 	Oid            Oid              `json:"oid"`            // oid
-	Extname        Name             `json:"extname"`        // extname
+	Extname        string           `json:"extname"`        // extname
 	Extowner       Oid              `json:"extowner"`       // extowner
 	Extnamespace   Oid              `json:"extnamespace"`   // extnamespace
 	Extrelocatable bool             `json:"extrelocatable"` // extrelocatable
 	Extversion     string           `json:"extversion"`     // extversion
-	Extconfig      []Oid            `json:"extconfig"`      // extconfig
+	Extconfig      []NullOid        `json:"extconfig"`      // extconfig
 	Extcondition   []sql.NullString `json:"extcondition"`   // extcondition
 }
 
@@ -695,11 +695,11 @@ type PgForeignDataWrapper struct {
 	Xmin         Xid              `json:"xmin"`         // xmin
 	Ctid         Tid              `json:"ctid"`         // ctid
 	Oid          Oid              `json:"oid"`          // oid
-	Fdwname      Name             `json:"fdwname"`      // fdwname
+	Fdwname      string           `json:"fdwname"`      // fdwname
 	Fdwowner     Oid              `json:"fdwowner"`     // fdwowner
 	Fdwhandler   Oid              `json:"fdwhandler"`   // fdwhandler
 	Fdwvalidator Oid              `json:"fdwvalidator"` // fdwvalidator
-	Fdwacl       []Aclitem        `json:"fdwacl"`       // fdwacl
+	Fdwacl       []NullAclitem    `json:"fdwacl"`       // fdwacl
 	Fdwoptions   []sql.NullString `json:"fdwoptions"`   // fdwoptions
 }
 
@@ -712,12 +712,12 @@ type PgForeignServer struct {
 	Xmin       Xid              `json:"xmin"`       // xmin
 	Ctid       Tid              `json:"ctid"`       // ctid
 	Oid        Oid              `json:"oid"`        // oid
-	Srvname    Name             `json:"srvname"`    // srvname
+	Srvname    string           `json:"srvname"`    // srvname
 	Srvowner   Oid              `json:"srvowner"`   // srvowner
 	Srvfdw     Oid              `json:"srvfdw"`     // srvfdw
 	Srvtype    sql.NullString   `json:"srvtype"`    // srvtype
 	Srvversion sql.NullString   `json:"srvversion"` // srvversion
-	Srvacl     []Aclitem        `json:"srvacl"`     // srvacl
+	Srvacl     []NullAclitem    `json:"srvacl"`     // srvacl
 	Srvoptions []sql.NullString `json:"srvoptions"` // srvoptions
 }
 
@@ -736,9 +736,9 @@ type PgForeignTable struct {
 
 // PgGroup represents a row from 'pg_catalog.pg_group'.
 type PgGroup struct {
-	Groname  Name  `json:"groname"`  // groname
-	Grosysid Oid   `json:"grosysid"` // grosysid
-	Grolist  []Oid `json:"grolist"`  // grolist
+	Groname  sql.NullString `json:"groname"`  // groname
+	Grosysid NullOid        `json:"grosysid"` // grosysid
+	Grolist  []NullOid      `json:"grolist"`  // grolist
 }
 
 // PgHbaFileRule represents a row from 'pg_catalog.pg_hba_file_rules'.
@@ -756,41 +756,41 @@ type PgHbaFileRule struct {
 
 // PgIndex represents a row from 'pg_catalog.pg_indexes'.
 type PgIndex struct {
-	Schemaname Name           `json:"schemaname"` // schemaname
-	Tablename  Name           `json:"tablename"`  // tablename
-	Indexname  Name           `json:"indexname"`  // indexname
-	Tablespace Name           `json:"tablespace"` // tablespace
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Tablename  sql.NullString `json:"tablename"`  // tablename
+	Indexname  sql.NullString `json:"indexname"`  // indexname
+	Tablespace sql.NullString `json:"tablespace"` // tablespace
 	Indexdef   sql.NullString `json:"indexdef"`   // indexdef
 }
 
 // PgIndex represents a row from 'pg_catalog.pg_index'.
 type PgIndex struct {
-	Tableoid       Oid        `json:"tableoid"`       // tableoid
-	Cmax           Cid        `json:"cmax"`           // cmax
-	Xmax           Xid        `json:"xmax"`           // xmax
-	Cmin           Cid        `json:"cmin"`           // cmin
-	Xmin           Xid        `json:"xmin"`           // xmin
-	Ctid           Tid        `json:"ctid"`           // ctid
-	Indexrelid     Oid        `json:"indexrelid"`     // indexrelid
-	Indrelid       Oid        `json:"indrelid"`       // indrelid
-	Indnatts       int16      `json:"indnatts"`       // indnatts
-	Indnkeyatts    int16      `json:"indnkeyatts"`    // indnkeyatts
-	Indisunique    bool       `json:"indisunique"`    // indisunique
-	Indisprimary   bool       `json:"indisprimary"`   // indisprimary
-	Indisexclusion bool       `json:"indisexclusion"` // indisexclusion
-	Indimmediate   bool       `json:"indimmediate"`   // indimmediate
-	Indisclustered bool       `json:"indisclustered"` // indisclustered
-	Indisvalid     bool       `json:"indisvalid"`     // indisvalid
-	Indcheckxmin   bool       `json:"indcheckxmin"`   // indcheckxmin
-	Indisready     bool       `json:"indisready"`     // indisready
-	Indislive      bool       `json:"indislive"`      // indislive
-	Indisreplident bool       `json:"indisreplident"` // indisreplident
-	Indkey         Int2vector `json:"indkey"`         // indkey
-	Indcollation   Oidvector  `json:"indcollation"`   // indcollation
-	Indclass       Oidvector  `json:"indclass"`       // indclass
-	Indoption      Int2vector `json:"indoption"`      // indoption
-	Indexprs       PgNodeTree `json:"indexprs"`       // indexprs
-	Indpred        PgNodeTree `json:"indpred"`        // indpred
+	Tableoid       Oid            `json:"tableoid"`       // tableoid
+	Cmax           Cid            `json:"cmax"`           // cmax
+	Xmax           Xid            `json:"xmax"`           // xmax
+	Cmin           Cid            `json:"cmin"`           // cmin
+	Xmin           Xid            `json:"xmin"`           // xmin
+	Ctid           Tid            `json:"ctid"`           // ctid
+	Indexrelid     Oid            `json:"indexrelid"`     // indexrelid
+	Indrelid       Oid            `json:"indrelid"`       // indrelid
+	Indnatts       int16          `json:"indnatts"`       // indnatts
+	Indnkeyatts    int16          `json:"indnkeyatts"`    // indnkeyatts
+	Indisunique    bool           `json:"indisunique"`    // indisunique
+	Indisprimary   bool           `json:"indisprimary"`   // indisprimary
+	Indisexclusion bool           `json:"indisexclusion"` // indisexclusion
+	Indimmediate   bool           `json:"indimmediate"`   // indimmediate
+	Indisclustered bool           `json:"indisclustered"` // indisclustered
+	Indisvalid     bool           `json:"indisvalid"`     // indisvalid
+	Indcheckxmin   bool           `json:"indcheckxmin"`   // indcheckxmin
+	Indisready     bool           `json:"indisready"`     // indisready
+	Indislive      bool           `json:"indislive"`      // indislive
+	Indisreplident bool           `json:"indisreplident"` // indisreplident
+	Indkey         Int2vector     `json:"indkey"`         // indkey
+	Indcollation   Oidvector      `json:"indcollation"`   // indcollation
+	Indclass       Oidvector      `json:"indclass"`       // indclass
+	Indoption      Int2vector     `json:"indoption"`      // indoption
+	Indexprs       NullPgNodeTree `json:"indexprs"`       // indexprs
+	Indpred        NullPgNodeTree `json:"indpred"`        // indpred
 }
 
 // PgInherit represents a row from 'pg_catalog.pg_inherits'.
@@ -823,21 +823,21 @@ type PgInitPriv struct {
 
 // PgLanguage represents a row from 'pg_catalog.pg_language'.
 type PgLanguage struct {
-	Tableoid      Oid       `json:"tableoid"`      // tableoid
-	Cmax          Cid       `json:"cmax"`          // cmax
-	Xmax          Xid       `json:"xmax"`          // xmax
-	Cmin          Cid       `json:"cmin"`          // cmin
-	Xmin          Xid       `json:"xmin"`          // xmin
-	Ctid          Tid       `json:"ctid"`          // ctid
-	Oid           Oid       `json:"oid"`           // oid
-	Lanname       Name      `json:"lanname"`       // lanname
-	Lanowner      Oid       `json:"lanowner"`      // lanowner
-	Lanispl       bool      `json:"lanispl"`       // lanispl
-	Lanpltrusted  bool      `json:"lanpltrusted"`  // lanpltrusted
-	Lanplcallfoid Oid       `json:"lanplcallfoid"` // lanplcallfoid
-	Laninline     Oid       `json:"laninline"`     // laninline
-	Lanvalidator  Oid       `json:"lanvalidator"`  // lanvalidator
-	Lanacl        []Aclitem `json:"lanacl"`        // lanacl
+	Tableoid      Oid           `json:"tableoid"`      // tableoid
+	Cmax          Cid           `json:"cmax"`          // cmax
+	Xmax          Xid           `json:"xmax"`          // xmax
+	Cmin          Cid           `json:"cmin"`          // cmin
+	Xmin          Xid           `json:"xmin"`          // xmin
+	Ctid          Tid           `json:"ctid"`          // ctid
+	Oid           Oid           `json:"oid"`           // oid
+	Lanname       string        `json:"lanname"`       // lanname
+	Lanowner      Oid           `json:"lanowner"`      // lanowner
+	Lanispl       bool          `json:"lanispl"`       // lanispl
+	Lanpltrusted  bool          `json:"lanpltrusted"`  // lanpltrusted
+	Lanplcallfoid Oid           `json:"lanplcallfoid"` // lanplcallfoid
+	Laninline     Oid           `json:"laninline"`     // laninline
+	Lanvalidator  Oid           `json:"lanvalidator"`  // lanvalidator
+	Lanacl        []NullAclitem `json:"lanacl"`        // lanacl
 }
 
 // PgLargeobject represents a row from 'pg_catalog.pg_largeobject'.
@@ -855,28 +855,28 @@ type PgLargeobject struct {
 
 // PgLargeobjectMetadatum represents a row from 'pg_catalog.pg_largeobject_metadata'.
 type PgLargeobjectMetadatum struct {
-	Tableoid Oid       `json:"tableoid"` // tableoid
-	Cmax     Cid       `json:"cmax"`     // cmax
-	Xmax     Xid       `json:"xmax"`     // xmax
-	Cmin     Cid       `json:"cmin"`     // cmin
-	Xmin     Xid       `json:"xmin"`     // xmin
-	Ctid     Tid       `json:"ctid"`     // ctid
-	Oid      Oid       `json:"oid"`      // oid
-	Lomowner Oid       `json:"lomowner"` // lomowner
-	Lomacl   []Aclitem `json:"lomacl"`   // lomacl
+	Tableoid Oid           `json:"tableoid"` // tableoid
+	Cmax     Cid           `json:"cmax"`     // cmax
+	Xmax     Xid           `json:"xmax"`     // xmax
+	Cmin     Cid           `json:"cmin"`     // cmin
+	Xmin     Xid           `json:"xmin"`     // xmin
+	Ctid     Tid           `json:"ctid"`     // ctid
+	Oid      Oid           `json:"oid"`      // oid
+	Lomowner Oid           `json:"lomowner"` // lomowner
+	Lomacl   []NullAclitem `json:"lomacl"`   // lomacl
 }
 
 // PgLock represents a row from 'pg_catalog.pg_locks'.
 type PgLock struct {
 	Locktype           sql.NullString `json:"locktype"`           // locktype
-	Database           Oid            `json:"database"`           // database
-	Relation           Oid            `json:"relation"`           // relation
+	Database           NullOid        `json:"database"`           // database
+	Relation           NullOid        `json:"relation"`           // relation
 	Page               sql.NullInt64  `json:"page"`               // page
 	Tuple              sql.NullInt64  `json:"tuple"`              // tuple
 	Virtualxid         sql.NullString `json:"virtualxid"`         // virtualxid
-	Transactionid      Xid            `json:"transactionid"`      // transactionid
-	Classid            Oid            `json:"classid"`            // classid
-	Objid              Oid            `json:"objid"`              // objid
+	Transactionid      NullXid        `json:"transactionid"`      // transactionid
+	Classid            NullOid        `json:"classid"`            // classid
+	Objid              NullOid        `json:"objid"`              // objid
 	Objsubid           sql.NullInt64  `json:"objsubid"`           // objsubid
 	Virtualtransaction sql.NullString `json:"virtualtransaction"` // virtualtransaction
 	Pid                sql.NullInt64  `json:"pid"`                // pid
@@ -887,10 +887,10 @@ type PgLock struct {
 
 // PgMatview represents a row from 'pg_catalog.pg_matviews'.
 type PgMatview struct {
-	Schemaname   Name           `json:"schemaname"`   // schemaname
-	Matviewname  Name           `json:"matviewname"`  // matviewname
-	Matviewowner Name           `json:"matviewowner"` // matviewowner
-	Tablespace   Name           `json:"tablespace"`   // tablespace
+	Schemaname   sql.NullString `json:"schemaname"`   // schemaname
+	Matviewname  sql.NullString `json:"matviewname"`  // matviewname
+	Matviewowner sql.NullString `json:"matviewowner"` // matviewowner
+	Tablespace   sql.NullString `json:"tablespace"`   // tablespace
 	Hasindexes   sql.NullBool   `json:"hasindexes"`   // hasindexes
 	Ispopulated  sql.NullBool   `json:"ispopulated"`  // ispopulated
 	Definition   sql.NullString `json:"definition"`   // definition
@@ -898,35 +898,35 @@ type PgMatview struct {
 
 // PgNamespace represents a row from 'pg_catalog.pg_namespace'.
 type PgNamespace struct {
-	Tableoid Oid       `json:"tableoid"` // tableoid
-	Cmax     Cid       `json:"cmax"`     // cmax
-	Xmax     Xid       `json:"xmax"`     // xmax
-	Cmin     Cid       `json:"cmin"`     // cmin
-	Xmin     Xid       `json:"xmin"`     // xmin
-	Ctid     Tid       `json:"ctid"`     // ctid
-	Oid      Oid       `json:"oid"`      // oid
-	Nspname  Name      `json:"nspname"`  // nspname
-	Nspowner Oid       `json:"nspowner"` // nspowner
-	Nspacl   []Aclitem `json:"nspacl"`   // nspacl
+	Tableoid Oid           `json:"tableoid"` // tableoid
+	Cmax     Cid           `json:"cmax"`     // cmax
+	Xmax     Xid           `json:"xmax"`     // xmax
+	Cmin     Cid           `json:"cmin"`     // cmin
+	Xmin     Xid           `json:"xmin"`     // xmin
+	Ctid     Tid           `json:"ctid"`     // ctid
+	Oid      Oid           `json:"oid"`      // oid
+	Nspname  string        `json:"nspname"`  // nspname
+	Nspowner Oid           `json:"nspowner"` // nspowner
+	Nspacl   []NullAclitem `json:"nspacl"`   // nspacl
 }
 
 // PgOpclass represents a row from 'pg_catalog.pg_opclass'.
 type PgOpclass struct {
-	Tableoid     Oid  `json:"tableoid"`     // tableoid
-	Cmax         Cid  `json:"cmax"`         // cmax
-	Xmax         Xid  `json:"xmax"`         // xmax
-	Cmin         Cid  `json:"cmin"`         // cmin
-	Xmin         Xid  `json:"xmin"`         // xmin
-	Ctid         Tid  `json:"ctid"`         // ctid
-	Oid          Oid  `json:"oid"`          // oid
-	Opcmethod    Oid  `json:"opcmethod"`    // opcmethod
-	Opcname      Name `json:"opcname"`      // opcname
-	Opcnamespace Oid  `json:"opcnamespace"` // opcnamespace
-	Opcowner     Oid  `json:"opcowner"`     // opcowner
-	Opcfamily    Oid  `json:"opcfamily"`    // opcfamily
-	Opcintype    Oid  `json:"opcintype"`    // opcintype
-	Opcdefault   bool `json:"opcdefault"`   // opcdefault
-	Opckeytype   Oid  `json:"opckeytype"`   // opckeytype
+	Tableoid     Oid    `json:"tableoid"`     // tableoid
+	Cmax         Cid    `json:"cmax"`         // cmax
+	Xmax         Xid    `json:"xmax"`         // xmax
+	Cmin         Cid    `json:"cmin"`         // cmin
+	Xmin         Xid    `json:"xmin"`         // xmin
+	Ctid         Tid    `json:"ctid"`         // ctid
+	Oid          Oid    `json:"oid"`          // oid
+	Opcmethod    Oid    `json:"opcmethod"`    // opcmethod
+	Opcname      string `json:"opcname"`      // opcname
+	Opcnamespace Oid    `json:"opcnamespace"` // opcnamespace
+	Opcowner     Oid    `json:"opcowner"`     // opcowner
+	Opcfamily    Oid    `json:"opcfamily"`    // opcfamily
+	Opcintype    Oid    `json:"opcintype"`    // opcintype
+	Opcdefault   bool   `json:"opcdefault"`   // opcdefault
+	Opckeytype   Oid    `json:"opckeytype"`   // opckeytype
 }
 
 // PgOperator represents a row from 'pg_catalog.pg_operator'.
@@ -938,7 +938,7 @@ type PgOperator struct {
 	Xmin         Xid     `json:"xmin"`         // xmin
 	Ctid         Tid     `json:"ctid"`         // ctid
 	Oid          Oid     `json:"oid"`          // oid
-	Oprname      Name    `json:"oprname"`      // oprname
+	Oprname      string  `json:"oprname"`      // oprname
 	Oprnamespace Oid     `json:"oprnamespace"` // oprnamespace
 	Oprowner     Oid     `json:"oprowner"`     // oprowner
 	Oprkind      Char    `json:"oprkind"`      // oprkind
@@ -956,65 +956,65 @@ type PgOperator struct {
 
 // PgOpfamily represents a row from 'pg_catalog.pg_opfamily'.
 type PgOpfamily struct {
-	Tableoid     Oid  `json:"tableoid"`     // tableoid
-	Cmax         Cid  `json:"cmax"`         // cmax
-	Xmax         Xid  `json:"xmax"`         // xmax
-	Cmin         Cid  `json:"cmin"`         // cmin
-	Xmin         Xid  `json:"xmin"`         // xmin
-	Ctid         Tid  `json:"ctid"`         // ctid
-	Oid          Oid  `json:"oid"`          // oid
-	Opfmethod    Oid  `json:"opfmethod"`    // opfmethod
-	Opfname      Name `json:"opfname"`      // opfname
-	Opfnamespace Oid  `json:"opfnamespace"` // opfnamespace
-	Opfowner     Oid  `json:"opfowner"`     // opfowner
+	Tableoid     Oid    `json:"tableoid"`     // tableoid
+	Cmax         Cid    `json:"cmax"`         // cmax
+	Xmax         Xid    `json:"xmax"`         // xmax
+	Cmin         Cid    `json:"cmin"`         // cmin
+	Xmin         Xid    `json:"xmin"`         // xmin
+	Ctid         Tid    `json:"ctid"`         // ctid
+	Oid          Oid    `json:"oid"`          // oid
+	Opfmethod    Oid    `json:"opfmethod"`    // opfmethod
+	Opfname      string `json:"opfname"`      // opfname
+	Opfnamespace Oid    `json:"opfnamespace"` // opfnamespace
+	Opfowner     Oid    `json:"opfowner"`     // opfowner
 }
 
 // PgPartitionedTable represents a row from 'pg_catalog.pg_partitioned_table'.
 type PgPartitionedTable struct {
-	Tableoid      Oid        `json:"tableoid"`      // tableoid
-	Cmax          Cid        `json:"cmax"`          // cmax
-	Xmax          Xid        `json:"xmax"`          // xmax
-	Cmin          Cid        `json:"cmin"`          // cmin
-	Xmin          Xid        `json:"xmin"`          // xmin
-	Ctid          Tid        `json:"ctid"`          // ctid
-	Partrelid     Oid        `json:"partrelid"`     // partrelid
-	Partstrat     Char       `json:"partstrat"`     // partstrat
-	Partnatts     int16      `json:"partnatts"`     // partnatts
-	Partdefid     Oid        `json:"partdefid"`     // partdefid
-	Partattrs     Int2vector `json:"partattrs"`     // partattrs
-	Partclass     Oidvector  `json:"partclass"`     // partclass
-	Partcollation Oidvector  `json:"partcollation"` // partcollation
-	Partexprs     PgNodeTree `json:"partexprs"`     // partexprs
+	Tableoid      Oid            `json:"tableoid"`      // tableoid
+	Cmax          Cid            `json:"cmax"`          // cmax
+	Xmax          Xid            `json:"xmax"`          // xmax
+	Cmin          Cid            `json:"cmin"`          // cmin
+	Xmin          Xid            `json:"xmin"`          // xmin
+	Ctid          Tid            `json:"ctid"`          // ctid
+	Partrelid     Oid            `json:"partrelid"`     // partrelid
+	Partstrat     Char           `json:"partstrat"`     // partstrat
+	Partnatts     int16          `json:"partnatts"`     // partnatts
+	Partdefid     Oid            `json:"partdefid"`     // partdefid
+	Partattrs     Int2vector     `json:"partattrs"`     // partattrs
+	Partclass     Oidvector      `json:"partclass"`     // partclass
+	Partcollation Oidvector      `json:"partcollation"` // partcollation
+	Partexprs     NullPgNodeTree `json:"partexprs"`     // partexprs
 }
 
 // PgPolicy represents a row from 'pg_catalog.pg_policies'.
 type PgPolicy struct {
-	Schemaname Name           `json:"schemaname"` // schemaname
-	Tablename  Name           `json:"tablename"`  // tablename
-	Policyname Name           `json:"policyname"` // policyname
-	Permissive sql.NullString `json:"permissive"` // permissive
-	Roles      []Name         `json:"roles"`      // roles
-	Cmd        sql.NullString `json:"cmd"`        // cmd
-	Qual       sql.NullString `json:"qual"`       // qual
-	WithCheck  sql.NullString `json:"with_check"` // with_check
+	Schemaname sql.NullString   `json:"schemaname"` // schemaname
+	Tablename  sql.NullString   `json:"tablename"`  // tablename
+	Policyname sql.NullString   `json:"policyname"` // policyname
+	Permissive sql.NullString   `json:"permissive"` // permissive
+	Roles      []sql.NullString `json:"roles"`      // roles
+	Cmd        sql.NullString   `json:"cmd"`        // cmd
+	Qual       sql.NullString   `json:"qual"`       // qual
+	WithCheck  sql.NullString   `json:"with_check"` // with_check
 }
 
 // PgPolicy represents a row from 'pg_catalog.pg_policy'.
 type PgPolicy struct {
-	Tableoid      Oid        `json:"tableoid"`      // tableoid
-	Cmax          Cid        `json:"cmax"`          // cmax
-	Xmax          Xid        `json:"xmax"`          // xmax
-	Cmin          Cid        `json:"cmin"`          // cmin
-	Xmin          Xid        `json:"xmin"`          // xmin
-	Ctid          Tid        `json:"ctid"`          // ctid
-	Oid           Oid        `json:"oid"`           // oid
-	Polname       Name       `json:"polname"`       // polname
-	Polrelid      Oid        `json:"polrelid"`      // polrelid
-	Polcmd        Char       `json:"polcmd"`        // polcmd
-	Polpermissive bool       `json:"polpermissive"` // polpermissive
-	Polroles      []Oid      `json:"polroles"`      // polroles
-	Polqual       PgNodeTree `json:"polqual"`       // polqual
-	Polwithcheck  PgNodeTree `json:"polwithcheck"`  // polwithcheck
+	Tableoid      Oid            `json:"tableoid"`      // tableoid
+	Cmax          Cid            `json:"cmax"`          // cmax
+	Xmax          Xid            `json:"xmax"`          // xmax
+	Cmin          Cid            `json:"cmin"`          // cmin
+	Xmin          Xid            `json:"xmin"`          // xmin
+	Ctid          Tid            `json:"ctid"`          // ctid
+	Oid           Oid            `json:"oid"`           // oid
+	Polname       string         `json:"polname"`       // polname
+	Polrelid      Oid            `json:"polrelid"`      // polrelid
+	Polcmd        Char           `json:"polcmd"`        // polcmd
+	Polpermissive bool           `json:"polpermissive"` // polpermissive
+	Polroles      []Oid          `json:"polroles"`      // polroles
+	Polqual       NullPgNodeTree `json:"polqual"`       // polqual
+	Polwithcheck  NullPgNodeTree `json:"polwithcheck"`  // polwithcheck
 }
 
 // PgPreparedStatement represents a row from 'pg_catalog.pg_prepared_statements'.
@@ -1022,17 +1022,17 @@ type PgPreparedStatement struct {
 	Name           sql.NullString `json:"name"`            // name
 	Statement      sql.NullString `json:"statement"`       // statement
 	PrepareTime    sql.NullTime   `json:"prepare_time"`    // prepare_time
-	ParameterTypes []Regtype      `json:"parameter_types"` // parameter_types
+	ParameterTypes []NullRegtype  `json:"parameter_types"` // parameter_types
 	FromSQL        sql.NullBool   `json:"from_sql"`        // from_sql
 }
 
 // PgPreparedXact represents a row from 'pg_catalog.pg_prepared_xacts'.
 type PgPreparedXact struct {
-	Transaction Xid            `json:"transaction"` // transaction
+	Transaction NullXid        `json:"transaction"` // transaction
 	Gid         sql.NullString `json:"gid"`         // gid
 	Prepared    sql.NullTime   `json:"prepared"`    // prepared
-	Owner       Name           `json:"owner"`       // owner
-	Database    Name           `json:"database"`    // database
+	Owner       sql.NullString `json:"owner"`       // owner
+	Database    sql.NullString `json:"database"`    // database
 }
 
 // PgProc represents a row from 'pg_catalog.pg_proc'.
@@ -1044,7 +1044,7 @@ type PgProc struct {
 	Xmin            Xid              `json:"xmin"`            // xmin
 	Ctid            Tid              `json:"ctid"`            // ctid
 	Oid             Oid              `json:"oid"`             // oid
-	Proname         Name             `json:"proname"`         // proname
+	Proname         string           `json:"proname"`         // proname
 	Pronamespace    Oid              `json:"pronamespace"`    // pronamespace
 	Proowner        Oid              `json:"proowner"`        // proowner
 	Prolang         Oid              `json:"prolang"`         // prolang
@@ -1063,34 +1063,34 @@ type PgProc struct {
 	Pronargdefaults int16            `json:"pronargdefaults"` // pronargdefaults
 	Prorettype      Oid              `json:"prorettype"`      // prorettype
 	Proargtypes     Oidvector        `json:"proargtypes"`     // proargtypes
-	Proallargtypes  []Oid            `json:"proallargtypes"`  // proallargtypes
-	Proargmodes     []Char           `json:"proargmodes"`     // proargmodes
+	Proallargtypes  []NullOid        `json:"proallargtypes"`  // proallargtypes
+	Proargmodes     []NullChar       `json:"proargmodes"`     // proargmodes
 	Proargnames     []sql.NullString `json:"proargnames"`     // proargnames
-	Proargdefaults  PgNodeTree       `json:"proargdefaults"`  // proargdefaults
-	Protrftypes     []Oid            `json:"protrftypes"`     // protrftypes
+	Proargdefaults  NullPgNodeTree   `json:"proargdefaults"`  // proargdefaults
+	Protrftypes     []NullOid        `json:"protrftypes"`     // protrftypes
 	Prosrc          string           `json:"prosrc"`          // prosrc
 	Probin          sql.NullString   `json:"probin"`          // probin
 	Proconfig       []sql.NullString `json:"proconfig"`       // proconfig
-	Proacl          []Aclitem        `json:"proacl"`          // proacl
+	Proacl          []NullAclitem    `json:"proacl"`          // proacl
 }
 
 // PgPublication represents a row from 'pg_catalog.pg_publication'.
 type PgPublication struct {
-	Tableoid     Oid  `json:"tableoid"`     // tableoid
-	Cmax         Cid  `json:"cmax"`         // cmax
-	Xmax         Xid  `json:"xmax"`         // xmax
-	Cmin         Cid  `json:"cmin"`         // cmin
-	Xmin         Xid  `json:"xmin"`         // xmin
-	Ctid         Tid  `json:"ctid"`         // ctid
-	Oid          Oid  `json:"oid"`          // oid
-	Pubname      Name `json:"pubname"`      // pubname
-	Pubowner     Oid  `json:"pubowner"`     // pubowner
-	Puballtables bool `json:"puballtables"` // puballtables
-	Pubinsert    bool `json:"pubinsert"`    // pubinsert
-	Pubupdate    bool `json:"pubupdate"`    // pubupdate
-	Pubdelete    bool `json:"pubdelete"`    // pubdelete
-	Pubtruncate  bool `json:"pubtruncate"`  // pubtruncate
-	Pubviaroot   bool `json:"pubviaroot"`   // pubviaroot
+	Tableoid     Oid    `json:"tableoid"`     // tableoid
+	Cmax         Cid    `json:"cmax"`         // cmax
+	Xmax         Xid    `json:"xmax"`         // xmax
+	Cmin         Cid    `json:"cmin"`         // cmin
+	Xmin         Xid    `json:"xmin"`         // xmin
+	Ctid         Tid    `json:"ctid"`         // ctid
+	Oid          Oid    `json:"oid"`          // oid
+	Pubname      string `json:"pubname"`      // pubname
+	Pubowner     Oid    `json:"pubowner"`     // pubowner
+	Puballtables bool   `json:"puballtables"` // puballtables
+	Pubinsert    bool   `json:"pubinsert"`    // pubinsert
+	Pubupdate    bool   `json:"pubupdate"`    // pubupdate
+	Pubdelete    bool   `json:"pubdelete"`    // pubdelete
+	Pubtruncate  bool   `json:"pubtruncate"`  // pubtruncate
+	Pubviaroot   bool   `json:"pubviaroot"`   // pubviaroot
 }
 
 // PgPublicationRel represents a row from 'pg_catalog.pg_publication_rel'.
@@ -1108,9 +1108,9 @@ type PgPublicationRel struct {
 
 // PgPublicationTable represents a row from 'pg_catalog.pg_publication_tables'.
 type PgPublicationTable struct {
-	Pubname    Name `json:"pubname"`    // pubname
-	Schemaname Name `json:"schemaname"` // schemaname
-	Tablename  Name `json:"tablename"`  // tablename
+	Pubname    sql.NullString `json:"pubname"`    // pubname
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Tablename  sql.NullString `json:"tablename"`  // tablename
 }
 
 // PgRange represents a row from 'pg_catalog.pg_range'.
@@ -1143,26 +1143,26 @@ type PgReplicationOrigin struct {
 
 // PgReplicationOriginStatus represents a row from 'pg_catalog.pg_replication_origin_status'.
 type PgReplicationOriginStatus struct {
-	LocalID    Oid            `json:"local_id"`    // local_id
+	LocalID    NullOid        `json:"local_id"`    // local_id
 	ExternalID sql.NullString `json:"external_id"` // external_id
-	RemoteLsn  PgLsn          `json:"remote_lsn"`  // remote_lsn
-	LocalLsn   PgLsn          `json:"local_lsn"`   // local_lsn
+	RemoteLsn  NullPgLsn      `json:"remote_lsn"`  // remote_lsn
+	LocalLsn   NullPgLsn      `json:"local_lsn"`   // local_lsn
 }
 
 // PgReplicationSlot represents a row from 'pg_catalog.pg_replication_slots'.
 type PgReplicationSlot struct {
-	SlotName          Name           `json:"slot_name"`           // slot_name
-	Plugin            Name           `json:"plugin"`              // plugin
+	SlotName          sql.NullString `json:"slot_name"`           // slot_name
+	Plugin            sql.NullString `json:"plugin"`              // plugin
 	SlotType          sql.NullString `json:"slot_type"`           // slot_type
-	Datoid            Oid            `json:"datoid"`              // datoid
-	Database          Name           `json:"database"`            // database
+	Datoid            NullOid        `json:"datoid"`              // datoid
+	Database          sql.NullString `json:"database"`            // database
 	Temporary         sql.NullBool   `json:"temporary"`           // temporary
 	Active            sql.NullBool   `json:"active"`              // active
 	ActivePid         sql.NullInt64  `json:"active_pid"`          // active_pid
-	Xmin              Xid            `json:"xmin"`                // xmin
-	CatalogXmin       Xid            `json:"catalog_xmin"`        // catalog_xmin
-	RestartLsn        PgLsn          `json:"restart_lsn"`         // restart_lsn
-	ConfirmedFlushLsn PgLsn          `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
+	Xmin              NullXid        `json:"xmin"`                // xmin
+	CatalogXmin       NullXid        `json:"catalog_xmin"`        // catalog_xmin
+	RestartLsn        NullPgLsn      `json:"restart_lsn"`         // restart_lsn
+	ConfirmedFlushLsn NullPgLsn      `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
 	WalStatus         sql.NullString `json:"wal_status"`          // wal_status
 	SafeWalSize       sql.NullInt64  `json:"safe_wal_size"`       // safe_wal_size
 }
@@ -1176,7 +1176,7 @@ type PgRewrite struct {
 	Xmin      Xid        `json:"xmin"`       // xmin
 	Ctid      Tid        `json:"ctid"`       // ctid
 	Oid       Oid        `json:"oid"`        // oid
-	Rulename  Name       `json:"rulename"`   // rulename
+	Rulename  string     `json:"rulename"`   // rulename
 	EvClass   Oid        `json:"ev_class"`   // ev_class
 	EvType    Char       `json:"ev_type"`    // ev_type
 	EvEnabled Char       `json:"ev_enabled"` // ev_enabled
@@ -1187,7 +1187,7 @@ type PgRewrite struct {
 
 // PgRole represents a row from 'pg_catalog.pg_roles'.
 type PgRole struct {
-	Rolname        Name             `json:"rolname"`        // rolname
+	Rolname        sql.NullString   `json:"rolname"`        // rolname
 	Rolsuper       sql.NullBool     `json:"rolsuper"`       // rolsuper
 	Rolinherit     sql.NullBool     `json:"rolinherit"`     // rolinherit
 	Rolcreaterole  sql.NullBool     `json:"rolcreaterole"`  // rolcreaterole
@@ -1199,27 +1199,15 @@ type PgRole struct {
 	Rolvaliduntil  sql.NullTime     `json:"rolvaliduntil"`  // rolvaliduntil
 	Rolbypassrls   sql.NullBool     `json:"rolbypassrls"`   // rolbypassrls
 	Rolconfig      []sql.NullString `json:"rolconfig"`      // rolconfig
-	Oid            Oid              `json:"oid"`            // oid
+	Oid            NullOid          `json:"oid"`            // oid
 }
 
 // PgRule represents a row from 'pg_catalog.pg_rules'.
 type PgRule struct {
-	Schemaname Name           `json:"schemaname"` // schemaname
-	Tablename  Name           `json:"tablename"`  // tablename
-	Rulename   Name           `json:"rulename"`   // rulename
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Tablename  sql.NullString `json:"tablename"`  // tablename
+	Rulename   sql.NullString `json:"rulename"`   // rulename
 	Definition sql.NullString `json:"definition"` // definition
-}
-
-// PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
-type PgSeclabel struct {
-	Objoid       Oid            `json:"objoid"`       // objoid
-	Classoid     Oid            `json:"classoid"`     // classoid
-	Objsubid     sql.NullInt64  `json:"objsubid"`     // objsubid
-	Objtype      sql.NullString `json:"objtype"`      // objtype
-	Objnamespace Oid            `json:"objnamespace"` // objnamespace
-	Objname      sql.NullString `json:"objname"`      // objname
-	Provider     sql.NullString `json:"provider"`     // provider
-	Label        sql.NullString `json:"label"`        // label
 }
 
 // PgSeclabel represents a row from 'pg_catalog.pg_seclabel'.
@@ -1237,19 +1225,16 @@ type PgSeclabel struct {
 	Label    string `json:"label"`    // label
 }
 
-// PgSequence represents a row from 'pg_catalog.pg_sequences'.
-type PgSequence struct {
-	Schemaname    Name          `json:"schemaname"`    // schemaname
-	Sequencename  Name          `json:"sequencename"`  // sequencename
-	Sequenceowner Name          `json:"sequenceowner"` // sequenceowner
-	DataType      Regtype       `json:"data_type"`     // data_type
-	StartValue    sql.NullInt64 `json:"start_value"`   // start_value
-	MinValue      sql.NullInt64 `json:"min_value"`     // min_value
-	MaxValue      sql.NullInt64 `json:"max_value"`     // max_value
-	IncrementBy   sql.NullInt64 `json:"increment_by"`  // increment_by
-	Cycle         sql.NullBool  `json:"cycle"`         // cycle
-	CacheSize     sql.NullInt64 `json:"cache_size"`    // cache_size
-	LastValue     sql.NullInt64 `json:"last_value"`    // last_value
+// PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
+type PgSeclabel struct {
+	Objoid       NullOid        `json:"objoid"`       // objoid
+	Classoid     NullOid        `json:"classoid"`     // classoid
+	Objsubid     sql.NullInt64  `json:"objsubid"`     // objsubid
+	Objtype      sql.NullString `json:"objtype"`      // objtype
+	Objnamespace NullOid        `json:"objnamespace"` // objnamespace
+	Objname      sql.NullString `json:"objname"`      // objname
+	Provider     sql.NullString `json:"provider"`     // provider
+	Label        sql.NullString `json:"label"`        // label
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequence'.
@@ -1268,6 +1253,21 @@ type PgSequence struct {
 	Seqmin       int64 `json:"seqmin"`       // seqmin
 	Seqcache     int64 `json:"seqcache"`     // seqcache
 	Seqcycle     bool  `json:"seqcycle"`     // seqcycle
+}
+
+// PgSequence represents a row from 'pg_catalog.pg_sequences'.
+type PgSequence struct {
+	Schemaname    sql.NullString `json:"schemaname"`    // schemaname
+	Sequencename  sql.NullString `json:"sequencename"`  // sequencename
+	Sequenceowner sql.NullString `json:"sequenceowner"` // sequenceowner
+	DataType      NullRegtype    `json:"data_type"`     // data_type
+	StartValue    sql.NullInt64  `json:"start_value"`   // start_value
+	MinValue      sql.NullInt64  `json:"min_value"`     // min_value
+	MaxValue      sql.NullInt64  `json:"max_value"`     // max_value
+	IncrementBy   sql.NullInt64  `json:"increment_by"`  // increment_by
+	Cycle         sql.NullBool   `json:"cycle"`         // cycle
+	CacheSize     sql.NullInt64  `json:"cache_size"`    // cache_size
+	LastValue     sql.NullInt64  `json:"last_value"`    // last_value
 }
 
 // PgSetting represents a row from 'pg_catalog.pg_settings'.
@@ -1293,8 +1293,8 @@ type PgSetting struct {
 
 // PgShadow represents a row from 'pg_catalog.pg_shadow'.
 type PgShadow struct {
-	Usename      Name             `json:"usename"`      // usename
-	Usesysid     Oid              `json:"usesysid"`     // usesysid
+	Usename      sql.NullString   `json:"usename"`      // usename
+	Usesysid     NullOid          `json:"usesysid"`     // usesysid
 	Usecreatedb  sql.NullBool     `json:"usecreatedb"`  // usecreatedb
 	Usesuper     sql.NullBool     `json:"usesuper"`     // usesuper
 	Userepl      sql.NullBool     `json:"userepl"`      // userepl
@@ -1358,30 +1358,30 @@ type PgShseclabel struct {
 
 // PgStat represents a row from 'pg_catalog.pg_stats'.
 type PgStat struct {
-	Schemaname          Name              `json:"schemaname"`             // schemaname
-	Tablename           Name              `json:"tablename"`              // tablename
-	Attname             Name              `json:"attname"`                // attname
+	Schemaname          sql.NullString    `json:"schemaname"`             // schemaname
+	Tablename           sql.NullString    `json:"tablename"`              // tablename
+	Attname             sql.NullString    `json:"attname"`                // attname
 	Inherited           sql.NullBool      `json:"inherited"`              // inherited
 	NullFrac            sql.NullFloat64   `json:"null_frac"`              // null_frac
 	AvgWidth            sql.NullInt64     `json:"avg_width"`              // avg_width
 	NDistinct           sql.NullFloat64   `json:"n_distinct"`             // n_distinct
-	MostCommonVals      Anyarray          `json:"most_common_vals"`       // most_common_vals
+	MostCommonVals      NullAnyarray      `json:"most_common_vals"`       // most_common_vals
 	MostCommonFreqs     []sql.NullFloat64 `json:"most_common_freqs"`      // most_common_freqs
-	HistogramBounds     Anyarray          `json:"histogram_bounds"`       // histogram_bounds
+	HistogramBounds     NullAnyarray      `json:"histogram_bounds"`       // histogram_bounds
 	Correlation         sql.NullFloat64   `json:"correlation"`            // correlation
-	MostCommonElems     Anyarray          `json:"most_common_elems"`      // most_common_elems
+	MostCommonElems     NullAnyarray      `json:"most_common_elems"`      // most_common_elems
 	MostCommonElemFreqs []sql.NullFloat64 `json:"most_common_elem_freqs"` // most_common_elem_freqs
 	ElemCountHistogram  []sql.NullFloat64 `json:"elem_count_histogram"`   // elem_count_histogram
 }
 
 // PgStatActivity represents a row from 'pg_catalog.pg_stat_activity'.
 type PgStatActivity struct {
-	Datid           Oid            `json:"datid"`            // datid
-	Datname         Name           `json:"datname"`          // datname
+	Datid           NullOid        `json:"datid"`            // datid
+	Datname         sql.NullString `json:"datname"`          // datname
 	Pid             sql.NullInt64  `json:"pid"`              // pid
 	LeaderPid       sql.NullInt64  `json:"leader_pid"`       // leader_pid
-	Usesysid        Oid            `json:"usesysid"`         // usesysid
-	Usename         Name           `json:"usename"`          // usename
+	Usesysid        NullOid        `json:"usesysid"`         // usesysid
+	Usename         sql.NullString `json:"usename"`          // usename
 	ApplicationName sql.NullString `json:"application_name"` // application_name
 	ClientAddr      sql.NullString `json:"client_addr"`      // client_addr
 	ClientHostname  sql.NullString `json:"client_hostname"`  // client_hostname
@@ -1393,49 +1393,49 @@ type PgStatActivity struct {
 	WaitEventType   sql.NullString `json:"wait_event_type"`  // wait_event_type
 	WaitEvent       sql.NullString `json:"wait_event"`       // wait_event
 	State           sql.NullString `json:"state"`            // state
-	BackendXid      Xid            `json:"backend_xid"`      // backend_xid
-	BackendXmin     Xid            `json:"backend_xmin"`     // backend_xmin
+	BackendXid      NullXid        `json:"backend_xid"`      // backend_xid
+	BackendXmin     NullXid        `json:"backend_xmin"`     // backend_xmin
 	Query           sql.NullString `json:"query"`            // query
 	BackendType     sql.NullString `json:"backend_type"`     // backend_type
 }
 
 // PgStatAllIndex represents a row from 'pg_catalog.pg_stat_all_indexes'.
 type PgStatAllIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatAllTable represents a row from 'pg_catalog.pg_stat_all_tables'.
 type PgStatAllTable struct {
-	Relid            Oid           `json:"relid"`               // relid
-	Schemaname       Name          `json:"schemaname"`          // schemaname
-	Relname          Name          `json:"relname"`             // relname
-	SeqScan          sql.NullInt64 `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64 `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64 `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64 `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64 `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64 `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64 `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64 `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64 `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64 `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64 `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64 `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime  `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime  `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime  `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime  `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64 `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            NullOid        `json:"relid"`               // relid
+	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
+	Relname          sql.NullString `json:"relname"`             // relname
+	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatArchiver represents a row from 'pg_catalog.pg_stat_archiver'.
@@ -1466,8 +1466,8 @@ type PgStatBgwriter struct {
 
 // PgStatDatabase represents a row from 'pg_catalog.pg_stat_database'.
 type PgStatDatabase struct {
-	Datid               Oid             `json:"datid"`                 // datid
-	Datname             Name            `json:"datname"`               // datname
+	Datid               NullOid         `json:"datid"`                 // datid
+	Datname             sql.NullString  `json:"datname"`               // datname
 	Numbackends         sql.NullInt64   `json:"numbackends"`           // numbackends
 	XactCommit          sql.NullInt64   `json:"xact_commit"`           // xact_commit
 	XactRollback        sql.NullInt64   `json:"xact_rollback"`         // xact_rollback
@@ -1491,13 +1491,13 @@ type PgStatDatabase struct {
 
 // PgStatDatabaseConflict represents a row from 'pg_catalog.pg_stat_database_conflicts'.
 type PgStatDatabaseConflict struct {
-	Datid           Oid           `json:"datid"`            // datid
-	Datname         Name          `json:"datname"`          // datname
-	ConflTablespace sql.NullInt64 `json:"confl_tablespace"` // confl_tablespace
-	ConflLock       sql.NullInt64 `json:"confl_lock"`       // confl_lock
-	ConflSnapshot   sql.NullInt64 `json:"confl_snapshot"`   // confl_snapshot
-	ConflBufferpin  sql.NullInt64 `json:"confl_bufferpin"`  // confl_bufferpin
-	ConflDeadlock   sql.NullInt64 `json:"confl_deadlock"`   // confl_deadlock
+	Datid           NullOid        `json:"datid"`            // datid
+	Datname         sql.NullString `json:"datname"`          // datname
+	ConflTablespace sql.NullInt64  `json:"confl_tablespace"` // confl_tablespace
+	ConflLock       sql.NullInt64  `json:"confl_lock"`       // confl_lock
+	ConflSnapshot   sql.NullInt64  `json:"confl_snapshot"`   // confl_snapshot
+	ConflBufferpin  sql.NullInt64  `json:"confl_bufferpin"`  // confl_bufferpin
+	ConflDeadlock   sql.NullInt64  `json:"confl_deadlock"`   // confl_deadlock
 }
 
 // PgStatGssapi represents a row from 'pg_catalog.pg_stat_gssapi'.
@@ -1511,9 +1511,9 @@ type PgStatGssapi struct {
 // PgStatProgressAnalyze represents a row from 'pg_catalog.pg_stat_progress_analyze'.
 type PgStatProgressAnalyze struct {
 	Pid                    sql.NullInt64  `json:"pid"`                       // pid
-	Datid                  Oid            `json:"datid"`                     // datid
-	Datname                Name           `json:"datname"`                   // datname
-	Relid                  Oid            `json:"relid"`                     // relid
+	Datid                  NullOid        `json:"datid"`                     // datid
+	Datname                sql.NullString `json:"datname"`                   // datname
+	Relid                  NullOid        `json:"relid"`                     // relid
 	Phase                  sql.NullString `json:"phase"`                     // phase
 	SampleBlksTotal        sql.NullInt64  `json:"sample_blks_total"`         // sample_blks_total
 	SampleBlksScanned      sql.NullInt64  `json:"sample_blks_scanned"`       // sample_blks_scanned
@@ -1521,7 +1521,7 @@ type PgStatProgressAnalyze struct {
 	ExtStatsComputed       sql.NullInt64  `json:"ext_stats_computed"`        // ext_stats_computed
 	ChildTablesTotal       sql.NullInt64  `json:"child_tables_total"`        // child_tables_total
 	ChildTablesDone        sql.NullInt64  `json:"child_tables_done"`         // child_tables_done
-	CurrentChildTableRelid Oid            `json:"current_child_table_relid"` // current_child_table_relid
+	CurrentChildTableRelid NullOid        `json:"current_child_table_relid"` // current_child_table_relid
 }
 
 // PgStatProgressBasebackup represents a row from 'pg_catalog.pg_stat_progress_basebackup'.
@@ -1537,12 +1537,12 @@ type PgStatProgressBasebackup struct {
 // PgStatProgressCluster represents a row from 'pg_catalog.pg_stat_progress_cluster'.
 type PgStatProgressCluster struct {
 	Pid               sql.NullInt64  `json:"pid"`                 // pid
-	Datid             Oid            `json:"datid"`               // datid
-	Datname           Name           `json:"datname"`             // datname
-	Relid             Oid            `json:"relid"`               // relid
+	Datid             NullOid        `json:"datid"`               // datid
+	Datname           sql.NullString `json:"datname"`             // datname
+	Relid             NullOid        `json:"relid"`               // relid
 	Command           sql.NullString `json:"command"`             // command
 	Phase             sql.NullString `json:"phase"`               // phase
-	ClusterIndexRelid Oid            `json:"cluster_index_relid"` // cluster_index_relid
+	ClusterIndexRelid NullOid        `json:"cluster_index_relid"` // cluster_index_relid
 	HeapTuplesScanned sql.NullInt64  `json:"heap_tuples_scanned"` // heap_tuples_scanned
 	HeapTuplesWritten sql.NullInt64  `json:"heap_tuples_written"` // heap_tuples_written
 	HeapBlksTotal     sql.NullInt64  `json:"heap_blks_total"`     // heap_blks_total
@@ -1553,10 +1553,10 @@ type PgStatProgressCluster struct {
 // PgStatProgressCreateIndex represents a row from 'pg_catalog.pg_stat_progress_create_index'.
 type PgStatProgressCreateIndex struct {
 	Pid              sql.NullInt64  `json:"pid"`                // pid
-	Datid            Oid            `json:"datid"`              // datid
-	Datname          Name           `json:"datname"`            // datname
-	Relid            Oid            `json:"relid"`              // relid
-	IndexRelid       Oid            `json:"index_relid"`        // index_relid
+	Datid            NullOid        `json:"datid"`              // datid
+	Datname          sql.NullString `json:"datname"`            // datname
+	Relid            NullOid        `json:"relid"`              // relid
+	IndexRelid       NullOid        `json:"index_relid"`        // index_relid
 	Command          sql.NullString `json:"command"`            // command
 	Phase            sql.NullString `json:"phase"`              // phase
 	LockersTotal     sql.NullInt64  `json:"lockers_total"`      // lockers_total
@@ -1573,9 +1573,9 @@ type PgStatProgressCreateIndex struct {
 // PgStatProgressVacuum represents a row from 'pg_catalog.pg_stat_progress_vacuum'.
 type PgStatProgressVacuum struct {
 	Pid              sql.NullInt64  `json:"pid"`                // pid
-	Datid            Oid            `json:"datid"`              // datid
-	Datname          Name           `json:"datname"`            // datname
-	Relid            Oid            `json:"relid"`              // relid
+	Datid            NullOid        `json:"datid"`              // datid
+	Datname          sql.NullString `json:"datname"`            // datname
+	Relid            NullOid        `json:"relid"`              // relid
 	Phase            sql.NullString `json:"phase"`              // phase
 	HeapBlksTotal    sql.NullInt64  `json:"heap_blks_total"`    // heap_blks_total
 	HeapBlksScanned  sql.NullInt64  `json:"heap_blks_scanned"`  // heap_blks_scanned
@@ -1588,19 +1588,19 @@ type PgStatProgressVacuum struct {
 // PgStatReplication represents a row from 'pg_catalog.pg_stat_replication'.
 type PgStatReplication struct {
 	Pid             sql.NullInt64  `json:"pid"`              // pid
-	Usesysid        Oid            `json:"usesysid"`         // usesysid
-	Usename         Name           `json:"usename"`          // usename
+	Usesysid        NullOid        `json:"usesysid"`         // usesysid
+	Usename         sql.NullString `json:"usename"`          // usename
 	ApplicationName sql.NullString `json:"application_name"` // application_name
 	ClientAddr      sql.NullString `json:"client_addr"`      // client_addr
 	ClientHostname  sql.NullString `json:"client_hostname"`  // client_hostname
 	ClientPort      sql.NullInt64  `json:"client_port"`      // client_port
 	BackendStart    sql.NullTime   `json:"backend_start"`    // backend_start
-	BackendXmin     Xid            `json:"backend_xmin"`     // backend_xmin
+	BackendXmin     NullXid        `json:"backend_xmin"`     // backend_xmin
 	State           sql.NullString `json:"state"`            // state
-	SentLsn         PgLsn          `json:"sent_lsn"`         // sent_lsn
-	WriteLsn        PgLsn          `json:"write_lsn"`        // write_lsn
-	FlushLsn        PgLsn          `json:"flush_lsn"`        // flush_lsn
-	ReplayLsn       PgLsn          `json:"replay_lsn"`       // replay_lsn
+	SentLsn         NullPgLsn      `json:"sent_lsn"`         // sent_lsn
+	WriteLsn        NullPgLsn      `json:"write_lsn"`        // write_lsn
+	FlushLsn        NullPgLsn      `json:"flush_lsn"`        // flush_lsn
+	ReplayLsn       NullPgLsn      `json:"replay_lsn"`       // replay_lsn
 	WriteLag        []byte         `json:"write_lag"`        // write_lag
 	FlushLag        []byte         `json:"flush_lag"`        // flush_lag
 	ReplayLag       []byte         `json:"replay_lag"`       // replay_lag
@@ -1637,61 +1637,61 @@ type PgStatSsl struct {
 
 // PgStatSubscription represents a row from 'pg_catalog.pg_stat_subscription'.
 type PgStatSubscription struct {
-	Subid              Oid           `json:"subid"`                 // subid
-	Subname            Name          `json:"subname"`               // subname
-	Pid                sql.NullInt64 `json:"pid"`                   // pid
-	Relid              Oid           `json:"relid"`                 // relid
-	ReceivedLsn        PgLsn         `json:"received_lsn"`          // received_lsn
-	LastMsgSendTime    sql.NullTime  `json:"last_msg_send_time"`    // last_msg_send_time
-	LastMsgReceiptTime sql.NullTime  `json:"last_msg_receipt_time"` // last_msg_receipt_time
-	LatestEndLsn       PgLsn         `json:"latest_end_lsn"`        // latest_end_lsn
-	LatestEndTime      sql.NullTime  `json:"latest_end_time"`       // latest_end_time
+	Subid              NullOid        `json:"subid"`                 // subid
+	Subname            sql.NullString `json:"subname"`               // subname
+	Pid                sql.NullInt64  `json:"pid"`                   // pid
+	Relid              NullOid        `json:"relid"`                 // relid
+	ReceivedLsn        NullPgLsn      `json:"received_lsn"`          // received_lsn
+	LastMsgSendTime    sql.NullTime   `json:"last_msg_send_time"`    // last_msg_send_time
+	LastMsgReceiptTime sql.NullTime   `json:"last_msg_receipt_time"` // last_msg_receipt_time
+	LatestEndLsn       NullPgLsn      `json:"latest_end_lsn"`        // latest_end_lsn
+	LatestEndTime      sql.NullTime   `json:"latest_end_time"`       // latest_end_time
 }
 
 // PgStatSysIndex represents a row from 'pg_catalog.pg_stat_sys_indexes'.
 type PgStatSysIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatSysTable represents a row from 'pg_catalog.pg_stat_sys_tables'.
 type PgStatSysTable struct {
-	Relid            Oid           `json:"relid"`               // relid
-	Schemaname       Name          `json:"schemaname"`          // schemaname
-	Relname          Name          `json:"relname"`             // relname
-	SeqScan          sql.NullInt64 `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64 `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64 `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64 `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64 `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64 `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64 `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64 `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64 `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64 `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64 `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64 `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime  `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime  `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime  `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime  `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64 `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            NullOid        `json:"relid"`               // relid
+	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
+	Relname          sql.NullString `json:"relname"`             // relname
+	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatUserFunction represents a row from 'pg_catalog.pg_stat_user_functions'.
 type PgStatUserFunction struct {
-	Funcid     Oid             `json:"funcid"`     // funcid
-	Schemaname Name            `json:"schemaname"` // schemaname
-	Funcname   Name            `json:"funcname"`   // funcname
+	Funcid     NullOid         `json:"funcid"`     // funcid
+	Schemaname sql.NullString  `json:"schemaname"` // schemaname
+	Funcname   sql.NullString  `json:"funcname"`   // funcname
 	Calls      sql.NullInt64   `json:"calls"`      // calls
 	TotalTime  sql.NullFloat64 `json:"total_time"` // total_time
 	SelfTime   sql.NullFloat64 `json:"self_time"`  // self_time
@@ -1699,55 +1699,55 @@ type PgStatUserFunction struct {
 
 // PgStatUserIndex represents a row from 'pg_catalog.pg_stat_user_indexes'.
 type PgStatUserIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64 `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatUserTable represents a row from 'pg_catalog.pg_stat_user_tables'.
 type PgStatUserTable struct {
-	Relid            Oid           `json:"relid"`               // relid
-	Schemaname       Name          `json:"schemaname"`          // schemaname
-	Relname          Name          `json:"relname"`             // relname
-	SeqScan          sql.NullInt64 `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64 `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64 `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64 `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64 `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64 `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64 `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64 `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64 `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64 `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64 `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64 `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime  `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime  `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime  `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime  `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64 `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64 `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64 `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64 `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            NullOid        `json:"relid"`               // relid
+	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
+	Relname          sql.NullString `json:"relname"`             // relname
+	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatWalReceiver represents a row from 'pg_catalog.pg_stat_wal_receiver'.
 type PgStatWalReceiver struct {
 	Pid                sql.NullInt64  `json:"pid"`                   // pid
 	Status             sql.NullString `json:"status"`                // status
-	ReceiveStartLsn    PgLsn          `json:"receive_start_lsn"`     // receive_start_lsn
+	ReceiveStartLsn    NullPgLsn      `json:"receive_start_lsn"`     // receive_start_lsn
 	ReceiveStartTli    sql.NullInt64  `json:"receive_start_tli"`     // receive_start_tli
-	WrittenLsn         PgLsn          `json:"written_lsn"`           // written_lsn
-	FlushedLsn         PgLsn          `json:"flushed_lsn"`           // flushed_lsn
+	WrittenLsn         NullPgLsn      `json:"written_lsn"`           // written_lsn
+	FlushedLsn         NullPgLsn      `json:"flushed_lsn"`           // flushed_lsn
 	ReceivedTli        sql.NullInt64  `json:"received_tli"`          // received_tli
 	LastMsgSendTime    sql.NullTime   `json:"last_msg_send_time"`    // last_msg_send_time
 	LastMsgReceiptTime sql.NullTime   `json:"last_msg_receipt_time"` // last_msg_receipt_time
-	LatestEndLsn       PgLsn          `json:"latest_end_lsn"`        // latest_end_lsn
+	LatestEndLsn       NullPgLsn      `json:"latest_end_lsn"`        // latest_end_lsn
 	LatestEndTime      sql.NullTime   `json:"latest_end_time"`       // latest_end_time
 	SlotName           sql.NullString `json:"slot_name"`             // slot_name
 	SenderHost         sql.NullString `json:"sender_host"`           // sender_host
@@ -1757,39 +1757,39 @@ type PgStatWalReceiver struct {
 
 // PgStatXactAllTable represents a row from 'pg_catalog.pg_stat_xact_all_tables'.
 type PgStatXactAllTable struct {
-	Relid       Oid           `json:"relid"`         // relid
-	Schemaname  Name          `json:"schemaname"`    // schemaname
-	Relname     Name          `json:"relname"`       // relname
-	SeqScan     sql.NullInt64 `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64 `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64 `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       NullOid        `json:"relid"`         // relid
+	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
+	Relname     sql.NullString `json:"relname"`       // relname
+	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatXactSysTable represents a row from 'pg_catalog.pg_stat_xact_sys_tables'.
 type PgStatXactSysTable struct {
-	Relid       Oid           `json:"relid"`         // relid
-	Schemaname  Name          `json:"schemaname"`    // schemaname
-	Relname     Name          `json:"relname"`       // relname
-	SeqScan     sql.NullInt64 `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64 `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64 `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       NullOid        `json:"relid"`         // relid
+	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
+	Relname     sql.NullString `json:"relname"`       // relname
+	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatXactUserFunction represents a row from 'pg_catalog.pg_stat_xact_user_functions'.
 type PgStatXactUserFunction struct {
-	Funcid     Oid             `json:"funcid"`     // funcid
-	Schemaname Name            `json:"schemaname"` // schemaname
-	Funcname   Name            `json:"funcname"`   // funcname
+	Funcid     NullOid         `json:"funcid"`     // funcid
+	Schemaname sql.NullString  `json:"schemaname"` // schemaname
+	Funcname   sql.NullString  `json:"funcname"`   // funcname
 	Calls      sql.NullInt64   `json:"calls"`      // calls
 	TotalTime  sql.NullFloat64 `json:"total_time"` // total_time
 	SelfTime   sql.NullFloat64 `json:"self_time"`  // self_time
@@ -1797,122 +1797,122 @@ type PgStatXactUserFunction struct {
 
 // PgStatXactUserTable represents a row from 'pg_catalog.pg_stat_xact_user_tables'.
 type PgStatXactUserTable struct {
-	Relid       Oid           `json:"relid"`         // relid
-	Schemaname  Name          `json:"schemaname"`    // schemaname
-	Relname     Name          `json:"relname"`       // relname
-	SeqScan     sql.NullInt64 `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64 `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64 `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64 `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64 `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64 `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64 `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64 `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       NullOid        `json:"relid"`         // relid
+	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
+	Relname     sql.NullString `json:"relname"`       // relname
+	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatioAllIndex represents a row from 'pg_catalog.pg_statio_all_indexes'.
 type PgStatioAllIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioAllSequence represents a row from 'pg_catalog.pg_statio_all_sequences'.
 type PgStatioAllSequence struct {
-	Relid      Oid           `json:"relid"`      // relid
-	Schemaname Name          `json:"schemaname"` // schemaname
-	Relname    Name          `json:"relname"`    // relname
-	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
+	Relid      NullOid        `json:"relid"`      // relid
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Relname    sql.NullString `json:"relname"`    // relname
+	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioAllTable represents a row from 'pg_catalog.pg_statio_all_tables'.
 type PgStatioAllTable struct {
-	Relid         Oid           `json:"relid"`           // relid
-	Schemaname    Name          `json:"schemaname"`      // schemaname
-	Relname       Name          `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64 `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64 `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64 `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64 `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64 `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         NullOid        `json:"relid"`           // relid
+	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
+	Relname       sql.NullString `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatioSysIndex represents a row from 'pg_catalog.pg_statio_sys_indexes'.
 type PgStatioSysIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioSysSequence represents a row from 'pg_catalog.pg_statio_sys_sequences'.
 type PgStatioSysSequence struct {
-	Relid      Oid           `json:"relid"`      // relid
-	Schemaname Name          `json:"schemaname"` // schemaname
-	Relname    Name          `json:"relname"`    // relname
-	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
+	Relid      NullOid        `json:"relid"`      // relid
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Relname    sql.NullString `json:"relname"`    // relname
+	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioSysTable represents a row from 'pg_catalog.pg_statio_sys_tables'.
 type PgStatioSysTable struct {
-	Relid         Oid           `json:"relid"`           // relid
-	Schemaname    Name          `json:"schemaname"`      // schemaname
-	Relname       Name          `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64 `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64 `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64 `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64 `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64 `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         NullOid        `json:"relid"`           // relid
+	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
+	Relname       sql.NullString `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatioUserIndex represents a row from 'pg_catalog.pg_statio_user_indexes'.
 type PgStatioUserIndex struct {
-	Relid        Oid           `json:"relid"`         // relid
-	Indexrelid   Oid           `json:"indexrelid"`    // indexrelid
-	Schemaname   Name          `json:"schemaname"`    // schemaname
-	Relname      Name          `json:"relname"`       // relname
-	Indexrelname Name          `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64 `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64 `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        NullOid        `json:"relid"`         // relid
+	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
+	Relname      sql.NullString `json:"relname"`       // relname
+	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioUserSequence represents a row from 'pg_catalog.pg_statio_user_sequences'.
 type PgStatioUserSequence struct {
-	Relid      Oid           `json:"relid"`      // relid
-	Schemaname Name          `json:"schemaname"` // schemaname
-	Relname    Name          `json:"relname"`    // relname
-	BlksRead   sql.NullInt64 `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64 `json:"blks_hit"`   // blks_hit
+	Relid      NullOid        `json:"relid"`      // relid
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Relname    sql.NullString `json:"relname"`    // relname
+	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioUserTable represents a row from 'pg_catalog.pg_statio_user_tables'.
 type PgStatioUserTable struct {
-	Relid         Oid           `json:"relid"`           // relid
-	Schemaname    Name          `json:"schemaname"`      // schemaname
-	Relname       Name          `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64 `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64 `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64 `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64 `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64 `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64 `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64 `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64 `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         NullOid        `json:"relid"`           // relid
+	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
+	Relname       sql.NullString `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatistic represents a row from 'pg_catalog.pg_statistic'.
@@ -1949,11 +1949,11 @@ type PgStatistic struct {
 	Stanumbers3 []sql.NullFloat64 `json:"stanumbers3"` // stanumbers3
 	Stanumbers4 []sql.NullFloat64 `json:"stanumbers4"` // stanumbers4
 	Stanumbers5 []sql.NullFloat64 `json:"stanumbers5"` // stanumbers5
-	Stavalues1  Anyarray          `json:"stavalues1"`  // stavalues1
-	Stavalues2  Anyarray          `json:"stavalues2"`  // stavalues2
-	Stavalues3  Anyarray          `json:"stavalues3"`  // stavalues3
-	Stavalues4  Anyarray          `json:"stavalues4"`  // stavalues4
-	Stavalues5  Anyarray          `json:"stavalues5"`  // stavalues5
+	Stavalues1  NullAnyarray      `json:"stavalues1"`  // stavalues1
+	Stavalues2  NullAnyarray      `json:"stavalues2"`  // stavalues2
+	Stavalues3  NullAnyarray      `json:"stavalues3"`  // stavalues3
+	Stavalues4  NullAnyarray      `json:"stavalues4"`  // stavalues4
+	Stavalues5  NullAnyarray      `json:"stavalues5"`  // stavalues5
 }
 
 // PgStatisticExt represents a row from 'pg_catalog.pg_statistic_ext'.
@@ -1966,7 +1966,7 @@ type PgStatisticExt struct {
 	Ctid          Tid        `json:"ctid"`          // ctid
 	Oid           Oid        `json:"oid"`           // oid
 	Stxrelid      Oid        `json:"stxrelid"`      // stxrelid
-	Stxname       Name       `json:"stxname"`       // stxname
+	Stxname       string     `json:"stxname"`       // stxname
 	Stxnamespace  Oid        `json:"stxnamespace"`  // stxnamespace
 	Stxowner      Oid        `json:"stxowner"`      // stxowner
 	Stxstattarget int        `json:"stxstattarget"` // stxstattarget
@@ -1976,78 +1976,78 @@ type PgStatisticExt struct {
 
 // PgStatisticExtDatum represents a row from 'pg_catalog.pg_statistic_ext_data'.
 type PgStatisticExtDatum struct {
-	Tableoid         Oid            `json:"tableoid"`         // tableoid
-	Cmax             Cid            `json:"cmax"`             // cmax
-	Xmax             Xid            `json:"xmax"`             // xmax
-	Cmin             Cid            `json:"cmin"`             // cmin
-	Xmin             Xid            `json:"xmin"`             // xmin
-	Ctid             Tid            `json:"ctid"`             // ctid
-	Stxoid           Oid            `json:"stxoid"`           // stxoid
-	Stxdndistinct    PgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
-	Stxddependencies PgDependencies `json:"stxddependencies"` // stxddependencies
-	Stxdmcv          PgMcvList      `json:"stxdmcv"`          // stxdmcv
+	Tableoid         Oid                `json:"tableoid"`         // tableoid
+	Cmax             Cid                `json:"cmax"`             // cmax
+	Xmax             Xid                `json:"xmax"`             // xmax
+	Cmin             Cid                `json:"cmin"`             // cmin
+	Xmin             Xid                `json:"xmin"`             // xmin
+	Ctid             Tid                `json:"ctid"`             // ctid
+	Stxoid           Oid                `json:"stxoid"`           // stxoid
+	Stxdndistinct    NullPgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
+	Stxddependencies NullPgDependencies `json:"stxddependencies"` // stxddependencies
+	Stxdmcv          NullPgMcvList      `json:"stxdmcv"`          // stxdmcv
 }
 
 // PgStatsExt represents a row from 'pg_catalog.pg_stats_ext'.
 type PgStatsExt struct {
-	Schemaname           Name              `json:"schemaname"`             // schemaname
-	Tablename            Name              `json:"tablename"`              // tablename
-	StatisticsSchemaname Name              `json:"statistics_schemaname"`  // statistics_schemaname
-	StatisticsName       Name              `json:"statistics_name"`        // statistics_name
-	StatisticsOwner      Name              `json:"statistics_owner"`       // statistics_owner
-	Attnames             []Name            `json:"attnames"`               // attnames
-	Kinds                []Char            `json:"kinds"`                  // kinds
-	NDistinct            PgNdistinct       `json:"n_distinct"`             // n_distinct
-	Dependencies         PgDependencies    `json:"dependencies"`           // dependencies
-	MostCommonVals       []sql.NullString  `json:"most_common_vals"`       // most_common_vals
-	MostCommonValNulls   []sql.NullBool    `json:"most_common_val_nulls"`  // most_common_val_nulls
-	MostCommonFreqs      []sql.NullFloat64 `json:"most_common_freqs"`      // most_common_freqs
-	MostCommonBaseFreqs  []sql.NullFloat64 `json:"most_common_base_freqs"` // most_common_base_freqs
+	Schemaname           sql.NullString     `json:"schemaname"`             // schemaname
+	Tablename            sql.NullString     `json:"tablename"`              // tablename
+	StatisticsSchemaname sql.NullString     `json:"statistics_schemaname"`  // statistics_schemaname
+	StatisticsName       sql.NullString     `json:"statistics_name"`        // statistics_name
+	StatisticsOwner      sql.NullString     `json:"statistics_owner"`       // statistics_owner
+	Attnames             []sql.NullString   `json:"attnames"`               // attnames
+	Kinds                []NullChar         `json:"kinds"`                  // kinds
+	NDistinct            NullPgNdistinct    `json:"n_distinct"`             // n_distinct
+	Dependencies         NullPgDependencies `json:"dependencies"`           // dependencies
+	MostCommonVals       []sql.NullString   `json:"most_common_vals"`       // most_common_vals
+	MostCommonValNulls   []sql.NullBool     `json:"most_common_val_nulls"`  // most_common_val_nulls
+	MostCommonFreqs      []sql.NullFloat64  `json:"most_common_freqs"`      // most_common_freqs
+	MostCommonBaseFreqs  []sql.NullFloat64  `json:"most_common_base_freqs"` // most_common_base_freqs
 }
 
 // PgSubscription represents a row from 'pg_catalog.pg_subscription'.
 type PgSubscription struct {
-	Tableoid        Oid         `json:"tableoid"`        // tableoid
-	Cmax            Cid         `json:"cmax"`            // cmax
-	Xmax            Xid         `json:"xmax"`            // xmax
-	Cmin            Cid         `json:"cmin"`            // cmin
-	Xmin            Xid         `json:"xmin"`            // xmin
-	Ctid            Tid         `json:"ctid"`            // ctid
-	Oid             Oid         `json:"oid"`             // oid
-	Subdbid         Oid         `json:"subdbid"`         // subdbid
-	Subname         Name        `json:"subname"`         // subname
-	Subowner        Oid         `json:"subowner"`        // subowner
-	Subenabled      bool        `json:"subenabled"`      // subenabled
-	Subconninfo     string      `json:"subconninfo"`     // subconninfo
-	Subslotname     Name        `json:"subslotname"`     // subslotname
-	Subsynccommit   string      `json:"subsynccommit"`   // subsynccommit
-	Subpublications StringSlice `json:"subpublications"` // subpublications
+	Tableoid        Oid            `json:"tableoid"`        // tableoid
+	Cmax            Cid            `json:"cmax"`            // cmax
+	Xmax            Xid            `json:"xmax"`            // xmax
+	Cmin            Cid            `json:"cmin"`            // cmin
+	Xmin            Xid            `json:"xmin"`            // xmin
+	Ctid            Tid            `json:"ctid"`            // ctid
+	Oid             Oid            `json:"oid"`             // oid
+	Subdbid         Oid            `json:"subdbid"`         // subdbid
+	Subname         string         `json:"subname"`         // subname
+	Subowner        Oid            `json:"subowner"`        // subowner
+	Subenabled      bool           `json:"subenabled"`      // subenabled
+	Subconninfo     string         `json:"subconninfo"`     // subconninfo
+	Subslotname     sql.NullString `json:"subslotname"`     // subslotname
+	Subsynccommit   string         `json:"subsynccommit"`   // subsynccommit
+	Subpublications StringSlice    `json:"subpublications"` // subpublications
 }
 
 // PgSubscriptionRel represents a row from 'pg_catalog.pg_subscription_rel'.
 type PgSubscriptionRel struct {
-	Tableoid   Oid   `json:"tableoid"`   // tableoid
-	Cmax       Cid   `json:"cmax"`       // cmax
-	Xmax       Xid   `json:"xmax"`       // xmax
-	Cmin       Cid   `json:"cmin"`       // cmin
-	Xmin       Xid   `json:"xmin"`       // xmin
-	Ctid       Tid   `json:"ctid"`       // ctid
-	Srsubid    Oid   `json:"srsubid"`    // srsubid
-	Srrelid    Oid   `json:"srrelid"`    // srrelid
-	Srsubstate Char  `json:"srsubstate"` // srsubstate
-	Srsublsn   PgLsn `json:"srsublsn"`   // srsublsn
+	Tableoid   Oid       `json:"tableoid"`   // tableoid
+	Cmax       Cid       `json:"cmax"`       // cmax
+	Xmax       Xid       `json:"xmax"`       // xmax
+	Cmin       Cid       `json:"cmin"`       // cmin
+	Xmin       Xid       `json:"xmin"`       // xmin
+	Ctid       Tid       `json:"ctid"`       // ctid
+	Srsubid    Oid       `json:"srsubid"`    // srsubid
+	Srrelid    Oid       `json:"srrelid"`    // srrelid
+	Srsubstate Char      `json:"srsubstate"` // srsubstate
+	Srsublsn   NullPgLsn `json:"srsublsn"`   // srsublsn
 }
 
 // PgTable represents a row from 'pg_catalog.pg_tables'.
 type PgTable struct {
-	Schemaname  Name         `json:"schemaname"`  // schemaname
-	Tablename   Name         `json:"tablename"`   // tablename
-	Tableowner  Name         `json:"tableowner"`  // tableowner
-	Tablespace  Name         `json:"tablespace"`  // tablespace
-	Hasindexes  sql.NullBool `json:"hasindexes"`  // hasindexes
-	Hasrules    sql.NullBool `json:"hasrules"`    // hasrules
-	Hastriggers sql.NullBool `json:"hastriggers"` // hastriggers
-	Rowsecurity sql.NullBool `json:"rowsecurity"` // rowsecurity
+	Schemaname  sql.NullString `json:"schemaname"`  // schemaname
+	Tablename   sql.NullString `json:"tablename"`   // tablename
+	Tableowner  sql.NullString `json:"tableowner"`  // tableowner
+	Tablespace  sql.NullString `json:"tablespace"`  // tablespace
+	Hasindexes  sql.NullBool   `json:"hasindexes"`  // hasindexes
+	Hasrules    sql.NullBool   `json:"hasrules"`    // hasrules
+	Hastriggers sql.NullBool   `json:"hastriggers"` // hastriggers
+	Rowsecurity sql.NullBool   `json:"rowsecurity"` // rowsecurity
 }
 
 // PgTablespace represents a row from 'pg_catalog.pg_tablespace'.
@@ -2059,9 +2059,9 @@ type PgTablespace struct {
 	Xmin       Xid              `json:"xmin"`       // xmin
 	Ctid       Tid              `json:"ctid"`       // ctid
 	Oid        Oid              `json:"oid"`        // oid
-	Spcname    Name             `json:"spcname"`    // spcname
+	Spcname    string           `json:"spcname"`    // spcname
 	Spcowner   Oid              `json:"spcowner"`   // spcowner
-	Spcacl     []Aclitem        `json:"spcacl"`     // spcacl
+	Spcacl     []NullAclitem    `json:"spcacl"`     // spcacl
 	Spcoptions []sql.NullString `json:"spcoptions"` // spcoptions
 }
 
@@ -2097,46 +2097,46 @@ type PgTransform struct {
 
 // PgTrigger represents a row from 'pg_catalog.pg_trigger'.
 type PgTrigger struct {
-	Tableoid       Oid        `json:"tableoid"`       // tableoid
-	Cmax           Cid        `json:"cmax"`           // cmax
-	Xmax           Xid        `json:"xmax"`           // xmax
-	Cmin           Cid        `json:"cmin"`           // cmin
-	Xmin           Xid        `json:"xmin"`           // xmin
-	Ctid           Tid        `json:"ctid"`           // ctid
-	Oid            Oid        `json:"oid"`            // oid
-	Tgrelid        Oid        `json:"tgrelid"`        // tgrelid
-	Tgparentid     Oid        `json:"tgparentid"`     // tgparentid
-	Tgname         Name       `json:"tgname"`         // tgname
-	Tgfoid         Oid        `json:"tgfoid"`         // tgfoid
-	Tgtype         int16      `json:"tgtype"`         // tgtype
-	Tgenabled      Char       `json:"tgenabled"`      // tgenabled
-	Tgisinternal   bool       `json:"tgisinternal"`   // tgisinternal
-	Tgconstrrelid  Oid        `json:"tgconstrrelid"`  // tgconstrrelid
-	Tgconstrindid  Oid        `json:"tgconstrindid"`  // tgconstrindid
-	Tgconstraint   Oid        `json:"tgconstraint"`   // tgconstraint
-	Tgdeferrable   bool       `json:"tgdeferrable"`   // tgdeferrable
-	Tginitdeferred bool       `json:"tginitdeferred"` // tginitdeferred
-	Tgnargs        int16      `json:"tgnargs"`        // tgnargs
-	Tgattr         Int2vector `json:"tgattr"`         // tgattr
-	Tgargs         []byte     `json:"tgargs"`         // tgargs
-	Tgqual         PgNodeTree `json:"tgqual"`         // tgqual
-	Tgoldtable     Name       `json:"tgoldtable"`     // tgoldtable
-	Tgnewtable     Name       `json:"tgnewtable"`     // tgnewtable
+	Tableoid       Oid            `json:"tableoid"`       // tableoid
+	Cmax           Cid            `json:"cmax"`           // cmax
+	Xmax           Xid            `json:"xmax"`           // xmax
+	Cmin           Cid            `json:"cmin"`           // cmin
+	Xmin           Xid            `json:"xmin"`           // xmin
+	Ctid           Tid            `json:"ctid"`           // ctid
+	Oid            Oid            `json:"oid"`            // oid
+	Tgrelid        Oid            `json:"tgrelid"`        // tgrelid
+	Tgparentid     Oid            `json:"tgparentid"`     // tgparentid
+	Tgname         string         `json:"tgname"`         // tgname
+	Tgfoid         Oid            `json:"tgfoid"`         // tgfoid
+	Tgtype         int16          `json:"tgtype"`         // tgtype
+	Tgenabled      Char           `json:"tgenabled"`      // tgenabled
+	Tgisinternal   bool           `json:"tgisinternal"`   // tgisinternal
+	Tgconstrrelid  Oid            `json:"tgconstrrelid"`  // tgconstrrelid
+	Tgconstrindid  Oid            `json:"tgconstrindid"`  // tgconstrindid
+	Tgconstraint   Oid            `json:"tgconstraint"`   // tgconstraint
+	Tgdeferrable   bool           `json:"tgdeferrable"`   // tgdeferrable
+	Tginitdeferred bool           `json:"tginitdeferred"` // tginitdeferred
+	Tgnargs        int16          `json:"tgnargs"`        // tgnargs
+	Tgattr         Int2vector     `json:"tgattr"`         // tgattr
+	Tgargs         []byte         `json:"tgargs"`         // tgargs
+	Tgqual         NullPgNodeTree `json:"tgqual"`         // tgqual
+	Tgoldtable     sql.NullString `json:"tgoldtable"`     // tgoldtable
+	Tgnewtable     sql.NullString `json:"tgnewtable"`     // tgnewtable
 }
 
 // PgTsConfig represents a row from 'pg_catalog.pg_ts_config'.
 type PgTsConfig struct {
-	Tableoid     Oid  `json:"tableoid"`     // tableoid
-	Cmax         Cid  `json:"cmax"`         // cmax
-	Xmax         Xid  `json:"xmax"`         // xmax
-	Cmin         Cid  `json:"cmin"`         // cmin
-	Xmin         Xid  `json:"xmin"`         // xmin
-	Ctid         Tid  `json:"ctid"`         // ctid
-	Oid          Oid  `json:"oid"`          // oid
-	Cfgname      Name `json:"cfgname"`      // cfgname
-	Cfgnamespace Oid  `json:"cfgnamespace"` // cfgnamespace
-	Cfgowner     Oid  `json:"cfgowner"`     // cfgowner
-	Cfgparser    Oid  `json:"cfgparser"`    // cfgparser
+	Tableoid     Oid    `json:"tableoid"`     // tableoid
+	Cmax         Cid    `json:"cmax"`         // cmax
+	Xmax         Xid    `json:"xmax"`         // xmax
+	Cmin         Cid    `json:"cmin"`         // cmin
+	Xmin         Xid    `json:"xmin"`         // xmin
+	Ctid         Tid    `json:"ctid"`         // ctid
+	Oid          Oid    `json:"oid"`          // oid
+	Cfgname      string `json:"cfgname"`      // cfgname
+	Cfgnamespace Oid    `json:"cfgnamespace"` // cfgnamespace
+	Cfgowner     Oid    `json:"cfgowner"`     // cfgowner
+	Cfgparser    Oid    `json:"cfgparser"`    // cfgparser
 }
 
 // PgTsConfigMap represents a row from 'pg_catalog.pg_ts_config_map'.
@@ -2162,7 +2162,7 @@ type PgTsDict struct {
 	Xmin           Xid            `json:"xmin"`           // xmin
 	Ctid           Tid            `json:"ctid"`           // ctid
 	Oid            Oid            `json:"oid"`            // oid
-	Dictname       Name           `json:"dictname"`       // dictname
+	Dictname       string         `json:"dictname"`       // dictname
 	Dictnamespace  Oid            `json:"dictnamespace"`  // dictnamespace
 	Dictowner      Oid            `json:"dictowner"`      // dictowner
 	Dicttemplate   Oid            `json:"dicttemplate"`   // dicttemplate
@@ -2178,7 +2178,7 @@ type PgTsParser struct {
 	Xmin         Xid     `json:"xmin"`         // xmin
 	Ctid         Tid     `json:"ctid"`         // ctid
 	Oid          Oid     `json:"oid"`          // oid
-	Prsname      Name    `json:"prsname"`      // prsname
+	Prsname      string  `json:"prsname"`      // prsname
 	Prsnamespace Oid     `json:"prsnamespace"` // prsnamespace
 	Prsstart     Regproc `json:"prsstart"`     // prsstart
 	Prstoken     Regproc `json:"prstoken"`     // prstoken
@@ -2196,7 +2196,7 @@ type PgTsTemplate struct {
 	Xmin          Xid     `json:"xmin"`          // xmin
 	Ctid          Tid     `json:"ctid"`          // ctid
 	Oid           Oid     `json:"oid"`           // oid
-	Tmplname      Name    `json:"tmplname"`      // tmplname
+	Tmplname      string  `json:"tmplname"`      // tmplname
 	Tmplnamespace Oid     `json:"tmplnamespace"` // tmplnamespace
 	Tmplinit      Regproc `json:"tmplinit"`      // tmplinit
 	Tmpllexize    Regproc `json:"tmpllexize"`    // tmpllexize
@@ -2211,7 +2211,7 @@ type PgType struct {
 	Xmin           Xid            `json:"xmin"`           // xmin
 	Ctid           Tid            `json:"ctid"`           // ctid
 	Oid            Oid            `json:"oid"`            // oid
-	Typname        Name           `json:"typname"`        // typname
+	Typname        string         `json:"typname"`        // typname
 	Typnamespace   Oid            `json:"typnamespace"`   // typnamespace
 	Typowner       Oid            `json:"typowner"`       // typowner
 	Typlen         int16          `json:"typlen"`         // typlen
@@ -2238,15 +2238,15 @@ type PgType struct {
 	Typtypmod      int            `json:"typtypmod"`      // typtypmod
 	Typndims       int            `json:"typndims"`       // typndims
 	Typcollation   Oid            `json:"typcollation"`   // typcollation
-	Typdefaultbin  PgNodeTree     `json:"typdefaultbin"`  // typdefaultbin
+	Typdefaultbin  NullPgNodeTree `json:"typdefaultbin"`  // typdefaultbin
 	Typdefault     sql.NullString `json:"typdefault"`     // typdefault
-	Typacl         []Aclitem      `json:"typacl"`         // typacl
+	Typacl         []NullAclitem  `json:"typacl"`         // typacl
 }
 
 // PgUser represents a row from 'pg_catalog.pg_user'.
 type PgUser struct {
-	Usename      Name             `json:"usename"`      // usename
-	Usesysid     Oid              `json:"usesysid"`     // usesysid
+	Usename      sql.NullString   `json:"usename"`      // usename
+	Usesysid     NullOid          `json:"usesysid"`     // usesysid
 	Usecreatedb  sql.NullBool     `json:"usecreatedb"`  // usecreatedb
 	Usesuper     sql.NullBool     `json:"usesuper"`     // usesuper
 	Userepl      sql.NullBool     `json:"userepl"`      // userepl
@@ -2254,16 +2254,6 @@ type PgUser struct {
 	Passwd       sql.NullString   `json:"passwd"`       // passwd
 	Valuntil     sql.NullTime     `json:"valuntil"`     // valuntil
 	Useconfig    []sql.NullString `json:"useconfig"`    // useconfig
-}
-
-// PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
-type PgUserMapping struct {
-	Umid      Oid              `json:"umid"`      // umid
-	Srvid     Oid              `json:"srvid"`     // srvid
-	Srvname   Name             `json:"srvname"`   // srvname
-	Umuser    Oid              `json:"umuser"`    // umuser
-	Usename   Name             `json:"usename"`   // usename
-	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
 
 // PgUserMapping represents a row from 'pg_catalog.pg_user_mapping'.
@@ -2280,11 +2270,21 @@ type PgUserMapping struct {
 	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
 
+// PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
+type PgUserMapping struct {
+	Umid      NullOid          `json:"umid"`      // umid
+	Srvid     NullOid          `json:"srvid"`     // srvid
+	Srvname   sql.NullString   `json:"srvname"`   // srvname
+	Umuser    NullOid          `json:"umuser"`    // umuser
+	Usename   sql.NullString   `json:"usename"`   // usename
+	Umoptions []sql.NullString `json:"umoptions"` // umoptions
+}
+
 // PgView represents a row from 'pg_catalog.pg_views'.
 type PgView struct {
-	Schemaname Name           `json:"schemaname"` // schemaname
-	Viewname   Name           `json:"viewname"`   // viewname
-	Viewowner  Name           `json:"viewowner"`  // viewowner
+	Schemaname sql.NullString `json:"schemaname"` // schemaname
+	Viewname   sql.NullString `json:"viewname"`   // viewname
+	Viewowner  sql.NullString `json:"viewowner"`  // viewowner
 	Definition sql.NullString `json:"definition"` // definition
 }
 
@@ -2309,7 +2309,7 @@ func PgAggregateByAggfnoid(ctx context.Context, db DB, aggfnoid pgtypes.Regproc)
 // PgAmByAmname retrieves a row from 'pg_catalog.pg_am' as a PgAm.
 //
 // Generated from index 'pg_am_name_index'.
-func PgAmByAmname(ctx context.Context, db DB, amname pgtypes.Name) (*PgAm, error) {
+func PgAmByAmname(ctx context.Context, db DB, amname string) (*PgAm, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amname, amhandler, amtype ` +
@@ -2471,7 +2471,7 @@ func PgAttrdefByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAttrdef, er
 // PgAttributeByAttrelidAttname retrieves a row from 'pg_catalog.pg_attribute' as a PgAttribute.
 //
 // Generated from index 'pg_attribute_relid_attnam_index'.
-func PgAttributeByAttrelidAttname(ctx context.Context, db DB, attrelid pgtypes.Oid, attname pgtypes.Name) (*PgAttribute, error) {
+func PgAttributeByAttrelidAttname(ctx context.Context, db DB, attrelid pgtypes.Oid, attname string) (*PgAttribute, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attstorage, attalign, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval ` +
@@ -2561,7 +2561,7 @@ func PgAuthidByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAuthid, erro
 // PgAuthidByRolname retrieves a row from 'pg_catalog.pg_authid' as a PgAuthid.
 //
 // Generated from index 'pg_authid_rolname_index'.
-func PgAuthidByRolname(ctx context.Context, db DB, rolname pgtypes.Name) (*PgAuthid, error) {
+func PgAuthidByRolname(ctx context.Context, db DB, rolname string) (*PgAuthid, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rolname, rolsuper, rolinherit, rolcreaterole, rolcreatedb, rolcanlogin, rolreplication, rolbypassrls, rolconnlimit, rolpassword, rolvaliduntil ` +
@@ -2633,7 +2633,7 @@ func PgClassByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgClass, error)
 // PgClassByRelnameRelnamespace retrieves a row from 'pg_catalog.pg_class' as a PgClass.
 //
 // Generated from index 'pg_class_relname_nsp_index'.
-func PgClassByRelnameRelnamespace(ctx context.Context, db DB, relname pgtypes.Name, relnamespace pgtypes.Oid) (*PgClass, error) {
+func PgClassByRelnameRelnamespace(ctx context.Context, db DB, relname string, relnamespace pgtypes.Oid) (*PgClass, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, relname, relnamespace, reltype, reloftype, relowner, relam, relfilenode, reltablespace, relpages, reltuples, relallvisible, reltoastrelid, relhasindex, relisshared, relpersistence, relkind, relnatts, relchecks, relhasrules, relhastriggers, relhassubclass, relrowsecurity, relforcerowsecurity, relispopulated, relreplident, relispartition, relrewrite, relfrozenxid, relminmxid, relacl, reloptions, relpartbound ` +
@@ -2683,7 +2683,7 @@ func PgClassByReltablespaceRelfilenode(ctx context.Context, db DB, reltablespace
 // PgCollationByCollnameCollencodingCollnamespace retrieves a row from 'pg_catalog.pg_collation' as a PgCollation.
 //
 // Generated from index 'pg_collation_name_enc_nsp_index'.
-func PgCollationByCollnameCollencodingCollnamespace(ctx context.Context, db DB, collname pgtypes.Name, collencoding int, collnamespace pgtypes.Oid) (*PgCollation, error) {
+func PgCollationByCollnameCollencodingCollnamespace(ctx context.Context, db DB, collname string, collencoding int, collnamespace pgtypes.Oid) (*PgCollation, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, collname, collnamespace, collowner, collprovider, collisdeterministic, collencoding, collcollate, collctype, collversion ` +
@@ -2719,7 +2719,7 @@ func PgCollationByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgCollation
 // PgConstraintByConnameConnamespace retrieves a row from 'pg_catalog.pg_constraint' as a PgConstraint.
 //
 // Generated from index 'pg_constraint_conname_nsp_index'.
-func PgConstraintByConnameConnamespace(ctx context.Context, db DB, conname pgtypes.Name, connamespace pgtypes.Oid) ([]*PgConstraint, error) {
+func PgConstraintByConnameConnamespace(ctx context.Context, db DB, conname string, connamespace pgtypes.Oid) ([]*PgConstraint, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, contype, condeferrable, condeferred, convalidated, conrelid, contypid, conindid, conparentid, confrelid, confupdtype, confdeltype, confmatchtype, conislocal, coninhcount, connoinherit, conkey, confkey, conpfeqop, conppeqop, conffeqop, conexclop, conbin ` +
@@ -2783,7 +2783,7 @@ func PgConstraintByConparentid(ctx context.Context, db DB, conparentid pgtypes.O
 // PgConstraintByConrelidContypidConname retrieves a row from 'pg_catalog.pg_constraint' as a PgConstraint.
 //
 // Generated from index 'pg_constraint_conrelid_contypid_conname_index'.
-func PgConstraintByConrelidContypidConname(ctx context.Context, db DB, conrelid, contypid pgtypes.Oid, conname pgtypes.Name) (*PgConstraint, error) {
+func PgConstraintByConrelidContypidConname(ctx context.Context, db DB, conrelid, contypid pgtypes.Oid, conname string) (*PgConstraint, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, contype, condeferrable, condeferred, convalidated, conrelid, contypid, conindid, conparentid, confrelid, confupdtype, confdeltype, confmatchtype, conislocal, coninhcount, connoinherit, conkey, confkey, conpfeqop, conppeqop, conffeqop, conexclop, conbin ` +
@@ -2869,7 +2869,7 @@ func PgConversionByConnamespaceConforencodingContoencodingOid(ctx context.Contex
 // PgConversionByConnameConnamespace retrieves a row from 'pg_catalog.pg_conversion' as a PgConversion.
 //
 // Generated from index 'pg_conversion_name_nsp_index'.
-func PgConversionByConnameConnamespace(ctx context.Context, db DB, conname pgtypes.Name, connamespace pgtypes.Oid) (*PgConversion, error) {
+func PgConversionByConnameConnamespace(ctx context.Context, db DB, conname string, connamespace pgtypes.Oid) (*PgConversion, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, conowner, conforencoding, contoencoding, conproc, condefault ` +
@@ -2905,7 +2905,7 @@ func PgConversionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgConversi
 // PgDatabaseByDatname retrieves a row from 'pg_catalog.pg_database' as a PgDatabase.
 //
 // Generated from index 'pg_database_datname_index'.
-func PgDatabaseByDatname(ctx context.Context, db DB, datname pgtypes.Name) (*PgDatabase, error) {
+func PgDatabaseByDatname(ctx context.Context, db DB, datname string) (*PgDatabase, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, datname, datdba, encoding, datcollate, datctype, datistemplate, datallowconn, datconnlimit, datlastsysoid, datfrozenxid, datminmxid, dattablespace, datacl ` +
@@ -3095,7 +3095,7 @@ func PgEnumByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgEnum, error) {
 // PgEnumByEnumtypidEnumlabel retrieves a row from 'pg_catalog.pg_enum' as a PgEnum.
 //
 // Generated from index 'pg_enum_typid_label_index'.
-func PgEnumByEnumtypidEnumlabel(ctx context.Context, db DB, enumtypid pgtypes.Oid, enumlabel pgtypes.Name) (*PgEnum, error) {
+func PgEnumByEnumtypidEnumlabel(ctx context.Context, db DB, enumtypid pgtypes.Oid, enumlabel string) (*PgEnum, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, enumtypid, enumsortorder, enumlabel ` +
@@ -3131,7 +3131,7 @@ func PgEnumByEnumtypidEnumsortorder(ctx context.Context, db DB, enumtypid pgtype
 // PgEventTriggerByEvtname retrieves a row from 'pg_catalog.pg_event_trigger' as a PgEventTrigger.
 //
 // Generated from index 'pg_event_trigger_evtname_index'.
-func PgEventTriggerByEvtname(ctx context.Context, db DB, evtname pgtypes.Name) (*PgEventTrigger, error) {
+func PgEventTriggerByEvtname(ctx context.Context, db DB, evtname string) (*PgEventTrigger, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, evtname, evtevent, evtowner, evtfoid, evtenabled, evttags ` +
@@ -3167,7 +3167,7 @@ func PgEventTriggerByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgEventT
 // PgExtensionByExtname retrieves a row from 'pg_catalog.pg_extension' as a PgExtension.
 //
 // Generated from index 'pg_extension_name_index'.
-func PgExtensionByExtname(ctx context.Context, db DB, extname pgtypes.Name) (*PgExtension, error) {
+func PgExtensionByExtname(ctx context.Context, db DB, extname string) (*PgExtension, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, extname, extowner, extnamespace, extrelocatable, extversion, extconfig, extcondition ` +
@@ -3203,7 +3203,7 @@ func PgExtensionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgExtension
 // PgForeignDataWrapperByFdwname retrieves a row from 'pg_catalog.pg_foreign_data_wrapper' as a PgForeignDataWrapper.
 //
 // Generated from index 'pg_foreign_data_wrapper_name_index'.
-func PgForeignDataWrapperByFdwname(ctx context.Context, db DB, fdwname pgtypes.Name) (*PgForeignDataWrapper, error) {
+func PgForeignDataWrapperByFdwname(ctx context.Context, db DB, fdwname string) (*PgForeignDataWrapper, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, fdwname, fdwowner, fdwhandler, fdwvalidator, fdwacl, fdwoptions ` +
@@ -3239,7 +3239,7 @@ func PgForeignDataWrapperByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*Pg
 // PgForeignServerBySrvname retrieves a row from 'pg_catalog.pg_foreign_server' as a PgForeignServer.
 //
 // Generated from index 'pg_foreign_server_name_index'.
-func PgForeignServerBySrvname(ctx context.Context, db DB, srvname pgtypes.Name) (*PgForeignServer, error) {
+func PgForeignServerBySrvname(ctx context.Context, db DB, srvname string) (*PgForeignServer, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, srvname, srvowner, srvfdw, srvtype, srvversion, srvacl, srvoptions ` +
@@ -3411,7 +3411,7 @@ func PgInitPrivByObjoidClassoidObjsubid(ctx context.Context, db DB, objoid, clas
 // PgLanguageByLanname retrieves a row from 'pg_catalog.pg_language' as a PgLanguage.
 //
 // Generated from index 'pg_language_name_index'.
-func PgLanguageByLanname(ctx context.Context, db DB, lanname pgtypes.Name) (*PgLanguage, error) {
+func PgLanguageByLanname(ctx context.Context, db DB, lanname string) (*PgLanguage, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, lanname, lanowner, lanispl, lanpltrusted, lanplcallfoid, laninline, lanvalidator, lanacl ` +
@@ -3483,7 +3483,7 @@ func PgLargeobjectMetadatumByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*
 // PgNamespaceByNspname retrieves a row from 'pg_catalog.pg_namespace' as a PgNamespace.
 //
 // Generated from index 'pg_namespace_nspname_index'.
-func PgNamespaceByNspname(ctx context.Context, db DB, nspname pgtypes.Name) (*PgNamespace, error) {
+func PgNamespaceByNspname(ctx context.Context, db DB, nspname string) (*PgNamespace, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, nspname, nspowner, nspacl ` +
@@ -3519,7 +3519,7 @@ func PgNamespaceByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgNamespace
 // PgOpclassByOpcmethodOpcnameOpcnamespace retrieves a row from 'pg_catalog.pg_opclass' as a PgOpclass.
 //
 // Generated from index 'pg_opclass_am_name_nsp_index'.
-func PgOpclassByOpcmethodOpcnameOpcnamespace(ctx context.Context, db DB, opcmethod pgtypes.Oid, opcname pgtypes.Name, opcnamespace pgtypes.Oid) (*PgOpclass, error) {
+func PgOpclassByOpcmethodOpcnameOpcnamespace(ctx context.Context, db DB, opcmethod pgtypes.Oid, opcname string, opcnamespace pgtypes.Oid) (*PgOpclass, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opcmethod, opcname, opcnamespace, opcowner, opcfamily, opcintype, opcdefault, opckeytype ` +
@@ -3573,7 +3573,7 @@ func PgOperatorByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgOperator, 
 // PgOperatorByOprnameOprleftOprrightOprnamespace retrieves a row from 'pg_catalog.pg_operator' as a PgOperator.
 //
 // Generated from index 'pg_operator_oprname_l_r_n_index'.
-func PgOperatorByOprnameOprleftOprrightOprnamespace(ctx context.Context, db DB, oprname pgtypes.Name, oprleft, oprright, oprnamespace pgtypes.Oid) (*PgOperator, error) {
+func PgOperatorByOprnameOprleftOprrightOprnamespace(ctx context.Context, db DB, oprname string, oprleft, oprright, oprnamespace pgtypes.Oid) (*PgOperator, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, oprname, oprnamespace, oprowner, oprkind, oprcanmerge, oprcanhash, oprleft, oprright, oprresult, oprcom, oprnegate, oprcode, oprrest, oprjoin ` +
@@ -3591,7 +3591,7 @@ func PgOperatorByOprnameOprleftOprrightOprnamespace(ctx context.Context, db DB, 
 // PgOpfamilyByOpfmethodOpfnameOpfnamespace retrieves a row from 'pg_catalog.pg_opfamily' as a PgOpfamily.
 //
 // Generated from index 'pg_opfamily_am_name_nsp_index'.
-func PgOpfamilyByOpfmethodOpfnameOpfnamespace(ctx context.Context, db DB, opfmethod pgtypes.Oid, opfname pgtypes.Name, opfnamespace pgtypes.Oid) (*PgOpfamily, error) {
+func PgOpfamilyByOpfmethodOpfnameOpfnamespace(ctx context.Context, db DB, opfmethod pgtypes.Oid, opfname string, opfnamespace pgtypes.Oid) (*PgOpfamily, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opfmethod, opfname, opfnamespace, opfowner ` +
@@ -3663,7 +3663,7 @@ func PgPolicyByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgPolicy, erro
 // PgPolicyByPolrelidPolname retrieves a row from 'pg_catalog.pg_policy' as a PgPolicy.
 //
 // Generated from index 'pg_policy_polrelid_polname_index'.
-func PgPolicyByPolrelidPolname(ctx context.Context, db DB, polrelid pgtypes.Oid, polname pgtypes.Name) (*PgPolicy, error) {
+func PgPolicyByPolrelidPolname(ctx context.Context, db DB, polrelid pgtypes.Oid, polname string) (*PgPolicy, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, polname, polrelid, polcmd, polpermissive, polroles, polqual, polwithcheck ` +
@@ -3699,7 +3699,7 @@ func PgProcByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgProc, error) {
 // PgProcByPronameProargtypesPronamespace retrieves a row from 'pg_catalog.pg_proc' as a PgProc.
 //
 // Generated from index 'pg_proc_proname_args_nsp_index'.
-func PgProcByPronameProargtypesPronamespace(ctx context.Context, db DB, proname pgtypes.Name, proargtypes pgtypes.Oidvector, pronamespace pgtypes.Oid) (*PgProc, error) {
+func PgProcByPronameProargtypesPronamespace(ctx context.Context, db DB, proname string, proargtypes pgtypes.Oidvector, pronamespace pgtypes.Oid) (*PgProc, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, proconfig, proacl ` +
@@ -3735,7 +3735,7 @@ func PgPublicationByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgPublica
 // PgPublicationByPubname retrieves a row from 'pg_catalog.pg_publication' as a PgPublication.
 //
 // Generated from index 'pg_publication_pubname_index'.
-func PgPublicationByPubname(ctx context.Context, db DB, pubname pgtypes.Name) (*PgPublication, error) {
+func PgPublicationByPubname(ctx context.Context, db DB, pubname string) (*PgPublication, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, pubname, pubowner, puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot ` +
@@ -3861,7 +3861,7 @@ func PgRewriteByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgRewrite, er
 // PgRewriteByEvClassRulename retrieves a row from 'pg_catalog.pg_rewrite' as a PgRewrite.
 //
 // Generated from index 'pg_rewrite_rel_rulename_index'.
-func PgRewriteByEvClassRulename(ctx context.Context, db DB, evClass pgtypes.Oid, rulename pgtypes.Name) (*PgRewrite, error) {
+func PgRewriteByEvClassRulename(ctx context.Context, db DB, evClass pgtypes.Oid, rulename string) (*PgRewrite, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rulename, ev_class, ev_type, ev_enabled, is_instead, ev_qual, ev_action ` +
@@ -4033,7 +4033,7 @@ func PgStatisticByStarelidStaattnumStainherit(ctx context.Context, db DB, starel
 // PgStatisticExtByStxnameStxnamespace retrieves a row from 'pg_catalog.pg_statistic_ext' as a PgStatisticExt.
 //
 // Generated from index 'pg_statistic_ext_name_index'.
-func PgStatisticExtByStxnameStxnamespace(ctx context.Context, db DB, stxname pgtypes.Name, stxnamespace pgtypes.Oid) (*PgStatisticExt, error) {
+func PgStatisticExtByStxnameStxnamespace(ctx context.Context, db DB, stxname string, stxnamespace pgtypes.Oid) (*PgStatisticExt, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind ` +
@@ -4137,7 +4137,7 @@ func PgSubscriptionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgSubscr
 // PgSubscriptionBySubdbidSubname retrieves a row from 'pg_catalog.pg_subscription' as a PgSubscription.
 //
 // Generated from index 'pg_subscription_subname_index'.
-func PgSubscriptionBySubdbidSubname(ctx context.Context, db DB, subdbid pgtypes.Oid, subname pgtypes.Name) (*PgSubscription, error) {
+func PgSubscriptionBySubdbidSubname(ctx context.Context, db DB, subdbid pgtypes.Oid, subname string) (*PgSubscription, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subconninfo, subslotname, subsynccommit, subpublications ` +
@@ -4191,7 +4191,7 @@ func PgTablespaceByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTablespa
 // PgTablespaceBySpcname retrieves a row from 'pg_catalog.pg_tablespace' as a PgTablespace.
 //
 // Generated from index 'pg_tablespace_spcname_index'.
-func PgTablespaceBySpcname(ctx context.Context, db DB, spcname pgtypes.Name) (*PgTablespace, error) {
+func PgTablespaceBySpcname(ctx context.Context, db DB, spcname string) (*PgTablespace, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, spcname, spcowner, spcacl, spcoptions ` +
@@ -4295,7 +4295,7 @@ func PgTriggerByTgconstraint(ctx context.Context, db DB, tgconstraint pgtypes.Oi
 // PgTriggerByTgrelidTgname retrieves a row from 'pg_catalog.pg_trigger' as a PgTrigger.
 //
 // Generated from index 'pg_trigger_tgrelid_tgname_index'.
-func PgTriggerByTgrelidTgname(ctx context.Context, db DB, tgrelid pgtypes.Oid, tgname pgtypes.Name) (*PgTrigger, error) {
+func PgTriggerByTgrelidTgname(ctx context.Context, db DB, tgrelid pgtypes.Oid, tgname string) (*PgTrigger, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tgrelid, tgparentid, tgname, tgfoid, tgtype, tgenabled, tgisinternal, tgconstrrelid, tgconstrindid, tgconstraint, tgdeferrable, tginitdeferred, tgnargs, tgattr, tgargs, tgqual, tgoldtable, tgnewtable ` +
@@ -4313,7 +4313,7 @@ func PgTriggerByTgrelidTgname(ctx context.Context, db DB, tgrelid pgtypes.Oid, t
 // PgTsConfigByCfgnameCfgnamespace retrieves a row from 'pg_catalog.pg_ts_config' as a PgTsConfig.
 //
 // Generated from index 'pg_ts_config_cfgname_index'.
-func PgTsConfigByCfgnameCfgnamespace(ctx context.Context, db DB, cfgname pgtypes.Name, cfgnamespace pgtypes.Oid) (*PgTsConfig, error) {
+func PgTsConfigByCfgnameCfgnamespace(ctx context.Context, db DB, cfgname string, cfgnamespace pgtypes.Oid) (*PgTsConfig, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, cfgname, cfgnamespace, cfgowner, cfgparser ` +
@@ -4367,7 +4367,7 @@ func PgTsConfigMapByMapcfgMaptokentypeMapseqno(ctx context.Context, db DB, mapcf
 // PgTsDictByDictnameDictnamespace retrieves a row from 'pg_catalog.pg_ts_dict' as a PgTsDict.
 //
 // Generated from index 'pg_ts_dict_dictname_index'.
-func PgTsDictByDictnameDictnamespace(ctx context.Context, db DB, dictname pgtypes.Name, dictnamespace pgtypes.Oid) (*PgTsDict, error) {
+func PgTsDictByDictnameDictnamespace(ctx context.Context, db DB, dictname string, dictnamespace pgtypes.Oid) (*PgTsDict, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, dictname, dictnamespace, dictowner, dicttemplate, dictinitoption ` +
@@ -4421,7 +4421,7 @@ func PgTsParserByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsParser, 
 // PgTsParserByPrsnamePrsnamespace retrieves a row from 'pg_catalog.pg_ts_parser' as a PgTsParser.
 //
 // Generated from index 'pg_ts_parser_prsname_index'.
-func PgTsParserByPrsnamePrsnamespace(ctx context.Context, db DB, prsname pgtypes.Name, prsnamespace pgtypes.Oid) (*PgTsParser, error) {
+func PgTsParserByPrsnamePrsnamespace(ctx context.Context, db DB, prsname string, prsnamespace pgtypes.Oid) (*PgTsParser, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, prsname, prsnamespace, prsstart, prstoken, prsend, prsheadline, prslextype ` +
@@ -4457,7 +4457,7 @@ func PgTsTemplateByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsTempla
 // PgTsTemplateByTmplnameTmplnamespace retrieves a row from 'pg_catalog.pg_ts_template' as a PgTsTemplate.
 //
 // Generated from index 'pg_ts_template_tmplname_index'.
-func PgTsTemplateByTmplnameTmplnamespace(ctx context.Context, db DB, tmplname pgtypes.Name, tmplnamespace pgtypes.Oid) (*PgTsTemplate, error) {
+func PgTsTemplateByTmplnameTmplnamespace(ctx context.Context, db DB, tmplname string, tmplnamespace pgtypes.Oid) (*PgTsTemplate, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tmplname, tmplnamespace, tmplinit, tmpllexize ` +
@@ -4493,7 +4493,7 @@ func PgTypeByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgType, error) {
 // PgTypeByTypnameTypnamespace retrieves a row from 'pg_catalog.pg_type' as a PgType.
 //
 // Generated from index 'pg_type_typname_nsp_index'.
-func PgTypeByTypnameTypnamespace(ctx context.Context, db DB, typname pgtypes.Name, typnamespace pgtypes.Oid) (*PgType, error) {
+func PgTypeByTypnameTypnamespace(ctx context.Context, db DB, typname string, typnamespace pgtypes.Oid) (*PgType, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl ` +
@@ -4557,19 +4557,6 @@ func ASCII(ctx context.Context, db DB, p0 string) (int, error) {
 	return r0, nil
 }
 
-// AbbrevByCidr calls the stored function 'pg_catalog.abbrev(cidr) text' on db.
-func AbbrevByCidr(ctx context.Context, db DB, p0 pgtypes.Cidr) (string, error) {
-	// call pg_catalog.abbrev
-	const sqlstr = `SELECT * FROM pg_catalog.abbrev($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // AbbrevByInet calls the stored function 'pg_catalog.abbrev(inet) text' on db.
 func AbbrevByInet(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.abbrev
@@ -4583,54 +4570,15 @@ func AbbrevByInet(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// AbsByBigint calls the stored function 'pg_catalog.abs(bigint) bigint' on db.
-func AbsByBigint(ctx context.Context, db DB, p0 int64) (int64, error) {
-	// call pg_catalog.abs
-	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
+// AbbrevByCidr calls the stored function 'pg_catalog.abbrev(cidr) text' on db.
+func AbbrevByCidr(ctx context.Context, db DB, p0 pgtypes.Cidr) (string, error) {
+	// call pg_catalog.abbrev
+	const sqlstr = `SELECT * FROM pg_catalog.abbrev($1)`
 	// run
-	var r0 int64
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// AbsByDoublePrecision calls the stored function 'pg_catalog.abs(double precision) double precision' on db.
-func AbsByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.abs
-	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// AbsByInteger calls the stored function 'pg_catalog.abs(integer) integer' on db.
-func AbsByInteger(ctx context.Context, db DB, p0 int) (int, error) {
-	// call pg_catalog.abs
-	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// AbsByNumeric calls the stored function 'pg_catalog.abs(numeric) numeric' on db.
-func AbsByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.abs
-	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -4648,6 +4596,45 @@ func AbsByReal(ctx context.Context, db DB, p0 float32) (float32, error) {
 	return r0, nil
 }
 
+// AbsByDoublePrecision calls the stored function 'pg_catalog.abs(double precision) double precision' on db.
+func AbsByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.abs
+	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// AbsByBigint calls the stored function 'pg_catalog.abs(bigint) bigint' on db.
+func AbsByBigint(ctx context.Context, db DB, p0 int64) (int64, error) {
+	// call pg_catalog.abs
+	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// AbsByInteger calls the stored function 'pg_catalog.abs(integer) integer' on db.
+func AbsByInteger(ctx context.Context, db DB, p0 int) (int, error) {
+	// call pg_catalog.abs
+	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // AbsBySmallint calls the stored function 'pg_catalog.abs(smallint) smallint' on db.
 func AbsBySmallint(ctx context.Context, db DB, p0 int16) (int16, error) {
 	// call pg_catalog.abs
@@ -4657,6 +4644,19 @@ func AbsBySmallint(ctx context.Context, db DB, p0 int16) (int16, error) {
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// AbsByNumeric calls the stored function 'pg_catalog.abs(numeric) numeric' on db.
+func AbsByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.abs
+	const sqlstr = `SELECT * FROM pg_catalog.abs($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -4781,15 +4781,15 @@ func Acosh(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// AgeByTimestampWithTimeZone calls the stored function 'pg_catalog.age(timestamp with time zone) interval' on db.
-func AgeByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) ([]byte, error) {
+// AgeByXid calls the stored function 'pg_catalog.age(xid) integer' on db.
+func AgeByXid(ctx context.Context, db DB, p0 pgtypes.Xid) (int, error) {
 	// call pg_catalog.age
 	const sqlstr = `SELECT * FROM pg_catalog.age($1)`
 	// run
-	var r0 []byte
+	var r0 int
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -4807,8 +4807,8 @@ func AgeByTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db 
 	return r0, nil
 }
 
-// AgeByTimestampWithoutTimeZone calls the stored function 'pg_catalog.age(timestamp without time zone) interval' on db.
-func AgeByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) ([]byte, error) {
+// AgeByTimestampWithTimeZone calls the stored function 'pg_catalog.age(timestamp with time zone) interval' on db.
+func AgeByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) ([]byte, error) {
 	// call pg_catalog.age
 	const sqlstr = `SELECT * FROM pg_catalog.age($1)`
 	// run
@@ -4833,15 +4833,15 @@ func AgeByTimestampWithoutTimeZoneAndTimestampWithoutTimeZone(ctx context.Contex
 	return r0, nil
 }
 
-// AgeByXid calls the stored function 'pg_catalog.age(xid) integer' on db.
-func AgeByXid(ctx context.Context, db DB, p0 pgtypes.Xid) (int, error) {
+// AgeByTimestampWithoutTimeZone calls the stored function 'pg_catalog.age(timestamp without time zone) interval' on db.
+func AgeByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) ([]byte, error) {
 	// call pg_catalog.age
 	const sqlstr = `SELECT * FROM pg_catalog.age($1)`
 	// run
-	var r0 int
+	var r0 []byte
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -4924,8 +4924,8 @@ func Anytextcat(ctx context.Context, db DB, p0 pgtypes.Anynonarray, p1 string) (
 	return r0, nil
 }
 
-// AreaByBox calls the stored function 'pg_catalog.area(box) double precision' on db.
-func AreaByBox(ctx context.Context, db DB, p0 pgtypes.Box) (float64, error) {
+// AreaByCircle calls the stored function 'pg_catalog.area(circle) double precision' on db.
+func AreaByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (float64, error) {
 	// call pg_catalog.area
 	const sqlstr = `SELECT * FROM pg_catalog.area($1)`
 	// run
@@ -4937,8 +4937,8 @@ func AreaByBox(ctx context.Context, db DB, p0 pgtypes.Box) (float64, error) {
 	return r0, nil
 }
 
-// AreaByCircle calls the stored function 'pg_catalog.area(circle) double precision' on db.
-func AreaByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (float64, error) {
+// AreaByBox calls the stored function 'pg_catalog.area(box) double precision' on db.
+func AreaByBox(ctx context.Context, db DB, p0 pgtypes.Box) (float64, error) {
 	// call pg_catalog.area
 	const sqlstr = `SELECT * FROM pg_catalog.area($1)`
 	// run
@@ -5379,19 +5379,6 @@ func ArrayToJSONByAnyarrayAndBoolean(ctx context.Context, db DB, p0 pgtypes.Anya
 	return r0, nil
 }
 
-// ArrayToStringByAnyarrayAndText calls the stored function 'pg_catalog.array_to_string(anyarray, text) text' on db.
-func ArrayToStringByAnyarrayAndText(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 string) (string, error) {
-	// call pg_catalog.array_to_string
-	const sqlstr = `SELECT * FROM pg_catalog.array_to_string($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // ArrayToStringByAnyarrayTextAndText calls the stored function 'pg_catalog.array_to_string(anyarray, text, text) text' on db.
 func ArrayToStringByAnyarrayTextAndText(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1, p2 string) (string, error) {
 	// call pg_catalog.array_to_string
@@ -5400,6 +5387,19 @@ func ArrayToStringByAnyarrayTextAndText(ctx context.Context, db DB, p0 pgtypes.A
 	var r0 string
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// ArrayToStringByAnyarrayAndText calls the stored function 'pg_catalog.array_to_string(anyarray, text) text' on db.
+func ArrayToStringByAnyarrayAndText(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 string) (string, error) {
+	// call pg_catalog.array_to_string
+	const sqlstr = `SELECT * FROM pg_catalog.array_to_string($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -5793,8 +5793,8 @@ func BinaryUpgradeSetRecordInitPrivs(ctx context.Context, db DB, p0 bool) error 
 	return nil
 }
 
-// BitByBigintAndInteger calls the stored function 'pg_catalog.bit(bigint, integer) bit' on db.
-func BitByBigintAndInteger(ctx context.Context, db DB, p0 int64, p1 int) (uint8, error) {
+// BitByIntegerAndInteger calls the stored function 'pg_catalog.bit(integer, integer) bit' on db.
+func BitByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (uint8, error) {
 	// call pg_catalog.bit
 	const sqlstr = `SELECT * FROM pg_catalog.bit($1, $2)`
 	// run
@@ -5819,27 +5819,14 @@ func BitByBitIntegerAndBoolean(ctx context.Context, db DB, p0 uint8, p1 int, p2 
 	return r0, nil
 }
 
-// BitByIntegerAndInteger calls the stored function 'pg_catalog.bit(integer, integer) bit' on db.
-func BitByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (uint8, error) {
+// BitByBigintAndInteger calls the stored function 'pg_catalog.bit(bigint, integer) bit' on db.
+func BitByBigintAndInteger(ctx context.Context, db DB, p0 int64, p1 int) (uint8, error) {
 	// call pg_catalog.bit
 	const sqlstr = `SELECT * FROM pg_catalog.bit($1, $2)`
 	// run
 	var r0 uint8
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// BitLengthByBit calls the stored function 'pg_catalog.bit_length(bit) integer' on db.
-func BitLengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
-	// call pg_catalog.bit_length
-	const sqlstr = `SELECT * FROM pg_catalog.bit_length($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -5860,6 +5847,19 @@ func BitLengthByBytea(ctx context.Context, db DB, p0 []byte) (int, error) {
 
 // BitLengthByText calls the stored function 'pg_catalog.bit_length(text) integer' on db.
 func BitLengthByText(ctx context.Context, db DB, p0 string) (int, error) {
+	// call pg_catalog.bit_length
+	const sqlstr = `SELECT * FROM pg_catalog.bit_length($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BitLengthByBit calls the stored function 'pg_catalog.bit_length(bit) integer' on db.
+func BitLengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
 	// call pg_catalog.bit_length
 	const sqlstr = `SELECT * FROM pg_catalog.bit_length($1)`
 	// run
@@ -6092,6 +6092,32 @@ func Bitxor(ctx context.Context, db DB, p0, p1 uint8) (uint8, error) {
 	return r0, nil
 }
 
+// BoolByInteger calls the stored function 'pg_catalog.bool(integer) boolean' on db.
+func BoolByInteger(ctx context.Context, db DB, p0 int) (bool, error) {
+	// call pg_catalog.bool
+	const sqlstr = `SELECT * FROM pg_catalog.bool($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BoolByJsonb calls the stored function 'pg_catalog.bool(jsonb) boolean' on db.
+func BoolByJsonb(ctx context.Context, db DB, p0 []byte) (bool, error) {
+	// call pg_catalog.bool
+	const sqlstr = `SELECT * FROM pg_catalog.bool($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // BoolAccum calls the stored function 'pg_catalog.bool_accum(internal, boolean) internal' on db.
 func BoolAccum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 bool) (pgtypes.Internal, error) {
 	// call pg_catalog.bool_accum
@@ -6135,32 +6161,6 @@ func BoolAlltrue(ctx context.Context, db DB, p0 pgtypes.Internal) (bool, error) 
 func BoolAnytrue(ctx context.Context, db DB, p0 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.bool_anytrue
 	const sqlstr = `SELECT * FROM pg_catalog.bool_anytrue($1)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoolByInteger calls the stored function 'pg_catalog.bool(integer) boolean' on db.
-func BoolByInteger(ctx context.Context, db DB, p0 int) (bool, error) {
-	// call pg_catalog.bool
-	const sqlstr = `SELECT * FROM pg_catalog.bool($1)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoolByJsonb calls the stored function 'pg_catalog.bool(jsonb) boolean' on db.
-func BoolByJsonb(ctx context.Context, db DB, p0 []byte) (bool, error) {
-	// call pg_catalog.bool
-	const sqlstr = `SELECT * FROM pg_catalog.bool($1)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0)
@@ -6313,6 +6313,58 @@ func BoundBox(ctx context.Context, db DB, p0, p1 pgtypes.Box) (pgtypes.Box, erro
 	return r0, nil
 }
 
+// BoxByPointAndPoint calls the stored function 'pg_catalog.box(point, point) box' on db.
+func BoxByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Box, error) {
+	// call pg_catalog.box
+	const sqlstr = `SELECT * FROM pg_catalog.box($1, $2)`
+	// run
+	var r0 pgtypes.Box
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Box{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BoxByPolygon calls the stored function 'pg_catalog.box(polygon) box' on db.
+func BoxByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Box, error) {
+	// call pg_catalog.box
+	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
+	// run
+	var r0 pgtypes.Box
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Box{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BoxByCircle calls the stored function 'pg_catalog.box(circle) box' on db.
+func BoxByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Box, error) {
+	// call pg_catalog.box
+	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
+	// run
+	var r0 pgtypes.Box
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Box{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BoxByPoint calls the stored function 'pg_catalog.box(point) box' on db.
+func BoxByPoint(ctx context.Context, db DB, p0 pgtypes.Point) (pgtypes.Box, error) {
+	// call pg_catalog.box
+	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
+	// run
+	var r0 pgtypes.Box
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Box{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // BoxAbove calls the stored function 'pg_catalog.box_above(box, box) boolean' on db.
 func BoxAbove(ctx context.Context, db DB, p0, p1 pgtypes.Box) (bool, error) {
 	// call pg_catalog.box_above
@@ -6374,58 +6426,6 @@ func BoxBelowEq(ctx context.Context, db DB, p0, p1 pgtypes.Box) (bool, error) {
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoxByCircle calls the stored function 'pg_catalog.box(circle) box' on db.
-func BoxByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Box, error) {
-	// call pg_catalog.box
-	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
-	// run
-	var r0 pgtypes.Box
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoxByPoint calls the stored function 'pg_catalog.box(point) box' on db.
-func BoxByPoint(ctx context.Context, db DB, p0 pgtypes.Point) (pgtypes.Box, error) {
-	// call pg_catalog.box
-	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
-	// run
-	var r0 pgtypes.Box
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoxByPointAndPoint calls the stored function 'pg_catalog.box(point, point) box' on db.
-func BoxByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Box, error) {
-	// call pg_catalog.box
-	const sqlstr = `SELECT * FROM pg_catalog.box($1, $2)`
-	// run
-	var r0 pgtypes.Box
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// BoxByPolygon calls the stored function 'pg_catalog.box(polygon) box' on db.
-func BoxByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Box, error) {
-	// call pg_catalog.box
-	const sqlstr = `SELECT * FROM pg_catalog.box($1)`
-	// run
-	var r0 pgtypes.Box
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6742,8 +6742,8 @@ func BoxSub(ctx context.Context, db DB, p0 pgtypes.Box, p1 pgtypes.Point) (pgtyp
 	return r0, nil
 }
 
-// BpcharByChar calls the stored function 'pg_catalog.bpchar("char") character' on db.
-func BpcharByChar(ctx context.Context, db DB, p0 pgtypes.Char) (string, error) {
+// BpcharByName calls the stored function 'pg_catalog.bpchar(name) character' on db.
+func BpcharByName(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.bpchar
 	const sqlstr = `SELECT * FROM pg_catalog.bpchar($1)`
 	// run
@@ -6768,8 +6768,8 @@ func BpcharByCharacterIntegerAndBoolean(ctx context.Context, db DB, p0 string, p
 	return r0, nil
 }
 
-// BpcharByName calls the stored function 'pg_catalog.bpchar(name) character' on db.
-func BpcharByName(ctx context.Context, db DB, p0 pgtypes.Name) (string, error) {
+// BpcharByChar calls the stored function 'pg_catalog.bpchar("char") character' on db.
+func BpcharByChar(ctx context.Context, db DB, p0 pgtypes.Char) (string, error) {
 	// call pg_catalog.bpchar
 	const sqlstr = `SELECT * FROM pg_catalog.bpchar($1)`
 	// run
@@ -7585,7 +7585,7 @@ func Btint8sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 }
 
 // Btnamecmp calls the stored function 'pg_catalog.btnamecmp(name, name) integer' on db.
-func Btnamecmp(ctx context.Context, db DB, p0, p1 pgtypes.Name) (int, error) {
+func Btnamecmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 	// call pg_catalog.btnamecmp
 	const sqlstr = `SELECT * FROM pg_catalog.btnamecmp($1, $2)`
 	// run
@@ -7609,7 +7609,7 @@ func Btnamesortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 }
 
 // Btnametextcmp calls the stored function 'pg_catalog.btnametextcmp(name, text) integer' on db.
-func Btnametextcmp(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (int, error) {
+func Btnametextcmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 	// call pg_catalog.btnametextcmp
 	const sqlstr = `SELECT * FROM pg_catalog.btnametextcmp($1, $2)`
 	// run
@@ -7697,19 +7697,6 @@ func BtrimByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) ([]byte, er
 	return r0, nil
 }
 
-// BtrimByText calls the stored function 'pg_catalog.btrim(text) text' on db.
-func BtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.btrim
-	const sqlstr = `SELECT * FROM pg_catalog.btrim($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // BtrimByTextAndText calls the stored function 'pg_catalog.btrim(text, text) text' on db.
 func BtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	// call pg_catalog.btrim
@@ -7718,6 +7705,19 @@ func BtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, erro
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// BtrimByText calls the stored function 'pg_catalog.btrim(text) text' on db.
+func BtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.btrim
+	const sqlstr = `SELECT * FROM pg_catalog.btrim($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -7761,7 +7761,7 @@ func Bttextcmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 }
 
 // Bttextnamecmp calls the stored function 'pg_catalog.bttextnamecmp(text, name) integer' on db.
-func Bttextnamecmp(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (int, error) {
+func Bttextnamecmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 	// call pg_catalog.bttextnamecmp
 	const sqlstr = `SELECT * FROM pg_catalog.bttextnamecmp($1, $2)`
 	// run
@@ -8354,19 +8354,6 @@ func Cbrt(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// CeilByDoublePrecision calls the stored function 'pg_catalog.ceil(double precision) double precision' on db.
-func CeilByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.ceil
-	const sqlstr = `SELECT * FROM pg_catalog.ceil($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
 // CeilByNumeric calls the stored function 'pg_catalog.ceil(numeric) numeric' on db.
 func CeilByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.ceil
@@ -8380,10 +8367,10 @@ func CeilByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// CeilingByDoublePrecision calls the stored function 'pg_catalog.ceiling(double precision) double precision' on db.
-func CeilingByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.ceiling
-	const sqlstr = `SELECT * FROM pg_catalog.ceiling($1)`
+// CeilByDoublePrecision calls the stored function 'pg_catalog.ceil(double precision) double precision' on db.
+func CeilByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.ceil
+	const sqlstr = `SELECT * FROM pg_catalog.ceil($1)`
 	// run
 	var r0 float64
 	logf(sqlstr, p0)
@@ -8395,6 +8382,19 @@ func CeilingByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, 
 
 // CeilingByNumeric calls the stored function 'pg_catalog.ceiling(numeric) numeric' on db.
 func CeilingByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.ceiling
+	const sqlstr = `SELECT * FROM pg_catalog.ceiling($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// CeilingByDoublePrecision calls the stored function 'pg_catalog.ceiling(double precision) double precision' on db.
+func CeilingByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.ceiling
 	const sqlstr = `SELECT * FROM pg_catalog.ceiling($1)`
 	// run
@@ -8705,6 +8705,45 @@ func Cidsend(ctx context.Context, db DB, p0 pgtypes.Cid) ([]byte, error) {
 	return r0, nil
 }
 
+// CircleByPointAndDoublePrecision calls the stored function 'pg_catalog.circle(point, double precision) circle' on db.
+func CircleByPointAndDoublePrecision(ctx context.Context, db DB, p0 pgtypes.Point, p1 float64) (pgtypes.Circle, error) {
+	// call pg_catalog.circle
+	const sqlstr = `SELECT * FROM pg_catalog.circle($1, $2)`
+	// run
+	var r0 pgtypes.Circle
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Circle{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// CircleByPolygon calls the stored function 'pg_catalog.circle(polygon) circle' on db.
+func CircleByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Circle, error) {
+	// call pg_catalog.circle
+	const sqlstr = `SELECT * FROM pg_catalog.circle($1)`
+	// run
+	var r0 pgtypes.Circle
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Circle{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// CircleByBox calls the stored function 'pg_catalog.circle(box) circle' on db.
+func CircleByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Circle, error) {
+	// call pg_catalog.circle
+	const sqlstr = `SELECT * FROM pg_catalog.circle($1)`
+	// run
+	var r0 pgtypes.Circle
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Circle{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // CircleAbove calls the stored function 'pg_catalog.circle_above(circle, circle) boolean' on db.
 func CircleAbove(ctx context.Context, db DB, p0, p1 pgtypes.Circle) (bool, error) {
 	// call pg_catalog.circle_above
@@ -8740,45 +8779,6 @@ func CircleBelow(ctx context.Context, db DB, p0, p1 pgtypes.Circle) (bool, error
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// CircleByBox calls the stored function 'pg_catalog.circle(box) circle' on db.
-func CircleByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Circle, error) {
-	// call pg_catalog.circle
-	const sqlstr = `SELECT * FROM pg_catalog.circle($1)`
-	// run
-	var r0 pgtypes.Circle
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// CircleByPointAndDoublePrecision calls the stored function 'pg_catalog.circle(point, double precision) circle' on db.
-func CircleByPointAndDoublePrecision(ctx context.Context, db DB, p0 pgtypes.Point, p1 float64) (pgtypes.Circle, error) {
-	// call pg_catalog.circle
-	const sqlstr = `SELECT * FROM pg_catalog.circle($1, $2)`
-	// run
-	var r0 pgtypes.Circle
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// CircleByPolygon calls the stored function 'pg_catalog.circle(polygon) circle' on db.
-func CircleByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Circle, error) {
-	// call pg_catalog.circle
-	const sqlstr = `SELECT * FROM pg_catalog.circle($1)`
-	// run
-	var r0 pgtypes.Circle
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9252,7 +9252,7 @@ func Contsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p2
 }
 
 // Convert calls the stored function 'pg_catalog.convert(bytea, name, name) bytea' on db.
-func Convert(ctx context.Context, db DB, p0 []byte, p1, p2 pgtypes.Name) ([]byte, error) {
+func Convert(ctx context.Context, db DB, p0 []byte, p1, p2 string) ([]byte, error) {
 	// call pg_catalog.convert
 	const sqlstr = `SELECT * FROM pg_catalog.convert($1, $2, $3)`
 	// run
@@ -9265,7 +9265,7 @@ func Convert(ctx context.Context, db DB, p0 []byte, p1, p2 pgtypes.Name) ([]byte
 }
 
 // ConvertFrom calls the stored function 'pg_catalog.convert_from(bytea, name) text' on db.
-func ConvertFrom(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Name) (string, error) {
+func ConvertFrom(ctx context.Context, db DB, p0 []byte, p1 string) (string, error) {
 	// call pg_catalog.convert_from
 	const sqlstr = `SELECT * FROM pg_catalog.convert_from($1, $2)`
 	// run
@@ -9278,7 +9278,7 @@ func ConvertFrom(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Name) (string
 }
 
 // ConvertTo calls the stored function 'pg_catalog.convert_to(text, name) bytea' on db.
-func ConvertTo(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) ([]byte, error) {
+func ConvertTo(ctx context.Context, db DB, p0, p1 string) ([]byte, error) {
 	// call pg_catalog.convert_to
 	const sqlstr = `SELECT * FROM pg_catalog.convert_to($1, $2)`
 	// run
@@ -9356,14 +9356,14 @@ func Cotd(ctx context.Context, db DB, p0 float64) (float64, error) {
 }
 
 // CurrentDatabase calls the stored function 'pg_catalog.current_database() name' on db.
-func CurrentDatabase(ctx context.Context, db DB) (pgtypes.Name, error) {
+func CurrentDatabase(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.current_database
 	const sqlstr = `SELECT * FROM pg_catalog.current_database()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -9382,27 +9382,27 @@ func CurrentQuery(ctx context.Context, db DB) (string, error) {
 }
 
 // CurrentSchema calls the stored function 'pg_catalog.current_schema() name' on db.
-func CurrentSchema(ctx context.Context, db DB) (pgtypes.Name, error) {
+func CurrentSchema(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.current_schema
 	const sqlstr = `SELECT * FROM pg_catalog.current_schema()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // CurrentSchemas calls the stored function 'pg_catalog.current_schemas(boolean) name' on db.
-func CurrentSchemas(ctx context.Context, db DB, p0 bool) ([]pgtypes.Name, error) {
+func CurrentSchemas(ctx context.Context, db DB, p0 bool) (StringSlice, error) {
 	// call pg_catalog.current_schemas
 	const sqlstr = `SELECT * FROM pg_catalog.current_schemas($1)`
 	// run
-	var r0 []pgtypes.Name
+	var r0 StringSlice
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return StringSlice{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9434,14 +9434,14 @@ func CurrentSettingByTextAndBoolean(ctx context.Context, db DB, p0 string, p1 bo
 }
 
 // CurrentUser calls the stored function 'pg_catalog.current_user() name' on db.
-func CurrentUser(ctx context.Context, db DB) (pgtypes.Name, error) {
+func CurrentUser(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.current_user
 	const sqlstr = `SELECT * FROM pg_catalog.current_user()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -9901,8 +9901,8 @@ func DateNeTimestamptz(ctx context.Context, db DB, p0, p1 time.Time) (bool, erro
 	return r0, nil
 }
 
-// DatePartByTextAndDate calls the stored function 'pg_catalog.date_part(text, date) double precision' on db.
-func DatePartByTextAndDate(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+// DatePartByTextAndTimestampWithTimeZone calls the stored function 'pg_catalog.date_part(text, timestamp with time zone) double precision' on db.
+func DatePartByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
 	// call pg_catalog.date_part
 	const sqlstr = `SELECT * FROM pg_catalog.date_part($1, $2)`
 	// run
@@ -9940,8 +9940,8 @@ func DatePartByTextAndTimeWithTimeZone(ctx context.Context, db DB, p0 string, p1
 	return r0, nil
 }
 
-// DatePartByTextAndTimeWithoutTimeZone calls the stored function 'pg_catalog.date_part(text, time without time zone) double precision' on db.
-func DatePartByTextAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+// DatePartByTextAndDate calls the stored function 'pg_catalog.date_part(text, date) double precision' on db.
+func DatePartByTextAndDate(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
 	// call pg_catalog.date_part
 	const sqlstr = `SELECT * FROM pg_catalog.date_part($1, $2)`
 	// run
@@ -9953,8 +9953,8 @@ func DatePartByTextAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 string,
 	return r0, nil
 }
 
-// DatePartByTextAndTimestampWithTimeZone calls the stored function 'pg_catalog.date_part(text, timestamp with time zone) double precision' on db.
-func DatePartByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+// DatePartByTextAndTimeWithoutTimeZone calls the stored function 'pg_catalog.date_part(text, time without time zone) double precision' on db.
+func DatePartByTextAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
 	// call pg_catalog.date_part
 	const sqlstr = `SELECT * FROM pg_catalog.date_part($1, $2)`
 	// run
@@ -10055,19 +10055,6 @@ func DateSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	return nil
 }
 
-// DateTruncByTextAndInterval calls the stored function 'pg_catalog.date_trunc(text, interval) interval' on db.
-func DateTruncByTextAndInterval(ctx context.Context, db DB, p0 string, p1 []byte) ([]byte, error) {
-	// call pg_catalog.date_trunc
-	const sqlstr = `SELECT * FROM pg_catalog.date_trunc($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
 // DateTruncByTextAndTimestampWithTimeZone calls the stored function 'pg_catalog.date_trunc(text, timestamp with time zone) timestamp with time zone' on db.
 func DateTruncByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
 	// call pg_catalog.date_trunc
@@ -10081,15 +10068,15 @@ func DateTruncByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 stri
 	return r0, nil
 }
 
-// DateTruncByTextAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.date_trunc(text, timestamp without time zone) timestamp without time zone' on db.
-func DateTruncByTextAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
+// DateTruncByTextAndInterval calls the stored function 'pg_catalog.date_trunc(text, interval) interval' on db.
+func DateTruncByTextAndInterval(ctx context.Context, db DB, p0 string, p1 []byte) ([]byte, error) {
 	// call pg_catalog.date_trunc
 	const sqlstr = `SELECT * FROM pg_catalog.date_trunc($1, $2)`
 	// run
-	var r0 time.Time
+	var r0 []byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -10102,6 +10089,19 @@ func DateTruncByTextTimestampWithTimeZoneAndText(ctx context.Context, db DB, p0 
 	var r0 time.Time
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// DateTruncByTextAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.date_trunc(text, timestamp without time zone) timestamp without time zone' on db.
+func DateTruncByTextAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
+	// call pg_catalog.date_trunc
+	const sqlstr = `SELECT * FROM pg_catalog.date_trunc($1, $2)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return time.Time{}, logerror(err)
 	}
 	return r0, nil
@@ -10887,19 +10887,6 @@ func EnumNe(ctx context.Context, db DB, p0, p1 pgtypes.Anyenum) (bool, error) {
 	return r0, nil
 }
 
-// EnumRangeByAnyenum calls the stored function 'pg_catalog.enum_range(anyenum) anyarray' on db.
-func EnumRangeByAnyenum(ctx context.Context, db DB, p0 pgtypes.Anyenum) (pgtypes.Anyarray, error) {
-	// call pg_catalog.enum_range
-	const sqlstr = `SELECT * FROM pg_catalog.enum_range($1)`
-	// run
-	var r0 pgtypes.Anyarray
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // EnumRangeByAnyenumAndAnyenum calls the stored function 'pg_catalog.enum_range(anyenum, anyenum) anyarray' on db.
 func EnumRangeByAnyenumAndAnyenum(ctx context.Context, db DB, p0, p1 pgtypes.Anyenum) (pgtypes.Anyarray, error) {
 	// call pg_catalog.enum_range
@@ -10908,6 +10895,19 @@ func EnumRangeByAnyenumAndAnyenum(ctx context.Context, db DB, p0, p1 pgtypes.Any
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Anyarray{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// EnumRangeByAnyenum calls the stored function 'pg_catalog.enum_range(anyenum) anyarray' on db.
+func EnumRangeByAnyenum(ctx context.Context, db DB, p0 pgtypes.Anyenum) (pgtypes.Anyarray, error) {
+	// call pg_catalog.enum_range
+	const sqlstr = `SELECT * FROM pg_catalog.enum_range($1)`
+	// run
+	var r0 pgtypes.Anyarray
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return Anyarray{}, logerror(err)
 	}
 	return r0, nil
@@ -11162,6 +11162,84 @@ func Family(ctx context.Context, db DB, p0 string) (int, error) {
 	return r0, nil
 }
 
+// Float4ByNumeric calls the stored function 'pg_catalog.float4(numeric) real' on db.
+func Float4ByNumeric(ctx context.Context, db DB, p0 float64) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float4BySmallint calls the stored function 'pg_catalog.float4(smallint) real' on db.
+func Float4BySmallint(ctx context.Context, db DB, p0 int16) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float4ByDoublePrecision calls the stored function 'pg_catalog.float4(double precision) real' on db.
+func Float4ByDoublePrecision(ctx context.Context, db DB, p0 float64) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float4ByInteger calls the stored function 'pg_catalog.float4(integer) real' on db.
+func Float4ByInteger(ctx context.Context, db DB, p0 int) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float4ByJsonb calls the stored function 'pg_catalog.float4(jsonb) real' on db.
+func Float4ByJsonb(ctx context.Context, db DB, p0 []byte) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float4ByBigint calls the stored function 'pg_catalog.float4(bigint) real' on db.
+func Float4ByBigint(ctx context.Context, db DB, p0 int64) (float32, error) {
+	// call pg_catalog.float4
+	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
+	// run
+	var r0 float32
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Float48div calls the stored function 'pg_catalog.float48div(real, double precision) double precision' on db.
 func Float48div(ctx context.Context, db DB, p0 float32, p1 float64) (float64, error) {
 	// call pg_catalog.float48div
@@ -11301,84 +11379,6 @@ func Float4Accum(ctx context.Context, db DB, p0 []float64, p1 float32) ([]float6
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4ByBigint calls the stored function 'pg_catalog.float4(bigint) real' on db.
-func Float4ByBigint(ctx context.Context, db DB, p0 int64) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4ByDoublePrecision calls the stored function 'pg_catalog.float4(double precision) real' on db.
-func Float4ByDoublePrecision(ctx context.Context, db DB, p0 float64) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4ByInteger calls the stored function 'pg_catalog.float4(integer) real' on db.
-func Float4ByInteger(ctx context.Context, db DB, p0 int) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4ByJsonb calls the stored function 'pg_catalog.float4(jsonb) real' on db.
-func Float4ByJsonb(ctx context.Context, db DB, p0 []byte) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4ByNumeric calls the stored function 'pg_catalog.float4(numeric) real' on db.
-func Float4ByNumeric(ctx context.Context, db DB, p0 float64) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float4BySmallint calls the stored function 'pg_catalog.float4(smallint) real' on db.
-func Float4BySmallint(ctx context.Context, db DB, p0 int16) (float32, error) {
-	// call pg_catalog.float4
-	const sqlstr = `SELECT * FROM pg_catalog.float4($1)`
-	// run
-	var r0 float32
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -11604,6 +11604,84 @@ func Float4up(ctx context.Context, db DB, p0 float32) (float32, error) {
 	return r0, nil
 }
 
+// Float8ByNumeric calls the stored function 'pg_catalog.float8(numeric) double precision' on db.
+func Float8ByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float8BySmallint calls the stored function 'pg_catalog.float8(smallint) double precision' on db.
+func Float8BySmallint(ctx context.Context, db DB, p0 int16) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float8ByJsonb calls the stored function 'pg_catalog.float8(jsonb) double precision' on db.
+func Float8ByJsonb(ctx context.Context, db DB, p0 []byte) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float8ByReal calls the stored function 'pg_catalog.float8(real) double precision' on db.
+func Float8ByReal(ctx context.Context, db DB, p0 float32) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float8ByInteger calls the stored function 'pg_catalog.float8(integer) double precision' on db.
+func Float8ByInteger(ctx context.Context, db DB, p0 int) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Float8ByBigint calls the stored function 'pg_catalog.float8(bigint) double precision' on db.
+func Float8ByBigint(ctx context.Context, db DB, p0 int64) (float64, error) {
+	// call pg_catalog.float8
+	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Float84div calls the stored function 'pg_catalog.float84div(double precision, real) double precision' on db.
 func Float84div(ctx context.Context, db DB, p0 float64, p1 float32) (float64, error) {
 	// call pg_catalog.float84div
@@ -11751,84 +11829,6 @@ func Float8Accum(ctx context.Context, db DB, p0 []float64, p1 float64) ([]float6
 func Float8Avg(ctx context.Context, db DB, p0 []float64) (float64, error) {
 	// call pg_catalog.float8_avg
 	const sqlstr = `SELECT * FROM pg_catalog.float8_avg($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8ByBigint calls the stored function 'pg_catalog.float8(bigint) double precision' on db.
-func Float8ByBigint(ctx context.Context, db DB, p0 int64) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8ByInteger calls the stored function 'pg_catalog.float8(integer) double precision' on db.
-func Float8ByInteger(ctx context.Context, db DB, p0 int) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8ByJsonb calls the stored function 'pg_catalog.float8(jsonb) double precision' on db.
-func Float8ByJsonb(ctx context.Context, db DB, p0 []byte) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8ByNumeric calls the stored function 'pg_catalog.float8(numeric) double precision' on db.
-func Float8ByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8ByReal calls the stored function 'pg_catalog.float8(real) double precision' on db.
-func Float8ByReal(ctx context.Context, db DB, p0 float32) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Float8BySmallint calls the stored function 'pg_catalog.float8(smallint) double precision' on db.
-func Float8BySmallint(ctx context.Context, db DB, p0 int16) (float64, error) {
-	// call pg_catalog.float8
-	const sqlstr = `SELECT * FROM pg_catalog.float8($1)`
 	// run
 	var r0 float64
 	logf(sqlstr, p0)
@@ -12293,8 +12293,8 @@ func Float8up(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// FloorByDoublePrecision calls the stored function 'pg_catalog.floor(double precision) double precision' on db.
-func FloorByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+// FloorByNumeric calls the stored function 'pg_catalog.floor(numeric) numeric' on db.
+func FloorByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.floor
 	const sqlstr = `SELECT * FROM pg_catalog.floor($1)`
 	// run
@@ -12306,8 +12306,8 @@ func FloorByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, er
 	return r0, nil
 }
 
-// FloorByNumeric calls the stored function 'pg_catalog.floor(numeric) numeric' on db.
-func FloorByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+// FloorByDoublePrecision calls the stored function 'pg_catalog.floor(double precision) double precision' on db.
+func FloorByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.floor
 	const sqlstr = `SELECT * FROM pg_catalog.floor($1)`
 	// run
@@ -12426,12 +12426,12 @@ func GbkToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 	return nil
 }
 
-// GcdByBigintAndBigint calls the stored function 'pg_catalog.gcd(bigint, bigint) bigint' on db.
-func GcdByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
+// GcdByIntegerAndInteger calls the stored function 'pg_catalog.gcd(integer, integer) integer' on db.
+func GcdByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
 	// call pg_catalog.gcd
 	const sqlstr = `SELECT * FROM pg_catalog.gcd($1, $2)`
 	// run
-	var r0 int64
+	var r0 int
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -12439,12 +12439,12 @@ func GcdByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, erro
 	return r0, nil
 }
 
-// GcdByIntegerAndInteger calls the stored function 'pg_catalog.gcd(integer, integer) integer' on db.
-func GcdByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
+// GcdByBigintAndBigint calls the stored function 'pg_catalog.gcd(bigint, bigint) bigint' on db.
+func GcdByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
 	// call pg_catalog.gcd
 	const sqlstr = `SELECT * FROM pg_catalog.gcd($1, $2)`
 	// run
-	var r0 int
+	var r0 int64
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -12478,25 +12478,12 @@ func GenRandomUUID(ctx context.Context, db DB) (uuid.UUID, error) {
 	return r0, nil
 }
 
-// GenerateSeriesByBigintAndBigint calls the stored function 'pg_catalog.generate_series(bigint, bigint) bigint' on db.
-func GenerateSeriesByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
-	// call pg_catalog.generate_series
-	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// GenerateSeriesByBigintBigintAndBigint calls the stored function 'pg_catalog.generate_series(bigint, bigint, bigint) bigint' on db.
-func GenerateSeriesByBigintBigintAndBigint(ctx context.Context, db DB, p0, p1, p2 int64) (int64, error) {
+// GenerateSeriesByIntegerIntegerAndInteger calls the stored function 'pg_catalog.generate_series(integer, integer, integer) integer' on db.
+func GenerateSeriesByIntegerIntegerAndInteger(ctx context.Context, db DB, p0, p1, p2 int) (int, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2, $3)`
 	// run
-	var r0 int64
+	var r0 int
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -12517,12 +12504,12 @@ func GenerateSeriesByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (
 	return r0, nil
 }
 
-// GenerateSeriesByIntegerIntegerAndInteger calls the stored function 'pg_catalog.generate_series(integer, integer, integer) integer' on db.
-func GenerateSeriesByIntegerIntegerAndInteger(ctx context.Context, db DB, p0, p1, p2 int) (int, error) {
+// GenerateSeriesByBigintBigintAndBigint calls the stored function 'pg_catalog.generate_series(bigint, bigint, bigint) bigint' on db.
+func GenerateSeriesByBigintBigintAndBigint(ctx context.Context, db DB, p0, p1, p2 int64) (int64, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2, $3)`
 	// run
-	var r0 int
+	var r0 int64
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -12530,15 +12517,15 @@ func GenerateSeriesByIntegerIntegerAndInteger(ctx context.Context, db DB, p0, p1
 	return r0, nil
 }
 
-// GenerateSeriesByNumericAndNumeric calls the stored function 'pg_catalog.generate_series(numeric, numeric) numeric' on db.
-func GenerateSeriesByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (float64, error) {
+// GenerateSeriesByBigintAndBigint calls the stored function 'pg_catalog.generate_series(bigint, bigint) bigint' on db.
+func GenerateSeriesByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2)`
 	// run
-	var r0 float64
+	var r0 int64
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
+		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -12556,8 +12543,21 @@ func GenerateSeriesByNumericNumericAndNumeric(ctx context.Context, db DB, p0, p1
 	return r0, nil
 }
 
-// GenerateSeriesByTimestampWithTimeZoneTimestampWithTimeZoneAndInterval calls the stored function 'pg_catalog.generate_series(timestamp with time zone, timestamp with time zone, interval) timestamp with time zone' on db.
-func GenerateSeriesByTimestampWithTimeZoneTimestampWithTimeZoneAndInterval(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte) (time.Time, error) {
+// GenerateSeriesByNumericAndNumeric calls the stored function 'pg_catalog.generate_series(numeric, numeric) numeric' on db.
+func GenerateSeriesByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (float64, error) {
+	// call pg_catalog.generate_series
+	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// GenerateSeriesByTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.generate_series(timestamp without time zone, timestamp without time zone, interval) timestamp without time zone' on db.
+func GenerateSeriesByTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte) (time.Time, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2, $3)`
 	// run
@@ -12569,8 +12569,8 @@ func GenerateSeriesByTimestampWithTimeZoneTimestampWithTimeZoneAndInterval(ctx c
 	return r0, nil
 }
 
-// GenerateSeriesByTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.generate_series(timestamp without time zone, timestamp without time zone, interval) timestamp without time zone' on db.
-func GenerateSeriesByTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte) (time.Time, error) {
+// GenerateSeriesByTimestampWithTimeZoneTimestampWithTimeZoneAndInterval calls the stored function 'pg_catalog.generate_series(timestamp with time zone, timestamp with time zone, interval) timestamp with time zone' on db.
+func GenerateSeriesByTimestampWithTimeZoneTimestampWithTimeZoneAndInterval(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte) (time.Time, error) {
 	// call pg_catalog.generate_series
 	const sqlstr = `SELECT * FROM pg_catalog.generate_series($1, $2, $3)`
 	// run
@@ -12608,19 +12608,6 @@ func GenerateSeriesInt8Support(ctx context.Context, db DB, p0 pgtypes.Internal) 
 	return r0, nil
 }
 
-// GenerateSubscriptsByAnyarrayAndInteger calls the stored function 'pg_catalog.generate_subscripts(anyarray, integer) integer' on db.
-func GenerateSubscriptsByAnyarrayAndInteger(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 int) (int, error) {
-	// call pg_catalog.generate_subscripts
-	const sqlstr = `SELECT * FROM pg_catalog.generate_subscripts($1, $2)`
-	// run
-	var r0 int
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
 // GenerateSubscriptsByAnyarrayIntegerAndBoolean calls the stored function 'pg_catalog.generate_subscripts(anyarray, integer, boolean) integer' on db.
 func GenerateSubscriptsByAnyarrayIntegerAndBoolean(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 int, p2 bool) (int, error) {
 	// call pg_catalog.generate_subscripts
@@ -12629,6 +12616,19 @@ func GenerateSubscriptsByAnyarrayIntegerAndBoolean(ctx context.Context, db DB, p
 	var r0 int
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// GenerateSubscriptsByAnyarrayAndInteger calls the stored function 'pg_catalog.generate_subscripts(anyarray, integer) integer' on db.
+func GenerateSubscriptsByAnyarrayAndInteger(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 int) (int, error) {
+	// call pg_catalog.generate_subscripts
+	const sqlstr = `SELECT * FROM pg_catalog.generate_subscripts($1, $2)`
+	// run
+	var r0 int
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -12687,27 +12687,27 @@ func GetCurrentTsConfig(ctx context.Context, db DB) (pgtypes.Regconfig, error) {
 }
 
 // Getdatabaseencoding calls the stored function 'pg_catalog.getdatabaseencoding() name' on db.
-func Getdatabaseencoding(ctx context.Context, db DB) (pgtypes.Name, error) {
+func Getdatabaseencoding(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.getdatabaseencoding
 	const sqlstr = `SELECT * FROM pg_catalog.getdatabaseencoding()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // Getpgusername calls the stored function 'pg_catalog.getpgusername() name' on db.
-func Getpgusername(ctx context.Context, db DB) (pgtypes.Name, error) {
+func Getpgusername(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.getpgusername
 	const sqlstr = `SELECT * FROM pg_catalog.getpgusername()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -12855,8 +12855,8 @@ func GinExtractTsqueryByTsqueryInternalSmallintInternalAndInternal(ctx context.C
 	return r0, nil
 }
 
-// GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_extract_tsquery(tsquery, internal, smallint, internal, internal, internal, internal) internal' on db.
-func GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Tsquery, p1 pgtypes.Internal, p2 int16, p3, p4, p5, p6 pgtypes.Internal) (pgtypes.Internal, error) {
+// GinExtractTsqueryByTsvectorInternalSmallintInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_extract_tsquery(tsvector, internal, smallint, internal, internal, internal, internal) internal' on db.
+func GinExtractTsqueryByTsvectorInternalSmallintInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Internal, p2 int16, p3, p4, p5, p6 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_tsquery
 	const sqlstr = `SELECT * FROM pg_catalog.gin_extract_tsquery($1, $2, $3, $4, $5, $6, $7)`
 	// run
@@ -12868,8 +12868,8 @@ func GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndIntern
 	return r0, nil
 }
 
-// GinExtractTsqueryByTsvectorInternalSmallintInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_extract_tsquery(tsvector, internal, smallint, internal, internal, internal, internal) internal' on db.
-func GinExtractTsqueryByTsvectorInternalSmallintInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Internal, p2 int16, p3, p4, p5, p6 pgtypes.Internal) (pgtypes.Internal, error) {
+// GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_extract_tsquery(tsquery, internal, smallint, internal, internal, internal, internal) internal' on db.
+func GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Tsquery, p1 pgtypes.Internal, p2 int16, p3, p4, p5, p6 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.gin_extract_tsquery
 	const sqlstr = `SELECT * FROM pg_catalog.gin_extract_tsquery($1, $2, $3, $4, $5, $6, $7)`
 	// run
@@ -12946,8 +12946,8 @@ func GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalAndInternal(ctx
 	return r0, nil
 }
 
-// GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_tsquery_consistent(internal, smallint, tsquery, integer, internal, internal, internal, internal) boolean' on db.
-func GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16, p2 pgtypes.Tsquery, p3 int, p4, p5, p6, p7 pgtypes.Internal) (bool, error) {
+// GinTsqueryConsistentByInternalSmallintTsvectorIntegerInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_tsquery_consistent(internal, smallint, tsvector, integer, internal, internal, internal, internal) boolean' on db.
+func GinTsqueryConsistentByInternalSmallintTsvectorIntegerInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16, p2 pgtypes.Tsvector, p3 int, p4, p5, p6, p7 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gin_tsquery_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gin_tsquery_consistent($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -12959,8 +12959,8 @@ func GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalInternalInterna
 	return r0, nil
 }
 
-// GinTsqueryConsistentByInternalSmallintTsvectorIntegerInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_tsquery_consistent(internal, smallint, tsvector, integer, internal, internal, internal, internal) boolean' on db.
-func GinTsqueryConsistentByInternalSmallintTsvectorIntegerInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16, p2 pgtypes.Tsvector, p3 int, p4, p5, p6, p7 pgtypes.Internal) (bool, error) {
+// GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalInternalInternalAndInternal calls the stored function 'pg_catalog.gin_tsquery_consistent(internal, smallint, tsquery, integer, internal, internal, internal, internal) boolean' on db.
+func GinTsqueryConsistentByInternalSmallintTsqueryIntegerInternalInternalInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16, p2 pgtypes.Tsquery, p3 int, p4, p5, p6, p7 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gin_tsquery_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gin_tsquery_consistent($1, $2, $3, $4, $5, $6, $7, $8)`
 	// run
@@ -12998,19 +12998,6 @@ func Ginarrayconsistent(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int1
 	return r0, nil
 }
 
-// GinarrayextractByAnyarrayAndInternal calls the stored function 'pg_catalog.ginarrayextract(anyarray, internal) internal' on db.
-func GinarrayextractByAnyarrayAndInternal(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Internal) (pgtypes.Internal, error) {
-	// call pg_catalog.ginarrayextract
-	const sqlstr = `SELECT * FROM pg_catalog.ginarrayextract($1, $2)`
-	// run
-	var r0 pgtypes.Internal
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // GinarrayextractByAnyarrayInternalAndInternal calls the stored function 'pg_catalog.ginarrayextract(anyarray, internal, internal) internal' on db.
 func GinarrayextractByAnyarrayInternalAndInternal(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1, p2 pgtypes.Internal) (pgtypes.Internal, error) {
 	// call pg_catalog.ginarrayextract
@@ -13019,6 +13006,19 @@ func GinarrayextractByAnyarrayInternalAndInternal(ctx context.Context, db DB, p0
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// GinarrayextractByAnyarrayAndInternal calls the stored function 'pg_catalog.ginarrayextract(anyarray, internal) internal' on db.
+func GinarrayextractByAnyarrayAndInternal(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.ginarrayextract
+	const sqlstr = `SELECT * FROM pg_catalog.ginarrayextract($1, $2)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return Internal{}, logerror(err)
 	}
 	return r0, nil
@@ -13297,8 +13297,8 @@ func GtsqueryCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	return r0, nil
 }
 
-// GtsqueryConsistentByInternalInternalIntegerOidAndInternal calls the stored function 'pg_catalog.gtsquery_consistent(internal, internal, integer, oid, internal) boolean' on db.
-func GtsqueryConsistentByInternalInternalIntegerOidAndInternal(ctx context.Context, db DB, p0, p1 pgtypes.Internal, p2 int, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
+// GtsqueryConsistentByInternalTsquerySmallintOidAndInternal calls the stored function 'pg_catalog.gtsquery_consistent(internal, tsquery, smallint, oid, internal) boolean' on db.
+func GtsqueryConsistentByInternalTsquerySmallintOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Tsquery, p2 int16, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gtsquery_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gtsquery_consistent($1, $2, $3, $4, $5)`
 	// run
@@ -13310,8 +13310,8 @@ func GtsqueryConsistentByInternalInternalIntegerOidAndInternal(ctx context.Conte
 	return r0, nil
 }
 
-// GtsqueryConsistentByInternalTsquerySmallintOidAndInternal calls the stored function 'pg_catalog.gtsquery_consistent(internal, tsquery, smallint, oid, internal) boolean' on db.
-func GtsqueryConsistentByInternalTsquerySmallintOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Tsquery, p2 int16, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
+// GtsqueryConsistentByInternalInternalIntegerOidAndInternal calls the stored function 'pg_catalog.gtsquery_consistent(internal, internal, integer, oid, internal) boolean' on db.
+func GtsqueryConsistentByInternalInternalIntegerOidAndInternal(ctx context.Context, db DB, p0, p1 pgtypes.Internal, p2 int, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gtsquery_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gtsquery_consistent($1, $2, $3, $4, $5)`
 	// run
@@ -13388,8 +13388,8 @@ func GtsvectorCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	return r0, nil
 }
 
-// GtsvectorConsistentByInternalGtsvectorIntegerOidAndInternal calls the stored function 'pg_catalog.gtsvector_consistent(internal, gtsvector, integer, oid, internal) boolean' on db.
-func GtsvectorConsistentByInternalGtsvectorIntegerOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Gtsvector, p2 int, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
+// GtsvectorConsistentByInternalTsvectorSmallintOidAndInternal calls the stored function 'pg_catalog.gtsvector_consistent(internal, tsvector, smallint, oid, internal) boolean' on db.
+func GtsvectorConsistentByInternalTsvectorSmallintOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Tsvector, p2 int16, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gtsvector_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gtsvector_consistent($1, $2, $3, $4, $5)`
 	// run
@@ -13401,8 +13401,8 @@ func GtsvectorConsistentByInternalGtsvectorIntegerOidAndInternal(ctx context.Con
 	return r0, nil
 }
 
-// GtsvectorConsistentByInternalTsvectorSmallintOidAndInternal calls the stored function 'pg_catalog.gtsvector_consistent(internal, tsvector, smallint, oid, internal) boolean' on db.
-func GtsvectorConsistentByInternalTsvectorSmallintOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Tsvector, p2 int16, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
+// GtsvectorConsistentByInternalGtsvectorIntegerOidAndInternal calls the stored function 'pg_catalog.gtsvector_consistent(internal, gtsvector, integer, oid, internal) boolean' on db.
+func GtsvectorConsistentByInternalGtsvectorIntegerOidAndInternal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Gtsvector, p2 int, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.gtsvector_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.gtsvector_consistent($1, $2, $3, $4, $5)`
 	// run
@@ -13490,21 +13490,8 @@ func GtsvectorUnion(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtype
 	return r0, nil
 }
 
-// HasAnyColumnPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(name, oid, text) boolean' on db.
-func HasAnyColumnPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_any_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // HasAnyColumnPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_any_column_privilege(name, text, text) boolean' on db.
-func HasAnyColumnPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
+func HasAnyColumnPrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
 	// call pg_catalog.has_any_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2, $3)`
 	// run
@@ -13516,21 +13503,8 @@ func HasAnyColumnPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtyp
 	return r0, nil
 }
 
-// HasAnyColumnPrivilegeByOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(oid, text) boolean' on db.
-func HasAnyColumnPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_any_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasAnyColumnPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(oid, oid, text) boolean' on db.
-func HasAnyColumnPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasAnyColumnPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(name, oid, text) boolean' on db.
+func HasAnyColumnPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_any_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2, $3)`
 	// run
@@ -13555,6 +13529,19 @@ func HasAnyColumnPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtype
 	return r0, nil
 }
 
+// HasAnyColumnPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(oid, oid, text) boolean' on db.
+func HasAnyColumnPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_any_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasAnyColumnPrivilegeByTextAndText calls the stored function 'pg_catalog.has_any_column_privilege(text, text) boolean' on db.
 func HasAnyColumnPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_any_column_privilege
@@ -13568,21 +13555,21 @@ func HasAnyColumnPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 strin
 	return r0, nil
 }
 
-// HasColumnPrivilegeByNameOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(name, oid, smallint, text) boolean' on db.
-func HasColumnPrivilegeByNameOidSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 int16, p3 string) (bool, error) {
-	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
+// HasAnyColumnPrivilegeByOidAndText calls the stored function 'pg_catalog.has_any_column_privilege(oid, text) boolean' on db.
+func HasAnyColumnPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_any_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_any_column_privilege($1, $2)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
 }
 
-// HasColumnPrivilegeByNameOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(name, oid, text, text) boolean' on db.
-func HasColumnPrivilegeByNameOidTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2, p3 string) (bool, error) {
+// HasColumnPrivilegeByNameTextTextAndText calls the stored function 'pg_catalog.has_column_privilege(name, text, text, text) boolean' on db.
+func HasColumnPrivilegeByNameTextTextAndText(ctx context.Context, db DB, p0, p1, p2, p3 string) (bool, error) {
 	// call pg_catalog.has_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
 	// run
@@ -13595,7 +13582,7 @@ func HasColumnPrivilegeByNameOidTextAndText(ctx context.Context, db DB, p0 pgtyp
 }
 
 // HasColumnPrivilegeByNameTextSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(name, text, smallint, text) boolean' on db.
-func HasColumnPrivilegeByNameTextSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 string, p2 int16, p3 string) (bool, error) {
+func HasColumnPrivilegeByNameTextSmallintAndText(ctx context.Context, db DB, p0, p1 string, p2 int16, p3 string) (bool, error) {
 	// call pg_catalog.has_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
 	// run
@@ -13607,8 +13594,8 @@ func HasColumnPrivilegeByNameTextSmallintAndText(ctx context.Context, db DB, p0 
 	return r0, nil
 }
 
-// HasColumnPrivilegeByNameTextTextAndText calls the stored function 'pg_catalog.has_column_privilege(name, text, text, text) boolean' on db.
-func HasColumnPrivilegeByNameTextTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2, p3 string) (bool, error) {
+// HasColumnPrivilegeByNameOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(name, oid, text, text) boolean' on db.
+func HasColumnPrivilegeByNameOidTextAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2, p3 string) (bool, error) {
 	// call pg_catalog.has_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
 	// run
@@ -13620,60 +13607,8 @@ func HasColumnPrivilegeByNameTextTextAndText(ctx context.Context, db DB, p0 pgty
 	return r0, nil
 }
 
-// HasColumnPrivilegeByOidOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, oid, smallint, text) boolean' on db.
-func HasColumnPrivilegeByOidOidSmallintAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 int16, p3 string) (bool, error) {
-	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasColumnPrivilegeByOidOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(oid, oid, text, text) boolean' on db.
-func HasColumnPrivilegeByOidOidTextAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2, p3 string) (bool, error) {
-	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasColumnPrivilegeByOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, smallint, text) boolean' on db.
-func HasColumnPrivilegeByOidSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int16, p2 string) (bool, error) {
-	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasColumnPrivilegeByOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(oid, text, text) boolean' on db.
-func HasColumnPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasColumnPrivilegeByOidTextSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, text, smallint, text) boolean' on db.
-func HasColumnPrivilegeByOidTextSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string, p2 int16, p3 string) (bool, error) {
+// HasColumnPrivilegeByNameOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(name, oid, smallint, text) boolean' on db.
+func HasColumnPrivilegeByNameOidSmallintAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 int16, p3 string) (bool, error) {
 	// call pg_catalog.has_column_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
 	// run
@@ -13698,14 +13633,40 @@ func HasColumnPrivilegeByOidTextTextAndText(ctx context.Context, db DB, p0 pgtyp
 	return r0, nil
 }
 
-// HasColumnPrivilegeByTextSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(text, smallint, text) boolean' on db.
-func HasColumnPrivilegeByTextSmallintAndText(ctx context.Context, db DB, p0 string, p1 int16, p2 string) (bool, error) {
+// HasColumnPrivilegeByOidTextSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, text, smallint, text) boolean' on db.
+func HasColumnPrivilegeByOidTextSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string, p2 int16, p3 string) (bool, error) {
 	// call pg_catalog.has_column_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasColumnPrivilegeByOidOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(oid, oid, text, text) boolean' on db.
+func HasColumnPrivilegeByOidOidTextAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2, p3 string) (bool, error) {
+	// call pg_catalog.has_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasColumnPrivilegeByOidOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, oid, smallint, text) boolean' on db.
+func HasColumnPrivilegeByOidOidSmallintAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 int16, p3 string) (bool, error) {
+	// call pg_catalog.has_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -13724,10 +13685,36 @@ func HasColumnPrivilegeByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 
 	return r0, nil
 }
 
-// HasDatabasePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_database_privilege(name, oid, text) boolean' on db.
-func HasDatabasePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_database_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2, $3)`
+// HasColumnPrivilegeByTextSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(text, smallint, text) boolean' on db.
+func HasColumnPrivilegeByTextSmallintAndText(ctx context.Context, db DB, p0 string, p1 int16, p2 string) (bool, error) {
+	// call pg_catalog.has_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasColumnPrivilegeByOidTextAndText calls the stored function 'pg_catalog.has_column_privilege(oid, text, text) boolean' on db.
+func HasColumnPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasColumnPrivilegeByOidSmallintAndText calls the stored function 'pg_catalog.has_column_privilege(oid, smallint, text) boolean' on db.
+func HasColumnPrivilegeByOidSmallintAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int16, p2 string) (bool, error) {
+	// call pg_catalog.has_column_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_column_privilege($1, $2, $3)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1, p2)
@@ -13738,7 +13725,7 @@ func HasDatabasePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes
 }
 
 // HasDatabasePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_database_privilege(name, text, text) boolean' on db.
-func HasDatabasePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
+func HasDatabasePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
 	// call pg_catalog.has_database_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2, $3)`
 	// run
@@ -13750,21 +13737,8 @@ func HasDatabasePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtype
 	return r0, nil
 }
 
-// HasDatabasePrivilegeByOidAndText calls the stored function 'pg_catalog.has_database_privilege(oid, text) boolean' on db.
-func HasDatabasePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_database_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasDatabasePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_database_privilege(oid, oid, text) boolean' on db.
-func HasDatabasePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasDatabasePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_database_privilege(name, oid, text) boolean' on db.
+func HasDatabasePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_database_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2, $3)`
 	// run
@@ -13789,6 +13763,19 @@ func HasDatabasePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
+// HasDatabasePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_database_privilege(oid, oid, text) boolean' on db.
+func HasDatabasePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_database_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasDatabasePrivilegeByTextAndText calls the stored function 'pg_catalog.has_database_privilege(text, text) boolean' on db.
 func HasDatabasePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_database_privilege
@@ -13802,36 +13789,10 @@ func HasDatabasePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string
 	return r0, nil
 }
 
-// HasForeignDataWrapperPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(name, oid, text) boolean' on db.
-func HasForeignDataWrapperPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_foreign_data_wrapper_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasForeignDataWrapperPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(name, text, text) boolean' on db.
-func HasForeignDataWrapperPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_foreign_data_wrapper_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasForeignDataWrapperPrivilegeByOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(oid, text) boolean' on db.
-func HasForeignDataWrapperPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_foreign_data_wrapper_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2)`
+// HasDatabasePrivilegeByOidAndText calls the stored function 'pg_catalog.has_database_privilege(oid, text) boolean' on db.
+func HasDatabasePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_database_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_database_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -13841,8 +13802,21 @@ func HasForeignDataWrapperPrivilegeByOidAndText(ctx context.Context, db DB, p0 p
 	return r0, nil
 }
 
-// HasForeignDataWrapperPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(oid, oid, text) boolean' on db.
-func HasForeignDataWrapperPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasForeignDataWrapperPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(name, text, text) boolean' on db.
+func HasForeignDataWrapperPrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_foreign_data_wrapper_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasForeignDataWrapperPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(name, oid, text) boolean' on db.
+func HasForeignDataWrapperPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_foreign_data_wrapper_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2, $3)`
 	// run
@@ -13867,6 +13841,19 @@ func HasForeignDataWrapperPrivilegeByOidTextAndText(ctx context.Context, db DB, 
 	return r0, nil
 }
 
+// HasForeignDataWrapperPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(oid, oid, text) boolean' on db.
+func HasForeignDataWrapperPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_foreign_data_wrapper_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasForeignDataWrapperPrivilegeByTextAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(text, text) boolean' on db.
 func HasForeignDataWrapperPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_foreign_data_wrapper_privilege
@@ -13880,36 +13867,10 @@ func HasForeignDataWrapperPrivilegeByTextAndText(ctx context.Context, db DB, p0,
 	return r0, nil
 }
 
-// HasFunctionPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_function_privilege(name, oid, text) boolean' on db.
-func HasFunctionPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_function_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasFunctionPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_function_privilege(name, text, text) boolean' on db.
-func HasFunctionPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_function_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasFunctionPrivilegeByOidAndText calls the stored function 'pg_catalog.has_function_privilege(oid, text) boolean' on db.
-func HasFunctionPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_function_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2)`
+// HasForeignDataWrapperPrivilegeByOidAndText calls the stored function 'pg_catalog.has_foreign_data_wrapper_privilege(oid, text) boolean' on db.
+func HasForeignDataWrapperPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_foreign_data_wrapper_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_foreign_data_wrapper_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -13919,8 +13880,21 @@ func HasFunctionPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid
 	return r0, nil
 }
 
-// HasFunctionPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_function_privilege(oid, oid, text) boolean' on db.
-func HasFunctionPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasFunctionPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_function_privilege(name, text, text) boolean' on db.
+func HasFunctionPrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_function_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasFunctionPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_function_privilege(name, oid, text) boolean' on db.
+func HasFunctionPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_function_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2, $3)`
 	// run
@@ -13945,6 +13919,19 @@ func HasFunctionPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
+// HasFunctionPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_function_privilege(oid, oid, text) boolean' on db.
+func HasFunctionPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_function_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasFunctionPrivilegeByTextAndText calls the stored function 'pg_catalog.has_function_privilege(text, text) boolean' on db.
 func HasFunctionPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_function_privilege
@@ -13958,36 +13945,10 @@ func HasFunctionPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string
 	return r0, nil
 }
 
-// HasLanguagePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_language_privilege(name, oid, text) boolean' on db.
-func HasLanguagePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_language_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasLanguagePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_language_privilege(name, text, text) boolean' on db.
-func HasLanguagePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_language_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasLanguagePrivilegeByOidAndText calls the stored function 'pg_catalog.has_language_privilege(oid, text) boolean' on db.
-func HasLanguagePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_language_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2)`
+// HasFunctionPrivilegeByOidAndText calls the stored function 'pg_catalog.has_function_privilege(oid, text) boolean' on db.
+func HasFunctionPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_function_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_function_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -13997,8 +13958,21 @@ func HasLanguagePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid
 	return r0, nil
 }
 
-// HasLanguagePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_language_privilege(oid, oid, text) boolean' on db.
-func HasLanguagePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasLanguagePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_language_privilege(name, text, text) boolean' on db.
+func HasLanguagePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_language_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasLanguagePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_language_privilege(name, oid, text) boolean' on db.
+func HasLanguagePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_language_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2, $3)`
 	// run
@@ -14023,6 +13997,19 @@ func HasLanguagePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
+// HasLanguagePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_language_privilege(oid, oid, text) boolean' on db.
+func HasLanguagePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_language_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasLanguagePrivilegeByTextAndText calls the stored function 'pg_catalog.has_language_privilege(text, text) boolean' on db.
 func HasLanguagePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_language_privilege
@@ -14036,36 +14023,10 @@ func HasLanguagePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string
 	return r0, nil
 }
 
-// HasSchemaPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_schema_privilege(name, oid, text) boolean' on db.
-func HasSchemaPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_schema_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasSchemaPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_schema_privilege(name, text, text) boolean' on db.
-func HasSchemaPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_schema_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasSchemaPrivilegeByOidAndText calls the stored function 'pg_catalog.has_schema_privilege(oid, text) boolean' on db.
-func HasSchemaPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_schema_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2)`
+// HasLanguagePrivilegeByOidAndText calls the stored function 'pg_catalog.has_language_privilege(oid, text) boolean' on db.
+func HasLanguagePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_language_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_language_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14075,8 +14036,21 @@ func HasSchemaPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, 
 	return r0, nil
 }
 
-// HasSchemaPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_schema_privilege(oid, oid, text) boolean' on db.
-func HasSchemaPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasSchemaPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_schema_privilege(name, text, text) boolean' on db.
+func HasSchemaPrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_schema_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasSchemaPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_schema_privilege(name, oid, text) boolean' on db.
+func HasSchemaPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_schema_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2, $3)`
 	// run
@@ -14101,6 +14075,19 @@ func HasSchemaPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.O
 	return r0, nil
 }
 
+// HasSchemaPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_schema_privilege(oid, oid, text) boolean' on db.
+func HasSchemaPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_schema_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasSchemaPrivilegeByTextAndText calls the stored function 'pg_catalog.has_schema_privilege(text, text) boolean' on db.
 func HasSchemaPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_schema_privilege
@@ -14114,36 +14101,10 @@ func HasSchemaPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) 
 	return r0, nil
 }
 
-// HasSequencePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(name, oid, text) boolean' on db.
-func HasSequencePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_sequence_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasSequencePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_sequence_privilege(name, text, text) boolean' on db.
-func HasSequencePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_sequence_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasSequencePrivilegeByOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(oid, text) boolean' on db.
-func HasSequencePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_sequence_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2)`
+// HasSchemaPrivilegeByOidAndText calls the stored function 'pg_catalog.has_schema_privilege(oid, text) boolean' on db.
+func HasSchemaPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_schema_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_schema_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14153,8 +14114,21 @@ func HasSequencePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid
 	return r0, nil
 }
 
-// HasSequencePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(oid, oid, text) boolean' on db.
-func HasSequencePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasSequencePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_sequence_privilege(name, text, text) boolean' on db.
+func HasSequencePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_sequence_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasSequencePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(name, oid, text) boolean' on db.
+func HasSequencePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_sequence_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2, $3)`
 	// run
@@ -14179,6 +14153,19 @@ func HasSequencePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
+// HasSequencePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(oid, oid, text) boolean' on db.
+func HasSequencePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_sequence_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasSequencePrivilegeByTextAndText calls the stored function 'pg_catalog.has_sequence_privilege(text, text) boolean' on db.
 func HasSequencePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_sequence_privilege
@@ -14192,36 +14179,10 @@ func HasSequencePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string
 	return r0, nil
 }
 
-// HasServerPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_server_privilege(name, oid, text) boolean' on db.
-func HasServerPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_server_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasServerPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_server_privilege(name, text, text) boolean' on db.
-func HasServerPrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_server_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasServerPrivilegeByOidAndText calls the stored function 'pg_catalog.has_server_privilege(oid, text) boolean' on db.
-func HasServerPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_server_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2)`
+// HasSequencePrivilegeByOidAndText calls the stored function 'pg_catalog.has_sequence_privilege(oid, text) boolean' on db.
+func HasSequencePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_sequence_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_sequence_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14231,8 +14192,21 @@ func HasServerPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, 
 	return r0, nil
 }
 
-// HasServerPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_server_privilege(oid, oid, text) boolean' on db.
-func HasServerPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasServerPrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_server_privilege(name, text, text) boolean' on db.
+func HasServerPrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_server_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasServerPrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_server_privilege(name, oid, text) boolean' on db.
+func HasServerPrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_server_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2, $3)`
 	// run
@@ -14257,6 +14231,19 @@ func HasServerPrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.O
 	return r0, nil
 }
 
+// HasServerPrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_server_privilege(oid, oid, text) boolean' on db.
+func HasServerPrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_server_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasServerPrivilegeByTextAndText calls the stored function 'pg_catalog.has_server_privilege(text, text) boolean' on db.
 func HasServerPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_server_privilege
@@ -14270,36 +14257,10 @@ func HasServerPrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) 
 	return r0, nil
 }
 
-// HasTablePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_table_privilege(name, oid, text) boolean' on db.
-func HasTablePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_table_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTablePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_table_privilege(name, text, text) boolean' on db.
-func HasTablePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_table_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTablePrivilegeByOidAndText calls the stored function 'pg_catalog.has_table_privilege(oid, text) boolean' on db.
-func HasTablePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_table_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2)`
+// HasServerPrivilegeByOidAndText calls the stored function 'pg_catalog.has_server_privilege(oid, text) boolean' on db.
+func HasServerPrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_server_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_server_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14309,8 +14270,21 @@ func HasTablePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p
 	return r0, nil
 }
 
-// HasTablePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_table_privilege(oid, oid, text) boolean' on db.
-func HasTablePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasTablePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_table_privilege(name, text, text) boolean' on db.
+func HasTablePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_table_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasTablePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_table_privilege(name, oid, text) boolean' on db.
+func HasTablePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_table_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2, $3)`
 	// run
@@ -14335,6 +14309,19 @@ func HasTablePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.Oi
 	return r0, nil
 }
 
+// HasTablePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_table_privilege(oid, oid, text) boolean' on db.
+func HasTablePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_table_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasTablePrivilegeByTextAndText calls the stored function 'pg_catalog.has_table_privilege(text, text) boolean' on db.
 func HasTablePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_table_privilege
@@ -14348,36 +14335,10 @@ func HasTablePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (
 	return r0, nil
 }
 
-// HasTablespacePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(name, oid, text) boolean' on db.
-func HasTablespacePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_tablespace_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTablespacePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_tablespace_privilege(name, text, text) boolean' on db.
-func HasTablespacePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_tablespace_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTablespacePrivilegeByOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(oid, text) boolean' on db.
-func HasTablespacePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_tablespace_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2)`
+// HasTablePrivilegeByOidAndText calls the stored function 'pg_catalog.has_table_privilege(oid, text) boolean' on db.
+func HasTablePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_table_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_table_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14387,8 +14348,21 @@ func HasTablespacePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.O
 	return r0, nil
 }
 
-// HasTablespacePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(oid, oid, text) boolean' on db.
-func HasTablespacePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasTablespacePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_tablespace_privilege(name, text, text) boolean' on db.
+func HasTablespacePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_tablespace_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasTablespacePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(name, oid, text) boolean' on db.
+func HasTablespacePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_tablespace_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2, $3)`
 	// run
@@ -14413,6 +14387,19 @@ func HasTablespacePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtyp
 	return r0, nil
 }
 
+// HasTablespacePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(oid, oid, text) boolean' on db.
+func HasTablespacePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_tablespace_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasTablespacePrivilegeByTextAndText calls the stored function 'pg_catalog.has_tablespace_privilege(text, text) boolean' on db.
 func HasTablespacePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.has_tablespace_privilege
@@ -14426,36 +14413,10 @@ func HasTablespacePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 stri
 	return r0, nil
 }
 
-// HasTypePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_type_privilege(name, oid, text) boolean' on db.
-func HasTypePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
-	// call pg_catalog.has_type_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTypePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_type_privilege(name, text, text) boolean' on db.
-func HasTypePrivilegeByNameTextAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1, p2 string) (bool, error) {
-	// call pg_catalog.has_type_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2, $3)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// HasTypePrivilegeByOidAndText calls the stored function 'pg_catalog.has_type_privilege(oid, text) boolean' on db.
-func HasTypePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.has_type_privilege
-	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2)`
+// HasTablespacePrivilegeByOidAndText calls the stored function 'pg_catalog.has_tablespace_privilege(oid, text) boolean' on db.
+func HasTablespacePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.has_tablespace_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_tablespace_privilege($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -14465,8 +14426,21 @@ func HasTypePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1
 	return r0, nil
 }
 
-// HasTypePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_type_privilege(oid, oid, text) boolean' on db.
-func HasTypePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+// HasTypePrivilegeByNameTextAndText calls the stored function 'pg_catalog.has_type_privilege(name, text, text) boolean' on db.
+func HasTypePrivilegeByNameTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
+	// call pg_catalog.has_type_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasTypePrivilegeByNameOidAndText calls the stored function 'pg_catalog.has_type_privilege(name, oid, text) boolean' on db.
+func HasTypePrivilegeByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.has_type_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2, $3)`
 	// run
@@ -14491,8 +14465,34 @@ func HasTypePrivilegeByOidTextAndText(ctx context.Context, db DB, p0 pgtypes.Oid
 	return r0, nil
 }
 
+// HasTypePrivilegeByOidOidAndText calls the stored function 'pg_catalog.has_type_privilege(oid, oid, text) boolean' on db.
+func HasTypePrivilegeByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string) (bool, error) {
+	// call pg_catalog.has_type_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // HasTypePrivilegeByTextAndText calls the stored function 'pg_catalog.has_type_privilege(text, text) boolean' on db.
 func HasTypePrivilegeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
+	// call pg_catalog.has_type_privilege
+	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// HasTypePrivilegeByOidAndText calls the stored function 'pg_catalog.has_type_privilege(oid, text) boolean' on db.
+func HasTypePrivilegeByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
 	// call pg_catalog.has_type_privilege
 	const sqlstr = `SELECT * FROM pg_catalog.has_type_privilege($1, $2)`
 	// run
@@ -14908,7 +14908,7 @@ func Hashmacaddrextended(ctx context.Context, db DB, p0 pgtypes.Macaddr, p1 int6
 }
 
 // Hashname calls the stored function 'pg_catalog.hashname(name) integer' on db.
-func Hashname(ctx context.Context, db DB, p0 pgtypes.Name) (int, error) {
+func Hashname(ctx context.Context, db DB, p0 string) (int, error) {
 	// call pg_catalog.hashname
 	const sqlstr = `SELECT * FROM pg_catalog.hashname($1)`
 	// run
@@ -14921,7 +14921,7 @@ func Hashname(ctx context.Context, db DB, p0 pgtypes.Name) (int, error) {
 }
 
 // Hashnameextended calls the stored function 'pg_catalog.hashnameextended(name, bigint) bigint' on db.
-func Hashnameextended(ctx context.Context, db DB, p0 pgtypes.Name, p1 int64) (int64, error) {
+func Hashnameextended(ctx context.Context, db DB, p0 string, p1 int64) (int64, error) {
 	// call pg_catalog.hashnameextended
 	const sqlstr = `SELECT * FROM pg_catalog.hashnameextended($1, $2)`
 	// run
@@ -15232,32 +15232,6 @@ func InRangeByBigintBigintBigintBooleanAndBoolean(ctx context.Context, db DB, p0
 	return r0, nil
 }
 
-// InRangeByDateDateIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(date, date, interval, boolean, boolean) boolean' on db.
-func InRangeByDateDateIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
-	// call pg_catalog.in_range
-	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3, p4)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// InRangeByDoublePrecisionDoublePrecisionDoublePrecisionBooleanAndBoolean calls the stored function 'pg_catalog.in_range(double precision, double precision, double precision, boolean, boolean) boolean' on db.
-func InRangeByDoublePrecisionDoublePrecisionDoublePrecisionBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 float64, p3, p4 bool) (bool, error) {
-	// call pg_catalog.in_range
-	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3, p4)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // InRangeByIntegerIntegerBigintBooleanAndBoolean calls the stored function 'pg_catalog.in_range(integer, integer, bigint, boolean, boolean) boolean' on db.
 func InRangeByIntegerIntegerBigintBooleanAndBoolean(ctx context.Context, db DB, p0, p1 int, p2 int64, p3, p4 bool) (bool, error) {
 	// call pg_catalog.in_range
@@ -15286,45 +15260,6 @@ func InRangeByIntegerIntegerIntegerBooleanAndBoolean(ctx context.Context, db DB,
 
 // InRangeByIntegerIntegerSmallintBooleanAndBoolean calls the stored function 'pg_catalog.in_range(integer, integer, smallint, boolean, boolean) boolean' on db.
 func InRangeByIntegerIntegerSmallintBooleanAndBoolean(ctx context.Context, db DB, p0, p1 int, p2 int16, p3, p4 bool) (bool, error) {
-	// call pg_catalog.in_range
-	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3, p4)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// InRangeByIntervalIntervalIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(interval, interval, interval, boolean, boolean) boolean' on db.
-func InRangeByIntervalIntervalIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 []byte, p3, p4 bool) (bool, error) {
-	// call pg_catalog.in_range
-	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3, p4)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// InRangeByNumericNumericNumericBooleanAndBoolean calls the stored function 'pg_catalog.in_range(numeric, numeric, numeric, boolean, boolean) boolean' on db.
-func InRangeByNumericNumericNumericBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 float64, p3, p4 bool) (bool, error) {
-	// call pg_catalog.in_range
-	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3, p4)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// InRangeByRealRealDoublePrecisionBooleanAndBoolean calls the stored function 'pg_catalog.in_range(real, real, double precision, boolean, boolean) boolean' on db.
-func InRangeByRealRealDoublePrecisionBooleanAndBoolean(ctx context.Context, db DB, p0, p1 float32, p2 float64, p3, p4 bool) (bool, error) {
 	// call pg_catalog.in_range
 	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
 	// run
@@ -15375,8 +15310,8 @@ func InRangeBySmallintSmallintSmallintBooleanAndBoolean(ctx context.Context, db 
 	return r0, nil
 }
 
-// InRangeByTimeWithTimeZoneTimeWithTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(time with time zone, time with time zone, interval, boolean, boolean) boolean' on db.
-func InRangeByTimeWithTimeZoneTimeWithTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
+// InRangeByDateDateIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(date, date, interval, boolean, boolean) boolean' on db.
+func InRangeByDateDateIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
 	// call pg_catalog.in_range
 	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
 	// run
@@ -15388,8 +15323,8 @@ func InRangeByTimeWithTimeZoneTimeWithTimeZoneIntervalBooleanAndBoolean(ctx cont
 	return r0, nil
 }
 
-// InRangeByTimeWithoutTimeZoneTimeWithoutTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(time without time zone, time without time zone, interval, boolean, boolean) boolean' on db.
-func InRangeByTimeWithoutTimeZoneTimeWithoutTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
+// InRangeByTimestampWithoutTimeZoneTimestampWithoutTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(timestamp without time zone, timestamp without time zone, interval, boolean, boolean) boolean' on db.
+func InRangeByTimestampWithoutTimeZoneTimestampWithoutTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
 	// call pg_catalog.in_range
 	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
 	// run
@@ -15414,8 +15349,73 @@ func InRangeByTimestampWithTimeZoneTimestampWithTimeZoneIntervalBooleanAndBoolea
 	return r0, nil
 }
 
-// InRangeByTimestampWithoutTimeZoneTimestampWithoutTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(timestamp without time zone, timestamp without time zone, interval, boolean, boolean) boolean' on db.
-func InRangeByTimestampWithoutTimeZoneTimestampWithoutTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
+// InRangeByIntervalIntervalIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(interval, interval, interval, boolean, boolean) boolean' on db.
+func InRangeByIntervalIntervalIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 []byte, p3, p4 bool) (bool, error) {
+	// call pg_catalog.in_range
+	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// InRangeByTimeWithoutTimeZoneTimeWithoutTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(time without time zone, time without time zone, interval, boolean, boolean) boolean' on db.
+func InRangeByTimeWithoutTimeZoneTimeWithoutTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
+	// call pg_catalog.in_range
+	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// InRangeByTimeWithTimeZoneTimeWithTimeZoneIntervalBooleanAndBoolean calls the stored function 'pg_catalog.in_range(time with time zone, time with time zone, interval, boolean, boolean) boolean' on db.
+func InRangeByTimeWithTimeZoneTimeWithTimeZoneIntervalBooleanAndBoolean(ctx context.Context, db DB, p0, p1 time.Time, p2 []byte, p3, p4 bool) (bool, error) {
+	// call pg_catalog.in_range
+	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// InRangeByDoublePrecisionDoublePrecisionDoublePrecisionBooleanAndBoolean calls the stored function 'pg_catalog.in_range(double precision, double precision, double precision, boolean, boolean) boolean' on db.
+func InRangeByDoublePrecisionDoublePrecisionDoublePrecisionBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 float64, p3, p4 bool) (bool, error) {
+	// call pg_catalog.in_range
+	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// InRangeByRealRealDoublePrecisionBooleanAndBoolean calls the stored function 'pg_catalog.in_range(real, real, double precision, boolean, boolean) boolean' on db.
+func InRangeByRealRealDoublePrecisionBooleanAndBoolean(ctx context.Context, db DB, p0, p1 float32, p2 float64, p3, p4 bool) (bool, error) {
+	// call pg_catalog.in_range
+	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// InRangeByNumericNumericNumericBooleanAndBoolean calls the stored function 'pg_catalog.in_range(numeric, numeric, numeric, boolean, boolean) boolean' on db.
+func InRangeByNumericNumericNumericBooleanAndBoolean(ctx context.Context, db DB, p0, p1, p2 float64, p3, p4 bool) (bool, error) {
 	// call pg_catalog.in_range
 	const sqlstr = `SELECT * FROM pg_catalog.in_range($1, $2, $3, $4, $5)`
 	// run
@@ -15770,6 +15770,84 @@ func Initcap(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
+// Int2ByNumeric calls the stored function 'pg_catalog.int2(numeric) smallint' on db.
+func Int2ByNumeric(ctx context.Context, db DB, p0 float64) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int2ByDoublePrecision calls the stored function 'pg_catalog.int2(double precision) smallint' on db.
+func Int2ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int2ByReal calls the stored function 'pg_catalog.int2(real) smallint' on db.
+func Int2ByReal(ctx context.Context, db DB, p0 float32) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int2ByInteger calls the stored function 'pg_catalog.int2(integer) smallint' on db.
+func Int2ByInteger(ctx context.Context, db DB, p0 int) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int2ByJsonb calls the stored function 'pg_catalog.int2(jsonb) smallint' on db.
+func Int2ByJsonb(ctx context.Context, db DB, p0 []byte) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int2ByBigint calls the stored function 'pg_catalog.int2(bigint) smallint' on db.
+func Int2ByBigint(ctx context.Context, db DB, p0 int64) (int16, error) {
+	// call pg_catalog.int2
+	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
+	// run
+	var r0 int16
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Int24div calls the stored function 'pg_catalog.int24div(smallint, integer) integer' on db.
 func Int24div(ctx context.Context, db DB, p0 int16, p1 int) (int, error) {
 	// call pg_catalog.int24div
@@ -16078,84 +16156,6 @@ func Int2AvgAccumInv(ctx context.Context, db DB, p0 []int64, p1 int16) ([]int64,
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByBigint calls the stored function 'pg_catalog.int2(bigint) smallint' on db.
-func Int2ByBigint(ctx context.Context, db DB, p0 int64) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByDoublePrecision calls the stored function 'pg_catalog.int2(double precision) smallint' on db.
-func Int2ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByInteger calls the stored function 'pg_catalog.int2(integer) smallint' on db.
-func Int2ByInteger(ctx context.Context, db DB, p0 int) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByJsonb calls the stored function 'pg_catalog.int2(jsonb) smallint' on db.
-func Int2ByJsonb(ctx context.Context, db DB, p0 []byte) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByNumeric calls the stored function 'pg_catalog.int2(numeric) smallint' on db.
-func Int2ByNumeric(ctx context.Context, db DB, p0 float64) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int2ByReal calls the stored function 'pg_catalog.int2(real) smallint' on db.
-func Int2ByReal(ctx context.Context, db DB, p0 float32) (int16, error) {
-	// call pg_catalog.int2
-	const sqlstr = `SELECT * FROM pg_catalog.int2($1)`
-	// run
-	var r0 int16
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -16537,6 +16537,123 @@ func Int2xor(ctx context.Context, db DB, p0, p1 int16) (int16, error) {
 	return r0, nil
 }
 
+// Int4ByBit calls the stored function 'pg_catalog.int4(bit) integer' on db.
+func Int4ByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByNumeric calls the stored function 'pg_catalog.int4(numeric) integer' on db.
+func Int4ByNumeric(ctx context.Context, db DB, p0 float64) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByBoolean calls the stored function 'pg_catalog.int4(boolean) integer' on db.
+func Int4ByBoolean(ctx context.Context, db DB, p0 bool) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4BySmallint calls the stored function 'pg_catalog.int4(smallint) integer' on db.
+func Int4BySmallint(ctx context.Context, db DB, p0 int16) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByDoublePrecision calls the stored function 'pg_catalog.int4(double precision) integer' on db.
+func Int4ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByReal calls the stored function 'pg_catalog.int4(real) integer' on db.
+func Int4ByReal(ctx context.Context, db DB, p0 float32) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByJsonb calls the stored function 'pg_catalog.int4(jsonb) integer' on db.
+func Int4ByJsonb(ctx context.Context, db DB, p0 []byte) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByBigint calls the stored function 'pg_catalog.int4(bigint) integer' on db.
+func Int4ByBigint(ctx context.Context, db DB, p0 int64) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4ByChar calls the stored function 'pg_catalog.int4("char") integer' on db.
+func Int4ByChar(ctx context.Context, db DB, p0 pgtypes.Char) (int, error) {
+	// call pg_catalog.int4
+	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Int42div calls the stored function 'pg_catalog.int42div(integer, smallint) integer' on db.
 func Int42div(ctx context.Context, db DB, p0 int, p1 int16) (int, error) {
 	// call pg_catalog.int42div
@@ -16858,123 +16975,6 @@ func Int4AvgCombine(ctx context.Context, db DB, p0, p1 []int64) ([]int64, error)
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByBigint calls the stored function 'pg_catalog.int4(bigint) integer' on db.
-func Int4ByBigint(ctx context.Context, db DB, p0 int64) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByBit calls the stored function 'pg_catalog.int4(bit) integer' on db.
-func Int4ByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByBoolean calls the stored function 'pg_catalog.int4(boolean) integer' on db.
-func Int4ByBoolean(ctx context.Context, db DB, p0 bool) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByChar calls the stored function 'pg_catalog.int4("char") integer' on db.
-func Int4ByChar(ctx context.Context, db DB, p0 pgtypes.Char) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByDoublePrecision calls the stored function 'pg_catalog.int4(double precision) integer' on db.
-func Int4ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByJsonb calls the stored function 'pg_catalog.int4(jsonb) integer' on db.
-func Int4ByJsonb(ctx context.Context, db DB, p0 []byte) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByNumeric calls the stored function 'pg_catalog.int4(numeric) integer' on db.
-func Int4ByNumeric(ctx context.Context, db DB, p0 float64) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4ByReal calls the stored function 'pg_catalog.int4(real) integer' on db.
-func Int4ByReal(ctx context.Context, db DB, p0 float32) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int4BySmallint calls the stored function 'pg_catalog.int4(smallint) integer' on db.
-func Int4BySmallint(ctx context.Context, db DB, p0 int16) (int, error) {
-	// call pg_catalog.int4
-	const sqlstr = `SELECT * FROM pg_catalog.int4($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -17382,6 +17382,110 @@ func Int4xor(ctx context.Context, db DB, p0, p1 int) (int, error) {
 	return r0, nil
 }
 
+// Int8ByOid calls the stored function 'pg_catalog.int8(oid) bigint' on db.
+func Int8ByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByNumeric calls the stored function 'pg_catalog.int8(numeric) bigint' on db.
+func Int8ByNumeric(ctx context.Context, db DB, p0 float64) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByBit calls the stored function 'pg_catalog.int8(bit) bigint' on db.
+func Int8ByBit(ctx context.Context, db DB, p0 uint8) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByJsonb calls the stored function 'pg_catalog.int8(jsonb) bigint' on db.
+func Int8ByJsonb(ctx context.Context, db DB, p0 []byte) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByInteger calls the stored function 'pg_catalog.int8(integer) bigint' on db.
+func Int8ByInteger(ctx context.Context, db DB, p0 int) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByDoublePrecision calls the stored function 'pg_catalog.int8(double precision) bigint' on db.
+func Int8ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8ByReal calls the stored function 'pg_catalog.int8(real) bigint' on db.
+func Int8ByReal(ctx context.Context, db DB, p0 float32) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8BySmallint calls the stored function 'pg_catalog.int8(smallint) bigint' on db.
+func Int8BySmallint(ctx context.Context, db DB, p0 int16) (int64, error) {
+	// call pg_catalog.int8
+	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Int82div calls the stored function 'pg_catalog.int82div(bigint, smallint) bigint' on db.
 func Int82div(ctx context.Context, db DB, p0 int64, p1 int16) (int64, error) {
 	// call pg_catalog.int82div
@@ -17742,110 +17846,6 @@ func Int8AvgSerialize(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byte, 
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByBit calls the stored function 'pg_catalog.int8(bit) bigint' on db.
-func Int8ByBit(ctx context.Context, db DB, p0 uint8) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByDoublePrecision calls the stored function 'pg_catalog.int8(double precision) bigint' on db.
-func Int8ByDoublePrecision(ctx context.Context, db DB, p0 float64) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByInteger calls the stored function 'pg_catalog.int8(integer) bigint' on db.
-func Int8ByInteger(ctx context.Context, db DB, p0 int) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByJsonb calls the stored function 'pg_catalog.int8(jsonb) bigint' on db.
-func Int8ByJsonb(ctx context.Context, db DB, p0 []byte) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByNumeric calls the stored function 'pg_catalog.int8(numeric) bigint' on db.
-func Int8ByNumeric(ctx context.Context, db DB, p0 float64) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByOid calls the stored function 'pg_catalog.int8(oid) bigint' on db.
-func Int8ByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8ByReal calls the stored function 'pg_catalog.int8(real) bigint' on db.
-func Int8ByReal(ctx context.Context, db DB, p0 float32) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// Int8BySmallint calls the stored function 'pg_catalog.int8(smallint) bigint' on db.
-func Int8BySmallint(ctx context.Context, db DB, p0 int16) (int64, error) {
-	// call pg_catalog.int8
-	const sqlstr = `SELECT * FROM pg_catalog.int8($1)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -18370,45 +18370,6 @@ func InterSl(ctx context.Context, db DB, p0 pgtypes.Lseg, p1 pgtypes.Line) (bool
 	return r0, nil
 }
 
-// IntervalAccum calls the stored function 'pg_catalog.interval_accum(interval, interval) interval' on db.
-func IntervalAccum(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
-	// call pg_catalog.interval_accum
-	const sqlstr = `SELECT * FROM pg_catalog.interval_accum($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// IntervalAccumInv calls the stored function 'pg_catalog.interval_accum_inv(interval, interval) interval' on db.
-func IntervalAccumInv(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
-	// call pg_catalog.interval_accum_inv
-	const sqlstr = `SELECT * FROM pg_catalog.interval_accum_inv($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// IntervalAvg calls the stored function 'pg_catalog.interval_avg(interval) interval' on db.
-func IntervalAvg(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
-	// call pg_catalog.interval_avg
-	const sqlstr = `SELECT * FROM pg_catalog.interval_avg($1)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
 // IntervalByIntervalAndInteger calls the stored function 'pg_catalog.interval(interval, integer) interval' on db.
 func IntervalByIntervalAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
 	// call pg_catalog.interval
@@ -18435,6 +18396,45 @@ func IntervalByTimeWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) ([]
 	return r0, nil
 }
 
+// IntervalAccum calls the stored function 'pg_catalog.interval_accum(interval, interval) interval' on db.
+func IntervalAccum(ctx context.Context, db DB, p0 [][]byte, p1 []byte) ([][]byte, error) {
+	// call pg_catalog.interval_accum
+	const sqlstr = `SELECT * FROM pg_catalog.interval_accum($1, $2)`
+	// run
+	var r0 [][]byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// IntervalAccumInv calls the stored function 'pg_catalog.interval_accum_inv(interval, interval) interval' on db.
+func IntervalAccumInv(ctx context.Context, db DB, p0 [][]byte, p1 []byte) ([][]byte, error) {
+	// call pg_catalog.interval_accum_inv
+	const sqlstr = `SELECT * FROM pg_catalog.interval_accum_inv($1, $2)`
+	// run
+	var r0 [][]byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// IntervalAvg calls the stored function 'pg_catalog.interval_avg(interval) interval' on db.
+func IntervalAvg(ctx context.Context, db DB, p0 [][]byte) ([]byte, error) {
+	// call pg_catalog.interval_avg
+	const sqlstr = `SELECT * FROM pg_catalog.interval_avg($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
 // IntervalCmp calls the stored function 'pg_catalog.interval_cmp(interval, interval) integer' on db.
 func IntervalCmp(ctx context.Context, db DB, p0, p1 []byte) (int, error) {
 	// call pg_catalog.interval_cmp
@@ -18449,11 +18449,11 @@ func IntervalCmp(ctx context.Context, db DB, p0, p1 []byte) (int, error) {
 }
 
 // IntervalCombine calls the stored function 'pg_catalog.interval_combine(interval, interval) interval' on db.
-func IntervalCombine(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
+func IntervalCombine(ctx context.Context, db DB, p0, p1 [][]byte) ([][]byte, error) {
 	// call pg_catalog.interval_combine
 	const sqlstr = `SELECT * FROM pg_catalog.interval_combine($1, $2)`
 	// run
-	var r0 []byte
+	var r0 [][]byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
@@ -18825,8 +18825,8 @@ func IsfiniteByDate(ctx context.Context, db DB, p0 time.Time) (bool, error) {
 	return r0, nil
 }
 
-// IsfiniteByInterval calls the stored function 'pg_catalog.isfinite(interval) boolean' on db.
-func IsfiniteByInterval(ctx context.Context, db DB, p0 []byte) (bool, error) {
+// IsfiniteByTimestampWithTimeZone calls the stored function 'pg_catalog.isfinite(timestamp with time zone) boolean' on db.
+func IsfiniteByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) (bool, error) {
 	// call pg_catalog.isfinite
 	const sqlstr = `SELECT * FROM pg_catalog.isfinite($1)`
 	// run
@@ -18838,8 +18838,8 @@ func IsfiniteByInterval(ctx context.Context, db DB, p0 []byte) (bool, error) {
 	return r0, nil
 }
 
-// IsfiniteByTimestampWithTimeZone calls the stored function 'pg_catalog.isfinite(timestamp with time zone) boolean' on db.
-func IsfiniteByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) (bool, error) {
+// IsfiniteByInterval calls the stored function 'pg_catalog.isfinite(interval) boolean' on db.
+func IsfiniteByInterval(ctx context.Context, db DB, p0 []byte) (bool, error) {
 	// call pg_catalog.isfinite
 	const sqlstr = `SELECT * FROM pg_catalog.isfinite($1)`
 	// run
@@ -18864,14 +18864,14 @@ func IsfiniteByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time
 	return r0, nil
 }
 
-// IshorizontalByLine calls the stored function 'pg_catalog.ishorizontal(line) boolean' on db.
-func IshorizontalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, error) {
+// IshorizontalByPointAndPoint calls the stored function 'pg_catalog.ishorizontal(point, point) boolean' on db.
+func IshorizontalByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
 	// call pg_catalog.ishorizontal
-	const sqlstr = `SELECT * FROM pg_catalog.ishorizontal($1)`
+	const sqlstr = `SELECT * FROM pg_catalog.ishorizontal($1, $2)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -18890,14 +18890,14 @@ func IshorizontalByLseg(ctx context.Context, db DB, p0 pgtypes.Lseg) (bool, erro
 	return r0, nil
 }
 
-// IshorizontalByPointAndPoint calls the stored function 'pg_catalog.ishorizontal(point, point) boolean' on db.
-func IshorizontalByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
+// IshorizontalByLine calls the stored function 'pg_catalog.ishorizontal(line) boolean' on db.
+func IshorizontalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, error) {
 	// call pg_catalog.ishorizontal
-	const sqlstr = `SELECT * FROM pg_catalog.ishorizontal($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.ishorizontal($1)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -18982,19 +18982,6 @@ func Isopen(ctx context.Context, db DB, p0 pgtypes.Path) (bool, error) {
 	return r0, nil
 }
 
-// IsparallelByLineAndLine calls the stored function 'pg_catalog.isparallel(line, line) boolean' on db.
-func IsparallelByLineAndLine(ctx context.Context, db DB, p0, p1 pgtypes.Line) (bool, error) {
-	// call pg_catalog.isparallel
-	const sqlstr = `SELECT * FROM pg_catalog.isparallel($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // IsparallelByLsegAndLseg calls the stored function 'pg_catalog.isparallel(lseg, lseg) boolean' on db.
 func IsparallelByLsegAndLseg(ctx context.Context, db DB, p0, p1 pgtypes.Lseg) (bool, error) {
 	// call pg_catalog.isparallel
@@ -19008,10 +18995,10 @@ func IsparallelByLsegAndLseg(ctx context.Context, db DB, p0, p1 pgtypes.Lseg) (b
 	return r0, nil
 }
 
-// IsperpByLineAndLine calls the stored function 'pg_catalog.isperp(line, line) boolean' on db.
-func IsperpByLineAndLine(ctx context.Context, db DB, p0, p1 pgtypes.Line) (bool, error) {
-	// call pg_catalog.isperp
-	const sqlstr = `SELECT * FROM pg_catalog.isperp($1, $2)`
+// IsparallelByLineAndLine calls the stored function 'pg_catalog.isparallel(line, line) boolean' on db.
+func IsparallelByLineAndLine(ctx context.Context, db DB, p0, p1 pgtypes.Line) (bool, error) {
+	// call pg_catalog.isparallel
+	const sqlstr = `SELECT * FROM pg_catalog.isparallel($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -19034,14 +19021,27 @@ func IsperpByLsegAndLseg(ctx context.Context, db DB, p0, p1 pgtypes.Lseg) (bool,
 	return r0, nil
 }
 
-// IsverticalByLine calls the stored function 'pg_catalog.isvertical(line) boolean' on db.
-func IsverticalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, error) {
-	// call pg_catalog.isvertical
-	const sqlstr = `SELECT * FROM pg_catalog.isvertical($1)`
+// IsperpByLineAndLine calls the stored function 'pg_catalog.isperp(line, line) boolean' on db.
+func IsperpByLineAndLine(ctx context.Context, db DB, p0, p1 pgtypes.Line) (bool, error) {
+	// call pg_catalog.isperp
+	const sqlstr = `SELECT * FROM pg_catalog.isperp($1, $2)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// IsverticalByPointAndPoint calls the stored function 'pg_catalog.isvertical(point, point) boolean' on db.
+func IsverticalByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
+	// call pg_catalog.isvertical
+	const sqlstr = `SELECT * FROM pg_catalog.isvertical($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -19060,14 +19060,14 @@ func IsverticalByLseg(ctx context.Context, db DB, p0 pgtypes.Lseg) (bool, error)
 	return r0, nil
 }
 
-// IsverticalByPointAndPoint calls the stored function 'pg_catalog.isvertical(point, point) boolean' on db.
-func IsverticalByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
+// IsverticalByLine calls the stored function 'pg_catalog.isvertical(line) boolean' on db.
+func IsverticalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, error) {
 	// call pg_catalog.isvertical
-	const sqlstr = `SELECT * FROM pg_catalog.isvertical($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.isvertical($1)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -19218,32 +19218,6 @@ func JSONEachText(ctx context.Context, db DB, fromJSON []byte) (string, string, 
 	return key, value, nil
 }
 
-// JSONObjectAggFinalfn calls the stored function 'pg_catalog.json_object_agg_finalfn(internal) json' on db.
-func JSONObjectAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byte, error) {
-	// call pg_catalog.json_object_agg_finalfn
-	const sqlstr = `SELECT * FROM pg_catalog.json_object_agg_finalfn($1)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// JSONObjectAggTransfn calls the stored function 'pg_catalog.json_object_agg_transfn(internal, "any", "any") internal' on db.
-func JSONObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 pgtypes.Any) (pgtypes.Internal, error) {
-	// call pg_catalog.json_object_agg_transfn
-	const sqlstr = `SELECT * FROM pg_catalog.json_object_agg_transfn($1, $2, $3)`
-	// run
-	var r0 pgtypes.Internal
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // JSONObjectByText calls the stored function 'pg_catalog.json_object(text) json' on db.
 func JSONObjectByText(ctx context.Context, db DB, p0 StringSlice) ([]byte, error) {
 	// call pg_catalog.json_object
@@ -19266,6 +19240,32 @@ func JSONObjectByTextAndText(ctx context.Context, db DB, p0, p1 StringSlice) ([]
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// JSONObjectAggFinalfn calls the stored function 'pg_catalog.json_object_agg_finalfn(internal) json' on db.
+func JSONObjectAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byte, error) {
+	// call pg_catalog.json_object_agg_finalfn
+	const sqlstr = `SELECT * FROM pg_catalog.json_object_agg_finalfn($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// JSONObjectAggTransfn calls the stored function 'pg_catalog.json_object_agg_transfn(internal, "any", "any") internal' on db.
+func JSONObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 pgtypes.Any) (pgtypes.Internal, error) {
+	// call pg_catalog.json_object_agg_transfn
+	const sqlstr = `SELECT * FROM pg_catalog.json_object_agg_transfn($1, $2, $3)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19619,8 +19619,8 @@ func JsonbContains(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
 	return r0, nil
 }
 
-// JsonbDeleteByJsonbAndInteger calls the stored function 'pg_catalog.jsonb_delete(jsonb, integer) jsonb' on db.
-func JsonbDeleteByJsonbAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
+// JsonbDeleteByJsonbAndText calls the stored function 'pg_catalog.jsonb_delete(jsonb, text) jsonb' on db.
+func JsonbDeleteByJsonbAndText(ctx context.Context, db DB, p0 []byte, p1 string) ([]byte, error) {
 	// call pg_catalog.jsonb_delete
 	const sqlstr = `SELECT * FROM pg_catalog.jsonb_delete($1, $2)`
 	// run
@@ -19632,8 +19632,8 @@ func JsonbDeleteByJsonbAndInteger(ctx context.Context, db DB, p0 []byte, p1 int)
 	return r0, nil
 }
 
-// JsonbDeleteByJsonbAndText calls the stored function 'pg_catalog.jsonb_delete(jsonb, text) jsonb' on db.
-func JsonbDeleteByJsonbAndText(ctx context.Context, db DB, p0 []byte, p1 string) ([]byte, error) {
+// JsonbDeleteByJsonbAndInteger calls the stored function 'pg_catalog.jsonb_delete(jsonb, integer) jsonb' on db.
+func JsonbDeleteByJsonbAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
 	// call pg_catalog.jsonb_delete
 	const sqlstr = `SELECT * FROM pg_catalog.jsonb_delete($1, $2)`
 	// run
@@ -19842,32 +19842,6 @@ func JsonbNe(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
 	return r0, nil
 }
 
-// JsonbObjectAggFinalfn calls the stored function 'pg_catalog.jsonb_object_agg_finalfn(internal) jsonb' on db.
-func JsonbObjectAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byte, error) {
-	// call pg_catalog.jsonb_object_agg_finalfn
-	const sqlstr = `SELECT * FROM pg_catalog.jsonb_object_agg_finalfn($1)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// JsonbObjectAggTransfn calls the stored function 'pg_catalog.jsonb_object_agg_transfn(internal, "any", "any") internal' on db.
-func JsonbObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 pgtypes.Any) (pgtypes.Internal, error) {
-	// call pg_catalog.jsonb_object_agg_transfn
-	const sqlstr = `SELECT * FROM pg_catalog.jsonb_object_agg_transfn($1, $2, $3)`
-	// run
-	var r0 pgtypes.Internal
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // JsonbObjectByText calls the stored function 'pg_catalog.jsonb_object(text) jsonb' on db.
 func JsonbObjectByText(ctx context.Context, db DB, p0 StringSlice) ([]byte, error) {
 	// call pg_catalog.jsonb_object
@@ -19890,6 +19864,32 @@ func JsonbObjectByTextAndText(ctx context.Context, db DB, p0, p1 StringSlice) ([
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// JsonbObjectAggFinalfn calls the stored function 'pg_catalog.jsonb_object_agg_finalfn(internal) jsonb' on db.
+func JsonbObjectAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byte, error) {
+	// call pg_catalog.jsonb_object_agg_finalfn
+	const sqlstr = `SELECT * FROM pg_catalog.jsonb_object_agg_finalfn($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// JsonbObjectAggTransfn calls the stored function 'pg_catalog.jsonb_object_agg_transfn(internal, "any", "any") internal' on db.
+func JsonbObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 pgtypes.Any) (pgtypes.Internal, error) {
+	// call pg_catalog.jsonb_object_agg_transfn
+	const sqlstr = `SELECT * FROM pg_catalog.jsonb_object_agg_transfn($1, $2, $3)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20457,12 +20457,12 @@ func Latin4ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 	return nil
 }
 
-// LcmByBigintAndBigint calls the stored function 'pg_catalog.lcm(bigint, bigint) bigint' on db.
-func LcmByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
+// LcmByIntegerAndInteger calls the stored function 'pg_catalog.lcm(integer, integer) integer' on db.
+func LcmByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
 	// call pg_catalog.lcm
 	const sqlstr = `SELECT * FROM pg_catalog.lcm($1, $2)`
 	// run
-	var r0 int64
+	var r0 int
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -20470,12 +20470,12 @@ func LcmByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, erro
 	return r0, nil
 }
 
-// LcmByIntegerAndInteger calls the stored function 'pg_catalog.lcm(integer, integer) integer' on db.
-func LcmByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
+// LcmByBigintAndBigint calls the stored function 'pg_catalog.lcm(bigint, bigint) bigint' on db.
+func LcmByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
 	// call pg_catalog.lcm
 	const sqlstr = `SELECT * FROM pg_catalog.lcm($1, $2)`
 	// run
-	var r0 int
+	var r0 int64
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -20509,40 +20509,14 @@ func Left(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
 	return r0, nil
 }
 
-// LengthByBit calls the stored function 'pg_catalog.length(bit) integer' on db.
-func LengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
+// LengthByText calls the stored function 'pg_catalog.length(text) integer' on db.
+func LengthByText(ctx context.Context, db DB, p0 string) (int, error) {
 	// call pg_catalog.length
 	const sqlstr = `SELECT * FROM pg_catalog.length($1)`
 	// run
 	var r0 int
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// LengthByBytea calls the stored function 'pg_catalog.length(bytea) integer' on db.
-func LengthByBytea(ctx context.Context, db DB, p0 []byte) (int, error) {
-	// call pg_catalog.length
-	const sqlstr = `SELECT * FROM pg_catalog.length($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// LengthByByteaAndName calls the stored function 'pg_catalog.length(bytea, name) integer' on db.
-func LengthByByteaAndName(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Name) (int, error) {
-	// call pg_catalog.length
-	const sqlstr = `SELECT * FROM pg_catalog.length($1, $2)`
-	// run
-	var r0 int
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -20587,8 +20561,34 @@ func LengthByPath(ctx context.Context, db DB, p0 pgtypes.Path) (float64, error) 
 	return r0, nil
 }
 
-// LengthByText calls the stored function 'pg_catalog.length(text) integer' on db.
-func LengthByText(ctx context.Context, db DB, p0 string) (int, error) {
+// LengthByBit calls the stored function 'pg_catalog.length(bit) integer' on db.
+func LengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
+	// call pg_catalog.length
+	const sqlstr = `SELECT * FROM pg_catalog.length($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// LengthByByteaAndName calls the stored function 'pg_catalog.length(bytea, name) integer' on db.
+func LengthByByteaAndName(ctx context.Context, db DB, p0 []byte, p1 string) (int, error) {
+	// call pg_catalog.length
+	const sqlstr = `SELECT * FROM pg_catalog.length($1, $2)`
+	// run
+	var r0 int
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// LengthByBytea calls the stored function 'pg_catalog.length(bytea) integer' on db.
+func LengthByBytea(ctx context.Context, db DB, p0 []byte) (int, error) {
 	// call pg_catalog.length
 	const sqlstr = `SELECT * FROM pg_catalog.length($1)`
 	// run
@@ -20613,32 +20613,6 @@ func LengthByTsvector(ctx context.Context, db DB, p0 pgtypes.Tsvector) (int, err
 	return r0, nil
 }
 
-// LikeByByteaAndBytea calls the stored function 'pg_catalog.like(bytea, bytea) boolean' on db.
-func LikeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
-	// call pg_catalog.like
-	const sqlstr = `SELECT * FROM pg_catalog.like($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// LikeByNameAndText calls the stored function 'pg_catalog.like(name, text) boolean' on db.
-func LikeByNameAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
-	// call pg_catalog.like
-	const sqlstr = `SELECT * FROM pg_catalog.like($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // LikeByTextAndText calls the stored function 'pg_catalog.like(text, text) boolean' on db.
 func LikeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.like
@@ -20652,15 +20626,28 @@ func LikeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) 
 	return r0, nil
 }
 
-// LikeEscapeByByteaAndBytea calls the stored function 'pg_catalog.like_escape(bytea, bytea) bytea' on db.
-func LikeEscapeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
-	// call pg_catalog.like_escape
-	const sqlstr = `SELECT * FROM pg_catalog.like_escape($1, $2)`
+// LikeByNameAndText calls the stored function 'pg_catalog.like(name, text) boolean' on db.
+func LikeByNameAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
+	// call pg_catalog.like
+	const sqlstr = `SELECT * FROM pg_catalog.like($1, $2)`
 	// run
-	var r0 []byte
+	var r0 bool
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// LikeByByteaAndBytea calls the stored function 'pg_catalog.like(bytea, bytea) boolean' on db.
+func LikeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
+	// call pg_catalog.like
+	const sqlstr = `SELECT * FROM pg_catalog.like($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
 	}
 	return r0, nil
 }
@@ -20674,6 +20661,19 @@ func LikeEscapeByTextAndText(ctx context.Context, db DB, p0, p1 string) (string,
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// LikeEscapeByByteaAndBytea calls the stored function 'pg_catalog.like_escape(bytea, bytea) bytea' on db.
+func LikeEscapeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
+	// call pg_catalog.like_escape
+	const sqlstr = `SELECT * FROM pg_catalog.like_escape($1, $2)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -21105,6 +21105,45 @@ func LoUnlink(ctx context.Context, db DB, p0 pgtypes.Oid) (int, error) {
 	return r0, nil
 }
 
+// LogByDoublePrecision calls the stored function 'pg_catalog.log(double precision) double precision' on db.
+func LogByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.log
+	const sqlstr = `SELECT * FROM pg_catalog.log($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// LogByNumericAndNumeric calls the stored function 'pg_catalog.log(numeric, numeric) numeric' on db.
+func LogByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (float64, error) {
+	// call pg_catalog.log
+	const sqlstr = `SELECT * FROM pg_catalog.log($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// LogByNumeric calls the stored function 'pg_catalog.log(numeric) numeric' on db.
+func LogByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.log
+	const sqlstr = `SELECT * FROM pg_catalog.log($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
 // Log10ByDoublePrecision calls the stored function 'pg_catalog.log10(double precision) double precision' on db.
 func Log10ByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.log10
@@ -21126,45 +21165,6 @@ func Log10ByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	var r0 float64
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// LogByDoublePrecision calls the stored function 'pg_catalog.log(double precision) double precision' on db.
-func LogByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.log
-	const sqlstr = `SELECT * FROM pg_catalog.log($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// LogByNumeric calls the stored function 'pg_catalog.log(numeric) numeric' on db.
-func LogByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.log
-	const sqlstr = `SELECT * FROM pg_catalog.log($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// LogByNumericAndNumeric calls the stored function 'pg_catalog.log(numeric, numeric) numeric' on db.
-func LogByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (float64, error) {
-	// call pg_catalog.log
-	const sqlstr = `SELECT * FROM pg_catalog.log($1, $2)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -21248,19 +21248,6 @@ func Lowrite(ctx context.Context, db DB, p0 int, p1 []byte) (int, error) {
 	return r0, nil
 }
 
-// LpadByTextAndInteger calls the stored function 'pg_catalog.lpad(text, integer) text' on db.
-func LpadByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
-	// call pg_catalog.lpad
-	const sqlstr = `SELECT * FROM pg_catalog.lpad($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // LpadByTextIntegerAndText calls the stored function 'pg_catalog.lpad(text, integer, text) text' on db.
 func LpadByTextIntegerAndText(ctx context.Context, db DB, p0 string, p1 int, p2 string) (string, error) {
 	// call pg_catalog.lpad
@@ -21269,6 +21256,19 @@ func LpadByTextIntegerAndText(ctx context.Context, db DB, p0 string, p1 int, p2 
 	var r0 string
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// LpadByTextAndInteger calls the stored function 'pg_catalog.lpad(text, integer) text' on db.
+func LpadByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
+	// call pg_catalog.lpad
+	const sqlstr = `SELECT * FROM pg_catalog.lpad($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -21521,19 +21521,6 @@ func LsegVertical(ctx context.Context, db DB, p0 pgtypes.Lseg) (bool, error) {
 	return r0, nil
 }
 
-// LtrimByText calls the stored function 'pg_catalog.ltrim(text) text' on db.
-func LtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.ltrim
-	const sqlstr = `SELECT * FROM pg_catalog.ltrim($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // LtrimByTextAndText calls the stored function 'pg_catalog.ltrim(text, text) text' on db.
 func LtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	// call pg_catalog.ltrim
@@ -21542,6 +21529,19 @@ func LtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, erro
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// LtrimByText calls the stored function 'pg_catalog.ltrim(text) text' on db.
+func LtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.ltrim
+	const sqlstr = `SELECT * FROM pg_catalog.ltrim($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -22039,8 +22039,8 @@ func Matchingsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid
 	return r0, nil
 }
 
-// Md5ByBytea calls the stored function 'pg_catalog.md5(bytea) text' on db.
-func Md5ByBytea(ctx context.Context, db DB, p0 []byte) (string, error) {
+// Md5ByText calls the stored function 'pg_catalog.md5(text) text' on db.
+func Md5ByText(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.md5
 	const sqlstr = `SELECT * FROM pg_catalog.md5($1)`
 	// run
@@ -22052,8 +22052,8 @@ func Md5ByBytea(ctx context.Context, db DB, p0 []byte) (string, error) {
 	return r0, nil
 }
 
-// Md5ByText calls the stored function 'pg_catalog.md5(text) text' on db.
-func Md5ByText(ctx context.Context, db DB, p0 string) (string, error) {
+// Md5ByBytea calls the stored function 'pg_catalog.md5(bytea) text' on db.
+func Md5ByBytea(ctx context.Context, db DB, p0 []byte) (string, error) {
 	// call pg_catalog.md5
 	const sqlstr = `SELECT * FROM pg_catalog.md5($1)`
 	// run
@@ -22243,32 +22243,6 @@ func MinScale(ctx context.Context, db DB, p0 float64) (int, error) {
 	return r0, nil
 }
 
-// ModByBigintAndBigint calls the stored function 'pg_catalog.mod(bigint, bigint) bigint' on db.
-func ModByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
-	// call pg_catalog.mod
-	const sqlstr = `SELECT * FROM pg_catalog.mod($1, $2)`
-	// run
-	var r0 int64
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// ModByIntegerAndInteger calls the stored function 'pg_catalog.mod(integer, integer) integer' on db.
-func ModByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
-	// call pg_catalog.mod
-	const sqlstr = `SELECT * FROM pg_catalog.mod($1, $2)`
-	// run
-	var r0 int
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
 // ModByNumericAndNumeric calls the stored function 'pg_catalog.mod(numeric, numeric) numeric' on db.
 func ModByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (float64, error) {
 	// call pg_catalog.mod
@@ -22295,6 +22269,32 @@ func ModBySmallintAndSmallint(ctx context.Context, db DB, p0, p1 int16) (int16, 
 	return r0, nil
 }
 
+// ModByIntegerAndInteger calls the stored function 'pg_catalog.mod(integer, integer) integer' on db.
+func ModByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (int, error) {
+	// call pg_catalog.mod
+	const sqlstr = `SELECT * FROM pg_catalog.mod($1, $2)`
+	// run
+	var r0 int
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ModByBigintAndBigint calls the stored function 'pg_catalog.mod(bigint, bigint) bigint' on db.
+func ModByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
+	// call pg_catalog.mod
+	const sqlstr = `SELECT * FROM pg_catalog.mod($1, $2)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // ModeFinal calls the stored function 'pg_catalog.mode_final(internal, anyelement) anyelement' on db.
 func ModeFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anyelement) (pgtypes.Anyelement, error) {
 	// call pg_catalog.mode_final
@@ -22308,8 +22308,8 @@ func ModeFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anyel
 	return r0, nil
 }
 
-// MoneyByBigint calls the stored function 'pg_catalog.money(bigint) money' on db.
-func MoneyByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
+// MoneyByInteger calls the stored function 'pg_catalog.money(integer) money' on db.
+func MoneyByInteger(ctx context.Context, db DB, p0 int) (string, error) {
 	// call pg_catalog.money
 	const sqlstr = `SELECT * FROM pg_catalog.money($1)`
 	// run
@@ -22321,8 +22321,8 @@ func MoneyByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
 	return r0, nil
 }
 
-// MoneyByInteger calls the stored function 'pg_catalog.money(integer) money' on db.
-func MoneyByInteger(ctx context.Context, db DB, p0 int) (string, error) {
+// MoneyByBigint calls the stored function 'pg_catalog.money(bigint) money' on db.
+func MoneyByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
 	// call pg_catalog.money
 	const sqlstr = `SELECT * FROM pg_catalog.money($1)`
 	// run
@@ -22373,60 +22373,60 @@ func MxidAge(ctx context.Context, db DB, p0 pgtypes.Xid) (int, error) {
 	return r0, nil
 }
 
-// NameByCharacter calls the stored function 'pg_catalog.name(character) name' on db.
-func NameByCharacter(ctx context.Context, db DB, p0 string) (pgtypes.Name, error) {
-	// call pg_catalog.name
-	const sqlstr = `SELECT * FROM pg_catalog.name($1)`
-	// run
-	var r0 pgtypes.Name
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // NameByCharacterVarying calls the stored function 'pg_catalog.name(character varying) name' on db.
-func NameByCharacterVarying(ctx context.Context, db DB, p0 string) (pgtypes.Name, error) {
+func NameByCharacterVarying(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.name
 	const sqlstr = `SELECT * FROM pg_catalog.name($1)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // NameByText calls the stored function 'pg_catalog.name(text) name' on db.
-func NameByText(ctx context.Context, db DB, p0 string) (pgtypes.Name, error) {
+func NameByText(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.name
 	const sqlstr = `SELECT * FROM pg_catalog.name($1)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// NameByCharacter calls the stored function 'pg_catalog.name(character) name' on db.
+func NameByCharacter(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.name
+	const sqlstr = `SELECT * FROM pg_catalog.name($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // Nameconcatoid calls the stored function 'pg_catalog.nameconcatoid(name, oid) name' on db.
-func Nameconcatoid(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid) (pgtypes.Name, error) {
+func Nameconcatoid(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid) (string, error) {
 	// call pg_catalog.nameconcatoid
 	const sqlstr = `SELECT * FROM pg_catalog.nameconcatoid($1, $2)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // Nameeq calls the stored function 'pg_catalog.nameeq(name, name) boolean' on db.
-func Nameeq(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Nameeq(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameeq
 	const sqlstr = `SELECT * FROM pg_catalog.nameeq($1, $2)`
 	// run
@@ -22439,7 +22439,7 @@ func Nameeq(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Nameeqtext calls the stored function 'pg_catalog.nameeqtext(name, text) boolean' on db.
-func Nameeqtext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameeqtext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameeqtext
 	const sqlstr = `SELECT * FROM pg_catalog.nameeqtext($1, $2)`
 	// run
@@ -22452,7 +22452,7 @@ func Nameeqtext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Namege calls the stored function 'pg_catalog.namege(name, name) boolean' on db.
-func Namege(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Namege(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namege
 	const sqlstr = `SELECT * FROM pg_catalog.namege($1, $2)`
 	// run
@@ -22465,7 +22465,7 @@ func Namege(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Namegetext calls the stored function 'pg_catalog.namegetext(name, text) boolean' on db.
-func Namegetext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namegetext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namegetext
 	const sqlstr = `SELECT * FROM pg_catalog.namegetext($1, $2)`
 	// run
@@ -22478,7 +22478,7 @@ func Namegetext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Namegt calls the stored function 'pg_catalog.namegt(name, name) boolean' on db.
-func Namegt(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Namegt(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namegt
 	const sqlstr = `SELECT * FROM pg_catalog.namegt($1, $2)`
 	// run
@@ -22491,7 +22491,7 @@ func Namegt(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Namegttext calls the stored function 'pg_catalog.namegttext(name, text) boolean' on db.
-func Namegttext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namegttext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namegttext
 	const sqlstr = `SELECT * FROM pg_catalog.namegttext($1, $2)`
 	// run
@@ -22504,7 +22504,7 @@ func Namegttext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Nameiclike calls the stored function 'pg_catalog.nameiclike(name, text) boolean' on db.
-func Nameiclike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameiclike(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameiclike
 	const sqlstr = `SELECT * FROM pg_catalog.nameiclike($1, $2)`
 	// run
@@ -22517,7 +22517,7 @@ func Nameiclike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Nameicnlike calls the stored function 'pg_catalog.nameicnlike(name, text) boolean' on db.
-func Nameicnlike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameicnlike(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameicnlike
 	const sqlstr = `SELECT * FROM pg_catalog.nameicnlike($1, $2)`
 	// run
@@ -22530,7 +22530,7 @@ func Nameicnlike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, 
 }
 
 // Nameicregexeq calls the stored function 'pg_catalog.nameicregexeq(name, text) boolean' on db.
-func Nameicregexeq(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameicregexeq(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameicregexeq
 	const sqlstr = `SELECT * FROM pg_catalog.nameicregexeq($1, $2)`
 	// run
@@ -22543,7 +22543,7 @@ func Nameicregexeq(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool
 }
 
 // Nameicregexne calls the stored function 'pg_catalog.nameicregexne(name, text) boolean' on db.
-func Nameicregexne(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameicregexne(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameicregexne
 	const sqlstr = `SELECT * FROM pg_catalog.nameicregexne($1, $2)`
 	// run
@@ -22556,7 +22556,7 @@ func Nameicregexne(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool
 }
 
 // Namele calls the stored function 'pg_catalog.namele(name, name) boolean' on db.
-func Namele(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Namele(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namele
 	const sqlstr = `SELECT * FROM pg_catalog.namele($1, $2)`
 	// run
@@ -22569,7 +22569,7 @@ func Namele(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Nameletext calls the stored function 'pg_catalog.nameletext(name, text) boolean' on db.
-func Nameletext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameletext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameletext
 	const sqlstr = `SELECT * FROM pg_catalog.nameletext($1, $2)`
 	// run
@@ -22582,7 +22582,7 @@ func Nameletext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Namelike calls the stored function 'pg_catalog.namelike(name, text) boolean' on db.
-func Namelike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namelike(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namelike
 	const sqlstr = `SELECT * FROM pg_catalog.namelike($1, $2)`
 	// run
@@ -22595,7 +22595,7 @@ func Namelike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, err
 }
 
 // Namelt calls the stored function 'pg_catalog.namelt(name, name) boolean' on db.
-func Namelt(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Namelt(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namelt
 	const sqlstr = `SELECT * FROM pg_catalog.namelt($1, $2)`
 	// run
@@ -22608,7 +22608,7 @@ func Namelt(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Namelttext calls the stored function 'pg_catalog.namelttext(name, text) boolean' on db.
-func Namelttext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namelttext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namelttext
 	const sqlstr = `SELECT * FROM pg_catalog.namelttext($1, $2)`
 	// run
@@ -22621,7 +22621,7 @@ func Namelttext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Namene calls the stored function 'pg_catalog.namene(name, name) boolean' on db.
-func Namene(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
+func Namene(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namene
 	const sqlstr = `SELECT * FROM pg_catalog.namene($1, $2)`
 	// run
@@ -22634,7 +22634,7 @@ func Namene(ctx context.Context, db DB, p0, p1 pgtypes.Name) (bool, error) {
 }
 
 // Namenetext calls the stored function 'pg_catalog.namenetext(name, text) boolean' on db.
-func Namenetext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namenetext(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namenetext
 	const sqlstr = `SELECT * FROM pg_catalog.namenetext($1, $2)`
 	// run
@@ -22647,7 +22647,7 @@ func Namenetext(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, e
 }
 
 // Namenlike calls the stored function 'pg_catalog.namenlike(name, text) boolean' on db.
-func Namenlike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Namenlike(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.namenlike
 	const sqlstr = `SELECT * FROM pg_catalog.namenlike($1, $2)`
 	// run
@@ -22660,20 +22660,20 @@ func Namenlike(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, er
 }
 
 // Namerecv calls the stored function 'pg_catalog.namerecv(internal) name' on db.
-func Namerecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Name, error) {
+func Namerecv(ctx context.Context, db DB, p0 pgtypes.Internal) (string, error) {
 	// call pg_catalog.namerecv
 	const sqlstr = `SELECT * FROM pg_catalog.namerecv($1)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
 // Nameregexeq calls the stored function 'pg_catalog.nameregexeq(name, text) boolean' on db.
-func Nameregexeq(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameregexeq(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameregexeq
 	const sqlstr = `SELECT * FROM pg_catalog.nameregexeq($1, $2)`
 	// run
@@ -22686,7 +22686,7 @@ func Nameregexeq(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, 
 }
 
 // Nameregexne calls the stored function 'pg_catalog.nameregexne(name, text) boolean' on db.
-func Nameregexne(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func Nameregexne(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.nameregexne
 	const sqlstr = `SELECT * FROM pg_catalog.nameregexne($1, $2)`
 	// run
@@ -22699,7 +22699,7 @@ func Nameregexne(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, 
 }
 
 // Namesend calls the stored function 'pg_catalog.namesend(name) bytea' on db.
-func Namesend(ctx context.Context, db DB, p0 pgtypes.Name) ([]byte, error) {
+func Namesend(ctx context.Context, db DB, p0 string) ([]byte, error) {
 	// call pg_catalog.namesend
 	const sqlstr = `SELECT * FROM pg_catalog.namesend($1)`
 	// run
@@ -23047,8 +23047,8 @@ func Normalize(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	return r0, nil
 }
 
-// NotlikeByByteaAndBytea calls the stored function 'pg_catalog.notlike(bytea, bytea) boolean' on db.
-func NotlikeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
+// NotlikeByTextAndText calls the stored function 'pg_catalog.notlike(text, text) boolean' on db.
+func NotlikeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.notlike
 	const sqlstr = `SELECT * FROM pg_catalog.notlike($1, $2)`
 	// run
@@ -23061,7 +23061,7 @@ func NotlikeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) (bool, er
 }
 
 // NotlikeByNameAndText calls the stored function 'pg_catalog.notlike(name, text) boolean' on db.
-func NotlikeByNameAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
+func NotlikeByNameAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.notlike
 	const sqlstr = `SELECT * FROM pg_catalog.notlike($1, $2)`
 	// run
@@ -23073,8 +23073,8 @@ func NotlikeByNameAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 string
 	return r0, nil
 }
 
-// NotlikeByTextAndText calls the stored function 'pg_catalog.notlike(text, text) boolean' on db.
-func NotlikeByTextAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
+// NotlikeByByteaAndBytea calls the stored function 'pg_catalog.notlike(bytea, bytea) boolean' on db.
+func NotlikeByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) (bool, error) {
 	// call pg_catalog.notlike
 	const sqlstr = `SELECT * FROM pg_catalog.notlike($1, $2)`
 	// run
@@ -23121,6 +23121,110 @@ func NpointsByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (int, erro
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByNumericAndInteger calls the stored function 'pg_catalog.numeric(numeric, integer) numeric' on db.
+func NumericByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByInteger calls the stored function 'pg_catalog.numeric(integer) numeric' on db.
+func NumericByInteger(ctx context.Context, db DB, p0 int) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByReal calls the stored function 'pg_catalog.numeric(real) numeric' on db.
+func NumericByReal(ctx context.Context, db DB, p0 float32) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByDoublePrecision calls the stored function 'pg_catalog.numeric(double precision) numeric' on db.
+func NumericByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByBigint calls the stored function 'pg_catalog.numeric(bigint) numeric' on db.
+func NumericByBigint(ctx context.Context, db DB, p0 int64) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericBySmallint calls the stored function 'pg_catalog.numeric(smallint) numeric' on db.
+func NumericBySmallint(ctx context.Context, db DB, p0 int16) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByJsonb calls the stored function 'pg_catalog.numeric(jsonb) numeric' on db.
+func NumericByJsonb(ctx context.Context, db DB, p0 []byte) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericByMoney calls the stored function 'pg_catalog.numeric(money) numeric' on db.
+func NumericByMoney(ctx context.Context, db DB, p0 string) (float64, error) {
+	// call pg_catalog.numeric
+	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -23238,110 +23342,6 @@ func NumericAvgSerialize(ctx context.Context, db DB, p0 pgtypes.Internal) ([]byt
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByBigint calls the stored function 'pg_catalog.numeric(bigint) numeric' on db.
-func NumericByBigint(ctx context.Context, db DB, p0 int64) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByDoublePrecision calls the stored function 'pg_catalog.numeric(double precision) numeric' on db.
-func NumericByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByInteger calls the stored function 'pg_catalog.numeric(integer) numeric' on db.
-func NumericByInteger(ctx context.Context, db DB, p0 int) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByJsonb calls the stored function 'pg_catalog.numeric(jsonb) numeric' on db.
-func NumericByJsonb(ctx context.Context, db DB, p0 []byte) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByMoney calls the stored function 'pg_catalog.numeric(money) numeric' on db.
-func NumericByMoney(ctx context.Context, db DB, p0 string) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByNumericAndInteger calls the stored function 'pg_catalog.numeric(numeric, integer) numeric' on db.
-func NumericByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1, $2)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericByReal calls the stored function 'pg_catalog.numeric(real) numeric' on db.
-func NumericByReal(ctx context.Context, db DB, p0 float32) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
-// NumericBySmallint calls the stored function 'pg_catalog.numeric(smallint) numeric' on db.
-func NumericBySmallint(ctx context.Context, db DB, p0 int16) (float64, error) {
-	// call pg_catalog.numeric
-	const sqlstr = `SELECT * FROM pg_catalog.numeric($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -23981,6 +23981,19 @@ func NumrangeSubdiff(ctx context.Context, db DB, p0, p1 float64) (float64, error
 	return r0, nil
 }
 
+// ObjDescriptionByOidAndName calls the stored function 'pg_catalog.obj_description(oid, name) text' on db.
+func ObjDescriptionByOidAndName(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (string, error) {
+	// call pg_catalog.obj_description
+	const sqlstr = `SELECT * FROM pg_catalog.obj_description($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // ObjDescriptionByOid calls the stored function 'pg_catalog.obj_description(oid) text' on db.
 func ObjDescriptionByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
 	// call pg_catalog.obj_description
@@ -23994,34 +24007,8 @@ func ObjDescriptionByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (string, er
 	return r0, nil
 }
 
-// ObjDescriptionByOidAndName calls the stored function 'pg_catalog.obj_description(oid, name) text' on db.
-func ObjDescriptionByOidAndName(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Name) (string, error) {
-	// call pg_catalog.obj_description
-	const sqlstr = `SELECT * FROM pg_catalog.obj_description($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// OctetLengthByBit calls the stored function 'pg_catalog.octet_length(bit) integer' on db.
-func OctetLengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
-	// call pg_catalog.octet_length
-	const sqlstr = `SELECT * FROM pg_catalog.octet_length($1)`
-	// run
-	var r0 int
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// OctetLengthByBytea calls the stored function 'pg_catalog.octet_length(bytea) integer' on db.
-func OctetLengthByBytea(ctx context.Context, db DB, p0 []byte) (int, error) {
+// OctetLengthByText calls the stored function 'pg_catalog.octet_length(text) integer' on db.
+func OctetLengthByText(ctx context.Context, db DB, p0 string) (int, error) {
 	// call pg_catalog.octet_length
 	const sqlstr = `SELECT * FROM pg_catalog.octet_length($1)`
 	// run
@@ -24046,8 +24033,21 @@ func OctetLengthByCharacter(ctx context.Context, db DB, p0 string) (int, error) 
 	return r0, nil
 }
 
-// OctetLengthByText calls the stored function 'pg_catalog.octet_length(text) integer' on db.
-func OctetLengthByText(ctx context.Context, db DB, p0 string) (int, error) {
+// OctetLengthByBit calls the stored function 'pg_catalog.octet_length(bit) integer' on db.
+func OctetLengthByBit(ctx context.Context, db DB, p0 uint8) (int, error) {
+	// call pg_catalog.octet_length
+	const sqlstr = `SELECT * FROM pg_catalog.octet_length($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// OctetLengthByBytea calls the stored function 'pg_catalog.octet_length(bytea) integer' on db.
+func OctetLengthByBytea(ctx context.Context, db DB, p0 []byte) (int, error) {
 	// call pg_catalog.octet_length
 	const sqlstr = `SELECT * FROM pg_catalog.octet_length($1)`
 	// run
@@ -24423,47 +24423,8 @@ func OverlapsByTimeWithTimeZoneTimeWithTimeZoneTimeWithTimeZoneAndTimeWithTimeZo
 	return r0, nil
 }
 
-// OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(time without time zone, interval, time without time zone, interval) boolean' on db.
-func OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2 time.Time, p3 []byte) (bool, error) {
-	// call pg_catalog.overlaps
-	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndTimeWithoutTimeZone calls the stored function 'pg_catalog.overlaps(time without time zone, interval, time without time zone, time without time zone) boolean' on db.
-func OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
-	// call pg_catalog.overlaps
-	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(time without time zone, time without time zone, time without time zone, interval) boolean' on db.
-func OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1, p2 time.Time, p3 []byte) (bool, error) {
-	// call pg_catalog.overlaps
-	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndTimeWithoutTimeZone calls the stored function 'pg_catalog.overlaps(time without time zone, time without time zone, time without time zone, time without time zone) boolean' on db.
-func OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndTimeWithoutTimeZone(ctx context.Context, db DB, p0, p1, p2, p3 time.Time) (bool, error) {
+// OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndTimestampWithTimeZone calls the stored function 'pg_catalog.overlaps(timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone) boolean' on db.
+func OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db DB, p0, p1, p2, p3 time.Time) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
@@ -24488,19 +24449,6 @@ func OverlapsByTimestampWithTimeZoneIntervalTimestampWithTimeZoneAndInterval(ctx
 	return r0, nil
 }
 
-// OverlapsByTimestampWithTimeZoneIntervalTimestampWithTimeZoneAndTimestampWithTimeZone calls the stored function 'pg_catalog.overlaps(timestamp with time zone, interval, timestamp with time zone, timestamp with time zone) boolean' on db.
-func OverlapsByTimestampWithTimeZoneIntervalTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
-	// call pg_catalog.overlaps
-	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(timestamp with time zone, timestamp with time zone, timestamp with time zone, interval) boolean' on db.
 func OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndInterval(ctx context.Context, db DB, p0, p1, p2 time.Time, p3 []byte) (bool, error) {
 	// call pg_catalog.overlaps
@@ -24514,8 +24462,8 @@ func OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAn
 	return r0, nil
 }
 
-// OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndTimestampWithTimeZone calls the stored function 'pg_catalog.overlaps(timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone) boolean' on db.
-func OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db DB, p0, p1, p2, p3 time.Time) (bool, error) {
+// OverlapsByTimestampWithTimeZoneIntervalTimestampWithTimeZoneAndTimestampWithTimeZone calls the stored function 'pg_catalog.overlaps(timestamp with time zone, interval, timestamp with time zone, timestamp with time zone) boolean' on db.
+func OverlapsByTimestampWithTimeZoneIntervalTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
@@ -24527,8 +24475,8 @@ func OverlapsByTimestampWithTimeZoneTimestampWithTimeZoneTimestampWithTimeZoneAn
 	return r0, nil
 }
 
-// OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(timestamp without time zone, interval, timestamp without time zone, interval) boolean' on db.
-func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2 time.Time, p3 []byte) (bool, error) {
+// OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndTimeWithoutTimeZone calls the stored function 'pg_catalog.overlaps(time without time zone, time without time zone, time without time zone, time without time zone) boolean' on db.
+func OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndTimeWithoutTimeZone(ctx context.Context, db DB, p0, p1, p2, p3 time.Time) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
@@ -24540,8 +24488,8 @@ func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndInterv
 	return r0, nil
 }
 
-// OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.overlaps(timestamp without time zone, interval, timestamp without time zone, timestamp without time zone) boolean' on db.
-func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
+// OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(time without time zone, interval, time without time zone, interval) boolean' on db.
+func OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2 time.Time, p3 []byte) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
@@ -24553,8 +24501,21 @@ func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndTimest
 	return r0, nil
 }
 
-// OverlapsByTimestampWithoutTimeZoneTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(timestamp without time zone, timestamp without time zone, timestamp without time zone, interval) boolean' on db.
-func OverlapsByTimestampWithoutTimeZoneTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1, p2 time.Time, p3 []byte) (bool, error) {
+// OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(time without time zone, time without time zone, time without time zone, interval) boolean' on db.
+func OverlapsByTimeWithoutTimeZoneTimeWithoutTimeZoneTimeWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1, p2 time.Time, p3 []byte) (bool, error) {
+	// call pg_catalog.overlaps
+	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndTimeWithoutTimeZone calls the stored function 'pg_catalog.overlaps(time without time zone, interval, time without time zone, time without time zone) boolean' on db.
+func OverlapsByTimeWithoutTimeZoneIntervalTimeWithoutTimeZoneAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
 	// call pg_catalog.overlaps
 	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
@@ -24579,54 +24540,54 @@ func OverlapsByTimestampWithoutTimeZoneTimestampWithoutTimeZoneTimestampWithoutT
 	return r0, nil
 }
 
-// OverlayByBitBitAndInteger calls the stored function 'pg_catalog.overlay(bit, bit, integer) bit' on db.
-func OverlayByBitBitAndInteger(ctx context.Context, db DB, p0, p1 uint8, p2 int) (uint8, error) {
-	// call pg_catalog.overlay
-	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3)`
+// OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(timestamp without time zone, interval, timestamp without time zone, interval) boolean' on db.
+func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2 time.Time, p3 []byte) (bool, error) {
+	// call pg_catalog.overlaps
+	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
 	// run
-	var r0 uint8
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return 0, logerror(err)
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
 	}
 	return r0, nil
 }
 
-// OverlayByBitBitIntegerAndInteger calls the stored function 'pg_catalog.overlay(bit, bit, integer, integer) bit' on db.
-func OverlayByBitBitIntegerAndInteger(ctx context.Context, db DB, p0, p1 uint8, p2, p3 int) (uint8, error) {
+// OverlapsByTimestampWithoutTimeZoneTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval calls the stored function 'pg_catalog.overlaps(timestamp without time zone, timestamp without time zone, timestamp without time zone, interval) boolean' on db.
+func OverlapsByTimestampWithoutTimeZoneTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndInterval(ctx context.Context, db DB, p0, p1, p2 time.Time, p3 []byte) (bool, error) {
+	// call pg_catalog.overlaps
+	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.overlaps(timestamp without time zone, interval, timestamp without time zone, timestamp without time zone) boolean' on db.
+func OverlapsByTimestampWithoutTimeZoneIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time, p1 []byte, p2, p3 time.Time) (bool, error) {
+	// call pg_catalog.overlaps
+	const sqlstr = `SELECT * FROM pg_catalog.overlaps($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlayByTextTextIntegerAndInteger calls the stored function 'pg_catalog.overlay(text, text, integer, integer) text' on db.
+func OverlayByTextTextIntegerAndInteger(ctx context.Context, db DB, p0, p1 string, p2, p3 int) (string, error) {
 	// call pg_catalog.overlay
 	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3, $4)`
 	// run
-	var r0 uint8
+	var r0 string
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return 0, logerror(err)
-	}
-	return r0, nil
-}
-
-// OverlayByByteaByteaAndInteger calls the stored function 'pg_catalog.overlay(bytea, bytea, integer) bytea' on db.
-func OverlayByByteaByteaAndInteger(ctx context.Context, db DB, p0, p1 []byte, p2 int) ([]byte, error) {
-	// call pg_catalog.overlay
-	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// OverlayByByteaByteaIntegerAndInteger calls the stored function 'pg_catalog.overlay(bytea, bytea, integer, integer) bytea' on db.
-func OverlayByByteaByteaIntegerAndInteger(ctx context.Context, db DB, p0, p1 []byte, p2, p3 int) ([]byte, error) {
-	// call pg_catalog.overlay
-	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3, $4)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -24644,15 +24605,54 @@ func OverlayByTextTextAndInteger(ctx context.Context, db DB, p0, p1 string, p2 i
 	return r0, nil
 }
 
-// OverlayByTextTextIntegerAndInteger calls the stored function 'pg_catalog.overlay(text, text, integer, integer) text' on db.
-func OverlayByTextTextIntegerAndInteger(ctx context.Context, db DB, p0, p1 string, p2, p3 int) (string, error) {
+// OverlayByBitBitIntegerAndInteger calls the stored function 'pg_catalog.overlay(bit, bit, integer, integer) bit' on db.
+func OverlayByBitBitIntegerAndInteger(ctx context.Context, db DB, p0, p1 uint8, p2, p3 int) (uint8, error) {
 	// call pg_catalog.overlay
 	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3, $4)`
 	// run
-	var r0 string
+	var r0 uint8
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlayByBitBitAndInteger calls the stored function 'pg_catalog.overlay(bit, bit, integer) bit' on db.
+func OverlayByBitBitAndInteger(ctx context.Context, db DB, p0, p1 uint8, p2 int) (uint8, error) {
+	// call pg_catalog.overlay
+	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3)`
+	// run
+	var r0 uint8
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlayByByteaByteaIntegerAndInteger calls the stored function 'pg_catalog.overlay(bytea, bytea, integer, integer) bytea' on db.
+func OverlayByByteaByteaIntegerAndInteger(ctx context.Context, db DB, p0, p1 []byte, p2, p3 int) ([]byte, error) {
+	// call pg_catalog.overlay
+	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3, $4)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// OverlayByByteaByteaAndInteger calls the stored function 'pg_catalog.overlay(bytea, bytea, integer) bytea' on db.
+func OverlayByByteaByteaAndInteger(ctx context.Context, db DB, p0, p1 []byte, p2 int) ([]byte, error) {
+	// call pg_catalog.overlay
+	const sqlstr = `SELECT * FROM pg_catalog.overlay($1, $2, $3)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -24970,11 +24970,11 @@ func PercentileContIntervalFinal(ctx context.Context, db DB, p0 pgtypes.Internal
 }
 
 // PercentileContIntervalMultiFinal calls the stored function 'pg_catalog.percentile_cont_interval_multi_final(internal, double precision) interval' on db.
-func PercentileContIntervalMultiFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 []float64) ([]byte, error) {
+func PercentileContIntervalMultiFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 []float64) ([][]byte, error) {
 	// call pg_catalog.percentile_cont_interval_multi_final
 	const sqlstr = `SELECT * FROM pg_catalog.percentile_cont_interval_multi_final($1, $2)`
 	// run
-	var r0 []byte
+	var r0 [][]byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
@@ -25052,17 +25052,6 @@ func PgAdvisoryLockSharedByIntegerAndInteger(ctx context.Context, db DB, p0, p1 
 	return nil
 }
 
-// PgAdvisoryUnlockAll calls the stored function 'pg_catalog.pg_advisory_unlock_all()' on db.
-func PgAdvisoryUnlockAll(ctx context.Context, db DB) error {
-	// call pg_catalog.pg_advisory_unlock_all
-	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_unlock_all()`
-	// runlogf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
-		return logerror(err)
-	}
-	return nil
-}
-
 // PgAdvisoryUnlockByBigint calls the stored function 'pg_catalog.pg_advisory_unlock(bigint) boolean' on db.
 func PgAdvisoryUnlockByBigint(ctx context.Context, db DB, p0 int64) (bool, error) {
 	// call pg_catalog.pg_advisory_unlock
@@ -25087,6 +25076,17 @@ func PgAdvisoryUnlockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int)
 		return false, logerror(err)
 	}
 	return r0, nil
+}
+
+// PgAdvisoryUnlockAll calls the stored function 'pg_catalog.pg_advisory_unlock_all()' on db.
+func PgAdvisoryUnlockAll(ctx context.Context, db DB) error {
+	// call pg_catalog.pg_advisory_unlock_all
+	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_unlock_all()`
+	// runlogf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
+		return logerror(err)
+	}
+	return nil
 }
 
 // PgAdvisoryUnlockSharedByBigint calls the stored function 'pg_catalog.pg_advisory_unlock_shared(bigint) boolean' on db.
@@ -25160,36 +25160,36 @@ func PgAdvisoryXactLockSharedByIntegerAndInteger(ctx context.Context, db DB, p0,
 }
 
 // PgAvailableExtensionVersions calls the stored function 'pg_catalog.pg_available_extension_versions() (name, text, boolean, boolean, boolean, name, name, text)' on db.
-func PgAvailableExtensionVersions(ctx context.Context, db DB) (pgtypes.Name, string, bool, bool, bool, pgtypes.Name, []pgtypes.Name, string, error) {
+func PgAvailableExtensionVersions(ctx context.Context, db DB) (string, string, bool, bool, bool, string, StringSlice, string, error) {
 	// call pg_catalog.pg_available_extension_versions
 	const sqlstr = `SELECT * FROM pg_catalog.pg_available_extension_versions()`
 	// run
-	var name pgtypes.Name
+	var name string
 	var version string
 	var superuser bool
 	var trusted bool
 	var relocatable bool
-	var schema pgtypes.Name
-	var requires []pgtypes.Name
+	var schema string
+	var requires StringSlice
 	var comment string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&name, &version, &superuser, &trusted, &relocatable, &schema, &requires, &comment); err != nil {
-		return Name{}, "", false, false, false, Name{}, nil, "", logerror(err)
+		return "", "", false, false, false, "", StringSlice{}, "", logerror(err)
 	}
 	return name, version, superuser, trusted, relocatable, schema, requires, comment, nil
 }
 
 // PgAvailableExtensions calls the stored function 'pg_catalog.pg_available_extensions() (name, text, text)' on db.
-func PgAvailableExtensions(ctx context.Context, db DB) (pgtypes.Name, string, string, error) {
+func PgAvailableExtensions(ctx context.Context, db DB) (string, string, string, error) {
 	// call pg_catalog.pg_available_extensions
 	const sqlstr = `SELECT * FROM pg_catalog.pg_available_extensions()`
 	// run
-	var name pgtypes.Name
+	var name string
 	var defaultVersion string
 	var comment string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&name, &defaultVersion, &comment); err != nil {
-		return Name{}, "", "", logerror(err)
+		return "", "", "", logerror(err)
 	}
 	return name, defaultVersion, comment, nil
 }
@@ -25247,7 +25247,7 @@ func PgCancelBackend(ctx context.Context, db DB, p0 int) (bool, error) {
 }
 
 // PgCharToEncoding calls the stored function 'pg_catalog.pg_char_to_encoding(name) integer' on db.
-func PgCharToEncoding(ctx context.Context, db DB, p0 pgtypes.Name) (int, error) {
+func PgCharToEncoding(ctx context.Context, db DB, p0 string) (int, error) {
 	// call pg_catalog.pg_char_to_encoding
 	const sqlstr = `SELECT * FROM pg_catalog.pg_char_to_encoding($1)`
 	// run
@@ -25260,14 +25260,14 @@ func PgCharToEncoding(ctx context.Context, db DB, p0 pgtypes.Name) (int, error) 
 }
 
 // PgClientEncoding calls the stored function 'pg_catalog.pg_client_encoding() name' on db.
-func PgClientEncoding(ctx context.Context, db DB) (pgtypes.Name, error) {
+func PgClientEncoding(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.pg_client_encoding
 	const sqlstr = `SELECT * FROM pg_catalog.pg_client_encoding()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -25463,100 +25463,100 @@ func PgConversionIsVisible(ctx context.Context, db DB, p0 pgtypes.Oid) (bool, er
 	return r0, nil
 }
 
-// PgCopyLogicalReplicationSlotBySrcSlotNameAndDstSlotName calls the stored function 'pg_catalog.pg_copy_logical_replication_slot(name, name) (name, pg_lsn)' on db.
-func PgCopyLogicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Context, db DB, srcSlotName, dstSlotName pgtypes.Name) (pgtypes.Name, pgtypes.PgLsn, error) {
+// PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameTemporaryAndPlugin calls the stored function 'pg_catalog.pg_copy_logical_replication_slot(name, name, boolean, name) (name, pg_lsn)' on db.
+func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameTemporaryAndPlugin(ctx context.Context, db DB, srcSlotName, dstSlotName string, temporary bool, plugin string) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_copy_logical_replication_slot
-	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_logical_replication_slot($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_logical_replication_slot($1, $2, $3, $4)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
-	logf(sqlstr, srcSlotName, dstSlotName)
-	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+	logf(sqlstr, srcSlotName, dstSlotName, temporary, plugin)
+	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary, plugin).Scan(&slotName, &lsn); err != nil {
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
 
 // PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary calls the stored function 'pg_catalog.pg_copy_logical_replication_slot(name, name, boolean) (name, pg_lsn)' on db.
-func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx context.Context, db DB, srcSlotName, dstSlotName pgtypes.Name, temporary bool) (pgtypes.Name, pgtypes.PgLsn, error) {
+func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx context.Context, db DB, srcSlotName, dstSlotName string, temporary bool) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_copy_logical_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_logical_replication_slot($1, $2, $3)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
 
-// PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameTemporaryAndPlugin calls the stored function 'pg_catalog.pg_copy_logical_replication_slot(name, name, boolean, name) (name, pg_lsn)' on db.
-func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameTemporaryAndPlugin(ctx context.Context, db DB, srcSlotName, dstSlotName pgtypes.Name, temporary bool, plugin pgtypes.Name) (pgtypes.Name, pgtypes.PgLsn, error) {
+// PgCopyLogicalReplicationSlotBySrcSlotNameAndDstSlotName calls the stored function 'pg_catalog.pg_copy_logical_replication_slot(name, name) (name, pg_lsn)' on db.
+func PgCopyLogicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Context, db DB, srcSlotName, dstSlotName string) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_copy_logical_replication_slot
-	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_logical_replication_slot($1, $2, $3, $4)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_logical_replication_slot($1, $2)`
 	// run
-	var slotName pgtypes.Name
-	var lsn pgtypes.PgLsn
-	logf(sqlstr, srcSlotName, dstSlotName, temporary, plugin)
-	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary, plugin).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
-	}
-	return slotName, lsn, nil
-}
-
-// PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName calls the stored function 'pg_catalog.pg_copy_physical_replication_slot(name, name) (name, pg_lsn)' on db.
-func PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Context, db DB, srcSlotName, dstSlotName pgtypes.Name) (pgtypes.Name, pgtypes.PgLsn, error) {
-	// call pg_catalog.pg_copy_physical_replication_slot
-	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_physical_replication_slot($1, $2)`
-	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
 
 // PgCopyPhysicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary calls the stored function 'pg_catalog.pg_copy_physical_replication_slot(name, name, boolean) (name, pg_lsn)' on db.
-func PgCopyPhysicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx context.Context, db DB, srcSlotName, dstSlotName pgtypes.Name, temporary bool) (pgtypes.Name, pgtypes.PgLsn, error) {
+func PgCopyPhysicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx context.Context, db DB, srcSlotName, dstSlotName string, temporary bool) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_copy_physical_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_physical_replication_slot($1, $2, $3)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
+	}
+	return slotName, lsn, nil
+}
+
+// PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName calls the stored function 'pg_catalog.pg_copy_physical_replication_slot(name, name) (name, pg_lsn)' on db.
+func PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Context, db DB, srcSlotName, dstSlotName string) (string, pgtypes.PgLsn, error) {
+	// call pg_catalog.pg_copy_physical_replication_slot
+	const sqlstr = `SELECT * FROM pg_catalog.pg_copy_physical_replication_slot($1, $2)`
+	// run
+	var slotName string
+	var lsn pgtypes.PgLsn
+	logf(sqlstr, srcSlotName, dstSlotName)
+	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName).Scan(&slotName, &lsn); err != nil {
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
 
 // PgCreateLogicalReplicationSlot calls the stored function 'pg_catalog.pg_create_logical_replication_slot(name, name, boolean) (name, pg_lsn)' on db.
-func PgCreateLogicalReplicationSlot(ctx context.Context, db DB, slotName, plugin pgtypes.Name, temporary bool) (pgtypes.Name, pgtypes.PgLsn, error) {
+func PgCreateLogicalReplicationSlot(ctx context.Context, db DB, slotName, plugin string, temporary bool) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_create_logical_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_create_logical_replication_slot($1, $2, $3)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, slotName, plugin, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, plugin, temporary).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
 
 // PgCreatePhysicalReplicationSlot calls the stored function 'pg_catalog.pg_create_physical_replication_slot(name, boolean, boolean) (name, pg_lsn)' on db.
-func PgCreatePhysicalReplicationSlot(ctx context.Context, db DB, slotName pgtypes.Name, immediatelyReserve, temporary bool) (pgtypes.Name, pgtypes.PgLsn, error) {
+func PgCreatePhysicalReplicationSlot(ctx context.Context, db DB, slotName string, immediatelyReserve, temporary bool) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_create_physical_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_create_physical_replication_slot($1, $2, $3)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, slotName, immediatelyReserve, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, immediatelyReserve, temporary).Scan(&slotName, &lsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25697,7 +25697,7 @@ func PgCursor(ctx context.Context, db DB) (string, string, bool, bool, bool, tim
 }
 
 // PgDatabaseSizeByName calls the stored function 'pg_catalog.pg_database_size(name) bigint' on db.
-func PgDatabaseSizeByName(ctx context.Context, db DB, p0 pgtypes.Name) (int64, error) {
+func PgDatabaseSizeByName(ctx context.Context, db DB, p0 string) (int64, error) {
 	// call pg_catalog.pg_database_size
 	const sqlstr = `SELECT * FROM pg_catalog.pg_database_size($1)`
 	// run
@@ -25788,7 +25788,7 @@ func PgDescribeObject(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 int) (s
 }
 
 // PgDropReplicationSlot calls the stored function 'pg_catalog.pg_drop_replication_slot(name)' on db.
-func PgDropReplicationSlot(ctx context.Context, db DB, p0 pgtypes.Name) error {
+func PgDropReplicationSlot(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_drop_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_drop_replication_slot($1)`
 	// runlogf(sqlstr)
@@ -25812,14 +25812,14 @@ func PgEncodingMaxLength(ctx context.Context, db DB, p0 int) (int, error) {
 }
 
 // PgEncodingToChar calls the stored function 'pg_catalog.pg_encoding_to_char(integer) name' on db.
-func PgEncodingToChar(ctx context.Context, db DB, p0 int) (pgtypes.Name, error) {
+func PgEncodingToChar(ctx context.Context, db DB, p0 int) (string, error) {
 	// call pg_catalog.pg_encoding_to_char
 	const sqlstr = `SELECT * FROM pg_catalog.pg_encoding_to_char($1)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -25920,7 +25920,7 @@ func PgExtensionConfigDump(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 s
 }
 
 // PgExtensionUpdatePaths calls the stored function 'pg_catalog.pg_extension_update_paths(name) (text, text, text)' on db.
-func PgExtensionUpdatePaths(ctx context.Context, db DB, name pgtypes.Name) (string, string, string, error) {
+func PgExtensionUpdatePaths(ctx context.Context, db DB, name string) (string, string, string, error) {
 	// call pg_catalog.pg_extension_update_paths
 	const sqlstr = `SELECT * FROM pg_catalog.pg_extension_update_paths($1)`
 	// run
@@ -26200,12 +26200,12 @@ func PgGetReplicaIdentityIndex(ctx context.Context, db DB, p0 pgtypes.Regclass) 
 }
 
 // PgGetReplicationSlots calls the stored function 'pg_catalog.pg_get_replication_slots() (name, name, text, oid, boolean, boolean, integer, xid, xid, pg_lsn, pg_lsn, text, bigint)' on db.
-func PgGetReplicationSlots(ctx context.Context, db DB) (pgtypes.Name, pgtypes.Name, string, pgtypes.Oid, bool, bool, int, pgtypes.Xid, pgtypes.Xid, pgtypes.PgLsn, pgtypes.PgLsn, string, int64, error) {
+func PgGetReplicationSlots(ctx context.Context, db DB) (string, string, string, pgtypes.Oid, bool, bool, int, pgtypes.Xid, pgtypes.Xid, pgtypes.PgLsn, pgtypes.PgLsn, string, int64, error) {
 	// call pg_catalog.pg_get_replication_slots
 	const sqlstr = `SELECT * FROM pg_catalog.pg_get_replication_slots()`
 	// run
-	var slotName pgtypes.Name
-	var plugin pgtypes.Name
+	var slotName string
+	var plugin string
 	var slotType string
 	var datoid pgtypes.Oid
 	var temporary bool
@@ -26219,7 +26219,7 @@ func PgGetReplicationSlots(ctx context.Context, db DB) (pgtypes.Name, pgtypes.Na
 	var safeWalSize int64
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&slotName, &plugin, &slotType, &datoid, &temporary, &active, &activePid, &xmin, &catalogXmin, &restartLsn, &confirmedFlushLsn, &walStatus, &safeWalSize); err != nil {
-		return Name{}, Name{}, "", Oid{}, false, false, 0, Xid{}, Xid{}, PgLsn{}, PgLsn{}, "", 0, logerror(err)
+		return "", "", "", Oid{}, false, false, 0, Xid{}, Xid{}, PgLsn{}, PgLsn{}, "", 0, logerror(err)
 	}
 	return slotName, plugin, slotType, datoid, temporary, active, activePid, xmin, catalogXmin, restartLsn, confirmedFlushLsn, walStatus, safeWalSize, nil
 }
@@ -26319,14 +26319,27 @@ func PgGetTriggerdefByOidAndBoolean(ctx context.Context, db DB, p0 pgtypes.Oid, 
 }
 
 // PgGetUserbyid calls the stored function 'pg_catalog.pg_get_userbyid(oid) name' on db.
-func PgGetUserbyid(ctx context.Context, db DB, p0 pgtypes.Oid) (pgtypes.Name, error) {
+func PgGetUserbyid(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
 	// call pg_catalog.pg_get_userbyid
 	const sqlstr = `SELECT * FROM pg_catalog.pg_get_userbyid($1)`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgGetViewdefByText calls the stored function 'pg_catalog.pg_get_viewdef(text) text' on db.
+func PgGetViewdefByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.pg_get_viewdef
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_viewdef($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -26339,6 +26352,19 @@ func PgGetViewdefByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (string, erro
 	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgGetViewdefByTextAndBoolean calls the stored function 'pg_catalog.pg_get_viewdef(text, boolean) text' on db.
+func PgGetViewdefByTextAndBoolean(ctx context.Context, db DB, p0 string, p1 bool) (string, error) {
+	// call pg_catalog.pg_get_viewdef
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_viewdef($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -26370,47 +26396,8 @@ func PgGetViewdefByOidAndInteger(ctx context.Context, db DB, p0 pgtypes.Oid, p1 
 	return r0, nil
 }
 
-// PgGetViewdefByText calls the stored function 'pg_catalog.pg_get_viewdef(text) text' on db.
-func PgGetViewdefByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.pg_get_viewdef
-	const sqlstr = `SELECT * FROM pg_catalog.pg_get_viewdef($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// PgGetViewdefByTextAndBoolean calls the stored function 'pg_catalog.pg_get_viewdef(text, boolean) text' on db.
-func PgGetViewdefByTextAndBoolean(ctx context.Context, db DB, p0 string, p1 bool) (string, error) {
-	// call pg_catalog.pg_get_viewdef
-	const sqlstr = `SELECT * FROM pg_catalog.pg_get_viewdef($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// PgHasRoleByNameAndText calls the stored function 'pg_catalog.pg_has_role(name, text) boolean' on db.
-func PgHasRoleByNameAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 string) (bool, error) {
-	// call pg_catalog.pg_has_role
-	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // PgHasRoleByNameNameAndText calls the stored function 'pg_catalog.pg_has_role(name, name, text) boolean' on db.
-func PgHasRoleByNameNameAndText(ctx context.Context, db DB, p0, p1 pgtypes.Name, p2 string) (bool, error) {
+func PgHasRoleByNameNameAndText(ctx context.Context, db DB, p0, p1, p2 string) (bool, error) {
 	// call pg_catalog.pg_has_role
 	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2, $3)`
 	// run
@@ -26423,7 +26410,7 @@ func PgHasRoleByNameNameAndText(ctx context.Context, db DB, p0, p1 pgtypes.Name,
 }
 
 // PgHasRoleByNameOidAndText calls the stored function 'pg_catalog.pg_has_role(name, oid, text) boolean' on db.
-func PgHasRoleByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 pgtypes.Oid, p2 string) (bool, error) {
+func PgHasRoleByNameOidAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid, p2 string) (bool, error) {
 	// call pg_catalog.pg_has_role
 	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2, $3)`
 	// run
@@ -26435,21 +26422,8 @@ func PgHasRoleByNameOidAndText(ctx context.Context, db DB, p0 pgtypes.Name, p1 p
 	return r0, nil
 }
 
-// PgHasRoleByOidAndText calls the stored function 'pg_catalog.pg_has_role(oid, text) boolean' on db.
-func PgHasRoleByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
-	// call pg_catalog.pg_has_role
-	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
 // PgHasRoleByOidNameAndText calls the stored function 'pg_catalog.pg_has_role(oid, name, text) boolean' on db.
-func PgHasRoleByOidNameAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Name, p2 string) (bool, error) {
+func PgHasRoleByOidNameAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1, p2 string) (bool, error) {
 	// call pg_catalog.pg_has_role
 	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2, $3)`
 	// run
@@ -26469,6 +26443,32 @@ func PgHasRoleByOidOidAndText(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2
 	var r0 bool
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgHasRoleByNameAndText calls the stored function 'pg_catalog.pg_has_role(name, text) boolean' on db.
+func PgHasRoleByNameAndText(ctx context.Context, db DB, p0, p1 string) (bool, error) {
+	// call pg_catalog.pg_has_role
+	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgHasRoleByOidAndText calls the stored function 'pg_catalog.pg_has_role(oid, text) boolean' on db.
+func PgHasRoleByOidAndText(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (bool, error) {
+	// call pg_catalog.pg_has_role
+	const sqlstr = `SELECT * FROM pg_catalog.pg_has_role($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -26775,19 +26775,6 @@ func PgLockStatus(ctx context.Context, db DB) (string, pgtypes.Oid, pgtypes.Oid,
 	return locktype, database, relation, page, tuple, virtualxid, transactionid, classid, objid, objsubid, virtualtransaction, pid, mode, granted, fastpath, nil
 }
 
-// PgLogicalEmitMessageByBooleanTextAndBytea calls the stored function 'pg_catalog.pg_logical_emit_message(boolean, text, bytea) pg_lsn' on db.
-func PgLogicalEmitMessageByBooleanTextAndBytea(ctx context.Context, db DB, p0 bool, p1 string, p2 []byte) (pgtypes.PgLsn, error) {
-	// call pg_catalog.pg_logical_emit_message
-	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_emit_message($1, $2, $3)`
-	// run
-	var r0 pgtypes.PgLsn
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // PgLogicalEmitMessageByBooleanTextAndText calls the stored function 'pg_catalog.pg_logical_emit_message(boolean, text, text) pg_lsn' on db.
 func PgLogicalEmitMessageByBooleanTextAndText(ctx context.Context, db DB, p0 bool, p1, p2 string) (pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_logical_emit_message
@@ -26801,8 +26788,21 @@ func PgLogicalEmitMessageByBooleanTextAndText(ctx context.Context, db DB, p0 boo
 	return r0, nil
 }
 
+// PgLogicalEmitMessageByBooleanTextAndBytea calls the stored function 'pg_catalog.pg_logical_emit_message(boolean, text, bytea) pg_lsn' on db.
+func PgLogicalEmitMessageByBooleanTextAndBytea(ctx context.Context, db DB, p0 bool, p1 string, p2 []byte) (pgtypes.PgLsn, error) {
+	// call pg_catalog.pg_logical_emit_message
+	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_emit_message($1, $2, $3)`
+	// run
+	var r0 pgtypes.PgLsn
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return PgLsn{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // PgLogicalSlotGetBinaryChanges calls the stored function 'pg_catalog.pg_logical_slot_get_binary_changes(name, pg_lsn, integer, text) (pg_lsn, xid, bytea)' on db.
-func PgLogicalSlotGetBinaryChanges(ctx context.Context, db DB, slotName pgtypes.Name, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, []byte, error) {
+func PgLogicalSlotGetBinaryChanges(ctx context.Context, db DB, slotName string, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, []byte, error) {
 	// call pg_catalog.pg_logical_slot_get_binary_changes
 	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_slot_get_binary_changes($1, $2, $3, $4)`
 	// run
@@ -26817,7 +26817,7 @@ func PgLogicalSlotGetBinaryChanges(ctx context.Context, db DB, slotName pgtypes.
 }
 
 // PgLogicalSlotGetChanges calls the stored function 'pg_catalog.pg_logical_slot_get_changes(name, pg_lsn, integer, text) (pg_lsn, xid, text)' on db.
-func PgLogicalSlotGetChanges(ctx context.Context, db DB, slotName pgtypes.Name, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, string, error) {
+func PgLogicalSlotGetChanges(ctx context.Context, db DB, slotName string, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, string, error) {
 	// call pg_catalog.pg_logical_slot_get_changes
 	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_slot_get_changes($1, $2, $3, $4)`
 	// run
@@ -26832,7 +26832,7 @@ func PgLogicalSlotGetChanges(ctx context.Context, db DB, slotName pgtypes.Name, 
 }
 
 // PgLogicalSlotPeekBinaryChanges calls the stored function 'pg_catalog.pg_logical_slot_peek_binary_changes(name, pg_lsn, integer, text) (pg_lsn, xid, bytea)' on db.
-func PgLogicalSlotPeekBinaryChanges(ctx context.Context, db DB, slotName pgtypes.Name, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, []byte, error) {
+func PgLogicalSlotPeekBinaryChanges(ctx context.Context, db DB, slotName string, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, []byte, error) {
 	// call pg_catalog.pg_logical_slot_peek_binary_changes
 	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_slot_peek_binary_changes($1, $2, $3, $4)`
 	// run
@@ -26847,7 +26847,7 @@ func PgLogicalSlotPeekBinaryChanges(ctx context.Context, db DB, slotName pgtypes
 }
 
 // PgLogicalSlotPeekChanges calls the stored function 'pg_catalog.pg_logical_slot_peek_changes(name, pg_lsn, integer, text) (pg_lsn, xid, text)' on db.
-func PgLogicalSlotPeekChanges(ctx context.Context, db DB, slotName pgtypes.Name, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, string, error) {
+func PgLogicalSlotPeekChanges(ctx context.Context, db DB, slotName string, uptoLsn pgtypes.PgLsn, uptoNchanges int, options StringSlice) (pgtypes.PgLsn, pgtypes.Xid, string, error) {
 	// call pg_catalog.pg_logical_slot_peek_changes
 	const sqlstr = `SELECT * FROM pg_catalog.pg_logical_slot_peek_changes($1, $2, $3, $4)`
 	// run
@@ -27227,7 +27227,7 @@ func PgNdistinctSend(ctx context.Context, db DB, p0 pgtypes.PgNdistinct) ([]byte
 }
 
 // PgNextoid calls the stored function 'pg_catalog.pg_nextoid(regclass, name, regclass) oid' on db.
-func PgNextoid(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 pgtypes.Name, p2 pgtypes.Regclass) (pgtypes.Oid, error) {
+func PgNextoid(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 string, p2 pgtypes.Regclass) (pgtypes.Oid, error) {
 	// call pg_catalog.pg_nextoid
 	const sqlstr = `SELECT * FROM pg_catalog.pg_nextoid($1, $2, $3)`
 	// run
@@ -27444,14 +27444,14 @@ func PgPromote(ctx context.Context, db DB, wait bool, waitSeconds int) (bool, er
 	return r0, nil
 }
 
-// PgReadBinaryFileByText calls the stored function 'pg_catalog.pg_read_binary_file(text) bytea' on db.
-func PgReadBinaryFileByText(ctx context.Context, db DB, p0 string) ([]byte, error) {
+// PgReadBinaryFileByTextBigintBigintAndBoolean calls the stored function 'pg_catalog.pg_read_binary_file(text, bigint, bigint, boolean) bytea' on db.
+func PgReadBinaryFileByTextBigintBigintAndBoolean(ctx context.Context, db DB, p0 string, p1, p2 int64, p3 bool) ([]byte, error) {
 	// call pg_catalog.pg_read_binary_file
-	const sqlstr = `SELECT * FROM pg_catalog.pg_read_binary_file($1)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_read_binary_file($1, $2, $3, $4)`
 	// run
 	var r0 []byte
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
 		return nil, logerror(err)
 	}
 	return r0, nil
@@ -27470,28 +27470,15 @@ func PgReadBinaryFileByTextBigintAndBigint(ctx context.Context, db DB, p0 string
 	return r0, nil
 }
 
-// PgReadBinaryFileByTextBigintBigintAndBoolean calls the stored function 'pg_catalog.pg_read_binary_file(text, bigint, bigint, boolean) bytea' on db.
-func PgReadBinaryFileByTextBigintBigintAndBoolean(ctx context.Context, db DB, p0 string, p1, p2 int64, p3 bool) ([]byte, error) {
+// PgReadBinaryFileByText calls the stored function 'pg_catalog.pg_read_binary_file(text) bytea' on db.
+func PgReadBinaryFileByText(ctx context.Context, db DB, p0 string) ([]byte, error) {
 	// call pg_catalog.pg_read_binary_file
-	const sqlstr = `SELECT * FROM pg_catalog.pg_read_binary_file($1, $2, $3, $4)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_read_binary_file($1)`
 	// run
 	var r0 []byte
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// PgReadFileByText calls the stored function 'pg_catalog.pg_read_file(text) text' on db.
-func PgReadFileByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.pg_read_file
-	const sqlstr = `SELECT * FROM pg_catalog.pg_read_file($1)`
-	// run
-	var r0 string
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -27517,6 +27504,19 @@ func PgReadFileByTextBigintBigintAndBoolean(ctx context.Context, db DB, p0 strin
 	var r0 string
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgReadFileByText calls the stored function 'pg_catalog.pg_read_file(text) text' on db.
+func PgReadFileByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.pg_read_file
+	const sqlstr = `SELECT * FROM pg_catalog.pg_read_file($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -27758,15 +27758,15 @@ func PgReplicationOriginXactSetup(ctx context.Context, db DB, p0 pgtypes.PgLsn, 
 }
 
 // PgReplicationSlotAdvance calls the stored function 'pg_catalog.pg_replication_slot_advance(name, pg_lsn) (name, pg_lsn)' on db.
-func PgReplicationSlotAdvance(ctx context.Context, db DB, slotName pgtypes.Name, uptoLsn pgtypes.PgLsn) (pgtypes.Name, pgtypes.PgLsn, error) {
+func PgReplicationSlotAdvance(ctx context.Context, db DB, slotName string, uptoLsn pgtypes.PgLsn) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_replication_slot_advance
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_slot_advance($1, $2)`
 	// run
-	var slotName pgtypes.Name
+	var slotName string
 	var endLsn pgtypes.PgLsn
 	logf(sqlstr, slotName, uptoLsn)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn).Scan(&slotName, &endLsn); err != nil {
-		return Name{}, PgLsn{}, logerror(err)
+		return "", PgLsn{}, logerror(err)
 	}
 	return slotName, endLsn, nil
 }
@@ -29544,8 +29544,8 @@ func PgTablespaceLocation(ctx context.Context, db DB, p0 pgtypes.Oid) (string, e
 	return r0, nil
 }
 
-// PgTablespaceSizeByName calls the stored function 'pg_catalog.pg_tablespace_size(name) bigint' on db.
-func PgTablespaceSizeByName(ctx context.Context, db DB, p0 pgtypes.Name) (int64, error) {
+// PgTablespaceSizeByOid calls the stored function 'pg_catalog.pg_tablespace_size(oid) bigint' on db.
+func PgTablespaceSizeByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
 	// call pg_catalog.pg_tablespace_size
 	const sqlstr = `SELECT * FROM pg_catalog.pg_tablespace_size($1)`
 	// run
@@ -29557,8 +29557,8 @@ func PgTablespaceSizeByName(ctx context.Context, db DB, p0 pgtypes.Name) (int64,
 	return r0, nil
 }
 
-// PgTablespaceSizeByOid calls the stored function 'pg_catalog.pg_tablespace_size(oid) bigint' on db.
-func PgTablespaceSizeByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+// PgTablespaceSizeByName calls the stored function 'pg_catalog.pg_tablespace_size(name) bigint' on db.
+func PgTablespaceSizeByName(ctx context.Context, db DB, p0 string) (int64, error) {
 	// call pg_catalog.pg_tablespace_size
 	const sqlstr = `SELECT * FROM pg_catalog.pg_tablespace_size($1)`
 	// run
@@ -29923,19 +29923,6 @@ func PgXactStatus(ctx context.Context, db DB, p0 pgtypes.Xid8) (string, error) {
 	return r0, nil
 }
 
-// PhrasetoTsqueryByRegconfigAndText calls the stored function 'pg_catalog.phraseto_tsquery(regconfig, text) tsquery' on db.
-func PhrasetoTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string) (pgtypes.Tsquery, error) {
-	// call pg_catalog.phraseto_tsquery
-	const sqlstr = `SELECT * FROM pg_catalog.phraseto_tsquery($1, $2)`
-	// run
-	var r0 pgtypes.Tsquery
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // PhrasetoTsqueryByText calls the stored function 'pg_catalog.phraseto_tsquery(text) tsquery' on db.
 func PhrasetoTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsquery, error) {
 	// call pg_catalog.phraseto_tsquery
@@ -29944,6 +29931,19 @@ func PhrasetoTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsque
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Tsquery{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// PhrasetoTsqueryByRegconfigAndText calls the stored function 'pg_catalog.phraseto_tsquery(regconfig, text) tsquery' on db.
+func PhrasetoTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string) (pgtypes.Tsquery, error) {
+	// call pg_catalog.phraseto_tsquery
+	const sqlstr = `SELECT * FROM pg_catalog.phraseto_tsquery($1, $2)`
+	// run
+	var r0 pgtypes.Tsquery
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return Tsquery{}, logerror(err)
 	}
 	return r0, nil
@@ -30023,58 +30023,6 @@ func PlpgsqlValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	return nil
 }
 
-// PointAbove calls the stored function 'pg_catalog.point_above(point, point) boolean' on db.
-func PointAbove(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
-	// call pg_catalog.point_above
-	const sqlstr = `SELECT * FROM pg_catalog.point_above($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// PointAdd calls the stored function 'pg_catalog.point_add(point, point) point' on db.
-func PointAdd(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, error) {
-	// call pg_catalog.point_add
-	const sqlstr = `SELECT * FROM pg_catalog.point_add($1, $2)`
-	// run
-	var r0 pgtypes.Point
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// PointBelow calls the stored function 'pg_catalog.point_below(point, point) boolean' on db.
-func PointBelow(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
-	// call pg_catalog.point_below
-	const sqlstr = `SELECT * FROM pg_catalog.point_below($1, $2)`
-	// run
-	var r0 bool
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
-	}
-	return r0, nil
-}
-
-// PointByBox calls the stored function 'pg_catalog.point(box) point' on db.
-func PointByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Point, error) {
-	// call pg_catalog.point
-	const sqlstr = `SELECT * FROM pg_catalog.point($1)`
-	// run
-	var r0 pgtypes.Point
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // PointByCircle calls the stored function 'pg_catalog.point(circle) point' on db.
 func PointByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Point, error) {
 	// call pg_catalog.point
@@ -30127,6 +30075,19 @@ func PointByPath(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Point, er
 	return r0, nil
 }
 
+// PointByBox calls the stored function 'pg_catalog.point(box) point' on db.
+func PointByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Point, error) {
+	// call pg_catalog.point
+	const sqlstr = `SELECT * FROM pg_catalog.point($1)`
+	// run
+	var r0 pgtypes.Point
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Point{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // PointByPolygon calls the stored function 'pg_catalog.point(polygon) point' on db.
 func PointByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Point, error) {
 	// call pg_catalog.point
@@ -30136,6 +30097,45 @@ func PointByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Poi
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return Point{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// PointAbove calls the stored function 'pg_catalog.point_above(point, point) boolean' on db.
+func PointAbove(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
+	// call pg_catalog.point_above
+	const sqlstr = `SELECT * FROM pg_catalog.point_above($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// PointAdd calls the stored function 'pg_catalog.point_add(point, point) point' on db.
+func PointAdd(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, error) {
+	// call pg_catalog.point_add
+	const sqlstr = `SELECT * FROM pg_catalog.point_add($1, $2)`
+	// run
+	var r0 pgtypes.Point
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Point{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// PointBelow calls the stored function 'pg_catalog.point_below(point, point) boolean' on db.
+func PointBelow(ctx context.Context, db DB, p0, p1 pgtypes.Point) (bool, error) {
+	// call pg_catalog.point_below
+	const sqlstr = `SELECT * FROM pg_catalog.point_below($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
 	}
 	return r0, nil
 }
@@ -30543,8 +30543,8 @@ func PolygonByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Polygon, 
 	return r0, nil
 }
 
-// PolygonByCircle calls the stored function 'pg_catalog.polygon(circle) polygon' on db.
-func PolygonByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Polygon, error) {
+// PolygonByPath calls the stored function 'pg_catalog.polygon(path) polygon' on db.
+func PolygonByPath(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Polygon, error) {
 	// call pg_catalog.polygon
 	const sqlstr = `SELECT * FROM pg_catalog.polygon($1)`
 	// run
@@ -30569,8 +30569,8 @@ func PolygonByIntegerAndCircle(ctx context.Context, db DB, p0 int, p1 pgtypes.Ci
 	return r0, nil
 }
 
-// PolygonByPath calls the stored function 'pg_catalog.polygon(path) polygon' on db.
-func PolygonByPath(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Polygon, error) {
+// PolygonByCircle calls the stored function 'pg_catalog.polygon(circle) polygon' on db.
+func PolygonByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Polygon, error) {
 	// call pg_catalog.polygon
 	const sqlstr = `SELECT * FROM pg_catalog.polygon($1)`
 	// run
@@ -30905,19 +30905,6 @@ func QuoteIdent(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// QuoteLiteralByAnyelement calls the stored function 'pg_catalog.quote_literal(anyelement) text' on db.
-func QuoteLiteralByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement) (string, error) {
-	// call pg_catalog.quote_literal
-	const sqlstr = `SELECT * FROM pg_catalog.quote_literal($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // QuoteLiteralByText calls the stored function 'pg_catalog.quote_literal(text) text' on db.
 func QuoteLiteralByText(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.quote_literal
@@ -30931,10 +30918,10 @@ func QuoteLiteralByText(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// QuoteNullableByAnyelement calls the stored function 'pg_catalog.quote_nullable(anyelement) text' on db.
-func QuoteNullableByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement) (string, error) {
-	// call pg_catalog.quote_nullable
-	const sqlstr = `SELECT * FROM pg_catalog.quote_nullable($1)`
+// QuoteLiteralByAnyelement calls the stored function 'pg_catalog.quote_literal(anyelement) text' on db.
+func QuoteLiteralByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement) (string, error) {
+	// call pg_catalog.quote_literal
+	const sqlstr = `SELECT * FROM pg_catalog.quote_literal($1)`
 	// run
 	var r0 string
 	logf(sqlstr, p0)
@@ -30946,6 +30933,19 @@ func QuoteNullableByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement
 
 // QuoteNullableByText calls the stored function 'pg_catalog.quote_nullable(text) text' on db.
 func QuoteNullableByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.quote_nullable
+	const sqlstr = `SELECT * FROM pg_catalog.quote_nullable($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// QuoteNullableByAnyelement calls the stored function 'pg_catalog.quote_nullable(anyelement) text' on db.
+func QuoteNullableByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement) (string, error) {
 	// call pg_catalog.quote_nullable
 	const sqlstr = `SELECT * FROM pg_catalog.quote_nullable($1)`
 	// run
@@ -32257,19 +32257,6 @@ func RoundByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, er
 	return r0, nil
 }
 
-// RoundByNumeric calls the stored function 'pg_catalog.round(numeric) numeric' on db.
-func RoundByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
-	// call pg_catalog.round
-	const sqlstr = `SELECT * FROM pg_catalog.round($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
 // RoundByNumericAndInteger calls the stored function 'pg_catalog.round(numeric, integer) numeric' on db.
 func RoundByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (float64, error) {
 	// call pg_catalog.round
@@ -32278,6 +32265,19 @@ func RoundByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (f
 	var r0 float64
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// RoundByNumeric calls the stored function 'pg_catalog.round(numeric) numeric' on db.
+func RoundByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+	// call pg_catalog.round
+	const sqlstr = `SELECT * FROM pg_catalog.round($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -32335,19 +32335,6 @@ func RowToJSONByRecordAndBoolean(ctx context.Context, db DB, p0 pgtypes.Record, 
 	return r0, nil
 }
 
-// RpadByTextAndInteger calls the stored function 'pg_catalog.rpad(text, integer) text' on db.
-func RpadByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
-	// call pg_catalog.rpad
-	const sqlstr = `SELECT * FROM pg_catalog.rpad($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // RpadByTextIntegerAndText calls the stored function 'pg_catalog.rpad(text, integer, text) text' on db.
 func RpadByTextIntegerAndText(ctx context.Context, db DB, p0 string, p1 int, p2 string) (string, error) {
 	// call pg_catalog.rpad
@@ -32361,14 +32348,14 @@ func RpadByTextIntegerAndText(ctx context.Context, db DB, p0 string, p1 int, p2 
 	return r0, nil
 }
 
-// RtrimByText calls the stored function 'pg_catalog.rtrim(text) text' on db.
-func RtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.rtrim
-	const sqlstr = `SELECT * FROM pg_catalog.rtrim($1)`
+// RpadByTextAndInteger calls the stored function 'pg_catalog.rpad(text, integer) text' on db.
+func RpadByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
+	// call pg_catalog.rpad
+	const sqlstr = `SELECT * FROM pg_catalog.rpad($1, $2)`
 	// run
 	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -32382,6 +32369,19 @@ func RtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, erro
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// RtrimByText calls the stored function 'pg_catalog.rtrim(text) text' on db.
+func RtrimByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.rtrim
+	const sqlstr = `SELECT * FROM pg_catalog.rtrim($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -32505,7 +32505,7 @@ func Scale(ctx context.Context, db DB, p0 float64) (int, error) {
 }
 
 // SchemaToXML calls the stored function 'pg_catalog.schema_to_xml(name, boolean, boolean, text) xml' on db.
-func SchemaToXML(ctx context.Context, db DB, schema pgtypes.Name, nulls, tableforest bool, targetns string) ([]byte, error) {
+func SchemaToXML(ctx context.Context, db DB, schema string, nulls, tableforest bool, targetns string) ([]byte, error) {
 	// call pg_catalog.schema_to_xml
 	const sqlstr = `SELECT * FROM pg_catalog.schema_to_xml($1, $2, $3, $4)`
 	// run
@@ -32518,7 +32518,7 @@ func SchemaToXML(ctx context.Context, db DB, schema pgtypes.Name, nulls, tablefo
 }
 
 // SchemaToXMLAndXmlschema calls the stored function 'pg_catalog.schema_to_xml_and_xmlschema(name, boolean, boolean, text) xml' on db.
-func SchemaToXMLAndXmlschema(ctx context.Context, db DB, schema pgtypes.Name, nulls, tableforest bool, targetns string) ([]byte, error) {
+func SchemaToXMLAndXmlschema(ctx context.Context, db DB, schema string, nulls, tableforest bool, targetns string) ([]byte, error) {
 	// call pg_catalog.schema_to_xml_and_xmlschema
 	const sqlstr = `SELECT * FROM pg_catalog.schema_to_xml_and_xmlschema($1, $2, $3, $4)`
 	// run
@@ -32531,7 +32531,7 @@ func SchemaToXMLAndXmlschema(ctx context.Context, db DB, schema pgtypes.Name, nu
 }
 
 // SchemaToXmlschema calls the stored function 'pg_catalog.schema_to_xmlschema(name, boolean, boolean, text) xml' on db.
-func SchemaToXmlschema(ctx context.Context, db DB, schema pgtypes.Name, nulls, tableforest bool, targetns string) ([]byte, error) {
+func SchemaToXmlschema(ctx context.Context, db DB, schema string, nulls, tableforest bool, targetns string) ([]byte, error) {
 	// call pg_catalog.schema_to_xmlschema
 	const sqlstr = `SELECT * FROM pg_catalog.schema_to_xmlschema($1, $2, $3, $4)`
 	// run
@@ -32544,14 +32544,14 @@ func SchemaToXmlschema(ctx context.Context, db DB, schema pgtypes.Name, nulls, t
 }
 
 // SessionUser calls the stored function 'pg_catalog.session_user() name' on db.
-func SessionUser(ctx context.Context, db DB) (pgtypes.Name, error) {
+func SessionUser(ctx context.Context, db DB) (string, error) {
 	// call pg_catalog.session_user
 	const sqlstr = `SELECT * FROM pg_catalog.session_user()`
 	// run
-	var r0 pgtypes.Name
+	var r0 string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Name{}, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -32608,19 +32608,6 @@ func SetConfig(ctx context.Context, db DB, p0, p1 string, p2 bool) (string, erro
 	return r0, nil
 }
 
-// SetMasklenByCidrAndInteger calls the stored function 'pg_catalog.set_masklen(cidr, integer) cidr' on db.
-func SetMasklenByCidrAndInteger(ctx context.Context, db DB, p0 pgtypes.Cidr, p1 int) (pgtypes.Cidr, error) {
-	// call pg_catalog.set_masklen
-	const sqlstr = `SELECT * FROM pg_catalog.set_masklen($1, $2)`
-	// run
-	var r0 pgtypes.Cidr
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // SetMasklenByInetAndInteger calls the stored function 'pg_catalog.set_masklen(inet, integer) inet' on db.
 func SetMasklenByInetAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
 	// call pg_catalog.set_masklen
@@ -32630,6 +32617,19 @@ func SetMasklenByInetAndInteger(ctx context.Context, db DB, p0 string, p1 int) (
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// SetMasklenByCidrAndInteger calls the stored function 'pg_catalog.set_masklen(cidr, integer) cidr' on db.
+func SetMasklenByCidrAndInteger(ctx context.Context, db DB, p0 pgtypes.Cidr, p1 int) (pgtypes.Cidr, error) {
+	// call pg_catalog.set_masklen
+	const sqlstr = `SELECT * FROM pg_catalog.set_masklen($1, $2)`
+	// run
+	var r0 pgtypes.Cidr
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32671,19 +32671,6 @@ func SetvalByRegclassBigintAndBoolean(ctx context.Context, db DB, p0 pgtypes.Reg
 	return r0, nil
 }
 
-// SetweightByTsvectorAndChar calls the stored function 'pg_catalog.setweight(tsvector, "char") tsvector' on db.
-func SetweightByTsvectorAndChar(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Char) (pgtypes.Tsvector, error) {
-	// call pg_catalog.setweight
-	const sqlstr = `SELECT * FROM pg_catalog.setweight($1, $2)`
-	// run
-	var r0 pgtypes.Tsvector
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // SetweightByTsvectorCharAndText calls the stored function 'pg_catalog.setweight(tsvector, "char", text) tsvector' on db.
 func SetweightByTsvectorCharAndText(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Char, p2 StringSlice) (pgtypes.Tsvector, error) {
 	// call pg_catalog.setweight
@@ -32692,6 +32679,19 @@ func SetweightByTsvectorCharAndText(ctx context.Context, db DB, p0 pgtypes.Tsvec
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return Tsvector{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// SetweightByTsvectorAndChar calls the stored function 'pg_catalog.setweight(tsvector, "char") tsvector' on db.
+func SetweightByTsvectorAndChar(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Char) (pgtypes.Tsvector, error) {
+	// call pg_catalog.setweight
+	const sqlstr = `SELECT * FROM pg_catalog.setweight($1, $2)`
+	// run
+	var r0 pgtypes.Tsvector
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return Tsvector{}, logerror(err)
 	}
 	return r0, nil
@@ -32772,7 +32772,7 @@ func ShiftJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstri
 }
 
 // ShobjDescription calls the stored function 'pg_catalog.shobj_description(oid, name) text' on db.
-func ShobjDescription(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Name) (string, error) {
+func ShobjDescription(ctx context.Context, db DB, p0 pgtypes.Oid, p1 string) (string, error) {
 	// call pg_catalog.shobj_description
 	const sqlstr = `SELECT * FROM pg_catalog.shobj_description($1, $2)`
 	// run
@@ -32784,8 +32784,8 @@ func ShobjDescription(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Nam
 	return r0, nil
 }
 
-// SignByDoublePrecision calls the stored function 'pg_catalog.sign(double precision) double precision' on db.
-func SignByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
+// SignByNumeric calls the stored function 'pg_catalog.sign(numeric) numeric' on db.
+func SignByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.sign
 	const sqlstr = `SELECT * FROM pg_catalog.sign($1)`
 	// run
@@ -32797,8 +32797,8 @@ func SignByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, err
 	return r0, nil
 }
 
-// SignByNumeric calls the stored function 'pg_catalog.sign(numeric) numeric' on db.
-func SignByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
+// SignByDoublePrecision calls the stored function 'pg_catalog.sign(double precision) double precision' on db.
+func SignByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.sign
 	const sqlstr = `SELECT * FROM pg_catalog.sign($1)`
 	// run
@@ -32823,19 +32823,6 @@ func SimilarEscape(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	return r0, nil
 }
 
-// SimilarToEscapeByText calls the stored function 'pg_catalog.similar_to_escape(text) text' on db.
-func SimilarToEscapeByText(ctx context.Context, db DB, p0 string) (string, error) {
-	// call pg_catalog.similar_to_escape
-	const sqlstr = `SELECT * FROM pg_catalog.similar_to_escape($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // SimilarToEscapeByTextAndText calls the stored function 'pg_catalog.similar_to_escape(text, text) text' on db.
 func SimilarToEscapeByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	// call pg_catalog.similar_to_escape
@@ -32844,6 +32831,19 @@ func SimilarToEscapeByTextAndText(ctx context.Context, db DB, p0, p1 string) (st
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// SimilarToEscapeByText calls the stored function 'pg_catalog.similar_to_escape(text) text' on db.
+func SimilarToEscapeByText(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.similar_to_escape
+	const sqlstr = `SELECT * FROM pg_catalog.similar_to_escape($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -33334,19 +33334,6 @@ func StringAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 st
 	return r0, nil
 }
 
-// StringToArrayByTextAndText calls the stored function 'pg_catalog.string_to_array(text, text) text' on db.
-func StringToArrayByTextAndText(ctx context.Context, db DB, p0, p1 string) (StringSlice, error) {
-	// call pg_catalog.string_to_array
-	const sqlstr = `SELECT * FROM pg_catalog.string_to_array($1, $2)`
-	// run
-	var r0 StringSlice
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return StringSlice{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // StringToArrayByTextTextAndText calls the stored function 'pg_catalog.string_to_array(text, text, text) text' on db.
 func StringToArrayByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (StringSlice, error) {
 	// call pg_catalog.string_to_array
@@ -33355,6 +33342,19 @@ func StringToArrayByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 strin
 	var r0 StringSlice
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return StringSlice{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// StringToArrayByTextAndText calls the stored function 'pg_catalog.string_to_array(text, text) text' on db.
+func StringToArrayByTextAndText(ctx context.Context, db DB, p0, p1 string) (StringSlice, error) {
+	// call pg_catalog.string_to_array
+	const sqlstr = `SELECT * FROM pg_catalog.string_to_array($1, $2)`
+	// run
+	var r0 StringSlice
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return StringSlice{}, logerror(err)
 	}
 	return r0, nil
@@ -33386,19 +33386,6 @@ func Strpos(ctx context.Context, db DB, p0, p1 string) (int, error) {
 	return r0, nil
 }
 
-// SubstrByByteaAndInteger calls the stored function 'pg_catalog.substr(bytea, integer) bytea' on db.
-func SubstrByByteaAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
-	// call pg_catalog.substr
-	const sqlstr = `SELECT * FROM pg_catalog.substr($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
 // SubstrByByteaIntegerAndInteger calls the stored function 'pg_catalog.substr(bytea, integer, integer) bytea' on db.
 func SubstrByByteaIntegerAndInteger(ctx context.Context, db DB, p0 []byte, p1, p2 int) ([]byte, error) {
 	// call pg_catalog.substr
@@ -33412,15 +33399,15 @@ func SubstrByByteaIntegerAndInteger(ctx context.Context, db DB, p0 []byte, p1, p
 	return r0, nil
 }
 
-// SubstrByTextAndInteger calls the stored function 'pg_catalog.substr(text, integer) text' on db.
-func SubstrByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
+// SubstrByByteaAndInteger calls the stored function 'pg_catalog.substr(bytea, integer) bytea' on db.
+func SubstrByByteaAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
 	// call pg_catalog.substr
 	const sqlstr = `SELECT * FROM pg_catalog.substr($1, $2)`
 	// run
-	var r0 string
+	var r0 []byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -33438,15 +33425,15 @@ func SubstrByTextIntegerAndInteger(ctx context.Context, db DB, p0 string, p1, p2
 	return r0, nil
 }
 
-// SubstringByBitAndInteger calls the stored function 'pg_catalog.substring(bit, integer) bit' on db.
-func SubstringByBitAndInteger(ctx context.Context, db DB, p0 uint8, p1 int) (uint8, error) {
-	// call pg_catalog.substring
-	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2)`
+// SubstrByTextAndInteger calls the stored function 'pg_catalog.substr(text, integer) text' on db.
+func SubstrByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
+	// call pg_catalog.substr
+	const sqlstr = `SELECT * FROM pg_catalog.substr($1, $2)`
 	// run
-	var r0 uint8
+	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -33464,15 +33451,15 @@ func SubstringByBitIntegerAndInteger(ctx context.Context, db DB, p0 uint8, p1, p
 	return r0, nil
 }
 
-// SubstringByByteaAndInteger calls the stored function 'pg_catalog.substring(bytea, integer) bytea' on db.
-func SubstringByByteaAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
+// SubstringByBitAndInteger calls the stored function 'pg_catalog.substring(bit, integer) bit' on db.
+func SubstringByBitAndInteger(ctx context.Context, db DB, p0 uint8, p1 int) (uint8, error) {
 	// call pg_catalog.substring
 	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2)`
 	// run
-	var r0 []byte
+	var r0 uint8
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return 0, logerror(err)
 	}
 	return r0, nil
 }
@@ -33490,15 +33477,15 @@ func SubstringByByteaIntegerAndInteger(ctx context.Context, db DB, p0 []byte, p1
 	return r0, nil
 }
 
-// SubstringByTextAndInteger calls the stored function 'pg_catalog.substring(text, integer) text' on db.
-func SubstringByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
+// SubstringByByteaAndInteger calls the stored function 'pg_catalog.substring(bytea, integer) bytea' on db.
+func SubstringByByteaAndInteger(ctx context.Context, db DB, p0 []byte, p1 int) ([]byte, error) {
 	// call pg_catalog.substring
 	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2)`
 	// run
-	var r0 string
+	var r0 []byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -33511,6 +33498,19 @@ func SubstringByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, 
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// SubstringByTextTextAndText calls the stored function 'pg_catalog.substring(text, text, text) text' on db.
+func SubstringByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (string, error) {
+	// call pg_catalog.substring
+	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2, $3)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -33529,14 +33529,14 @@ func SubstringByTextIntegerAndInteger(ctx context.Context, db DB, p0 string, p1,
 	return r0, nil
 }
 
-// SubstringByTextTextAndText calls the stored function 'pg_catalog.substring(text, text, text) text' on db.
-func SubstringByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (string, error) {
+// SubstringByTextAndInteger calls the stored function 'pg_catalog.substring(text, integer) text' on db.
+func SubstringByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
 	// call pg_catalog.substring
-	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2, $3)`
+	const sqlstr = `SELECT * FROM pg_catalog.substring($1, $2)`
 	// run
 	var r0 string
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -33646,8 +33646,8 @@ func Tanh(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// TextByBoolean calls the stored function 'pg_catalog.text(boolean) text' on db.
-func TextByBoolean(ctx context.Context, db DB, p0 bool) (string, error) {
+// TextByXML calls the stored function 'pg_catalog.text(xml) text' on db.
+func TextByXML(ctx context.Context, db DB, p0 []byte) (string, error) {
 	// call pg_catalog.text
 	const sqlstr = `SELECT * FROM pg_catalog.text($1)`
 	// run
@@ -33659,8 +33659,8 @@ func TextByBoolean(ctx context.Context, db DB, p0 bool) (string, error) {
 	return r0, nil
 }
 
-// TextByChar calls the stored function 'pg_catalog.text("char") text' on db.
-func TextByChar(ctx context.Context, db DB, p0 pgtypes.Char) (string, error) {
+// TextByBoolean calls the stored function 'pg_catalog.text(boolean) text' on db.
+func TextByBoolean(ctx context.Context, db DB, p0 bool) (string, error) {
 	// call pg_catalog.text
 	const sqlstr = `SELECT * FROM pg_catalog.text($1)`
 	// run
@@ -33685,6 +33685,19 @@ func TextByCharacter(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
+// TextByName calls the stored function 'pg_catalog.text(name) text' on db.
+func TextByName(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.text
+	const sqlstr = `SELECT * FROM pg_catalog.text($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // TextByInet calls the stored function 'pg_catalog.text(inet) text' on db.
 func TextByInet(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.text
@@ -33698,21 +33711,8 @@ func TextByInet(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// TextByName calls the stored function 'pg_catalog.text(name) text' on db.
-func TextByName(ctx context.Context, db DB, p0 pgtypes.Name) (string, error) {
-	// call pg_catalog.text
-	const sqlstr = `SELECT * FROM pg_catalog.text($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// TextByXML calls the stored function 'pg_catalog.text(xml) text' on db.
-func TextByXML(ctx context.Context, db DB, p0 []byte) (string, error) {
+// TextByChar calls the stored function 'pg_catalog.text("char") text' on db.
+func TextByChar(ctx context.Context, db DB, p0 pgtypes.Char) (string, error) {
 	// call pg_catalog.text
 	const sqlstr = `SELECT * FROM pg_catalog.text($1)`
 	// run
@@ -33894,7 +33894,7 @@ func Texteq(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 }
 
 // Texteqname calls the stored function 'pg_catalog.texteqname(text, name) boolean' on db.
-func Texteqname(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Texteqname(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.texteqname
 	const sqlstr = `SELECT * FROM pg_catalog.texteqname($1, $2)`
 	// run
@@ -33907,7 +33907,7 @@ func Texteqname(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, e
 }
 
 // Textgename calls the stored function 'pg_catalog.textgename(text, name) boolean' on db.
-func Textgename(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Textgename(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.textgename
 	const sqlstr = `SELECT * FROM pg_catalog.textgename($1, $2)`
 	// run
@@ -33920,7 +33920,7 @@ func Textgename(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, e
 }
 
 // Textgtname calls the stored function 'pg_catalog.textgtname(text, name) boolean' on db.
-func Textgtname(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Textgtname(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.textgtname
 	const sqlstr = `SELECT * FROM pg_catalog.textgtname($1, $2)`
 	// run
@@ -34024,7 +34024,7 @@ func Textlen(ctx context.Context, db DB, p0 string) (int, error) {
 }
 
 // Textlename calls the stored function 'pg_catalog.textlename(text, name) boolean' on db.
-func Textlename(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Textlename(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.textlename
 	const sqlstr = `SELECT * FROM pg_catalog.textlename($1, $2)`
 	// run
@@ -34063,7 +34063,7 @@ func TextlikeSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.I
 }
 
 // Textltname calls the stored function 'pg_catalog.textltname(text, name) boolean' on db.
-func Textltname(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Textltname(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.textltname
 	const sqlstr = `SELECT * FROM pg_catalog.textltname($1, $2)`
 	// run
@@ -34089,7 +34089,7 @@ func Textne(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 }
 
 // Textnename calls the stored function 'pg_catalog.textnename(text, name) boolean' on db.
-func Textnename(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (bool, error) {
+func Textnename(ctx context.Context, db DB, p0, p1 string) (bool, error) {
 	// call pg_catalog.textnename
 	const sqlstr = `SELECT * FROM pg_catalog.textnename($1, $2)`
 	// run
@@ -34335,8 +34335,8 @@ func Tidsmaller(ctx context.Context, db DB, p0, p1 pgtypes.Tid) (pgtypes.Tid, er
 	return r0, nil
 }
 
-// TimeByInterval calls the stored function 'pg_catalog.time(interval) time without time zone' on db.
-func TimeByInterval(ctx context.Context, db DB, p0 []byte) (time.Time, error) {
+// TimeByTimestampWithoutTimeZone calls the stored function 'pg_catalog.time(timestamp without time zone) time without time zone' on db.
+func TimeByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
 	// call pg_catalog.time
 	const sqlstr = `SELECT * FROM pg_catalog.time($1)`
 	// run
@@ -34348,8 +34348,8 @@ func TimeByInterval(ctx context.Context, db DB, p0 []byte) (time.Time, error) {
 	return r0, nil
 }
 
-// TimeByTimeWithTimeZone calls the stored function 'pg_catalog.time(time with time zone) time without time zone' on db.
-func TimeByTimeWithTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
+// TimeByInterval calls the stored function 'pg_catalog.time(interval) time without time zone' on db.
+func TimeByInterval(ctx context.Context, db DB, p0 []byte) (time.Time, error) {
 	// call pg_catalog.time
 	const sqlstr = `SELECT * FROM pg_catalog.time($1)`
 	// run
@@ -34387,8 +34387,8 @@ func TimeByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) (time
 	return r0, nil
 }
 
-// TimeByTimestampWithoutTimeZone calls the stored function 'pg_catalog.time(timestamp without time zone) time without time zone' on db.
-func TimeByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
+// TimeByTimeWithTimeZone calls the stored function 'pg_catalog.time(time with time zone) time without time zone' on db.
+func TimeByTimeWithTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
 	// call pg_catalog.time
 	const sqlstr = `SELECT * FROM pg_catalog.time($1)`
 	// run
@@ -34647,6 +34647,19 @@ func Timeofday(ctx context.Context, db DB) (string, error) {
 	return r0, nil
 }
 
+// TimestampByTimestampWithoutTimeZoneAndInteger calls the stored function 'pg_catalog.timestamp(timestamp without time zone, integer) timestamp without time zone' on db.
+func TimestampByTimestampWithoutTimeZoneAndInteger(ctx context.Context, db DB, p0 time.Time, p1 int) (time.Time, error) {
+	// call pg_catalog.timestamp
+	const sqlstr = `SELECT * FROM pg_catalog.timestamp($1, $2)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // TimestampByDate calls the stored function 'pg_catalog.timestamp(date) timestamp without time zone' on db.
 func TimestampByDate(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
 	// call pg_catalog.timestamp
@@ -34681,19 +34694,6 @@ func TimestampByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) 
 	var r0 time.Time
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// TimestampByTimestampWithoutTimeZoneAndInteger calls the stored function 'pg_catalog.timestamp(timestamp without time zone, integer) timestamp without time zone' on db.
-func TimestampByTimestampWithoutTimeZoneAndInteger(ctx context.Context, db DB, p0 time.Time, p1 int) (time.Time, error) {
-	// call pg_catalog.timestamp
-	const sqlstr = `SELECT * FROM pg_catalog.timestamp($1, $2)`
-	// run
-	var r0 time.Time
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return time.Time{}, logerror(err)
 	}
 	return r0, nil
@@ -35139,8 +35139,8 @@ func TimestamptzByDate(ctx context.Context, db DB, p0 time.Time) (time.Time, err
 	return r0, nil
 }
 
-// TimestamptzByDateAndTimeWithTimeZone calls the stored function 'pg_catalog.timestamptz(date, time with time zone) timestamp with time zone' on db.
-func TimestamptzByDateAndTimeWithTimeZone(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, error) {
+// TimestamptzByDateAndTimeWithoutTimeZone calls the stored function 'pg_catalog.timestamptz(date, time without time zone) timestamp with time zone' on db.
+func TimestamptzByDateAndTimeWithoutTimeZone(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, error) {
 	// call pg_catalog.timestamptz
 	const sqlstr = `SELECT * FROM pg_catalog.timestamptz($1, $2)`
 	// run
@@ -35152,8 +35152,8 @@ func TimestamptzByDateAndTimeWithTimeZone(ctx context.Context, db DB, p0, p1 tim
 	return r0, nil
 }
 
-// TimestamptzByDateAndTimeWithoutTimeZone calls the stored function 'pg_catalog.timestamptz(date, time without time zone) timestamp with time zone' on db.
-func TimestamptzByDateAndTimeWithoutTimeZone(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, error) {
+// TimestamptzByDateAndTimeWithTimeZone calls the stored function 'pg_catalog.timestamptz(date, time with time zone) timestamp with time zone' on db.
+func TimestamptzByDateAndTimeWithTimeZone(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, error) {
 	// call pg_catalog.timestamptz
 	const sqlstr = `SELECT * FROM pg_catalog.timestamptz($1, $2)`
 	// run
@@ -35581,6 +35581,19 @@ func Timetypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, error)
 	return r0, nil
 }
 
+// TimetzByTimestampWithTimeZone calls the stored function 'pg_catalog.timetz(timestamp with time zone) time with time zone' on db.
+func TimetzByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
+	// call pg_catalog.timetz
+	const sqlstr = `SELECT * FROM pg_catalog.timetz($1)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // TimetzByTimeWithTimeZoneAndInteger calls the stored function 'pg_catalog.timetz(time with time zone, integer) time with time zone' on db.
 func TimetzByTimeWithTimeZoneAndInteger(ctx context.Context, db DB, p0 time.Time, p1 int) (time.Time, error) {
 	// call pg_catalog.timetz
@@ -35596,19 +35609,6 @@ func TimetzByTimeWithTimeZoneAndInteger(ctx context.Context, db DB, p0 time.Time
 
 // TimetzByTimeWithoutTimeZone calls the stored function 'pg_catalog.timetz(time without time zone) time with time zone' on db.
 func TimetzByTimeWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
-	// call pg_catalog.timetz
-	const sqlstr = `SELECT * FROM pg_catalog.timetz($1)`
-	// run
-	var r0 time.Time
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// TimetzByTimestampWithTimeZone calls the stored function 'pg_catalog.timetz(timestamp with time zone) time with time zone' on db.
-func TimetzByTimestampWithTimeZone(ctx context.Context, db DB, p0 time.Time) (time.Time, error) {
 	// call pg_catalog.timetz
 	const sqlstr = `SELECT * FROM pg_catalog.timetz($1)`
 	// run
@@ -35841,47 +35841,8 @@ func Timetztypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, erro
 	return r0, nil
 }
 
-// TimezoneByIntervalAndTimeWithTimeZone calls the stored function 'pg_catalog.timezone(interval, time with time zone) time with time zone' on db.
-func TimezoneByIntervalAndTimeWithTimeZone(ctx context.Context, db DB, p0 []byte, p1 time.Time) (time.Time, error) {
-	// call pg_catalog.timezone
-	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
-	// run
-	var r0 time.Time
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // TimezoneByIntervalAndTimestampWithTimeZone calls the stored function 'pg_catalog.timezone(interval, timestamp with time zone) timestamp without time zone' on db.
 func TimezoneByIntervalAndTimestampWithTimeZone(ctx context.Context, db DB, p0 []byte, p1 time.Time) (time.Time, error) {
-	// call pg_catalog.timezone
-	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
-	// run
-	var r0 time.Time
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// TimezoneByIntervalAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.timezone(interval, timestamp without time zone) timestamp with time zone' on db.
-func TimezoneByIntervalAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 []byte, p1 time.Time) (time.Time, error) {
-	// call pg_catalog.timezone
-	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
-	// run
-	var r0 time.Time
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return time.Time{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// TimezoneByTextAndTimeWithTimeZone calls the stored function 'pg_catalog.timezone(text, time with time zone) time with time zone' on db.
-func TimezoneByTextAndTimeWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
 	// call pg_catalog.timezone
 	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
 	// run
@@ -35906,8 +35867,47 @@ func TimezoneByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 strin
 	return r0, nil
 }
 
+// TimezoneByTextAndTimeWithTimeZone calls the stored function 'pg_catalog.timezone(text, time with time zone) time with time zone' on db.
+func TimezoneByTextAndTimeWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
+	// call pg_catalog.timezone
+	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TimezoneByIntervalAndTimeWithTimeZone calls the stored function 'pg_catalog.timezone(interval, time with time zone) time with time zone' on db.
+func TimezoneByIntervalAndTimeWithTimeZone(ctx context.Context, db DB, p0 []byte, p1 time.Time) (time.Time, error) {
+	// call pg_catalog.timezone
+	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // TimezoneByTextAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.timezone(text, timestamp without time zone) timestamp with time zone' on db.
 func TimezoneByTextAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (time.Time, error) {
+	// call pg_catalog.timezone
+	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TimezoneByIntervalAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.timezone(interval, timestamp without time zone) timestamp with time zone' on db.
+func TimezoneByIntervalAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 []byte, p1 time.Time) (time.Time, error) {
 	// call pg_catalog.timezone
 	const sqlstr = `SELECT * FROM pg_catalog.timezone($1, $2)`
 	// run
@@ -35946,7 +35946,7 @@ func ToASCIIByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (str
 }
 
 // ToASCIIByTextAndName calls the stored function 'pg_catalog.to_ascii(text, name) text' on db.
-func ToASCIIByTextAndName(ctx context.Context, db DB, p0 string, p1 pgtypes.Name) (string, error) {
+func ToASCIIByTextAndName(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	// call pg_catalog.to_ascii
 	const sqlstr = `SELECT * FROM pg_catalog.to_ascii($1, $2)`
 	// run
@@ -35958,47 +35958,21 @@ func ToASCIIByTextAndName(ctx context.Context, db DB, p0 string, p1 pgtypes.Name
 	return r0, nil
 }
 
-// ToCharByBigintAndText calls the stored function 'pg_catalog.to_char(bigint, text) text' on db.
-func ToCharByBigintAndText(ctx context.Context, db DB, p0 int64, p1 string) (string, error) {
-	// call pg_catalog.to_char
-	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// ToCharByDoublePrecisionAndText calls the stored function 'pg_catalog.to_char(double precision, text) text' on db.
-func ToCharByDoublePrecisionAndText(ctx context.Context, db DB, p0 float64, p1 string) (string, error) {
-	// call pg_catalog.to_char
-	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// ToCharByIntegerAndText calls the stored function 'pg_catalog.to_char(integer, text) text' on db.
-func ToCharByIntegerAndText(ctx context.Context, db DB, p0 int, p1 string) (string, error) {
-	// call pg_catalog.to_char
-	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
 // ToCharByIntervalAndText calls the stored function 'pg_catalog.to_char(interval, text) text' on db.
 func ToCharByIntervalAndText(ctx context.Context, db DB, p0 []byte, p1 string) (string, error) {
+	// call pg_catalog.to_char
+	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// ToCharByTimestampWithTimeZoneAndText calls the stored function 'pg_catalog.to_char(timestamp with time zone, text) text' on db.
+func ToCharByTimestampWithTimeZoneAndText(ctx context.Context, db DB, p0 time.Time, p1 string) (string, error) {
 	// call pg_catalog.to_char
 	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
 	// run
@@ -36023,6 +35997,32 @@ func ToCharByNumericAndText(ctx context.Context, db DB, p0 float64, p1 string) (
 	return r0, nil
 }
 
+// ToCharByIntegerAndText calls the stored function 'pg_catalog.to_char(integer, text) text' on db.
+func ToCharByIntegerAndText(ctx context.Context, db DB, p0 int, p1 string) (string, error) {
+	// call pg_catalog.to_char
+	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// ToCharByBigintAndText calls the stored function 'pg_catalog.to_char(bigint, text) text' on db.
+func ToCharByBigintAndText(ctx context.Context, db DB, p0 int64, p1 string) (string, error) {
+	// call pg_catalog.to_char
+	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // ToCharByRealAndText calls the stored function 'pg_catalog.to_char(real, text) text' on db.
 func ToCharByRealAndText(ctx context.Context, db DB, p0 float32, p1 string) (string, error) {
 	// call pg_catalog.to_char
@@ -36036,8 +36036,8 @@ func ToCharByRealAndText(ctx context.Context, db DB, p0 float32, p1 string) (str
 	return r0, nil
 }
 
-// ToCharByTimestampWithTimeZoneAndText calls the stored function 'pg_catalog.to_char(timestamp with time zone, text) text' on db.
-func ToCharByTimestampWithTimeZoneAndText(ctx context.Context, db DB, p0 time.Time, p1 string) (string, error) {
+// ToCharByDoublePrecisionAndText calls the stored function 'pg_catalog.to_char(double precision, text) text' on db.
+func ToCharByDoublePrecisionAndText(ctx context.Context, db DB, p0 float64, p1 string) (string, error) {
 	// call pg_catalog.to_char
 	const sqlstr = `SELECT * FROM pg_catalog.to_char($1, $2)`
 	// run
@@ -36075,8 +36075,8 @@ func ToDate(ctx context.Context, db DB, p0, p1 string) (time.Time, error) {
 	return r0, nil
 }
 
-// ToHexByBigint calls the stored function 'pg_catalog.to_hex(bigint) text' on db.
-func ToHexByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
+// ToHexByInteger calls the stored function 'pg_catalog.to_hex(integer) text' on db.
+func ToHexByInteger(ctx context.Context, db DB, p0 int) (string, error) {
 	// call pg_catalog.to_hex
 	const sqlstr = `SELECT * FROM pg_catalog.to_hex($1)`
 	// run
@@ -36088,8 +36088,8 @@ func ToHexByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
 	return r0, nil
 }
 
-// ToHexByInteger calls the stored function 'pg_catalog.to_hex(integer) text' on db.
-func ToHexByInteger(ctx context.Context, db DB, p0 int) (string, error) {
+// ToHexByBigint calls the stored function 'pg_catalog.to_hex(bigint) text' on db.
+func ToHexByBigint(ctx context.Context, db DB, p0 int64) (string, error) {
 	// call pg_catalog.to_hex
 	const sqlstr = `SELECT * FROM pg_catalog.to_hex($1)`
 	// run
@@ -36309,8 +36309,21 @@ func ToTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsquery, er
 	return r0, nil
 }
 
-// ToTsvectorByJSON calls the stored function 'pg_catalog.to_tsvector(json) tsvector' on db.
-func ToTsvectorByJSON(ctx context.Context, db DB, p0 []byte) (pgtypes.Tsvector, error) {
+// ToTsvectorByRegconfigAndText calls the stored function 'pg_catalog.to_tsvector(regconfig, text) tsvector' on db.
+func ToTsvectorByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string) (pgtypes.Tsvector, error) {
+	// call pg_catalog.to_tsvector
+	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1, $2)`
+	// run
+	var r0 pgtypes.Tsvector
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return Tsvector{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// ToTsvectorByText calls the stored function 'pg_catalog.to_tsvector(text) tsvector' on db.
+func ToTsvectorByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsvector, error) {
 	// call pg_catalog.to_tsvector
 	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1)`
 	// run
@@ -36335,14 +36348,14 @@ func ToTsvectorByJsonb(ctx context.Context, db DB, p0 []byte) (pgtypes.Tsvector,
 	return r0, nil
 }
 
-// ToTsvectorByRegconfigAndJSON calls the stored function 'pg_catalog.to_tsvector(regconfig, json) tsvector' on db.
-func ToTsvectorByRegconfigAndJSON(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte) (pgtypes.Tsvector, error) {
+// ToTsvectorByJSON calls the stored function 'pg_catalog.to_tsvector(json) tsvector' on db.
+func ToTsvectorByJSON(ctx context.Context, db DB, p0 []byte) (pgtypes.Tsvector, error) {
 	// call pg_catalog.to_tsvector
-	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1)`
 	// run
 	var r0 pgtypes.Tsvector
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return Tsvector{}, logerror(err)
 	}
 	return r0, nil
@@ -36361,27 +36374,14 @@ func ToTsvectorByRegconfigAndJsonb(ctx context.Context, db DB, p0 pgtypes.Regcon
 	return r0, nil
 }
 
-// ToTsvectorByRegconfigAndText calls the stored function 'pg_catalog.to_tsvector(regconfig, text) tsvector' on db.
-func ToTsvectorByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string) (pgtypes.Tsvector, error) {
+// ToTsvectorByRegconfigAndJSON calls the stored function 'pg_catalog.to_tsvector(regconfig, json) tsvector' on db.
+func ToTsvectorByRegconfigAndJSON(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte) (pgtypes.Tsvector, error) {
 	// call pg_catalog.to_tsvector
 	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1, $2)`
 	// run
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// ToTsvectorByText calls the stored function 'pg_catalog.to_tsvector(text) tsvector' on db.
-func ToTsvectorByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsvector, error) {
-	// call pg_catalog.to_tsvector
-	const sqlstr = `SELECT * FROM pg_catalog.to_tsvector($1)`
-	// run
-	var r0 pgtypes.Tsvector
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return Tsvector{}, logerror(err)
 	}
 	return r0, nil
@@ -36439,28 +36439,15 @@ func TruncByDoublePrecision(ctx context.Context, db DB, p0 float64) (float64, er
 	return r0, nil
 }
 
-// TruncByMacaddr calls the stored function 'pg_catalog.trunc(macaddr) macaddr' on db.
-func TruncByMacaddr(ctx context.Context, db DB, p0 pgtypes.Macaddr) (pgtypes.Macaddr, error) {
+// TruncByNumericAndInteger calls the stored function 'pg_catalog.trunc(numeric, integer) numeric' on db.
+func TruncByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (float64, error) {
 	// call pg_catalog.trunc
-	const sqlstr = `SELECT * FROM pg_catalog.trunc($1)`
+	const sqlstr = `SELECT * FROM pg_catalog.trunc($1, $2)`
 	// run
-	var r0 pgtypes.Macaddr
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// TruncByMacaddr8 calls the stored function 'pg_catalog.trunc(macaddr8) macaddr8' on db.
-func TruncByMacaddr8(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.Macaddr8, error) {
-	// call pg_catalog.trunc
-	const sqlstr = `SELECT * FROM pg_catalog.trunc($1)`
-	// run
-	var r0 pgtypes.Macaddr8
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -36478,15 +36465,28 @@ func TruncByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// TruncByNumericAndInteger calls the stored function 'pg_catalog.trunc(numeric, integer) numeric' on db.
-func TruncByNumericAndInteger(ctx context.Context, db DB, p0 float64, p1 int) (float64, error) {
+// TruncByMacaddr8 calls the stored function 'pg_catalog.trunc(macaddr8) macaddr8' on db.
+func TruncByMacaddr8(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.Macaddr8, error) {
 	// call pg_catalog.trunc
-	const sqlstr = `SELECT * FROM pg_catalog.trunc($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.trunc($1)`
 	// run
-	var r0 float64
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
+	var r0 pgtypes.Macaddr8
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Macaddr8{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TruncByMacaddr calls the stored function 'pg_catalog.trunc(macaddr) macaddr' on db.
+func TruncByMacaddr(ctx context.Context, db DB, p0 pgtypes.Macaddr) (pgtypes.Macaddr, error) {
+	// call pg_catalog.trunc
+	const sqlstr = `SELECT * FROM pg_catalog.trunc($1)`
+	// run
+	var r0 pgtypes.Macaddr
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36566,73 +36566,60 @@ func TsFilter(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 []pgtypes.Char
 	return r0, nil
 }
 
-// TsHeadlineByJSONAndTsquery calls the stored function 'pg_catalog.ts_headline(json, tsquery) json' on db.
-func TsHeadlineByJSONAndTsquery(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery) ([]byte, error) {
+// TsHeadlineByRegconfigTextTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, text, tsquery, text) text' on db.
+func TsHeadlineByRegconfigTextTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string, p2 pgtypes.Tsquery, p3 string) (string, error) {
+	// call pg_catalog.ts_headline
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3, $4)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// TsHeadlineByRegconfigTextAndTsquery calls the stored function 'pg_catalog.ts_headline(regconfig, text, tsquery) text' on db.
+func TsHeadlineByRegconfigTextAndTsquery(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string, p2 pgtypes.Tsquery) (string, error) {
+	// call pg_catalog.ts_headline
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// TsHeadlineByTextTsqueryAndText calls the stored function 'pg_catalog.ts_headline(text, tsquery, text) text' on db.
+func TsHeadlineByTextTsqueryAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Tsquery, p2 string) (string, error) {
+	// call pg_catalog.ts_headline
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// TsHeadlineByTextAndTsquery calls the stored function 'pg_catalog.ts_headline(text, tsquery) text' on db.
+func TsHeadlineByTextAndTsquery(ctx context.Context, db DB, p0 string, p1 pgtypes.Tsquery) (string, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2)`
 	// run
-	var r0 []byte
+	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
+		return "", logerror(err)
 	}
 	return r0, nil
 }
 
-// TsHeadlineByJSONTsqueryAndText calls the stored function 'pg_catalog.ts_headline(json, tsquery, text) json' on db.
-func TsHeadlineByJSONTsqueryAndText(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery, p2 string) ([]byte, error) {
-	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// TsHeadlineByJsonbAndTsquery calls the stored function 'pg_catalog.ts_headline(jsonb, tsquery) jsonb' on db.
-func TsHeadlineByJsonbAndTsquery(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery) ([]byte, error) {
-	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// TsHeadlineByJsonbTsqueryAndText calls the stored function 'pg_catalog.ts_headline(jsonb, tsquery, text) jsonb' on db.
-func TsHeadlineByJsonbTsqueryAndText(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery, p2 string) ([]byte, error) {
-	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// TsHeadlineByRegconfigJSONAndTsquery calls the stored function 'pg_catalog.ts_headline(regconfig, json, tsquery) json' on db.
-func TsHeadlineByRegconfigJSONAndTsquery(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery) ([]byte, error) {
-	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
-// TsHeadlineByRegconfigJSONTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, json, tsquery, text) json' on db.
-func TsHeadlineByRegconfigJSONTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery, p3 string) ([]byte, error) {
+// TsHeadlineByRegconfigJsonbTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, jsonb, tsquery, text) jsonb' on db.
+func TsHeadlineByRegconfigJsonbTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery, p3 string) ([]byte, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3, $4)`
 	// run
@@ -36657,8 +36644,34 @@ func TsHeadlineByRegconfigJsonbAndTsquery(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
-// TsHeadlineByRegconfigJsonbTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, jsonb, tsquery, text) jsonb' on db.
-func TsHeadlineByRegconfigJsonbTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery, p3 string) ([]byte, error) {
+// TsHeadlineByJsonbTsqueryAndText calls the stored function 'pg_catalog.ts_headline(jsonb, tsquery, text) jsonb' on db.
+func TsHeadlineByJsonbTsqueryAndText(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery, p2 string) ([]byte, error) {
+	// call pg_catalog.ts_headline
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// TsHeadlineByJsonbAndTsquery calls the stored function 'pg_catalog.ts_headline(jsonb, tsquery) jsonb' on db.
+func TsHeadlineByJsonbAndTsquery(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery) ([]byte, error) {
+	// call pg_catalog.ts_headline
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// TsHeadlineByRegconfigJSONTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, json, tsquery, text) json' on db.
+func TsHeadlineByRegconfigJSONTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery, p3 string) ([]byte, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3, $4)`
 	// run
@@ -36670,54 +36683,41 @@ func TsHeadlineByRegconfigJsonbTsqueryAndText(ctx context.Context, db DB, p0 pgt
 	return r0, nil
 }
 
-// TsHeadlineByRegconfigTextAndTsquery calls the stored function 'pg_catalog.ts_headline(regconfig, text, tsquery) text' on db.
-func TsHeadlineByRegconfigTextAndTsquery(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string, p2 pgtypes.Tsquery) (string, error) {
+// TsHeadlineByRegconfigJSONAndTsquery calls the stored function 'pg_catalog.ts_headline(regconfig, json, tsquery) json' on db.
+func TsHeadlineByRegconfigJSONAndTsquery(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 []byte, p2 pgtypes.Tsquery) ([]byte, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
 	// run
-	var r0 string
+	var r0 []byte
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
 
-// TsHeadlineByRegconfigTextTsqueryAndText calls the stored function 'pg_catalog.ts_headline(regconfig, text, tsquery, text) text' on db.
-func TsHeadlineByRegconfigTextTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Regconfig, p1 string, p2 pgtypes.Tsquery, p3 string) (string, error) {
+// TsHeadlineByJSONTsqueryAndText calls the stored function 'pg_catalog.ts_headline(json, tsquery, text) json' on db.
+func TsHeadlineByJSONTsqueryAndText(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery, p2 string) ([]byte, error) {
 	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3, $4)`
+	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
 	// run
-	var r0 string
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return "", logerror(err)
+	var r0 []byte
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
 
-// TsHeadlineByTextAndTsquery calls the stored function 'pg_catalog.ts_headline(text, tsquery) text' on db.
-func TsHeadlineByTextAndTsquery(ctx context.Context, db DB, p0 string, p1 pgtypes.Tsquery) (string, error) {
+// TsHeadlineByJSONAndTsquery calls the stored function 'pg_catalog.ts_headline(json, tsquery) json' on db.
+func TsHeadlineByJSONAndTsquery(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Tsquery) ([]byte, error) {
 	// call pg_catalog.ts_headline
 	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2)`
 	// run
-	var r0 string
+	var r0 []byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// TsHeadlineByTextTsqueryAndText calls the stored function 'pg_catalog.ts_headline(text, tsquery, text) text' on db.
-func TsHeadlineByTextTsqueryAndText(ctx context.Context, db DB, p0 string, p1 pgtypes.Tsquery, p2 string) (string, error) {
-	// call pg_catalog.ts_headline
-	const sqlstr = `SELECT * FROM pg_catalog.ts_headline($1, $2, $3)`
-	// run
-	var r0 string
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return "", logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -36787,20 +36787,6 @@ func TsMatchVq(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Tsque
 	return r0, nil
 }
 
-// TsParseByParserNameAndTxt calls the stored function 'pg_catalog.ts_parse(text, text) (integer, text)' on db.
-func TsParseByParserNameAndTxt(ctx context.Context, db DB, parserName, txt string) (int, string, error) {
-	// call pg_catalog.ts_parse
-	const sqlstr = `SELECT * FROM pg_catalog.ts_parse($1, $2)`
-	// run
-	var tokid int
-	var token string
-	logf(sqlstr, parserName, txt)
-	if err := db.QueryRowContext(ctx, sqlstr, parserName, txt).Scan(&tokid, &token); err != nil {
-		return 0, "", logerror(err)
-	}
-	return tokid, token, nil
-}
-
 // TsParseByParserOidAndTxt calls the stored function 'pg_catalog.ts_parse(oid, text) (integer, text)' on db.
 func TsParseByParserOidAndTxt(ctx context.Context, db DB, parserOid pgtypes.Oid, txt string) (int, string, error) {
 	// call pg_catalog.ts_parse
@@ -36815,17 +36801,18 @@ func TsParseByParserOidAndTxt(ctx context.Context, db DB, parserOid pgtypes.Oid,
 	return tokid, token, nil
 }
 
-// TsRankByRealTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank(real, tsvector, tsquery) real' on db.
-func TsRankByRealTsvectorAndTsquery(ctx context.Context, db DB, p0 []float32, p1 pgtypes.Tsvector, p2 pgtypes.Tsquery) (float32, error) {
-	// call pg_catalog.ts_rank
-	const sqlstr = `SELECT * FROM pg_catalog.ts_rank($1, $2, $3)`
+// TsParseByParserNameAndTxt calls the stored function 'pg_catalog.ts_parse(text, text) (integer, text)' on db.
+func TsParseByParserNameAndTxt(ctx context.Context, db DB, parserName, txt string) (int, string, error) {
+	// call pg_catalog.ts_parse
+	const sqlstr = `SELECT * FROM pg_catalog.ts_parse($1, $2)`
 	// run
-	var r0 float32
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
+	var tokid int
+	var token string
+	logf(sqlstr, parserName, txt)
+	if err := db.QueryRowContext(ctx, sqlstr, parserName, txt).Scan(&tokid, &token); err != nil {
+		return 0, "", logerror(err)
 	}
-	return r0, nil
+	return tokid, token, nil
 }
 
 // TsRankByRealTsvectorTsqueryAndInteger calls the stored function 'pg_catalog.ts_rank(real, tsvector, tsquery, integer) real' on db.
@@ -36841,14 +36828,14 @@ func TsRankByRealTsvectorTsqueryAndInteger(ctx context.Context, db DB, p0 []floa
 	return r0, nil
 }
 
-// TsRankByTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank(tsvector, tsquery) real' on db.
-func TsRankByTsvectorAndTsquery(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Tsquery) (float32, error) {
+// TsRankByRealTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank(real, tsvector, tsquery) real' on db.
+func TsRankByRealTsvectorAndTsquery(ctx context.Context, db DB, p0 []float32, p1 pgtypes.Tsvector, p2 pgtypes.Tsquery) (float32, error) {
 	// call pg_catalog.ts_rank
-	const sqlstr = `SELECT * FROM pg_catalog.ts_rank($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.ts_rank($1, $2, $3)`
 	// run
 	var r0 float32
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -36867,14 +36854,14 @@ func TsRankByTsvectorTsqueryAndInteger(ctx context.Context, db DB, p0 pgtypes.Ts
 	return r0, nil
 }
 
-// TsRankCdByRealTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank_cd(real, tsvector, tsquery) real' on db.
-func TsRankCdByRealTsvectorAndTsquery(ctx context.Context, db DB, p0 []float32, p1 pgtypes.Tsvector, p2 pgtypes.Tsquery) (float32, error) {
-	// call pg_catalog.ts_rank_cd
-	const sqlstr = `SELECT * FROM pg_catalog.ts_rank_cd($1, $2, $3)`
+// TsRankByTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank(tsvector, tsquery) real' on db.
+func TsRankByTsvectorAndTsquery(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Tsquery) (float32, error) {
+	// call pg_catalog.ts_rank
+	const sqlstr = `SELECT * FROM pg_catalog.ts_rank($1, $2)`
 	// run
 	var r0 float32
-	logf(sqlstr, p0, p1, p2)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -36893,14 +36880,14 @@ func TsRankCdByRealTsvectorTsqueryAndInteger(ctx context.Context, db DB, p0 []fl
 	return r0, nil
 }
 
-// TsRankCdByTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank_cd(tsvector, tsquery) real' on db.
-func TsRankCdByTsvectorAndTsquery(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Tsquery) (float32, error) {
+// TsRankCdByRealTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank_cd(real, tsvector, tsquery) real' on db.
+func TsRankCdByRealTsvectorAndTsquery(ctx context.Context, db DB, p0 []float32, p1 pgtypes.Tsvector, p2 pgtypes.Tsquery) (float32, error) {
 	// call pg_catalog.ts_rank_cd
-	const sqlstr = `SELECT * FROM pg_catalog.ts_rank_cd($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.ts_rank_cd($1, $2, $3)`
 	// run
 	var r0 float32
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -36919,15 +36906,15 @@ func TsRankCdByTsvectorTsqueryAndInteger(ctx context.Context, db DB, p0 pgtypes.
 	return r0, nil
 }
 
-// TsRewriteByTsqueryAndText calls the stored function 'pg_catalog.ts_rewrite(tsquery, text) tsquery' on db.
-func TsRewriteByTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Tsquery, p1 string) (pgtypes.Tsquery, error) {
-	// call pg_catalog.ts_rewrite
-	const sqlstr = `SELECT * FROM pg_catalog.ts_rewrite($1, $2)`
+// TsRankCdByTsvectorAndTsquery calls the stored function 'pg_catalog.ts_rank_cd(tsvector, tsquery) real' on db.
+func TsRankCdByTsvectorAndTsquery(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 pgtypes.Tsquery) (float32, error) {
+	// call pg_catalog.ts_rank_cd
+	const sqlstr = `SELECT * FROM pg_catalog.ts_rank_cd($1, $2)`
 	// run
-	var r0 pgtypes.Tsquery
+	var r0 float32
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -36940,6 +36927,19 @@ func TsRewriteByTsqueryTsqueryAndTsquery(ctx context.Context, db DB, p0, p1, p2 
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return Tsquery{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TsRewriteByTsqueryAndText calls the stored function 'pg_catalog.ts_rewrite(tsquery, text) tsquery' on db.
+func TsRewriteByTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Tsquery, p1 string) (pgtypes.Tsquery, error) {
+	// call pg_catalog.ts_rewrite
+	const sqlstr = `SELECT * FROM pg_catalog.ts_rewrite($1, $2)`
+	// run
+	var r0 pgtypes.Tsquery
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return Tsquery{}, logerror(err)
 	}
 	return r0, nil
@@ -36975,21 +36975,6 @@ func TsStatByQueryAndWeights(ctx context.Context, db DB, query, weights string) 
 	return word, ndoc, nentry, nil
 }
 
-// TsTokenTypeByParserName calls the stored function 'pg_catalog.ts_token_type(text) (integer, text, text)' on db.
-func TsTokenTypeByParserName(ctx context.Context, db DB, parserName string) (int, string, string, error) {
-	// call pg_catalog.ts_token_type
-	const sqlstr = `SELECT * FROM pg_catalog.ts_token_type($1)`
-	// run
-	var tokid int
-	var alias string
-	var description string
-	logf(sqlstr, parserName)
-	if err := db.QueryRowContext(ctx, sqlstr, parserName).Scan(&tokid, &alias, &description); err != nil {
-		return 0, "", "", logerror(err)
-	}
-	return tokid, alias, description, nil
-}
-
 // TsTokenTypeByParserOid calls the stored function 'pg_catalog.ts_token_type(oid) (integer, text, text)' on db.
 func TsTokenTypeByParserOid(ctx context.Context, db DB, parserOid pgtypes.Oid) (int, string, string, error) {
 	// call pg_catalog.ts_token_type
@@ -37000,6 +36985,21 @@ func TsTokenTypeByParserOid(ctx context.Context, db DB, parserOid pgtypes.Oid) (
 	var description string
 	logf(sqlstr, parserOid)
 	if err := db.QueryRowContext(ctx, sqlstr, parserOid).Scan(&tokid, &alias, &description); err != nil {
+		return 0, "", "", logerror(err)
+	}
+	return tokid, alias, description, nil
+}
+
+// TsTokenTypeByParserName calls the stored function 'pg_catalog.ts_token_type(text) (integer, text, text)' on db.
+func TsTokenTypeByParserName(ctx context.Context, db DB, parserName string) (int, string, string, error) {
+	// call pg_catalog.ts_token_type
+	const sqlstr = `SELECT * FROM pg_catalog.ts_token_type($1)`
+	// run
+	var tokid int
+	var alias string
+	var description string
+	logf(sqlstr, parserName)
+	if err := db.QueryRowContext(ctx, sqlstr, parserName).Scan(&tokid, &alias, &description); err != nil {
 		return 0, "", "", logerror(err)
 	}
 	return tokid, alias, description, nil
@@ -38256,6 +38256,19 @@ func Varbittypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, erro
 	return r0, nil
 }
 
+// VarcharByName calls the stored function 'pg_catalog.varchar(name) character varying' on db.
+func VarcharByName(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.varchar
+	const sqlstr = `SELECT * FROM pg_catalog.varchar($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // VarcharByCharacterVaryingIntegerAndBoolean calls the stored function 'pg_catalog.varchar(character varying, integer, boolean) character varying' on db.
 func VarcharByCharacterVaryingIntegerAndBoolean(ctx context.Context, db DB, p0 string, p1 int, p2 bool) (string, error) {
 	// call pg_catalog.varchar
@@ -38264,19 +38277,6 @@ func VarcharByCharacterVaryingIntegerAndBoolean(ctx context.Context, db DB, p0 s
 	var r0 string
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return "", logerror(err)
-	}
-	return r0, nil
-}
-
-// VarcharByName calls the stored function 'pg_catalog.varchar(name) character varying' on db.
-func VarcharByName(ctx context.Context, db DB, p0 pgtypes.Name) (string, error) {
-	// call pg_catalog.varchar
-	const sqlstr = `SELECT * FROM pg_catalog.varchar($1)`
-	// run
-	var r0 string
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -38410,14 +38410,14 @@ func Width(ctx context.Context, db DB, p0 pgtypes.Box) (float64, error) {
 	return r0, nil
 }
 
-// WidthBucketByAnyelementAndAnyarray calls the stored function 'pg_catalog.width_bucket(anyelement, anyarray) integer' on db.
-func WidthBucketByAnyelementAndAnyarray(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anyarray) (int, error) {
+// WidthBucketByNumericNumericNumericAndInteger calls the stored function 'pg_catalog.width_bucket(numeric, numeric, numeric, integer) integer' on db.
+func WidthBucketByNumericNumericNumericAndInteger(ctx context.Context, db DB, p0, p1, p2 float64, p3 int) (int, error) {
 	// call pg_catalog.width_bucket
-	const sqlstr = `SELECT * FROM pg_catalog.width_bucket($1, $2)`
+	const sqlstr = `SELECT * FROM pg_catalog.width_bucket($1, $2, $3, $4)`
 	// run
 	var r0 int
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -38436,14 +38436,14 @@ func WidthBucketByDoublePrecisionDoublePrecisionDoublePrecisionAndInteger(ctx co
 	return r0, nil
 }
 
-// WidthBucketByNumericNumericNumericAndInteger calls the stored function 'pg_catalog.width_bucket(numeric, numeric, numeric, integer) integer' on db.
-func WidthBucketByNumericNumericNumericAndInteger(ctx context.Context, db DB, p0, p1, p2 float64, p3 int) (int, error) {
+// WidthBucketByAnyelementAndAnyarray calls the stored function 'pg_catalog.width_bucket(anyelement, anyarray) integer' on db.
+func WidthBucketByAnyelementAndAnyarray(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anyarray) (int, error) {
 	// call pg_catalog.width_bucket
-	const sqlstr = `SELECT * FROM pg_catalog.width_bucket($1, $2, $3, $4)`
+	const sqlstr = `SELECT * FROM pg_catalog.width_bucket($1, $2)`
 	// run
 	var r0 int
-	logf(sqlstr, p0, p1, p2, p3)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -38908,25 +38908,12 @@ func Xmlvalidate(ctx context.Context, db DB, p0 []byte, p1 string) (bool, error)
 	return r0, nil
 }
 
-// XpathByTextAndXML calls the stored function 'pg_catalog.xpath(text, xml) xml' on db.
-func XpathByTextAndXML(ctx context.Context, db DB, p0 string, p1 []byte) ([]byte, error) {
-	// call pg_catalog.xpath
-	const sqlstr = `SELECT * FROM pg_catalog.xpath($1, $2)`
-	// run
-	var r0 []byte
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return nil, logerror(err)
-	}
-	return r0, nil
-}
-
 // XpathByTextXMLAndText calls the stored function 'pg_catalog.xpath(text, xml, text) xml' on db.
-func XpathByTextXMLAndText(ctx context.Context, db DB, p0 string, p1 []byte, p2 StringSlice) ([]byte, error) {
+func XpathByTextXMLAndText(ctx context.Context, db DB, p0 string, p1 []byte, p2 StringSlice) ([][]byte, error) {
 	// call pg_catalog.xpath
 	const sqlstr = `SELECT * FROM pg_catalog.xpath($1, $2, $3)`
 	// run
-	var r0 []byte
+	var r0 [][]byte
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return nil, logerror(err)
@@ -38934,15 +38921,15 @@ func XpathByTextXMLAndText(ctx context.Context, db DB, p0 string, p1 []byte, p2 
 	return r0, nil
 }
 
-// XpathExistsByTextAndXML calls the stored function 'pg_catalog.xpath_exists(text, xml) boolean' on db.
-func XpathExistsByTextAndXML(ctx context.Context, db DB, p0 string, p1 []byte) (bool, error) {
-	// call pg_catalog.xpath_exists
-	const sqlstr = `SELECT * FROM pg_catalog.xpath_exists($1, $2)`
+// XpathByTextAndXML calls the stored function 'pg_catalog.xpath(text, xml) xml' on db.
+func XpathByTextAndXML(ctx context.Context, db DB, p0 string, p1 []byte) ([][]byte, error) {
+	// call pg_catalog.xpath
+	const sqlstr = `SELECT * FROM pg_catalog.xpath($1, $2)`
 	// run
-	var r0 bool
+	var r0 [][]byte
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return false, logerror(err)
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -38955,6 +38942,19 @@ func XpathExistsByTextXMLAndText(ctx context.Context, db DB, p0 string, p1 []byt
 	var r0 bool
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// XpathExistsByTextAndXML calls the stored function 'pg_catalog.xpath_exists(text, xml) boolean' on db.
+func XpathExistsByTextAndXML(ctx context.Context, db DB, p0 string, p1 []byte) (bool, error) {
+	// call pg_catalog.xpath_exists
+	const sqlstr = `SELECT * FROM pg_catalog.xpath_exists($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
