@@ -1114,12 +1114,18 @@ func (f *Funcs) zero(z ...interface{}) string {
 			zeroes = append(zeroes, x)
 		case Table:
 			for _, p := range x.Fields {
-				zeroes = append(zeroes, p.Zero)
+				zeroes = append(zeroes, f.zero(p))
 			}
 		case []Field:
 			for _, p := range x {
-				zeroes = append(zeroes, p.Zero)
+				zeroes = append(zeroes, f.zero(p))
 			}
+		case Field:
+			if _, ok := f.knownTypes[x.Type]; ok || x.Zero == "nil" {
+				zeroes = append(zeroes, x.Zero)
+				break
+			}
+			zeroes = append(zeroes, f.typefn(x.Type)+"{}")
 		default:
 			zeroes = append(zeroes, fmt.Sprintf("/* UNSUPPORTED TYPE %d %T */", i, v))
 		}
@@ -1132,19 +1138,15 @@ func (f *Funcs) typefn(typ string) string {
 	if strings.Contains(typ, ".") {
 		return typ
 	}
-	prefix := ""
+	var prefix string
 	for strings.HasPrefix(typ, "[]") {
 		typ = typ[2:]
-		prefix = prefix + "[]"
+		prefix += "[]"
 	}
-	if _, ok := f.knownTypes[typ]; !ok {
-		pkg := f.custom
-		if pkg != "" {
-			pkg = pkg + "."
-		}
-		return prefix + pkg + typ
+	if _, ok := f.knownTypes[typ]; ok || f.custom == "" {
+		return prefix + typ
 	}
-	return prefix + typ
+	return prefix + f.custom + "." + typ
 }
 
 // field generates a field definition for a struct.
@@ -1157,7 +1159,7 @@ func (f *Funcs) field(field Field) (string, error) {
 	if s := buf.String(); s != "" {
 		tag = " " + s
 	}
-	s := fmt.Sprintf("%s %s%s %s", field.GoName, field.Type, tag, "// "+field.SQLName)
+	s := fmt.Sprintf("\t%s %s%s %s", field.GoName, f.typefn(field.Type), tag, "// "+field.SQLName)
 	return s, nil
 }
 
