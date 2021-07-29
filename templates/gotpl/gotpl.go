@@ -279,26 +279,27 @@ func emitQuery(ctx context.Context, doAppend bool, set *templates.TemplateSet, q
 }
 
 func buildQueryType(ctx context.Context, query xo.Query) (Table, error) {
+	tf := camelExport
+	if query.Flat {
+		tf = camel
+	}
 	var fields []Field
 	for _, z := range query.Fields {
-		f, err := convertField(ctx, true, z)
+		f, err := convertField(ctx, tf, z)
 		if err != nil {
 			return Table{}, err
 		}
-		// Provided by user already
+		// dont use convertField; the types are already provided by the user
 		if query.ManualFields {
 			f = Field{
 				GoName:  z.Name,
-				SQLName: snaker.CamelToSnake(z.Name),
+				SQLName: snake(z.Name),
 				Type:    z.Datatype.Type,
 			}
 		}
-		if query.Flat {
-			f.GoName = snaker.ForceLowerCamelIdentifier(f.GoName)
-		}
 		fields = append(fields, f)
 	}
-	sqlName := strings.ToLower(snaker.CamelToSnake(query.Type))
+	sqlName := snake(query.Type)
 	return Table{
 		GoName:  query.Type,
 		SQLName: sqlName,
@@ -323,7 +324,7 @@ func buildQueryName(query xo.Query) string {
 	} else {
 		name += "By"
 		for _, p := range query.Params {
-			name += snaker.ForceCamelIdentifier(p.Name)
+			name += camelExport(p.Name)
 		}
 	}
 	return name
@@ -426,13 +427,11 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 
 func convertEnum(e xo.Enum) Enum {
 	var vals []EnumValue
+	goName := camelExport(e.Name)
 	for _, v := range e.Values {
-		name := snaker.ForceCamelIdentifier(strings.ToLower(v.Name))
-		if strings.HasSuffix(name, strings.ToLower(e.Name)) {
-			n := name[:len(name)-len(e.Name)]
-			if len(n) > 0 {
-				name = n
-			}
+		name := camelExport(strings.ToLower(v.Name))
+		if strings.HasSuffix(name, goName) && goName != name {
+			name = strings.TrimSuffix(name, goName)
 		}
 		vals = append(vals, EnumValue{
 			GoName:     name,
@@ -441,7 +440,7 @@ func convertEnum(e xo.Enum) Enum {
 		})
 	}
 	return Enum{
-		GoName:  snaker.ForceCamelIdentifier((e.Name)),
+		GoName:  goName,
 		SQLName: e.Name,
 		Values:  vals,
 	}
@@ -449,62 +448,57 @@ func convertEnum(e xo.Enum) Enum {
 
 func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []string, p xo.Proc) ([]string, error) {
 	_, schema, _ := xo.DriverSchemaNthParam(ctx)
-	// build
-	var paramList, retList []string
-	var params, returns []Field
+	proc := Proc{
+		Type:      p.Type,
+		GoName:    camelExport(p.Name),
+		SQLName:   p.Name,
+		Signature: fmt.Sprintf("%s.%s", schema, p.Name),
+		Void:      p.Void,
+	}
 	// proc params
+	var types []string
 	for _, z := range p.Params {
-		f, err := convertField(ctx, false, z)
+		f, err := convertField(ctx, camel, z)
 		if err != nil {
 			return nil, err
 		}
-		paramList = append(paramList, z.Datatype.Type)
-		params = append(params, f)
+		proc.Params = append(proc.Params, f)
+		types = append(types, z.Datatype.Type)
 	}
+	// add to signature, generate name
+	proc.Signature += "(" + strings.Join(types, ", ") + ")"
+	proc.OverloadedName = overloadedName(types, proc)
+	types = nil
 	// proc return
 	for _, z := range p.Returns {
-		f, err := convertField(ctx, false, z)
+		f, err := convertField(ctx, camel, z)
 		if err != nil {
 			return nil, err
 		}
-		retList = append(retList, z.Datatype.Type)
-		returns = append(returns, f)
+		proc.Returns = append(proc.Returns, f)
+		types = append(types, z.Datatype.Type)
 	}
-	// signature used for comment
-	var format string
-	switch {
-	case p.Void:
-		format = "%s.%s(%s)%s"
-	case len(p.Returns) == 1:
-		format = "%s.%s(%s) %s"
-	default:
-		format = "%s.%s(%s) (%s)"
+	// append signature
+	if !p.Void {
+		format := " (%s)"
+		if len(p.Returns) == 1 {
+			format = " %s"
+		}
+		proc.Signature += fmt.Sprintf(format, strings.Join(types, ", "))
 	}
-	signature := fmt.Sprintf(format, schema, p.Name, strings.Join(paramList, ", "), strings.Join(retList, ", "))
-	name := snaker.SnakeToCamelIdentifier(p.Name)
-	// add proc to emit order
-	procs, ok := overloadMap[name]
+	// add proc
+	procs, ok := overloadMap[proc.GoName]
 	if !ok {
-		order = append(order, name)
+		order = append(order, proc.GoName)
 	}
-	overloadMap[name] = append(procs, Proc{
-		Type:           p.Type,
-		GoName:         name,
-		OverloadedName: overloadedName(p.Params, params, name),
-		SQLName:        p.Name,
-		Signature:      signature,
-		Params:         params,
-		Returns:        returns,
-		Void:           p.Void,
-		Comment:        "",
-	})
+	overloadMap[proc.GoName] = append(procs, proc)
 	return order, nil
 }
 
 func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 	var cols, pkCols []Field
 	for _, z := range t.Columns {
-		f, err := convertField(ctx, true, z)
+		f, err := convertField(ctx, camelExport, z)
 		if err != nil {
 			return Table{}, err
 		}
@@ -527,7 +521,7 @@ func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 	var fields []Field
 	for _, z := range i.Fields {
-		f, err := convertField(ctx, true, z)
+		f, err := convertField(ctx, camelExport, z)
 		if err != nil {
 			return Index{}, err
 		}
@@ -545,13 +539,10 @@ func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 }
 
 func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, error) {
-	name := snaker.ForceCamelIdentifier(fk.FuncName)
-	refName := snaker.ForceCamelIdentifier(singularize(fk.RefTable))
-	refFunc := snaker.ForceCamelIdentifier(fk.RefFuncName)
 	var fields, refFields []Field
 	// convert fields
 	for _, f := range fk.Fields {
-		field, err := convertField(ctx, true, f)
+		field, err := convertField(ctx, camelExport, f)
 		if err != nil {
 			return ForeignKey{}, err
 		}
@@ -559,36 +550,53 @@ func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, er
 	}
 	// convert ref fields
 	for _, f := range fk.RefFields {
-		refField, err := convertField(ctx, true, f)
+		refField, err := convertField(ctx, camelExport, f)
 		if err != nil {
 			return ForeignKey{}, err
 		}
 		refFields = append(refFields, refField)
 	}
 	return ForeignKey{
-		GoName:      name,
+		GoName:      camelExport(fk.FuncName),
 		SQLName:     fk.Name,
 		Table:       t,
 		Fields:      fields,
-		RefTable:    refName,
+		RefTable:    camelExport(singularize(fk.RefTable)),
 		RefFields:   refFields,
-		RefFuncName: refFunc,
+		RefFuncName: camelExport(fk.RefFuncName),
 	}, nil
 }
 
-func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, error) {
-	l := Loader(ctx)
-	name := snaker.ForceCamelIdentifier(f.Name)
-	if !identifier {
-		name = snaker.ForceLowerCamelIdentifier(f.Name)
+func overloadedName(sqlTypes []string, proc Proc) string {
+	if len(proc.Params) == 0 {
+		return proc.GoName
 	}
+	var names []string
+	// build parameters for proc.
+	// if the proc's parameter has no name, use the types of the proc instead
+	for i, f := range proc.Params {
+		if f.SQLName == fmt.Sprintf("p%d", i) {
+			names = append(names, camelExport(strings.Split(sqlTypes[i], " ")...))
+			continue
+		}
+		names = append(names, camelExport(f.GoName))
+	}
+	if len(names) == 1 {
+		return fmt.Sprintf("%sBy%s", proc.GoName, names[0])
+	}
+	front, last := strings.Join(names[:len(names)-1], ""), names[len(names)-1]
+	return fmt.Sprintf("%sBy%sAnd%s", proc.GoName, front, last)
+}
+
+func convertField(ctx context.Context, tf transformFunc, f xo.Field) (Field, error) {
+	l := Loader(ctx)
 	typ, zero, err := l.GoType(ctx, f.Datatype)
 	if err != nil {
 		return Field{}, err
 	}
 	return Field{
 		Type:       typ,
-		GoName:     name,
+		GoName:     tf(f.Name),
 		SQLName:    f.Name,
 		Zero:       zero,
 		IsPrimary:  f.IsPrimary,
@@ -596,31 +604,18 @@ func convertField(ctx context.Context, identifier bool, f xo.Field) (Field, erro
 	}, nil
 }
 
-func overloadedName(xoParams []xo.Field, goParams []Field, name string) string {
-	if len(goParams) == 0 {
-		return name
-	}
-	var useTypes bool
-	var names, types []string
-	// build parameters for proc.
-	// if the proc's parameter has no name, use the types of the proc instead
-	for i, f := range goParams {
-		if f.SQLName == fmt.Sprintf("p%d", i) {
-			useTypes = true
-		}
-		name := snaker.ForceCamelIdentifier(f.GoName)
-		dt := xoParams[i].Datatype.Type
-		typ := snaker.ForceCamelIdentifier(strings.Join(strings.Split(dt, " "), "_"))
-		names, types = append(names, name), append(types, typ)
-	}
-	fields := names
-	if useTypes {
-		fields = types
-	}
-	if len(types) == 1 {
-		return fmt.Sprintf("%sBy%s", name, fields[0])
-	}
-	return fmt.Sprintf("%sBy%sAnd%s", name, strings.Join(fields[:len(fields)-1], ""), fields[len(fields)-1])
+type transformFunc func(...string) string
+
+func snake(names ...string) string {
+	return snaker.CamelToSnake(strings.Join(names, "_"))
+}
+
+func camel(names ...string) string {
+	return snaker.ForceLowerCamelIdentifier(strings.Join(names, "_"))
+}
+
+func camelExport(names ...string) string {
+	return snaker.ForceCamelIdentifier(strings.Join(names, "_"))
 }
 
 // Context keys.
@@ -744,21 +739,10 @@ func contains(v []string, s string) bool {
 
 // singuralize will singularize a identifier, returning in CamelCase.
 func singularize(s string) string {
-	if i := lastIndex(s, '_'); i != -1 {
-		return s[:i] + "_" + inflector.Singularize(s[i+1:])
+	if i := strings.LastIndex(s, "_"); i != -1 {
+		return s[:i+1] + inflector.Singularize(s[i+1:])
 	}
 	return inflector.Singularize(s)
-}
-
-// lastIndex finds the last rune r in s, returning -1 if not present.
-func lastIndex(s string, c rune) int {
-	r := []rune(s)
-	for i := len(r) - 1; i >= 0; i-- {
-		if r[i] == c {
-			return i
-		}
-	}
-	return -1
 }
 
 // Files are the embedded Go templates.
