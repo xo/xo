@@ -69,9 +69,9 @@ func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	}
 	// handle bools
 	switch {
-	case goType == "int" && d.Prec == 1 && !d.Nullable:
+	case goType == "int64" && d.Prec == 1 && !d.Nullable:
 		goType, zero = "bool", "false"
-	case goType == "int" && d.Prec == 1 && d.Nullable:
+	case goType == "sql.NullInt64" && d.Prec == 1 && d.Nullable:
 		goType, zero = "sql.NullBool", "sql.NullBool{}"
 	}
 	return goType, zero, nil

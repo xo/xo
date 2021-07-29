@@ -9,8 +9,8 @@ import (
 
 // ABitOfEverything represents a row from 'a_bit_of_everything.a_bit_of_everything'.
 type ABitOfEverything struct {
-	ABool                               int64           `json:"a_bool"`                                    // a_bool
-	ABoolNullable                       sql.NullInt64   `json:"a_bool_nullable"`                           // a_bool_nullable
+	ABool                               bool            `json:"a_bool"`                                    // a_bool
+	ABoolNullable                       sql.NullBool    `json:"a_bool_nullable"`                           // a_bool_nullable
 	ABlob                               []byte          `json:"a_blob"`                                    // a_blob
 	ABlobNullable                       []byte          `json:"a_blob_nullable"`                           // a_blob_nullable
 	AChar                               string          `json:"a_char"`                                    // a_char

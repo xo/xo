@@ -4,6 +4,6 @@ package oracle
 
 // AViewOfEverythingSome represents a row from 'a_bit_of_everything.a_view_of_everything_some'.
 type AViewOfEverythingSome struct {
-	ABool  int64  `json:"a_bool"`  // a_bool
+	ABool  bool   `json:"a_bool"`  // a_bool
 	ANclob string `json:"a_nclob"` // a_nclob
 }
