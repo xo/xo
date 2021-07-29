@@ -1,0 +1,5 @@
+_examples/**/*.xo.* linguist-generated
+**/*.go.tpl linguist-language=go
+**/*.yaml.tpl linguist-language=yaml
+**/*.json.tpl linguist-language=json
+**/*.dot.tpl linguist-language=dot
