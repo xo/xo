@@ -5,7 +5,7 @@
 {{- if and (driver "mysql") (eq $p.Type "procedure") (not $p.Void) }}
 	// At the moment, the Go MySQL driver does not support stored procedures
 	// with out parameters
-	return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}fmt.Errorf("unsupported")
+	return {{ zero $p.Returns }}, fmt.Errorf("unsupported")
 {{- else }}
 	// call {{ schema $p.SQLName }}
 	{{ sqlstr "proc" $p }}
@@ -20,7 +20,7 @@
 {{- else }}
 	if err := {{ db "QueryRow" $p }}.Scan({{ names "&" $p.Returns }}); err != nil {
 {{- end }}
-		return {{ range $p.Returns }}{{ zero .Zero }}, {{ end }}logerror(err)
+		return {{ zero $p.Returns }}, logerror(err)
 	}
 	return {{ range $p.Returns }}{{ check_name .GoName }}, {{ end }}nil
 {{- else -}}

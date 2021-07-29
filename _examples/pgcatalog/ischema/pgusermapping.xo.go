@@ -4,13 +4,15 @@ package ischema
 
 import (
 	"database/sql"
+
+	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
 )
 
 // PgUserMapping represents a row from 'information_schema._pg_user_mappings'.
 type PgUserMapping struct {
-	Oid                     NullOid          `json:"oid"`                      // oid
+	Oid                     pgtypes.NullOid  `json:"oid"`                      // oid
 	Umoptions               []sql.NullString `json:"umoptions"`                // umoptions
-	Umuser                  NullOid          `json:"umuser"`                   // umuser
+	Umuser                  pgtypes.NullOid  `json:"umuser"`                   // umuser
 	AuthorizationIdentifier sql.NullString   `json:"authorization_identifier"` // authorization_identifier
 	ForeignServerCatalog    sql.NullString   `json:"foreign_server_catalog"`   // foreign_server_catalog
 	ForeignServerName       sql.NullString   `json:"foreign_server_name"`      // foreign_server_name

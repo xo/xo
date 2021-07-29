@@ -16,7 +16,7 @@ func PgTruetypid(ctx context.Context, db DB, p0 pgtypes.PgAttribute, p1 pgtypes.
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }

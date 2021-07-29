@@ -17,7 +17,7 @@ func PgExpandarray(ctx context.Context, db DB, p0 pgtypes.Anyarray) (pgtypes.Any
 	var n int
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&x, &n); err != nil {
-		return Anyelement{}, 0, logerror(err)
+		return pgtypes.Anyelement{}, 0, logerror(err)
 	}
 	return x, n, nil
 }

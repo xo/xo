@@ -4,16 +4,18 @@ package ischema
 
 import (
 	"database/sql"
+
+	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
 )
 
 // SQLFeature represents a row from 'information_schema.sql_features'.
 type SQLFeature struct {
-	Tableoid       Oid            `json:"tableoid"`         // tableoid
-	Cmax           Cid            `json:"cmax"`             // cmax
-	Xmax           Xid            `json:"xmax"`             // xmax
-	Cmin           Cid            `json:"cmin"`             // cmin
-	Xmin           Xid            `json:"xmin"`             // xmin
-	Ctid           Tid            `json:"ctid"`             // ctid
+	Tableoid       pgtypes.Oid    `json:"tableoid"`         // tableoid
+	Cmax           pgtypes.Cid    `json:"cmax"`             // cmax
+	Xmax           pgtypes.Xid    `json:"xmax"`             // xmax
+	Cmin           pgtypes.Cid    `json:"cmin"`             // cmin
+	Xmin           pgtypes.Xid    `json:"xmin"`             // xmin
+	Ctid           pgtypes.Tid    `json:"ctid"`             // ctid
 	FeatureID      sql.NullString `json:"feature_id"`       // feature_id
 	FeatureName    sql.NullString `json:"feature_name"`     // feature_name
 	SubFeatureID   sql.NullString `json:"sub_feature_id"`   // sub_feature_id

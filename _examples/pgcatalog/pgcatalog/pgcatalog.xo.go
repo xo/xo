@@ -210,157 +210,157 @@ func (ss StringSlice) Value() (driver.Value, error) {
 
 // PgAggregate represents a row from 'pg_catalog.pg_aggregate'.
 type PgAggregate struct {
-	Tableoid         Oid            `json:"tableoid"`         // tableoid
-	Cmax             Cid            `json:"cmax"`             // cmax
-	Xmax             Xid            `json:"xmax"`             // xmax
-	Cmin             Cid            `json:"cmin"`             // cmin
-	Xmin             Xid            `json:"xmin"`             // xmin
-	Ctid             Tid            `json:"ctid"`             // ctid
-	Aggfnoid         Regproc        `json:"aggfnoid"`         // aggfnoid
-	Aggkind          Char           `json:"aggkind"`          // aggkind
-	Aggnumdirectargs int16          `json:"aggnumdirectargs"` // aggnumdirectargs
-	Aggtransfn       Regproc        `json:"aggtransfn"`       // aggtransfn
-	Aggfinalfn       Regproc        `json:"aggfinalfn"`       // aggfinalfn
-	Aggcombinefn     Regproc        `json:"aggcombinefn"`     // aggcombinefn
-	Aggserialfn      Regproc        `json:"aggserialfn"`      // aggserialfn
-	Aggdeserialfn    Regproc        `json:"aggdeserialfn"`    // aggdeserialfn
-	Aggmtransfn      Regproc        `json:"aggmtransfn"`      // aggmtransfn
-	Aggminvtransfn   Regproc        `json:"aggminvtransfn"`   // aggminvtransfn
-	Aggmfinalfn      Regproc        `json:"aggmfinalfn"`      // aggmfinalfn
-	Aggfinalextra    bool           `json:"aggfinalextra"`    // aggfinalextra
-	Aggmfinalextra   bool           `json:"aggmfinalextra"`   // aggmfinalextra
-	Aggfinalmodify   Char           `json:"aggfinalmodify"`   // aggfinalmodify
-	Aggmfinalmodify  Char           `json:"aggmfinalmodify"`  // aggmfinalmodify
-	Aggsortop        Oid            `json:"aggsortop"`        // aggsortop
-	Aggtranstype     Oid            `json:"aggtranstype"`     // aggtranstype
-	Aggtransspace    int            `json:"aggtransspace"`    // aggtransspace
-	Aggmtranstype    Oid            `json:"aggmtranstype"`    // aggmtranstype
-	Aggmtransspace   int            `json:"aggmtransspace"`   // aggmtransspace
-	Agginitval       sql.NullString `json:"agginitval"`       // agginitval
-	Aggminitval      sql.NullString `json:"aggminitval"`      // aggminitval
+	Tableoid         pgtypes.Oid     `json:"tableoid"`         // tableoid
+	Cmax             pgtypes.Cid     `json:"cmax"`             // cmax
+	Xmax             pgtypes.Xid     `json:"xmax"`             // xmax
+	Cmin             pgtypes.Cid     `json:"cmin"`             // cmin
+	Xmin             pgtypes.Xid     `json:"xmin"`             // xmin
+	Ctid             pgtypes.Tid     `json:"ctid"`             // ctid
+	Aggfnoid         pgtypes.Regproc `json:"aggfnoid"`         // aggfnoid
+	Aggkind          pgtypes.Char    `json:"aggkind"`          // aggkind
+	Aggnumdirectargs int16           `json:"aggnumdirectargs"` // aggnumdirectargs
+	Aggtransfn       pgtypes.Regproc `json:"aggtransfn"`       // aggtransfn
+	Aggfinalfn       pgtypes.Regproc `json:"aggfinalfn"`       // aggfinalfn
+	Aggcombinefn     pgtypes.Regproc `json:"aggcombinefn"`     // aggcombinefn
+	Aggserialfn      pgtypes.Regproc `json:"aggserialfn"`      // aggserialfn
+	Aggdeserialfn    pgtypes.Regproc `json:"aggdeserialfn"`    // aggdeserialfn
+	Aggmtransfn      pgtypes.Regproc `json:"aggmtransfn"`      // aggmtransfn
+	Aggminvtransfn   pgtypes.Regproc `json:"aggminvtransfn"`   // aggminvtransfn
+	Aggmfinalfn      pgtypes.Regproc `json:"aggmfinalfn"`      // aggmfinalfn
+	Aggfinalextra    bool            `json:"aggfinalextra"`    // aggfinalextra
+	Aggmfinalextra   bool            `json:"aggmfinalextra"`   // aggmfinalextra
+	Aggfinalmodify   pgtypes.Char    `json:"aggfinalmodify"`   // aggfinalmodify
+	Aggmfinalmodify  pgtypes.Char    `json:"aggmfinalmodify"`  // aggmfinalmodify
+	Aggsortop        pgtypes.Oid     `json:"aggsortop"`        // aggsortop
+	Aggtranstype     pgtypes.Oid     `json:"aggtranstype"`     // aggtranstype
+	Aggtransspace    int             `json:"aggtransspace"`    // aggtransspace
+	Aggmtranstype    pgtypes.Oid     `json:"aggmtranstype"`    // aggmtranstype
+	Aggmtransspace   int             `json:"aggmtransspace"`   // aggmtransspace
+	Agginitval       sql.NullString  `json:"agginitval"`       // agginitval
+	Aggminitval      sql.NullString  `json:"aggminitval"`      // aggminitval
 }
 
 // PgAm represents a row from 'pg_catalog.pg_am'.
 type PgAm struct {
-	Tableoid  Oid     `json:"tableoid"`  // tableoid
-	Cmax      Cid     `json:"cmax"`      // cmax
-	Xmax      Xid     `json:"xmax"`      // xmax
-	Cmin      Cid     `json:"cmin"`      // cmin
-	Xmin      Xid     `json:"xmin"`      // xmin
-	Ctid      Tid     `json:"ctid"`      // ctid
-	Oid       Oid     `json:"oid"`       // oid
-	Amname    string  `json:"amname"`    // amname
-	Amhandler Regproc `json:"amhandler"` // amhandler
-	Amtype    Char    `json:"amtype"`    // amtype
+	Tableoid  pgtypes.Oid     `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid     `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid     `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid     `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid     `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid     `json:"ctid"`      // ctid
+	Oid       pgtypes.Oid     `json:"oid"`       // oid
+	Amname    string          `json:"amname"`    // amname
+	Amhandler pgtypes.Regproc `json:"amhandler"` // amhandler
+	Amtype    pgtypes.Char    `json:"amtype"`    // amtype
 }
 
 // PgAmop represents a row from 'pg_catalog.pg_amop'.
 type PgAmop struct {
-	Tableoid       Oid   `json:"tableoid"`       // tableoid
-	Cmax           Cid   `json:"cmax"`           // cmax
-	Xmax           Xid   `json:"xmax"`           // xmax
-	Cmin           Cid   `json:"cmin"`           // cmin
-	Xmin           Xid   `json:"xmin"`           // xmin
-	Ctid           Tid   `json:"ctid"`           // ctid
-	Oid            Oid   `json:"oid"`            // oid
-	Amopfamily     Oid   `json:"amopfamily"`     // amopfamily
-	Amoplefttype   Oid   `json:"amoplefttype"`   // amoplefttype
-	Amoprighttype  Oid   `json:"amoprighttype"`  // amoprighttype
-	Amopstrategy   int16 `json:"amopstrategy"`   // amopstrategy
-	Amoppurpose    Char  `json:"amoppurpose"`    // amoppurpose
-	Amopopr        Oid   `json:"amopopr"`        // amopopr
-	Amopmethod     Oid   `json:"amopmethod"`     // amopmethod
-	Amopsortfamily Oid   `json:"amopsortfamily"` // amopsortfamily
+	Tableoid       pgtypes.Oid  `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid  `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid  `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid  `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid  `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid  `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid  `json:"oid"`            // oid
+	Amopfamily     pgtypes.Oid  `json:"amopfamily"`     // amopfamily
+	Amoplefttype   pgtypes.Oid  `json:"amoplefttype"`   // amoplefttype
+	Amoprighttype  pgtypes.Oid  `json:"amoprighttype"`  // amoprighttype
+	Amopstrategy   int16        `json:"amopstrategy"`   // amopstrategy
+	Amoppurpose    pgtypes.Char `json:"amoppurpose"`    // amoppurpose
+	Amopopr        pgtypes.Oid  `json:"amopopr"`        // amopopr
+	Amopmethod     pgtypes.Oid  `json:"amopmethod"`     // amopmethod
+	Amopsortfamily pgtypes.Oid  `json:"amopsortfamily"` // amopsortfamily
 }
 
 // PgAmproc represents a row from 'pg_catalog.pg_amproc'.
 type PgAmproc struct {
-	Tableoid        Oid     `json:"tableoid"`        // tableoid
-	Cmax            Cid     `json:"cmax"`            // cmax
-	Xmax            Xid     `json:"xmax"`            // xmax
-	Cmin            Cid     `json:"cmin"`            // cmin
-	Xmin            Xid     `json:"xmin"`            // xmin
-	Ctid            Tid     `json:"ctid"`            // ctid
-	Oid             Oid     `json:"oid"`             // oid
-	Amprocfamily    Oid     `json:"amprocfamily"`    // amprocfamily
-	Amproclefttype  Oid     `json:"amproclefttype"`  // amproclefttype
-	Amprocrighttype Oid     `json:"amprocrighttype"` // amprocrighttype
-	Amprocnum       int16   `json:"amprocnum"`       // amprocnum
-	Amproc          Regproc `json:"amproc"`          // amproc
+	Tableoid        pgtypes.Oid     `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid     `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid     `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid     `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid     `json:"xmin"`            // xmin
+	Ctid            pgtypes.Tid     `json:"ctid"`            // ctid
+	Oid             pgtypes.Oid     `json:"oid"`             // oid
+	Amprocfamily    pgtypes.Oid     `json:"amprocfamily"`    // amprocfamily
+	Amproclefttype  pgtypes.Oid     `json:"amproclefttype"`  // amproclefttype
+	Amprocrighttype pgtypes.Oid     `json:"amprocrighttype"` // amprocrighttype
+	Amprocnum       int16           `json:"amprocnum"`       // amprocnum
+	Amproc          pgtypes.Regproc `json:"amproc"`          // amproc
 }
 
 // PgAttrdef represents a row from 'pg_catalog.pg_attrdef'.
 type PgAttrdef struct {
-	Tableoid Oid        `json:"tableoid"` // tableoid
-	Cmax     Cid        `json:"cmax"`     // cmax
-	Xmax     Xid        `json:"xmax"`     // xmax
-	Cmin     Cid        `json:"cmin"`     // cmin
-	Xmin     Xid        `json:"xmin"`     // xmin
-	Ctid     Tid        `json:"ctid"`     // ctid
-	Oid      Oid        `json:"oid"`      // oid
-	Adrelid  Oid        `json:"adrelid"`  // adrelid
-	Adnum    int16      `json:"adnum"`    // adnum
-	Adbin    PgNodeTree `json:"adbin"`    // adbin
+	Tableoid pgtypes.Oid        `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid        `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid        `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid        `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid        `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid        `json:"ctid"`     // ctid
+	Oid      pgtypes.Oid        `json:"oid"`      // oid
+	Adrelid  pgtypes.Oid        `json:"adrelid"`  // adrelid
+	Adnum    int16              `json:"adnum"`    // adnum
+	Adbin    pgtypes.PgNodeTree `json:"adbin"`    // adbin
 }
 
 // PgAttribute represents a row from 'pg_catalog.pg_attribute'.
 type PgAttribute struct {
-	Tableoid      Oid              `json:"tableoid"`      // tableoid
-	Cmax          Cid              `json:"cmax"`          // cmax
-	Xmax          Xid              `json:"xmax"`          // xmax
-	Cmin          Cid              `json:"cmin"`          // cmin
-	Xmin          Xid              `json:"xmin"`          // xmin
-	Ctid          Tid              `json:"ctid"`          // ctid
-	Attrelid      Oid              `json:"attrelid"`      // attrelid
-	Attname       string           `json:"attname"`       // attname
-	Atttypid      Oid              `json:"atttypid"`      // atttypid
-	Attstattarget int              `json:"attstattarget"` // attstattarget
-	Attlen        int16            `json:"attlen"`        // attlen
-	Attnum        int16            `json:"attnum"`        // attnum
-	Attndims      int              `json:"attndims"`      // attndims
-	Attcacheoff   int              `json:"attcacheoff"`   // attcacheoff
-	Atttypmod     int              `json:"atttypmod"`     // atttypmod
-	Attbyval      bool             `json:"attbyval"`      // attbyval
-	Attstorage    Char             `json:"attstorage"`    // attstorage
-	Attalign      Char             `json:"attalign"`      // attalign
-	Attnotnull    bool             `json:"attnotnull"`    // attnotnull
-	Atthasdef     bool             `json:"atthasdef"`     // atthasdef
-	Atthasmissing bool             `json:"atthasmissing"` // atthasmissing
-	Attidentity   Char             `json:"attidentity"`   // attidentity
-	Attgenerated  Char             `json:"attgenerated"`  // attgenerated
-	Attisdropped  bool             `json:"attisdropped"`  // attisdropped
-	Attislocal    bool             `json:"attislocal"`    // attislocal
-	Attinhcount   int              `json:"attinhcount"`   // attinhcount
-	Attcollation  Oid              `json:"attcollation"`  // attcollation
-	Attacl        []NullAclitem    `json:"attacl"`        // attacl
-	Attoptions    []sql.NullString `json:"attoptions"`    // attoptions
-	Attfdwoptions []sql.NullString `json:"attfdwoptions"` // attfdwoptions
-	Attmissingval NullAnyarray     `json:"attmissingval"` // attmissingval
+	Tableoid      pgtypes.Oid           `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid           `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid           `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid           `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid           `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid           `json:"ctid"`          // ctid
+	Attrelid      pgtypes.Oid           `json:"attrelid"`      // attrelid
+	Attname       string                `json:"attname"`       // attname
+	Atttypid      pgtypes.Oid           `json:"atttypid"`      // atttypid
+	Attstattarget int                   `json:"attstattarget"` // attstattarget
+	Attlen        int16                 `json:"attlen"`        // attlen
+	Attnum        int16                 `json:"attnum"`        // attnum
+	Attndims      int                   `json:"attndims"`      // attndims
+	Attcacheoff   int                   `json:"attcacheoff"`   // attcacheoff
+	Atttypmod     int                   `json:"atttypmod"`     // atttypmod
+	Attbyval      bool                  `json:"attbyval"`      // attbyval
+	Attstorage    pgtypes.Char          `json:"attstorage"`    // attstorage
+	Attalign      pgtypes.Char          `json:"attalign"`      // attalign
+	Attnotnull    bool                  `json:"attnotnull"`    // attnotnull
+	Atthasdef     bool                  `json:"atthasdef"`     // atthasdef
+	Atthasmissing bool                  `json:"atthasmissing"` // atthasmissing
+	Attidentity   pgtypes.Char          `json:"attidentity"`   // attidentity
+	Attgenerated  pgtypes.Char          `json:"attgenerated"`  // attgenerated
+	Attisdropped  bool                  `json:"attisdropped"`  // attisdropped
+	Attislocal    bool                  `json:"attislocal"`    // attislocal
+	Attinhcount   int                   `json:"attinhcount"`   // attinhcount
+	Attcollation  pgtypes.Oid           `json:"attcollation"`  // attcollation
+	Attacl        []pgtypes.NullAclitem `json:"attacl"`        // attacl
+	Attoptions    []sql.NullString      `json:"attoptions"`    // attoptions
+	Attfdwoptions []sql.NullString      `json:"attfdwoptions"` // attfdwoptions
+	Attmissingval pgtypes.NullAnyarray  `json:"attmissingval"` // attmissingval
 }
 
 // PgAuthMember represents a row from 'pg_catalog.pg_auth_members'.
 type PgAuthMember struct {
-	Tableoid    Oid  `json:"tableoid"`     // tableoid
-	Cmax        Cid  `json:"cmax"`         // cmax
-	Xmax        Xid  `json:"xmax"`         // xmax
-	Cmin        Cid  `json:"cmin"`         // cmin
-	Xmin        Xid  `json:"xmin"`         // xmin
-	Ctid        Tid  `json:"ctid"`         // ctid
-	Roleid      Oid  `json:"roleid"`       // roleid
-	Member      Oid  `json:"member"`       // member
-	Grantor     Oid  `json:"grantor"`      // grantor
-	AdminOption bool `json:"admin_option"` // admin_option
+	Tableoid    pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`         // ctid
+	Roleid      pgtypes.Oid `json:"roleid"`       // roleid
+	Member      pgtypes.Oid `json:"member"`       // member
+	Grantor     pgtypes.Oid `json:"grantor"`      // grantor
+	AdminOption bool        `json:"admin_option"` // admin_option
 }
 
 // PgAuthid represents a row from 'pg_catalog.pg_authid'.
 type PgAuthid struct {
-	Tableoid       Oid            `json:"tableoid"`       // tableoid
-	Cmax           Cid            `json:"cmax"`           // cmax
-	Xmax           Xid            `json:"xmax"`           // xmax
-	Cmin           Cid            `json:"cmin"`           // cmin
-	Xmin           Xid            `json:"xmin"`           // xmin
-	Ctid           Tid            `json:"ctid"`           // ctid
-	Oid            Oid            `json:"oid"`            // oid
+	Tableoid       pgtypes.Oid    `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid    `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid    `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid    `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid    `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid    `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid    `json:"oid"`            // oid
 	Rolname        string         `json:"rolname"`        // rolname
 	Rolsuper       bool           `json:"rolsuper"`       // rolsuper
 	Rolinherit     bool           `json:"rolinherit"`     // rolinherit
@@ -397,76 +397,76 @@ type PgAvailableExtensionVersion struct {
 
 // PgCast represents a row from 'pg_catalog.pg_cast'.
 type PgCast struct {
-	Tableoid    Oid  `json:"tableoid"`    // tableoid
-	Cmax        Cid  `json:"cmax"`        // cmax
-	Xmax        Xid  `json:"xmax"`        // xmax
-	Cmin        Cid  `json:"cmin"`        // cmin
-	Xmin        Xid  `json:"xmin"`        // xmin
-	Ctid        Tid  `json:"ctid"`        // ctid
-	Oid         Oid  `json:"oid"`         // oid
-	Castsource  Oid  `json:"castsource"`  // castsource
-	Casttarget  Oid  `json:"casttarget"`  // casttarget
-	Castfunc    Oid  `json:"castfunc"`    // castfunc
-	Castcontext Char `json:"castcontext"` // castcontext
-	Castmethod  Char `json:"castmethod"`  // castmethod
+	Tableoid    pgtypes.Oid  `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid  `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid  `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid  `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid  `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid  `json:"ctid"`        // ctid
+	Oid         pgtypes.Oid  `json:"oid"`         // oid
+	Castsource  pgtypes.Oid  `json:"castsource"`  // castsource
+	Casttarget  pgtypes.Oid  `json:"casttarget"`  // casttarget
+	Castfunc    pgtypes.Oid  `json:"castfunc"`    // castfunc
+	Castcontext pgtypes.Char `json:"castcontext"` // castcontext
+	Castmethod  pgtypes.Char `json:"castmethod"`  // castmethod
 }
 
 // PgClass represents a row from 'pg_catalog.pg_class'.
 type PgClass struct {
-	Tableoid            Oid              `json:"tableoid"`            // tableoid
-	Cmax                Cid              `json:"cmax"`                // cmax
-	Xmax                Xid              `json:"xmax"`                // xmax
-	Cmin                Cid              `json:"cmin"`                // cmin
-	Xmin                Xid              `json:"xmin"`                // xmin
-	Ctid                Tid              `json:"ctid"`                // ctid
-	Oid                 Oid              `json:"oid"`                 // oid
-	Relname             string           `json:"relname"`             // relname
-	Relnamespace        Oid              `json:"relnamespace"`        // relnamespace
-	Reltype             Oid              `json:"reltype"`             // reltype
-	Reloftype           Oid              `json:"reloftype"`           // reloftype
-	Relowner            Oid              `json:"relowner"`            // relowner
-	Relam               Oid              `json:"relam"`               // relam
-	Relfilenode         Oid              `json:"relfilenode"`         // relfilenode
-	Reltablespace       Oid              `json:"reltablespace"`       // reltablespace
-	Relpages            int              `json:"relpages"`            // relpages
-	Reltuples           float32          `json:"reltuples"`           // reltuples
-	Relallvisible       int              `json:"relallvisible"`       // relallvisible
-	Reltoastrelid       Oid              `json:"reltoastrelid"`       // reltoastrelid
-	Relhasindex         bool             `json:"relhasindex"`         // relhasindex
-	Relisshared         bool             `json:"relisshared"`         // relisshared
-	Relpersistence      Char             `json:"relpersistence"`      // relpersistence
-	Relkind             Char             `json:"relkind"`             // relkind
-	Relnatts            int16            `json:"relnatts"`            // relnatts
-	Relchecks           int16            `json:"relchecks"`           // relchecks
-	Relhasrules         bool             `json:"relhasrules"`         // relhasrules
-	Relhastriggers      bool             `json:"relhastriggers"`      // relhastriggers
-	Relhassubclass      bool             `json:"relhassubclass"`      // relhassubclass
-	Relrowsecurity      bool             `json:"relrowsecurity"`      // relrowsecurity
-	Relforcerowsecurity bool             `json:"relforcerowsecurity"` // relforcerowsecurity
-	Relispopulated      bool             `json:"relispopulated"`      // relispopulated
-	Relreplident        Char             `json:"relreplident"`        // relreplident
-	Relispartition      bool             `json:"relispartition"`      // relispartition
-	Relrewrite          Oid              `json:"relrewrite"`          // relrewrite
-	Relfrozenxid        Xid              `json:"relfrozenxid"`        // relfrozenxid
-	Relminmxid          Xid              `json:"relminmxid"`          // relminmxid
-	Relacl              []NullAclitem    `json:"relacl"`              // relacl
-	Reloptions          []sql.NullString `json:"reloptions"`          // reloptions
-	Relpartbound        NullPgNodeTree   `json:"relpartbound"`        // relpartbound
+	Tableoid            pgtypes.Oid            `json:"tableoid"`            // tableoid
+	Cmax                pgtypes.Cid            `json:"cmax"`                // cmax
+	Xmax                pgtypes.Xid            `json:"xmax"`                // xmax
+	Cmin                pgtypes.Cid            `json:"cmin"`                // cmin
+	Xmin                pgtypes.Xid            `json:"xmin"`                // xmin
+	Ctid                pgtypes.Tid            `json:"ctid"`                // ctid
+	Oid                 pgtypes.Oid            `json:"oid"`                 // oid
+	Relname             string                 `json:"relname"`             // relname
+	Relnamespace        pgtypes.Oid            `json:"relnamespace"`        // relnamespace
+	Reltype             pgtypes.Oid            `json:"reltype"`             // reltype
+	Reloftype           pgtypes.Oid            `json:"reloftype"`           // reloftype
+	Relowner            pgtypes.Oid            `json:"relowner"`            // relowner
+	Relam               pgtypes.Oid            `json:"relam"`               // relam
+	Relfilenode         pgtypes.Oid            `json:"relfilenode"`         // relfilenode
+	Reltablespace       pgtypes.Oid            `json:"reltablespace"`       // reltablespace
+	Relpages            int                    `json:"relpages"`            // relpages
+	Reltuples           float32                `json:"reltuples"`           // reltuples
+	Relallvisible       int                    `json:"relallvisible"`       // relallvisible
+	Reltoastrelid       pgtypes.Oid            `json:"reltoastrelid"`       // reltoastrelid
+	Relhasindex         bool                   `json:"relhasindex"`         // relhasindex
+	Relisshared         bool                   `json:"relisshared"`         // relisshared
+	Relpersistence      pgtypes.Char           `json:"relpersistence"`      // relpersistence
+	Relkind             pgtypes.Char           `json:"relkind"`             // relkind
+	Relnatts            int16                  `json:"relnatts"`            // relnatts
+	Relchecks           int16                  `json:"relchecks"`           // relchecks
+	Relhasrules         bool                   `json:"relhasrules"`         // relhasrules
+	Relhastriggers      bool                   `json:"relhastriggers"`      // relhastriggers
+	Relhassubclass      bool                   `json:"relhassubclass"`      // relhassubclass
+	Relrowsecurity      bool                   `json:"relrowsecurity"`      // relrowsecurity
+	Relforcerowsecurity bool                   `json:"relforcerowsecurity"` // relforcerowsecurity
+	Relispopulated      bool                   `json:"relispopulated"`      // relispopulated
+	Relreplident        pgtypes.Char           `json:"relreplident"`        // relreplident
+	Relispartition      bool                   `json:"relispartition"`      // relispartition
+	Relrewrite          pgtypes.Oid            `json:"relrewrite"`          // relrewrite
+	Relfrozenxid        pgtypes.Xid            `json:"relfrozenxid"`        // relfrozenxid
+	Relminmxid          pgtypes.Xid            `json:"relminmxid"`          // relminmxid
+	Relacl              []pgtypes.NullAclitem  `json:"relacl"`              // relacl
+	Reloptions          []sql.NullString       `json:"reloptions"`          // reloptions
+	Relpartbound        pgtypes.NullPgNodeTree `json:"relpartbound"`        // relpartbound
 }
 
 // PgCollation represents a row from 'pg_catalog.pg_collation'.
 type PgCollation struct {
-	Tableoid            Oid            `json:"tableoid"`            // tableoid
-	Cmax                Cid            `json:"cmax"`                // cmax
-	Xmax                Xid            `json:"xmax"`                // xmax
-	Cmin                Cid            `json:"cmin"`                // cmin
-	Xmin                Xid            `json:"xmin"`                // xmin
-	Ctid                Tid            `json:"ctid"`                // ctid
-	Oid                 Oid            `json:"oid"`                 // oid
+	Tableoid            pgtypes.Oid    `json:"tableoid"`            // tableoid
+	Cmax                pgtypes.Cid    `json:"cmax"`                // cmax
+	Xmax                pgtypes.Xid    `json:"xmax"`                // xmax
+	Cmin                pgtypes.Cid    `json:"cmin"`                // cmin
+	Xmin                pgtypes.Xid    `json:"xmin"`                // xmin
+	Ctid                pgtypes.Tid    `json:"ctid"`                // ctid
+	Oid                 pgtypes.Oid    `json:"oid"`                 // oid
 	Collname            string         `json:"collname"`            // collname
-	Collnamespace       Oid            `json:"collnamespace"`       // collnamespace
-	Collowner           Oid            `json:"collowner"`           // collowner
-	Collprovider        Char           `json:"collprovider"`        // collprovider
+	Collnamespace       pgtypes.Oid    `json:"collnamespace"`       // collnamespace
+	Collowner           pgtypes.Oid    `json:"collowner"`           // collowner
+	Collprovider        pgtypes.Char   `json:"collprovider"`        // collprovider
 	Collisdeterministic bool           `json:"collisdeterministic"` // collisdeterministic
 	Collencoding        int            `json:"collencoding"`        // collencoding
 	Collcollate         string         `json:"collcollate"`         // collcollate
@@ -482,55 +482,55 @@ type PgConfig struct {
 
 // PgConstraint represents a row from 'pg_catalog.pg_constraint'.
 type PgConstraint struct {
-	Tableoid      Oid             `json:"tableoid"`      // tableoid
-	Cmax          Cid             `json:"cmax"`          // cmax
-	Xmax          Xid             `json:"xmax"`          // xmax
-	Cmin          Cid             `json:"cmin"`          // cmin
-	Xmin          Xid             `json:"xmin"`          // xmin
-	Ctid          Tid             `json:"ctid"`          // ctid
-	Oid           Oid             `json:"oid"`           // oid
-	Conname       string          `json:"conname"`       // conname
-	Connamespace  Oid             `json:"connamespace"`  // connamespace
-	Contype       Char            `json:"contype"`       // contype
-	Condeferrable bool            `json:"condeferrable"` // condeferrable
-	Condeferred   bool            `json:"condeferred"`   // condeferred
-	Convalidated  bool            `json:"convalidated"`  // convalidated
-	Conrelid      Oid             `json:"conrelid"`      // conrelid
-	Contypid      Oid             `json:"contypid"`      // contypid
-	Conindid      Oid             `json:"conindid"`      // conindid
-	Conparentid   Oid             `json:"conparentid"`   // conparentid
-	Confrelid     Oid             `json:"confrelid"`     // confrelid
-	Confupdtype   Char            `json:"confupdtype"`   // confupdtype
-	Confdeltype   Char            `json:"confdeltype"`   // confdeltype
-	Confmatchtype Char            `json:"confmatchtype"` // confmatchtype
-	Conislocal    bool            `json:"conislocal"`    // conislocal
-	Coninhcount   int             `json:"coninhcount"`   // coninhcount
-	Connoinherit  bool            `json:"connoinherit"`  // connoinherit
-	Conkey        []sql.NullInt64 `json:"conkey"`        // conkey
-	Confkey       []sql.NullInt64 `json:"confkey"`       // confkey
-	Conpfeqop     []NullOid       `json:"conpfeqop"`     // conpfeqop
-	Conppeqop     []NullOid       `json:"conppeqop"`     // conppeqop
-	Conffeqop     []NullOid       `json:"conffeqop"`     // conffeqop
-	Conexclop     []NullOid       `json:"conexclop"`     // conexclop
-	Conbin        NullPgNodeTree  `json:"conbin"`        // conbin
+	Tableoid      pgtypes.Oid            `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid            `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid            `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid            `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid            `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid            `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid            `json:"oid"`           // oid
+	Conname       string                 `json:"conname"`       // conname
+	Connamespace  pgtypes.Oid            `json:"connamespace"`  // connamespace
+	Contype       pgtypes.Char           `json:"contype"`       // contype
+	Condeferrable bool                   `json:"condeferrable"` // condeferrable
+	Condeferred   bool                   `json:"condeferred"`   // condeferred
+	Convalidated  bool                   `json:"convalidated"`  // convalidated
+	Conrelid      pgtypes.Oid            `json:"conrelid"`      // conrelid
+	Contypid      pgtypes.Oid            `json:"contypid"`      // contypid
+	Conindid      pgtypes.Oid            `json:"conindid"`      // conindid
+	Conparentid   pgtypes.Oid            `json:"conparentid"`   // conparentid
+	Confrelid     pgtypes.Oid            `json:"confrelid"`     // confrelid
+	Confupdtype   pgtypes.Char           `json:"confupdtype"`   // confupdtype
+	Confdeltype   pgtypes.Char           `json:"confdeltype"`   // confdeltype
+	Confmatchtype pgtypes.Char           `json:"confmatchtype"` // confmatchtype
+	Conislocal    bool                   `json:"conislocal"`    // conislocal
+	Coninhcount   int                    `json:"coninhcount"`   // coninhcount
+	Connoinherit  bool                   `json:"connoinherit"`  // connoinherit
+	Conkey        []sql.NullInt64        `json:"conkey"`        // conkey
+	Confkey       []sql.NullInt64        `json:"confkey"`       // confkey
+	Conpfeqop     []pgtypes.NullOid      `json:"conpfeqop"`     // conpfeqop
+	Conppeqop     []pgtypes.NullOid      `json:"conppeqop"`     // conppeqop
+	Conffeqop     []pgtypes.NullOid      `json:"conffeqop"`     // conffeqop
+	Conexclop     []pgtypes.NullOid      `json:"conexclop"`     // conexclop
+	Conbin        pgtypes.NullPgNodeTree `json:"conbin"`        // conbin
 }
 
 // PgConversion represents a row from 'pg_catalog.pg_conversion'.
 type PgConversion struct {
-	Tableoid       Oid     `json:"tableoid"`       // tableoid
-	Cmax           Cid     `json:"cmax"`           // cmax
-	Xmax           Xid     `json:"xmax"`           // xmax
-	Cmin           Cid     `json:"cmin"`           // cmin
-	Xmin           Xid     `json:"xmin"`           // xmin
-	Ctid           Tid     `json:"ctid"`           // ctid
-	Oid            Oid     `json:"oid"`            // oid
-	Conname        string  `json:"conname"`        // conname
-	Connamespace   Oid     `json:"connamespace"`   // connamespace
-	Conowner       Oid     `json:"conowner"`       // conowner
-	Conforencoding int     `json:"conforencoding"` // conforencoding
-	Contoencoding  int     `json:"contoencoding"`  // contoencoding
-	Conproc        Regproc `json:"conproc"`        // conproc
-	Condefault     bool    `json:"condefault"`     // condefault
+	Tableoid       pgtypes.Oid     `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid     `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid     `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid     `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid     `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid     `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid     `json:"oid"`            // oid
+	Conname        string          `json:"conname"`        // conname
+	Connamespace   pgtypes.Oid     `json:"connamespace"`   // connamespace
+	Conowner       pgtypes.Oid     `json:"conowner"`       // conowner
+	Conforencoding int             `json:"conforencoding"` // conforencoding
+	Contoencoding  int             `json:"contoencoding"`  // contoencoding
+	Conproc        pgtypes.Regproc `json:"conproc"`        // conproc
+	Condefault     bool            `json:"condefault"`     // condefault
 }
 
 // PgCursor represents a row from 'pg_catalog.pg_cursors'.
@@ -545,134 +545,134 @@ type PgCursor struct {
 
 // PgDatabase represents a row from 'pg_catalog.pg_database'.
 type PgDatabase struct {
-	Tableoid      Oid           `json:"tableoid"`      // tableoid
-	Cmax          Cid           `json:"cmax"`          // cmax
-	Xmax          Xid           `json:"xmax"`          // xmax
-	Cmin          Cid           `json:"cmin"`          // cmin
-	Xmin          Xid           `json:"xmin"`          // xmin
-	Ctid          Tid           `json:"ctid"`          // ctid
-	Oid           Oid           `json:"oid"`           // oid
-	Datname       string        `json:"datname"`       // datname
-	Datdba        Oid           `json:"datdba"`        // datdba
-	Encoding      int           `json:"encoding"`      // encoding
-	Datcollate    string        `json:"datcollate"`    // datcollate
-	Datctype      string        `json:"datctype"`      // datctype
-	Datistemplate bool          `json:"datistemplate"` // datistemplate
-	Datallowconn  bool          `json:"datallowconn"`  // datallowconn
-	Datconnlimit  int           `json:"datconnlimit"`  // datconnlimit
-	Datlastsysoid Oid           `json:"datlastsysoid"` // datlastsysoid
-	Datfrozenxid  Xid           `json:"datfrozenxid"`  // datfrozenxid
-	Datminmxid    Xid           `json:"datminmxid"`    // datminmxid
-	Dattablespace Oid           `json:"dattablespace"` // dattablespace
-	Datacl        []NullAclitem `json:"datacl"`        // datacl
+	Tableoid      pgtypes.Oid           `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid           `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid           `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid           `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid           `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid           `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid           `json:"oid"`           // oid
+	Datname       string                `json:"datname"`       // datname
+	Datdba        pgtypes.Oid           `json:"datdba"`        // datdba
+	Encoding      int                   `json:"encoding"`      // encoding
+	Datcollate    string                `json:"datcollate"`    // datcollate
+	Datctype      string                `json:"datctype"`      // datctype
+	Datistemplate bool                  `json:"datistemplate"` // datistemplate
+	Datallowconn  bool                  `json:"datallowconn"`  // datallowconn
+	Datconnlimit  int                   `json:"datconnlimit"`  // datconnlimit
+	Datlastsysoid pgtypes.Oid           `json:"datlastsysoid"` // datlastsysoid
+	Datfrozenxid  pgtypes.Xid           `json:"datfrozenxid"`  // datfrozenxid
+	Datminmxid    pgtypes.Xid           `json:"datminmxid"`    // datminmxid
+	Dattablespace pgtypes.Oid           `json:"dattablespace"` // dattablespace
+	Datacl        []pgtypes.NullAclitem `json:"datacl"`        // datacl
 }
 
 // PgDbRoleSetting represents a row from 'pg_catalog.pg_db_role_setting'.
 type PgDbRoleSetting struct {
-	Tableoid    Oid              `json:"tableoid"`    // tableoid
-	Cmax        Cid              `json:"cmax"`        // cmax
-	Xmax        Xid              `json:"xmax"`        // xmax
-	Cmin        Cid              `json:"cmin"`        // cmin
-	Xmin        Xid              `json:"xmin"`        // xmin
-	Ctid        Tid              `json:"ctid"`        // ctid
-	Setdatabase Oid              `json:"setdatabase"` // setdatabase
-	Setrole     Oid              `json:"setrole"`     // setrole
+	Tableoid    pgtypes.Oid      `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid      `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid      `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid      `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid      `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid      `json:"ctid"`        // ctid
+	Setdatabase pgtypes.Oid      `json:"setdatabase"` // setdatabase
+	Setrole     pgtypes.Oid      `json:"setrole"`     // setrole
 	Setconfig   []sql.NullString `json:"setconfig"`   // setconfig
 }
 
 // PgDefaultACL represents a row from 'pg_catalog.pg_default_acl'.
 type PgDefaultACL struct {
-	Tableoid        Oid       `json:"tableoid"`        // tableoid
-	Cmax            Cid       `json:"cmax"`            // cmax
-	Xmax            Xid       `json:"xmax"`            // xmax
-	Cmin            Cid       `json:"cmin"`            // cmin
-	Xmin            Xid       `json:"xmin"`            // xmin
-	Ctid            Tid       `json:"ctid"`            // ctid
-	Oid             Oid       `json:"oid"`             // oid
-	Defaclrole      Oid       `json:"defaclrole"`      // defaclrole
-	Defaclnamespace Oid       `json:"defaclnamespace"` // defaclnamespace
-	Defaclobjtype   Char      `json:"defaclobjtype"`   // defaclobjtype
-	Defaclacl       []Aclitem `json:"defaclacl"`       // defaclacl
+	Tableoid        pgtypes.Oid       `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid       `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid       `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid       `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid       `json:"xmin"`            // xmin
+	Ctid            pgtypes.Tid       `json:"ctid"`            // ctid
+	Oid             pgtypes.Oid       `json:"oid"`             // oid
+	Defaclrole      pgtypes.Oid       `json:"defaclrole"`      // defaclrole
+	Defaclnamespace pgtypes.Oid       `json:"defaclnamespace"` // defaclnamespace
+	Defaclobjtype   pgtypes.Char      `json:"defaclobjtype"`   // defaclobjtype
+	Defaclacl       []pgtypes.Aclitem `json:"defaclacl"`       // defaclacl
 }
 
 // PgDepend represents a row from 'pg_catalog.pg_depend'.
 type PgDepend struct {
-	Tableoid    Oid  `json:"tableoid"`    // tableoid
-	Cmax        Cid  `json:"cmax"`        // cmax
-	Xmax        Xid  `json:"xmax"`        // xmax
-	Cmin        Cid  `json:"cmin"`        // cmin
-	Xmin        Xid  `json:"xmin"`        // xmin
-	Ctid        Tid  `json:"ctid"`        // ctid
-	Classid     Oid  `json:"classid"`     // classid
-	Objid       Oid  `json:"objid"`       // objid
-	Objsubid    int  `json:"objsubid"`    // objsubid
-	Refclassid  Oid  `json:"refclassid"`  // refclassid
-	Refobjid    Oid  `json:"refobjid"`    // refobjid
-	Refobjsubid int  `json:"refobjsubid"` // refobjsubid
-	Deptype     Char `json:"deptype"`     // deptype
+	Tableoid    pgtypes.Oid  `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid  `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid  `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid  `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid  `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid  `json:"ctid"`        // ctid
+	Classid     pgtypes.Oid  `json:"classid"`     // classid
+	Objid       pgtypes.Oid  `json:"objid"`       // objid
+	Objsubid    int          `json:"objsubid"`    // objsubid
+	Refclassid  pgtypes.Oid  `json:"refclassid"`  // refclassid
+	Refobjid    pgtypes.Oid  `json:"refobjid"`    // refobjid
+	Refobjsubid int          `json:"refobjsubid"` // refobjsubid
+	Deptype     pgtypes.Char `json:"deptype"`     // deptype
 }
 
 // PgDescription represents a row from 'pg_catalog.pg_description'.
 type PgDescription struct {
-	Tableoid    Oid    `json:"tableoid"`    // tableoid
-	Cmax        Cid    `json:"cmax"`        // cmax
-	Xmax        Xid    `json:"xmax"`        // xmax
-	Cmin        Cid    `json:"cmin"`        // cmin
-	Xmin        Xid    `json:"xmin"`        // xmin
-	Ctid        Tid    `json:"ctid"`        // ctid
-	Objoid      Oid    `json:"objoid"`      // objoid
-	Classoid    Oid    `json:"classoid"`    // classoid
-	Objsubid    int    `json:"objsubid"`    // objsubid
-	Description string `json:"description"` // description
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
+	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
+	Objsubid    int         `json:"objsubid"`    // objsubid
+	Description string      `json:"description"` // description
 }
 
 // PgEnum represents a row from 'pg_catalog.pg_enum'.
 type PgEnum struct {
-	Tableoid      Oid     `json:"tableoid"`      // tableoid
-	Cmax          Cid     `json:"cmax"`          // cmax
-	Xmax          Xid     `json:"xmax"`          // xmax
-	Cmin          Cid     `json:"cmin"`          // cmin
-	Xmin          Xid     `json:"xmin"`          // xmin
-	Ctid          Tid     `json:"ctid"`          // ctid
-	Oid           Oid     `json:"oid"`           // oid
-	Enumtypid     Oid     `json:"enumtypid"`     // enumtypid
-	Enumsortorder float32 `json:"enumsortorder"` // enumsortorder
-	Enumlabel     string  `json:"enumlabel"`     // enumlabel
+	Tableoid      pgtypes.Oid `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid `json:"oid"`           // oid
+	Enumtypid     pgtypes.Oid `json:"enumtypid"`     // enumtypid
+	Enumsortorder float32     `json:"enumsortorder"` // enumsortorder
+	Enumlabel     string      `json:"enumlabel"`     // enumlabel
 }
 
 // PgEventTrigger represents a row from 'pg_catalog.pg_event_trigger'.
 type PgEventTrigger struct {
-	Tableoid   Oid              `json:"tableoid"`   // tableoid
-	Cmax       Cid              `json:"cmax"`       // cmax
-	Xmax       Xid              `json:"xmax"`       // xmax
-	Cmin       Cid              `json:"cmin"`       // cmin
-	Xmin       Xid              `json:"xmin"`       // xmin
-	Ctid       Tid              `json:"ctid"`       // ctid
-	Oid        Oid              `json:"oid"`        // oid
+	Tableoid   pgtypes.Oid      `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid      `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid      `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid      `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid      `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid      `json:"ctid"`       // ctid
+	Oid        pgtypes.Oid      `json:"oid"`        // oid
 	Evtname    string           `json:"evtname"`    // evtname
 	Evtevent   string           `json:"evtevent"`   // evtevent
-	Evtowner   Oid              `json:"evtowner"`   // evtowner
-	Evtfoid    Oid              `json:"evtfoid"`    // evtfoid
-	Evtenabled Char             `json:"evtenabled"` // evtenabled
+	Evtowner   pgtypes.Oid      `json:"evtowner"`   // evtowner
+	Evtfoid    pgtypes.Oid      `json:"evtfoid"`    // evtfoid
+	Evtenabled pgtypes.Char     `json:"evtenabled"` // evtenabled
 	Evttags    []sql.NullString `json:"evttags"`    // evttags
 }
 
 // PgExtension represents a row from 'pg_catalog.pg_extension'.
 type PgExtension struct {
-	Tableoid       Oid              `json:"tableoid"`       // tableoid
-	Cmax           Cid              `json:"cmax"`           // cmax
-	Xmax           Xid              `json:"xmax"`           // xmax
-	Cmin           Cid              `json:"cmin"`           // cmin
-	Xmin           Xid              `json:"xmin"`           // xmin
-	Ctid           Tid              `json:"ctid"`           // ctid
-	Oid            Oid              `json:"oid"`            // oid
-	Extname        string           `json:"extname"`        // extname
-	Extowner       Oid              `json:"extowner"`       // extowner
-	Extnamespace   Oid              `json:"extnamespace"`   // extnamespace
-	Extrelocatable bool             `json:"extrelocatable"` // extrelocatable
-	Extversion     string           `json:"extversion"`     // extversion
-	Extconfig      []NullOid        `json:"extconfig"`      // extconfig
-	Extcondition   []sql.NullString `json:"extcondition"`   // extcondition
+	Tableoid       pgtypes.Oid       `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid       `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid       `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid       `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid       `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid       `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid       `json:"oid"`            // oid
+	Extname        string            `json:"extname"`        // extname
+	Extowner       pgtypes.Oid       `json:"extowner"`       // extowner
+	Extnamespace   pgtypes.Oid       `json:"extnamespace"`   // extnamespace
+	Extrelocatable bool              `json:"extrelocatable"` // extrelocatable
+	Extversion     string            `json:"extversion"`     // extversion
+	Extconfig      []pgtypes.NullOid `json:"extconfig"`      // extconfig
+	Extcondition   []sql.NullString  `json:"extcondition"`   // extcondition
 }
 
 // PgFileSetting represents a row from 'pg_catalog.pg_file_settings'.
@@ -688,57 +688,57 @@ type PgFileSetting struct {
 
 // PgForeignDataWrapper represents a row from 'pg_catalog.pg_foreign_data_wrapper'.
 type PgForeignDataWrapper struct {
-	Tableoid     Oid              `json:"tableoid"`     // tableoid
-	Cmax         Cid              `json:"cmax"`         // cmax
-	Xmax         Xid              `json:"xmax"`         // xmax
-	Cmin         Cid              `json:"cmin"`         // cmin
-	Xmin         Xid              `json:"xmin"`         // xmin
-	Ctid         Tid              `json:"ctid"`         // ctid
-	Oid          Oid              `json:"oid"`          // oid
-	Fdwname      string           `json:"fdwname"`      // fdwname
-	Fdwowner     Oid              `json:"fdwowner"`     // fdwowner
-	Fdwhandler   Oid              `json:"fdwhandler"`   // fdwhandler
-	Fdwvalidator Oid              `json:"fdwvalidator"` // fdwvalidator
-	Fdwacl       []NullAclitem    `json:"fdwacl"`       // fdwacl
-	Fdwoptions   []sql.NullString `json:"fdwoptions"`   // fdwoptions
+	Tableoid     pgtypes.Oid           `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid           `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid           `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid           `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid           `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid           `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid           `json:"oid"`          // oid
+	Fdwname      string                `json:"fdwname"`      // fdwname
+	Fdwowner     pgtypes.Oid           `json:"fdwowner"`     // fdwowner
+	Fdwhandler   pgtypes.Oid           `json:"fdwhandler"`   // fdwhandler
+	Fdwvalidator pgtypes.Oid           `json:"fdwvalidator"` // fdwvalidator
+	Fdwacl       []pgtypes.NullAclitem `json:"fdwacl"`       // fdwacl
+	Fdwoptions   []sql.NullString      `json:"fdwoptions"`   // fdwoptions
 }
 
 // PgForeignServer represents a row from 'pg_catalog.pg_foreign_server'.
 type PgForeignServer struct {
-	Tableoid   Oid              `json:"tableoid"`   // tableoid
-	Cmax       Cid              `json:"cmax"`       // cmax
-	Xmax       Xid              `json:"xmax"`       // xmax
-	Cmin       Cid              `json:"cmin"`       // cmin
-	Xmin       Xid              `json:"xmin"`       // xmin
-	Ctid       Tid              `json:"ctid"`       // ctid
-	Oid        Oid              `json:"oid"`        // oid
-	Srvname    string           `json:"srvname"`    // srvname
-	Srvowner   Oid              `json:"srvowner"`   // srvowner
-	Srvfdw     Oid              `json:"srvfdw"`     // srvfdw
-	Srvtype    sql.NullString   `json:"srvtype"`    // srvtype
-	Srvversion sql.NullString   `json:"srvversion"` // srvversion
-	Srvacl     []NullAclitem    `json:"srvacl"`     // srvacl
-	Srvoptions []sql.NullString `json:"srvoptions"` // srvoptions
+	Tableoid   pgtypes.Oid           `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid           `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid           `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid           `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid           `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid           `json:"ctid"`       // ctid
+	Oid        pgtypes.Oid           `json:"oid"`        // oid
+	Srvname    string                `json:"srvname"`    // srvname
+	Srvowner   pgtypes.Oid           `json:"srvowner"`   // srvowner
+	Srvfdw     pgtypes.Oid           `json:"srvfdw"`     // srvfdw
+	Srvtype    sql.NullString        `json:"srvtype"`    // srvtype
+	Srvversion sql.NullString        `json:"srvversion"` // srvversion
+	Srvacl     []pgtypes.NullAclitem `json:"srvacl"`     // srvacl
+	Srvoptions []sql.NullString      `json:"srvoptions"` // srvoptions
 }
 
 // PgForeignTable represents a row from 'pg_catalog.pg_foreign_table'.
 type PgForeignTable struct {
-	Tableoid  Oid              `json:"tableoid"`  // tableoid
-	Cmax      Cid              `json:"cmax"`      // cmax
-	Xmax      Xid              `json:"xmax"`      // xmax
-	Cmin      Cid              `json:"cmin"`      // cmin
-	Xmin      Xid              `json:"xmin"`      // xmin
-	Ctid      Tid              `json:"ctid"`      // ctid
-	Ftrelid   Oid              `json:"ftrelid"`   // ftrelid
-	Ftserver  Oid              `json:"ftserver"`  // ftserver
+	Tableoid  pgtypes.Oid      `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid      `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid      `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid      `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid      `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid      `json:"ctid"`      // ctid
+	Ftrelid   pgtypes.Oid      `json:"ftrelid"`   // ftrelid
+	Ftserver  pgtypes.Oid      `json:"ftserver"`  // ftserver
 	Ftoptions []sql.NullString `json:"ftoptions"` // ftoptions
 }
 
 // PgGroup represents a row from 'pg_catalog.pg_group'.
 type PgGroup struct {
-	Groname  sql.NullString `json:"groname"`  // groname
-	Grosysid NullOid        `json:"grosysid"` // grosysid
-	Grolist  []NullOid      `json:"grolist"`  // grolist
+	Groname  sql.NullString    `json:"groname"`  // groname
+	Grosysid pgtypes.NullOid   `json:"grosysid"` // grosysid
+	Grolist  []pgtypes.NullOid `json:"grolist"`  // grolist
 }
 
 // PgHbaFileRule represents a row from 'pg_catalog.pg_hba_file_rules'.
@@ -765,124 +765,124 @@ type PgIndex struct {
 
 // PgIndex represents a row from 'pg_catalog.pg_index'.
 type PgIndex struct {
-	Tableoid       Oid            `json:"tableoid"`       // tableoid
-	Cmax           Cid            `json:"cmax"`           // cmax
-	Xmax           Xid            `json:"xmax"`           // xmax
-	Cmin           Cid            `json:"cmin"`           // cmin
-	Xmin           Xid            `json:"xmin"`           // xmin
-	Ctid           Tid            `json:"ctid"`           // ctid
-	Indexrelid     Oid            `json:"indexrelid"`     // indexrelid
-	Indrelid       Oid            `json:"indrelid"`       // indrelid
-	Indnatts       int16          `json:"indnatts"`       // indnatts
-	Indnkeyatts    int16          `json:"indnkeyatts"`    // indnkeyatts
-	Indisunique    bool           `json:"indisunique"`    // indisunique
-	Indisprimary   bool           `json:"indisprimary"`   // indisprimary
-	Indisexclusion bool           `json:"indisexclusion"` // indisexclusion
-	Indimmediate   bool           `json:"indimmediate"`   // indimmediate
-	Indisclustered bool           `json:"indisclustered"` // indisclustered
-	Indisvalid     bool           `json:"indisvalid"`     // indisvalid
-	Indcheckxmin   bool           `json:"indcheckxmin"`   // indcheckxmin
-	Indisready     bool           `json:"indisready"`     // indisready
-	Indislive      bool           `json:"indislive"`      // indislive
-	Indisreplident bool           `json:"indisreplident"` // indisreplident
-	Indkey         Int2vector     `json:"indkey"`         // indkey
-	Indcollation   Oidvector      `json:"indcollation"`   // indcollation
-	Indclass       Oidvector      `json:"indclass"`       // indclass
-	Indoption      Int2vector     `json:"indoption"`      // indoption
-	Indexprs       NullPgNodeTree `json:"indexprs"`       // indexprs
-	Indpred        NullPgNodeTree `json:"indpred"`        // indpred
+	Tableoid       pgtypes.Oid            `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid            `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid            `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid            `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid            `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid            `json:"ctid"`           // ctid
+	Indexrelid     pgtypes.Oid            `json:"indexrelid"`     // indexrelid
+	Indrelid       pgtypes.Oid            `json:"indrelid"`       // indrelid
+	Indnatts       int16                  `json:"indnatts"`       // indnatts
+	Indnkeyatts    int16                  `json:"indnkeyatts"`    // indnkeyatts
+	Indisunique    bool                   `json:"indisunique"`    // indisunique
+	Indisprimary   bool                   `json:"indisprimary"`   // indisprimary
+	Indisexclusion bool                   `json:"indisexclusion"` // indisexclusion
+	Indimmediate   bool                   `json:"indimmediate"`   // indimmediate
+	Indisclustered bool                   `json:"indisclustered"` // indisclustered
+	Indisvalid     bool                   `json:"indisvalid"`     // indisvalid
+	Indcheckxmin   bool                   `json:"indcheckxmin"`   // indcheckxmin
+	Indisready     bool                   `json:"indisready"`     // indisready
+	Indislive      bool                   `json:"indislive"`      // indislive
+	Indisreplident bool                   `json:"indisreplident"` // indisreplident
+	Indkey         pgtypes.Int2vector     `json:"indkey"`         // indkey
+	Indcollation   pgtypes.Oidvector      `json:"indcollation"`   // indcollation
+	Indclass       pgtypes.Oidvector      `json:"indclass"`       // indclass
+	Indoption      pgtypes.Int2vector     `json:"indoption"`      // indoption
+	Indexprs       pgtypes.NullPgNodeTree `json:"indexprs"`       // indexprs
+	Indpred        pgtypes.NullPgNodeTree `json:"indpred"`        // indpred
 }
 
 // PgInherit represents a row from 'pg_catalog.pg_inherits'.
 type PgInherit struct {
-	Tableoid  Oid `json:"tableoid"`  // tableoid
-	Cmax      Cid `json:"cmax"`      // cmax
-	Xmax      Xid `json:"xmax"`      // xmax
-	Cmin      Cid `json:"cmin"`      // cmin
-	Xmin      Xid `json:"xmin"`      // xmin
-	Ctid      Tid `json:"ctid"`      // ctid
-	Inhrelid  Oid `json:"inhrelid"`  // inhrelid
-	Inhparent Oid `json:"inhparent"` // inhparent
-	Inhseqno  int `json:"inhseqno"`  // inhseqno
+	Tableoid  pgtypes.Oid `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid `json:"ctid"`      // ctid
+	Inhrelid  pgtypes.Oid `json:"inhrelid"`  // inhrelid
+	Inhparent pgtypes.Oid `json:"inhparent"` // inhparent
+	Inhseqno  int         `json:"inhseqno"`  // inhseqno
 }
 
 // PgInitPriv represents a row from 'pg_catalog.pg_init_privs'.
 type PgInitPriv struct {
-	Tableoid  Oid       `json:"tableoid"`  // tableoid
-	Cmax      Cid       `json:"cmax"`      // cmax
-	Xmax      Xid       `json:"xmax"`      // xmax
-	Cmin      Cid       `json:"cmin"`      // cmin
-	Xmin      Xid       `json:"xmin"`      // xmin
-	Ctid      Tid       `json:"ctid"`      // ctid
-	Objoid    Oid       `json:"objoid"`    // objoid
-	Classoid  Oid       `json:"classoid"`  // classoid
-	Objsubid  int       `json:"objsubid"`  // objsubid
-	Privtype  Char      `json:"privtype"`  // privtype
-	Initprivs []Aclitem `json:"initprivs"` // initprivs
+	Tableoid  pgtypes.Oid       `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid       `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid       `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid       `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid       `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid       `json:"ctid"`      // ctid
+	Objoid    pgtypes.Oid       `json:"objoid"`    // objoid
+	Classoid  pgtypes.Oid       `json:"classoid"`  // classoid
+	Objsubid  int               `json:"objsubid"`  // objsubid
+	Privtype  pgtypes.Char      `json:"privtype"`  // privtype
+	Initprivs []pgtypes.Aclitem `json:"initprivs"` // initprivs
 }
 
 // PgLanguage represents a row from 'pg_catalog.pg_language'.
 type PgLanguage struct {
-	Tableoid      Oid           `json:"tableoid"`      // tableoid
-	Cmax          Cid           `json:"cmax"`          // cmax
-	Xmax          Xid           `json:"xmax"`          // xmax
-	Cmin          Cid           `json:"cmin"`          // cmin
-	Xmin          Xid           `json:"xmin"`          // xmin
-	Ctid          Tid           `json:"ctid"`          // ctid
-	Oid           Oid           `json:"oid"`           // oid
-	Lanname       string        `json:"lanname"`       // lanname
-	Lanowner      Oid           `json:"lanowner"`      // lanowner
-	Lanispl       bool          `json:"lanispl"`       // lanispl
-	Lanpltrusted  bool          `json:"lanpltrusted"`  // lanpltrusted
-	Lanplcallfoid Oid           `json:"lanplcallfoid"` // lanplcallfoid
-	Laninline     Oid           `json:"laninline"`     // laninline
-	Lanvalidator  Oid           `json:"lanvalidator"`  // lanvalidator
-	Lanacl        []NullAclitem `json:"lanacl"`        // lanacl
+	Tableoid      pgtypes.Oid           `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid           `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid           `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid           `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid           `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid           `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid           `json:"oid"`           // oid
+	Lanname       string                `json:"lanname"`       // lanname
+	Lanowner      pgtypes.Oid           `json:"lanowner"`      // lanowner
+	Lanispl       bool                  `json:"lanispl"`       // lanispl
+	Lanpltrusted  bool                  `json:"lanpltrusted"`  // lanpltrusted
+	Lanplcallfoid pgtypes.Oid           `json:"lanplcallfoid"` // lanplcallfoid
+	Laninline     pgtypes.Oid           `json:"laninline"`     // laninline
+	Lanvalidator  pgtypes.Oid           `json:"lanvalidator"`  // lanvalidator
+	Lanacl        []pgtypes.NullAclitem `json:"lanacl"`        // lanacl
 }
 
 // PgLargeobject represents a row from 'pg_catalog.pg_largeobject'.
 type PgLargeobject struct {
-	Tableoid Oid    `json:"tableoid"` // tableoid
-	Cmax     Cid    `json:"cmax"`     // cmax
-	Xmax     Xid    `json:"xmax"`     // xmax
-	Cmin     Cid    `json:"cmin"`     // cmin
-	Xmin     Xid    `json:"xmin"`     // xmin
-	Ctid     Tid    `json:"ctid"`     // ctid
-	Loid     Oid    `json:"loid"`     // loid
-	Pageno   int    `json:"pageno"`   // pageno
-	Data     []byte `json:"data"`     // data
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Loid     pgtypes.Oid `json:"loid"`     // loid
+	Pageno   int         `json:"pageno"`   // pageno
+	Data     []byte      `json:"data"`     // data
 }
 
 // PgLargeobjectMetadatum represents a row from 'pg_catalog.pg_largeobject_metadata'.
 type PgLargeobjectMetadatum struct {
-	Tableoid Oid           `json:"tableoid"` // tableoid
-	Cmax     Cid           `json:"cmax"`     // cmax
-	Xmax     Xid           `json:"xmax"`     // xmax
-	Cmin     Cid           `json:"cmin"`     // cmin
-	Xmin     Xid           `json:"xmin"`     // xmin
-	Ctid     Tid           `json:"ctid"`     // ctid
-	Oid      Oid           `json:"oid"`      // oid
-	Lomowner Oid           `json:"lomowner"` // lomowner
-	Lomacl   []NullAclitem `json:"lomacl"`   // lomacl
+	Tableoid pgtypes.Oid           `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid           `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid           `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid           `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid           `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid           `json:"ctid"`     // ctid
+	Oid      pgtypes.Oid           `json:"oid"`      // oid
+	Lomowner pgtypes.Oid           `json:"lomowner"` // lomowner
+	Lomacl   []pgtypes.NullAclitem `json:"lomacl"`   // lomacl
 }
 
 // PgLock represents a row from 'pg_catalog.pg_locks'.
 type PgLock struct {
-	Locktype           sql.NullString `json:"locktype"`           // locktype
-	Database           NullOid        `json:"database"`           // database
-	Relation           NullOid        `json:"relation"`           // relation
-	Page               sql.NullInt64  `json:"page"`               // page
-	Tuple              sql.NullInt64  `json:"tuple"`              // tuple
-	Virtualxid         sql.NullString `json:"virtualxid"`         // virtualxid
-	Transactionid      NullXid        `json:"transactionid"`      // transactionid
-	Classid            NullOid        `json:"classid"`            // classid
-	Objid              NullOid        `json:"objid"`              // objid
-	Objsubid           sql.NullInt64  `json:"objsubid"`           // objsubid
-	Virtualtransaction sql.NullString `json:"virtualtransaction"` // virtualtransaction
-	Pid                sql.NullInt64  `json:"pid"`                // pid
-	Mode               sql.NullString `json:"mode"`               // mode
-	Granted            sql.NullBool   `json:"granted"`            // granted
-	Fastpath           sql.NullBool   `json:"fastpath"`           // fastpath
+	Locktype           sql.NullString  `json:"locktype"`           // locktype
+	Database           pgtypes.NullOid `json:"database"`           // database
+	Relation           pgtypes.NullOid `json:"relation"`           // relation
+	Page               sql.NullInt64   `json:"page"`               // page
+	Tuple              sql.NullInt64   `json:"tuple"`              // tuple
+	Virtualxid         sql.NullString  `json:"virtualxid"`         // virtualxid
+	Transactionid      pgtypes.NullXid `json:"transactionid"`      // transactionid
+	Classid            pgtypes.NullOid `json:"classid"`            // classid
+	Objid              pgtypes.NullOid `json:"objid"`              // objid
+	Objsubid           sql.NullInt64   `json:"objsubid"`           // objsubid
+	Virtualtransaction sql.NullString  `json:"virtualtransaction"` // virtualtransaction
+	Pid                sql.NullInt64   `json:"pid"`                // pid
+	Mode               sql.NullString  `json:"mode"`               // mode
+	Granted            sql.NullBool    `json:"granted"`            // granted
+	Fastpath           sql.NullBool    `json:"fastpath"`           // fastpath
 }
 
 // PgMatview represents a row from 'pg_catalog.pg_matviews'.
@@ -898,93 +898,93 @@ type PgMatview struct {
 
 // PgNamespace represents a row from 'pg_catalog.pg_namespace'.
 type PgNamespace struct {
-	Tableoid Oid           `json:"tableoid"` // tableoid
-	Cmax     Cid           `json:"cmax"`     // cmax
-	Xmax     Xid           `json:"xmax"`     // xmax
-	Cmin     Cid           `json:"cmin"`     // cmin
-	Xmin     Xid           `json:"xmin"`     // xmin
-	Ctid     Tid           `json:"ctid"`     // ctid
-	Oid      Oid           `json:"oid"`      // oid
-	Nspname  string        `json:"nspname"`  // nspname
-	Nspowner Oid           `json:"nspowner"` // nspowner
-	Nspacl   []NullAclitem `json:"nspacl"`   // nspacl
+	Tableoid pgtypes.Oid           `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid           `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid           `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid           `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid           `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid           `json:"ctid"`     // ctid
+	Oid      pgtypes.Oid           `json:"oid"`      // oid
+	Nspname  string                `json:"nspname"`  // nspname
+	Nspowner pgtypes.Oid           `json:"nspowner"` // nspowner
+	Nspacl   []pgtypes.NullAclitem `json:"nspacl"`   // nspacl
 }
 
 // PgOpclass represents a row from 'pg_catalog.pg_opclass'.
 type PgOpclass struct {
-	Tableoid     Oid    `json:"tableoid"`     // tableoid
-	Cmax         Cid    `json:"cmax"`         // cmax
-	Xmax         Xid    `json:"xmax"`         // xmax
-	Cmin         Cid    `json:"cmin"`         // cmin
-	Xmin         Xid    `json:"xmin"`         // xmin
-	Ctid         Tid    `json:"ctid"`         // ctid
-	Oid          Oid    `json:"oid"`          // oid
-	Opcmethod    Oid    `json:"opcmethod"`    // opcmethod
-	Opcname      string `json:"opcname"`      // opcname
-	Opcnamespace Oid    `json:"opcnamespace"` // opcnamespace
-	Opcowner     Oid    `json:"opcowner"`     // opcowner
-	Opcfamily    Oid    `json:"opcfamily"`    // opcfamily
-	Opcintype    Oid    `json:"opcintype"`    // opcintype
-	Opcdefault   bool   `json:"opcdefault"`   // opcdefault
-	Opckeytype   Oid    `json:"opckeytype"`   // opckeytype
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid `json:"oid"`          // oid
+	Opcmethod    pgtypes.Oid `json:"opcmethod"`    // opcmethod
+	Opcname      string      `json:"opcname"`      // opcname
+	Opcnamespace pgtypes.Oid `json:"opcnamespace"` // opcnamespace
+	Opcowner     pgtypes.Oid `json:"opcowner"`     // opcowner
+	Opcfamily    pgtypes.Oid `json:"opcfamily"`    // opcfamily
+	Opcintype    pgtypes.Oid `json:"opcintype"`    // opcintype
+	Opcdefault   bool        `json:"opcdefault"`   // opcdefault
+	Opckeytype   pgtypes.Oid `json:"opckeytype"`   // opckeytype
 }
 
 // PgOperator represents a row from 'pg_catalog.pg_operator'.
 type PgOperator struct {
-	Tableoid     Oid     `json:"tableoid"`     // tableoid
-	Cmax         Cid     `json:"cmax"`         // cmax
-	Xmax         Xid     `json:"xmax"`         // xmax
-	Cmin         Cid     `json:"cmin"`         // cmin
-	Xmin         Xid     `json:"xmin"`         // xmin
-	Ctid         Tid     `json:"ctid"`         // ctid
-	Oid          Oid     `json:"oid"`          // oid
-	Oprname      string  `json:"oprname"`      // oprname
-	Oprnamespace Oid     `json:"oprnamespace"` // oprnamespace
-	Oprowner     Oid     `json:"oprowner"`     // oprowner
-	Oprkind      Char    `json:"oprkind"`      // oprkind
-	Oprcanmerge  bool    `json:"oprcanmerge"`  // oprcanmerge
-	Oprcanhash   bool    `json:"oprcanhash"`   // oprcanhash
-	Oprleft      Oid     `json:"oprleft"`      // oprleft
-	Oprright     Oid     `json:"oprright"`     // oprright
-	Oprresult    Oid     `json:"oprresult"`    // oprresult
-	Oprcom       Oid     `json:"oprcom"`       // oprcom
-	Oprnegate    Oid     `json:"oprnegate"`    // oprnegate
-	Oprcode      Regproc `json:"oprcode"`      // oprcode
-	Oprrest      Regproc `json:"oprrest"`      // oprrest
-	Oprjoin      Regproc `json:"oprjoin"`      // oprjoin
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid     `json:"oid"`          // oid
+	Oprname      string          `json:"oprname"`      // oprname
+	Oprnamespace pgtypes.Oid     `json:"oprnamespace"` // oprnamespace
+	Oprowner     pgtypes.Oid     `json:"oprowner"`     // oprowner
+	Oprkind      pgtypes.Char    `json:"oprkind"`      // oprkind
+	Oprcanmerge  bool            `json:"oprcanmerge"`  // oprcanmerge
+	Oprcanhash   bool            `json:"oprcanhash"`   // oprcanhash
+	Oprleft      pgtypes.Oid     `json:"oprleft"`      // oprleft
+	Oprright     pgtypes.Oid     `json:"oprright"`     // oprright
+	Oprresult    pgtypes.Oid     `json:"oprresult"`    // oprresult
+	Oprcom       pgtypes.Oid     `json:"oprcom"`       // oprcom
+	Oprnegate    pgtypes.Oid     `json:"oprnegate"`    // oprnegate
+	Oprcode      pgtypes.Regproc `json:"oprcode"`      // oprcode
+	Oprrest      pgtypes.Regproc `json:"oprrest"`      // oprrest
+	Oprjoin      pgtypes.Regproc `json:"oprjoin"`      // oprjoin
 }
 
 // PgOpfamily represents a row from 'pg_catalog.pg_opfamily'.
 type PgOpfamily struct {
-	Tableoid     Oid    `json:"tableoid"`     // tableoid
-	Cmax         Cid    `json:"cmax"`         // cmax
-	Xmax         Xid    `json:"xmax"`         // xmax
-	Cmin         Cid    `json:"cmin"`         // cmin
-	Xmin         Xid    `json:"xmin"`         // xmin
-	Ctid         Tid    `json:"ctid"`         // ctid
-	Oid          Oid    `json:"oid"`          // oid
-	Opfmethod    Oid    `json:"opfmethod"`    // opfmethod
-	Opfname      string `json:"opfname"`      // opfname
-	Opfnamespace Oid    `json:"opfnamespace"` // opfnamespace
-	Opfowner     Oid    `json:"opfowner"`     // opfowner
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid `json:"oid"`          // oid
+	Opfmethod    pgtypes.Oid `json:"opfmethod"`    // opfmethod
+	Opfname      string      `json:"opfname"`      // opfname
+	Opfnamespace pgtypes.Oid `json:"opfnamespace"` // opfnamespace
+	Opfowner     pgtypes.Oid `json:"opfowner"`     // opfowner
 }
 
 // PgPartitionedTable represents a row from 'pg_catalog.pg_partitioned_table'.
 type PgPartitionedTable struct {
-	Tableoid      Oid            `json:"tableoid"`      // tableoid
-	Cmax          Cid            `json:"cmax"`          // cmax
-	Xmax          Xid            `json:"xmax"`          // xmax
-	Cmin          Cid            `json:"cmin"`          // cmin
-	Xmin          Xid            `json:"xmin"`          // xmin
-	Ctid          Tid            `json:"ctid"`          // ctid
-	Partrelid     Oid            `json:"partrelid"`     // partrelid
-	Partstrat     Char           `json:"partstrat"`     // partstrat
-	Partnatts     int16          `json:"partnatts"`     // partnatts
-	Partdefid     Oid            `json:"partdefid"`     // partdefid
-	Partattrs     Int2vector     `json:"partattrs"`     // partattrs
-	Partclass     Oidvector      `json:"partclass"`     // partclass
-	Partcollation Oidvector      `json:"partcollation"` // partcollation
-	Partexprs     NullPgNodeTree `json:"partexprs"`     // partexprs
+	Tableoid      pgtypes.Oid            `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid            `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid            `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid            `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid            `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid            `json:"ctid"`          // ctid
+	Partrelid     pgtypes.Oid            `json:"partrelid"`     // partrelid
+	Partstrat     pgtypes.Char           `json:"partstrat"`     // partstrat
+	Partnatts     int16                  `json:"partnatts"`     // partnatts
+	Partdefid     pgtypes.Oid            `json:"partdefid"`     // partdefid
+	Partattrs     pgtypes.Int2vector     `json:"partattrs"`     // partattrs
+	Partclass     pgtypes.Oidvector      `json:"partclass"`     // partclass
+	Partcollation pgtypes.Oidvector      `json:"partcollation"` // partcollation
+	Partexprs     pgtypes.NullPgNodeTree `json:"partexprs"`     // partexprs
 }
 
 // PgPolicy represents a row from 'pg_catalog.pg_policies'.
@@ -1001,109 +1001,109 @@ type PgPolicy struct {
 
 // PgPolicy represents a row from 'pg_catalog.pg_policy'.
 type PgPolicy struct {
-	Tableoid      Oid            `json:"tableoid"`      // tableoid
-	Cmax          Cid            `json:"cmax"`          // cmax
-	Xmax          Xid            `json:"xmax"`          // xmax
-	Cmin          Cid            `json:"cmin"`          // cmin
-	Xmin          Xid            `json:"xmin"`          // xmin
-	Ctid          Tid            `json:"ctid"`          // ctid
-	Oid           Oid            `json:"oid"`           // oid
-	Polname       string         `json:"polname"`       // polname
-	Polrelid      Oid            `json:"polrelid"`      // polrelid
-	Polcmd        Char           `json:"polcmd"`        // polcmd
-	Polpermissive bool           `json:"polpermissive"` // polpermissive
-	Polroles      []Oid          `json:"polroles"`      // polroles
-	Polqual       NullPgNodeTree `json:"polqual"`       // polqual
-	Polwithcheck  NullPgNodeTree `json:"polwithcheck"`  // polwithcheck
+	Tableoid      pgtypes.Oid            `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid            `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid            `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid            `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid            `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid            `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid            `json:"oid"`           // oid
+	Polname       string                 `json:"polname"`       // polname
+	Polrelid      pgtypes.Oid            `json:"polrelid"`      // polrelid
+	Polcmd        pgtypes.Char           `json:"polcmd"`        // polcmd
+	Polpermissive bool                   `json:"polpermissive"` // polpermissive
+	Polroles      []pgtypes.Oid          `json:"polroles"`      // polroles
+	Polqual       pgtypes.NullPgNodeTree `json:"polqual"`       // polqual
+	Polwithcheck  pgtypes.NullPgNodeTree `json:"polwithcheck"`  // polwithcheck
 }
 
 // PgPreparedStatement represents a row from 'pg_catalog.pg_prepared_statements'.
 type PgPreparedStatement struct {
-	Name           sql.NullString `json:"name"`            // name
-	Statement      sql.NullString `json:"statement"`       // statement
-	PrepareTime    sql.NullTime   `json:"prepare_time"`    // prepare_time
-	ParameterTypes []NullRegtype  `json:"parameter_types"` // parameter_types
-	FromSQL        sql.NullBool   `json:"from_sql"`        // from_sql
+	Name           sql.NullString        `json:"name"`            // name
+	Statement      sql.NullString        `json:"statement"`       // statement
+	PrepareTime    sql.NullTime          `json:"prepare_time"`    // prepare_time
+	ParameterTypes []pgtypes.NullRegtype `json:"parameter_types"` // parameter_types
+	FromSQL        sql.NullBool          `json:"from_sql"`        // from_sql
 }
 
 // PgPreparedXact represents a row from 'pg_catalog.pg_prepared_xacts'.
 type PgPreparedXact struct {
-	Transaction NullXid        `json:"transaction"` // transaction
-	Gid         sql.NullString `json:"gid"`         // gid
-	Prepared    sql.NullTime   `json:"prepared"`    // prepared
-	Owner       sql.NullString `json:"owner"`       // owner
-	Database    sql.NullString `json:"database"`    // database
+	Transaction pgtypes.NullXid `json:"transaction"` // transaction
+	Gid         sql.NullString  `json:"gid"`         // gid
+	Prepared    sql.NullTime    `json:"prepared"`    // prepared
+	Owner       sql.NullString  `json:"owner"`       // owner
+	Database    sql.NullString  `json:"database"`    // database
 }
 
 // PgProc represents a row from 'pg_catalog.pg_proc'.
 type PgProc struct {
-	Tableoid        Oid              `json:"tableoid"`        // tableoid
-	Cmax            Cid              `json:"cmax"`            // cmax
-	Xmax            Xid              `json:"xmax"`            // xmax
-	Cmin            Cid              `json:"cmin"`            // cmin
-	Xmin            Xid              `json:"xmin"`            // xmin
-	Ctid            Tid              `json:"ctid"`            // ctid
-	Oid             Oid              `json:"oid"`             // oid
-	Proname         string           `json:"proname"`         // proname
-	Pronamespace    Oid              `json:"pronamespace"`    // pronamespace
-	Proowner        Oid              `json:"proowner"`        // proowner
-	Prolang         Oid              `json:"prolang"`         // prolang
-	Procost         float32          `json:"procost"`         // procost
-	Prorows         float32          `json:"prorows"`         // prorows
-	Provariadic     Oid              `json:"provariadic"`     // provariadic
-	Prosupport      Regproc          `json:"prosupport"`      // prosupport
-	Prokind         Char             `json:"prokind"`         // prokind
-	Prosecdef       bool             `json:"prosecdef"`       // prosecdef
-	Proleakproof    bool             `json:"proleakproof"`    // proleakproof
-	Proisstrict     bool             `json:"proisstrict"`     // proisstrict
-	Proretset       bool             `json:"proretset"`       // proretset
-	Provolatile     Char             `json:"provolatile"`     // provolatile
-	Proparallel     Char             `json:"proparallel"`     // proparallel
-	Pronargs        int16            `json:"pronargs"`        // pronargs
-	Pronargdefaults int16            `json:"pronargdefaults"` // pronargdefaults
-	Prorettype      Oid              `json:"prorettype"`      // prorettype
-	Proargtypes     Oidvector        `json:"proargtypes"`     // proargtypes
-	Proallargtypes  []NullOid        `json:"proallargtypes"`  // proallargtypes
-	Proargmodes     []NullChar       `json:"proargmodes"`     // proargmodes
-	Proargnames     []sql.NullString `json:"proargnames"`     // proargnames
-	Proargdefaults  NullPgNodeTree   `json:"proargdefaults"`  // proargdefaults
-	Protrftypes     []NullOid        `json:"protrftypes"`     // protrftypes
-	Prosrc          string           `json:"prosrc"`          // prosrc
-	Probin          sql.NullString   `json:"probin"`          // probin
-	Proconfig       []sql.NullString `json:"proconfig"`       // proconfig
-	Proacl          []NullAclitem    `json:"proacl"`          // proacl
+	Tableoid        pgtypes.Oid            `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid            `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid            `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid            `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid            `json:"xmin"`            // xmin
+	Ctid            pgtypes.Tid            `json:"ctid"`            // ctid
+	Oid             pgtypes.Oid            `json:"oid"`             // oid
+	Proname         string                 `json:"proname"`         // proname
+	Pronamespace    pgtypes.Oid            `json:"pronamespace"`    // pronamespace
+	Proowner        pgtypes.Oid            `json:"proowner"`        // proowner
+	Prolang         pgtypes.Oid            `json:"prolang"`         // prolang
+	Procost         float32                `json:"procost"`         // procost
+	Prorows         float32                `json:"prorows"`         // prorows
+	Provariadic     pgtypes.Oid            `json:"provariadic"`     // provariadic
+	Prosupport      pgtypes.Regproc        `json:"prosupport"`      // prosupport
+	Prokind         pgtypes.Char           `json:"prokind"`         // prokind
+	Prosecdef       bool                   `json:"prosecdef"`       // prosecdef
+	Proleakproof    bool                   `json:"proleakproof"`    // proleakproof
+	Proisstrict     bool                   `json:"proisstrict"`     // proisstrict
+	Proretset       bool                   `json:"proretset"`       // proretset
+	Provolatile     pgtypes.Char           `json:"provolatile"`     // provolatile
+	Proparallel     pgtypes.Char           `json:"proparallel"`     // proparallel
+	Pronargs        int16                  `json:"pronargs"`        // pronargs
+	Pronargdefaults int16                  `json:"pronargdefaults"` // pronargdefaults
+	Prorettype      pgtypes.Oid            `json:"prorettype"`      // prorettype
+	Proargtypes     pgtypes.Oidvector      `json:"proargtypes"`     // proargtypes
+	Proallargtypes  []pgtypes.NullOid      `json:"proallargtypes"`  // proallargtypes
+	Proargmodes     []pgtypes.NullChar     `json:"proargmodes"`     // proargmodes
+	Proargnames     []sql.NullString       `json:"proargnames"`     // proargnames
+	Proargdefaults  pgtypes.NullPgNodeTree `json:"proargdefaults"`  // proargdefaults
+	Protrftypes     []pgtypes.NullOid      `json:"protrftypes"`     // protrftypes
+	Prosrc          string                 `json:"prosrc"`          // prosrc
+	Probin          sql.NullString         `json:"probin"`          // probin
+	Proconfig       []sql.NullString       `json:"proconfig"`       // proconfig
+	Proacl          []pgtypes.NullAclitem  `json:"proacl"`          // proacl
 }
 
 // PgPublication represents a row from 'pg_catalog.pg_publication'.
 type PgPublication struct {
-	Tableoid     Oid    `json:"tableoid"`     // tableoid
-	Cmax         Cid    `json:"cmax"`         // cmax
-	Xmax         Xid    `json:"xmax"`         // xmax
-	Cmin         Cid    `json:"cmin"`         // cmin
-	Xmin         Xid    `json:"xmin"`         // xmin
-	Ctid         Tid    `json:"ctid"`         // ctid
-	Oid          Oid    `json:"oid"`          // oid
-	Pubname      string `json:"pubname"`      // pubname
-	Pubowner     Oid    `json:"pubowner"`     // pubowner
-	Puballtables bool   `json:"puballtables"` // puballtables
-	Pubinsert    bool   `json:"pubinsert"`    // pubinsert
-	Pubupdate    bool   `json:"pubupdate"`    // pubupdate
-	Pubdelete    bool   `json:"pubdelete"`    // pubdelete
-	Pubtruncate  bool   `json:"pubtruncate"`  // pubtruncate
-	Pubviaroot   bool   `json:"pubviaroot"`   // pubviaroot
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid `json:"oid"`          // oid
+	Pubname      string      `json:"pubname"`      // pubname
+	Pubowner     pgtypes.Oid `json:"pubowner"`     // pubowner
+	Puballtables bool        `json:"puballtables"` // puballtables
+	Pubinsert    bool        `json:"pubinsert"`    // pubinsert
+	Pubupdate    bool        `json:"pubupdate"`    // pubupdate
+	Pubdelete    bool        `json:"pubdelete"`    // pubdelete
+	Pubtruncate  bool        `json:"pubtruncate"`  // pubtruncate
+	Pubviaroot   bool        `json:"pubviaroot"`   // pubviaroot
 }
 
 // PgPublicationRel represents a row from 'pg_catalog.pg_publication_rel'.
 type PgPublicationRel struct {
-	Tableoid Oid `json:"tableoid"` // tableoid
-	Cmax     Cid `json:"cmax"`     // cmax
-	Xmax     Xid `json:"xmax"`     // xmax
-	Cmin     Cid `json:"cmin"`     // cmin
-	Xmin     Xid `json:"xmin"`     // xmin
-	Ctid     Tid `json:"ctid"`     // ctid
-	Oid      Oid `json:"oid"`      // oid
-	Prpubid  Oid `json:"prpubid"`  // prpubid
-	Prrelid  Oid `json:"prrelid"`  // prrelid
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Oid      pgtypes.Oid `json:"oid"`      // oid
+	Prpubid  pgtypes.Oid `json:"prpubid"`  // prpubid
+	Prrelid  pgtypes.Oid `json:"prrelid"`  // prrelid
 }
 
 // PgPublicationTable represents a row from 'pg_catalog.pg_publication_tables'.
@@ -1115,74 +1115,74 @@ type PgPublicationTable struct {
 
 // PgRange represents a row from 'pg_catalog.pg_range'.
 type PgRange struct {
-	Tableoid     Oid     `json:"tableoid"`     // tableoid
-	Cmax         Cid     `json:"cmax"`         // cmax
-	Xmax         Xid     `json:"xmax"`         // xmax
-	Cmin         Cid     `json:"cmin"`         // cmin
-	Xmin         Xid     `json:"xmin"`         // xmin
-	Ctid         Tid     `json:"ctid"`         // ctid
-	Rngtypid     Oid     `json:"rngtypid"`     // rngtypid
-	Rngsubtype   Oid     `json:"rngsubtype"`   // rngsubtype
-	Rngcollation Oid     `json:"rngcollation"` // rngcollation
-	Rngsubopc    Oid     `json:"rngsubopc"`    // rngsubopc
-	Rngcanonical Regproc `json:"rngcanonical"` // rngcanonical
-	Rngsubdiff   Regproc `json:"rngsubdiff"`   // rngsubdiff
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Rngtypid     pgtypes.Oid     `json:"rngtypid"`     // rngtypid
+	Rngsubtype   pgtypes.Oid     `json:"rngsubtype"`   // rngsubtype
+	Rngcollation pgtypes.Oid     `json:"rngcollation"` // rngcollation
+	Rngsubopc    pgtypes.Oid     `json:"rngsubopc"`    // rngsubopc
+	Rngcanonical pgtypes.Regproc `json:"rngcanonical"` // rngcanonical
+	Rngsubdiff   pgtypes.Regproc `json:"rngsubdiff"`   // rngsubdiff
 }
 
 // PgReplicationOrigin represents a row from 'pg_catalog.pg_replication_origin'.
 type PgReplicationOrigin struct {
-	Tableoid Oid    `json:"tableoid"` // tableoid
-	Cmax     Cid    `json:"cmax"`     // cmax
-	Xmax     Xid    `json:"xmax"`     // xmax
-	Cmin     Cid    `json:"cmin"`     // cmin
-	Xmin     Xid    `json:"xmin"`     // xmin
-	Ctid     Tid    `json:"ctid"`     // ctid
-	Roident  Oid    `json:"roident"`  // roident
-	Roname   string `json:"roname"`   // roname
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Roident  pgtypes.Oid `json:"roident"`  // roident
+	Roname   string      `json:"roname"`   // roname
 }
 
 // PgReplicationOriginStatus represents a row from 'pg_catalog.pg_replication_origin_status'.
 type PgReplicationOriginStatus struct {
-	LocalID    NullOid        `json:"local_id"`    // local_id
-	ExternalID sql.NullString `json:"external_id"` // external_id
-	RemoteLsn  NullPgLsn      `json:"remote_lsn"`  // remote_lsn
-	LocalLsn   NullPgLsn      `json:"local_lsn"`   // local_lsn
+	LocalID    pgtypes.NullOid   `json:"local_id"`    // local_id
+	ExternalID sql.NullString    `json:"external_id"` // external_id
+	RemoteLsn  pgtypes.NullPgLsn `json:"remote_lsn"`  // remote_lsn
+	LocalLsn   pgtypes.NullPgLsn `json:"local_lsn"`   // local_lsn
 }
 
 // PgReplicationSlot represents a row from 'pg_catalog.pg_replication_slots'.
 type PgReplicationSlot struct {
-	SlotName          sql.NullString `json:"slot_name"`           // slot_name
-	Plugin            sql.NullString `json:"plugin"`              // plugin
-	SlotType          sql.NullString `json:"slot_type"`           // slot_type
-	Datoid            NullOid        `json:"datoid"`              // datoid
-	Database          sql.NullString `json:"database"`            // database
-	Temporary         sql.NullBool   `json:"temporary"`           // temporary
-	Active            sql.NullBool   `json:"active"`              // active
-	ActivePid         sql.NullInt64  `json:"active_pid"`          // active_pid
-	Xmin              NullXid        `json:"xmin"`                // xmin
-	CatalogXmin       NullXid        `json:"catalog_xmin"`        // catalog_xmin
-	RestartLsn        NullPgLsn      `json:"restart_lsn"`         // restart_lsn
-	ConfirmedFlushLsn NullPgLsn      `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
-	WalStatus         sql.NullString `json:"wal_status"`          // wal_status
-	SafeWalSize       sql.NullInt64  `json:"safe_wal_size"`       // safe_wal_size
+	SlotName          sql.NullString    `json:"slot_name"`           // slot_name
+	Plugin            sql.NullString    `json:"plugin"`              // plugin
+	SlotType          sql.NullString    `json:"slot_type"`           // slot_type
+	Datoid            pgtypes.NullOid   `json:"datoid"`              // datoid
+	Database          sql.NullString    `json:"database"`            // database
+	Temporary         sql.NullBool      `json:"temporary"`           // temporary
+	Active            sql.NullBool      `json:"active"`              // active
+	ActivePid         sql.NullInt64     `json:"active_pid"`          // active_pid
+	Xmin              pgtypes.NullXid   `json:"xmin"`                // xmin
+	CatalogXmin       pgtypes.NullXid   `json:"catalog_xmin"`        // catalog_xmin
+	RestartLsn        pgtypes.NullPgLsn `json:"restart_lsn"`         // restart_lsn
+	ConfirmedFlushLsn pgtypes.NullPgLsn `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
+	WalStatus         sql.NullString    `json:"wal_status"`          // wal_status
+	SafeWalSize       sql.NullInt64     `json:"safe_wal_size"`       // safe_wal_size
 }
 
 // PgRewrite represents a row from 'pg_catalog.pg_rewrite'.
 type PgRewrite struct {
-	Tableoid  Oid        `json:"tableoid"`   // tableoid
-	Cmax      Cid        `json:"cmax"`       // cmax
-	Xmax      Xid        `json:"xmax"`       // xmax
-	Cmin      Cid        `json:"cmin"`       // cmin
-	Xmin      Xid        `json:"xmin"`       // xmin
-	Ctid      Tid        `json:"ctid"`       // ctid
-	Oid       Oid        `json:"oid"`        // oid
-	Rulename  string     `json:"rulename"`   // rulename
-	EvClass   Oid        `json:"ev_class"`   // ev_class
-	EvType    Char       `json:"ev_type"`    // ev_type
-	EvEnabled Char       `json:"ev_enabled"` // ev_enabled
-	IsInstead bool       `json:"is_instead"` // is_instead
-	EvQual    PgNodeTree `json:"ev_qual"`    // ev_qual
-	EvAction  PgNodeTree `json:"ev_action"`  // ev_action
+	Tableoid  pgtypes.Oid        `json:"tableoid"`   // tableoid
+	Cmax      pgtypes.Cid        `json:"cmax"`       // cmax
+	Xmax      pgtypes.Xid        `json:"xmax"`       // xmax
+	Cmin      pgtypes.Cid        `json:"cmin"`       // cmin
+	Xmin      pgtypes.Xid        `json:"xmin"`       // xmin
+	Ctid      pgtypes.Tid        `json:"ctid"`       // ctid
+	Oid       pgtypes.Oid        `json:"oid"`        // oid
+	Rulename  string             `json:"rulename"`   // rulename
+	EvClass   pgtypes.Oid        `json:"ev_class"`   // ev_class
+	EvType    pgtypes.Char       `json:"ev_type"`    // ev_type
+	EvEnabled pgtypes.Char       `json:"ev_enabled"` // ev_enabled
+	IsInstead bool               `json:"is_instead"` // is_instead
+	EvQual    pgtypes.PgNodeTree `json:"ev_qual"`    // ev_qual
+	EvAction  pgtypes.PgNodeTree `json:"ev_action"`  // ev_action
 }
 
 // PgRole represents a row from 'pg_catalog.pg_roles'.
@@ -1199,7 +1199,7 @@ type PgRole struct {
 	Rolvaliduntil  sql.NullTime     `json:"rolvaliduntil"`  // rolvaliduntil
 	Rolbypassrls   sql.NullBool     `json:"rolbypassrls"`   // rolbypassrls
 	Rolconfig      []sql.NullString `json:"rolconfig"`      // rolconfig
-	Oid            NullOid          `json:"oid"`            // oid
+	Oid            pgtypes.NullOid  `json:"oid"`            // oid
 }
 
 // PgRule represents a row from 'pg_catalog.pg_rules'.
@@ -1212,62 +1212,62 @@ type PgRule struct {
 
 // PgSeclabel represents a row from 'pg_catalog.pg_seclabel'.
 type PgSeclabel struct {
-	Tableoid Oid    `json:"tableoid"` // tableoid
-	Cmax     Cid    `json:"cmax"`     // cmax
-	Xmax     Xid    `json:"xmax"`     // xmax
-	Cmin     Cid    `json:"cmin"`     // cmin
-	Xmin     Xid    `json:"xmin"`     // xmin
-	Ctid     Tid    `json:"ctid"`     // ctid
-	Objoid   Oid    `json:"objoid"`   // objoid
-	Classoid Oid    `json:"classoid"` // classoid
-	Objsubid int    `json:"objsubid"` // objsubid
-	Provider string `json:"provider"` // provider
-	Label    string `json:"label"`    // label
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Objoid   pgtypes.Oid `json:"objoid"`   // objoid
+	Classoid pgtypes.Oid `json:"classoid"` // classoid
+	Objsubid int         `json:"objsubid"` // objsubid
+	Provider string      `json:"provider"` // provider
+	Label    string      `json:"label"`    // label
 }
 
 // PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
 type PgSeclabel struct {
-	Objoid       NullOid        `json:"objoid"`       // objoid
-	Classoid     NullOid        `json:"classoid"`     // classoid
-	Objsubid     sql.NullInt64  `json:"objsubid"`     // objsubid
-	Objtype      sql.NullString `json:"objtype"`      // objtype
-	Objnamespace NullOid        `json:"objnamespace"` // objnamespace
-	Objname      sql.NullString `json:"objname"`      // objname
-	Provider     sql.NullString `json:"provider"`     // provider
-	Label        sql.NullString `json:"label"`        // label
+	Objoid       pgtypes.NullOid `json:"objoid"`       // objoid
+	Classoid     pgtypes.NullOid `json:"classoid"`     // classoid
+	Objsubid     sql.NullInt64   `json:"objsubid"`     // objsubid
+	Objtype      sql.NullString  `json:"objtype"`      // objtype
+	Objnamespace pgtypes.NullOid `json:"objnamespace"` // objnamespace
+	Objname      sql.NullString  `json:"objname"`      // objname
+	Provider     sql.NullString  `json:"provider"`     // provider
+	Label        sql.NullString  `json:"label"`        // label
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequence'.
 type PgSequence struct {
-	Tableoid     Oid   `json:"tableoid"`     // tableoid
-	Cmax         Cid   `json:"cmax"`         // cmax
-	Xmax         Xid   `json:"xmax"`         // xmax
-	Cmin         Cid   `json:"cmin"`         // cmin
-	Xmin         Xid   `json:"xmin"`         // xmin
-	Ctid         Tid   `json:"ctid"`         // ctid
-	Seqrelid     Oid   `json:"seqrelid"`     // seqrelid
-	Seqtypid     Oid   `json:"seqtypid"`     // seqtypid
-	Seqstart     int64 `json:"seqstart"`     // seqstart
-	Seqincrement int64 `json:"seqincrement"` // seqincrement
-	Seqmax       int64 `json:"seqmax"`       // seqmax
-	Seqmin       int64 `json:"seqmin"`       // seqmin
-	Seqcache     int64 `json:"seqcache"`     // seqcache
-	Seqcycle     bool  `json:"seqcycle"`     // seqcycle
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Seqrelid     pgtypes.Oid `json:"seqrelid"`     // seqrelid
+	Seqtypid     pgtypes.Oid `json:"seqtypid"`     // seqtypid
+	Seqstart     int64       `json:"seqstart"`     // seqstart
+	Seqincrement int64       `json:"seqincrement"` // seqincrement
+	Seqmax       int64       `json:"seqmax"`       // seqmax
+	Seqmin       int64       `json:"seqmin"`       // seqmin
+	Seqcache     int64       `json:"seqcache"`     // seqcache
+	Seqcycle     bool        `json:"seqcycle"`     // seqcycle
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequences'.
 type PgSequence struct {
-	Schemaname    sql.NullString `json:"schemaname"`    // schemaname
-	Sequencename  sql.NullString `json:"sequencename"`  // sequencename
-	Sequenceowner sql.NullString `json:"sequenceowner"` // sequenceowner
-	DataType      NullRegtype    `json:"data_type"`     // data_type
-	StartValue    sql.NullInt64  `json:"start_value"`   // start_value
-	MinValue      sql.NullInt64  `json:"min_value"`     // min_value
-	MaxValue      sql.NullInt64  `json:"max_value"`     // max_value
-	IncrementBy   sql.NullInt64  `json:"increment_by"`  // increment_by
-	Cycle         sql.NullBool   `json:"cycle"`         // cycle
-	CacheSize     sql.NullInt64  `json:"cache_size"`    // cache_size
-	LastValue     sql.NullInt64  `json:"last_value"`    // last_value
+	Schemaname    sql.NullString      `json:"schemaname"`    // schemaname
+	Sequencename  sql.NullString      `json:"sequencename"`  // sequencename
+	Sequenceowner sql.NullString      `json:"sequenceowner"` // sequenceowner
+	DataType      pgtypes.NullRegtype `json:"data_type"`     // data_type
+	StartValue    sql.NullInt64       `json:"start_value"`   // start_value
+	MinValue      sql.NullInt64       `json:"min_value"`     // min_value
+	MaxValue      sql.NullInt64       `json:"max_value"`     // max_value
+	IncrementBy   sql.NullInt64       `json:"increment_by"`  // increment_by
+	Cycle         sql.NullBool        `json:"cycle"`         // cycle
+	CacheSize     sql.NullInt64       `json:"cache_size"`    // cache_size
+	LastValue     sql.NullInt64       `json:"last_value"`    // last_value
 }
 
 // PgSetting represents a row from 'pg_catalog.pg_settings'.
@@ -1294,7 +1294,7 @@ type PgSetting struct {
 // PgShadow represents a row from 'pg_catalog.pg_shadow'.
 type PgShadow struct {
 	Usename      sql.NullString   `json:"usename"`      // usename
-	Usesysid     NullOid          `json:"usesysid"`     // usesysid
+	Usesysid     pgtypes.NullOid  `json:"usesysid"`     // usesysid
 	Usecreatedb  sql.NullBool     `json:"usecreatedb"`  // usecreatedb
 	Usesuper     sql.NullBool     `json:"usesuper"`     // usesuper
 	Userepl      sql.NullBool     `json:"userepl"`      // userepl
@@ -1306,32 +1306,32 @@ type PgShadow struct {
 
 // PgShdepend represents a row from 'pg_catalog.pg_shdepend'.
 type PgShdepend struct {
-	Tableoid   Oid  `json:"tableoid"`   // tableoid
-	Cmax       Cid  `json:"cmax"`       // cmax
-	Xmax       Xid  `json:"xmax"`       // xmax
-	Cmin       Cid  `json:"cmin"`       // cmin
-	Xmin       Xid  `json:"xmin"`       // xmin
-	Ctid       Tid  `json:"ctid"`       // ctid
-	Dbid       Oid  `json:"dbid"`       // dbid
-	Classid    Oid  `json:"classid"`    // classid
-	Objid      Oid  `json:"objid"`      // objid
-	Objsubid   int  `json:"objsubid"`   // objsubid
-	Refclassid Oid  `json:"refclassid"` // refclassid
-	Refobjid   Oid  `json:"refobjid"`   // refobjid
-	Deptype    Char `json:"deptype"`    // deptype
+	Tableoid   pgtypes.Oid  `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid  `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid  `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid  `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid  `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid  `json:"ctid"`       // ctid
+	Dbid       pgtypes.Oid  `json:"dbid"`       // dbid
+	Classid    pgtypes.Oid  `json:"classid"`    // classid
+	Objid      pgtypes.Oid  `json:"objid"`      // objid
+	Objsubid   int          `json:"objsubid"`   // objsubid
+	Refclassid pgtypes.Oid  `json:"refclassid"` // refclassid
+	Refobjid   pgtypes.Oid  `json:"refobjid"`   // refobjid
+	Deptype    pgtypes.Char `json:"deptype"`    // deptype
 }
 
 // PgShdescription represents a row from 'pg_catalog.pg_shdescription'.
 type PgShdescription struct {
-	Tableoid    Oid    `json:"tableoid"`    // tableoid
-	Cmax        Cid    `json:"cmax"`        // cmax
-	Xmax        Xid    `json:"xmax"`        // xmax
-	Cmin        Cid    `json:"cmin"`        // cmin
-	Xmin        Xid    `json:"xmin"`        // xmin
-	Ctid        Tid    `json:"ctid"`        // ctid
-	Objoid      Oid    `json:"objoid"`      // objoid
-	Classoid    Oid    `json:"classoid"`    // classoid
-	Description string `json:"description"` // description
+	Tableoid    pgtypes.Oid `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid `json:"ctid"`        // ctid
+	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
+	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
+	Description string      `json:"description"` // description
 }
 
 // PgShmemAllocation represents a row from 'pg_catalog.pg_shmem_allocations'.
@@ -1344,98 +1344,98 @@ type PgShmemAllocation struct {
 
 // PgShseclabel represents a row from 'pg_catalog.pg_shseclabel'.
 type PgShseclabel struct {
-	Tableoid Oid    `json:"tableoid"` // tableoid
-	Cmax     Cid    `json:"cmax"`     // cmax
-	Xmax     Xid    `json:"xmax"`     // xmax
-	Cmin     Cid    `json:"cmin"`     // cmin
-	Xmin     Xid    `json:"xmin"`     // xmin
-	Ctid     Tid    `json:"ctid"`     // ctid
-	Objoid   Oid    `json:"objoid"`   // objoid
-	Classoid Oid    `json:"classoid"` // classoid
-	Provider string `json:"provider"` // provider
-	Label    string `json:"label"`    // label
+	Tableoid pgtypes.Oid `json:"tableoid"` // tableoid
+	Cmax     pgtypes.Cid `json:"cmax"`     // cmax
+	Xmax     pgtypes.Xid `json:"xmax"`     // xmax
+	Cmin     pgtypes.Cid `json:"cmin"`     // cmin
+	Xmin     pgtypes.Xid `json:"xmin"`     // xmin
+	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
+	Objoid   pgtypes.Oid `json:"objoid"`   // objoid
+	Classoid pgtypes.Oid `json:"classoid"` // classoid
+	Provider string      `json:"provider"` // provider
+	Label    string      `json:"label"`    // label
 }
 
 // PgStat represents a row from 'pg_catalog.pg_stats'.
 type PgStat struct {
-	Schemaname          sql.NullString    `json:"schemaname"`             // schemaname
-	Tablename           sql.NullString    `json:"tablename"`              // tablename
-	Attname             sql.NullString    `json:"attname"`                // attname
-	Inherited           sql.NullBool      `json:"inherited"`              // inherited
-	NullFrac            sql.NullFloat64   `json:"null_frac"`              // null_frac
-	AvgWidth            sql.NullInt64     `json:"avg_width"`              // avg_width
-	NDistinct           sql.NullFloat64   `json:"n_distinct"`             // n_distinct
-	MostCommonVals      NullAnyarray      `json:"most_common_vals"`       // most_common_vals
-	MostCommonFreqs     []sql.NullFloat64 `json:"most_common_freqs"`      // most_common_freqs
-	HistogramBounds     NullAnyarray      `json:"histogram_bounds"`       // histogram_bounds
-	Correlation         sql.NullFloat64   `json:"correlation"`            // correlation
-	MostCommonElems     NullAnyarray      `json:"most_common_elems"`      // most_common_elems
-	MostCommonElemFreqs []sql.NullFloat64 `json:"most_common_elem_freqs"` // most_common_elem_freqs
-	ElemCountHistogram  []sql.NullFloat64 `json:"elem_count_histogram"`   // elem_count_histogram
+	Schemaname          sql.NullString       `json:"schemaname"`             // schemaname
+	Tablename           sql.NullString       `json:"tablename"`              // tablename
+	Attname             sql.NullString       `json:"attname"`                // attname
+	Inherited           sql.NullBool         `json:"inherited"`              // inherited
+	NullFrac            sql.NullFloat64      `json:"null_frac"`              // null_frac
+	AvgWidth            sql.NullInt64        `json:"avg_width"`              // avg_width
+	NDistinct           sql.NullFloat64      `json:"n_distinct"`             // n_distinct
+	MostCommonVals      pgtypes.NullAnyarray `json:"most_common_vals"`       // most_common_vals
+	MostCommonFreqs     []sql.NullFloat64    `json:"most_common_freqs"`      // most_common_freqs
+	HistogramBounds     pgtypes.NullAnyarray `json:"histogram_bounds"`       // histogram_bounds
+	Correlation         sql.NullFloat64      `json:"correlation"`            // correlation
+	MostCommonElems     pgtypes.NullAnyarray `json:"most_common_elems"`      // most_common_elems
+	MostCommonElemFreqs []sql.NullFloat64    `json:"most_common_elem_freqs"` // most_common_elem_freqs
+	ElemCountHistogram  []sql.NullFloat64    `json:"elem_count_histogram"`   // elem_count_histogram
 }
 
 // PgStatActivity represents a row from 'pg_catalog.pg_stat_activity'.
 type PgStatActivity struct {
-	Datid           NullOid        `json:"datid"`            // datid
-	Datname         sql.NullString `json:"datname"`          // datname
-	Pid             sql.NullInt64  `json:"pid"`              // pid
-	LeaderPid       sql.NullInt64  `json:"leader_pid"`       // leader_pid
-	Usesysid        NullOid        `json:"usesysid"`         // usesysid
-	Usename         sql.NullString `json:"usename"`          // usename
-	ApplicationName sql.NullString `json:"application_name"` // application_name
-	ClientAddr      sql.NullString `json:"client_addr"`      // client_addr
-	ClientHostname  sql.NullString `json:"client_hostname"`  // client_hostname
-	ClientPort      sql.NullInt64  `json:"client_port"`      // client_port
-	BackendStart    sql.NullTime   `json:"backend_start"`    // backend_start
-	XactStart       sql.NullTime   `json:"xact_start"`       // xact_start
-	QueryStart      sql.NullTime   `json:"query_start"`      // query_start
-	StateChange     sql.NullTime   `json:"state_change"`     // state_change
-	WaitEventType   sql.NullString `json:"wait_event_type"`  // wait_event_type
-	WaitEvent       sql.NullString `json:"wait_event"`       // wait_event
-	State           sql.NullString `json:"state"`            // state
-	BackendXid      NullXid        `json:"backend_xid"`      // backend_xid
-	BackendXmin     NullXid        `json:"backend_xmin"`     // backend_xmin
-	Query           sql.NullString `json:"query"`            // query
-	BackendType     sql.NullString `json:"backend_type"`     // backend_type
+	Datid           pgtypes.NullOid `json:"datid"`            // datid
+	Datname         sql.NullString  `json:"datname"`          // datname
+	Pid             sql.NullInt64   `json:"pid"`              // pid
+	LeaderPid       sql.NullInt64   `json:"leader_pid"`       // leader_pid
+	Usesysid        pgtypes.NullOid `json:"usesysid"`         // usesysid
+	Usename         sql.NullString  `json:"usename"`          // usename
+	ApplicationName sql.NullString  `json:"application_name"` // application_name
+	ClientAddr      sql.NullString  `json:"client_addr"`      // client_addr
+	ClientHostname  sql.NullString  `json:"client_hostname"`  // client_hostname
+	ClientPort      sql.NullInt64   `json:"client_port"`      // client_port
+	BackendStart    sql.NullTime    `json:"backend_start"`    // backend_start
+	XactStart       sql.NullTime    `json:"xact_start"`       // xact_start
+	QueryStart      sql.NullTime    `json:"query_start"`      // query_start
+	StateChange     sql.NullTime    `json:"state_change"`     // state_change
+	WaitEventType   sql.NullString  `json:"wait_event_type"`  // wait_event_type
+	WaitEvent       sql.NullString  `json:"wait_event"`       // wait_event
+	State           sql.NullString  `json:"state"`            // state
+	BackendXid      pgtypes.NullXid `json:"backend_xid"`      // backend_xid
+	BackendXmin     pgtypes.NullXid `json:"backend_xmin"`     // backend_xmin
+	Query           sql.NullString  `json:"query"`            // query
+	BackendType     sql.NullString  `json:"backend_type"`     // backend_type
 }
 
 // PgStatAllIndex represents a row from 'pg_catalog.pg_stat_all_indexes'.
 type PgStatAllIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64   `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatAllTable represents a row from 'pg_catalog.pg_stat_all_tables'.
 type PgStatAllTable struct {
-	Relid            NullOid        `json:"relid"`               // relid
-	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
-	Relname          sql.NullString `json:"relname"`             // relname
-	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            pgtypes.NullOid `json:"relid"`               // relid
+	Schemaname       sql.NullString  `json:"schemaname"`          // schemaname
+	Relname          sql.NullString  `json:"relname"`             // relname
+	SeqScan          sql.NullInt64   `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64   `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64   `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64   `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64   `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64   `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64   `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64   `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64   `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64   `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64   `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64   `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime    `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime    `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime    `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime    `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64   `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64   `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64   `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64   `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatArchiver represents a row from 'pg_catalog.pg_stat_archiver'.
@@ -1466,7 +1466,7 @@ type PgStatBgwriter struct {
 
 // PgStatDatabase represents a row from 'pg_catalog.pg_stat_database'.
 type PgStatDatabase struct {
-	Datid               NullOid         `json:"datid"`                 // datid
+	Datid               pgtypes.NullOid `json:"datid"`                 // datid
 	Datname             sql.NullString  `json:"datname"`               // datname
 	Numbackends         sql.NullInt64   `json:"numbackends"`           // numbackends
 	XactCommit          sql.NullInt64   `json:"xact_commit"`           // xact_commit
@@ -1491,13 +1491,13 @@ type PgStatDatabase struct {
 
 // PgStatDatabaseConflict represents a row from 'pg_catalog.pg_stat_database_conflicts'.
 type PgStatDatabaseConflict struct {
-	Datid           NullOid        `json:"datid"`            // datid
-	Datname         sql.NullString `json:"datname"`          // datname
-	ConflTablespace sql.NullInt64  `json:"confl_tablespace"` // confl_tablespace
-	ConflLock       sql.NullInt64  `json:"confl_lock"`       // confl_lock
-	ConflSnapshot   sql.NullInt64  `json:"confl_snapshot"`   // confl_snapshot
-	ConflBufferpin  sql.NullInt64  `json:"confl_bufferpin"`  // confl_bufferpin
-	ConflDeadlock   sql.NullInt64  `json:"confl_deadlock"`   // confl_deadlock
+	Datid           pgtypes.NullOid `json:"datid"`            // datid
+	Datname         sql.NullString  `json:"datname"`          // datname
+	ConflTablespace sql.NullInt64   `json:"confl_tablespace"` // confl_tablespace
+	ConflLock       sql.NullInt64   `json:"confl_lock"`       // confl_lock
+	ConflSnapshot   sql.NullInt64   `json:"confl_snapshot"`   // confl_snapshot
+	ConflBufferpin  sql.NullInt64   `json:"confl_bufferpin"`  // confl_bufferpin
+	ConflDeadlock   sql.NullInt64   `json:"confl_deadlock"`   // confl_deadlock
 }
 
 // PgStatGssapi represents a row from 'pg_catalog.pg_stat_gssapi'.
@@ -1510,18 +1510,18 @@ type PgStatGssapi struct {
 
 // PgStatProgressAnalyze represents a row from 'pg_catalog.pg_stat_progress_analyze'.
 type PgStatProgressAnalyze struct {
-	Pid                    sql.NullInt64  `json:"pid"`                       // pid
-	Datid                  NullOid        `json:"datid"`                     // datid
-	Datname                sql.NullString `json:"datname"`                   // datname
-	Relid                  NullOid        `json:"relid"`                     // relid
-	Phase                  sql.NullString `json:"phase"`                     // phase
-	SampleBlksTotal        sql.NullInt64  `json:"sample_blks_total"`         // sample_blks_total
-	SampleBlksScanned      sql.NullInt64  `json:"sample_blks_scanned"`       // sample_blks_scanned
-	ExtStatsTotal          sql.NullInt64  `json:"ext_stats_total"`           // ext_stats_total
-	ExtStatsComputed       sql.NullInt64  `json:"ext_stats_computed"`        // ext_stats_computed
-	ChildTablesTotal       sql.NullInt64  `json:"child_tables_total"`        // child_tables_total
-	ChildTablesDone        sql.NullInt64  `json:"child_tables_done"`         // child_tables_done
-	CurrentChildTableRelid NullOid        `json:"current_child_table_relid"` // current_child_table_relid
+	Pid                    sql.NullInt64   `json:"pid"`                       // pid
+	Datid                  pgtypes.NullOid `json:"datid"`                     // datid
+	Datname                sql.NullString  `json:"datname"`                   // datname
+	Relid                  pgtypes.NullOid `json:"relid"`                     // relid
+	Phase                  sql.NullString  `json:"phase"`                     // phase
+	SampleBlksTotal        sql.NullInt64   `json:"sample_blks_total"`         // sample_blks_total
+	SampleBlksScanned      sql.NullInt64   `json:"sample_blks_scanned"`       // sample_blks_scanned
+	ExtStatsTotal          sql.NullInt64   `json:"ext_stats_total"`           // ext_stats_total
+	ExtStatsComputed       sql.NullInt64   `json:"ext_stats_computed"`        // ext_stats_computed
+	ChildTablesTotal       sql.NullInt64   `json:"child_tables_total"`        // child_tables_total
+	ChildTablesDone        sql.NullInt64   `json:"child_tables_done"`         // child_tables_done
+	CurrentChildTableRelid pgtypes.NullOid `json:"current_child_table_relid"` // current_child_table_relid
 }
 
 // PgStatProgressBasebackup represents a row from 'pg_catalog.pg_stat_progress_basebackup'.
@@ -1536,77 +1536,77 @@ type PgStatProgressBasebackup struct {
 
 // PgStatProgressCluster represents a row from 'pg_catalog.pg_stat_progress_cluster'.
 type PgStatProgressCluster struct {
-	Pid               sql.NullInt64  `json:"pid"`                 // pid
-	Datid             NullOid        `json:"datid"`               // datid
-	Datname           sql.NullString `json:"datname"`             // datname
-	Relid             NullOid        `json:"relid"`               // relid
-	Command           sql.NullString `json:"command"`             // command
-	Phase             sql.NullString `json:"phase"`               // phase
-	ClusterIndexRelid NullOid        `json:"cluster_index_relid"` // cluster_index_relid
-	HeapTuplesScanned sql.NullInt64  `json:"heap_tuples_scanned"` // heap_tuples_scanned
-	HeapTuplesWritten sql.NullInt64  `json:"heap_tuples_written"` // heap_tuples_written
-	HeapBlksTotal     sql.NullInt64  `json:"heap_blks_total"`     // heap_blks_total
-	HeapBlksScanned   sql.NullInt64  `json:"heap_blks_scanned"`   // heap_blks_scanned
-	IndexRebuildCount sql.NullInt64  `json:"index_rebuild_count"` // index_rebuild_count
+	Pid               sql.NullInt64   `json:"pid"`                 // pid
+	Datid             pgtypes.NullOid `json:"datid"`               // datid
+	Datname           sql.NullString  `json:"datname"`             // datname
+	Relid             pgtypes.NullOid `json:"relid"`               // relid
+	Command           sql.NullString  `json:"command"`             // command
+	Phase             sql.NullString  `json:"phase"`               // phase
+	ClusterIndexRelid pgtypes.NullOid `json:"cluster_index_relid"` // cluster_index_relid
+	HeapTuplesScanned sql.NullInt64   `json:"heap_tuples_scanned"` // heap_tuples_scanned
+	HeapTuplesWritten sql.NullInt64   `json:"heap_tuples_written"` // heap_tuples_written
+	HeapBlksTotal     sql.NullInt64   `json:"heap_blks_total"`     // heap_blks_total
+	HeapBlksScanned   sql.NullInt64   `json:"heap_blks_scanned"`   // heap_blks_scanned
+	IndexRebuildCount sql.NullInt64   `json:"index_rebuild_count"` // index_rebuild_count
 }
 
 // PgStatProgressCreateIndex represents a row from 'pg_catalog.pg_stat_progress_create_index'.
 type PgStatProgressCreateIndex struct {
-	Pid              sql.NullInt64  `json:"pid"`                // pid
-	Datid            NullOid        `json:"datid"`              // datid
-	Datname          sql.NullString `json:"datname"`            // datname
-	Relid            NullOid        `json:"relid"`              // relid
-	IndexRelid       NullOid        `json:"index_relid"`        // index_relid
-	Command          sql.NullString `json:"command"`            // command
-	Phase            sql.NullString `json:"phase"`              // phase
-	LockersTotal     sql.NullInt64  `json:"lockers_total"`      // lockers_total
-	LockersDone      sql.NullInt64  `json:"lockers_done"`       // lockers_done
-	CurrentLockerPid sql.NullInt64  `json:"current_locker_pid"` // current_locker_pid
-	BlocksTotal      sql.NullInt64  `json:"blocks_total"`       // blocks_total
-	BlocksDone       sql.NullInt64  `json:"blocks_done"`        // blocks_done
-	TuplesTotal      sql.NullInt64  `json:"tuples_total"`       // tuples_total
-	TuplesDone       sql.NullInt64  `json:"tuples_done"`        // tuples_done
-	PartitionsTotal  sql.NullInt64  `json:"partitions_total"`   // partitions_total
-	PartitionsDone   sql.NullInt64  `json:"partitions_done"`    // partitions_done
+	Pid              sql.NullInt64   `json:"pid"`                // pid
+	Datid            pgtypes.NullOid `json:"datid"`              // datid
+	Datname          sql.NullString  `json:"datname"`            // datname
+	Relid            pgtypes.NullOid `json:"relid"`              // relid
+	IndexRelid       pgtypes.NullOid `json:"index_relid"`        // index_relid
+	Command          sql.NullString  `json:"command"`            // command
+	Phase            sql.NullString  `json:"phase"`              // phase
+	LockersTotal     sql.NullInt64   `json:"lockers_total"`      // lockers_total
+	LockersDone      sql.NullInt64   `json:"lockers_done"`       // lockers_done
+	CurrentLockerPid sql.NullInt64   `json:"current_locker_pid"` // current_locker_pid
+	BlocksTotal      sql.NullInt64   `json:"blocks_total"`       // blocks_total
+	BlocksDone       sql.NullInt64   `json:"blocks_done"`        // blocks_done
+	TuplesTotal      sql.NullInt64   `json:"tuples_total"`       // tuples_total
+	TuplesDone       sql.NullInt64   `json:"tuples_done"`        // tuples_done
+	PartitionsTotal  sql.NullInt64   `json:"partitions_total"`   // partitions_total
+	PartitionsDone   sql.NullInt64   `json:"partitions_done"`    // partitions_done
 }
 
 // PgStatProgressVacuum represents a row from 'pg_catalog.pg_stat_progress_vacuum'.
 type PgStatProgressVacuum struct {
-	Pid              sql.NullInt64  `json:"pid"`                // pid
-	Datid            NullOid        `json:"datid"`              // datid
-	Datname          sql.NullString `json:"datname"`            // datname
-	Relid            NullOid        `json:"relid"`              // relid
-	Phase            sql.NullString `json:"phase"`              // phase
-	HeapBlksTotal    sql.NullInt64  `json:"heap_blks_total"`    // heap_blks_total
-	HeapBlksScanned  sql.NullInt64  `json:"heap_blks_scanned"`  // heap_blks_scanned
-	HeapBlksVacuumed sql.NullInt64  `json:"heap_blks_vacuumed"` // heap_blks_vacuumed
-	IndexVacuumCount sql.NullInt64  `json:"index_vacuum_count"` // index_vacuum_count
-	MaxDeadTuples    sql.NullInt64  `json:"max_dead_tuples"`    // max_dead_tuples
-	NumDeadTuples    sql.NullInt64  `json:"num_dead_tuples"`    // num_dead_tuples
+	Pid              sql.NullInt64   `json:"pid"`                // pid
+	Datid            pgtypes.NullOid `json:"datid"`              // datid
+	Datname          sql.NullString  `json:"datname"`            // datname
+	Relid            pgtypes.NullOid `json:"relid"`              // relid
+	Phase            sql.NullString  `json:"phase"`              // phase
+	HeapBlksTotal    sql.NullInt64   `json:"heap_blks_total"`    // heap_blks_total
+	HeapBlksScanned  sql.NullInt64   `json:"heap_blks_scanned"`  // heap_blks_scanned
+	HeapBlksVacuumed sql.NullInt64   `json:"heap_blks_vacuumed"` // heap_blks_vacuumed
+	IndexVacuumCount sql.NullInt64   `json:"index_vacuum_count"` // index_vacuum_count
+	MaxDeadTuples    sql.NullInt64   `json:"max_dead_tuples"`    // max_dead_tuples
+	NumDeadTuples    sql.NullInt64   `json:"num_dead_tuples"`    // num_dead_tuples
 }
 
 // PgStatReplication represents a row from 'pg_catalog.pg_stat_replication'.
 type PgStatReplication struct {
-	Pid             sql.NullInt64  `json:"pid"`              // pid
-	Usesysid        NullOid        `json:"usesysid"`         // usesysid
-	Usename         sql.NullString `json:"usename"`          // usename
-	ApplicationName sql.NullString `json:"application_name"` // application_name
-	ClientAddr      sql.NullString `json:"client_addr"`      // client_addr
-	ClientHostname  sql.NullString `json:"client_hostname"`  // client_hostname
-	ClientPort      sql.NullInt64  `json:"client_port"`      // client_port
-	BackendStart    sql.NullTime   `json:"backend_start"`    // backend_start
-	BackendXmin     NullXid        `json:"backend_xmin"`     // backend_xmin
-	State           sql.NullString `json:"state"`            // state
-	SentLsn         NullPgLsn      `json:"sent_lsn"`         // sent_lsn
-	WriteLsn        NullPgLsn      `json:"write_lsn"`        // write_lsn
-	FlushLsn        NullPgLsn      `json:"flush_lsn"`        // flush_lsn
-	ReplayLsn       NullPgLsn      `json:"replay_lsn"`       // replay_lsn
-	WriteLag        []byte         `json:"write_lag"`        // write_lag
-	FlushLag        []byte         `json:"flush_lag"`        // flush_lag
-	ReplayLag       []byte         `json:"replay_lag"`       // replay_lag
-	SyncPriority    sql.NullInt64  `json:"sync_priority"`    // sync_priority
-	SyncState       sql.NullString `json:"sync_state"`       // sync_state
-	ReplyTime       sql.NullTime   `json:"reply_time"`       // reply_time
+	Pid             sql.NullInt64     `json:"pid"`              // pid
+	Usesysid        pgtypes.NullOid   `json:"usesysid"`         // usesysid
+	Usename         sql.NullString    `json:"usename"`          // usename
+	ApplicationName sql.NullString    `json:"application_name"` // application_name
+	ClientAddr      sql.NullString    `json:"client_addr"`      // client_addr
+	ClientHostname  sql.NullString    `json:"client_hostname"`  // client_hostname
+	ClientPort      sql.NullInt64     `json:"client_port"`      // client_port
+	BackendStart    sql.NullTime      `json:"backend_start"`    // backend_start
+	BackendXmin     pgtypes.NullXid   `json:"backend_xmin"`     // backend_xmin
+	State           sql.NullString    `json:"state"`            // state
+	SentLsn         pgtypes.NullPgLsn `json:"sent_lsn"`         // sent_lsn
+	WriteLsn        pgtypes.NullPgLsn `json:"write_lsn"`        // write_lsn
+	FlushLsn        pgtypes.NullPgLsn `json:"flush_lsn"`        // flush_lsn
+	ReplayLsn       pgtypes.NullPgLsn `json:"replay_lsn"`       // replay_lsn
+	WriteLag        []byte            `json:"write_lag"`        // write_lag
+	FlushLag        []byte            `json:"flush_lag"`        // flush_lag
+	ReplayLag       []byte            `json:"replay_lag"`       // replay_lag
+	SyncPriority    sql.NullInt64     `json:"sync_priority"`    // sync_priority
+	SyncState       sql.NullString    `json:"sync_state"`       // sync_state
+	ReplyTime       sql.NullTime      `json:"reply_time"`       // reply_time
 }
 
 // PgStatSlru represents a row from 'pg_catalog.pg_stat_slru'.
@@ -1637,59 +1637,59 @@ type PgStatSsl struct {
 
 // PgStatSubscription represents a row from 'pg_catalog.pg_stat_subscription'.
 type PgStatSubscription struct {
-	Subid              NullOid        `json:"subid"`                 // subid
-	Subname            sql.NullString `json:"subname"`               // subname
-	Pid                sql.NullInt64  `json:"pid"`                   // pid
-	Relid              NullOid        `json:"relid"`                 // relid
-	ReceivedLsn        NullPgLsn      `json:"received_lsn"`          // received_lsn
-	LastMsgSendTime    sql.NullTime   `json:"last_msg_send_time"`    // last_msg_send_time
-	LastMsgReceiptTime sql.NullTime   `json:"last_msg_receipt_time"` // last_msg_receipt_time
-	LatestEndLsn       NullPgLsn      `json:"latest_end_lsn"`        // latest_end_lsn
-	LatestEndTime      sql.NullTime   `json:"latest_end_time"`       // latest_end_time
+	Subid              pgtypes.NullOid   `json:"subid"`                 // subid
+	Subname            sql.NullString    `json:"subname"`               // subname
+	Pid                sql.NullInt64     `json:"pid"`                   // pid
+	Relid              pgtypes.NullOid   `json:"relid"`                 // relid
+	ReceivedLsn        pgtypes.NullPgLsn `json:"received_lsn"`          // received_lsn
+	LastMsgSendTime    sql.NullTime      `json:"last_msg_send_time"`    // last_msg_send_time
+	LastMsgReceiptTime sql.NullTime      `json:"last_msg_receipt_time"` // last_msg_receipt_time
+	LatestEndLsn       pgtypes.NullPgLsn `json:"latest_end_lsn"`        // latest_end_lsn
+	LatestEndTime      sql.NullTime      `json:"latest_end_time"`       // latest_end_time
 }
 
 // PgStatSysIndex represents a row from 'pg_catalog.pg_stat_sys_indexes'.
 type PgStatSysIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64   `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatSysTable represents a row from 'pg_catalog.pg_stat_sys_tables'.
 type PgStatSysTable struct {
-	Relid            NullOid        `json:"relid"`               // relid
-	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
-	Relname          sql.NullString `json:"relname"`             // relname
-	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            pgtypes.NullOid `json:"relid"`               // relid
+	Schemaname       sql.NullString  `json:"schemaname"`          // schemaname
+	Relname          sql.NullString  `json:"relname"`             // relname
+	SeqScan          sql.NullInt64   `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64   `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64   `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64   `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64   `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64   `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64   `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64   `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64   `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64   `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64   `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64   `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime    `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime    `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime    `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime    `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64   `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64   `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64   `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64   `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatUserFunction represents a row from 'pg_catalog.pg_stat_user_functions'.
 type PgStatUserFunction struct {
-	Funcid     NullOid         `json:"funcid"`     // funcid
+	Funcid     pgtypes.NullOid `json:"funcid"`     // funcid
 	Schemaname sql.NullString  `json:"schemaname"` // schemaname
 	Funcname   sql.NullString  `json:"funcname"`   // funcname
 	Calls      sql.NullInt64   `json:"calls"`      // calls
@@ -1699,95 +1699,95 @@ type PgStatUserFunction struct {
 
 // PgStatUserIndex represents a row from 'pg_catalog.pg_stat_user_indexes'.
 type PgStatUserIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxScan      sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupRead   sql.NullInt64  `json:"idx_tup_read"`  // idx_tup_read
-	IdxTupFetch  sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxScan      sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupRead   sql.NullInt64   `json:"idx_tup_read"`  // idx_tup_read
+	IdxTupFetch  sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
 }
 
 // PgStatUserTable represents a row from 'pg_catalog.pg_stat_user_tables'.
 type PgStatUserTable struct {
-	Relid            NullOid        `json:"relid"`               // relid
-	Schemaname       sql.NullString `json:"schemaname"`          // schemaname
-	Relname          sql.NullString `json:"relname"`             // relname
-	SeqScan          sql.NullInt64  `json:"seq_scan"`            // seq_scan
-	SeqTupRead       sql.NullInt64  `json:"seq_tup_read"`        // seq_tup_read
-	IdxScan          sql.NullInt64  `json:"idx_scan"`            // idx_scan
-	IdxTupFetch      sql.NullInt64  `json:"idx_tup_fetch"`       // idx_tup_fetch
-	NTupIns          sql.NullInt64  `json:"n_tup_ins"`           // n_tup_ins
-	NTupUpd          sql.NullInt64  `json:"n_tup_upd"`           // n_tup_upd
-	NTupDel          sql.NullInt64  `json:"n_tup_del"`           // n_tup_del
-	NTupHotUpd       sql.NullInt64  `json:"n_tup_hot_upd"`       // n_tup_hot_upd
-	NLiveTup         sql.NullInt64  `json:"n_live_tup"`          // n_live_tup
-	NDeadTup         sql.NullInt64  `json:"n_dead_tup"`          // n_dead_tup
-	NModSinceAnalyze sql.NullInt64  `json:"n_mod_since_analyze"` // n_mod_since_analyze
-	NInsSinceVacuum  sql.NullInt64  `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
-	LastVacuum       sql.NullTime   `json:"last_vacuum"`         // last_vacuum
-	LastAutovacuum   sql.NullTime   `json:"last_autovacuum"`     // last_autovacuum
-	LastAnalyze      sql.NullTime   `json:"last_analyze"`        // last_analyze
-	LastAutoanalyze  sql.NullTime   `json:"last_autoanalyze"`    // last_autoanalyze
-	VacuumCount      sql.NullInt64  `json:"vacuum_count"`        // vacuum_count
-	AutovacuumCount  sql.NullInt64  `json:"autovacuum_count"`    // autovacuum_count
-	AnalyzeCount     sql.NullInt64  `json:"analyze_count"`       // analyze_count
-	AutoanalyzeCount sql.NullInt64  `json:"autoanalyze_count"`   // autoanalyze_count
+	Relid            pgtypes.NullOid `json:"relid"`               // relid
+	Schemaname       sql.NullString  `json:"schemaname"`          // schemaname
+	Relname          sql.NullString  `json:"relname"`             // relname
+	SeqScan          sql.NullInt64   `json:"seq_scan"`            // seq_scan
+	SeqTupRead       sql.NullInt64   `json:"seq_tup_read"`        // seq_tup_read
+	IdxScan          sql.NullInt64   `json:"idx_scan"`            // idx_scan
+	IdxTupFetch      sql.NullInt64   `json:"idx_tup_fetch"`       // idx_tup_fetch
+	NTupIns          sql.NullInt64   `json:"n_tup_ins"`           // n_tup_ins
+	NTupUpd          sql.NullInt64   `json:"n_tup_upd"`           // n_tup_upd
+	NTupDel          sql.NullInt64   `json:"n_tup_del"`           // n_tup_del
+	NTupHotUpd       sql.NullInt64   `json:"n_tup_hot_upd"`       // n_tup_hot_upd
+	NLiveTup         sql.NullInt64   `json:"n_live_tup"`          // n_live_tup
+	NDeadTup         sql.NullInt64   `json:"n_dead_tup"`          // n_dead_tup
+	NModSinceAnalyze sql.NullInt64   `json:"n_mod_since_analyze"` // n_mod_since_analyze
+	NInsSinceVacuum  sql.NullInt64   `json:"n_ins_since_vacuum"`  // n_ins_since_vacuum
+	LastVacuum       sql.NullTime    `json:"last_vacuum"`         // last_vacuum
+	LastAutovacuum   sql.NullTime    `json:"last_autovacuum"`     // last_autovacuum
+	LastAnalyze      sql.NullTime    `json:"last_analyze"`        // last_analyze
+	LastAutoanalyze  sql.NullTime    `json:"last_autoanalyze"`    // last_autoanalyze
+	VacuumCount      sql.NullInt64   `json:"vacuum_count"`        // vacuum_count
+	AutovacuumCount  sql.NullInt64   `json:"autovacuum_count"`    // autovacuum_count
+	AnalyzeCount     sql.NullInt64   `json:"analyze_count"`       // analyze_count
+	AutoanalyzeCount sql.NullInt64   `json:"autoanalyze_count"`   // autoanalyze_count
 }
 
 // PgStatWalReceiver represents a row from 'pg_catalog.pg_stat_wal_receiver'.
 type PgStatWalReceiver struct {
-	Pid                sql.NullInt64  `json:"pid"`                   // pid
-	Status             sql.NullString `json:"status"`                // status
-	ReceiveStartLsn    NullPgLsn      `json:"receive_start_lsn"`     // receive_start_lsn
-	ReceiveStartTli    sql.NullInt64  `json:"receive_start_tli"`     // receive_start_tli
-	WrittenLsn         NullPgLsn      `json:"written_lsn"`           // written_lsn
-	FlushedLsn         NullPgLsn      `json:"flushed_lsn"`           // flushed_lsn
-	ReceivedTli        sql.NullInt64  `json:"received_tli"`          // received_tli
-	LastMsgSendTime    sql.NullTime   `json:"last_msg_send_time"`    // last_msg_send_time
-	LastMsgReceiptTime sql.NullTime   `json:"last_msg_receipt_time"` // last_msg_receipt_time
-	LatestEndLsn       NullPgLsn      `json:"latest_end_lsn"`        // latest_end_lsn
-	LatestEndTime      sql.NullTime   `json:"latest_end_time"`       // latest_end_time
-	SlotName           sql.NullString `json:"slot_name"`             // slot_name
-	SenderHost         sql.NullString `json:"sender_host"`           // sender_host
-	SenderPort         sql.NullInt64  `json:"sender_port"`           // sender_port
-	Conninfo           sql.NullString `json:"conninfo"`              // conninfo
+	Pid                sql.NullInt64     `json:"pid"`                   // pid
+	Status             sql.NullString    `json:"status"`                // status
+	ReceiveStartLsn    pgtypes.NullPgLsn `json:"receive_start_lsn"`     // receive_start_lsn
+	ReceiveStartTli    sql.NullInt64     `json:"receive_start_tli"`     // receive_start_tli
+	WrittenLsn         pgtypes.NullPgLsn `json:"written_lsn"`           // written_lsn
+	FlushedLsn         pgtypes.NullPgLsn `json:"flushed_lsn"`           // flushed_lsn
+	ReceivedTli        sql.NullInt64     `json:"received_tli"`          // received_tli
+	LastMsgSendTime    sql.NullTime      `json:"last_msg_send_time"`    // last_msg_send_time
+	LastMsgReceiptTime sql.NullTime      `json:"last_msg_receipt_time"` // last_msg_receipt_time
+	LatestEndLsn       pgtypes.NullPgLsn `json:"latest_end_lsn"`        // latest_end_lsn
+	LatestEndTime      sql.NullTime      `json:"latest_end_time"`       // latest_end_time
+	SlotName           sql.NullString    `json:"slot_name"`             // slot_name
+	SenderHost         sql.NullString    `json:"sender_host"`           // sender_host
+	SenderPort         sql.NullInt64     `json:"sender_port"`           // sender_port
+	Conninfo           sql.NullString    `json:"conninfo"`              // conninfo
 }
 
 // PgStatXactAllTable represents a row from 'pg_catalog.pg_stat_xact_all_tables'.
 type PgStatXactAllTable struct {
-	Relid       NullOid        `json:"relid"`         // relid
-	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
-	Relname     sql.NullString `json:"relname"`       // relname
-	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       pgtypes.NullOid `json:"relid"`         // relid
+	Schemaname  sql.NullString  `json:"schemaname"`    // schemaname
+	Relname     sql.NullString  `json:"relname"`       // relname
+	SeqScan     sql.NullInt64   `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64   `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64   `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64   `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64   `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64   `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatXactSysTable represents a row from 'pg_catalog.pg_stat_xact_sys_tables'.
 type PgStatXactSysTable struct {
-	Relid       NullOid        `json:"relid"`         // relid
-	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
-	Relname     sql.NullString `json:"relname"`       // relname
-	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       pgtypes.NullOid `json:"relid"`         // relid
+	Schemaname  sql.NullString  `json:"schemaname"`    // schemaname
+	Relname     sql.NullString  `json:"relname"`       // relname
+	SeqScan     sql.NullInt64   `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64   `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64   `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64   `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64   `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64   `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatXactUserFunction represents a row from 'pg_catalog.pg_stat_xact_user_functions'.
 type PgStatXactUserFunction struct {
-	Funcid     NullOid         `json:"funcid"`     // funcid
+	Funcid     pgtypes.NullOid `json:"funcid"`     // funcid
 	Schemaname sql.NullString  `json:"schemaname"` // schemaname
 	Funcname   sql.NullString  `json:"funcname"`   // funcname
 	Calls      sql.NullInt64   `json:"calls"`      // calls
@@ -1797,226 +1797,226 @@ type PgStatXactUserFunction struct {
 
 // PgStatXactUserTable represents a row from 'pg_catalog.pg_stat_xact_user_tables'.
 type PgStatXactUserTable struct {
-	Relid       NullOid        `json:"relid"`         // relid
-	Schemaname  sql.NullString `json:"schemaname"`    // schemaname
-	Relname     sql.NullString `json:"relname"`       // relname
-	SeqScan     sql.NullInt64  `json:"seq_scan"`      // seq_scan
-	SeqTupRead  sql.NullInt64  `json:"seq_tup_read"`  // seq_tup_read
-	IdxScan     sql.NullInt64  `json:"idx_scan"`      // idx_scan
-	IdxTupFetch sql.NullInt64  `json:"idx_tup_fetch"` // idx_tup_fetch
-	NTupIns     sql.NullInt64  `json:"n_tup_ins"`     // n_tup_ins
-	NTupUpd     sql.NullInt64  `json:"n_tup_upd"`     // n_tup_upd
-	NTupDel     sql.NullInt64  `json:"n_tup_del"`     // n_tup_del
-	NTupHotUpd  sql.NullInt64  `json:"n_tup_hot_upd"` // n_tup_hot_upd
+	Relid       pgtypes.NullOid `json:"relid"`         // relid
+	Schemaname  sql.NullString  `json:"schemaname"`    // schemaname
+	Relname     sql.NullString  `json:"relname"`       // relname
+	SeqScan     sql.NullInt64   `json:"seq_scan"`      // seq_scan
+	SeqTupRead  sql.NullInt64   `json:"seq_tup_read"`  // seq_tup_read
+	IdxScan     sql.NullInt64   `json:"idx_scan"`      // idx_scan
+	IdxTupFetch sql.NullInt64   `json:"idx_tup_fetch"` // idx_tup_fetch
+	NTupIns     sql.NullInt64   `json:"n_tup_ins"`     // n_tup_ins
+	NTupUpd     sql.NullInt64   `json:"n_tup_upd"`     // n_tup_upd
+	NTupDel     sql.NullInt64   `json:"n_tup_del"`     // n_tup_del
+	NTupHotUpd  sql.NullInt64   `json:"n_tup_hot_upd"` // n_tup_hot_upd
 }
 
 // PgStatioAllIndex represents a row from 'pg_catalog.pg_statio_all_indexes'.
 type PgStatioAllIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64   `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64   `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioAllSequence represents a row from 'pg_catalog.pg_statio_all_sequences'.
 type PgStatioAllSequence struct {
-	Relid      NullOid        `json:"relid"`      // relid
-	Schemaname sql.NullString `json:"schemaname"` // schemaname
-	Relname    sql.NullString `json:"relname"`    // relname
-	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
+	Relid      pgtypes.NullOid `json:"relid"`      // relid
+	Schemaname sql.NullString  `json:"schemaname"` // schemaname
+	Relname    sql.NullString  `json:"relname"`    // relname
+	BlksRead   sql.NullInt64   `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64   `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioAllTable represents a row from 'pg_catalog.pg_statio_all_tables'.
 type PgStatioAllTable struct {
-	Relid         NullOid        `json:"relid"`           // relid
-	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
-	Relname       sql.NullString `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         pgtypes.NullOid `json:"relid"`           // relid
+	Schemaname    sql.NullString  `json:"schemaname"`      // schemaname
+	Relname       sql.NullString  `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64   `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64   `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64   `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64   `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64   `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64   `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64   `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64   `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatioSysIndex represents a row from 'pg_catalog.pg_statio_sys_indexes'.
 type PgStatioSysIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64   `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64   `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioSysSequence represents a row from 'pg_catalog.pg_statio_sys_sequences'.
 type PgStatioSysSequence struct {
-	Relid      NullOid        `json:"relid"`      // relid
-	Schemaname sql.NullString `json:"schemaname"` // schemaname
-	Relname    sql.NullString `json:"relname"`    // relname
-	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
+	Relid      pgtypes.NullOid `json:"relid"`      // relid
+	Schemaname sql.NullString  `json:"schemaname"` // schemaname
+	Relname    sql.NullString  `json:"relname"`    // relname
+	BlksRead   sql.NullInt64   `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64   `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioSysTable represents a row from 'pg_catalog.pg_statio_sys_tables'.
 type PgStatioSysTable struct {
-	Relid         NullOid        `json:"relid"`           // relid
-	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
-	Relname       sql.NullString `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         pgtypes.NullOid `json:"relid"`           // relid
+	Schemaname    sql.NullString  `json:"schemaname"`      // schemaname
+	Relname       sql.NullString  `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64   `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64   `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64   `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64   `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64   `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64   `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64   `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64   `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatioUserIndex represents a row from 'pg_catalog.pg_statio_user_indexes'.
 type PgStatioUserIndex struct {
-	Relid        NullOid        `json:"relid"`         // relid
-	Indexrelid   NullOid        `json:"indexrelid"`    // indexrelid
-	Schemaname   sql.NullString `json:"schemaname"`    // schemaname
-	Relname      sql.NullString `json:"relname"`       // relname
-	Indexrelname sql.NullString `json:"indexrelname"`  // indexrelname
-	IdxBlksRead  sql.NullInt64  `json:"idx_blks_read"` // idx_blks_read
-	IdxBlksHit   sql.NullInt64  `json:"idx_blks_hit"`  // idx_blks_hit
+	Relid        pgtypes.NullOid `json:"relid"`         // relid
+	Indexrelid   pgtypes.NullOid `json:"indexrelid"`    // indexrelid
+	Schemaname   sql.NullString  `json:"schemaname"`    // schemaname
+	Relname      sql.NullString  `json:"relname"`       // relname
+	Indexrelname sql.NullString  `json:"indexrelname"`  // indexrelname
+	IdxBlksRead  sql.NullInt64   `json:"idx_blks_read"` // idx_blks_read
+	IdxBlksHit   sql.NullInt64   `json:"idx_blks_hit"`  // idx_blks_hit
 }
 
 // PgStatioUserSequence represents a row from 'pg_catalog.pg_statio_user_sequences'.
 type PgStatioUserSequence struct {
-	Relid      NullOid        `json:"relid"`      // relid
-	Schemaname sql.NullString `json:"schemaname"` // schemaname
-	Relname    sql.NullString `json:"relname"`    // relname
-	BlksRead   sql.NullInt64  `json:"blks_read"`  // blks_read
-	BlksHit    sql.NullInt64  `json:"blks_hit"`   // blks_hit
+	Relid      pgtypes.NullOid `json:"relid"`      // relid
+	Schemaname sql.NullString  `json:"schemaname"` // schemaname
+	Relname    sql.NullString  `json:"relname"`    // relname
+	BlksRead   sql.NullInt64   `json:"blks_read"`  // blks_read
+	BlksHit    sql.NullInt64   `json:"blks_hit"`   // blks_hit
 }
 
 // PgStatioUserTable represents a row from 'pg_catalog.pg_statio_user_tables'.
 type PgStatioUserTable struct {
-	Relid         NullOid        `json:"relid"`           // relid
-	Schemaname    sql.NullString `json:"schemaname"`      // schemaname
-	Relname       sql.NullString `json:"relname"`         // relname
-	HeapBlksRead  sql.NullInt64  `json:"heap_blks_read"`  // heap_blks_read
-	HeapBlksHit   sql.NullInt64  `json:"heap_blks_hit"`   // heap_blks_hit
-	IdxBlksRead   sql.NullInt64  `json:"idx_blks_read"`   // idx_blks_read
-	IdxBlksHit    sql.NullInt64  `json:"idx_blks_hit"`    // idx_blks_hit
-	ToastBlksRead sql.NullInt64  `json:"toast_blks_read"` // toast_blks_read
-	ToastBlksHit  sql.NullInt64  `json:"toast_blks_hit"`  // toast_blks_hit
-	TidxBlksRead  sql.NullInt64  `json:"tidx_blks_read"`  // tidx_blks_read
-	TidxBlksHit   sql.NullInt64  `json:"tidx_blks_hit"`   // tidx_blks_hit
+	Relid         pgtypes.NullOid `json:"relid"`           // relid
+	Schemaname    sql.NullString  `json:"schemaname"`      // schemaname
+	Relname       sql.NullString  `json:"relname"`         // relname
+	HeapBlksRead  sql.NullInt64   `json:"heap_blks_read"`  // heap_blks_read
+	HeapBlksHit   sql.NullInt64   `json:"heap_blks_hit"`   // heap_blks_hit
+	IdxBlksRead   sql.NullInt64   `json:"idx_blks_read"`   // idx_blks_read
+	IdxBlksHit    sql.NullInt64   `json:"idx_blks_hit"`    // idx_blks_hit
+	ToastBlksRead sql.NullInt64   `json:"toast_blks_read"` // toast_blks_read
+	ToastBlksHit  sql.NullInt64   `json:"toast_blks_hit"`  // toast_blks_hit
+	TidxBlksRead  sql.NullInt64   `json:"tidx_blks_read"`  // tidx_blks_read
+	TidxBlksHit   sql.NullInt64   `json:"tidx_blks_hit"`   // tidx_blks_hit
 }
 
 // PgStatistic represents a row from 'pg_catalog.pg_statistic'.
 type PgStatistic struct {
-	Tableoid    Oid               `json:"tableoid"`    // tableoid
-	Cmax        Cid               `json:"cmax"`        // cmax
-	Xmax        Xid               `json:"xmax"`        // xmax
-	Cmin        Cid               `json:"cmin"`        // cmin
-	Xmin        Xid               `json:"xmin"`        // xmin
-	Ctid        Tid               `json:"ctid"`        // ctid
-	Starelid    Oid               `json:"starelid"`    // starelid
-	Staattnum   int16             `json:"staattnum"`   // staattnum
-	Stainherit  bool              `json:"stainherit"`  // stainherit
-	Stanullfrac float32           `json:"stanullfrac"` // stanullfrac
-	Stawidth    int               `json:"stawidth"`    // stawidth
-	Stadistinct float32           `json:"stadistinct"` // stadistinct
-	Stakind1    int16             `json:"stakind1"`    // stakind1
-	Stakind2    int16             `json:"stakind2"`    // stakind2
-	Stakind3    int16             `json:"stakind3"`    // stakind3
-	Stakind4    int16             `json:"stakind4"`    // stakind4
-	Stakind5    int16             `json:"stakind5"`    // stakind5
-	Staop1      Oid               `json:"staop1"`      // staop1
-	Staop2      Oid               `json:"staop2"`      // staop2
-	Staop3      Oid               `json:"staop3"`      // staop3
-	Staop4      Oid               `json:"staop4"`      // staop4
-	Staop5      Oid               `json:"staop5"`      // staop5
-	Stacoll1    Oid               `json:"stacoll1"`    // stacoll1
-	Stacoll2    Oid               `json:"stacoll2"`    // stacoll2
-	Stacoll3    Oid               `json:"stacoll3"`    // stacoll3
-	Stacoll4    Oid               `json:"stacoll4"`    // stacoll4
-	Stacoll5    Oid               `json:"stacoll5"`    // stacoll5
-	Stanumbers1 []sql.NullFloat64 `json:"stanumbers1"` // stanumbers1
-	Stanumbers2 []sql.NullFloat64 `json:"stanumbers2"` // stanumbers2
-	Stanumbers3 []sql.NullFloat64 `json:"stanumbers3"` // stanumbers3
-	Stanumbers4 []sql.NullFloat64 `json:"stanumbers4"` // stanumbers4
-	Stanumbers5 []sql.NullFloat64 `json:"stanumbers5"` // stanumbers5
-	Stavalues1  NullAnyarray      `json:"stavalues1"`  // stavalues1
-	Stavalues2  NullAnyarray      `json:"stavalues2"`  // stavalues2
-	Stavalues3  NullAnyarray      `json:"stavalues3"`  // stavalues3
-	Stavalues4  NullAnyarray      `json:"stavalues4"`  // stavalues4
-	Stavalues5  NullAnyarray      `json:"stavalues5"`  // stavalues5
+	Tableoid    pgtypes.Oid          `json:"tableoid"`    // tableoid
+	Cmax        pgtypes.Cid          `json:"cmax"`        // cmax
+	Xmax        pgtypes.Xid          `json:"xmax"`        // xmax
+	Cmin        pgtypes.Cid          `json:"cmin"`        // cmin
+	Xmin        pgtypes.Xid          `json:"xmin"`        // xmin
+	Ctid        pgtypes.Tid          `json:"ctid"`        // ctid
+	Starelid    pgtypes.Oid          `json:"starelid"`    // starelid
+	Staattnum   int16                `json:"staattnum"`   // staattnum
+	Stainherit  bool                 `json:"stainherit"`  // stainherit
+	Stanullfrac float32              `json:"stanullfrac"` // stanullfrac
+	Stawidth    int                  `json:"stawidth"`    // stawidth
+	Stadistinct float32              `json:"stadistinct"` // stadistinct
+	Stakind1    int16                `json:"stakind1"`    // stakind1
+	Stakind2    int16                `json:"stakind2"`    // stakind2
+	Stakind3    int16                `json:"stakind3"`    // stakind3
+	Stakind4    int16                `json:"stakind4"`    // stakind4
+	Stakind5    int16                `json:"stakind5"`    // stakind5
+	Staop1      pgtypes.Oid          `json:"staop1"`      // staop1
+	Staop2      pgtypes.Oid          `json:"staop2"`      // staop2
+	Staop3      pgtypes.Oid          `json:"staop3"`      // staop3
+	Staop4      pgtypes.Oid          `json:"staop4"`      // staop4
+	Staop5      pgtypes.Oid          `json:"staop5"`      // staop5
+	Stacoll1    pgtypes.Oid          `json:"stacoll1"`    // stacoll1
+	Stacoll2    pgtypes.Oid          `json:"stacoll2"`    // stacoll2
+	Stacoll3    pgtypes.Oid          `json:"stacoll3"`    // stacoll3
+	Stacoll4    pgtypes.Oid          `json:"stacoll4"`    // stacoll4
+	Stacoll5    pgtypes.Oid          `json:"stacoll5"`    // stacoll5
+	Stanumbers1 []sql.NullFloat64    `json:"stanumbers1"` // stanumbers1
+	Stanumbers2 []sql.NullFloat64    `json:"stanumbers2"` // stanumbers2
+	Stanumbers3 []sql.NullFloat64    `json:"stanumbers3"` // stanumbers3
+	Stanumbers4 []sql.NullFloat64    `json:"stanumbers4"` // stanumbers4
+	Stanumbers5 []sql.NullFloat64    `json:"stanumbers5"` // stanumbers5
+	Stavalues1  pgtypes.NullAnyarray `json:"stavalues1"`  // stavalues1
+	Stavalues2  pgtypes.NullAnyarray `json:"stavalues2"`  // stavalues2
+	Stavalues3  pgtypes.NullAnyarray `json:"stavalues3"`  // stavalues3
+	Stavalues4  pgtypes.NullAnyarray `json:"stavalues4"`  // stavalues4
+	Stavalues5  pgtypes.NullAnyarray `json:"stavalues5"`  // stavalues5
 }
 
 // PgStatisticExt represents a row from 'pg_catalog.pg_statistic_ext'.
 type PgStatisticExt struct {
-	Tableoid      Oid        `json:"tableoid"`      // tableoid
-	Cmax          Cid        `json:"cmax"`          // cmax
-	Xmax          Xid        `json:"xmax"`          // xmax
-	Cmin          Cid        `json:"cmin"`          // cmin
-	Xmin          Xid        `json:"xmin"`          // xmin
-	Ctid          Tid        `json:"ctid"`          // ctid
-	Oid           Oid        `json:"oid"`           // oid
-	Stxrelid      Oid        `json:"stxrelid"`      // stxrelid
-	Stxname       string     `json:"stxname"`       // stxname
-	Stxnamespace  Oid        `json:"stxnamespace"`  // stxnamespace
-	Stxowner      Oid        `json:"stxowner"`      // stxowner
-	Stxstattarget int        `json:"stxstattarget"` // stxstattarget
-	Stxkeys       Int2vector `json:"stxkeys"`       // stxkeys
-	Stxkind       []Char     `json:"stxkind"`       // stxkind
+	Tableoid      pgtypes.Oid        `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid        `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid        `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid        `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid        `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid        `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid        `json:"oid"`           // oid
+	Stxrelid      pgtypes.Oid        `json:"stxrelid"`      // stxrelid
+	Stxname       string             `json:"stxname"`       // stxname
+	Stxnamespace  pgtypes.Oid        `json:"stxnamespace"`  // stxnamespace
+	Stxowner      pgtypes.Oid        `json:"stxowner"`      // stxowner
+	Stxstattarget int                `json:"stxstattarget"` // stxstattarget
+	Stxkeys       pgtypes.Int2vector `json:"stxkeys"`       // stxkeys
+	Stxkind       []pgtypes.Char     `json:"stxkind"`       // stxkind
 }
 
 // PgStatisticExtDatum represents a row from 'pg_catalog.pg_statistic_ext_data'.
 type PgStatisticExtDatum struct {
-	Tableoid         Oid                `json:"tableoid"`         // tableoid
-	Cmax             Cid                `json:"cmax"`             // cmax
-	Xmax             Xid                `json:"xmax"`             // xmax
-	Cmin             Cid                `json:"cmin"`             // cmin
-	Xmin             Xid                `json:"xmin"`             // xmin
-	Ctid             Tid                `json:"ctid"`             // ctid
-	Stxoid           Oid                `json:"stxoid"`           // stxoid
-	Stxdndistinct    NullPgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
-	Stxddependencies NullPgDependencies `json:"stxddependencies"` // stxddependencies
-	Stxdmcv          NullPgMcvList      `json:"stxdmcv"`          // stxdmcv
+	Tableoid         pgtypes.Oid                `json:"tableoid"`         // tableoid
+	Cmax             pgtypes.Cid                `json:"cmax"`             // cmax
+	Xmax             pgtypes.Xid                `json:"xmax"`             // xmax
+	Cmin             pgtypes.Cid                `json:"cmin"`             // cmin
+	Xmin             pgtypes.Xid                `json:"xmin"`             // xmin
+	Ctid             pgtypes.Tid                `json:"ctid"`             // ctid
+	Stxoid           pgtypes.Oid                `json:"stxoid"`           // stxoid
+	Stxdndistinct    pgtypes.NullPgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
+	Stxddependencies pgtypes.NullPgDependencies `json:"stxddependencies"` // stxddependencies
+	Stxdmcv          pgtypes.NullPgMcvList      `json:"stxdmcv"`          // stxdmcv
 }
 
 // PgStatsExt represents a row from 'pg_catalog.pg_stats_ext'.
 type PgStatsExt struct {
-	Schemaname           sql.NullString     `json:"schemaname"`             // schemaname
-	Tablename            sql.NullString     `json:"tablename"`              // tablename
-	StatisticsSchemaname sql.NullString     `json:"statistics_schemaname"`  // statistics_schemaname
-	StatisticsName       sql.NullString     `json:"statistics_name"`        // statistics_name
-	StatisticsOwner      sql.NullString     `json:"statistics_owner"`       // statistics_owner
-	Attnames             []sql.NullString   `json:"attnames"`               // attnames
-	Kinds                []NullChar         `json:"kinds"`                  // kinds
-	NDistinct            NullPgNdistinct    `json:"n_distinct"`             // n_distinct
-	Dependencies         NullPgDependencies `json:"dependencies"`           // dependencies
-	MostCommonVals       []sql.NullString   `json:"most_common_vals"`       // most_common_vals
-	MostCommonValNulls   []sql.NullBool     `json:"most_common_val_nulls"`  // most_common_val_nulls
-	MostCommonFreqs      []sql.NullFloat64  `json:"most_common_freqs"`      // most_common_freqs
-	MostCommonBaseFreqs  []sql.NullFloat64  `json:"most_common_base_freqs"` // most_common_base_freqs
+	Schemaname           sql.NullString             `json:"schemaname"`             // schemaname
+	Tablename            sql.NullString             `json:"tablename"`              // tablename
+	StatisticsSchemaname sql.NullString             `json:"statistics_schemaname"`  // statistics_schemaname
+	StatisticsName       sql.NullString             `json:"statistics_name"`        // statistics_name
+	StatisticsOwner      sql.NullString             `json:"statistics_owner"`       // statistics_owner
+	Attnames             []sql.NullString           `json:"attnames"`               // attnames
+	Kinds                []pgtypes.NullChar         `json:"kinds"`                  // kinds
+	NDistinct            pgtypes.NullPgNdistinct    `json:"n_distinct"`             // n_distinct
+	Dependencies         pgtypes.NullPgDependencies `json:"dependencies"`           // dependencies
+	MostCommonVals       []sql.NullString           `json:"most_common_vals"`       // most_common_vals
+	MostCommonValNulls   []sql.NullBool             `json:"most_common_val_nulls"`  // most_common_val_nulls
+	MostCommonFreqs      []sql.NullFloat64          `json:"most_common_freqs"`      // most_common_freqs
+	MostCommonBaseFreqs  []sql.NullFloat64          `json:"most_common_base_freqs"` // most_common_base_freqs
 }
 
 // PgSubscription represents a row from 'pg_catalog.pg_subscription'.
 type PgSubscription struct {
-	Tableoid        Oid            `json:"tableoid"`        // tableoid
-	Cmax            Cid            `json:"cmax"`            // cmax
-	Xmax            Xid            `json:"xmax"`            // xmax
-	Cmin            Cid            `json:"cmin"`            // cmin
-	Xmin            Xid            `json:"xmin"`            // xmin
-	Ctid            Tid            `json:"ctid"`            // ctid
-	Oid             Oid            `json:"oid"`             // oid
-	Subdbid         Oid            `json:"subdbid"`         // subdbid
+	Tableoid        pgtypes.Oid    `json:"tableoid"`        // tableoid
+	Cmax            pgtypes.Cid    `json:"cmax"`            // cmax
+	Xmax            pgtypes.Xid    `json:"xmax"`            // xmax
+	Cmin            pgtypes.Cid    `json:"cmin"`            // cmin
+	Xmin            pgtypes.Xid    `json:"xmin"`            // xmin
+	Ctid            pgtypes.Tid    `json:"ctid"`            // ctid
+	Oid             pgtypes.Oid    `json:"oid"`             // oid
+	Subdbid         pgtypes.Oid    `json:"subdbid"`         // subdbid
 	Subname         string         `json:"subname"`         // subname
-	Subowner        Oid            `json:"subowner"`        // subowner
+	Subowner        pgtypes.Oid    `json:"subowner"`        // subowner
 	Subenabled      bool           `json:"subenabled"`      // subenabled
 	Subconninfo     string         `json:"subconninfo"`     // subconninfo
 	Subslotname     sql.NullString `json:"subslotname"`     // subslotname
@@ -2026,16 +2026,16 @@ type PgSubscription struct {
 
 // PgSubscriptionRel represents a row from 'pg_catalog.pg_subscription_rel'.
 type PgSubscriptionRel struct {
-	Tableoid   Oid       `json:"tableoid"`   // tableoid
-	Cmax       Cid       `json:"cmax"`       // cmax
-	Xmax       Xid       `json:"xmax"`       // xmax
-	Cmin       Cid       `json:"cmin"`       // cmin
-	Xmin       Xid       `json:"xmin"`       // xmin
-	Ctid       Tid       `json:"ctid"`       // ctid
-	Srsubid    Oid       `json:"srsubid"`    // srsubid
-	Srrelid    Oid       `json:"srrelid"`    // srrelid
-	Srsubstate Char      `json:"srsubstate"` // srsubstate
-	Srsublsn   NullPgLsn `json:"srsublsn"`   // srsublsn
+	Tableoid   pgtypes.Oid       `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid       `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid       `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid       `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid       `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid       `json:"ctid"`       // ctid
+	Srsubid    pgtypes.Oid       `json:"srsubid"`    // srsubid
+	Srrelid    pgtypes.Oid       `json:"srrelid"`    // srrelid
+	Srsubstate pgtypes.Char      `json:"srsubstate"` // srsubstate
+	Srsublsn   pgtypes.NullPgLsn `json:"srsublsn"`   // srsublsn
 }
 
 // PgTable represents a row from 'pg_catalog.pg_tables'.
@@ -2052,17 +2052,17 @@ type PgTable struct {
 
 // PgTablespace represents a row from 'pg_catalog.pg_tablespace'.
 type PgTablespace struct {
-	Tableoid   Oid              `json:"tableoid"`   // tableoid
-	Cmax       Cid              `json:"cmax"`       // cmax
-	Xmax       Xid              `json:"xmax"`       // xmax
-	Cmin       Cid              `json:"cmin"`       // cmin
-	Xmin       Xid              `json:"xmin"`       // xmin
-	Ctid       Tid              `json:"ctid"`       // ctid
-	Oid        Oid              `json:"oid"`        // oid
-	Spcname    string           `json:"spcname"`    // spcname
-	Spcowner   Oid              `json:"spcowner"`   // spcowner
-	Spcacl     []NullAclitem    `json:"spcacl"`     // spcacl
-	Spcoptions []sql.NullString `json:"spcoptions"` // spcoptions
+	Tableoid   pgtypes.Oid           `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid           `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid           `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid           `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid           `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid           `json:"ctid"`       // ctid
+	Oid        pgtypes.Oid           `json:"oid"`        // oid
+	Spcname    string                `json:"spcname"`    // spcname
+	Spcowner   pgtypes.Oid           `json:"spcowner"`   // spcowner
+	Spcacl     []pgtypes.NullAclitem `json:"spcacl"`     // spcacl
+	Spcoptions []sql.NullString      `json:"spcoptions"` // spcoptions
 }
 
 // PgTimezoneAbbrev represents a row from 'pg_catalog.pg_timezone_abbrevs'.
@@ -2082,171 +2082,171 @@ type PgTimezoneName struct {
 
 // PgTransform represents a row from 'pg_catalog.pg_transform'.
 type PgTransform struct {
-	Tableoid   Oid     `json:"tableoid"`   // tableoid
-	Cmax       Cid     `json:"cmax"`       // cmax
-	Xmax       Xid     `json:"xmax"`       // xmax
-	Cmin       Cid     `json:"cmin"`       // cmin
-	Xmin       Xid     `json:"xmin"`       // xmin
-	Ctid       Tid     `json:"ctid"`       // ctid
-	Oid        Oid     `json:"oid"`        // oid
-	Trftype    Oid     `json:"trftype"`    // trftype
-	Trflang    Oid     `json:"trflang"`    // trflang
-	Trffromsql Regproc `json:"trffromsql"` // trffromsql
-	Trftosql   Regproc `json:"trftosql"`   // trftosql
+	Tableoid   pgtypes.Oid     `json:"tableoid"`   // tableoid
+	Cmax       pgtypes.Cid     `json:"cmax"`       // cmax
+	Xmax       pgtypes.Xid     `json:"xmax"`       // xmax
+	Cmin       pgtypes.Cid     `json:"cmin"`       // cmin
+	Xmin       pgtypes.Xid     `json:"xmin"`       // xmin
+	Ctid       pgtypes.Tid     `json:"ctid"`       // ctid
+	Oid        pgtypes.Oid     `json:"oid"`        // oid
+	Trftype    pgtypes.Oid     `json:"trftype"`    // trftype
+	Trflang    pgtypes.Oid     `json:"trflang"`    // trflang
+	Trffromsql pgtypes.Regproc `json:"trffromsql"` // trffromsql
+	Trftosql   pgtypes.Regproc `json:"trftosql"`   // trftosql
 }
 
 // PgTrigger represents a row from 'pg_catalog.pg_trigger'.
 type PgTrigger struct {
-	Tableoid       Oid            `json:"tableoid"`       // tableoid
-	Cmax           Cid            `json:"cmax"`           // cmax
-	Xmax           Xid            `json:"xmax"`           // xmax
-	Cmin           Cid            `json:"cmin"`           // cmin
-	Xmin           Xid            `json:"xmin"`           // xmin
-	Ctid           Tid            `json:"ctid"`           // ctid
-	Oid            Oid            `json:"oid"`            // oid
-	Tgrelid        Oid            `json:"tgrelid"`        // tgrelid
-	Tgparentid     Oid            `json:"tgparentid"`     // tgparentid
-	Tgname         string         `json:"tgname"`         // tgname
-	Tgfoid         Oid            `json:"tgfoid"`         // tgfoid
-	Tgtype         int16          `json:"tgtype"`         // tgtype
-	Tgenabled      Char           `json:"tgenabled"`      // tgenabled
-	Tgisinternal   bool           `json:"tgisinternal"`   // tgisinternal
-	Tgconstrrelid  Oid            `json:"tgconstrrelid"`  // tgconstrrelid
-	Tgconstrindid  Oid            `json:"tgconstrindid"`  // tgconstrindid
-	Tgconstraint   Oid            `json:"tgconstraint"`   // tgconstraint
-	Tgdeferrable   bool           `json:"tgdeferrable"`   // tgdeferrable
-	Tginitdeferred bool           `json:"tginitdeferred"` // tginitdeferred
-	Tgnargs        int16          `json:"tgnargs"`        // tgnargs
-	Tgattr         Int2vector     `json:"tgattr"`         // tgattr
-	Tgargs         []byte         `json:"tgargs"`         // tgargs
-	Tgqual         NullPgNodeTree `json:"tgqual"`         // tgqual
-	Tgoldtable     sql.NullString `json:"tgoldtable"`     // tgoldtable
-	Tgnewtable     sql.NullString `json:"tgnewtable"`     // tgnewtable
+	Tableoid       pgtypes.Oid            `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid            `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid            `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid            `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid            `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid            `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid            `json:"oid"`            // oid
+	Tgrelid        pgtypes.Oid            `json:"tgrelid"`        // tgrelid
+	Tgparentid     pgtypes.Oid            `json:"tgparentid"`     // tgparentid
+	Tgname         string                 `json:"tgname"`         // tgname
+	Tgfoid         pgtypes.Oid            `json:"tgfoid"`         // tgfoid
+	Tgtype         int16                  `json:"tgtype"`         // tgtype
+	Tgenabled      pgtypes.Char           `json:"tgenabled"`      // tgenabled
+	Tgisinternal   bool                   `json:"tgisinternal"`   // tgisinternal
+	Tgconstrrelid  pgtypes.Oid            `json:"tgconstrrelid"`  // tgconstrrelid
+	Tgconstrindid  pgtypes.Oid            `json:"tgconstrindid"`  // tgconstrindid
+	Tgconstraint   pgtypes.Oid            `json:"tgconstraint"`   // tgconstraint
+	Tgdeferrable   bool                   `json:"tgdeferrable"`   // tgdeferrable
+	Tginitdeferred bool                   `json:"tginitdeferred"` // tginitdeferred
+	Tgnargs        int16                  `json:"tgnargs"`        // tgnargs
+	Tgattr         pgtypes.Int2vector     `json:"tgattr"`         // tgattr
+	Tgargs         []byte                 `json:"tgargs"`         // tgargs
+	Tgqual         pgtypes.NullPgNodeTree `json:"tgqual"`         // tgqual
+	Tgoldtable     sql.NullString         `json:"tgoldtable"`     // tgoldtable
+	Tgnewtable     sql.NullString         `json:"tgnewtable"`     // tgnewtable
 }
 
 // PgTsConfig represents a row from 'pg_catalog.pg_ts_config'.
 type PgTsConfig struct {
-	Tableoid     Oid    `json:"tableoid"`     // tableoid
-	Cmax         Cid    `json:"cmax"`         // cmax
-	Xmax         Xid    `json:"xmax"`         // xmax
-	Cmin         Cid    `json:"cmin"`         // cmin
-	Xmin         Xid    `json:"xmin"`         // xmin
-	Ctid         Tid    `json:"ctid"`         // ctid
-	Oid          Oid    `json:"oid"`          // oid
-	Cfgname      string `json:"cfgname"`      // cfgname
-	Cfgnamespace Oid    `json:"cfgnamespace"` // cfgnamespace
-	Cfgowner     Oid    `json:"cfgowner"`     // cfgowner
-	Cfgparser    Oid    `json:"cfgparser"`    // cfgparser
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid `json:"oid"`          // oid
+	Cfgname      string      `json:"cfgname"`      // cfgname
+	Cfgnamespace pgtypes.Oid `json:"cfgnamespace"` // cfgnamespace
+	Cfgowner     pgtypes.Oid `json:"cfgowner"`     // cfgowner
+	Cfgparser    pgtypes.Oid `json:"cfgparser"`    // cfgparser
 }
 
 // PgTsConfigMap represents a row from 'pg_catalog.pg_ts_config_map'.
 type PgTsConfigMap struct {
-	Tableoid     Oid `json:"tableoid"`     // tableoid
-	Cmax         Cid `json:"cmax"`         // cmax
-	Xmax         Xid `json:"xmax"`         // xmax
-	Cmin         Cid `json:"cmin"`         // cmin
-	Xmin         Xid `json:"xmin"`         // xmin
-	Ctid         Tid `json:"ctid"`         // ctid
-	Mapcfg       Oid `json:"mapcfg"`       // mapcfg
-	Maptokentype int `json:"maptokentype"` // maptokentype
-	Mapseqno     int `json:"mapseqno"`     // mapseqno
-	Mapdict      Oid `json:"mapdict"`      // mapdict
+	Tableoid     pgtypes.Oid `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid `json:"ctid"`         // ctid
+	Mapcfg       pgtypes.Oid `json:"mapcfg"`       // mapcfg
+	Maptokentype int         `json:"maptokentype"` // maptokentype
+	Mapseqno     int         `json:"mapseqno"`     // mapseqno
+	Mapdict      pgtypes.Oid `json:"mapdict"`      // mapdict
 }
 
 // PgTsDict represents a row from 'pg_catalog.pg_ts_dict'.
 type PgTsDict struct {
-	Tableoid       Oid            `json:"tableoid"`       // tableoid
-	Cmax           Cid            `json:"cmax"`           // cmax
-	Xmax           Xid            `json:"xmax"`           // xmax
-	Cmin           Cid            `json:"cmin"`           // cmin
-	Xmin           Xid            `json:"xmin"`           // xmin
-	Ctid           Tid            `json:"ctid"`           // ctid
-	Oid            Oid            `json:"oid"`            // oid
+	Tableoid       pgtypes.Oid    `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid    `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid    `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid    `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid    `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid    `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid    `json:"oid"`            // oid
 	Dictname       string         `json:"dictname"`       // dictname
-	Dictnamespace  Oid            `json:"dictnamespace"`  // dictnamespace
-	Dictowner      Oid            `json:"dictowner"`      // dictowner
-	Dicttemplate   Oid            `json:"dicttemplate"`   // dicttemplate
+	Dictnamespace  pgtypes.Oid    `json:"dictnamespace"`  // dictnamespace
+	Dictowner      pgtypes.Oid    `json:"dictowner"`      // dictowner
+	Dicttemplate   pgtypes.Oid    `json:"dicttemplate"`   // dicttemplate
 	Dictinitoption sql.NullString `json:"dictinitoption"` // dictinitoption
 }
 
 // PgTsParser represents a row from 'pg_catalog.pg_ts_parser'.
 type PgTsParser struct {
-	Tableoid     Oid     `json:"tableoid"`     // tableoid
-	Cmax         Cid     `json:"cmax"`         // cmax
-	Xmax         Xid     `json:"xmax"`         // xmax
-	Cmin         Cid     `json:"cmin"`         // cmin
-	Xmin         Xid     `json:"xmin"`         // xmin
-	Ctid         Tid     `json:"ctid"`         // ctid
-	Oid          Oid     `json:"oid"`          // oid
-	Prsname      string  `json:"prsname"`      // prsname
-	Prsnamespace Oid     `json:"prsnamespace"` // prsnamespace
-	Prsstart     Regproc `json:"prsstart"`     // prsstart
-	Prstoken     Regproc `json:"prstoken"`     // prstoken
-	Prsend       Regproc `json:"prsend"`       // prsend
-	Prsheadline  Regproc `json:"prsheadline"`  // prsheadline
-	Prslextype   Regproc `json:"prslextype"`   // prslextype
+	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
+	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
+	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
+	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
+	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
+	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
+	Oid          pgtypes.Oid     `json:"oid"`          // oid
+	Prsname      string          `json:"prsname"`      // prsname
+	Prsnamespace pgtypes.Oid     `json:"prsnamespace"` // prsnamespace
+	Prsstart     pgtypes.Regproc `json:"prsstart"`     // prsstart
+	Prstoken     pgtypes.Regproc `json:"prstoken"`     // prstoken
+	Prsend       pgtypes.Regproc `json:"prsend"`       // prsend
+	Prsheadline  pgtypes.Regproc `json:"prsheadline"`  // prsheadline
+	Prslextype   pgtypes.Regproc `json:"prslextype"`   // prslextype
 }
 
 // PgTsTemplate represents a row from 'pg_catalog.pg_ts_template'.
 type PgTsTemplate struct {
-	Tableoid      Oid     `json:"tableoid"`      // tableoid
-	Cmax          Cid     `json:"cmax"`          // cmax
-	Xmax          Xid     `json:"xmax"`          // xmax
-	Cmin          Cid     `json:"cmin"`          // cmin
-	Xmin          Xid     `json:"xmin"`          // xmin
-	Ctid          Tid     `json:"ctid"`          // ctid
-	Oid           Oid     `json:"oid"`           // oid
-	Tmplname      string  `json:"tmplname"`      // tmplname
-	Tmplnamespace Oid     `json:"tmplnamespace"` // tmplnamespace
-	Tmplinit      Regproc `json:"tmplinit"`      // tmplinit
-	Tmpllexize    Regproc `json:"tmpllexize"`    // tmpllexize
+	Tableoid      pgtypes.Oid     `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid     `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid     `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid     `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid     `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid     `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid     `json:"oid"`           // oid
+	Tmplname      string          `json:"tmplname"`      // tmplname
+	Tmplnamespace pgtypes.Oid     `json:"tmplnamespace"` // tmplnamespace
+	Tmplinit      pgtypes.Regproc `json:"tmplinit"`      // tmplinit
+	Tmpllexize    pgtypes.Regproc `json:"tmpllexize"`    // tmpllexize
 }
 
 // PgType represents a row from 'pg_catalog.pg_type'.
 type PgType struct {
-	Tableoid       Oid            `json:"tableoid"`       // tableoid
-	Cmax           Cid            `json:"cmax"`           // cmax
-	Xmax           Xid            `json:"xmax"`           // xmax
-	Cmin           Cid            `json:"cmin"`           // cmin
-	Xmin           Xid            `json:"xmin"`           // xmin
-	Ctid           Tid            `json:"ctid"`           // ctid
-	Oid            Oid            `json:"oid"`            // oid
-	Typname        string         `json:"typname"`        // typname
-	Typnamespace   Oid            `json:"typnamespace"`   // typnamespace
-	Typowner       Oid            `json:"typowner"`       // typowner
-	Typlen         int16          `json:"typlen"`         // typlen
-	Typbyval       bool           `json:"typbyval"`       // typbyval
-	Typtype        Char           `json:"typtype"`        // typtype
-	Typcategory    Char           `json:"typcategory"`    // typcategory
-	Typispreferred bool           `json:"typispreferred"` // typispreferred
-	Typisdefined   bool           `json:"typisdefined"`   // typisdefined
-	Typdelim       Char           `json:"typdelim"`       // typdelim
-	Typrelid       Oid            `json:"typrelid"`       // typrelid
-	Typelem        Oid            `json:"typelem"`        // typelem
-	Typarray       Oid            `json:"typarray"`       // typarray
-	Typinput       Regproc        `json:"typinput"`       // typinput
-	Typoutput      Regproc        `json:"typoutput"`      // typoutput
-	Typreceive     Regproc        `json:"typreceive"`     // typreceive
-	Typsend        Regproc        `json:"typsend"`        // typsend
-	Typmodin       Regproc        `json:"typmodin"`       // typmodin
-	Typmodout      Regproc        `json:"typmodout"`      // typmodout
-	Typanalyze     Regproc        `json:"typanalyze"`     // typanalyze
-	Typalign       Char           `json:"typalign"`       // typalign
-	Typstorage     Char           `json:"typstorage"`     // typstorage
-	Typnotnull     bool           `json:"typnotnull"`     // typnotnull
-	Typbasetype    Oid            `json:"typbasetype"`    // typbasetype
-	Typtypmod      int            `json:"typtypmod"`      // typtypmod
-	Typndims       int            `json:"typndims"`       // typndims
-	Typcollation   Oid            `json:"typcollation"`   // typcollation
-	Typdefaultbin  NullPgNodeTree `json:"typdefaultbin"`  // typdefaultbin
-	Typdefault     sql.NullString `json:"typdefault"`     // typdefault
-	Typacl         []NullAclitem  `json:"typacl"`         // typacl
+	Tableoid       pgtypes.Oid            `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid            `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid            `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid            `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid            `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid            `json:"ctid"`           // ctid
+	Oid            pgtypes.Oid            `json:"oid"`            // oid
+	Typname        string                 `json:"typname"`        // typname
+	Typnamespace   pgtypes.Oid            `json:"typnamespace"`   // typnamespace
+	Typowner       pgtypes.Oid            `json:"typowner"`       // typowner
+	Typlen         int16                  `json:"typlen"`         // typlen
+	Typbyval       bool                   `json:"typbyval"`       // typbyval
+	Typtype        pgtypes.Char           `json:"typtype"`        // typtype
+	Typcategory    pgtypes.Char           `json:"typcategory"`    // typcategory
+	Typispreferred bool                   `json:"typispreferred"` // typispreferred
+	Typisdefined   bool                   `json:"typisdefined"`   // typisdefined
+	Typdelim       pgtypes.Char           `json:"typdelim"`       // typdelim
+	Typrelid       pgtypes.Oid            `json:"typrelid"`       // typrelid
+	Typelem        pgtypes.Oid            `json:"typelem"`        // typelem
+	Typarray       pgtypes.Oid            `json:"typarray"`       // typarray
+	Typinput       pgtypes.Regproc        `json:"typinput"`       // typinput
+	Typoutput      pgtypes.Regproc        `json:"typoutput"`      // typoutput
+	Typreceive     pgtypes.Regproc        `json:"typreceive"`     // typreceive
+	Typsend        pgtypes.Regproc        `json:"typsend"`        // typsend
+	Typmodin       pgtypes.Regproc        `json:"typmodin"`       // typmodin
+	Typmodout      pgtypes.Regproc        `json:"typmodout"`      // typmodout
+	Typanalyze     pgtypes.Regproc        `json:"typanalyze"`     // typanalyze
+	Typalign       pgtypes.Char           `json:"typalign"`       // typalign
+	Typstorage     pgtypes.Char           `json:"typstorage"`     // typstorage
+	Typnotnull     bool                   `json:"typnotnull"`     // typnotnull
+	Typbasetype    pgtypes.Oid            `json:"typbasetype"`    // typbasetype
+	Typtypmod      int                    `json:"typtypmod"`      // typtypmod
+	Typndims       int                    `json:"typndims"`       // typndims
+	Typcollation   pgtypes.Oid            `json:"typcollation"`   // typcollation
+	Typdefaultbin  pgtypes.NullPgNodeTree `json:"typdefaultbin"`  // typdefaultbin
+	Typdefault     sql.NullString         `json:"typdefault"`     // typdefault
+	Typacl         []pgtypes.NullAclitem  `json:"typacl"`         // typacl
 }
 
 // PgUser represents a row from 'pg_catalog.pg_user'.
 type PgUser struct {
 	Usename      sql.NullString   `json:"usename"`      // usename
-	Usesysid     NullOid          `json:"usesysid"`     // usesysid
+	Usesysid     pgtypes.NullOid  `json:"usesysid"`     // usesysid
 	Usecreatedb  sql.NullBool     `json:"usecreatedb"`  // usecreatedb
 	Usesuper     sql.NullBool     `json:"usesuper"`     // usesuper
 	Userepl      sql.NullBool     `json:"userepl"`      // userepl
@@ -2258,24 +2258,24 @@ type PgUser struct {
 
 // PgUserMapping represents a row from 'pg_catalog.pg_user_mapping'.
 type PgUserMapping struct {
-	Tableoid  Oid              `json:"tableoid"`  // tableoid
-	Cmax      Cid              `json:"cmax"`      // cmax
-	Xmax      Xid              `json:"xmax"`      // xmax
-	Cmin      Cid              `json:"cmin"`      // cmin
-	Xmin      Xid              `json:"xmin"`      // xmin
-	Ctid      Tid              `json:"ctid"`      // ctid
-	Oid       Oid              `json:"oid"`       // oid
-	Umuser    Oid              `json:"umuser"`    // umuser
-	Umserver  Oid              `json:"umserver"`  // umserver
+	Tableoid  pgtypes.Oid      `json:"tableoid"`  // tableoid
+	Cmax      pgtypes.Cid      `json:"cmax"`      // cmax
+	Xmax      pgtypes.Xid      `json:"xmax"`      // xmax
+	Cmin      pgtypes.Cid      `json:"cmin"`      // cmin
+	Xmin      pgtypes.Xid      `json:"xmin"`      // xmin
+	Ctid      pgtypes.Tid      `json:"ctid"`      // ctid
+	Oid       pgtypes.Oid      `json:"oid"`       // oid
+	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
+	Umserver  pgtypes.Oid      `json:"umserver"`  // umserver
 	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
 
 // PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
 type PgUserMapping struct {
-	Umid      NullOid          `json:"umid"`      // umid
-	Srvid     NullOid          `json:"srvid"`     // srvid
+	Umid      pgtypes.NullOid  `json:"umid"`      // umid
+	Srvid     pgtypes.NullOid  `json:"srvid"`     // srvid
 	Srvname   sql.NullString   `json:"srvname"`   // srvname
-	Umuser    NullOid          `json:"umuser"`    // umuser
+	Umuser    pgtypes.NullOid  `json:"umuser"`    // umuser
 	Usename   sql.NullString   `json:"usename"`   // usename
 	Umoptions []sql.NullString `json:"umoptions"` // umoptions
 }
@@ -4698,7 +4698,7 @@ func Aclexplode(ctx context.Context, db DB, acl []pgtypes.Aclitem) (pgtypes.Oid,
 	var isGrantable bool
 	logf(sqlstr, acl)
 	if err := db.QueryRowContext(ctx, sqlstr, acl).Scan(&grantor, &grantee, &privilegeType, &isGrantable); err != nil {
-		return Oid{}, Oid{}, "", false, logerror(err)
+		return pgtypes.Oid{}, pgtypes.Oid{}, "", false, logerror(err)
 	}
 	return grantor, grantee, privilegeType, isGrantable, nil
 }
@@ -4867,7 +4867,7 @@ func AnyarrayRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Anya
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -4893,7 +4893,7 @@ func AnycompatiblearrayRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pg
 	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anycompatiblearray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -4997,7 +4997,7 @@ func ArrayAggArrayFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pg
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5010,7 +5010,7 @@ func ArrayAggArrayTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5023,7 +5023,7 @@ func ArrayAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5036,7 +5036,7 @@ func ArrayAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5049,7 +5049,7 @@ func ArrayAppend(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Any
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5062,7 +5062,7 @@ func ArrayCat(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (pgtypes.Anya
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5101,7 +5101,7 @@ func ArrayFillByAnyelementAndInteger(ctx context.Context, db DB, p0 pgtypes.Anye
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5114,7 +5114,7 @@ func ArrayFillByAnyelementIntegerAndInteger(ctx context.Context, db DB, p0 pgtyp
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5153,7 +5153,7 @@ func ArrayLarger(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (pgtypes.A
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5283,7 +5283,7 @@ func ArrayPrepend(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5296,7 +5296,7 @@ func ArrayRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, 
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5309,7 +5309,7 @@ func ArrayRemove(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Any
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5322,7 +5322,7 @@ func ArrayReplace(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1, p2 pgtype
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5348,7 +5348,7 @@ func ArraySmaller(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (pgtypes.
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5413,7 +5413,7 @@ func ArrayToTsvector(ctx context.Context, db DB, p0 StringSlice) (pgtypes.Tsvect
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5439,7 +5439,7 @@ func ArrayUnnestSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5634,7 +5634,7 @@ func Bernoulli(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.TsmHand
 	var r0 pgtypes.TsmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return TsmHandler{}, logerror(err)
+		return pgtypes.TsmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6126,7 +6126,7 @@ func BoolAccum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 bool) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6139,7 +6139,7 @@ func BoolAccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 bool) (pgt
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6308,7 +6308,7 @@ func BoundBox(ctx context.Context, db DB, p0, p1 pgtypes.Box) (pgtypes.Box, erro
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6321,7 +6321,7 @@ func BoxByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtyp
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6334,7 +6334,7 @@ func BoxByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Box, 
 	var r0 pgtypes.Box
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6347,7 +6347,7 @@ func BoxByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Box, er
 	var r0 pgtypes.Box
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6360,7 +6360,7 @@ func BoxByPoint(ctx context.Context, db DB, p0 pgtypes.Point) (pgtypes.Box, erro
 	var r0 pgtypes.Box
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6399,7 +6399,7 @@ func BoxAdd(ctx context.Context, db DB, p0 pgtypes.Box, p1 pgtypes.Point) (pgtyp
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6438,7 +6438,7 @@ func BoxCenter(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Point, error
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6503,7 +6503,7 @@ func BoxDiv(ctx context.Context, db DB, p0 pgtypes.Box, p1 pgtypes.Point) (pgtyp
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6555,7 +6555,7 @@ func BoxIntersect(ctx context.Context, db DB, p0, p1 pgtypes.Box) (pgtypes.Box, 
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6607,7 +6607,7 @@ func BoxMul(ctx context.Context, db DB, p0 pgtypes.Box, p1 pgtypes.Point) (pgtyp
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6685,7 +6685,7 @@ func BoxRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Box, erro
 	var r0 pgtypes.Box
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -6737,7 +6737,7 @@ func BoxSub(ctx context.Context, db DB, p0 pgtypes.Box, p1 pgtypes.Point) (pgtyp
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -7149,7 +7149,7 @@ func BrinInclusionOpcinfo(ctx context.Context, db DB, p0 pgtypes.Internal) (pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -7201,7 +7201,7 @@ func BrinMinmaxOpcinfo(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -7253,7 +7253,7 @@ func Brinhandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Index
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -7429,7 +7429,7 @@ func Bthandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.IndexAm
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -7842,7 +7842,7 @@ func ByteaStringAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8414,7 +8414,7 @@ func CenterByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Point, err
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8427,7 +8427,7 @@ func CenterByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Poin
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8440,7 +8440,7 @@ func CharByInteger(ctx context.Context, db DB, p0 int) (pgtypes.Char, error) {
 	var r0 pgtypes.Char
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8453,7 +8453,7 @@ func CharByText(ctx context.Context, db DB, p0 string) (pgtypes.Char, error) {
 	var r0 pgtypes.Char
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8596,7 +8596,7 @@ func Charrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Char, er
 	var r0 pgtypes.Char
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8648,7 +8648,7 @@ func Cidr(ctx context.Context, db DB, p0 string) (pgtypes.Cidr, error) {
 	var r0 pgtypes.Cidr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
+		return pgtypes.Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8661,7 +8661,7 @@ func CidrRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Cidr, er
 	var r0 pgtypes.Cidr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
+		return pgtypes.Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8687,7 +8687,7 @@ func Cidrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Cid, erro
 	var r0 pgtypes.Cid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Cid{}, logerror(err)
+		return pgtypes.Cid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8713,7 +8713,7 @@ func CircleByPointAndDoublePrecision(ctx context.Context, db DB, p0 pgtypes.Poin
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8726,7 +8726,7 @@ func CircleByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Ci
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8739,7 +8739,7 @@ func CircleByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Circle, er
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8765,7 +8765,7 @@ func CircleAddPt(ctx context.Context, db DB, p0 pgtypes.Circle, p1 pgtypes.Point
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8791,7 +8791,7 @@ func CircleCenter(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Point,
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8856,7 +8856,7 @@ func CircleDivPt(ctx context.Context, db DB, p0 pgtypes.Circle, p1 pgtypes.Point
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -8947,7 +8947,7 @@ func CircleMulPt(ctx context.Context, db DB, p0 pgtypes.Circle, p1 pgtypes.Point
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9038,7 +9038,7 @@ func CircleRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Circle
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9090,7 +9090,7 @@ func CircleSubPt(ctx context.Context, db DB, p0 pgtypes.Circle, p1 pgtypes.Point
 	var r0 pgtypes.Circle
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Circle{}, logerror(err)
+		return pgtypes.Circle{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9116,7 +9116,7 @@ func CloseLb(ctx context.Context, db DB, p0 pgtypes.Line, p1 pgtypes.Box) (pgtyp
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9129,7 +9129,7 @@ func CloseLs(ctx context.Context, db DB, p0 pgtypes.Line, p1 pgtypes.Lseg) (pgty
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9142,7 +9142,7 @@ func CloseLseg(ctx context.Context, db DB, p0, p1 pgtypes.Lseg) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9155,7 +9155,7 @@ func ClosePb(ctx context.Context, db DB, p0 pgtypes.Point, p1 pgtypes.Box) (pgty
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9168,7 +9168,7 @@ func ClosePl(ctx context.Context, db DB, p0 pgtypes.Point, p1 pgtypes.Line) (pgt
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9181,7 +9181,7 @@ func ClosePs(ctx context.Context, db DB, p0 pgtypes.Point, p1 pgtypes.Lseg) (pgt
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9194,7 +9194,7 @@ func CloseSb(ctx context.Context, db DB, p0 pgtypes.Lseg, p1 pgtypes.Box) (pgtyp
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9207,7 +9207,7 @@ func CloseSl(ctx context.Context, db DB, p0 pgtypes.Lseg, p1 pgtypes.Line) (pgty
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9454,7 +9454,7 @@ func Currtid(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Tid) (pgtype
 	var r0 pgtypes.Tid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tid{}, logerror(err)
+		return pgtypes.Tid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -9467,7 +9467,7 @@ func Currtid2(ctx context.Context, db DB, p0 string, p1 pgtypes.Tid) (pgtypes.Ti
 	var r0 pgtypes.Tid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tid{}, logerror(err)
+		return pgtypes.Tid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10115,7 +10115,7 @@ func DaterangeByDateAndDate(ctx context.Context, db DB, p0, p1 time.Time) (pgtyp
 	var r0 pgtypes.Daterange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Daterange{}, logerror(err)
+		return pgtypes.Daterange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10128,7 +10128,7 @@ func DaterangeByDateDateAndText(ctx context.Context, db DB, p0, p1 time.Time, p2
 	var r0 pgtypes.Daterange
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Daterange{}, logerror(err)
+		return pgtypes.Daterange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10141,7 +10141,7 @@ func DaterangeCanonical(ctx context.Context, db DB, p0 pgtypes.Daterange) (pgtyp
 	var r0 pgtypes.Daterange
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Daterange{}, logerror(err)
+		return pgtypes.Daterange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10245,7 +10245,7 @@ func Diagonal(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Lseg, error) 
 	var r0 pgtypes.Lseg
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Lseg{}, logerror(err)
+		return pgtypes.Lseg{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10271,7 +10271,7 @@ func DispellInit(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Inter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10284,7 +10284,7 @@ func DispellLexize(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal) 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10596,7 +10596,7 @@ func DomainRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid,
 	var r0 pgtypes.Any
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Any{}, logerror(err)
+		return pgtypes.Any{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10635,7 +10635,7 @@ func DsimpleInit(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Inter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10648,7 +10648,7 @@ func DsimpleLexize(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal) 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10661,7 +10661,7 @@ func DsnowballInit(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Int
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10674,7 +10674,7 @@ func DsnowballLexize(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10700,7 +10700,7 @@ func DsynonymInit(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Inte
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10713,7 +10713,7 @@ func DsynonymLexize(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal)
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10791,7 +10791,7 @@ func EnumFirst(ctx context.Context, db DB, p0 pgtypes.Anyenum) (pgtypes.Anyenum,
 	var r0 pgtypes.Anyenum
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyenum{}, logerror(err)
+		return pgtypes.Anyenum{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10830,7 +10830,7 @@ func EnumLarger(ctx context.Context, db DB, p0, p1 pgtypes.Anyenum) (pgtypes.Any
 	var r0 pgtypes.Anyenum
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyenum{}, logerror(err)
+		return pgtypes.Anyenum{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10843,7 +10843,7 @@ func EnumLast(ctx context.Context, db DB, p0 pgtypes.Anyenum) (pgtypes.Anyenum, 
 	var r0 pgtypes.Anyenum
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyenum{}, logerror(err)
+		return pgtypes.Anyenum{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10895,7 +10895,7 @@ func EnumRangeByAnyenumAndAnyenum(ctx context.Context, db DB, p0, p1 pgtypes.Any
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10908,7 +10908,7 @@ func EnumRangeByAnyenum(ctx context.Context, db DB, p0 pgtypes.Anyenum) (pgtypes
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10921,7 +10921,7 @@ func EnumRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid) (
 	var r0 pgtypes.Anyenum
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyenum{}, logerror(err)
+		return pgtypes.Anyenum{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10947,7 +10947,7 @@ func EnumSmaller(ctx context.Context, db DB, p0, p1 pgtypes.Anyenum) (pgtypes.An
 	var r0 pgtypes.Anyenum
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyenum{}, logerror(err)
+		return pgtypes.Anyenum{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12590,7 +12590,7 @@ func GenerateSeriesInt4Support(ctx context.Context, db DB, p0 pgtypes.Internal) 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12603,7 +12603,7 @@ func GenerateSeriesInt8Support(ctx context.Context, db DB, p0 pgtypes.Internal) 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12681,7 +12681,7 @@ func GetCurrentTsConfig(ctx context.Context, db DB) (pgtypes.Regconfig, error) {
 	var r0 pgtypes.Regconfig
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Regconfig{}, logerror(err)
+		return pgtypes.Regconfig{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12798,7 +12798,7 @@ func GinExtractJsonb(ctx context.Context, db DB, p0 []byte, p1, p2 pgtypes.Inter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12811,7 +12811,7 @@ func GinExtractJsonbPath(ctx context.Context, db DB, p0 []byte, p1, p2 pgtypes.I
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12824,7 +12824,7 @@ func GinExtractJsonbQuery(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Inte
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12837,7 +12837,7 @@ func GinExtractJsonbQueryPath(ctx context.Context, db DB, p0 []byte, p1 pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12850,7 +12850,7 @@ func GinExtractTsqueryByTsqueryInternalSmallintInternalAndInternal(ctx context.C
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12863,7 +12863,7 @@ func GinExtractTsqueryByTsvectorInternalSmallintInternalInternalInternalAndInter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12876,7 +12876,7 @@ func GinExtractTsqueryByTsqueryInternalSmallintInternalInternalInternalAndIntern
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12889,7 +12889,7 @@ func GinExtractTsvectorByTsvectorAndInternal(ctx context.Context, db DB, p0 pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12902,7 +12902,7 @@ func GinExtractTsvectorByTsvectorInternalAndInternal(ctx context.Context, db DB,
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12915,7 +12915,7 @@ func GinTriconsistentJsonb(ctx context.Context, db DB, p0 pgtypes.Internal, p1 i
 	var r0 pgtypes.Char
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12928,7 +12928,7 @@ func GinTriconsistentJsonbPath(ctx context.Context, db DB, p0 pgtypes.Internal, 
 	var r0 pgtypes.Char
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -12980,7 +12980,7 @@ func GinTsqueryTriconsistent(ctx context.Context, db DB, p0 pgtypes.Internal, p1
 	var r0 pgtypes.Char
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13006,7 +13006,7 @@ func GinarrayextractByAnyarrayInternalAndInternal(ctx context.Context, db DB, p0
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13019,7 +13019,7 @@ func GinarrayextractByAnyarrayAndInternal(ctx context.Context, db DB, p0 pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13032,7 +13032,7 @@ func Ginarraytriconsistent(ctx context.Context, db DB, p0 pgtypes.Internal, p1 i
 	var r0 pgtypes.Char
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Char{}, logerror(err)
+		return pgtypes.Char{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13045,7 +13045,7 @@ func Ginhandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.IndexA
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13058,7 +13058,7 @@ func Ginqueryarrayextract(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3, p4, p5, p6)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13097,7 +13097,7 @@ func GistBoxPenalty(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13110,7 +13110,7 @@ func GistBoxPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13123,7 +13123,7 @@ func GistBoxSame(ctx context.Context, db DB, p0, p1 pgtypes.Box, p2 pgtypes.Inte
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13136,7 +13136,7 @@ func GistBoxUnion(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Box
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13149,7 +13149,7 @@ func GistCircleCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13188,7 +13188,7 @@ func GistPointCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13227,7 +13227,7 @@ func GistPointFetch(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.In
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13240,7 +13240,7 @@ func GistPolyCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13279,7 +13279,7 @@ func Gisthandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Index
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13292,7 +13292,7 @@ func GtsqueryCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13331,7 +13331,7 @@ func GtsqueryPenalty(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (p
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13344,7 +13344,7 @@ func GtsqueryPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgt
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13357,7 +13357,7 @@ func GtsquerySame(ctx context.Context, db DB, p0, p1 int64, p2 pgtypes.Internal)
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13383,7 +13383,7 @@ func GtsvectorCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13422,7 +13422,7 @@ func GtsvectorDecompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtyp
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13446,7 +13446,7 @@ func GtsvectorPenalty(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13459,7 +13459,7 @@ func GtsvectorPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13472,7 +13472,7 @@ func GtsvectorSame(ctx context.Context, db DB, p0, p1 pgtypes.Gtsvector, p2 pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -13485,7 +13485,7 @@ func GtsvectorUnion(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Gtsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Gtsvector{}, logerror(err)
+		return pgtypes.Gtsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -14746,7 +14746,7 @@ func Hashhandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Index
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15071,7 +15071,7 @@ func HeapTableamHandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtype
 	var r0 pgtypes.TableAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return TableAmHandler{}, logerror(err)
+		return pgtypes.TableAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15461,7 +15461,7 @@ func InetGistCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15487,7 +15487,7 @@ func InetGistFetch(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Int
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15500,7 +15500,7 @@ func InetGistPenalty(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (p
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15513,7 +15513,7 @@ func InetGistPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgt
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15526,7 +15526,7 @@ func InetGistSame(ctx context.Context, db DB, p0, p1 string, p2 pgtypes.Internal
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -15552,7 +15552,7 @@ func InetMerge(ctx context.Context, db DB, p0, p1 string) (pgtypes.Cidr, error) 
 	var r0 pgtypes.Cidr
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
+		return pgtypes.Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -16116,7 +16116,7 @@ func Int2Accum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16) (pgtyp
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -16129,7 +16129,7 @@ func Int2AccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int16) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -16506,7 +16506,7 @@ func Int2vectorrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.In
 	var r0 pgtypes.Int2vector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Int2vector{}, logerror(err)
+		return pgtypes.Int2vector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -16922,7 +16922,7 @@ func Int4Accum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -16935,7 +16935,7 @@ func Int4AccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int) (pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17234,7 +17234,7 @@ func Int4rangeByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) (pgtyp
 	var r0 pgtypes.Int4range
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Int4range{}, logerror(err)
+		return pgtypes.Int4range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17247,7 +17247,7 @@ func Int4rangeByIntegerIntegerAndText(ctx context.Context, db DB, p0, p1 int, p2
 	var r0 pgtypes.Int4range
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Int4range{}, logerror(err)
+		return pgtypes.Int4range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17260,7 +17260,7 @@ func Int4rangeCanonical(ctx context.Context, db DB, p0 pgtypes.Int4range) (pgtyp
 	var r0 pgtypes.Int4range
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Int4range{}, logerror(err)
+		return pgtypes.Int4range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17754,7 +17754,7 @@ func Int8Accum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int64) (pgtyp
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17767,7 +17767,7 @@ func Int8AccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int64) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17793,7 +17793,7 @@ func Int8AvgAccum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int64) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17806,7 +17806,7 @@ func Int8AvgAccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int64) 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17819,7 +17819,7 @@ func Int8AvgCombine(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -17832,7 +17832,7 @@ func Int8AvgDeserialize(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Intern
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -18170,7 +18170,7 @@ func Int8rangeByBigintAndBigint(ctx context.Context, db DB, p0, p1 int64) (pgtyp
 	var r0 pgtypes.Int8range
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Int8range{}, logerror(err)
+		return pgtypes.Int8range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -18183,7 +18183,7 @@ func Int8rangeByBigintBigintAndText(ctx context.Context, db DB, p0, p1 int64, p2
 	var r0 pgtypes.Int8range
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Int8range{}, logerror(err)
+		return pgtypes.Int8range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -18196,7 +18196,7 @@ func Int8rangeCanonical(ctx context.Context, db DB, p0 pgtypes.Int8range) (pgtyp
 	var r0 pgtypes.Int8range
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Int8range{}, logerror(err)
+		return pgtypes.Int8range{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -18742,7 +18742,7 @@ func IntervalSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.I
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19094,7 +19094,7 @@ func JSONAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19265,7 +19265,7 @@ func JSONObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19317,7 +19317,7 @@ func JSONPopulateRecord(ctx context.Context, db DB, base pgtypes.Anyelement, fro
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, base, fromJSON, useJSONAsText)
 	if err := db.QueryRowContext(ctx, sqlstr, base, fromJSON, useJSONAsText).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19330,7 +19330,7 @@ func JSONPopulateRecordset(ctx context.Context, db DB, base pgtypes.Anyelement, 
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, base, fromJSON, useJSONAsText)
 	if err := db.QueryRowContext(ctx, sqlstr, base, fromJSON, useJSONAsText).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19382,7 +19382,7 @@ func JSONToRecord(ctx context.Context, db DB, p0 []byte) (pgtypes.Record, error)
 	var r0 pgtypes.Record
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Record{}, logerror(err)
+		return pgtypes.Record{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19395,7 +19395,7 @@ func JSONToRecordset(ctx context.Context, db DB, p0 []byte) (pgtypes.Record, err
 	var r0 pgtypes.Record
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Record{}, logerror(err)
+		return pgtypes.Record{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19408,7 +19408,7 @@ func JSONToTsvectorByJSONAndJsonb(ctx context.Context, db DB, p0, p1 []byte) (pg
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19421,7 +19421,7 @@ func JSONToTsvectorByRegconfigJSONAndJsonb(ctx context.Context, db DB, p0 pgtype
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19471,7 +19471,7 @@ func JsonbAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -19889,7 +19889,7 @@ func JsonbObjectAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, 
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20097,7 +20097,7 @@ func JsonbPopulateRecord(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 [
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20110,7 +20110,7 @@ func JsonbPopulateRecordset(ctx context.Context, db DB, p0 pgtypes.Anyelement, p
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20201,7 +20201,7 @@ func JsonbToRecord(ctx context.Context, db DB, p0 []byte) (pgtypes.Record, error
 	var r0 pgtypes.Record
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Record{}, logerror(err)
+		return pgtypes.Record{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20214,7 +20214,7 @@ func JsonbToRecordset(ctx context.Context, db DB, p0 []byte) (pgtypes.Record, er
 	var r0 pgtypes.Record
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Record{}, logerror(err)
+		return pgtypes.Record{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20227,7 +20227,7 @@ func JsonbToTsvectorByJsonbAndJsonb(ctx context.Context, db DB, p0, p1 []byte) (
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20240,7 +20240,7 @@ func JsonbToTsvectorByRegconfigJsonbAndJsonb(ctx context.Context, db DB, p0 pgty
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20266,7 +20266,7 @@ func JsonpathRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Json
 	var r0 pgtypes.Jsonpath
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Jsonpath{}, logerror(err)
+		return pgtypes.Jsonpath{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20712,7 +20712,7 @@ func Line(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Line, error
 	var r0 pgtypes.Line
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Line{}, logerror(err)
+		return pgtypes.Line{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20764,7 +20764,7 @@ func LineInterpt(ctx context.Context, db DB, p0, p1 pgtypes.Line) (pgtypes.Point
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20816,7 +20816,7 @@ func LineRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Line, er
 	var r0 pgtypes.Line
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Line{}, logerror(err)
+		return pgtypes.Line{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20894,7 +20894,7 @@ func LoCreat(ctx context.Context, db DB, p0 int) (pgtypes.Oid, error) {
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20907,7 +20907,7 @@ func LoCreate(ctx context.Context, db DB, p0 pgtypes.Oid) (pgtypes.Oid, error) {
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20933,7 +20933,7 @@ func LoFromBytea(ctx context.Context, db DB, p0 pgtypes.Oid, p1 []byte) (pgtypes
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20972,7 +20972,7 @@ func LoImportByText(ctx context.Context, db DB, p0 string) (pgtypes.Oid, error) 
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -20985,7 +20985,7 @@ func LoImportByTextAndOid(ctx context.Context, db DB, p0 string, p1 pgtypes.Oid)
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21191,7 +21191,7 @@ func LowerByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (pgtypes.A
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21282,7 +21282,7 @@ func LsegByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Lseg, error)
 	var r0 pgtypes.Lseg
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Lseg{}, logerror(err)
+		return pgtypes.Lseg{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21295,7 +21295,7 @@ func LsegByPointAndPoint(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgty
 	var r0 pgtypes.Lseg
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Lseg{}, logerror(err)
+		return pgtypes.Lseg{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21308,7 +21308,7 @@ func LsegCenter(ctx context.Context, db DB, p0 pgtypes.Lseg) (pgtypes.Point, err
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21386,7 +21386,7 @@ func LsegInterpt(ctx context.Context, db DB, p0, p1 pgtypes.Lseg) (pgtypes.Point
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21490,7 +21490,7 @@ func LsegRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Lseg, er
 	var r0 pgtypes.Lseg
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Lseg{}, logerror(err)
+		return pgtypes.Lseg{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21555,7 +21555,7 @@ func Macaddr(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.Macaddr, 
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21568,7 +21568,7 @@ func Macaddr8(ctx context.Context, db DB, p0 pgtypes.Macaddr) (pgtypes.Macaddr8,
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21581,7 +21581,7 @@ func Macaddr8And(ctx context.Context, db DB, p0, p1 pgtypes.Macaddr8) (pgtypes.M
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21685,7 +21685,7 @@ func Macaddr8Not(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.Macad
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21698,7 +21698,7 @@ func Macaddr8Or(ctx context.Context, db DB, p0, p1 pgtypes.Macaddr8) (pgtypes.Ma
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21711,7 +21711,7 @@ func Macaddr8Recv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Maca
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21737,7 +21737,7 @@ func Macaddr8Set7bit(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.M
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21750,7 +21750,7 @@ func MacaddrAnd(ctx context.Context, db DB, p0, p1 pgtypes.Macaddr) (pgtypes.Mac
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21854,7 +21854,7 @@ func MacaddrNot(ctx context.Context, db DB, p0 pgtypes.Macaddr) (pgtypes.Macaddr
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21867,7 +21867,7 @@ func MacaddrOr(ctx context.Context, db DB, p0, p1 pgtypes.Macaddr) (pgtypes.Maca
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21880,7 +21880,7 @@ func MacaddrRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Macad
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -21995,7 +21995,7 @@ func Makeaclitem(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 string, p3 b
 	var r0 pgtypes.Aclitem
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Aclitem{}, logerror(err)
+		return pgtypes.Aclitem{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -22303,7 +22303,7 @@ func ModeFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anyel
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -22758,7 +22758,7 @@ func Network(ctx context.Context, db DB, p0 string) (pgtypes.Cidr, error) {
 	var r0 pgtypes.Cidr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
+		return pgtypes.Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -22938,7 +22938,7 @@ func NetworkSubsetSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23250,7 +23250,7 @@ func NumericAccum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 float64) (
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23263,7 +23263,7 @@ func NumericAccumInv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 float64
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23302,7 +23302,7 @@ func NumericAvgAccum(ctx context.Context, db DB, p0 pgtypes.Internal, p1 float64
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23315,7 +23315,7 @@ func NumericAvgCombine(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgt
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23328,7 +23328,7 @@ func NumericAvgDeserialize(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Int
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23367,7 +23367,7 @@ func NumericCombine(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23380,7 +23380,7 @@ func NumericDeserialize(ctx context.Context, db DB, p0 []byte, p1 pgtypes.Intern
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23614,7 +23614,7 @@ func NumericPolyCombine(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23627,7 +23627,7 @@ func NumericPolyDeserialize(ctx context.Context, db DB, p0 []byte, p1 pgtypes.In
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23859,7 +23859,7 @@ func NumericSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.In
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23950,7 +23950,7 @@ func NumrangeByNumericAndNumeric(ctx context.Context, db DB, p0, p1 float64) (pg
 	var r0 pgtypes.Numrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Numrange{}, logerror(err)
+		return pgtypes.Numrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -23963,7 +23963,7 @@ func NumrangeByNumericNumericAndText(ctx context.Context, db DB, p0, p1 float64,
 	var r0 pgtypes.Numrange
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Numrange{}, logerror(err)
+		return pgtypes.Numrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24067,7 +24067,7 @@ func Oid(ctx context.Context, db DB, p0 int64) (pgtypes.Oid, error) {
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24119,7 +24119,7 @@ func Oidlarger(ctx context.Context, db DB, p0, p1 pgtypes.Oid) (pgtypes.Oid, err
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24171,7 +24171,7 @@ func Oidrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Oid, erro
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24197,7 +24197,7 @@ func Oidsmaller(ctx context.Context, db DB, p0, p1 pgtypes.Oid) (pgtypes.Oid, er
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24288,7 +24288,7 @@ func Oidvectorrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Oid
 	var r0 pgtypes.Oidvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oidvector{}, logerror(err)
+		return pgtypes.Oidvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24405,7 +24405,7 @@ func OrderedSetTransition(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24678,7 +24678,7 @@ func Path(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Path, error) 
 	var r0 pgtypes.Path
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24691,7 +24691,7 @@ func PathAdd(ctx context.Context, db DB, p0, p1 pgtypes.Path) (pgtypes.Path, err
 	var r0 pgtypes.Path
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24704,7 +24704,7 @@ func PathAddPt(ctx context.Context, db DB, p0 pgtypes.Path, p1 pgtypes.Point) (p
 	var r0 pgtypes.Path
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24717,7 +24717,7 @@ func PathCenter(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Point, err
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24756,7 +24756,7 @@ func PathDivPt(ctx context.Context, db DB, p0 pgtypes.Path, p1 pgtypes.Point) (p
 	var r0 pgtypes.Path
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24795,7 +24795,7 @@ func PathMulPt(ctx context.Context, db DB, p0 pgtypes.Path, p1 pgtypes.Point) (p
 	var r0 pgtypes.Path
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24886,7 +24886,7 @@ func PathRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Path, er
 	var r0 pgtypes.Path
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24912,7 +24912,7 @@ func PathSubPt(ctx context.Context, db DB, p0 pgtypes.Path, p1 pgtypes.Point) (p
 	var r0 pgtypes.Path
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24925,7 +24925,7 @@ func Pclose(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Path, error) {
 	var r0 pgtypes.Path
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24990,7 +24990,7 @@ func PercentileDiscFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p1 flo
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25003,7 +25003,7 @@ func PercentileDiscMultiFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p
 	var r0 pgtypes.Anyarray
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyarray{}, logerror(err)
+		return pgtypes.Anyarray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25389,7 +25389,7 @@ func PgControlCheckpoint(ctx context.Context, db DB) (pgtypes.PgLsn, pgtypes.PgL
 	var checkpointTime time.Time
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&checkpointLsn, &redoLsn, &redoWalFile, &timelineID, &prevTimelineID, &fullPageWrites, &nextXid, &nextOid, &nextMultixactID, &nextMultiOffset, &oldestXid, &oldestXidDbid, &oldestActiveXid, &oldestMultiXid, &oldestMultiDbid, &oldestCommitTsXid, &newestCommitTsXid, &checkpointTime); err != nil {
-		return PgLsn{}, PgLsn{}, "", 0, 0, false, "", Oid{}, Xid{}, Xid{}, Xid{}, Oid{}, Xid{}, Xid{}, Oid{}, Xid{}, Xid{}, time.Time{}, logerror(err)
+		return pgtypes.PgLsn{}, pgtypes.PgLsn{}, "", 0, 0, false, "", pgtypes.Oid{}, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.Oid{}, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.Oid{}, pgtypes.Xid{}, pgtypes.Xid{}, time.Time{}, logerror(err)
 	}
 	return checkpointLsn, redoLsn, redoWalFile, timelineID, prevTimelineID, fullPageWrites, nextXid, nextOid, nextMultixactID, nextMultiOffset, oldestXid, oldestXidDbid, oldestActiveXid, oldestMultiXid, oldestMultiDbid, oldestCommitTsXid, newestCommitTsXid, checkpointTime, nil
 }
@@ -25429,7 +25429,7 @@ func PgControlRecovery(ctx context.Context, db DB) (pgtypes.PgLsn, int, pgtypes.
 	var endOfBackupRecordRequired bool
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&minRecoveryEndLsn, &minRecoveryEndTimeline, &backupStartLsn, &backupEndLsn, &endOfBackupRecordRequired); err != nil {
-		return PgLsn{}, 0, PgLsn{}, PgLsn{}, false, logerror(err)
+		return pgtypes.PgLsn{}, 0, pgtypes.PgLsn{}, pgtypes.PgLsn{}, false, logerror(err)
 	}
 	return minRecoveryEndLsn, minRecoveryEndTimeline, backupStartLsn, backupEndLsn, endOfBackupRecordRequired, nil
 }
@@ -25472,7 +25472,7 @@ func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameTemporaryAndPlugin(ctx 
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName, temporary, plugin)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary, plugin).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25486,7 +25486,7 @@ func PgCopyLogicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx contex
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25500,7 +25500,7 @@ func PgCopyLogicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Context
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25514,7 +25514,7 @@ func PgCopyPhysicalReplicationSlotBySrcSlotNameDstSlotNameAndTemporary(ctx conte
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName, temporary).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25528,7 +25528,7 @@ func PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Contex
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, srcSlotName, dstSlotName)
 	if err := db.QueryRowContext(ctx, sqlstr, srcSlotName, dstSlotName).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25542,7 +25542,7 @@ func PgCreateLogicalReplicationSlot(ctx context.Context, db DB, slotName, plugin
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, slotName, plugin, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, plugin, temporary).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25556,7 +25556,7 @@ func PgCreatePhysicalReplicationSlot(ctx context.Context, db DB, slotName string
 	var lsn pgtypes.PgLsn
 	logf(sqlstr, slotName, immediatelyReserve, temporary)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, immediatelyReserve, temporary).Scan(&slotName, &lsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
 }
@@ -25569,7 +25569,7 @@ func PgCreateRestorePoint(ctx context.Context, db DB, p0 string) (pgtypes.PgLsn,
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25608,7 +25608,7 @@ func PgCurrentSnapshot(ctx context.Context, db DB) (pgtypes.PgSnapshot, error) {
 	var r0 pgtypes.PgSnapshot
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgSnapshot{}, logerror(err)
+		return pgtypes.PgSnapshot{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25621,7 +25621,7 @@ func PgCurrentWalFlushLsn(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25634,7 +25634,7 @@ func PgCurrentWalInsertLsn(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25647,7 +25647,7 @@ func PgCurrentWalLsn(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25660,7 +25660,7 @@ func PgCurrentXactID(ctx context.Context, db DB) (pgtypes.Xid8, error) {
 	var r0 pgtypes.Xid8
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25673,7 +25673,7 @@ func PgCurrentXactIDIfAssigned(ctx context.Context, db DB) (pgtypes.Xid8, error)
 	var r0 pgtypes.Xid8
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25730,7 +25730,7 @@ func PgDdlCommandRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.PgDdlCommand
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgDdlCommand{}, logerror(err)
+		return pgtypes.PgDdlCommand{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25756,7 +25756,7 @@ func PgDependenciesRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtype
 	var r0 pgtypes.PgDependencies
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgDependencies{}, logerror(err)
+		return pgtypes.PgDependencies{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25840,7 +25840,7 @@ func PgEventTriggerDdlCommands(ctx context.Context, db DB) (pgtypes.Oid, pgtypes
 	var command pgtypes.PgDdlCommand
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&classid, &objid, &objsubid, &commandTag, &objectType, &schemaName, &objectIdentity, &inExtension, &command); err != nil {
-		return Oid{}, Oid{}, 0, "", "", "", "", false, PgDdlCommand{}, logerror(err)
+		return pgtypes.Oid{}, pgtypes.Oid{}, 0, "", "", "", "", false, pgtypes.PgDdlCommand{}, logerror(err)
 	}
 	return classid, objid, objsubid, commandTag, objectType, schemaName, objectIdentity, inExtension, command, nil
 }
@@ -25864,7 +25864,7 @@ func PgEventTriggerDroppedObjects(ctx context.Context, db DB) (pgtypes.Oid, pgty
 	var addressArgs StringSlice
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&classid, &objid, &objsubid, &original, &normal, &isTemporary, &objectType, &schemaName, &objectName, &objectIdentity, &addressNames, &addressArgs); err != nil {
-		return Oid{}, Oid{}, 0, false, false, false, "", "", "", "", StringSlice{}, StringSlice{}, logerror(err)
+		return pgtypes.Oid{}, pgtypes.Oid{}, 0, false, false, false, "", "", "", "", StringSlice{}, StringSlice{}, logerror(err)
 	}
 	return classid, objid, objsubid, original, normal, isTemporary, objectType, schemaName, objectName, objectIdentity, addressNames, addressArgs, nil
 }
@@ -25877,7 +25877,7 @@ func PgEventTriggerTableRewriteOid(ctx context.Context, db DB) (pgtypes.Oid, err
 	var oid pgtypes.Oid
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&oid); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return oid, nil
 }
@@ -25942,7 +25942,7 @@ func PgFilenodeRelation(ctx context.Context, db DB, p0, p1 pgtypes.Oid) (pgtypes
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26113,7 +26113,7 @@ func PgGetKeywords(ctx context.Context, db DB) (string, pgtypes.Char, string, er
 	var catdesc string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&word, &catcode, &catdesc); err != nil {
-		return "", Char{}, "", logerror(err)
+		return "", pgtypes.Char{}, "", logerror(err)
 	}
 	return word, catcode, catdesc, nil
 }
@@ -26127,7 +26127,7 @@ func PgGetMultixactMembers(ctx context.Context, db DB, multixid pgtypes.Xid) (pg
 	var mode string
 	logf(sqlstr, multixid)
 	if err := db.QueryRowContext(ctx, sqlstr, multixid).Scan(&xid, &mode); err != nil {
-		return Xid{}, "", logerror(err)
+		return pgtypes.Xid{}, "", logerror(err)
 	}
 	return xid, mode, nil
 }
@@ -26142,7 +26142,7 @@ func PgGetObjectAddress(ctx context.Context, db DB, typ string, objectNames, obj
 	var objsubid int
 	logf(sqlstr, typ, objectNames, objectArgs)
 	if err := db.QueryRowContext(ctx, sqlstr, typ, objectNames, objectArgs).Scan(&classid, &objid, &objsubid); err != nil {
-		return Oid{}, Oid{}, 0, logerror(err)
+		return pgtypes.Oid{}, pgtypes.Oid{}, 0, logerror(err)
 	}
 	return classid, objid, objsubid, nil
 }
@@ -26181,7 +26181,7 @@ func PgGetPublicationTables(ctx context.Context, db DB, pubname string) (pgtypes
 	var relid pgtypes.Oid
 	logf(sqlstr, pubname)
 	if err := db.QueryRowContext(ctx, sqlstr, pubname).Scan(&relid); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return relid, nil
 }
@@ -26194,7 +26194,7 @@ func PgGetReplicaIdentityIndex(ctx context.Context, db DB, p0 pgtypes.Regclass) 
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26219,7 +26219,7 @@ func PgGetReplicationSlots(ctx context.Context, db DB) (string, string, string, 
 	var safeWalSize int64
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&slotName, &plugin, &slotType, &datoid, &temporary, &active, &activePid, &xmin, &catalogXmin, &restartLsn, &confirmedFlushLsn, &walStatus, &safeWalSize); err != nil {
-		return "", "", "", Oid{}, false, false, 0, Xid{}, Xid{}, PgLsn{}, PgLsn{}, "", 0, logerror(err)
+		return "", "", "", pgtypes.Oid{}, false, false, 0, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.PgLsn{}, pgtypes.PgLsn{}, "", 0, logerror(err)
 	}
 	return slotName, plugin, slotType, datoid, temporary, active, activePid, xmin, catalogXmin, restartLsn, confirmedFlushLsn, walStatus, safeWalSize, nil
 }
@@ -26691,7 +26691,7 @@ func PgLastCommittedXact(ctx context.Context, db DB) (pgtypes.Xid, time.Time, er
 	var timestamp time.Time
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&xid, &timestamp); err != nil {
-		return Xid{}, time.Time{}, logerror(err)
+		return pgtypes.Xid{}, time.Time{}, logerror(err)
 	}
 	return xid, timestamp, nil
 }
@@ -26704,7 +26704,7 @@ func PgLastWalReceiveLsn(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26717,7 +26717,7 @@ func PgLastWalReplayLsn(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26770,7 +26770,7 @@ func PgLockStatus(ctx context.Context, db DB) (string, pgtypes.Oid, pgtypes.Oid,
 	var fastpath bool
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&locktype, &database, &relation, &page, &tuple, &virtualxid, &transactionid, &classid, &objid, &objsubid, &virtualtransaction, &pid, &mode, &granted, &fastpath); err != nil {
-		return "", Oid{}, Oid{}, 0, 0, "", Xid{}, Oid{}, Oid{}, 0, "", 0, "", false, false, logerror(err)
+		return "", pgtypes.Oid{}, pgtypes.Oid{}, 0, 0, "", pgtypes.Xid{}, pgtypes.Oid{}, pgtypes.Oid{}, 0, "", 0, "", false, false, logerror(err)
 	}
 	return locktype, database, relation, page, tuple, virtualxid, transactionid, classid, objid, objsubid, virtualtransaction, pid, mode, granted, fastpath, nil
 }
@@ -26783,7 +26783,7 @@ func PgLogicalEmitMessageByBooleanTextAndText(ctx context.Context, db DB, p0 boo
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26796,7 +26796,7 @@ func PgLogicalEmitMessageByBooleanTextAndBytea(ctx context.Context, db DB, p0 bo
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26811,7 +26811,7 @@ func PgLogicalSlotGetBinaryChanges(ctx context.Context, db DB, slotName string, 
 	var data []byte
 	logf(sqlstr, slotName, uptoLsn, uptoNchanges, options)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn, uptoNchanges, options).Scan(&lsn, &xid, &data); err != nil {
-		return PgLsn{}, Xid{}, nil, logerror(err)
+		return pgtypes.PgLsn{}, pgtypes.Xid{}, nil, logerror(err)
 	}
 	return lsn, xid, data, nil
 }
@@ -26826,7 +26826,7 @@ func PgLogicalSlotGetChanges(ctx context.Context, db DB, slotName string, uptoLs
 	var data string
 	logf(sqlstr, slotName, uptoLsn, uptoNchanges, options)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn, uptoNchanges, options).Scan(&lsn, &xid, &data); err != nil {
-		return PgLsn{}, Xid{}, "", logerror(err)
+		return pgtypes.PgLsn{}, pgtypes.Xid{}, "", logerror(err)
 	}
 	return lsn, xid, data, nil
 }
@@ -26841,7 +26841,7 @@ func PgLogicalSlotPeekBinaryChanges(ctx context.Context, db DB, slotName string,
 	var data []byte
 	logf(sqlstr, slotName, uptoLsn, uptoNchanges, options)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn, uptoNchanges, options).Scan(&lsn, &xid, &data); err != nil {
-		return PgLsn{}, Xid{}, nil, logerror(err)
+		return pgtypes.PgLsn{}, pgtypes.Xid{}, nil, logerror(err)
 	}
 	return lsn, xid, data, nil
 }
@@ -26856,7 +26856,7 @@ func PgLogicalSlotPeekChanges(ctx context.Context, db DB, slotName string, uptoL
 	var data string
 	logf(sqlstr, slotName, uptoLsn, uptoNchanges, options)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn, uptoNchanges, options).Scan(&lsn, &xid, &data); err != nil {
-		return PgLsn{}, Xid{}, "", logerror(err)
+		return pgtypes.PgLsn{}, pgtypes.Xid{}, "", logerror(err)
 	}
 	return lsn, xid, data, nil
 }
@@ -27048,7 +27048,7 @@ func PgLsnLarger(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (pgtypes.PgLs
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27113,7 +27113,7 @@ func PgLsnRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.PgLsn, 
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27139,7 +27139,7 @@ func PgLsnSmaller(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (pgtypes.PgL
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27169,7 +27169,7 @@ func PgMcvListRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.PgM
 	var r0 pgtypes.PgMcvList
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgMcvList{}, logerror(err)
+		return pgtypes.PgMcvList{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27195,7 +27195,7 @@ func PgMyTempSchema(ctx context.Context, db DB) (pgtypes.Oid, error) {
 	var r0 pgtypes.Oid
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27208,7 +27208,7 @@ func PgNdistinctRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.P
 	var r0 pgtypes.PgNdistinct
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgNdistinct{}, logerror(err)
+		return pgtypes.PgNdistinct{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27234,7 +27234,7 @@ func PgNextoid(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 string, p2 pg
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27247,7 +27247,7 @@ func PgNodeTreeRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Pg
 	var r0 pgtypes.PgNodeTree
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgNodeTree{}, logerror(err)
+		return pgtypes.PgNodeTree{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27350,7 +27350,7 @@ func PgPartitionAncestors(ctx context.Context, db DB, partitionid pgtypes.Regcla
 	var relid pgtypes.Regclass
 	logf(sqlstr, partitionid)
 	if err := db.QueryRowContext(ctx, sqlstr, partitionid).Scan(&relid); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return relid, nil
 }
@@ -27363,7 +27363,7 @@ func PgPartitionRoot(ctx context.Context, db DB, p0 pgtypes.Regclass) (pgtypes.R
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27379,7 +27379,7 @@ func PgPartitionTree(ctx context.Context, db DB, rootrelid pgtypes.Regclass) (pg
 	var level int
 	logf(sqlstr, rootrelid)
 	if err := db.QueryRowContext(ctx, sqlstr, rootrelid).Scan(&relid, &parentrelid, &isleaf, &level); err != nil {
-		return Regclass{}, Regclass{}, false, 0, logerror(err)
+		return pgtypes.Regclass{}, pgtypes.Regclass{}, false, 0, logerror(err)
 	}
 	return relid, parentrelid, isleaf, level, nil
 }
@@ -27426,7 +27426,7 @@ func PgPreparedXact(ctx context.Context, db DB) (pgtypes.Xid, string, time.Time,
 	var dbid pgtypes.Oid
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&transaction, &gid, &prepared, &ownerid, &dbid); err != nil {
-		return Xid{}, "", time.Time{}, Oid{}, Oid{}, logerror(err)
+		return pgtypes.Xid{}, "", time.Time{}, pgtypes.Oid{}, pgtypes.Oid{}, logerror(err)
 	}
 	return transaction, gid, prepared, ownerid, dbid, nil
 }
@@ -27543,7 +27543,7 @@ func PgRelationFilenode(ctx context.Context, db DB, p0 pgtypes.Regclass) (pgtype
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27645,7 +27645,7 @@ func PgReplicationOriginCreate(ctx context.Context, db DB, p0 string) (pgtypes.O
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27669,7 +27669,7 @@ func PgReplicationOriginOid(ctx context.Context, db DB, p0 string) (pgtypes.Oid,
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27682,7 +27682,7 @@ func PgReplicationOriginProgress(ctx context.Context, db DB, p0 string, p1 bool)
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27708,7 +27708,7 @@ func PgReplicationOriginSessionProgress(ctx context.Context, db DB, p0 bool) (pg
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27766,7 +27766,7 @@ func PgReplicationSlotAdvance(ctx context.Context, db DB, slotName string, uptoL
 	var endLsn pgtypes.PgLsn
 	logf(sqlstr, slotName, uptoLsn)
 	if err := db.QueryRowContext(ctx, sqlstr, slotName, uptoLsn).Scan(&slotName, &endLsn); err != nil {
-		return "", PgLsn{}, logerror(err)
+		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, endLsn, nil
 }
@@ -27837,7 +27837,7 @@ func PgSequenceParameters(ctx context.Context, db DB, sequenceOid pgtypes.Oid) (
 	var dataType pgtypes.Oid
 	logf(sqlstr, sequenceOid)
 	if err := db.QueryRowContext(ctx, sqlstr, sequenceOid).Scan(&startValue, &minimumValue, &maximumValue, &increment, &cycleOption, &cacheSize, &dataType); err != nil {
-		return 0, 0, 0, 0, false, 0, Oid{}, logerror(err)
+		return 0, 0, 0, 0, false, 0, pgtypes.Oid{}, logerror(err)
 	}
 	return startValue, minimumValue, maximumValue, increment, cycleOption, cacheSize, dataType, nil
 }
@@ -27901,7 +27901,7 @@ func PgShowReplicationOriginStatus(ctx context.Context, db DB) (pgtypes.Oid, str
 	var localLsn pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&localID, &externalID, &remoteLsn, &localLsn); err != nil {
-		return Oid{}, "", PgLsn{}, PgLsn{}, logerror(err)
+		return pgtypes.Oid{}, "", pgtypes.PgLsn{}, pgtypes.PgLsn{}, logerror(err)
 	}
 	return localID, externalID, remoteLsn, localLsn, nil
 }
@@ -27986,7 +27986,7 @@ func PgSnapshotRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Pg
 	var r0 pgtypes.PgSnapshot
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return PgSnapshot{}, logerror(err)
+		return pgtypes.PgSnapshot{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28012,7 +28012,7 @@ func PgSnapshotXip(ctx context.Context, db DB, p0 pgtypes.PgSnapshot) (pgtypes.X
 	var r0 pgtypes.Xid8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28025,7 +28025,7 @@ func PgSnapshotXmax(ctx context.Context, db DB, p0 pgtypes.PgSnapshot) (pgtypes.
 	var r0 pgtypes.Xid8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28038,7 +28038,7 @@ func PgSnapshotXmin(ctx context.Context, db DB, p0 pgtypes.PgSnapshot) (pgtypes.
 	var r0 pgtypes.Xid8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28051,7 +28051,7 @@ func PgStartBackup(ctx context.Context, db DB, label string, fast, exclusive boo
 	var r0 pgtypes.PgLsn
 	logf(sqlstr, label, fast, exclusive)
 	if err := db.QueryRowContext(ctx, sqlstr, label, fast, exclusive).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28140,7 +28140,7 @@ func PgStatGetActivity(ctx context.Context, db DB, pid int) (pgtypes.Oid, int, p
 	var leaderPid int
 	logf(sqlstr, pid)
 	if err := db.QueryRowContext(ctx, sqlstr, pid).Scan(&datid, &pid, &usesysid, &applicationName, &state, &query, &waitEventType, &waitEvent, &xactStart, &queryStart, &backendStart, &stateChange, &clientAddr, &clientHostname, &clientPort, &backendXid, &backendXmin, &backendType, &ssl, &sslversion, &sslcipher, &sslbits, &sslcompression, &sslClientDn, &sslClientSerial, &sslIssuerDn, &gssAuth, &gssPrinc, &gssEnc, &leaderPid); err != nil {
-		return Oid{}, 0, Oid{}, "", "", "", "", "", time.Time{}, time.Time{}, time.Time{}, time.Time{}, "", "", 0, Xid{}, Xid{}, "", false, "", "", 0, false, "", 0.0, "", false, "", false, 0, logerror(err)
+		return pgtypes.Oid{}, 0, pgtypes.Oid{}, "", "", "", "", "", time.Time{}, time.Time{}, time.Time{}, time.Time{}, "", "", 0, pgtypes.Xid{}, pgtypes.Xid{}, "", false, "", "", 0, false, "", 0.0, "", false, "", false, 0, logerror(err)
 	}
 	return datid, pid, usesysid, applicationName, state, query, waitEventType, waitEvent, xactStart, queryStart, backendStart, stateChange, clientAddr, clientHostname, clientPort, backendXid, backendXmin, backendType, ssl, sslversion, sslcipher, sslbits, sslcompression, sslClientDn, sslClientSerial, sslIssuerDn, gssAuth, gssPrinc, gssEnc, leaderPid, nil
 }
@@ -28263,7 +28263,7 @@ func PgStatGetBackendDbid(ctx context.Context, db DB, p0 int) (pgtypes.Oid, erro
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -28315,7 +28315,7 @@ func PgStatGetBackendUserid(ctx context.Context, db DB, p0 int) (pgtypes.Oid, er
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29026,7 +29026,7 @@ func PgStatGetProgressInfo(ctx context.Context, db DB, cmdtype string) (int, pgt
 	var param20 int64
 	logf(sqlstr, cmdtype)
 	if err := db.QueryRowContext(ctx, sqlstr, cmdtype).Scan(&pid, &datid, &relid, &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8, &param9, &param10, &param11, &param12, &param13, &param14, &param15, &param16, &param17, &param18, &param19, &param20); err != nil {
-		return 0, Oid{}, Oid{}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, logerror(err)
+		return 0, pgtypes.Oid{}, pgtypes.Oid{}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, logerror(err)
 	}
 	return pid, datid, relid, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17, param18, param19, param20, nil
 }
@@ -29080,7 +29080,7 @@ func PgStatGetSubscription(ctx context.Context, db DB, subid pgtypes.Oid) (pgtyp
 	var latestEndTime time.Time
 	logf(sqlstr, subid)
 	if err := db.QueryRowContext(ctx, sqlstr, subid).Scan(&subid, &relid, &pid, &receivedLsn, &lastMsgSendTime, &lastMsgReceiptTime, &latestEndLsn, &latestEndTime); err != nil {
-		return Oid{}, Oid{}, 0, PgLsn{}, time.Time{}, time.Time{}, PgLsn{}, time.Time{}, logerror(err)
+		return pgtypes.Oid{}, pgtypes.Oid{}, 0, pgtypes.PgLsn{}, time.Time{}, time.Time{}, pgtypes.PgLsn{}, time.Time{}, logerror(err)
 	}
 	return subid, relid, pid, receivedLsn, lastMsgSendTime, lastMsgReceiptTime, latestEndLsn, latestEndTime, nil
 }
@@ -29198,7 +29198,7 @@ func PgStatGetWalReceiver(ctx context.Context, db DB) (int, string, pgtypes.PgLs
 	var conninfo string
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&pid, &status, &receiveStartLsn, &receiveStartTli, &writtenLsn, &flushedLsn, &receivedTli, &lastMsgSendTime, &lastMsgReceiptTime, &latestEndLsn, &latestEndTime, &slotName, &senderHost, &senderPort, &conninfo); err != nil {
-		return 0, "", PgLsn{}, 0, PgLsn{}, PgLsn{}, 0, time.Time{}, time.Time{}, PgLsn{}, time.Time{}, "", "", 0, "", logerror(err)
+		return 0, "", pgtypes.PgLsn{}, 0, pgtypes.PgLsn{}, pgtypes.PgLsn{}, 0, time.Time{}, time.Time{}, pgtypes.PgLsn{}, time.Time{}, "", "", 0, "", logerror(err)
 	}
 	return pid, status, receiveStartLsn, receiveStartTli, writtenLsn, flushedLsn, receivedTli, lastMsgSendTime, lastMsgReceiptTime, latestEndLsn, latestEndTime, slotName, senderHost, senderPort, conninfo, nil
 }
@@ -29222,7 +29222,7 @@ func PgStatGetWalSenders(ctx context.Context, db DB) (int, string, pgtypes.PgLsn
 	var replyTime time.Time
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&pid, &state, &sentLsn, &writeLsn, &flushLsn, &replayLsn, &writeLag, &flushLag, &replayLag, &syncPriority, &syncState, &replyTime); err != nil {
-		return 0, "", PgLsn{}, PgLsn{}, PgLsn{}, PgLsn{}, nil, nil, nil, 0, "", time.Time{}, logerror(err)
+		return 0, "", pgtypes.PgLsn{}, pgtypes.PgLsn{}, pgtypes.PgLsn{}, pgtypes.PgLsn{}, nil, nil, nil, 0, "", time.Time{}, logerror(err)
 	}
 	return pid, state, sentLsn, writeLsn, flushLsn, replayLsn, writeLag, flushLag, replayLag, syncPriority, syncState, replyTime, nil
 }
@@ -29459,7 +29459,7 @@ func PgStopBackup(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29474,7 +29474,7 @@ func PgStopBackupByExclusiveAndWaitForArchive(ctx context.Context, db DB, exclus
 	var spcmapfile string
 	logf(sqlstr, exclusive, waitForArchive)
 	if err := db.QueryRowContext(ctx, sqlstr, exclusive, waitForArchive).Scan(&lsn, &labelfile, &spcmapfile); err != nil {
-		return PgLsn{}, "", "", logerror(err)
+		return pgtypes.PgLsn{}, "", "", logerror(err)
 	}
 	return lsn, labelfile, spcmapfile, nil
 }
@@ -29487,7 +29487,7 @@ func PgSwitchWal(ctx context.Context, db DB) (pgtypes.PgLsn, error) {
 	var r0 pgtypes.PgLsn
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return PgLsn{}, logerror(err)
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29526,7 +29526,7 @@ func PgTablespaceDatabases(ctx context.Context, db DB, p0 pgtypes.Oid) (pgtypes.
 	var r0 pgtypes.Oid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Oid{}, logerror(err)
+		return pgtypes.Oid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29817,7 +29817,7 @@ func PgTypeof(ctx context.Context, db DB, p0 pgtypes.Any) (pgtypes.Regtype, erro
 	var r0 pgtypes.Regtype
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regtype{}, logerror(err)
+		return pgtypes.Regtype{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29931,7 +29931,7 @@ func PhrasetoTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsque
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29944,7 +29944,7 @@ func PhrasetoTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Re
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29970,7 +29970,7 @@ func PlaintoTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Reg
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29983,7 +29983,7 @@ func PlaintoTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsquer
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -29996,7 +29996,7 @@ func PlpgsqlCallHandler(ctx context.Context, db DB) (pgtypes.LanguageHandler, er
 	var r0 pgtypes.LanguageHandler
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return LanguageHandler{}, logerror(err)
+		return pgtypes.LanguageHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30031,7 +30031,7 @@ func PointByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Point
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30044,7 +30044,7 @@ func PointByDoublePrecisionAndDoublePrecision(ctx context.Context, db DB, p0, p1
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30057,7 +30057,7 @@ func PointByLseg(ctx context.Context, db DB, p0 pgtypes.Lseg) (pgtypes.Point, er
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30070,7 +30070,7 @@ func PointByPath(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Point, er
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30083,7 +30083,7 @@ func PointByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Point, erro
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30096,7 +30096,7 @@ func PointByPolygon(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Poi
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30122,7 +30122,7 @@ func PointAdd(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30161,7 +30161,7 @@ func PointDiv(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30213,7 +30213,7 @@ func PointMul(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30239,7 +30239,7 @@ func PointRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30278,7 +30278,7 @@ func PointSub(ctx context.Context, db DB, p0, p1 pgtypes.Point) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30330,7 +30330,7 @@ func PolyCenter(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtypes.Point, 
 	var r0 pgtypes.Point
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Point{}, logerror(err)
+		return pgtypes.Point{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30486,7 +30486,7 @@ func PolyRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Polygon,
 	var r0 pgtypes.Polygon
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Polygon{}, logerror(err)
+		return pgtypes.Polygon{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30538,7 +30538,7 @@ func PolygonByBox(ctx context.Context, db DB, p0 pgtypes.Box) (pgtypes.Polygon, 
 	var r0 pgtypes.Polygon
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Polygon{}, logerror(err)
+		return pgtypes.Polygon{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30551,7 +30551,7 @@ func PolygonByPath(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Polygon
 	var r0 pgtypes.Polygon
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Polygon{}, logerror(err)
+		return pgtypes.Polygon{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30564,7 +30564,7 @@ func PolygonByIntegerAndCircle(ctx context.Context, db DB, p0 int, p1 pgtypes.Ci
 	var r0 pgtypes.Polygon
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Polygon{}, logerror(err)
+		return pgtypes.Polygon{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30577,7 +30577,7 @@ func PolygonByCircle(ctx context.Context, db DB, p0 pgtypes.Circle) (pgtypes.Pol
 	var r0 pgtypes.Polygon
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Polygon{}, logerror(err)
+		return pgtypes.Polygon{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30590,7 +30590,7 @@ func Popen(ctx context.Context, db DB, p0 pgtypes.Path) (pgtypes.Path, error) {
 	var r0 pgtypes.Path
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Path{}, logerror(err)
+		return pgtypes.Path{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30770,7 +30770,7 @@ func PrsdHeadline(ctx context.Context, db DB, p0, p1 pgtypes.Internal, p2 pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30783,7 +30783,7 @@ func PrsdLextype(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Inter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30796,7 +30796,7 @@ func PrsdNexttoken(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (pgt
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -30809,7 +30809,7 @@ func PrsdStart(ctx context.Context, db DB, p0 pgtypes.Internal, p1 int) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31134,7 +31134,7 @@ func RangeGistPenalty(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31147,7 +31147,7 @@ func RangeGistPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pg
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31160,7 +31160,7 @@ func RangeGistSame(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange, p2 pgtyp
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31173,7 +31173,7 @@ func RangeGistUnion(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31199,7 +31199,7 @@ func RangeIntersect(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtype
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31238,7 +31238,7 @@ func RangeMerge(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.An
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31251,7 +31251,7 @@ func RangeMinus(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.An
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31316,7 +31316,7 @@ func RangeRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, 
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31355,7 +31355,7 @@ func RangeUnion(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.An
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Anyrange{}, logerror(err)
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31537,7 +31537,7 @@ func RecordRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid,
 	var r0 pgtypes.Record
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Record{}, logerror(err)
+		return pgtypes.Record{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31563,7 +31563,7 @@ func Regclass(ctx context.Context, db DB, p0 string) (pgtypes.Regclass, error) {
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31576,7 +31576,7 @@ func Regclassrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Regc
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31602,7 +31602,7 @@ func Regcollationrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Regcollation
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regcollation{}, logerror(err)
+		return pgtypes.Regcollation{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31628,7 +31628,7 @@ func Regconfigrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Reg
 	var r0 pgtypes.Regconfig
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regconfig{}, logerror(err)
+		return pgtypes.Regconfig{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31654,7 +31654,7 @@ func Regdictionaryrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	var r0 pgtypes.Regdictionary
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regdictionary{}, logerror(err)
+		return pgtypes.Regdictionary{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31862,7 +31862,7 @@ func Regnamespacerecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Regnamespace
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regnamespace{}, logerror(err)
+		return pgtypes.Regnamespace{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31888,7 +31888,7 @@ func Regoperatorrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.R
 	var r0 pgtypes.Regoperator
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regoperator{}, logerror(err)
+		return pgtypes.Regoperator{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31914,7 +31914,7 @@ func Regoperrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Regop
 	var r0 pgtypes.Regoper
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regoper{}, logerror(err)
+		return pgtypes.Regoper{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31940,7 +31940,7 @@ func Regprocedurerecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Regprocedure
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regprocedure{}, logerror(err)
+		return pgtypes.Regprocedure{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31966,7 +31966,7 @@ func Regprocrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Regpr
 	var r0 pgtypes.Regproc
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regproc{}, logerror(err)
+		return pgtypes.Regproc{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -31992,7 +31992,7 @@ func Regrolerecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Regro
 	var r0 pgtypes.Regrole
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regrole{}, logerror(err)
+		return pgtypes.Regrole{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32018,7 +32018,7 @@ func Regtyperecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Regty
 	var r0 pgtypes.Regtype
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regtype{}, logerror(err)
+		return pgtypes.Regtype{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32083,7 +32083,7 @@ func RiFkeyCascadeDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32096,7 +32096,7 @@ func RiFkeyCascadeUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32109,7 +32109,7 @@ func RiFkeyCheckIns(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32122,7 +32122,7 @@ func RiFkeyCheckUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32135,7 +32135,7 @@ func RiFkeyNoactionDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32148,7 +32148,7 @@ func RiFkeyNoactionUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32161,7 +32161,7 @@ func RiFkeyRestrictDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32174,7 +32174,7 @@ func RiFkeyRestrictUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32187,7 +32187,7 @@ func RiFkeySetdefaultDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32200,7 +32200,7 @@ func RiFkeySetdefaultUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32213,7 +32213,7 @@ func RiFkeySetnullDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32226,7 +32226,7 @@ func RiFkeySetnullUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32629,7 +32629,7 @@ func SetMasklenByCidrAndInteger(ctx context.Context, db DB, p0 pgtypes.Cidr, p1 
 	var r0 pgtypes.Cidr
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Cidr{}, logerror(err)
+		return pgtypes.Cidr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32679,7 +32679,7 @@ func SetweightByTsvectorCharAndText(ctx context.Context, db DB, p0 pgtypes.Tsvec
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32692,7 +32692,7 @@ func SetweightByTsvectorAndChar(ctx context.Context, db DB, p0 pgtypes.Tsvector,
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33054,7 +33054,7 @@ func SpgPolyQuadCompress(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtype
 	var r0 pgtypes.Box
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Box{}, logerror(err)
+		return pgtypes.Box{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33238,7 +33238,7 @@ func Spghandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.IndexA
 	var r0 pgtypes.IndexAmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return IndexAmHandler{}, logerror(err)
+		return pgtypes.IndexAmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33329,7 +33329,7 @@ func StringAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1, p2 st
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33368,7 +33368,7 @@ func Strip(ctx context.Context, db DB, p0 pgtypes.Tsvector) (pgtypes.Tsvector, e
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33550,7 +33550,7 @@ func SuppressRedundantUpdatesTrigger(ctx context.Context, db DB) (pgtypes.Trigge
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33563,7 +33563,7 @@ func System(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.TsmHandler
 	var r0 pgtypes.TsmHandler
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return TsmHandler{}, logerror(err)
+		return pgtypes.TsmHandler{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33953,7 +33953,7 @@ func TexticlikeSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -33992,7 +33992,7 @@ func TexticregexeqSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgty
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34057,7 +34057,7 @@ func TextlikeSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.I
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34148,7 +34148,7 @@ func TextregexeqSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtype
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34187,7 +34187,7 @@ func ThesaurusInit(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Int
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34200,7 +34200,7 @@ func ThesaurusLexize(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34252,7 +34252,7 @@ func Tidlarger(ctx context.Context, db DB, p0, p1 pgtypes.Tid) (pgtypes.Tid, err
 	var r0 pgtypes.Tid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tid{}, logerror(err)
+		return pgtypes.Tid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34304,7 +34304,7 @@ func Tidrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Tid, erro
 	var r0 pgtypes.Tid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tid{}, logerror(err)
+		return pgtypes.Tid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34330,7 +34330,7 @@ func Tidsmaller(ctx context.Context, db DB, p0, p1 pgtypes.Tid) (pgtypes.Tid, er
 	var r0 pgtypes.Tid
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tid{}, logerror(err)
+		return pgtypes.Tid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -34616,7 +34616,7 @@ func TimeSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Inter
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -35108,7 +35108,7 @@ func TimestampSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36148,7 +36148,7 @@ func ToRegclass(ctx context.Context, db DB, p0 string) (pgtypes.Regclass, error)
 	var r0 pgtypes.Regclass
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regclass{}, logerror(err)
+		return pgtypes.Regclass{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36161,7 +36161,7 @@ func ToRegcollation(ctx context.Context, db DB, p0 string) (pgtypes.Regcollation
 	var r0 pgtypes.Regcollation
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regcollation{}, logerror(err)
+		return pgtypes.Regcollation{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36174,7 +36174,7 @@ func ToRegnamespace(ctx context.Context, db DB, p0 string) (pgtypes.Regnamespace
 	var r0 pgtypes.Regnamespace
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regnamespace{}, logerror(err)
+		return pgtypes.Regnamespace{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36187,7 +36187,7 @@ func ToRegoper(ctx context.Context, db DB, p0 string) (pgtypes.Regoper, error) {
 	var r0 pgtypes.Regoper
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regoper{}, logerror(err)
+		return pgtypes.Regoper{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36200,7 +36200,7 @@ func ToRegoperator(ctx context.Context, db DB, p0 string) (pgtypes.Regoperator, 
 	var r0 pgtypes.Regoperator
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regoperator{}, logerror(err)
+		return pgtypes.Regoperator{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36213,7 +36213,7 @@ func ToRegproc(ctx context.Context, db DB, p0 string) (pgtypes.Regproc, error) {
 	var r0 pgtypes.Regproc
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regproc{}, logerror(err)
+		return pgtypes.Regproc{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36226,7 +36226,7 @@ func ToRegprocedure(ctx context.Context, db DB, p0 string) (pgtypes.Regprocedure
 	var r0 pgtypes.Regprocedure
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regprocedure{}, logerror(err)
+		return pgtypes.Regprocedure{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36239,7 +36239,7 @@ func ToRegrole(ctx context.Context, db DB, p0 string) (pgtypes.Regrole, error) {
 	var r0 pgtypes.Regrole
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regrole{}, logerror(err)
+		return pgtypes.Regrole{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36252,7 +36252,7 @@ func ToRegtype(ctx context.Context, db DB, p0 string) (pgtypes.Regtype, error) {
 	var r0 pgtypes.Regtype
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Regtype{}, logerror(err)
+		return pgtypes.Regtype{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36291,7 +36291,7 @@ func ToTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconfi
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36304,7 +36304,7 @@ func ToTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsquery, er
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36317,7 +36317,7 @@ func ToTsvectorByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes.Regconf
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36330,7 +36330,7 @@ func ToTsvectorByText(ctx context.Context, db DB, p0 string) (pgtypes.Tsvector, 
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36343,7 +36343,7 @@ func ToTsvectorByJsonb(ctx context.Context, db DB, p0 []byte) (pgtypes.Tsvector,
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36356,7 +36356,7 @@ func ToTsvectorByJSON(ctx context.Context, db DB, p0 []byte) (pgtypes.Tsvector, 
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36369,7 +36369,7 @@ func ToTsvectorByRegconfigAndJsonb(ctx context.Context, db DB, p0 pgtypes.Regcon
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36382,7 +36382,7 @@ func ToTsvectorByRegconfigAndJSON(ctx context.Context, db DB, p0 pgtypes.Regconf
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36473,7 +36473,7 @@ func TruncByMacaddr8(ctx context.Context, db DB, p0 pgtypes.Macaddr8) (pgtypes.M
 	var r0 pgtypes.Macaddr8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr8{}, logerror(err)
+		return pgtypes.Macaddr8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36486,7 +36486,7 @@ func TruncByMacaddr(ctx context.Context, db DB, p0 pgtypes.Macaddr) (pgtypes.Mac
 	var r0 pgtypes.Macaddr
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Macaddr{}, logerror(err)
+		return pgtypes.Macaddr{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36504,7 +36504,7 @@ func TsDebugByConfigAndDocument(ctx context.Context, db DB, config pgtypes.Regco
 	var lexemes StringSlice
 	logf(sqlstr, config, document)
 	if err := db.QueryRowContext(ctx, sqlstr, config, document).Scan(&alias, &description, &token, &dictionaries, &dictionary, &lexemes); err != nil {
-		return "", "", "", nil, Regdictionary{}, StringSlice{}, logerror(err)
+		return "", "", "", nil, pgtypes.Regdictionary{}, StringSlice{}, logerror(err)
 	}
 	return alias, description, token, dictionaries, dictionary, lexemes, nil
 }
@@ -36522,7 +36522,7 @@ func TsDebugByDocument(ctx context.Context, db DB, document string) (string, str
 	var lexemes StringSlice
 	logf(sqlstr, document)
 	if err := db.QueryRowContext(ctx, sqlstr, document).Scan(&alias, &description, &token, &dictionaries, &dictionary, &lexemes); err != nil {
-		return "", "", "", nil, Regdictionary{}, StringSlice{}, logerror(err)
+		return "", "", "", nil, pgtypes.Regdictionary{}, StringSlice{}, logerror(err)
 	}
 	return alias, description, token, dictionaries, dictionary, lexemes, nil
 }
@@ -36535,7 +36535,7 @@ func TsDeleteByTsvectorAndText(ctx context.Context, db DB, p0 pgtypes.Tsvector, 
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36548,7 +36548,7 @@ func TsDeleteByTsvectorAndText(ctx context.Context, db DB, p0 pgtypes.Tsvector, 
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36561,7 +36561,7 @@ func TsFilter(ctx context.Context, db DB, p0 pgtypes.Tsvector, p1 []pgtypes.Char
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36927,7 +36927,7 @@ func TsRewriteByTsqueryTsqueryAndTsquery(ctx context.Context, db DB, p0, p1, p2 
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -36940,7 +36940,7 @@ func TsRewriteByTsqueryAndText(ctx context.Context, db DB, p0 pgtypes.Tsquery, p
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37078,7 +37078,7 @@ func TsqueryAnd(ctx context.Context, db DB, p0, p1 pgtypes.Tsquery) (pgtypes.Tsq
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37182,7 +37182,7 @@ func TsqueryNot(ctx context.Context, db DB, p0 pgtypes.Tsquery) (pgtypes.Tsquery
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37195,7 +37195,7 @@ func TsqueryOr(ctx context.Context, db DB, p0, p1 pgtypes.Tsquery) (pgtypes.Tsqu
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37208,7 +37208,7 @@ func TsqueryPhraseByTsqueryAndTsquery(ctx context.Context, db DB, p0, p1 pgtypes
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37221,7 +37221,7 @@ func TsqueryPhraseByTsqueryTsqueryAndInteger(ctx context.Context, db DB, p0, p1 
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37234,7 +37234,7 @@ func Tsqueryrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Tsque
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37260,7 +37260,7 @@ func TsrangeByTimestampWithoutTimeZoneAndTimestampWithoutTimeZone(ctx context.Co
 	var r0 pgtypes.Tsrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsrange{}, logerror(err)
+		return pgtypes.Tsrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37273,7 +37273,7 @@ func TsrangeByTimestampWithoutTimeZoneTimestampWithoutTimeZoneAndText(ctx contex
 	var r0 pgtypes.Tsrange
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tsrange{}, logerror(err)
+		return pgtypes.Tsrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37299,7 +37299,7 @@ func TstzrangeByTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Contex
 	var r0 pgtypes.Tstzrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tstzrange{}, logerror(err)
+		return pgtypes.Tstzrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37312,7 +37312,7 @@ func TstzrangeByTimestampWithTimeZoneTimestampWithTimeZoneAndText(ctx context.Co
 	var r0 pgtypes.Tstzrange
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return Tstzrange{}, logerror(err)
+		return pgtypes.Tstzrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37351,7 +37351,7 @@ func TsvectorConcat(ctx context.Context, db DB, p0, p1 pgtypes.Tsvector) (pgtype
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37455,7 +37455,7 @@ func TsvectorUpdateTrigger(ctx context.Context, db DB) (pgtypes.Trigger, error) 
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37468,7 +37468,7 @@ func TsvectorUpdateTriggerColumn(ctx context.Context, db DB) (pgtypes.Trigger, e
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37481,7 +37481,7 @@ func Tsvectorrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Tsve
 	var r0 pgtypes.Tsvector
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsvector{}, logerror(err)
+		return pgtypes.Tsvector{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37533,7 +37533,7 @@ func TxidCurrentSnapshot(ctx context.Context, db DB) (pgtypes.TxidSnapshot, erro
 	var r0 pgtypes.TxidSnapshot
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return TxidSnapshot{}, logerror(err)
+		return pgtypes.TxidSnapshot{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37546,7 +37546,7 @@ func TxidSnapshotRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.
 	var r0 pgtypes.TxidSnapshot
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return TxidSnapshot{}, logerror(err)
+		return pgtypes.TxidSnapshot{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37989,7 +37989,7 @@ func UniqueKeyRecheck(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	var r0 pgtypes.Trigger
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return Trigger{}, logerror(err)
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38002,7 +38002,7 @@ func Unknownrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Unkno
 	var r0 pgtypes.Unknown
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Unknown{}, logerror(err)
+		return pgtypes.Unknown{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38028,7 +38028,7 @@ func UnnestByAnyarray(ctx context.Context, db DB, p0 pgtypes.Anyarray) (pgtypes.
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38056,7 +38056,7 @@ func UpperByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (pgtypes.A
 	var r0 pgtypes.Anyelement
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Anyelement{}, logerror(err)
+		return pgtypes.Anyelement{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38147,7 +38147,7 @@ func VarbitSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Int
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38290,7 +38290,7 @@ func VarcharSupport(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.In
 	var r0 pgtypes.Internal
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Internal{}, logerror(err)
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38379,7 +38379,7 @@ func WebsearchToTsqueryByRegconfigAndText(ctx context.Context, db DB, p0 pgtypes
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38392,7 +38392,7 @@ func WebsearchToTsqueryByText(ctx context.Context, db DB, p0 string) (pgtypes.Ts
 	var r0 pgtypes.Tsquery
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Tsquery{}, logerror(err)
+		return pgtypes.Tsquery{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38656,7 +38656,7 @@ func Xid(ctx context.Context, db DB, p0 pgtypes.Xid8) (pgtypes.Xid, error) {
 	var r0 pgtypes.Xid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid{}, logerror(err)
+		return pgtypes.Xid{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38760,7 +38760,7 @@ func Xid8recv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Xid8, er
 	var r0 pgtypes.Xid8
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid8{}, logerror(err)
+		return pgtypes.Xid8{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38838,7 +38838,7 @@ func Xidrecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Xid, erro
 	var r0 pgtypes.Xid
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return Xid{}, logerror(err)
+		return pgtypes.Xid{}, logerror(err)
 	}
 	return r0, nil
 }

@@ -4,12 +4,14 @@ package ischema
 
 import (
 	"database/sql"
+
+	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
 )
 
 // PgForeignDataWrapper represents a row from 'information_schema._pg_foreign_data_wrappers'.
 type PgForeignDataWrapper struct {
-	Oid                        NullOid          `json:"oid"`                           // oid
-	Fdwowner                   NullOid          `json:"fdwowner"`                      // fdwowner
+	Oid                        pgtypes.NullOid  `json:"oid"`                           // oid
+	Fdwowner                   pgtypes.NullOid  `json:"fdwowner"`                      // fdwowner
 	Fdwoptions                 []sql.NullString `json:"fdwoptions"`                    // fdwoptions
 	ForeignDataWrapperCatalog  sql.NullString   `json:"foreign_data_wrapper_catalog"`  // foreign_data_wrapper_catalog
 	ForeignDataWrapperName     sql.NullString   `json:"foreign_data_wrapper_name"`     // foreign_data_wrapper_name

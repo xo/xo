@@ -4,11 +4,13 @@ package ischema
 
 import (
 	"database/sql"
+
+	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
 )
 
 // PgForeignServer represents a row from 'information_schema._pg_foreign_servers'.
 type PgForeignServer struct {
-	Oid                       NullOid          `json:"oid"`                          // oid
+	Oid                       pgtypes.NullOid  `json:"oid"`                          // oid
 	Srvoptions                []sql.NullString `json:"srvoptions"`                   // srvoptions
 	ForeignServerCatalog      sql.NullString   `json:"foreign_server_catalog"`       // foreign_server_catalog
 	ForeignServerName         sql.NullString   `json:"foreign_server_name"`          // foreign_server_name
