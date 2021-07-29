@@ -577,19 +577,8 @@ var indexSuffixRE = regexp.MustCompile(`(?i)_(ix|idx|index|pkey|ukey|key)$`)
 
 // singuralize will singularize a identifier, returning in CamelCase.
 func singularize(s string) string {
-	if i := lastIndex(s, '_'); i != -1 {
-		return s[:i] + "_" + inflector.Singularize(s[i+1:])
+	if i := strings.LastIndex(s, "_"); i != -1 {
+		return s[:i+1] + inflector.Singularize(s[i+1:])
 	}
 	return inflector.Singularize(s)
-}
-
-// lastIndex finds the last rune r in s, returning -1 if not present.
-func lastIndex(s string, c rune) int {
-	r := []rune(s)
-	for i := len(r) - 1; i >= 0; i-- {
-		if r[i] == c {
-			return i
-		}
-	}
-	return -1
 }

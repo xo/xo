@@ -69,8 +69,6 @@ type Field struct {
 	SQLName    string
 	Type       string
 	Zero       string
-	Prec       int
-	Array      bool
 	IsPrimary  bool
 	IsSequence bool
 	Comment    string
