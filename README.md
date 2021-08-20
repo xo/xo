@@ -285,8 +285,8 @@ $ go generate
 $ git add templates gen.go && git commit -m 'Adding custom xo templates for models'
 ```
 
-> **Note**: using `xo dump` will create templates for all languages. You can
-safely delete templates used for code generation for the other languages.
+> **Note**: via the `--template` parameter of `xo dump` you can create
+templates for other languages. The default is `go`.
 
 ### Template Language/Syntax
 
