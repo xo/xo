@@ -28,13 +28,13 @@ func ({{ short $e.GoName }} {{ $e.GoName }}) MarshalText() ([]byte, error) {
 
 // UnmarshalText unmarshals {{ $e.GoName }} from text.
 func ({{ short $e.GoName }} *{{ $e.GoName }}) UnmarshalText(buf []byte) error {
-	switch s := string(buf); s {
+	switch svar := string(buf); svar {
 {{ range $e.Values -}}
 	case "{{ .SQLName }}":
 		*{{ short $e.GoName }} = {{ $e.GoName }}{{ .GoName }}
 {{ end -}}
 	default:
-		return ErrInvalid{{ $e.GoName }}(s)
+		return ErrInvalid{{ $e.GoName }}(svar)
 	}
 	return nil
 }
