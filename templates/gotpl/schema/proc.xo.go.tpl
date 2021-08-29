@@ -23,7 +23,7 @@
 		return {{ zero $p.Returns }}, logerror(err)
 	}
 	return {{ range $p.Returns }}{{ check_name .GoName }}, {{ end }}nil
-{{- else -}}
+{{- else }}
 	logf(sqlstr)
 {{- if driver "sqlserver" "oracle" }}
 	if _, err := {{ db_named "Exec" $p }}; err != nil {
