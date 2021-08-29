@@ -17,12 +17,13 @@ require (
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v1.14.8
-	github.com/sijms/go-ora v1.2.0
+	github.com/sijms/go-ora v1.2.1
 	github.com/stretchr/testify v1.5.1 // indirect
-	github.com/xo/dburl v0.8.4
+	github.com/xo/dburl v0.8.5
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+	golang.org/x/mod v0.5.0 // indirect
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/tools v0.1.5
 	mvdan.cc/gofumpt v0.1.1
 )
