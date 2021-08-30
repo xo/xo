@@ -12,6 +12,8 @@ import (
 	"sort"
 	"text/template"
 
+	"github.com/traefik/yaegi/interp"
+	"github.com/traefik/yaegi/stdlib"
 	xo "github.com/xo/xo/types"
 )
 
@@ -306,9 +308,9 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 		return nil, fmt.Errorf("unable to read template %s: %w", name, err)
 	}
 	// build funcs
-	funcs, err := set.Funcs(ctx)
+	funcs, err := set.BuildFuncs(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("unable to build funcs %s: %v", name, err)
+		return nil, fmt.Errorf("unable to build funcs %s: %w", name, err)
 	}
 	// parse content
 	t, err := template.New(name).Funcs(funcs).Parse(string(buf))
@@ -316,6 +318,57 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 		return nil, fmt.Errorf("unable to parse template %s: %w", name, err)
 	}
 	return t, nil
+}
+
+// BuildFuncs builds the funcs for
+func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error) {
+	// get src and default funcs
+	src := Src(ctx)
+	if src == nil {
+		src = set.Files
+	}
+	funcs, err := set.Funcs(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// add custom funcs
+	f, err := src.Open("funcs.go.tpl")
+	switch {
+	case err != nil && os.IsNotExist(err):
+		return funcs, nil
+	case err != nil:
+		return nil, fmt.Errorf("unable to load custom funcs: %w", err)
+	}
+	// load
+	buf, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read custom funcs: %w", err)
+	}
+	// eval
+	i := interp.New(interp.Options{})
+	i.Use(stdlib.Symbols)
+	if _, err := i.Eval(string(buf)); err != nil {
+		return nil, fmt.Errorf("unable to eval custom funcs: %w", err)
+	}
+	// process
+	v, err := i.Eval("funcs.Init")
+	if err != nil {
+		return nil, fmt.Errorf("custom funcs missing or has invalid Init func: %w", err)
+	}
+	z, ok := v.Interface().(func(context.Context) (template.FuncMap, error))
+	if !ok {
+		return nil, fmt.Errorf("custom funcs.Init must have signature `func(context.Context) (template.FuncMap, error)`, has: %T", v.Interface())
+	}
+	// init
+	m, err := z(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("custom funcs.Init error: %w", err)
+	}
+	// add to funcs
+	for k, v := range m {
+		funcs[k] = v
+	}
+	return funcs, nil
 }
 
 // LoadFile loads a file.
