@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"text/template"
 
@@ -348,6 +349,9 @@ func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error
 	if err := i.Use(stdlib.Symbols); err != nil {
 		return nil, fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
 	}
+	if err := i.Use(Symbols(ctx)); err != nil {
+		return nil, fmt.Errorf("unable to add xo to yaegi interpreter: %w", err)
+	}
 	if _, err := i.Eval(string(buf)); err != nil {
 		return nil, fmt.Errorf("unable to eval funcs.go.tpl: %w", err)
 	}
@@ -434,12 +438,19 @@ func (err *ErrPostFailed) Unwrap() error {
 
 // Context keys.
 const (
+	SymbolsKey      xo.ContextKey = "symbols"
 	GenTypeKey      xo.ContextKey = "gen-type"
 	TemplateTypeKey xo.ContextKey = "template-type"
 	SuffixKey       xo.ContextKey = "suffix"
 	SrcKey          xo.ContextKey = "src"
 	OutKey          xo.ContextKey = "out"
 )
+
+// Symbols returns the symbols option from the context.
+func Symbols(ctx context.Context) map[string]map[string]reflect.Value {
+	v, _ := ctx.Value(SymbolsKey).(map[string]map[string]reflect.Value)
+	return v
+}
 
 // GenType returns the the gen-type option from the context.
 func GenType(ctx context.Context) string {

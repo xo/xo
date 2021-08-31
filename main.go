@@ -3,6 +3,7 @@
 package main
 
 //go:generate ./gen.sh models
+//go:generate go generate ./internal
 
 import (
 	"context"
@@ -24,13 +25,16 @@ import (
 	_ "github.com/xo/xo/templates/yamltpl"
 
 	"github.com/xo/xo/cmd"
+	"github.com/xo/xo/internal"
+	"github.com/xo/xo/templates"
 )
 
 // version is the app version.
 var version = "0.0.0-dev"
 
 func main() {
-	if err := cmd.Run(context.Background(), "xo", version); err != nil {
+	ctx := context.WithValue(context.Background(), templates.SymbolsKey, internal.Symbols)
+	if err := cmd.Run(ctx, "xo", version); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
