@@ -1,6 +1,6 @@
 module github.com/xo/xo
 
-go 1.16
+go 1.17
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
@@ -27,4 +27,10 @@ require (
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/tools v0.1.5
 	mvdan.cc/gofumpt v0.1.1
+)
+
+require (
+	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
+	github.com/mattn/go-colorable v0.1.8 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )

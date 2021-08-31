@@ -36,13 +36,13 @@ func (aen AEnumNullable) MarshalText() ([]byte, error) {
 
 // UnmarshalText unmarshals AEnumNullable from text.
 func (aen *AEnumNullable) UnmarshalText(buf []byte) error {
-	switch s := string(buf); s {
+	switch str := string(buf); str {
 	case "ONE":
 		*aen = AEnumNullableOne
 	case "TWO":
 		*aen = AEnumNullableTwo
 	default:
-		return ErrInvalidAEnumNullable(s)
+		return ErrInvalidAEnumNullable(str)
 	}
 	return nil
 }

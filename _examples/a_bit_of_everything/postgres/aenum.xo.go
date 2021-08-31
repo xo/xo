@@ -36,13 +36,13 @@ func (ae AEnum) MarshalText() ([]byte, error) {
 
 // UnmarshalText unmarshals AEnum from text.
 func (ae *AEnum) UnmarshalText(buf []byte) error {
-	switch s := string(buf); s {
+	switch str := string(buf); str {
 	case "ONE":
 		*ae = AEnumOne
 	case "TWO":
 		*ae = AEnumTwo
 	default:
-		return ErrInvalidAEnum(s)
+		return ErrInvalidAEnum(str)
 	}
 	return nil
 }

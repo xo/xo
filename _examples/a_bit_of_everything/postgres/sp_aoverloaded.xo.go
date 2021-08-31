@@ -10,7 +10,8 @@ import (
 func AOverloadedByParamOne(ctx context.Context, db DB, paramOne int) error {
 	// call public.a_overloaded
 	const sqlstr = `CALL public.a_overloaded($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, paramOne); err != nil {
 		return logerror(err)
 	}
@@ -21,7 +22,8 @@ func AOverloadedByParamOne(ctx context.Context, db DB, paramOne int) error {
 func AOverloadedByParamOneAndParamTwo(ctx context.Context, db DB, paramOne, paramTwo int) error {
 	// call public.a_overloaded
 	const sqlstr = `CALL public.a_overloaded($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, paramOne, paramTwo); err != nil {
 		return logerror(err)
 	}

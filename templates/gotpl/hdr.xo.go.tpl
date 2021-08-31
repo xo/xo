@@ -1,7 +1,7 @@
 {{- $tags := tags -}}
 {{- $inject := inject -}}
 {{- if $tags -}}
-// +build{{ range $tags }} {{ . }}{{ end }}
+//go:build{{ range $tags }} {{ . }}{{ end }}
 
 {{ end -}}
 {{- if first -}}

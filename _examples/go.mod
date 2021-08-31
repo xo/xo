@@ -1,6 +1,6 @@
 module github.com/xo/xo/_examples
 
-go 1.16
+go 1.17
 
 require (
 	github.com/denisenkom/go-mssqldb v0.10.0
@@ -14,4 +14,9 @@ require (
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+)
+
+require (
+	github.com/go-logfmt/logfmt v0.5.0 // indirect
+	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 )

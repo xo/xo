@@ -10,7 +10,8 @@ import (
 func A1In0Out(ctx context.Context, db DB, aParam int) error {
 	// call public.a_1_in_0_out
 	const sqlstr = `CALL public.a_1_in_0_out($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, aParam); err != nil {
 		return logerror(err)
 	}

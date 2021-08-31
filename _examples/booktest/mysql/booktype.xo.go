@@ -36,13 +36,13 @@ func (bt BookType) MarshalText() ([]byte, error) {
 
 // UnmarshalText unmarshals BookType from text.
 func (bt *BookType) UnmarshalText(buf []byte) error {
-	switch s := string(buf); s {
+	switch str := string(buf); str {
 	case "FICTION":
 		*bt = BookTypeFiction
 	case "NONFICTION":
 		*bt = BookTypeNonfiction
 	default:
-		return ErrInvalidBookType(s)
+		return ErrInvalidBookType(str)
 	}
 	return nil
 }

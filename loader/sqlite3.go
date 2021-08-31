@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"regexp"
 
 	"github.com/xo/xo/models"
 	xo "github.com/xo/xo/types"
@@ -74,6 +73,3 @@ func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	}
 	return goType, zero, nil
 }
-
-// unsignedRE is the unsigned regexp.
-var unsignedRE = regexp.MustCompile(`\s*unsigned\*`)

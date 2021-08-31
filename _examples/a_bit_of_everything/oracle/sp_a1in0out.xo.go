@@ -11,7 +11,8 @@ import (
 func A1In0Out(ctx context.Context, db DB, aParam int64) error {
 	// call a_bit_of_everything.a_1_in_0_out
 	const sqlstr = `BEGIN a_1_in_0_out(:a_param); END;`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("a_param", aParam)); err != nil {
 		return logerror(err)
 	}

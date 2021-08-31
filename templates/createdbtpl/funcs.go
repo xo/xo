@@ -335,14 +335,6 @@ func (f *Funcs) isEndConstraint(idx *xo.Index) bool {
 	return idx.IsPrimary || idx.IsUnique
 }
 
-var escapeValues = map[string][2]string{
-	"postgres":  {`"`, `"`},
-	"mysql":     {"`", "`"},
-	"sqlite3":   {"[", "]"},
-	"sqlserver": {`"`, `"`},
-	"oracle":    {`"`, `"`},
-}
-
 var typeAliases = map[string]map[string]string{
 	"postgres": {
 		"character varying":           "varchar",

@@ -331,7 +331,7 @@ func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error
 	if err != nil {
 		return nil, err
 	}
-	// add custom funcs
+	// read custom funcs
 	f, err := src.Open("funcs.go.tpl")
 	switch {
 	case err != nil && os.IsNotExist(err):
@@ -339,18 +339,19 @@ func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error
 	case err != nil:
 		return nil, fmt.Errorf("unable to load funcs.go.tpl: %w", err)
 	}
-	// load
 	buf, err := ioutil.ReadAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read funcs.go.tpl: %w", err)
 	}
-	// eval
+	// build interpreter for custom funcs
 	i := interp.New(interp.Options{})
-	i.Use(stdlib.Symbols)
+	if err := i.Use(stdlib.Symbols); err != nil {
+		return nil, fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
+	}
 	if _, err := i.Eval(string(buf)); err != nil {
 		return nil, fmt.Errorf("unable to eval funcs.go.tpl: %w", err)
 	}
-	// process
+	// eval custom funcs
 	v, err := i.Eval("funcs.Init")
 	if err != nil {
 		return nil, fmt.Errorf("unable to eval funcs.Init: %w", err)
@@ -359,12 +360,12 @@ func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error
 	if !ok {
 		return nil, fmt.Errorf("funcs.Init must have signature `func(context.Context) (template.FuncMap, error)`, has: `%T`", v.Interface())
 	}
-	// init
+	// init custom funcs
 	m, err := z(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("funcs.Init error: %w", err)
 	}
-	// add to funcs
+	// add custom funcs to funcs
 	for k, v := range m {
 		funcs[k] = v
 	}

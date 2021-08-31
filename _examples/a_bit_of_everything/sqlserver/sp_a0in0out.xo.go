@@ -10,7 +10,8 @@ import (
 func A0In0Out(ctx context.Context, db DB) error {
 	// call a_bit_of_everything.a_0_in_0_out
 	const sqlstr = `a_bit_of_everything.a_0_in_0_out`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}

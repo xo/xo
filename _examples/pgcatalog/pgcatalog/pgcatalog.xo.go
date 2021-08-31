@@ -5643,7 +5643,8 @@ func Bernoulli(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.TsmHand
 func Big5ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.big5_to_euc_tw
 	const sqlstr = `SELECT * FROM pg_catalog.big5_to_euc_tw($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -5654,7 +5655,8 @@ func Big5ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Big5ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.big5_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.big5_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -5665,7 +5667,8 @@ func Big5ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func Big5ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.big5_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.big5_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -5676,7 +5679,8 @@ func Big5ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func BinaryUpgradeCreateEmptyExtension(ctx context.Context, db DB, p0, p1 string, p2 bool, p3 string, p4 []pgtypes.Oid, p5, p6 StringSlice) error {
 	// call pg_catalog.binary_upgrade_create_empty_extension
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_create_empty_extension($1, $2, $3, $4, $5, $6, $7)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5, p6); err != nil {
 		return logerror(err)
 	}
@@ -5687,7 +5691,8 @@ func BinaryUpgradeCreateEmptyExtension(ctx context.Context, db DB, p0, p1 string
 func BinaryUpgradeSetMissingValue(ctx context.Context, db DB, p0 pgtypes.Oid, p1, p2 string) error {
 	// call pg_catalog.binary_upgrade_set_missing_value
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_missing_value($1, $2, $3)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2); err != nil {
 		return logerror(err)
 	}
@@ -5698,7 +5703,8 @@ func BinaryUpgradeSetMissingValue(ctx context.Context, db DB, p0 pgtypes.Oid, p1
 func BinaryUpgradeSetNextArrayPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_array_pg_type_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_array_pg_type_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5709,7 +5715,8 @@ func BinaryUpgradeSetNextArrayPgTypeOid(ctx context.Context, db DB, p0 pgtypes.O
 func BinaryUpgradeSetNextHeapPgClassOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_heap_pg_class_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_heap_pg_class_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5720,7 +5727,8 @@ func BinaryUpgradeSetNextHeapPgClassOid(ctx context.Context, db DB, p0 pgtypes.O
 func BinaryUpgradeSetNextIndexPgClassOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_index_pg_class_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_index_pg_class_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5731,7 +5739,8 @@ func BinaryUpgradeSetNextIndexPgClassOid(ctx context.Context, db DB, p0 pgtypes.
 func BinaryUpgradeSetNextPgAuthidOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_pg_authid_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_pg_authid_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5742,7 +5751,8 @@ func BinaryUpgradeSetNextPgAuthidOid(ctx context.Context, db DB, p0 pgtypes.Oid)
 func BinaryUpgradeSetNextPgEnumOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_pg_enum_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_pg_enum_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5753,7 +5763,8 @@ func BinaryUpgradeSetNextPgEnumOid(ctx context.Context, db DB, p0 pgtypes.Oid) e
 func BinaryUpgradeSetNextPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_pg_type_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_pg_type_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5764,7 +5775,8 @@ func BinaryUpgradeSetNextPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) e
 func BinaryUpgradeSetNextToastPgClassOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_toast_pg_class_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_toast_pg_class_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5775,7 +5787,8 @@ func BinaryUpgradeSetNextToastPgClassOid(ctx context.Context, db DB, p0 pgtypes.
 func BinaryUpgradeSetNextToastPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_toast_pg_type_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_toast_pg_type_oid($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -5786,7 +5799,8 @@ func BinaryUpgradeSetNextToastPgTypeOid(ctx context.Context, db DB, p0 pgtypes.O
 func BinaryUpgradeSetRecordInitPrivs(ctx context.Context, db DB, p0 bool) error {
 	// call pg_catalog.binary_upgrade_set_record_init_privs
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_record_init_privs($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -6863,7 +6877,8 @@ func BpcharSmaller(ctx context.Context, db DB, p0, p1 string) (string, error) {
 func BpcharSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.bpchar_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.bpchar_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7108,7 +7123,8 @@ func Bpchartypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, erro
 func BrinDesummarizeRange(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 int64) error {
 	// call pg_catalog.brin_desummarize_range
 	const sqlstr = `SELECT * FROM pg_catalog.brin_desummarize_range($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -7314,7 +7330,8 @@ func BtbpcharPatternCmp(ctx context.Context, db DB, p0, p1 string) (int, error) 
 func BtbpcharPatternSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btbpchar_pattern_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btbpchar_pattern_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7377,7 +7394,8 @@ func Btfloat4cmp(ctx context.Context, db DB, p0, p1 float32) (int, error) {
 func Btfloat4sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btfloat4sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btfloat4sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7414,7 +7432,8 @@ func Btfloat8cmp(ctx context.Context, db DB, p0, p1 float64) (int, error) {
 func Btfloat8sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btfloat8sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btfloat8sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7477,7 +7496,8 @@ func Btint2cmp(ctx context.Context, db DB, p0, p1 int16) (int, error) {
 func Btint2sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btint2sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btint2sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7527,7 +7547,8 @@ func Btint4cmp(ctx context.Context, db DB, p0, p1 int) (int, error) {
 func Btint4sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btint4sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btint4sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7577,7 +7598,8 @@ func Btint8cmp(ctx context.Context, db DB, p0, p1 int64) (int, error) {
 func Btint8sortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btint8sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btint8sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7601,7 +7623,8 @@ func Btnamecmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 func Btnamesortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btnamesortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btnamesortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7638,7 +7661,8 @@ func Btoidcmp(ctx context.Context, db DB, p0, p1 pgtypes.Oid) (int, error) {
 func Btoidsortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.btoidsortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.btoidsortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7740,7 +7764,8 @@ func BttextPatternCmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 func BttextPatternSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.bttext_pattern_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.bttext_pattern_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7777,7 +7802,8 @@ func Bttextnamecmp(ctx context.Context, db DB, p0, p1 string) (int, error) {
 func Bttextsortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.bttextsortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.bttextsortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -7814,7 +7840,8 @@ func Btvarstrequalimage(ctx context.Context, db DB, p0 pgtypes.Oid) (bool, error
 func ByteaSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.bytea_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.bytea_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -10048,7 +10075,8 @@ func DateSmaller(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, error
 func DateSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.date_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.date_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -10982,7 +11010,8 @@ func Eqsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p2 p
 func EucCnToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_cn_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -10993,7 +11022,8 @@ func EucCnToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func EucCnToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_cn_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11004,7 +11034,8 @@ func EucCnToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func EucJis2004ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_jis_2004_to_shift_jis_2004
 	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_shift_jis_2004($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11015,7 +11046,8 @@ func EucJis2004ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes
 func EucJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_jis_2004_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11026,7 +11058,8 @@ func EucJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring
 func EucJpToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_jp_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11037,7 +11070,8 @@ func EucJpToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func EucJpToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_jp_to_sjis
 	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_sjis($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11048,7 +11082,8 @@ func EucJpToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func EucJpToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_jp_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11059,7 +11094,8 @@ func EucJpToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func EucKrToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_kr_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11070,7 +11106,8 @@ func EucKrToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func EucKrToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_kr_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11081,7 +11118,8 @@ func EucKrToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func EucTwToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_tw_to_big5
 	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_big5($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11092,7 +11130,8 @@ func EucTwToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func EucTwToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_tw_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -11103,7 +11142,8 @@ func EucTwToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func EucTwToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.euc_tw_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -12349,7 +12389,8 @@ func Flt8MulCash(ctx context.Context, db DB, p0 float64, p1 string) (string, err
 func FmgrCValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.fmgr_c_validator
 	const sqlstr = `SELECT * FROM pg_catalog.fmgr_c_validator($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -12360,7 +12401,8 @@ func FmgrCValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 func FmgrInternalValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.fmgr_internal_validator
 	const sqlstr = `SELECT * FROM pg_catalog.fmgr_internal_validator($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -12371,7 +12413,8 @@ func FmgrInternalValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 func FmgrSQLValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.fmgr_sql_validator
 	const sqlstr = `SELECT * FROM pg_catalog.fmgr_sql_validator($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -12408,7 +12451,8 @@ func FormatType(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int) (string, err
 func Gb18030ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.gb18030_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.gb18030_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -12419,7 +12463,8 @@ func Gb18030ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func GbkToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.gbk_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.gbk_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -13431,7 +13476,8 @@ func GtsvectorDecompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtyp
 func GtsvectorOptions(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.gtsvector_options
 	const sqlstr = `SELECT * FROM pg_catalog.gtsvector_options($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -15626,7 +15672,8 @@ func InetServerPort(ctx context.Context, db DB) (int, error) {
 func InetSpgChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.inet_spg_choose
 	const sqlstr = `SELECT * FROM pg_catalog.inet_spg_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -15637,7 +15684,8 @@ func InetSpgChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func InetSpgConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.inet_spg_config
 	const sqlstr = `SELECT * FROM pg_catalog.inet_spg_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -15648,7 +15696,8 @@ func InetSpgConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func InetSpgInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.inet_spg_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.inet_spg_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -15672,7 +15721,8 @@ func InetSpgLeafConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) 
 func InetSpgPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.inet_spg_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.inet_spg_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -18907,7 +18957,8 @@ func IshorizontalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, erro
 func Iso88591ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso8859_1_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.iso8859_1_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -18918,7 +18969,8 @@ func Iso88591ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, 
 func Iso8859ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso8859_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.iso8859_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -18929,7 +18981,8 @@ func Iso8859ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func IsoToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso_to_koi8r
 	const sqlstr = `SELECT * FROM pg_catalog.iso_to_koi8r($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -18940,7 +18993,8 @@ func IsoToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func IsoToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.iso_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -18951,7 +19005,8 @@ func IsoToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgt
 func IsoToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso_to_win1251
 	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win1251($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -18962,7 +19017,8 @@ func IsoToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func IsoToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.iso_to_win866
 	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win866($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -19443,7 +19499,8 @@ func JSONTypeof(ctx context.Context, db DB, p0 []byte) (string, error) {
 func JohabToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.johab_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.johab_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20327,7 +20384,8 @@ func JustifyInterval(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
 func Koi8rToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8r_to_iso
 	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_iso($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20338,7 +20396,8 @@ func Koi8rToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func Koi8rToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8r_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20349,7 +20408,8 @@ func Koi8rToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func Koi8rToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8r_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20360,7 +20420,8 @@ func Koi8rToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Koi8rToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8r_to_win1251
 	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win1251($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20371,7 +20432,8 @@ func Koi8rToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, 
 func Koi8rToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8r_to_win866
 	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win866($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20382,7 +20444,8 @@ func Koi8rToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func Koi8uToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.koi8u_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.koi8u_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20406,7 +20469,8 @@ func Lastval(ctx context.Context, db DB) (int64, error) {
 func Latin1ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.latin1_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.latin1_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20417,7 +20481,8 @@ func Latin1ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Latin2ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.latin2_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20428,7 +20493,8 @@ func Latin2ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Latin2ToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.latin2_to_win1250
 	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_win1250($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20439,7 +20505,8 @@ func Latin2ToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring,
 func Latin3ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.latin3_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.latin3_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -20450,7 +20517,8 @@ func Latin3ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Latin4ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.latin4_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.latin4_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -21033,7 +21101,8 @@ func LoOpen(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int) (int, error) {
 func LoPut(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int64, p2 []byte) error {
 	// call pg_catalog.lo_put
 	const sqlstr = `SELECT * FROM pg_catalog.lo_put($1, $2, $3)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2); err != nil {
 		return logerror(err)
 	}
@@ -21902,7 +21971,8 @@ func MacaddrSend(ctx context.Context, db DB, p0 pgtypes.Macaddr) ([]byte, error)
 func MacaddrSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.macaddr_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.macaddr_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -22069,7 +22139,8 @@ func Md5ByBytea(ctx context.Context, db DB, p0 []byte) (string, error) {
 func MicToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_big5
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_big5($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22080,7 +22151,8 @@ func MicToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func MicToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_euc_cn
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_cn($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22091,7 +22163,8 @@ func MicToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func MicToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_euc_jp
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_jp($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22102,7 +22175,8 @@ func MicToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func MicToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_euc_kr
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_kr($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22113,7 +22187,8 @@ func MicToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func MicToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_euc_tw
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_tw($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22124,7 +22199,8 @@ func MicToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func MicToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_iso
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_iso($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22135,7 +22211,8 @@ func MicToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgt
 func MicToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_koi8r
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_koi8r($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22146,7 +22223,8 @@ func MicToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func MicToLatin1(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_latin1
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin1($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22157,7 +22235,8 @@ func MicToLatin1(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func MicToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_latin2
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin2($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22168,7 +22247,8 @@ func MicToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func MicToLatin3(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_latin3
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin3($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22179,7 +22259,8 @@ func MicToLatin3(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func MicToLatin4(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_latin4
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin4($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22190,7 +22271,8 @@ func MicToLatin4(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func MicToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_sjis
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_sjis($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22201,7 +22283,8 @@ func MicToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func MicToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_win1250
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1250($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22212,7 +22295,8 @@ func MicToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func MicToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_win1251
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1251($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22223,7 +22307,8 @@ func MicToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func MicToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.mic_to_win866
 	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win866($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -22897,7 +22982,8 @@ func NetworkSmaller(ctx context.Context, db DB, p0, p1 string) (string, error) {
 func NetworkSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.network_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.network_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -23779,7 +23865,8 @@ func NumericSmaller(ctx context.Context, db DB, p0, p1 float64) (float64, error)
 func NumericSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.numeric_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.numeric_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25012,7 +25099,8 @@ func PercentileDiscMultiFinal(ctx context.Context, db DB, p0 pgtypes.Internal, p
 func PgAdvisoryLockByBigint(ctx context.Context, db DB, p0 int64) error {
 	// call pg_catalog.pg_advisory_lock
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_lock($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25023,7 +25111,8 @@ func PgAdvisoryLockByBigint(ctx context.Context, db DB, p0 int64) error {
 func PgAdvisoryLockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) error {
 	// call pg_catalog.pg_advisory_lock
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_lock($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -25034,7 +25123,8 @@ func PgAdvisoryLockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) e
 func PgAdvisoryLockSharedByBigint(ctx context.Context, db DB, p0 int64) error {
 	// call pg_catalog.pg_advisory_lock_shared
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_lock_shared($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25045,7 +25135,8 @@ func PgAdvisoryLockSharedByBigint(ctx context.Context, db DB, p0 int64) error {
 func PgAdvisoryLockSharedByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) error {
 	// call pg_catalog.pg_advisory_lock_shared
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_lock_shared($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -25082,7 +25173,8 @@ func PgAdvisoryUnlockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int)
 func PgAdvisoryUnlockAll(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_advisory_unlock_all
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_unlock_all()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -25119,7 +25211,8 @@ func PgAdvisoryUnlockSharedByIntegerAndInteger(ctx context.Context, db DB, p0, p
 func PgAdvisoryXactLockByBigint(ctx context.Context, db DB, p0 int64) error {
 	// call pg_catalog.pg_advisory_xact_lock
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_xact_lock($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25130,7 +25223,8 @@ func PgAdvisoryXactLockByBigint(ctx context.Context, db DB, p0 int64) error {
 func PgAdvisoryXactLockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) error {
 	// call pg_catalog.pg_advisory_xact_lock
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_xact_lock($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -25141,7 +25235,8 @@ func PgAdvisoryXactLockByIntegerAndInteger(ctx context.Context, db DB, p0, p1 in
 func PgAdvisoryXactLockSharedByBigint(ctx context.Context, db DB, p0 int64) error {
 	// call pg_catalog.pg_advisory_xact_lock_shared
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_xact_lock_shared($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25152,7 +25247,8 @@ func PgAdvisoryXactLockSharedByBigint(ctx context.Context, db DB, p0 int64) erro
 func PgAdvisoryXactLockSharedByIntegerAndInteger(ctx context.Context, db DB, p0, p1 int) error {
 	// call pg_catalog.pg_advisory_xact_lock_shared
 	const sqlstr = `SELECT * FROM pg_catalog.pg_advisory_xact_lock_shared($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -25791,7 +25887,8 @@ func PgDescribeObject(ctx context.Context, db DB, p0, p1 pgtypes.Oid, p2 int) (s
 func PgDropReplicationSlot(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_drop_replication_slot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_drop_replication_slot($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -25912,7 +26009,8 @@ func PgExportSnapshot(ctx context.Context, db DB) (string, error) {
 func PgExtensionConfigDump(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 string) error {
 	// call pg_catalog.pg_extension_config_dump
 	const sqlstr = `SELECT * FROM pg_catalog.pg_extension_config_dump($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -27282,7 +27380,8 @@ func PgNotificationQueueUsage(ctx context.Context, db DB) (float64, error) {
 func PgNotify(ctx context.Context, db DB, p0, p1 string) error {
 	// call pg_catalog.pg_notify
 	const sqlstr = `SELECT * FROM pg_catalog.pg_notify($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -27630,7 +27729,8 @@ func PgReloadConf(ctx context.Context, db DB) (bool, error) {
 func PgReplicationOriginAdvance(ctx context.Context, db DB, p0 string, p1 pgtypes.PgLsn) error {
 	// call pg_catalog.pg_replication_origin_advance
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_advance($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -27654,7 +27754,8 @@ func PgReplicationOriginCreate(ctx context.Context, db DB, p0 string) (pgtypes.O
 func PgReplicationOriginDrop(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_replication_origin_drop
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_drop($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -27717,7 +27818,8 @@ func PgReplicationOriginSessionProgress(ctx context.Context, db DB, p0 bool) (pg
 func PgReplicationOriginSessionReset(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_replication_origin_session_reset
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_session_reset()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -27728,7 +27830,8 @@ func PgReplicationOriginSessionReset(ctx context.Context, db DB) error {
 func PgReplicationOriginSessionSetup(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_replication_origin_session_setup
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_session_setup($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -27739,7 +27842,8 @@ func PgReplicationOriginSessionSetup(ctx context.Context, db DB, p0 string) erro
 func PgReplicationOriginXactReset(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_replication_origin_xact_reset
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_xact_reset()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -27750,7 +27854,8 @@ func PgReplicationOriginXactReset(ctx context.Context, db DB) error {
 func PgReplicationOriginXactSetup(ctx context.Context, db DB, p0 pgtypes.PgLsn, p1 time.Time) error {
 	// call pg_catalog.pg_replication_origin_xact_setup
 	const sqlstr = `SELECT * FROM pg_catalog.pg_replication_origin_xact_setup($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -27949,7 +28054,8 @@ func PgSizePrettyByNumeric(ctx context.Context, db DB, p0 float64) (string, erro
 func PgSleep(ctx context.Context, db DB, p0 float64) error {
 	// call pg_catalog.pg_sleep
 	const sqlstr = `SELECT * FROM pg_catalog.pg_sleep($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -27960,7 +28066,8 @@ func PgSleep(ctx context.Context, db DB, p0 float64) error {
 func PgSleepFor(ctx context.Context, db DB, p0 []byte) error {
 	// call pg_catalog.pg_sleep_for
 	const sqlstr = `SELECT * FROM pg_catalog.pg_sleep_for($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -27971,7 +28078,8 @@ func PgSleepFor(ctx context.Context, db DB, p0 []byte) error {
 func PgSleepUntil(ctx context.Context, db DB, p0 time.Time) error {
 	// call pg_catalog.pg_sleep_until
 	const sqlstr = `SELECT * FROM pg_catalog.pg_sleep_until($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -28060,7 +28168,8 @@ func PgStartBackup(ctx context.Context, db DB, label string, fast, exclusive boo
 func PgStatClearSnapshot(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_stat_clear_snapshot
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_clear_snapshot()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -29387,7 +29496,8 @@ func PgStatGetXactTuplesUpdated(ctx context.Context, db DB, p0 pgtypes.Oid) (int
 func PgStatReset(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_stat_reset
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -29398,7 +29508,8 @@ func PgStatReset(ctx context.Context, db DB) error {
 func PgStatResetShared(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_stat_reset_shared
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset_shared($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -29409,7 +29520,8 @@ func PgStatResetShared(ctx context.Context, db DB, p0 string) error {
 func PgStatResetSingleFunctionCounters(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.pg_stat_reset_single_function_counters
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset_single_function_counters($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -29420,7 +29532,8 @@ func PgStatResetSingleFunctionCounters(ctx context.Context, db DB, p0 pgtypes.Oi
 func PgStatResetSingleTableCounters(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.pg_stat_reset_single_table_counters
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset_single_table_counters($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -29431,7 +29544,8 @@ func PgStatResetSingleTableCounters(ctx context.Context, db DB, p0 pgtypes.Oid) 
 func PgStatResetSlru(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_stat_reset_slru
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset_slru($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -29852,7 +29966,8 @@ func PgWalLsnDiff(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (float64, er
 func PgWalReplayPause(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_wal_replay_pause
 	const sqlstr = `SELECT * FROM pg_catalog.pg_wal_replay_pause()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -29863,7 +29978,8 @@ func PgWalReplayPause(ctx context.Context, db DB) error {
 func PgWalReplayResume(ctx context.Context, db DB) error {
 	// call pg_catalog.pg_wal_replay_resume
 	const sqlstr = `SELECT * FROM pg_catalog.pg_wal_replay_resume()`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr); err != nil {
 		return logerror(err)
 	}
@@ -30005,7 +30121,8 @@ func PlpgsqlCallHandler(ctx context.Context, db DB) (pgtypes.LanguageHandler, er
 func PlpgsqlInlineHandler(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.plpgsql_inline_handler
 	const sqlstr = `SELECT * FROM pg_catalog.plpgsql_inline_handler($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -30016,7 +30133,8 @@ func PlpgsqlInlineHandler(ctx context.Context, db DB, p0 pgtypes.Internal) error
 func PlpgsqlValidator(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.plpgsql_validator
 	const sqlstr = `SELECT * FROM pg_catalog.plpgsql_validator($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -30755,7 +30873,8 @@ func Prefixsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, 
 func PrsdEnd(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.prsd_end
 	const sqlstr = `SELECT * FROM pg_catalog.prsd_end($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -30953,6 +31072,162 @@ func QuoteNullableByAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyelement
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyCascadeDel calls the stored function 'pg_catalog.RI_FKey_cascade_del() trigger' on db.
+func RIFKeyCascadeDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_cascade_del
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_cascade_del()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyCascadeUpd calls the stored function 'pg_catalog.RI_FKey_cascade_upd() trigger' on db.
+func RIFKeyCascadeUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_cascade_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_cascade_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyCheckIns calls the stored function 'pg_catalog.RI_FKey_check_ins() trigger' on db.
+func RIFKeyCheckIns(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_check_ins
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_check_ins()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyCheckUpd calls the stored function 'pg_catalog.RI_FKey_check_upd() trigger' on db.
+func RIFKeyCheckUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_check_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_check_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyNoactionDel calls the stored function 'pg_catalog.RI_FKey_noaction_del() trigger' on db.
+func RIFKeyNoactionDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_noaction_del
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_noaction_del()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyNoactionUpd calls the stored function 'pg_catalog.RI_FKey_noaction_upd() trigger' on db.
+func RIFKeyNoactionUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_noaction_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_noaction_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyRestrictDel calls the stored function 'pg_catalog.RI_FKey_restrict_del() trigger' on db.
+func RIFKeyRestrictDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_restrict_del
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_restrict_del()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeyRestrictUpd calls the stored function 'pg_catalog.RI_FKey_restrict_upd() trigger' on db.
+func RIFKeyRestrictUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_restrict_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_restrict_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeySetdefaultDel calls the stored function 'pg_catalog.RI_FKey_setdefault_del() trigger' on db.
+func RIFKeySetdefaultDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_setdefault_del
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setdefault_del()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeySetdefaultUpd calls the stored function 'pg_catalog.RI_FKey_setdefault_upd() trigger' on db.
+func RIFKeySetdefaultUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_setdefault_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setdefault_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeySetnullDel calls the stored function 'pg_catalog.RI_FKey_setnull_del() trigger' on db.
+func RIFKeySetnullDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_setnull_del
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setnull_del()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RIFKeySetnullUpd calls the stored function 'pg_catalog.RI_FKey_setnull_upd() trigger' on db.
+func RIFKeySetnullUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
+	// call pg_catalog.RI_FKey_setnull_upd
+	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setnull_upd()`
+	// run
+	var r0 pgtypes.Trigger
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Trigger{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32075,162 +32350,6 @@ func Reverse(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// RiFkeyCascadeDel calls the stored function 'pg_catalog.RI_FKey_cascade_del() trigger' on db.
-func RiFkeyCascadeDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_cascade_del
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_cascade_del()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyCascadeUpd calls the stored function 'pg_catalog.RI_FKey_cascade_upd() trigger' on db.
-func RiFkeyCascadeUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_cascade_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_cascade_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyCheckIns calls the stored function 'pg_catalog.RI_FKey_check_ins() trigger' on db.
-func RiFkeyCheckIns(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_check_ins
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_check_ins()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyCheckUpd calls the stored function 'pg_catalog.RI_FKey_check_upd() trigger' on db.
-func RiFkeyCheckUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_check_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_check_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyNoactionDel calls the stored function 'pg_catalog.RI_FKey_noaction_del() trigger' on db.
-func RiFkeyNoactionDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_noaction_del
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_noaction_del()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyNoactionUpd calls the stored function 'pg_catalog.RI_FKey_noaction_upd() trigger' on db.
-func RiFkeyNoactionUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_noaction_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_noaction_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyRestrictDel calls the stored function 'pg_catalog.RI_FKey_restrict_del() trigger' on db.
-func RiFkeyRestrictDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_restrict_del
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_restrict_del()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeyRestrictUpd calls the stored function 'pg_catalog.RI_FKey_restrict_upd() trigger' on db.
-func RiFkeyRestrictUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_restrict_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_restrict_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeySetdefaultDel calls the stored function 'pg_catalog.RI_FKey_setdefault_del() trigger' on db.
-func RiFkeySetdefaultDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_setdefault_del
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setdefault_del()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeySetdefaultUpd calls the stored function 'pg_catalog.RI_FKey_setdefault_upd() trigger' on db.
-func RiFkeySetdefaultUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_setdefault_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setdefault_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeySetnullDel calls the stored function 'pg_catalog.RI_FKey_setnull_del() trigger' on db.
-func RiFkeySetnullDel(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_setnull_del
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setnull_del()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
-// RiFkeySetnullUpd calls the stored function 'pg_catalog.RI_FKey_setnull_upd() trigger' on db.
-func RiFkeySetnullUpd(ctx context.Context, db DB) (pgtypes.Trigger, error) {
-	// call pg_catalog.RI_FKey_setnull_upd
-	const sqlstr = `SELECT * FROM pg_catalog.RI_FKey_setnull_upd()`
-	// run
-	var r0 pgtypes.Trigger
-	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
-		return pgtypes.Trigger{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // Right calls the stored function 'pg_catalog.right(text, integer) text' on db.
 func Right(ctx context.Context, db DB, p0 string, p1 int) (string, error) {
 	// call pg_catalog.right
@@ -32638,7 +32757,8 @@ func SetMasklenByCidrAndInteger(ctx context.Context, db DB, p0 pgtypes.Cidr, p1 
 func Setseed(ctx context.Context, db DB, p0 float64) error {
 	// call pg_catalog.setseed
 	const sqlstr = `SELECT * FROM pg_catalog.setseed($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -32753,7 +32873,8 @@ func Sha512(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
 func ShiftJis2004ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.shift_jis_2004_to_euc_jis_2004
 	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_euc_jis_2004($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -32764,7 +32885,8 @@ func ShiftJis2004ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes
 func ShiftJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.shift_jis_2004_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -32892,7 +33014,8 @@ func Sinh(ctx context.Context, db DB, p0 float64) (float64, error) {
 func SjisToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.sjis_to_euc_jp
 	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_euc_jp($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -32903,7 +33026,8 @@ func SjisToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func SjisToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.sjis_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -32914,7 +33038,8 @@ func SjisToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func SjisToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.sjis_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -32938,7 +33063,8 @@ func Slope(ctx context.Context, db DB, p0, p1 pgtypes.Point) (float64, error) {
 func SpgBboxQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_bbox_quad_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_bbox_quad_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -32949,7 +33075,8 @@ func SpgBboxQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) erro
 func SpgBoxQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_box_quad_choose
 	const sqlstr = `SELECT * FROM pg_catalog.spg_box_quad_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -32960,7 +33087,8 @@ func SpgBoxQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error
 func SpgBoxQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_box_quad_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_box_quad_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -32971,7 +33099,8 @@ func SpgBoxQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error
 func SpgBoxQuadInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_box_quad_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.spg_box_quad_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -32995,7 +33124,8 @@ func SpgBoxQuadLeafConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Interna
 func SpgBoxQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_box_quad_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.spg_box_quad_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33006,7 +33136,8 @@ func SpgBoxQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) er
 func SpgKdChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_kd_choose
 	const sqlstr = `SELECT * FROM pg_catalog.spg_kd_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33017,7 +33148,8 @@ func SpgKdChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgKdConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_kd_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_kd_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33028,7 +33160,8 @@ func SpgKdConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgKdInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_kd_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.spg_kd_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33039,7 +33172,8 @@ func SpgKdInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) e
 func SpgKdPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_kd_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.spg_kd_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33063,7 +33197,8 @@ func SpgPolyQuadCompress(ctx context.Context, db DB, p0 pgtypes.Polygon) (pgtype
 func SpgQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_quad_choose
 	const sqlstr = `SELECT * FROM pg_catalog.spg_quad_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33074,7 +33209,8 @@ func SpgQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_quad_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_quad_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33085,7 +33221,8 @@ func SpgQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgQuadInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_quad_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.spg_quad_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33109,7 +33246,8 @@ func SpgQuadLeafConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) 
 func SpgQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_quad_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.spg_quad_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33120,7 +33258,8 @@ func SpgQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error
 func SpgRangeQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_range_quad_choose
 	const sqlstr = `SELECT * FROM pg_catalog.spg_range_quad_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33131,7 +33270,8 @@ func SpgRangeQuadChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) err
 func SpgRangeQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_range_quad_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_range_quad_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33142,7 +33282,8 @@ func SpgRangeQuadConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) err
 func SpgRangeQuadInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_range_quad_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.spg_range_quad_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33166,7 +33307,8 @@ func SpgRangeQuadLeafConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Inter
 func SpgRangeQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_range_quad_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.spg_range_quad_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33177,7 +33319,8 @@ func SpgRangeQuadPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) 
 func SpgTextChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_text_choose
 	const sqlstr = `SELECT * FROM pg_catalog.spg_text_choose($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33188,7 +33331,8 @@ func SpgTextChoose(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgTextConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_text_config
 	const sqlstr = `SELECT * FROM pg_catalog.spg_text_config($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33199,7 +33343,8 @@ func SpgTextConfig(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 func SpgTextInnerConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_text_inner_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.spg_text_inner_consistent($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -33223,7 +33368,8 @@ func SpgTextLeafConsistent(ctx context.Context, db DB, p0, p1 pgtypes.Internal) 
 func SpgTextPicksplit(ctx context.Context, db DB, p0, p1 pgtypes.Internal) error {
 	// call pg_catalog.spg_text_picksplit
 	const sqlstr = `SELECT * FROM pg_catalog.spg_text_picksplit($1, $2)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1); err != nil {
 		return logerror(err)
 	}
@@ -35093,7 +35239,8 @@ func TimestampSmaller(ctx context.Context, db DB, p0, p1 time.Time) (time.Time, 
 func TimestampSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.timestamp_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.timestamp_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -37633,7 +37780,8 @@ func TxidVisibleInSnapshot(ctx context.Context, db DB, p0 int64, p1 pgtypes.Txid
 func UTF8ToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_big5
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_big5($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37644,7 +37792,8 @@ func UTF8ToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func UTF8ToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_euc_cn
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_cn($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37655,7 +37804,8 @@ func UTF8ToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_euc_jis_2004
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jis_2004($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37666,7 +37816,8 @@ func UTF8ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring
 func UTF8ToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_euc_jp
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jp($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37677,7 +37828,8 @@ func UTF8ToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_euc_kr
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_kr($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37688,7 +37840,8 @@ func UTF8ToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_euc_tw
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_tw($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37699,7 +37852,8 @@ func UTF8ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToGb18030(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_gb18030
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gb18030($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37710,7 +37864,8 @@ func UTF8ToGb18030(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func UTF8ToGbk(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_gbk
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gbk($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37721,7 +37876,8 @@ func UTF8ToGbk(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func UTF8ToIso8859(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_iso8859
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37732,7 +37888,8 @@ func UTF8ToIso8859(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func UTF8ToIso88591(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_iso8859_1
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859_1($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37743,7 +37900,8 @@ func UTF8ToIso88591(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, 
 func UTF8ToJohab(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_johab
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_johab($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37754,7 +37912,8 @@ func UTF8ToJohab(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_koi8r
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8r($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37765,7 +37924,8 @@ func UTF8ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToKoi8u(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_koi8u
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8u($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37776,7 +37936,8 @@ func UTF8ToKoi8u(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func UTF8ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_shift_jis_2004
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_shift_jis_2004($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37787,7 +37948,8 @@ func UTF8ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstri
 func UTF8ToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_sjis
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_sjis($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37798,7 +37960,8 @@ func UTF8ToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 p
 func UTF8ToUhc(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_uhc
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_uhc($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37809,7 +37972,8 @@ func UTF8ToUhc(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pg
 func UTF8ToWin(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.utf8_to_win
 	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_win($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -37963,7 +38127,8 @@ func UUIDSend(ctx context.Context, db DB, p0 uuid.UUID) ([]byte, error) {
 func UUIDSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.uuid_sortsupport
 	const sqlstr = `SELECT * FROM pg_catalog.uuid_sortsupport($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -37974,7 +38139,8 @@ func UUIDSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 func UhcToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.uhc_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.uhc_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38351,7 +38517,8 @@ func Version(ctx context.Context, db DB) (string, error) {
 func VoidRecv(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	// call pg_catalog.void_recv
 	const sqlstr = `SELECT * FROM pg_catalog.void_recv($1)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
 		return logerror(err)
 	}
@@ -38453,7 +38620,8 @@ func WidthBucketByAnyelementAndAnyarray(ctx context.Context, db DB, p0 pgtypes.A
 func Win1250ToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1250_to_latin2
 	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_latin2($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38464,7 +38632,8 @@ func Win1250ToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring,
 func Win1250ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1250_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38475,7 +38644,8 @@ func Win1250ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func Win1251ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1251_to_iso
 	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_iso($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38486,7 +38656,8 @@ func Win1251ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func Win1251ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1251_to_koi8r
 	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_koi8r($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38497,7 +38668,8 @@ func Win1251ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, 
 func Win1251ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1251_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38508,7 +38680,8 @@ func Win1251ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3
 func Win1251ToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win1251_to_win866
 	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_win866($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38519,7 +38692,8 @@ func Win1251ToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring,
 func Win866ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win866_to_iso
 	const sqlstr = `SELECT * FROM pg_catalog.win866_to_iso($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38530,7 +38704,8 @@ func Win866ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Win866ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win866_to_koi8r
 	const sqlstr = `SELECT * FROM pg_catalog.win866_to_koi8r($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38541,7 +38716,8 @@ func Win866ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p
 func Win866ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win866_to_mic
 	const sqlstr = `SELECT * FROM pg_catalog.win866_to_mic($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38552,7 +38728,8 @@ func Win866ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 
 func Win866ToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win866_to_win1251
 	const sqlstr = `SELECT * FROM pg_catalog.win866_to_win1251($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}
@@ -38563,7 +38740,8 @@ func Win866ToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring,
 func WinToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
 	// call pg_catalog.win_to_utf8
 	const sqlstr = `SELECT * FROM pg_catalog.win_to_utf8($1, $2, $3, $4, $5)`
-	// runlogf(sqlstr)
+	// run
+	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
 		return logerror(err)
 	}

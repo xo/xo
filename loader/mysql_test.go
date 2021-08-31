@@ -168,6 +168,9 @@ func TestMysqlGoType(t *testing.T) {
 		}
 		d.Nullable = test.nullable
 		goType, zero, err := MysqlGoType(ctx, d)
+		if err != nil {
+			t.Fatalf("test %d (%s) %q MysqlGoType(%#v) expected no error, got: %v", i, test.name, test.typ, d, err)
+		}
 		if goType != test.goType {
 			t.Errorf("test %d (%s) %q (nullable: %t) expected goType = %q, got: %q", i, test.name, test.typ, test.nullable, test.goType, goType)
 		}

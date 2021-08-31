@@ -13,13 +13,13 @@ type AuthUser struct {
 	ID          int64          `json:"id"`           // id
 	Password    sql.NullString `json:"password"`     // password
 	LastLogin   sql.NullTime   `json:"last_login"`   // last_login
-	IsSuperuser int64          `json:"is_superuser"` // is_superuser
+	IsSuperuser bool           `json:"is_superuser"` // is_superuser
 	Username    sql.NullString `json:"username"`     // username
 	FirstName   sql.NullString `json:"first_name"`   // first_name
 	LastName    sql.NullString `json:"last_name"`    // last_name
 	Email       sql.NullString `json:"email"`        // email
-	IsStaff     int64          `json:"is_staff"`     // is_staff
-	IsActive    int64          `json:"is_active"`    // is_active
+	IsStaff     bool           `json:"is_staff"`     // is_staff
+	IsActive    bool           `json:"is_active"`    // is_active
 	DateJoined  time.Time      `json:"date_joined"`  // date_joined
 	// xo fields
 	_exists, _deleted bool
