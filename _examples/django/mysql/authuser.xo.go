@@ -54,12 +54,12 @@ func (au *AuthUser) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined)
 	res, err := db.ExecContext(ctx, sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	au.ID = int(id)
 	// set exists
@@ -112,7 +112,7 @@ func (au *AuthUser) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined)
 	if _, err := db.ExecContext(ctx, sqlstr, au.ID, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	au._exists = true

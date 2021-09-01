@@ -48,12 +48,12 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
 	res, err := db.ExecContext(ctx, sqlstr, b.BookID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	b.BookID = int(id)
 	// set exists
@@ -107,7 +107,7 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, b.BookID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
 	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	b._exists = true

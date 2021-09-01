@@ -102,7 +102,7 @@ func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TerritoryID, t.TerritoryDescription, t.RegionID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	t._exists = true

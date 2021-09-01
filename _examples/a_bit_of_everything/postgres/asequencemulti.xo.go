@@ -96,7 +96,7 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, asm.ASeq, asm.AText)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	asm._exists = true

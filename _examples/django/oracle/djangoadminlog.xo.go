@@ -51,7 +51,7 @@ func (dal *DjangoAdminLog) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	dal.ID = int64(id)
 	// set exists
@@ -111,7 +111,7 @@ func (dal *DjangoAdminLog) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID)
 	if _, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dal._exists = true

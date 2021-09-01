@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"text/template"
 
 	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
@@ -49,13 +48,6 @@ func init() {
 				Default:    "true",
 				Value:      true,
 			},
-		},
-		Funcs: func(ctx context.Context) (template.FuncMap, error) {
-			f, err := NewFuncs(ctx)
-			if err != nil {
-				return nil, err
-			}
-			return f.FuncMap(), nil
 		},
 		FileName: func(ctx context.Context, tpl *templates.Template) string {
 			return tpl.Name

@@ -44,12 +44,12 @@ func (auup *AuthUserUserPermission) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, auup.UserID, auup.PermissionID)
 	res, err := db.ExecContext(ctx, sqlstr, auup.UserID, auup.PermissionID)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	auup.ID = int64(id)
 	// set exists
@@ -102,7 +102,7 @@ func (auup *AuthUserUserPermission) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, auup.ID, auup.UserID, auup.PermissionID)
 	if _, err := db.ExecContext(ctx, sqlstr, auup.ID, auup.UserID, auup.PermissionID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	auup._exists = true

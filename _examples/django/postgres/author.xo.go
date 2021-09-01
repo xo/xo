@@ -95,7 +95,7 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, a.AuthorID, a.Name)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID, a.Name); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	a._exists = true

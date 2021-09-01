@@ -122,7 +122,7 @@ func (dal *DjangoAdminLog) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID)
 	if _, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dal._exists = true

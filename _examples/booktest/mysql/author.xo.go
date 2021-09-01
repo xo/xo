@@ -43,12 +43,12 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, a.Name)
 	res, err := db.ExecContext(ctx, sqlstr, a.Name)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	a.AuthorID = int(id)
 	// set exists
@@ -101,7 +101,7 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, a.AuthorID, a.Name)
 	if _, err := db.ExecContext(ctx, sqlstr, a.AuthorID, a.Name); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	a._exists = true

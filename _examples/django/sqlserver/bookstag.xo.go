@@ -115,7 +115,7 @@ func (bt *BooksTag) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, bt.ID, bt.BookID, bt.TagID)
 	if _, err := db.ExecContext(ctx, sqlstr, bt.ID, bt.BookID, bt.TagID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	bt._exists = true

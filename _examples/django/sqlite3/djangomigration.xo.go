@@ -45,12 +45,12 @@ func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, dm.App, dm.Name, dm.Applied)
 	res, err := db.ExecContext(ctx, sqlstr, dm.ID, dm.App, dm.Name, dm.Applied)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	dm.ID = int(id)
 	// set exists
@@ -104,7 +104,7 @@ func (dm *DjangoMigration) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dm.ID, dm.App, dm.Name, dm.Applied)
 	if _, err := db.ExecContext(ctx, sqlstr, dm.ID, dm.App, dm.Name, dm.Applied); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dm._exists = true

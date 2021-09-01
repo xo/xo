@@ -44,12 +44,12 @@ func (dct *DjangoContentType) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, dct.AppLabel, dct.Model)
 	res, err := db.ExecContext(ctx, sqlstr, dct.ID, dct.AppLabel, dct.Model)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	dct.ID = int(id)
 	// set exists
@@ -103,7 +103,7 @@ func (dct *DjangoContentType) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dct.ID, dct.AppLabel, dct.Model)
 	if _, err := db.ExecContext(ctx, sqlstr, dct.ID, dct.AppLabel, dct.Model); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dct._exists = true

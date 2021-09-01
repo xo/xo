@@ -98,12 +98,6 @@ func (l *Loader) SchemaName(ctx context.Context, db models.DB) (string, error) {
 	return "", nil
 }
 
-// CtxLoader returns loader from the context.
-func CtxLoader(ctx context.Context) *Loader {
-	l, _ := ctx.Value(xo.LoaderKey).(*Loader)
-	return l
-}
-
 // Int32 returns int32 from the context.
 func Int32(ctx context.Context) string {
 	s, _ := ctx.Value(xo.Int32Key).(string)

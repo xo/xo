@@ -115,7 +115,7 @@ func (aug *AuthUserGroup) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, aug.ID, aug.UserID, aug.GroupID)
 	if _, err := db.ExecContext(ctx, sqlstr, aug.ID, aug.UserID, aug.GroupID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	aug._exists = true

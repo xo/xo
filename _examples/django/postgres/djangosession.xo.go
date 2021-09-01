@@ -97,7 +97,7 @@ func (ds *DjangoSession) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, ds.SessionKey, ds.SessionData, ds.ExpireDate)
 	if _, err := db.ExecContext(ctx, sqlstr, ds.SessionKey, ds.SessionData, ds.ExpireDate); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	ds._exists = true

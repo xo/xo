@@ -43,7 +43,7 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	as.ASeq = int(id)
 	// set exists

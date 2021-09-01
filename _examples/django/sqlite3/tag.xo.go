@@ -43,12 +43,12 @@ func (t *Tag) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, t.Tag)
 	res, err := db.ExecContext(ctx, sqlstr, t.TagID, t.Tag)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	t.TagID = int(id)
 	// set exists
@@ -102,7 +102,7 @@ func (t *Tag) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, t.TagID, t.Tag)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TagID, t.Tag); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	t._exists = true

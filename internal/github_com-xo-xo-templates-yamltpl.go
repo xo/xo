@@ -8,12 +8,8 @@ import (
 )
 
 func init() {
-	Symbols["github.com/xo/xo/templates/yamltpl/jsontpl"] = map[string]reflect.Value{
+	Symbols["github.com/xo/xo/templates/yamltpl/yamltpl"] = map[string]reflect.Value{
 		// function, constant and variable definitions
-		"Files":    reflect.ValueOf(&jsontpl.Files).Elem(),
-		"NewFuncs": reflect.ValueOf(jsontpl.NewFuncs),
-
-		// type definitions
-		"Funcs": reflect.ValueOf((*jsontpl.Funcs)(nil)),
+		"Files": reflect.ValueOf(&yamltpl.Files).Elem(),
 	}
 }

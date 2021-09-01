@@ -1,4 +1,5 @@
-package createdbtpl
+// Package funcs provides custom template funcs.
+package funcs
 
 import (
 	"context"
@@ -7,8 +8,36 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/xo/xo/templates/createdbtpl"
 	xo "github.com/xo/xo/types"
 )
+
+// Init intializes the custom template funcs.
+func Init(ctx context.Context) (template.FuncMap, error) {
+	driver, _, _ := xo.DriverSchemaNthParam(ctx)
+	funcs := &Funcs{
+		driver:      driver,
+		enumMap:     createdbtpl.EnumMap(ctx),
+		constraint:  createdbtpl.Constraint(ctx),
+		escCols:     createdbtpl.Esc(ctx, "columns"),
+		escTypes:    createdbtpl.Esc(ctx, "types"),
+		engine:      createdbtpl.Engine(ctx),
+		trimComment: createdbtpl.TrimComment(ctx),
+	}
+	return template.FuncMap{
+		"coldef":          funcs.coldef,
+		"viewdef":         funcs.viewdef,
+		"procdef":         funcs.procdef,
+		"driver":          funcs.driverfn,
+		"constraint":      funcs.constraintfn,
+		"esc":             funcs.escType,
+		"fields":          funcs.fields,
+		"engine":          funcs.enginefn,
+		"literal":         funcs.literal,
+		"isEndConstraint": funcs.isEndConstraint,
+		"comma":           comma,
+	}, nil
+}
 
 // Funcs is a set of template funcs.
 type Funcs struct {
@@ -19,43 +48,6 @@ type Funcs struct {
 	escTypes    bool
 	engine      string
 	trimComment bool
-}
-
-// NewFuncs creates a new Funcs.
-func NewFuncs(ctx context.Context, enums []xo.Enum) *Funcs {
-	driver, _, _ := xo.DriverSchemaNthParam(ctx)
-	enumMap := make(map[string]xo.Enum)
-	if driver == "mysql" {
-		for _, e := range enums {
-			enumMap[e.Name] = e
-		}
-	}
-	return &Funcs{
-		driver:      driver,
-		enumMap:     enumMap,
-		constraint:  Constraint(ctx),
-		escCols:     Esc(ctx, "columns"),
-		escTypes:    Esc(ctx, "types"),
-		engine:      Engine(ctx),
-		trimComment: TrimComment(ctx),
-	}
-}
-
-// FuncMap returns the func map.
-func (f *Funcs) FuncMap() template.FuncMap {
-	return template.FuncMap{
-		"coldef":          f.coldef,
-		"viewdef":         f.viewdef,
-		"procdef":         f.procdef,
-		"driver":          f.driverfn,
-		"constraint":      f.constraintfn,
-		"esc":             f.escType,
-		"fields":          f.fields,
-		"engine":          f.enginefn,
-		"literal":         f.literal,
-		"comma":           f.comma,
-		"isEndConstraint": f.isEndConstraint,
-	}
 }
 
 func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
@@ -316,18 +308,6 @@ func (f *Funcs) literal(literal string) string {
 	return fmt.Sprint("'", strings.ReplaceAll(literal, "'", "''"), "'")
 }
 
-func (f *Funcs) comma(i int, v interface{}) string {
-	var l int
-	switch x := v.(type) {
-	case []xo.Field:
-		l = len(x)
-	}
-	if i+1 < l {
-		return ","
-	}
-	return ""
-}
-
 func (f *Funcs) isEndConstraint(idx *xo.Index) bool {
 	if f.driver == "sqlite3" && idx.Fields[0].IsSequence {
 		return false
@@ -368,4 +348,16 @@ var omitPrecision = map[string]map[string]bool{
 		"TIMESTAMP WITH TIME ZONE":       true,
 		"TIMESTAMP WITH LOCAL TIME ZONE": true,
 	},
+}
+
+func comma(i int, v interface{}) string {
+	var l int
+	switch x := v.(type) {
+	case []xo.Field:
+		l = len(x)
+	}
+	if i+1 < l {
+		return ","
+	}
+	return ""
 }

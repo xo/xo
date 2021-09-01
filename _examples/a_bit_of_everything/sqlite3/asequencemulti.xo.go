@@ -44,12 +44,12 @@ func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, asm.AText)
 	res, err := db.ExecContext(ctx, sqlstr, asm.AText)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	asm.ASeq = int(id)
 	// set exists
@@ -103,7 +103,7 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, asm.ASeq, asm.AText)
 	if _, err := db.ExecContext(ctx, sqlstr, asm.ASeq, asm.AText); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	asm._exists = true

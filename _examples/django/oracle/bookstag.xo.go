@@ -45,7 +45,7 @@ func (bt *BooksTag) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, bt.BookID, bt.TagID)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, bt.BookID, bt.TagID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	bt.ID = int64(id)
 	// set exists
@@ -105,7 +105,7 @@ func (bt *BooksTag) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, bt.ID, bt.BookID, bt.TagID)
 	if _, err := db.ExecContext(ctx, sqlstr, bt.ID, bt.BookID, bt.TagID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	bt._exists = true

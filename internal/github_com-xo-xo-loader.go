@@ -10,7 +10,6 @@ import (
 func init() {
 	Symbols["github.com/xo/xo/loader/loader"] = map[string]reflect.Value{
 		// function, constant and variable definitions
-		"CtxLoader":            reflect.ValueOf(loader.CtxLoader),
 		"EnableOids":           reflect.ValueOf(loader.EnableOids),
 		"Flags":                reflect.ValueOf(loader.Flags),
 		"Get":                  reflect.ValueOf(loader.Get),

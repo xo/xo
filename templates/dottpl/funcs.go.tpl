@@ -1,4 +1,5 @@
-package dottpl
+// Package funcs provides custom template funcs.
+package funcs
 
 import (
 	"bytes"
@@ -8,8 +9,29 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
+	"github.com/xo/xo/templates/dottpl"
 	xo "github.com/xo/xo/types"
 )
+
+// Init intializes the custom template funcs.
+func Init(ctx context.Context) (template.FuncMap, error) {
+	driver, schema, _ := xo.DriverSchemaNthParam(ctx)
+	// parse row template
+	row, err := template.New("row").Parse(dottpl.Row(ctx))
+	if err != nil {
+		return nil, err
+	}
+	funcs := &Funcs{
+		driver:    driver,
+		schema:    schema,
+		defaults:  dottpl.Defaults(ctx),
+		bold:      dottpl.Bold(ctx),
+		color:     dottpl.Color(ctx),
+		row:       row,
+		direction: dottpl.Direction(ctx),
+	}
+	return funcs.FuncMap(), nil
+}
 
 // Funcs is a set of template funcs.
 type Funcs struct {
@@ -22,25 +44,6 @@ type Funcs struct {
 	direction bool
 }
 
-// NewFuncs creates a new Funcs
-func NewFuncs(ctx context.Context) (*Funcs, error) {
-	driver, schema, _ := xo.DriverSchemaNthParam(ctx)
-	// parse row template
-	row, err := template.New("row").Parse(Row(ctx))
-	if err != nil {
-		return nil, err
-	}
-	return &Funcs{
-		driver:    driver,
-		schema:    schema,
-		defaults:  Defaults(ctx),
-		bold:      Bold(ctx),
-		color:     Color(ctx),
-		row:       row,
-		direction: Direction(ctx),
-	}, err
-}
-
 // FuncMap returns the func map.
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
@@ -49,8 +52,8 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"header":    f.header,
 		"row":       f.rowfn,
 		"edge":      f.edge,
-		"quotes":    f.quotes,
-		"normalize": f.normalize,
+		"quotes":    quotes,
+		"normalize": normalize,
 	}
 }
 
@@ -75,7 +78,7 @@ func (f *Funcs) rowfn(field xo.Field) string {
 
 func (f *Funcs) edge(table xo.Table, fkey xo.ForeignKey, i int) string {
 	node, toNode := f.schemafn(table.Name), f.schemafn(fkey.RefTable)
-	row, toRow := f.quotes(fkey.Fields[i].Name), f.quotes(fkey.RefFields[i].Name)
+	row, toRow := quotes(fkey.Fields[i].Name), quotes(fkey.RefFields[i].Name)
 	var dirFrom, dirTo string
 	if f.direction {
 		dirFrom, dirTo = ":e", ":w"
@@ -91,19 +94,19 @@ func (f *Funcs) schemafn(names ...string) string {
 	case s == "" && n == "":
 		return ""
 	case f.driver == "sqlite3":
-		return f.quotes(n)
+		return quotes(n)
 	}
-	return f.quotes(s + "." + n)
+	return quotes(s + "." + n)
 }
 
 func (f *Funcs) defaultsfn() []string {
 	return f.defaults
 }
 
-func (f *Funcs) quotes(v string) string {
+func quotes(v string) string {
 	return fmt.Sprintf("%q", v)
 }
 
-func (f *Funcs) normalize(v string) string {
+func normalize(v string) string {
 	return snaker.CamelToSnakeIdentifier(snaker.ForceCamelIdentifier(v))
 }

@@ -45,7 +45,7 @@ func (dct *DjangoContentType) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, dct.AppLabel, dct.Model)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, dct.AppLabel, dct.Model, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	dct.ID = int64(id)
 	// set exists
@@ -105,7 +105,7 @@ func (dct *DjangoContentType) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dct.ID, dct.AppLabel, dct.Model)
 	if _, err := db.ExecContext(ctx, sqlstr, dct.ID, dct.AppLabel, dct.Model); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dct._exists = true

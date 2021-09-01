@@ -70,17 +70,17 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 {{- else if (driver "oracle") -}}
 	var id int64
 	if _, err := {{ db_prefix "Exec" true $t (named "pk" "&id" true) }}; err != nil {
-		return err
+		return logerror(err)
 	}
 {{- else -}}
 	res, err := {{ db_prefix "Exec" true $t }}
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 {{- end -}}
 {{ if not (driver "postgres") -}}
@@ -158,7 +158,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	// run
 	{{ logf $t }}
 	if _, err := {{ db_prefix "Exec" false $t }}; err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	{{ short $t }}._exists = true

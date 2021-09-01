@@ -19,11 +19,7 @@ func init() {
 		"Direction":    reflect.ValueOf(dottpl.Direction),
 		"DirectionKey": reflect.ValueOf(dottpl.DirectionKey),
 		"Files":        reflect.ValueOf(&dottpl.Files).Elem(),
-		"NewFuncs":     reflect.ValueOf(dottpl.NewFuncs),
 		"Row":          reflect.ValueOf(dottpl.Row),
 		"RowKey":       reflect.ValueOf(dottpl.RowKey),
-
-		// type definitions
-		"Funcs": reflect.ValueOf((*dottpl.Funcs)(nil)),
 	}
 }

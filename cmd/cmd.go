@@ -374,12 +374,12 @@ func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 			return nil, err
 		}
 	}
+	// add driver to context
+	ctx = context.WithValue(ctx, xo.DriverKey, v.Driver)
 	// add db to context
 	ctx = context.WithValue(ctx, xo.DbKey, db)
 	// add loader to context
 	ctx = context.WithValue(ctx, xo.LoaderKey, l)
-	// add driver to context
-	ctx = context.WithValue(ctx, xo.DriverKey, v.Driver)
 	// add schema to context
 	ctx = context.WithValue(ctx, xo.SchemaKey, schema)
 	// add nth-func to context

@@ -42,12 +42,12 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr)
 	res, err := db.ExecContext(ctx, sqlstr)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	as.ASeq = int(id)
 	// set exists

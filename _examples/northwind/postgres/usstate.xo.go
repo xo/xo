@@ -98,7 +98,7 @@ func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion)
 	if _, err := db.ExecContext(ctx, sqlstr, us.StateID, us.StateName, us.StateAbbr, us.StateRegion); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	us._exists = true

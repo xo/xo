@@ -14,6 +14,8 @@ func init() {
 		"ConstraintKey":  reflect.ValueOf(createdbtpl.ConstraintKey),
 		"Engine":         reflect.ValueOf(createdbtpl.Engine),
 		"EngineKey":      reflect.ValueOf(createdbtpl.EngineKey),
+		"EnumMap":        reflect.ValueOf(createdbtpl.EnumMap),
+		"EnumMapKey":     reflect.ValueOf(createdbtpl.EnumMapKey),
 		"Esc":            reflect.ValueOf(createdbtpl.Esc),
 		"EscKey":         reflect.ValueOf(createdbtpl.EscKey),
 		"Files":          reflect.ValueOf(&createdbtpl.Files).Elem(),
@@ -22,11 +24,7 @@ func init() {
 		"FmtOpts":        reflect.ValueOf(createdbtpl.FmtOpts),
 		"FmtOptsKey":     reflect.ValueOf(createdbtpl.FmtOptsKey),
 		"Lang":           reflect.ValueOf(createdbtpl.Lang),
-		"NewFuncs":       reflect.ValueOf(createdbtpl.NewFuncs),
 		"TrimComment":    reflect.ValueOf(createdbtpl.TrimComment),
 		"TrimCommentKey": reflect.ValueOf(createdbtpl.TrimCommentKey),
-
-		// type definitions
-		"Funcs": reflect.ValueOf((*createdbtpl.Funcs)(nil)),
 	}
 }

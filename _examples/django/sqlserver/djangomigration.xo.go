@@ -117,7 +117,7 @@ func (dm *DjangoMigration) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dm.ID, dm.App, dm.Name, dm.Applied)
 	if _, err := db.ExecContext(ctx, sqlstr, dm.ID, dm.App, dm.Name, dm.Applied); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dm._exists = true

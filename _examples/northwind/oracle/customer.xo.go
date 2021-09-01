@@ -111,7 +111,7 @@ func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CustomerID, c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Phone, c.Fax); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	c._exists = true

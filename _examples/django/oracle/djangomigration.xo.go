@@ -47,7 +47,7 @@ func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, dm.App, dm.Name, dm.Applied)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, dm.App, dm.Name, dm.Applied, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	dm.ID = int64(id)
 	// set exists
@@ -107,7 +107,7 @@ func (dm *DjangoMigration) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, dm.ID, dm.App, dm.Name, dm.Applied)
 	if _, err := db.ExecContext(ctx, sqlstr, dm.ID, dm.App, dm.Name, dm.Applied); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	dm._exists = true

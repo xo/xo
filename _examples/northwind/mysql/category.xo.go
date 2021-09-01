@@ -97,7 +97,7 @@ func (c *Category) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture)
 	if _, err := db.ExecContext(ctx, sqlstr, c.CategoryID, c.CategoryName, c.Description, c.Picture); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	c._exists = true

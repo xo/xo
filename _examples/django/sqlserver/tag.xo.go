@@ -114,7 +114,7 @@ func (t *Tag) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, t.TagID, t.Tag)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TagID, t.Tag); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	t._exists = true

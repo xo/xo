@@ -1,30 +1,29 @@
-package jsontpl
+// Package funcs provides custom template funcs.
+package funcs
 
 import (
 	"context"
 	"encoding/json"
 	"text/template"
+
+	"github.com/xo/xo/templates/jsontpl"
 )
+
+// Init intializes the custom template funcs.
+func Init(ctx context.Context) (template.FuncMap, error) {
+	funcs := &Funcs{
+		indent: jsontpl.Indent(ctx),
+		ugly:   jsontpl.Ugly(ctx),
+	}
+	return template.FuncMap{
+		"json": funcs.jsonfn,
+	}, nil
+}
 
 // Funcs is a set of template funcs.
 type Funcs struct {
 	indent string
 	ugly   bool
-}
-
-// NewFuncs creates a new Funcs.
-func NewFuncs(ctx context.Context) *Funcs {
-	return &Funcs{
-		indent: Indent(ctx),
-		ugly:   Ugly(ctx),
-	}
-}
-
-// FuncMap returns the func map.
-func (f *Funcs) FuncMap() template.FuncMap {
-	return template.FuncMap{
-		"json": f.jsonfn,
-	}
 }
 
 // jsonfn marshals v as json.

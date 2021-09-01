@@ -46,7 +46,7 @@ func (ap *AuthPermission) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, ap.Name, ap.ContentTypeID, ap.Codename)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, ap.Name, ap.ContentTypeID, ap.Codename, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	ap.ID = int64(id)
 	// set exists
@@ -106,7 +106,7 @@ func (ap *AuthPermission) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, ap.ID, ap.Name, ap.ContentTypeID, ap.Codename)
 	if _, err := db.ExecContext(ctx, sqlstr, ap.ID, ap.Name, ap.ContentTypeID, ap.Codename); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	ap._exists = true

@@ -96,7 +96,7 @@ func (agp *AuthGroupPermission) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, agp.ID, agp.GroupID, agp.PermissionID)
 	if _, err := db.ExecContext(ctx, sqlstr, agp.ID, agp.GroupID, agp.PermissionID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	agp._exists = true

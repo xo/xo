@@ -96,7 +96,7 @@ func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, apm.AKey, apm.AText)
 	if _, err := db.ExecContext(ctx, sqlstr, apm.AKey, apm.AText); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	apm._exists = true

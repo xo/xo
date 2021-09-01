@@ -8,9 +8,11 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strings"
 	"text/template"
 
 	"github.com/traefik/yaegi/interp"
@@ -71,25 +73,15 @@ func Flags(name string) []xo.FlagSet {
 	return flags
 }
 
-// AddKnownType adds a known type name to a template set.
-func AddKnownType(ctx context.Context, name string) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
-	}
-	if set.AddType != nil {
-		set.AddType(name)
-	}
-	return nil
-}
-
 // Process processes emitted templates for a template set.
 func Process(ctx context.Context, doAppend bool, single string, v *xo.XO) error {
 	typ := TemplateType(ctx)
 	set, ok := templates[typ]
 	if !ok {
 		return fmt.Errorf("unknown template %q", typ)
+	}
+	if set.BuildContext != nil {
+		ctx = set.BuildContext(ctx)
 	}
 	if err := set.Process(ctx, doAppend, set, v); err != nil {
 		return err
@@ -256,6 +248,9 @@ type TemplateSet struct {
 	Funcs func(context.Context) (template.FuncMap, error)
 	// FileName determines the out file name templates.
 	FileName func(context.Context, *Template) string
+	// BuildContext provides a way for template sets to inject additional,
+	// global context values.
+	BuildContext func(context.Context) context.Context
 	// Process performs the preprocessing and the order to load files.
 	Process func(context.Context, bool, *TemplateSet, *xo.XO) error
 	// Post performs post processing of generated content.
@@ -311,7 +306,7 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 	// build funcs
 	funcs, err := set.BuildFuncs(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("unable to build funcs %s: %w", name, err)
+		return nil, fmt.Errorf("unable to build custom template funcs for %s: %w", name, err)
 	}
 	// parse content
 	t, err := template.New(name).Funcs(funcs).Parse(string(buf))
@@ -323,14 +318,20 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 
 // BuildFuncs builds the funcs for
 func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error) {
-	// get src and default funcs
+	// get template src
 	src := Src(ctx)
 	if src == nil {
 		src = set.Files
 	}
-	funcs, err := set.Funcs(ctx)
-	if err != nil {
-		return nil, err
+	// load default funcs
+	var funcs template.FuncMap
+	if set.Funcs == nil {
+		funcs = make(template.FuncMap)
+	} else {
+		var err error
+		if funcs, err = set.Funcs(ctx); err != nil {
+			return nil, err
+		}
 	}
 	// read custom funcs
 	f, err := src.Open("funcs.go.tpl")
@@ -344,8 +345,14 @@ func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error
 	if err != nil {
 		return nil, fmt.Errorf("unable to read funcs.go.tpl: %w", err)
 	}
+	// determine gopath
+	var opts interp.Options
+	cmd := exec.Command("go", "env", "GOPATH")
+	if buf, err := cmd.CombinedOutput(); err == nil {
+		opts.GoPath = strings.TrimSpace(string(buf))
+	}
 	// build interpreter for custom funcs
-	i := interp.New(interp.Options{})
+	i := interp.New(opts)
 	if err := i.Use(stdlib.Symbols); err != nil {
 		return nil, fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
 	}

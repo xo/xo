@@ -13,11 +13,7 @@ func init() {
 		"Files":     reflect.ValueOf(&jsontpl.Files).Elem(),
 		"Indent":    reflect.ValueOf(jsontpl.Indent),
 		"IndentKey": reflect.ValueOf(jsontpl.IndentKey),
-		"NewFuncs":  reflect.ValueOf(jsontpl.NewFuncs),
 		"Ugly":      reflect.ValueOf(jsontpl.Ugly),
 		"UglyKey":   reflect.ValueOf(jsontpl.UglyKey),
-
-		// type definitions
-		"Funcs": reflect.ValueOf((*jsontpl.Funcs)(nil)),
 	}
 }

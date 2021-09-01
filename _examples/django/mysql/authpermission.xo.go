@@ -45,12 +45,12 @@ func (ap *AuthPermission) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, ap.Name, ap.ContentTypeID, ap.Codename)
 	res, err := db.ExecContext(ctx, sqlstr, ap.Name, ap.ContentTypeID, ap.Codename)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	ap.ID = int(id)
 	// set exists
@@ -103,7 +103,7 @@ func (ap *AuthPermission) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, ap.ID, ap.Name, ap.ContentTypeID, ap.Codename)
 	if _, err := db.ExecContext(ctx, sqlstr, ap.ID, ap.Name, ap.ContentTypeID, ap.Codename); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	ap._exists = true

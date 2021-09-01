@@ -1,5 +1,7 @@
 package gotpl
 
+import "fmt"
+
 // EnumValue is a enum value template.
 type EnumValue struct {
 	GoName     string
@@ -94,4 +96,18 @@ type Query struct {
 	Interpolate bool
 	Type        Table
 	Comment     string
+}
+
+// PackageImport holds information about a Go package import.
+type PackageImport struct {
+	Alias string
+	Pkg   string
+}
+
+// String satisfies the fmt.Stringer interface.
+func (v PackageImport) String() string {
+	if v.Alias != "" {
+		return fmt.Sprintf("%s %q", v.Alias, v.Pkg)
+	}
+	return fmt.Sprintf("%q", v.Pkg)
 }

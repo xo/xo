@@ -1,9 +1,8 @@
-package jsontpl
+package yamltpl
 
 import (
 	"context"
 	"embed"
-	"text/template"
 
 	"github.com/xo/xo/templates"
 	xo "github.com/xo/xo/types"
@@ -13,9 +12,6 @@ func init() {
 	templates.Register("yaml", &templates.TemplateSet{
 		Files:   Files,
 		FileExt: ".xo.yaml",
-		Funcs: func(ctx context.Context) (template.FuncMap, error) {
-			return NewFuncs(ctx).FuncMap(), nil
-		},
 		FileName: func(ctx context.Context, tpl *templates.Template) string {
 			return tpl.Name
 		},

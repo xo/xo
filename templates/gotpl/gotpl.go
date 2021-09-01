@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-	"text/template"
 
 	"github.com/gedex/inflector"
 	"github.com/kenshaw/snaker"
@@ -39,7 +38,7 @@ func init() {
 		"Slice":       true,
 		"StringSlice": true,
 	}
-	shortNames := map[string]string{
+	shorts := map[string]string{
 		"bool":        "b",
 		"string":      "s",
 		"byte":        "b",
@@ -169,12 +168,11 @@ func init() {
 				Value:       "",
 			},
 		},
-		Funcs: func(ctx context.Context) (template.FuncMap, error) {
-			f, err := NewFuncs(ctx, knownTypes, shortNames, &first)
-			if err != nil {
-				return nil, err
-			}
-			return f.FuncMap(), nil
+		BuildContext: func(ctx context.Context) context.Context {
+			ctx = context.WithValue(ctx, FirstKey, &first)
+			ctx = context.WithValue(ctx, KnownTypesKey, knownTypes)
+			ctx = context.WithValue(ctx, ShortsKey, shorts)
+			return ctx
 		},
 		HeaderTemplate: func(ctx context.Context) *templates.Template {
 			return &templates.Template{
@@ -193,7 +191,7 @@ func init() {
 			}
 		},
 		Process: func(ctx context.Context, doAppend bool, set *templates.TemplateSet, v *xo.XO) error {
-			if err := Initialisms(ctx); err != nil {
+			if err := addInitialisms(ctx); err != nil {
 				return err
 			}
 			for _, q := range v.Queries {
@@ -339,6 +337,7 @@ func buildQueryName(query xo.Query) string {
 	return name
 }
 
+// emitSchema emits the xo schema for the template set.
 func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) error {
 	// emit enums
 	for _, e := range s.Enums {
@@ -430,7 +429,6 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -455,6 +453,7 @@ func convertEnum(e xo.Enum) Enum {
 	}
 }
 
+// convertProc converts a xo.Proc.
 func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []string, p xo.Proc) ([]string, error) {
 	_, schema, _ := xo.DriverSchemaNthParam(ctx)
 	proc := Proc{
@@ -504,6 +503,7 @@ func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []str
 	return order, nil
 }
 
+// convertTable converts a xo.Table to a Table.
 func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 	var cols, pkCols []Field
 	for _, z := range t.Columns {
@@ -629,6 +629,9 @@ func camelExport(names ...string) string {
 
 // Context keys.
 const (
+	FirstKey      xo.ContextKey = "first"
+	KnownTypesKey xo.ContextKey = "known-types"
+	ShortsKey     xo.ContextKey = "shorts"
 	NotFirstKey   xo.ContextKey = "not-first"
 	PkgKey        xo.ContextKey = "pkg"
 	TagKey        xo.ContextKey = "tag"
@@ -648,6 +651,24 @@ const (
 func Loader(ctx context.Context) *loader.Loader {
 	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
 	return l
+}
+
+// First returns first from the context.
+func First(ctx context.Context) *bool {
+	b, _ := ctx.Value(FirstKey).(*bool)
+	return b
+}
+
+// KnownTYpes returns known-types from the context.
+func KnownTypes(ctx context.Context) map[string]bool {
+	m, _ := ctx.Value(KnownTypesKey).(map[string]bool)
+	return m
+}
+
+// Shorts retruns shorts from the context.
+func Shorts(ctx context.Context) map[string]string {
+	m, _ := ctx.Value(ShortsKey).(map[string]string)
+	return m
 }
 
 // NotFirst returns not-first from the context.
@@ -707,8 +728,8 @@ func Conflict(ctx context.Context) string {
 	return s
 }
 
-// Initialisms returns tags from the context.
-func Initialisms(ctx context.Context) error {
+// addInitialisms adds snaker initialisms from the context.
+func addInitialisms(ctx context.Context) error {
 	var v []string
 	for _, s := range ctx.Value(InitialismKey).([]string) {
 		if s != "" {

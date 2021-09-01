@@ -44,12 +44,12 @@ func (aug *AuthUserGroup) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, aug.UserID, aug.GroupID)
 	res, err := db.ExecContext(ctx, sqlstr, aug.UserID, aug.GroupID)
 	if err != nil {
-		return err
+		return logerror(err)
 	}
 	// retrieve id
 	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	aug.ID = int64(id)
 	// set exists
@@ -102,7 +102,7 @@ func (aug *AuthUserGroup) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, aug.ID, aug.UserID, aug.GroupID)
 	if _, err := db.ExecContext(ctx, sqlstr, aug.ID, aug.UserID, aug.GroupID); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	aug._exists = true

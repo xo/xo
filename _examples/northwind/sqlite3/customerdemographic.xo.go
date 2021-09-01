@@ -96,7 +96,7 @@ func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, cd.CustomerTypeID, cd.CustomerDesc)
 	if _, err := db.ExecContext(ctx, sqlstr, cd.CustomerTypeID, cd.CustomerDesc); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	cd._exists = true

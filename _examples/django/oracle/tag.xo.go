@@ -44,7 +44,7 @@ func (t *Tag) Insert(ctx context.Context, db DB) error {
 	logf(sqlstr, t.Tag)
 	var id int64
 	if _, err := db.ExecContext(ctx, sqlstr, t.Tag, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
-		return err
+		return logerror(err)
 	} // set primary key
 	t.TagID = int64(id)
 	// set exists
@@ -104,7 +104,7 @@ func (t *Tag) Upsert(ctx context.Context, db DB) error {
 	// run
 	logf(sqlstr, t.TagID, t.Tag)
 	if _, err := db.ExecContext(ctx, sqlstr, t.TagID, t.Tag); err != nil {
-		return err
+		return logerror(err)
 	}
 	// set exists
 	t._exists = true
