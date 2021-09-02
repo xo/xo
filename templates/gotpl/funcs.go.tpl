@@ -100,8 +100,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"context_both":    f.context_both,
 		"context_disable": f.context_disable,
 		// func and query
-		"func_name_context":   f.func_name_context,
-		"func_name":           f.func_name_none,
+		"func_name":           f.func_name,
 		"func_context":        f.func_context,
 		"func":                f.func_none,
 		"recv_context":        f.recv_context,
@@ -223,50 +222,49 @@ func (f *Funcs) injectfn() string {
 	return f.inject
 }
 
-// func_name_none builds a func name.
-func (f *Funcs) func_name_none(v interface{}) string {
-	switch x := v.(type) {
-	case string:
-		return x
-	case gotpl.Query:
-		return x.Name
-	case gotpl.Table:
-		return x.GoName
-	case gotpl.ForeignKey:
-		return x.GoName
-	case gotpl.Proc:
-		n := x.GoName
-		if x.Overloaded {
-			n = x.OverloadedName
+// func_name builds a func name.
+func (f *Funcs) func_name(context bool, v interface{}) string {
+	if context {
+		switch x := v.(type) {
+		case string:
+			return nameContext(f.context_both(), x)
+		case gotpl.Query:
+			return nameContext(f.context_both(), x.Name)
+		case gotpl.Table:
+			return nameContext(f.context_both(), x.GoName)
+		case gotpl.ForeignKey:
+			return nameContext(f.context_both(), x.GoName)
+		case gotpl.Proc:
+			n := x.GoName
+			if x.Overloaded {
+				n = x.OverloadedName
+			}
+			return nameContext(f.context_both(), n)
+		case gotpl.Index:
+			return nameContext(f.context_both(), x.FuncName)
 		}
-		return n
-	case gotpl.Index:
-		return x.FuncName
-	}
-	return fmt.Sprintf("[[ UNSUPPORTED TYPE 1: %T ]]", v)
-}
-
-// func_name_context generates a name for the func.
-func (f *Funcs) func_name_context(v interface{}) string {
-	switch x := v.(type) {
-	case string:
-		return nameContext(f.context_both(), x)
-	case gotpl.Query:
-		return nameContext(f.context_both(), x.Name)
-	case gotpl.Table:
-		return nameContext(f.context_both(), x.GoName)
-	case gotpl.ForeignKey:
-		return nameContext(f.context_both(), x.GoName)
-	case gotpl.Proc:
-		n := x.GoName
-		if x.Overloaded {
-			n = x.OverloadedName
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE 2: %T ]]", v)
+	} else {
+		switch x := v.(type) {
+		case string:
+			return x
+		case gotpl.Query:
+			return x.Name
+		case gotpl.Table:
+			return x.GoName
+		case gotpl.ForeignKey:
+			return x.GoName
+		case gotpl.Proc:
+			n := x.GoName
+			if x.Overloaded {
+				n = x.OverloadedName
+			}
+			return n
+		case gotpl.Index:
+			return x.FuncName
 		}
-		return nameContext(f.context_both(), n)
-	case gotpl.Index:
-		return nameContext(f.context_both(), x.FuncName)
+		return fmt.Sprintf("[[ UNSUPPORTED TYPE 1: %T ]]", v)
 	}
-	return fmt.Sprintf("[[ UNSUPPORTED TYPE 2: %T ]]", v)
 }
 
 // funcfn builds a func definition.
@@ -323,12 +321,12 @@ func (f *Funcs) funcfn(name string, context bool, v interface{}) string {
 // func_context generates a func signature for v with context determined by the
 // context mode.
 func (f *Funcs) func_context(v interface{}) string {
-	return f.funcfn(f.func_name_context(v), f.contextfn(), v)
+	return f.funcfn(f.func_name(true, v), f.contextfn(), v)
 }
 
 // func_none genarates a func signature for v without context.
 func (f *Funcs) func_none(v interface{}) string {
-	return f.funcfn(f.func_name_none(v), false, v)
+	return f.funcfn(f.func_name(false, v), false, v)
 }
 
 // recv builds a receiver func definition.
@@ -353,7 +351,7 @@ func (f *Funcs) recv(name string, context bool, t gotpl.Table, v interface{}) st
 func (f *Funcs) recv_context(typ interface{}, v interface{}) string {
 	switch x := typ.(type) {
 	case gotpl.Table:
-		return f.recv(f.func_name_context(v), f.contextfn(), x, v)
+		return f.recv(f.func_name(true, v), f.contextfn(), x, v)
 	}
 	return fmt.Sprintf("[[ UNSUPPORTED TYPE 4: %T ]]", typ)
 }
@@ -362,7 +360,7 @@ func (f *Funcs) recv_context(typ interface{}, v interface{}) string {
 func (f *Funcs) recv_none(typ interface{}, v interface{}) string {
 	switch x := typ.(type) {
 	case gotpl.Table:
-		return f.recv(f.func_name_none(v), false, x, v)
+		return f.recv(f.func_name(false, v), false, x, v)
 	}
 	return fmt.Sprintf("[[ UNSUPPORTED TYPE 5: %T ]]", typ)
 }

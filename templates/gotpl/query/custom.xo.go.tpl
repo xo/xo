@@ -1,8 +1,8 @@
 {{- $q := .Data -}}
 {{- if $q.Comment -}}
-// {{ $q.Comment | eval (func_name_context $q) }}
+// {{ $q.Comment | eval (func_name true $q) }}
 {{- else -}}
-// {{ func_name_context $q }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.GoName }}{{ end }}.
+// {{ func_name true $q }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.GoName }}{{ end }}.
 {{- end }}
 {{ func_context $q }} {
 	// query
@@ -50,12 +50,12 @@
 
 {{ if context_both -}}
 {{- if $q.Comment -}}
-// {{ $q.Comment | eval (func_name $q) }}
+// {{ $q.Comment | eval (func_name false $q) }}
 {{- else -}}
-// {{ func_name $q }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.GoName }}{{ end }}.
+// {{ func_name false $q }} runs a custom query{{ if $q.Exec }} as a sql.Result{{ else if not $q.Flat }}, returning results as {{ $q.Type.GoName }}{{ end }}.
 {{- end }}
 {{ func $q }} {
-	return {{ func_name_context $q }}({{ names_all "" "context.Background()" "db" $q }})
+	return {{ func_name true $q }}({{ names_all "" "context.Background()" "db" $q }})
 }
 {{- end }}
 
