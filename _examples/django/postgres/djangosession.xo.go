@@ -178,37 +178,3 @@ func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*
 	}
 	return &ds, nil
 }
-
-// DjangoSessionBySessionKey retrieves a row from 'public.django_session' as a DjangoSession.
-//
-// Generated from index 'django_session_session_key_c0390e0f_like'.
-func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) ([]*DjangoSession, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`session_key, session_data, expire_date ` +
-		`FROM public.django_session ` +
-		`WHERE session_key = $1`
-	// run
-	logf(sqlstr, sessionKey)
-	rows, err := db.QueryContext(ctx, sqlstr, sessionKey)
-	if err != nil {
-		return nil, logerror(err)
-	}
-	defer rows.Close()
-	// process
-	var res []*DjangoSession
-	for rows.Next() {
-		ds := DjangoSession{
-			_exists: true,
-		}
-		// scan
-		if err := rows.Scan(&ds.SessionKey, &ds.SessionData, &ds.ExpireDate); err != nil {
-			return nil, logerror(err)
-		}
-		res = append(res, &ds)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, logerror(err)
-	}
-	return res, nil
-}

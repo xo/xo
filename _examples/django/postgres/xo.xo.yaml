@@ -23,13 +23,6 @@ schemas:
         is_primary: true
         is_sequence: true
       indexes:
-      - name: auth_group_name_a6ea08ec_like
-        func_name: auth_group_by_name
-        fields:
-        - name: name
-          datatype:
-            type: character varying
-            prec: 150
       - name: auth_group_name_key
         func_name: auth_group_by_name
         fields:
@@ -259,13 +252,6 @@ schemas:
           is_sequence: true
         is_unique: true
         is_primary: true
-      - name: auth_user_username_6821ab7c_like
-        func_name: auth_user_by_username
-        fields:
-        - name: username
-          datatype:
-            type: character varying
-            prec: 150
       - name: auth_user_username_key
         func_name: auth_user_by_username
         fields:
@@ -824,14 +810,6 @@ schemas:
           is_primary: true
         is_unique: true
         is_primary: true
-      - name: django_session_session_key_c0390e0f_like
-        func_name: django_session_by_session_key
-        fields:
-        - name: session_key
-          datatype:
-            type: character varying
-            prec: 40
-          is_primary: true
       manual: true
     - type: table
       name: tags

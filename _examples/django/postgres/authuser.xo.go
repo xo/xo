@@ -156,40 +156,6 @@ func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 
 // AuthUserByUsername retrieves a row from 'public.auth_user' as a AuthUser.
 //
-// Generated from index 'auth_user_username_6821ab7c_like'.
-func AuthUserByUsername(ctx context.Context, db DB, username string) ([]*AuthUser, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined ` +
-		`FROM public.auth_user ` +
-		`WHERE username = $1`
-	// run
-	logf(sqlstr, username)
-	rows, err := db.QueryContext(ctx, sqlstr, username)
-	if err != nil {
-		return nil, logerror(err)
-	}
-	defer rows.Close()
-	// process
-	var res []*AuthUser
-	for rows.Next() {
-		au := AuthUser{
-			_exists: true,
-		}
-		// scan
-		if err := rows.Scan(&au.ID, &au.Password, &au.LastLogin, &au.IsSuperuser, &au.Username, &au.FirstName, &au.LastName, &au.Email, &au.IsStaff, &au.IsActive, &au.DateJoined); err != nil {
-			return nil, logerror(err)
-		}
-		res = append(res, &au)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, logerror(err)
-	}
-	return res, nil
-}
-
-// AuthUserByUsername retrieves a row from 'public.auth_user' as a AuthUser.
-//
 // Generated from index 'auth_user_username_key'.
 func AuthUserByUsername(ctx context.Context, db DB, username string) (*AuthUser, error) {
 	// query

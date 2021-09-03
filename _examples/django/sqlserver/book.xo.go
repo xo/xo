@@ -10,7 +10,7 @@ import (
 // Book represents a row from 'django.books'.
 type Book struct {
 	BookID            int64     `json:"book_id"`              // book_id
-	Isbn              string    `json:"isbn"`                 // isbn
+	ISBN              string    `json:"isbn"`                 // isbn
 	BookType          int       `json:"book_type"`            // book_type
 	Title             string    `json:"title"`                // title
 	Year              int       `json:"year"`                 // year
@@ -46,8 +46,8 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 		`@p1, @p2, @p3, @p4, @p5, @p6` +
 		`); SELECT ID = CONVERT(BIGINT, SCOPE_IDENTITY())`
 	// run
-	logf(sqlstr, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
-	rows, err := db.QueryContext(ctx, sqlstr, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
+	logf(sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
+	rows, err := db.QueryContext(ctx, sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
 	if err != nil {
 		return logerror(err)
 	}
@@ -81,8 +81,8 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 		`isbn = @p1, book_type = @p2, title = @p3, year = @p4, available = @p5, books_author_id_fkey = @p6 ` +
 		`WHERE book_id = @p7`
 	// run
-	logf(sqlstr, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, b.BookID)
-	if _, err := db.ExecContext(ctx, sqlstr, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, b.BookID); err != nil {
+	logf(sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, b.BookID)
+	if _, err := db.ExecContext(ctx, sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, b.BookID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -118,8 +118,8 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 		`s.isbn, s.book_type, s.title, s.year, s.available, s.books_author_id_fkey` +
 		`);`
 	// run
-	logf(sqlstr, b.BookID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
-	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.Isbn, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey); err != nil {
+	logf(sqlstr, b.BookID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
+	if _, err := db.ExecContext(ctx, sqlstr, b.BookID, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -162,7 +162,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int64) (*Book, error) {
 	b := Book{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, bookID).Scan(&b.BookID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
 		return nil, logerror(err)
 	}
 	return &b, nil
@@ -191,7 +191,7 @@ func BooksByBooksAuthorIDFkey(ctx context.Context, db DB, booksAuthorIDFkey int6
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&b.BookID, &b.Isbn, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
+		if err := rows.Scan(&b.BookID, &b.ISBN, &b.BookType, &b.Title, &b.Year, &b.Available, &b.BooksAuthorIDFkey); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &b)

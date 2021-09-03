@@ -8,9 +8,6 @@ CREATE TABLE auth_group (
   PRIMARY KEY (id)
 );
 
--- index auth_group_name_a6ea08ec_like
-CREATE INDEX auth_group_name_a6ea08ec_like ON auth_group (name);
-
 -- table django_content_type
 CREATE TABLE django_content_type (
   id SERIAL,
@@ -64,9 +61,6 @@ CREATE TABLE auth_user (
   PRIMARY KEY (id),
   UNIQUE (username)
 );
-
--- index auth_user_username_6821ab7c_like
-CREATE INDEX auth_user_username_6821ab7c_like ON auth_user (username);
 
 -- table auth_user_groups
 CREATE TABLE auth_user_groups (
@@ -180,6 +174,3 @@ CREATE TABLE django_session (
 
 -- index django_session_expire_date_a5c62663
 CREATE INDEX django_session_expire_date_a5c62663 ON django_session (expire_date);
-
--- index django_session_session_key_c0390e0f_like
-CREATE INDEX django_session_session_key_c0390e0f_like ON django_session (session_key);

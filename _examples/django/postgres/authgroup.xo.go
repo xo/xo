@@ -125,40 +125,6 @@ func (ag *AuthGroup) Delete(ctx context.Context, db DB) error {
 
 // AuthGroupByName retrieves a row from 'public.auth_group' as a AuthGroup.
 //
-// Generated from index 'auth_group_name_a6ea08ec_like'.
-func AuthGroupByName(ctx context.Context, db DB, name string) ([]*AuthGroup, error) {
-	// query
-	const sqlstr = `SELECT ` +
-		`id, name ` +
-		`FROM public.auth_group ` +
-		`WHERE name = $1`
-	// run
-	logf(sqlstr, name)
-	rows, err := db.QueryContext(ctx, sqlstr, name)
-	if err != nil {
-		return nil, logerror(err)
-	}
-	defer rows.Close()
-	// process
-	var res []*AuthGroup
-	for rows.Next() {
-		ag := AuthGroup{
-			_exists: true,
-		}
-		// scan
-		if err := rows.Scan(&ag.ID, &ag.Name); err != nil {
-			return nil, logerror(err)
-		}
-		res = append(res, &ag)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, logerror(err)
-	}
-	return res, nil
-}
-
-// AuthGroupByName retrieves a row from 'public.auth_group' as a AuthGroup.
-//
 // Generated from index 'auth_group_name_key'.
 func AuthGroupByName(ctx context.Context, db DB, name string) (*AuthGroup, error) {
 	// query
