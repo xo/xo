@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/user"
 	"reflect"
 	"strings"
 
@@ -353,18 +354,22 @@ type OutParams struct {
 // Open opens a connection to the database, returning a context for use in the
 // application logic.
 func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
+	v, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
 	// parse dsn
-	v, err := dburl.Parse(dsn)
+	u, err := dburl.Parse(dsn)
 	if err != nil {
 		return nil, err
 	}
 	// grab loader
-	l := loader.Get(v.Driver)
+	l := loader.Get(u.Driver)
 	if l == nil {
-		return nil, fmt.Errorf("no database loader available for %q", v.Driver)
+		return nil, fmt.Errorf("no database loader available for %q", u.Driver)
 	}
 	// open database
-	db, err := passfile.OpenURL(v, "xopass")
+	db, err := passfile.OpenURL(u, v.HomeDir, "xopass")
 	if err != nil {
 		return nil, err
 	}
@@ -375,7 +380,7 @@ func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 		}
 	}
 	// add driver to context
-	ctx = context.WithValue(ctx, xo.DriverKey, v.Driver)
+	ctx = context.WithValue(ctx, xo.DriverKey, u.Driver)
 	// add db to context
 	ctx = context.WithValue(ctx, xo.DbKey, db)
 	// add loader to context

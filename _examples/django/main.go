@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/user"
 
 	// drivers
 	_ "github.com/denisenkom/go-mssqldb"
@@ -58,18 +59,22 @@ func run(ctx context.Context, verbose bool, dsn string) error {
 		sqlite3.SetLogger(logger)
 		sqlserver.SetLogger(logger)
 	}
+	v, err := user.Current()
+	if err != nil {
+		return err
+	}
 	// parse url
-	v, err := parse(dsn)
+	u, err := parse(dsn)
 	if err != nil {
 		return err
 	}
 	// open database
-	db, err := passfile.OpenURL(v, "xopass")
+	db, err := passfile.OpenURL(u, v.HomeDir, "xopass")
 	if err != nil {
 		return err
 	}
 	var f func(context.Context, *sql.DB) error
-	switch v.Driver {
+	switch u.Driver {
 	case "mysql":
 		f = runMysql
 	case "oracle", "godror":

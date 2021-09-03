@@ -20,7 +20,7 @@ require (
 	github.com/sijms/go-ora v1.2.1
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/traefik/yaegi v0.9.23
-	github.com/xo/dburl v0.8.5
+	github.com/xo/dburl v0.9.0
 	github.com/yookoala/realpath v1.0.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/mod v0.5.0 // indirect
