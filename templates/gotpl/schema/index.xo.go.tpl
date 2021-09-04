@@ -1,5 +1,5 @@
 {{- $i := .Data -}}
-// {{ func_name true $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
+// {{ func_name $i "Context" }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
 //
 // Generated from index '{{ $i.SQLName }}'.
 {{ func_context $i }} {
@@ -45,11 +45,11 @@
 }
 
 {{ if context_both -}}
-// {{ func_name false $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
+// {{ func_name $i "" }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
 //
 // Generated from index '{{ $i.SQLName }}'.
 {{ func $i }} {
-	return {{ func_name true $i }}({{ names "" "context.Background()" "db" $i }})
+	return {{ func_name $i "Context" }}({{ names "" "context.Background()" "db" $i }})
 }
 {{- end }}
 

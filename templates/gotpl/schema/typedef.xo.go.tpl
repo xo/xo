@@ -26,7 +26,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	return {{ short $t }}._deleted
 }
 
-// {{ func_name true "Insert" }} inserts the {{ $t.GoName }} to the database.
+// {{ func_name "Insert" "Context" }} inserts the {{ $t.GoName }} to the database.
 {{ recv_context $t "Insert" }} {
 	switch {
 	case {{ short $t }}._exists: // already exists
@@ -104,7 +104,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 {{ if eq (len $t.Fields) (len $t.PrimaryKeys) -}}
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 {{- else -}}
-// {{ func_name true "Update" }} updates a {{ $t.GoName }} in the database.
+// {{ func_name "Update" "Context" }} updates a {{ $t.GoName }} in the database.
 {{ recv_context $t "Update" }} {
 	switch {
 	case !{{ short $t }}._exists: // doesn't exist
@@ -129,12 +129,12 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 {{- end }}
 
-// {{ func_name true "Save" }} saves the {{ $t.GoName }} to the database.
+// {{ func_name "Save" "Context"}} saves the {{ $t.GoName }} to the database.
 {{ recv_context $t "Save" }} {
 	if {{ short $t }}.Exists() {
-		return {{ short $t }}.{{ func_name true "Update" }}({{ if context }}ctx, {{ end }}db)
+		return {{ short $t }}.{{ func_name "Update" "Context"}}({{ if context }}ctx, {{ end }}db)
 	}
-	return {{ short $t }}.{{ func_name true "Insert" }}({{ if context }}ctx, {{ end }}db)
+	return {{ short $t }}.{{ func_name "Insert" "Context" }}({{ if context }}ctx, {{ end }}db)
 }
 
 {{ if context_both -}}
@@ -147,7 +147,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 {{- end }}
 
-// {{ func_name true "Upsert" }} performs an upsert for {{ $t.GoName }}.
+// {{ func_name "Upsert" "Context"}} performs an upsert for {{ $t.GoName }}.
 {{ recv_context $t "Upsert" }} {
 	switch {
 	case {{ short $t }}._deleted: // deleted
@@ -173,7 +173,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 {{- end -}}
 {{- end }}
 
-// {{ func_name true "Delete" }} deletes the {{ $t.GoName }} from the database.
+// {{ func_name "Delete" "Context" }} deletes the {{ $t.GoName }} from the database.
 {{ recv_context $t "Delete" }} {
 	switch {
 	case !{{ short $t }}._exists: // doesn't exist

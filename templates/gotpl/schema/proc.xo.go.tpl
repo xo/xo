@@ -1,6 +1,6 @@
 {{- $ps := .Data -}}
 {{- range $p := $ps -}}
-// {{ func_name true $p }} calls the stored {{ $p.Type }} '{{ $p.Signature }}' on db.
+// {{ func_name $p "Context" }} calls the stored {{ $p.Type }} '{{ $p.Signature }}' on db.
 {{ func_context $p }} {
 {{- if and (driver "mysql") (eq $p.Type "procedure") (not $p.Void) }}
 	// At the moment, the Go MySQL driver does not support stored procedures
@@ -38,9 +38,9 @@
 }
 
 {{ if context_both -}}
-// {{ func_name false $p }} calls the {{ $p.Type }} '{{ $p.Signature }}' on db.
+// {{ func_name $p "" }} calls the {{ $p.Type }} '{{ $p.Signature }}' on db.
 {{ func $p }} {
-	return {{ func_name true $p }}({{ names_all "" "context.Background()" "db" $p.Params }})
+	return {{ func_name $p "Context" }}({{ names_all "" "context.Background()" "db" $p.Params }})
 }
 {{- end -}}
 {{- end }}

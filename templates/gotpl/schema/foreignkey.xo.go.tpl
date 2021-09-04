@@ -1,5 +1,5 @@
 {{- $k := .Data -}}
-// {{ func_name true $k }} returns the {{ $k.RefTable }} associated with the {{ $k.Table.GoName }}'s ({{ names "" $k.Fields }}).
+// {{ func_name $k "Context" }} returns the {{ $k.RefTable }} associated with the {{ $k.Table.GoName }}'s ({{ names "" $k.Fields }}).
 //
 // Generated from foreign key '{{ $k.SQLName }}'.
 {{ recv_context $k.Table $k }} {
@@ -7,7 +7,7 @@
 }
 {{- if context_both }}
 
-// {{ func_name false $k }} returns the {{ $k.RefTable }} associated with the {{ $k.Table }}'s ({{ names "" $k.Fields }}).
+// {{ func_name $k "" }} returns the {{ $k.RefTable }} associated with the {{ $k.Table }}'s ({{ names "" $k.Fields }}).
 //
 // Generated from foreign key '{{ $k.SQLName }}'.
 {{ recv $k.Table $k }} {
