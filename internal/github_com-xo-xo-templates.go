@@ -10,6 +10,7 @@ import (
 func init() {
 	Symbols["github.com/xo/xo/templates/templates"] = map[string]reflect.Value{
 		// function, constant and variable definitions
+		"BaseFuncs":       reflect.ValueOf(templates.BaseFuncs),
 		"Errors":          reflect.ValueOf(templates.Errors),
 		"Flags":           reflect.ValueOf(templates.Flags),
 		"For":             reflect.ValueOf(templates.For),

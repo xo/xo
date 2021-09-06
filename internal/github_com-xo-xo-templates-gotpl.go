@@ -32,6 +32,8 @@ func init() {
 		"InjectKey":     reflect.ValueOf(gotpl.InjectKey),
 		"KnownTypes":    reflect.ValueOf(gotpl.KnownTypes),
 		"KnownTypesKey": reflect.ValueOf(gotpl.KnownTypesKey),
+		"Legacy":        reflect.ValueOf(gotpl.Legacy),
+		"LegacyKey":     reflect.ValueOf(gotpl.LegacyKey),
 		"Loader":        reflect.ValueOf(gotpl.Loader),
 		"NotFirst":      reflect.ValueOf(gotpl.NotFirst),
 		"NotFirstKey":   reflect.ValueOf(gotpl.NotFirstKey),

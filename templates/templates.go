@@ -15,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
 	xo "github.com/xo/xo/types"
@@ -26,6 +27,11 @@ var templates = map[string]*TemplateSet{}
 // Register registers a template set.
 func Register(typ string, set *TemplateSet) {
 	templates[typ] = set
+}
+
+// BaseFuncs returns base template funcs.
+func BaseFuncs() template.FuncMap {
+	return sprig.TxtFuncMap()
 }
 
 // Types returns the registered type names of template sets.
@@ -80,8 +86,13 @@ func Process(ctx context.Context, doAppend bool, single string, v *xo.XO) error 
 	if !ok {
 		return fmt.Errorf("unknown template %q", typ)
 	}
+	// build context
 	if set.BuildContext != nil {
 		ctx = set.BuildContext(ctx)
+	}
+	// build funcs
+	if err := set.BuildFuncs(ctx); err != nil {
+		return fmt.Errorf("unable to build template funcs: %w", err)
 	}
 	if err := set.Process(ctx, doAppend, set, v); err != nil {
 		return err
@@ -245,11 +256,11 @@ type TemplateSet struct {
 	// PackageTemplates returns package templates.
 	PackageTemplates func(context.Context) []*Template
 	// Funcs provides template funcs for use by templates.
-	Funcs func(context.Context) (template.FuncMap, error)
+	Funcs func(context.Context) template.FuncMap
 	// FileName determines the out file name templates.
 	FileName func(context.Context, *Template) string
 	// BuildContext provides a way for template sets to inject additional,
-	// global context values.
+	// global context values, prior to template processing.
 	BuildContext func(context.Context) context.Context
 	// Process performs the preprocessing and the order to load files.
 	Process func(context.Context, bool, *TemplateSet, *xo.XO) error
@@ -257,8 +268,84 @@ type TemplateSet struct {
 	Post func(context.Context, []byte) ([]byte, error)
 	// emitted holds emitted templates.
 	emitted []*EmittedTemplate
+	// funcs are the template funcs.
+	funcs template.FuncMap
 	// files holds the generated files.
 	files map[string]*EmittedTemplate
+}
+
+// BuildFuncs builds the template funcs.
+func (set *TemplateSet) BuildFuncs(ctx context.Context) error {
+	if set.Funcs == nil {
+		set.funcs = BaseFuncs()
+	} else {
+		set.funcs = set.Funcs(ctx)
+	}
+	return set.AddCustomFuncs(ctx)
+}
+
+// AddCustomFuncs adds funcs from the template's funcs.go.tpl to the set of
+// template funcs.
+//
+// Uses the github.com/traefik/yaegi interpretter to evaluate the funcs.go.tpl,
+// adding anything returned by the file's defined `func Init(context.Context) (template.FuncMap, error)`
+// to the built template funcs.
+//
+// See existing templates for implementation examples.
+func (set *TemplateSet) AddCustomFuncs(ctx context.Context) error {
+	// get template src
+	src := Src(ctx)
+	if src == nil {
+		src = set.Files
+	}
+	// read custom funcs
+	f, err := src.Open("funcs.go.tpl")
+	switch {
+	case err != nil && os.IsNotExist(err):
+		return nil
+	case err != nil:
+		return fmt.Errorf("unable to load funcs.go.tpl: %w", err)
+	}
+	buf, err := ioutil.ReadAll(f)
+	if err != nil {
+		return fmt.Errorf("unable to read funcs.go.tpl: %w", err)
+	}
+	// determine gopath
+	var opts interp.Options
+	cmd := exec.Command("go", "env", "GOPATH")
+	if buf, err := cmd.CombinedOutput(); err == nil {
+		opts.GoPath = strings.TrimSpace(string(buf))
+	}
+	// build interpreter for custom funcs
+	i := interp.New(opts)
+	if err := i.Use(stdlib.Symbols); err != nil {
+		return fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
+	}
+	if err := i.Use(Symbols(ctx)); err != nil {
+		return fmt.Errorf("unable to add xo to yaegi interpreter: %w", err)
+	}
+	if _, err := i.Eval(string(buf)); err != nil {
+		return fmt.Errorf("unable to eval funcs.go.tpl: %w", err)
+	}
+	// eval custom funcs
+	v, err := i.Eval("funcs.Init")
+	if err != nil {
+		return fmt.Errorf("unable to eval funcs.Init: %w", err)
+	}
+	z, ok := v.Interface().(func(context.Context) (template.FuncMap, error))
+	if !ok {
+		return fmt.Errorf("funcs.Init must have signature `func(context.Context) (template.FuncMap, error)`, has: `%T`", v.Interface())
+	}
+	// init custom funcs
+	m, err := z(ctx)
+	if err != nil {
+		return fmt.Errorf("funcs.Init error: %w", err)
+	}
+	// add custom funcs to funcs
+	for k, v := range m {
+		set.funcs[k] = v
+	}
+	return nil
 }
 
 // Emit emits a template to the template set.
@@ -303,84 +390,12 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 	if err != nil {
 		return nil, fmt.Errorf("unable to read template %s: %w", name, err)
 	}
-	// build funcs
-	funcs, err := set.BuildFuncs(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("unable to build custom template funcs for %s: %w", name, err)
-	}
 	// parse content
-	t, err := template.New(name).Funcs(funcs).Parse(string(buf))
+	t, err := template.New(name).Funcs(set.funcs).Parse(string(buf))
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse template %s: %w", name, err)
 	}
 	return t, nil
-}
-
-// BuildFuncs builds the funcs for
-func (set *TemplateSet) BuildFuncs(ctx context.Context) (template.FuncMap, error) {
-	// get template src
-	src := Src(ctx)
-	if src == nil {
-		src = set.Files
-	}
-	// load default funcs
-	var funcs template.FuncMap
-	if set.Funcs == nil {
-		funcs = make(template.FuncMap)
-	} else {
-		var err error
-		if funcs, err = set.Funcs(ctx); err != nil {
-			return nil, err
-		}
-	}
-	// read custom funcs
-	f, err := src.Open("funcs.go.tpl")
-	switch {
-	case err != nil && os.IsNotExist(err):
-		return funcs, nil
-	case err != nil:
-		return nil, fmt.Errorf("unable to load funcs.go.tpl: %w", err)
-	}
-	buf, err := ioutil.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("unable to read funcs.go.tpl: %w", err)
-	}
-	// determine gopath
-	var opts interp.Options
-	cmd := exec.Command("go", "env", "GOPATH")
-	if buf, err := cmd.CombinedOutput(); err == nil {
-		opts.GoPath = strings.TrimSpace(string(buf))
-	}
-	// build interpreter for custom funcs
-	i := interp.New(opts)
-	if err := i.Use(stdlib.Symbols); err != nil {
-		return nil, fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
-	}
-	if err := i.Use(Symbols(ctx)); err != nil {
-		return nil, fmt.Errorf("unable to add xo to yaegi interpreter: %w", err)
-	}
-	if _, err := i.Eval(string(buf)); err != nil {
-		return nil, fmt.Errorf("unable to eval funcs.go.tpl: %w", err)
-	}
-	// eval custom funcs
-	v, err := i.Eval("funcs.Init")
-	if err != nil {
-		return nil, fmt.Errorf("unable to eval funcs.Init: %w", err)
-	}
-	z, ok := v.Interface().(func(context.Context) (template.FuncMap, error))
-	if !ok {
-		return nil, fmt.Errorf("funcs.Init must have signature `func(context.Context) (template.FuncMap, error)`, has: `%T`", v.Interface())
-	}
-	// init custom funcs
-	m, err := z(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("funcs.Init error: %w", err)
-	}
-	// add custom funcs to funcs
-	for k, v := range m {
-		funcs[k] = v
-	}
-	return funcs, nil
 }
 
 // LoadFile loads a file.

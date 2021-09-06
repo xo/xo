@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/gedex/inflector"
 	"github.com/kenshaw/snaker"
@@ -167,6 +168,19 @@ func init() {
 				Default:     "",
 				Value:       "",
 			},
+			{
+				ContextKey: LegacyKey,
+				Desc:       "enables legacy v1 template funcs",
+				Default:    "false",
+				Value:      false,
+			},
+		},
+		Funcs: func(ctx context.Context) template.FuncMap {
+			funcs := templates.BaseFuncs()
+			if Legacy(ctx) {
+				addLegacyFuncs(ctx, funcs)
+			}
+			return funcs
 		},
 		BuildContext: func(ctx context.Context) context.Context {
 			ctx = context.WithValue(ctx, FirstKey, &first)
@@ -645,6 +659,7 @@ const (
 	ContextKey    xo.ContextKey = "context"
 	InjectKey     xo.ContextKey = "inject"
 	InjectFileKey xo.ContextKey = "inject-file"
+	LegacyKey     xo.ContextKey = "legacy"
 )
 
 // Loader returns the loader from the context.
@@ -728,17 +743,6 @@ func Conflict(ctx context.Context) string {
 	return s
 }
 
-// addInitialisms adds snaker initialisms from the context.
-func addInitialisms(ctx context.Context) error {
-	var v []string
-	for _, s := range ctx.Value(InitialismKey).([]string) {
-		if s != "" {
-			v = append(v, s)
-		}
-	}
-	return snaker.DefaultInitialisms.Add(v...)
-}
-
 // Esc indicates if esc should be escaped based from the context.
 func Esc(ctx context.Context, esc string) bool {
 	v, _ := ctx.Value(EscKey).([]string)
@@ -767,6 +771,23 @@ func Inject(ctx context.Context) string {
 func InjectFile(ctx context.Context) string {
 	s, _ := ctx.Value(InjectFileKey).(string)
 	return s
+}
+
+// Legacy returns legacy from the context.
+func Legacy(ctx context.Context) bool {
+	b, _ := ctx.Value(LegacyKey).(bool)
+	return b
+}
+
+// addInitialisms adds snaker initialisms from the context.
+func addInitialisms(ctx context.Context) error {
+	var v []string
+	for _, s := range ctx.Value(InitialismKey).([]string) {
+		if s != "" {
+			v = append(v, s)
+		}
+	}
+	return snaker.DefaultInitialisms.Add(v...)
 }
 
 // contains returns true when s is in v.

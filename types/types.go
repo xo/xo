@@ -63,6 +63,16 @@ type Schema struct {
 	Views  []Table `json:"views,omitempty"`
 }
 
+// EnumByName returns a enum by its name.
+func (s Schema) EnumByName(name string) *Enum {
+	for _, e := range s.Enums {
+		if e.Name == name {
+			return &e
+		}
+	}
+	return nil
+}
+
 // Enum is a enum type.
 type Enum struct {
 	Name   string  `json:"name,omitempty"`
@@ -145,6 +155,7 @@ type Datatype struct {
 	Nullable bool   `json:"nullable,omitempty"`
 	IsArray  bool   `json:"array,omitempty"`
 	Unsigned bool   `json:"unsigned,omitempty"`
+	Enum     *Enum  `json:"-"`
 }
 
 // ParseType parses "type[ (precision[,scale])][\[\]]" strings returning the

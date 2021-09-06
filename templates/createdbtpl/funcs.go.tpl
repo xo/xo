@@ -17,7 +17,6 @@ func Init(ctx context.Context) (template.FuncMap, error) {
 	driver, _, _ := xo.DriverSchemaNthParam(ctx)
 	funcs := &Funcs{
 		driver:      driver,
-		enumMap:     createdbtpl.EnumMap(ctx),
 		constraint:  createdbtpl.Constraint(ctx),
 		escCols:     createdbtpl.Esc(ctx, "columns"),
 		escTypes:    createdbtpl.Esc(ctx, "types"),
@@ -42,7 +41,6 @@ func Init(ctx context.Context) (template.FuncMap, error) {
 // Funcs is a set of template funcs.
 type Funcs struct {
 	driver      string
-	enumMap     map[string]xo.Enum
 	constraint  bool
 	escCols     bool
 	escTypes    bool
@@ -271,7 +269,7 @@ func (f *Funcs) enginefn() string {
 }
 
 func (f *Funcs) normalize(datatype xo.Datatype) string {
-	typ := f.convert(datatype.Type)
+	typ := f.convert(datatype)
 	if datatype.Scale > 0 && !omitPrecision[f.driver][typ] {
 		typ += fmt.Sprintf("(%d, %d)", datatype.Prec, datatype.Scale)
 	} else if datatype.Prec > 0 && !omitPrecision[f.driver][typ] {
@@ -286,16 +284,17 @@ func (f *Funcs) normalize(datatype xo.Datatype) string {
 	return typ
 }
 
-func (f *Funcs) convert(typ string) string {
+func (f *Funcs) convert(datatype xo.Datatype) string {
 	// mysql enums
-	if e, ok := f.enumMap[typ]; f.driver == "mysql" && ok {
+	if f.driver == "mysql" && datatype.Enum != nil {
 		var enums []string
-		for _, v := range e.Values {
+		for _, v := range datatype.Enum.Values {
 			enums = append(enums, fmt.Sprintf("'%s'", v.Name))
 		}
 		return fmt.Sprintf("ENUM(%s)", strings.Join(enums, ", "))
 	}
 	// check aliases
+	typ := datatype.Type
 	if alias, ok := typeAliases[f.driver][typ]; ok {
 		typ = alias
 	}

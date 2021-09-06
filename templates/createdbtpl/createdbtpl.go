@@ -77,17 +77,9 @@ func init() {
 			if len(v.Schemas) == 0 {
 				return errors.New("createdb template must be passed at least one schema")
 			}
-			driver, _, _ := xo.DriverSchemaNthParam(ctx)
 			for _, schema := range v.Schemas {
 				schema.Tables = sortTables(schema.Tables)
-				// build enum map for mysql
-				enumMap := make(map[string]xo.Enum)
-				if driver == "mysql" {
-					for _, e := range schema.Enums {
-						enumMap[e.Name] = e
-					}
-				}
-				if err := set.Emit(context.WithValue(ctx, EnumMapKey, enumMap), &templates.Template{
+				if err := set.Emit(ctx, &templates.Template{
 					Name:     "xo",
 					Template: "xo",
 					Data:     schema,
@@ -174,7 +166,6 @@ const (
 	EscKey         xo.ContextKey = "escape"
 	EngineKey      xo.ContextKey = "engine"
 	TrimCommentKey xo.ContextKey = "trim-comment"
-	EnumMapKey     xo.ContextKey = "enum-map"
 )
 
 // Fmt returns fmt from the context.
@@ -228,12 +219,6 @@ func Lang(ctx context.Context) string {
 		return "plsql"
 	}
 	return "sql"
-}
-
-// EnumMap returns the enum-map from the context.
-func EnumMap(ctx context.Context) map[string]xo.Enum {
-	m, _ := ctx.Value(EnumMapKey).(map[string]xo.Enum)
-	return m
 }
 
 // Files are the embedded SQL templates.

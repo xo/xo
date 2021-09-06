@@ -36,6 +36,16 @@ func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
 	if s.Views, err = LoadTables(ctx, args, "view"); err != nil {
 		return err
 	}
+	// fix enums for mysql
+	if l.Driver == "mysql" {
+		for i := 0; i < len(s.Tables); i++ {
+			for j := 0; j < len(s.Tables[i].Columns); j++ {
+				if e := s.EnumByName(s.Tables[i].Columns[j].Datatype.Type); e != nil {
+					s.Tables[i].Columns[j].Datatype.Enum = e
+				}
+			}
+		}
+	}
 	// emit
 	dest.Emit(s)
 	return nil
