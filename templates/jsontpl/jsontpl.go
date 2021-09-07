@@ -15,15 +15,15 @@ func init() {
 		Flags: []xo.Flag{
 			{
 				ContextKey: IndentKey,
+				Type:       "string",
 				Desc:       "indent spacing",
 				Default:    "  ",
-				Value:      "",
 			},
 			{
 				ContextKey: UglyKey,
+				Type:       "bool",
 				Desc:       "disable indentation",
 				Default:    "false",
-				Value:      false,
 			},
 		},
 		FileName: func(ctx context.Context, tpl *templates.Template) string {

@@ -17,36 +17,36 @@ func init() {
 		Flags: []xo.Flag{
 			{
 				ContextKey:  DefaultsKey,
+				Type:        "[]string",
 				Desc:        "default statements (default: node [shape=none, margin=0])",
 				PlaceHolder: `""`,
 				Default:     "node [shape=none, margin=0]",
-				Value:       []string{},
 			},
 			{
 				ContextKey: BoldKey,
+				Type:       "bool",
 				Desc:       "bold header row",
 				Default:    "false",
-				Value:      false,
 			},
 			{
 				ContextKey:  ColorKey,
+				Type:        "string",
 				Desc:        "header color (default: lightblue)",
 				PlaceHolder: `""`,
 				Default:     "lightblue",
-				Value:       "",
 			},
 			{
 				ContextKey:  RowKey,
+				Type:        "string",
 				Desc:        "row value template (default:  {{ .Name }}: {{ .Datatype.Type }})",
 				Default:     "{{ .Name }}: {{ .Datatype.Type }}",
 				PlaceHolder: `""`,
-				Value:       "",
 			},
 			{
 				ContextKey: DirectionKey,
+				Type:       "bool",
 				Desc:       "enable edge directions",
 				Default:    "true",
-				Value:      true,
 			},
 		},
 		FileName: func(ctx context.Context, tpl *templates.Template) string {

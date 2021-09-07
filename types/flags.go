@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/alecthomas/kingpin"
@@ -9,11 +10,11 @@ import (
 // Flag is a option flag.
 type Flag struct {
 	ContextKey  ContextKey
+	Type        string
 	Desc        string
 	PlaceHolder string
 	Default     string
 	Short       rune
-	Value       interface{}
 	Enums       []string
 }
 
@@ -27,22 +28,24 @@ type FlagSet struct {
 // Add adds the flag to the cmd.
 func (flag FlagSet) Add(cmd *kingpin.CmdClause, flags map[ContextKey]interface{}) {
 	def := []string{flag.Flag.Default}
-	if _, ok := flag.Flag.Value.([]string); ok {
+	if flag.Flag.Type == "[]string" {
 		def = strings.Split(flag.Flag.Default, ",")
 	}
 	f := cmd.Flag(flag.Type+"-"+flag.Name, flag.Flag.Desc).
 		PlaceHolder(flag.Flag.PlaceHolder).
 		Short(flag.Flag.Short).
 		Default(def...)
-	switch flag.Flag.Value.(type) {
-	case bool:
+	switch flag.Flag.Type {
+	case "bool":
 		flags[flag.Flag.ContextKey] = newBool(f, flags[flag.Flag.ContextKey])
-	case int:
+	case "int":
 		flags[flag.Flag.ContextKey] = newInt(f, flags[flag.Flag.ContextKey])
-	case string:
+	case "string":
 		flags[flag.Flag.ContextKey] = newString(f, flags[flag.Flag.ContextKey], flag.Flag.Enums)
-	case []string:
+	case "[]string":
 		flags[flag.Flag.ContextKey] = newStrings(f, flags[flag.Flag.ContextKey], flag.Flag.Enums)
+	default:
+		panic(fmt.Sprintf("unknown flag type %s", flag.Flag.Type))
 	}
 }
 
