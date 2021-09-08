@@ -186,7 +186,7 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 }
 
 // OracleTableColumns runs a custom query, returning results as Column.
-func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
+func OracleTableColumns(ctx context.Context, db DB, schema, table, schema2, table2 string) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`c.column_id AS field_ordinal, ` +
@@ -200,24 +200,25 @@ func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Co
 		`WHEN 'RAW' THEN 'RAW(' || c.data_length || ')' ` +
 		`ELSE c.data_type END) AS data_type, ` +
 		`CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null, ` +
-		`COALESCE(( ` +
-		`SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END ` +
-		`FROM all_cons_columns l, all_constraints r ` +
-		`WHERE r.constraint_type = 'P' ` +
-		`AND r.owner = c.owner ` +
+		`CASE WHEN p.column_id IS NOT NULL THEN '1' ELSE '0' END as is_primary_key ` +
+		`FROM all_tab_columns c ` +
+		`LEFT JOIN ( ` +
+		`SELECT distinct c.column_id FROM all_tab_columns c ` +
+		`JOIN all_cons_columns l ON l.owner = c.owner ` +
+		`AND c.column_name = l.column_name ` +
+		`JOIN all_constraints r ON r.owner = c.owner ` +
 		`AND r.table_name = c.table_name ` +
 		`AND r.constraint_name = l.constraint_name ` +
-		`AND l.owner = c.owner ` +
-		`AND l.table_name = c.table_name ` +
-		`AND l.column_name = c.column_name ` +
-		`), '0') AS is_primary_key ` +
-		`FROM all_tab_columns c ` +
+		`AND r.constraint_type = 'P' ` +
 		`WHERE c.owner = UPPER(:1) ` +
 		`AND c.table_name = UPPER(:2) ` +
+		`) p on p.column_id = c.column_id ` +
+		`WHERE c.owner = UPPER(:3) ` +
+		`AND c.table_name = UPPER(:4) ` +
 		`ORDER BY c.column_id`
 	// run
-	logf(sqlstr, schema, table)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
+	logf(sqlstr, schema, table, schema2, table2)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, table, schema2, table2)
 	if err != nil {
 		return nil, logerror(err)
 	}

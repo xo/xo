@@ -848,6 +848,7 @@ WHERE o.object_name NOT LIKE '%$%'
   AND o.object_type = UPPER(%%typ string%%)
 ENDSQL
 
+# Thanks to Sgt_Tailor#0124 // @svenwiltink!
 # oracle table column list query
 $XOBIN query $ORDB -M -B -2 -T Column -F OracleTableColumns -a -o $DEST $@ << ENDSQL
 SELECT
@@ -859,23 +860,24 @@ SELECT
     WHEN 'VARCHAR2' THEN 'VARCHAR2(' || c.char_length || ')'
     WHEN 'NVARCHAR2' THEN 'NVARCHAR2(' || c.char_length || ')'
     WHEN 'NUMBER' THEN 'NUMBER(' || NVL(c.data_precision, 0) || ',' || NVL(c.data_scale, 0) || ')'
-	WHEN 'RAW' THEN 'RAW(' || c.data_length || ')'
+    WHEN 'RAW' THEN 'RAW(' || c.data_length || ')'
     ELSE c.data_type END) AS data_type,
   CASE WHEN c.nullable = 'N' THEN '1' ELSE '0' END AS not_null,
-  COALESCE((
-    SELECT CASE WHEN r.constraint_type = 'P' THEN '1' ELSE '0' END
-    FROM all_cons_columns l, all_constraints r
-    WHERE r.constraint_type = 'P'
-      AND r.owner = c.owner
+  CASE WHEN p.column_id IS NOT NULL THEN '1' ELSE '0' END as is_primary_key
+FROM all_tab_columns c
+  LEFT JOIN (
+    SELECT distinct c.column_id FROM all_tab_columns c
+    JOIN all_cons_columns l ON l.owner = c.owner
+      AND c.column_name = l.column_name
+    JOIN all_constraints r ON r.owner = c.owner
       AND r.table_name = c.table_name
       AND r.constraint_name = l.constraint_name
-      AND l.owner = c.owner
-      AND l.table_name = c.table_name
-      AND l.column_name = c.column_name
-  ), '0') AS is_primary_key
-FROM all_tab_columns c
-WHERE c.owner = UPPER(%%schema string%%)
-  AND c.table_name = UPPER(%%table string%%)
+      AND r.constraint_type = 'P'
+    WHERE c.owner = UPPER(%%schema string%%)
+    AND c.table_name = UPPER(%%table string%%)
+  ) p on p.column_id = c.column_id
+WHERE c.owner = UPPER(%%schema2 string%%)
+  AND c.table_name = UPPER(%%table2 string%%)
 ORDER BY c.column_id
 ENDSQL
 

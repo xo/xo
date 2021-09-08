@@ -17,7 +17,7 @@ func init() {
 		Procs:            models.OracleProcs,
 		ProcParams:       models.OracleProcParams,
 		Tables:           models.OracleTables,
-		TableColumns:     models.OracleTableColumns,
+		TableColumns:     oracleTableCols,
 		TableSequences:   models.OracleTableSequences,
 		TableForeignKeys: models.OracleTableForeignKeys,
 		TableIndexes:     models.OracleTableIndexes,
@@ -26,6 +26,10 @@ func init() {
 		ViewTruncate:     models.OracleViewTruncate,
 		ViewDrop:         models.OracleViewDrop,
 	})
+}
+
+func oracleTableCols(ctx context.Context, db models.DB, schema, table string) ([]*models.Column, error) {
+	return models.OracleTableColumns(ctx, db, schema, table, schema, table)
 }
 
 // OracleGoType parse a oracle type into a Go type based on the column
