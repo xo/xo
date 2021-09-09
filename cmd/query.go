@@ -177,6 +177,8 @@ func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, n
 		}
 		// add to string
 		sqlstr = sqlstr + query[last:m[0]]
+		// determine if parameter previously defined or not
+		prevIndex := index(fields, name)
 		if paramInterpolate && field.Interpolate {
 			// handle interpolation case
 			switch {
@@ -187,10 +189,19 @@ func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, n
 			}
 			sqlstr += "` + " + name + " + `"
 		} else {
-			sqlstr += nth(i)
-			i++
+			n := i
+			if prevIndex != -1 {
+				n = prevIndex
+			} else {
+				i++
+			}
+			sqlstr += nth(n)
 		}
-		fields, last = append(fields, field), m[1]
+		// accumulate if not previously encountered
+		if prevIndex == -1 {
+			fields = append(fields, field)
+		}
+		last = m[1]
 	}
 	// return built query and any remaining
 	return sqlstr + query[last:], fields, nil
@@ -293,4 +304,14 @@ func SplitFields(s string) ([]xo.Field, error) {
 		})
 	}
 	return fields, nil
+}
+
+// index finds index of name in v.
+func index(v []xo.Field, name string) int {
+	for i := 0; i < len(v); i++ {
+		if v[i].Name == name {
+			return i
+		}
+	}
+	return -1
 }

@@ -186,7 +186,7 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 }
 
 // OracleTableColumns runs a custom query, returning results as Column.
-func OracleTableColumns(ctx context.Context, db DB, schema, table, schema2, table2 string) ([]*Column, error) {
+func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`c.column_id AS field_ordinal, ` +
@@ -213,12 +213,12 @@ func OracleTableColumns(ctx context.Context, db DB, schema, table, schema2, tabl
 		`WHERE c.owner = UPPER(:1) ` +
 		`AND c.table_name = UPPER(:2) ` +
 		`) p on p.column_id = c.column_id ` +
-		`WHERE c.owner = UPPER(:3) ` +
-		`AND c.table_name = UPPER(:4) ` +
+		`WHERE c.owner = UPPER(:1) ` +
+		`AND c.table_name = UPPER(:2) ` +
 		`ORDER BY c.column_id`
 	// run
-	logf(sqlstr, schema, table, schema2, table2)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, table, schema2, table2)
+	logf(sqlstr, schema, table)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, table)
 	if err != nil {
 		return nil, logerror(err)
 	}

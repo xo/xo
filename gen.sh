@@ -848,7 +848,7 @@ WHERE o.object_name NOT LIKE '%$%'
   AND o.object_type = UPPER(%%typ string%%)
 ENDSQL
 
-# Thanks to Sgt_Tailor#0124 // @svenwiltink!
+# Thanks to github.com/svenwiltink
 # oracle table column list query
 $XOBIN query $ORDB -M -B -2 -T Column -F OracleTableColumns -a -o $DEST $@ << ENDSQL
 SELECT
@@ -876,8 +876,8 @@ FROM all_tab_columns c
     WHERE c.owner = UPPER(%%schema string%%)
     AND c.table_name = UPPER(%%table string%%)
   ) p on p.column_id = c.column_id
-WHERE c.owner = UPPER(%%schema2 string%%)
-  AND c.table_name = UPPER(%%table2 string%%)
+WHERE c.owner = UPPER(%%schema string%%)
+  AND c.table_name = UPPER(%%table string%%)
 ORDER BY c.column_id
 ENDSQL
 
