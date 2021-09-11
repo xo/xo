@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gedex/inflector"
+	"github.com/kenshaw/inflector"
 	"github.com/xo/xo/models"
 	xo "github.com/xo/xo/types"
 )

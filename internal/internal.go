@@ -7,8 +7,11 @@ import (
 
 // Symbols are extracted (generated) symbols from the types package.
 //
-//go:generate yaegi extract github.com/kenshaw/snaker
 //go:generate yaegi extract github.com/goccy/go-yaml
+//go:generate yaegi extract github.com/kenshaw/inflector
+//go:generate yaegi extract github.com/kenshaw/snaker
+//go:generate yaegi extract golang.org/x/tools/imports
+//go:generate yaegi extract mvdan.cc/gofumpt/format
 //
 // go list ./... |grep -v internal|tail -n +2|sed -e 's%^%//go:generate yaegi extract %'
 //

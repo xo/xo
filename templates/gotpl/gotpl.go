@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gedex/inflector"
+	"github.com/kenshaw/inflector"
 	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/loader"
 	"github.com/xo/xo/templates"
