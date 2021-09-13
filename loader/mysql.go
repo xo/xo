@@ -40,7 +40,7 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 		case d.Prec == 1 && !d.Nullable:
 			goType, zero = "bool", "false"
 		case d.Prec == 1 && d.Nullable:
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "null.Bool", "sql.NullBool{}"
 		case d.Prec <= 8 && !d.Nullable:
 			goType, zero = "uint8", "0"
 		case d.Prec <= 16 && !d.Nullable:
@@ -48,68 +48,68 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 		case d.Prec <= 32 && !d.Nullable:
 			goType, zero = "uint32", "0"
 		case d.Nullable:
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "null.Int", "sql.NullInt64{}"
 		default:
 			goType, zero = "uint64", "0"
 		}
 	case "bool", "boolean":
 		goType, zero = "bool", "false"
 		if d.Nullable {
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "null.Bool", "sql.NullBool{}"
 		}
 	case "char", "varchar", "tinytext", "text", "mediumtext", "longtext":
 		goType, zero = "string", `""`
 		if d.Nullable {
-			goType, zero = "sql.NullString", "sql.NullString{}"
+			goType, zero = "null.String", "sql.NullString{}"
 		}
 	case "tinyint":
 		switch {
 		case d.Prec == 1 && !d.Nullable: // force tinyint(1) as bool
 			goType, zero = "bool", "false"
 		case d.Prec == 1 && d.Nullable:
-			goType, zero = "sql.NullBool", "sql.NullBool{}"
+			goType, zero = "null.Bool", "sql.NullBool{}"
 		case d.Nullable:
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "null.Int", "sql.NullInt64{}"
 		default:
 			goType, zero = "int8", "0"
 		}
 	case "smallint", "year":
 		goType, zero = "int16", "0"
 		if d.Nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "null.Int", "sql.NullInt64{}"
 		}
 	case "mediumint", "int", "integer":
 		goType, zero = Int32(ctx), "0"
 		if d.Nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "null.Int", "sql.NullInt64{}"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
 		if d.Nullable {
-			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
+			goType, zero = "null.Int", "sql.NullInt64{}"
 		}
 	case "float":
 		goType, zero = "float32", "0.0"
 		if d.Nullable {
-			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
+			goType, zero = "null.Float", "sql.NullFloat64{}"
 		}
 	case "decimal", "double":
 		goType, zero = "float64", "0.0"
 		if d.Nullable {
-			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
+			goType, zero = "null.Float", "sql.NullFloat64{}"
 		}
 	case "binary", "blob", "longblob", "mediumblob", "tinyblob", "varbinary":
 		goType, zero = "[]byte", "nil"
 	case "timestamp", "datetime", "date":
 		goType, zero = "time.Time", "time.Time{}"
 		if d.Nullable {
-			goType, zero = "sql.NullTime", "sql.NullTime{}"
+			goType, zero = "null.Time", "sql.NullTime{}"
 		}
 	case "time":
 		// time is not supported by the MySQL driver. Can parse the string to time.Time in the user code.
 		goType, zero = "string", `""`
 		if d.Nullable {
-			goType, zero = "sql.NullString", "sql.NullString{}"
+			goType, zero = "null.String", "sql.NullString{}"
 		}
 	default:
 		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
@@ -134,12 +134,12 @@ var setRE = regexp.MustCompile(`(?i)^set\([^)]*\)$`)
 
 // MysqlEnumValues loads the enum values.
 func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum string) ([]*models.EnumValue, error) {
-	// load enum vals
+	// load enum values
 	res, err := models.MysqlEnumValues(ctx, db, schema, enum)
 	if err != nil {
 		return nil, err
 	}
-	// process enum vals
+	// process enum values
 	var values []*models.EnumValue
 	for i, val := range strings.Split(res.EnumValues[1:len(res.EnumValues)-1], "','") {
 		values = append(values, &models.EnumValue{
