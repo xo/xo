@@ -2,8 +2,10 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"reflect"
@@ -32,7 +34,7 @@ func Run(ctx context.Context, name, version string) error {
 		return fmt.Errorf("template %s does not support %s", args.TemplateParams.Type, cmd)
 	}
 	// load
-	if cmd != "dump" {
+	if cmd == "query" || cmd == "schema" {
 		// open database
 		var err error
 		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
@@ -200,6 +202,14 @@ func NewArgs(ctx context.Context, name, version string) (context.Context, *Args,
 		return nil
 	}).Bool()
 	cmd := kingpin.Parse()
+	// read query string from stdin if not provided via --query
+	if cmd == "query" && args.QueryParams.Query == "" {
+		buf, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return nil, nil, "", err
+		}
+		args.QueryParams.Query = string(bytes.TrimRight(buf, "\r\n"))
+	}
 	// add loader flags
 	for key, v := range args.DbParams.Flags {
 		// deref the interface (should always be a pointer to a type)

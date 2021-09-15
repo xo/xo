@@ -1,13 +1,10 @@
 package cmd
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -19,19 +16,10 @@ import (
 func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
 	// driver info
 	_, l, _ := DbLoaderSchema(ctx)
-	// read query string from stdin if not provided via --query
-	sqlstr := args.QueryParams.Query
-	if sqlstr == "" {
-		buf, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			return err
-		}
-		sqlstr = string(bytes.TrimRight(buf, "\r\n"))
-	}
 	// introspect query if not exec mode
 	query, inspect, comments, fields, err := ParseQuery(
 		ctx,
-		sqlstr,
+		args.QueryParams.Query,
 		args.QueryParams.Delimiter,
 		args.QueryParams.Interpolate,
 		args.QueryParams.Trim,
