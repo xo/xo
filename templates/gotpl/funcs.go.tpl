@@ -779,7 +779,7 @@ func (f *Funcs) sqlstr_update(v interface{}) []string {
 		for i, z := range x.PrimaryKeys {
 			list = append(list, fmt.Sprintf("%s = %s", f.colname(z), f.nth(n+i)))
 		}
-		return append(lines, "WHERE "+strings.Join(list, ", "))
+		return append(lines, "WHERE "+strings.Join(list, " AND "))
 	}
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE 20: %T ]]", v)}
 }
