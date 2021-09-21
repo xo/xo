@@ -223,50 +223,19 @@ func (f *Funcs) injectfn() string {
 	return f.inject
 }
 
+// Schema represents a schema type (query, table, index, etc).
+type Schema interface {
+	GetName()
+}
+
 // func_name_none builds a func name.
-func (f *Funcs) func_name_none(v interface{}) string {
-	switch x := v.(type) {
-	case string:
-		return x
-	case gotpl.Query:
-		return x.Name
-	case gotpl.Table:
-		return x.GoName
-	case gotpl.ForeignKey:
-		return x.GoName
-	case gotpl.Proc:
-		n := x.GoName
-		if x.Overloaded {
-			n = x.OverloadedName
-		}
-		return n
-	case gotpl.Index:
-		return x.FuncName
-	}
-	return fmt.Sprintf("[[ UNSUPPORTED TYPE 1: %T ]]", v)
+func (f *Funcs) func_name_none(s Schema) string {
+	return s.GetName()
 }
 
 // func_name_context generates a name for the func.
-func (f *Funcs) func_name_context(v interface{}) string {
-	switch x := v.(type) {
-	case string:
-		return nameContext(f.context_both(), x)
-	case gotpl.Query:
-		return nameContext(f.context_both(), x.Name)
-	case gotpl.Table:
-		return nameContext(f.context_both(), x.GoName)
-	case gotpl.ForeignKey:
-		return nameContext(f.context_both(), x.GoName)
-	case gotpl.Proc:
-		n := x.GoName
-		if x.Overloaded {
-			n = x.OverloadedName
-		}
-		return nameContext(f.context_both(), n)
-	case gotpl.Index:
-		return nameContext(f.context_both(), x.FuncName)
-	}
-	return fmt.Sprintf("[[ UNSUPPORTED TYPE 2: %T ]]", v)
+func (f *Funcs) func_name_context(s Schema) string {
+	return nameContext(f.context_both()), s.GetName())
 }
 
 // funcfn builds a func definition.

@@ -1,0 +1,1 @@
+// Custom functions can be placed here without interfering with upstream funcs.go.tpl changes.

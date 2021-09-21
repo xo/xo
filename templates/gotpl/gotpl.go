@@ -808,6 +808,20 @@ func singularize(s string) string {
 	return inflector.Singularize(s)
 }
 
+// PackageImport holds information about a Go package import.
+type PackageImport struct {
+	Alias string
+	Pkg   string
+}
+
+// String satisfies the fmt.Stringer interface.
+func (v PackageImport) String() string {
+	if v.Alias != "" {
+		return fmt.Sprintf("%s %q", v.Alias, v.Pkg)
+	}
+	return fmt.Sprintf("%q", v.Pkg)
+}
+
 // Files are the embedded Go templates.
 //
 //go:embed *.tpl
