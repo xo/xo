@@ -1,17 +1,13 @@
 package loader
 
 import (
-	"context"
-
 	"github.com/xo/xo/models"
 	xo "github.com/xo/xo/types"
 )
 
 func init() {
-	Register(&Loader{
-		Driver:           "sqlite3",
+	Register("sqlite3", Loader{
 		Mask:             "$%d",
-		GoType:           Sqlite3GoType,
 		Schema:           models.Sqlite3Schema,
 		Tables:           models.Sqlite3Tables,
 		TableColumns:     models.Sqlite3TableColumns,
@@ -26,7 +22,7 @@ func init() {
 
 // Sqlite3GoType parse a sqlite3 type into a Go type based on the column
 // definition.
-func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+func Sqlite3GoType(d xo.Type, schema, itype, utype string) (string, string, error) {
 	var goType, zero string
 	switch d.Type {
 	case "bool", "boolean":
@@ -35,7 +31,7 @@ func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "int", "integer", "tinyint", "smallint", "mediumint":
-		goType, zero = Int32(ctx), "0"
+		goType, zero = itype, "0"
 		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -65,8 +61,8 @@ func Sqlite3GoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	}
 	// if unsigned ...
 	if intRE.MatchString(goType) && d.Unsigned {
-		if goType == Int32(ctx) {
-			goType, zero = Uint32(ctx), "0"
+		if goType == itype {
+			goType, zero = utype, "0"
 		} else {
 			goType = "u" + goType
 		}

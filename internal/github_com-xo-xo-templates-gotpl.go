@@ -30,11 +30,12 @@ func init() {
 		"InjectFile":    reflect.ValueOf(gotpl.InjectFile),
 		"InjectFileKey": reflect.ValueOf(gotpl.InjectFileKey),
 		"InjectKey":     reflect.ValueOf(gotpl.InjectKey),
+		"Int32":         reflect.ValueOf(gotpl.Int32),
+		"Int32Key":      reflect.ValueOf(gotpl.Int32Key),
 		"KnownTypes":    reflect.ValueOf(gotpl.KnownTypes),
 		"KnownTypesKey": reflect.ValueOf(gotpl.KnownTypesKey),
 		"Legacy":        reflect.ValueOf(gotpl.Legacy),
 		"LegacyKey":     reflect.ValueOf(gotpl.LegacyKey),
-		"Loader":        reflect.ValueOf(gotpl.Loader),
 		"NotFirst":      reflect.ValueOf(gotpl.NotFirst),
 		"NotFirstKey":   reflect.ValueOf(gotpl.NotFirstKey),
 		"Pkg":           reflect.ValueOf(gotpl.Pkg),
@@ -44,6 +45,8 @@ func init() {
 		"TagKey":        reflect.ValueOf(gotpl.TagKey),
 		"Tags":          reflect.ValueOf(gotpl.Tags),
 		"UUIDKey":       reflect.ValueOf(gotpl.UUIDKey),
+		"Uint32":        reflect.ValueOf(gotpl.Uint32),
+		"Uint32Key":     reflect.ValueOf(gotpl.Uint32Key),
 
 		// type definitions
 		"Enum":          reflect.ValueOf((*gotpl.Enum)(nil)),

@@ -207,7 +207,7 @@ func TrimComment(ctx context.Context) bool {
 // Lang returns the sql-formatter language to use from the context based on the
 // context driver.
 func Lang(ctx context.Context) string {
-	driver, _, _ := xo.DriverSchemaNthParam(ctx)
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	switch driver {
 	case "postgres", "sqlite3":
 		return "postgresql"

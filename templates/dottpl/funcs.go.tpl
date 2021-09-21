@@ -15,7 +15,7 @@ import (
 
 // Init intializes the custom template funcs.
 func Init(ctx context.Context) (template.FuncMap, error) {
-	driver, schema, _ := xo.DriverSchemaNthParam(ctx)
+	driver, _, schema := xo.DriverDbSchema(ctx)
 	// parse row template
 	row, err := template.New("row").Parse(dottpl.Row(ctx))
 	if err != nil {

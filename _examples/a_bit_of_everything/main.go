@@ -17,7 +17,7 @@ import (
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
-	//_ "github.com/sijms/go-ora"
+	//_ "github.com/sijms/go-ora/v2"
 
 	// models
 	"github.com/xo/xo/_examples/a_bit_of_everything/mysql"

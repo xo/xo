@@ -10,16 +10,16 @@ import (
 	"strings"
 
 	"github.com/kenshaw/inflector"
+	"github.com/xo/xo/loader"
 	"github.com/xo/xo/models"
 	xo "github.com/xo/xo/types"
 )
 
 // BuildSchema builds a schema.
 func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
-	// driver info
-	_, l, schema := DbLoaderSchema(ctx)
+	driver, _, schema := xo.DriverDbSchema(ctx)
 	s := xo.Schema{
-		Driver: l.Driver,
+		Driver: driver,
 		Name:   schema,
 	}
 	var err error
@@ -37,11 +37,11 @@ func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
 		return err
 	}
 	// fix enums for mysql
-	if l.Driver == "mysql" {
+	if driver == "mysql" {
 		for i := 0; i < len(s.Tables); i++ {
 			for j := 0; j < len(s.Tables[i].Columns); j++ {
-				if e := s.EnumByName(s.Tables[i].Columns[j].Datatype.Type); e != nil {
-					s.Tables[i].Columns[j].Datatype.Enum = e
+				if e := s.EnumByName(s.Tables[i].Columns[j].Type.Type); e != nil {
+					s.Tables[i].Columns[j].Type.Enum = e
 				}
 			}
 		}
@@ -53,13 +53,8 @@ func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
 
 // LoadEnums loads enums.
 func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
-	db, l, schema := DbLoaderSchema(ctx)
-	// not supplied, so bail
-	if l.Enums == nil {
-		return nil, nil
-	}
 	// load enums
-	enumNames, err := l.Enums(ctx, db, schema)
+	enumNames, err := loader.Enums(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -85,9 +80,8 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 
 // LoadEnumValues loads enum values.
 func LoadEnumValues(ctx context.Context, args *Args, enum *xo.Enum) error {
-	db, l, schema := DbLoaderSchema(ctx)
 	// load enum values
-	enumValues, err := l.EnumValues(ctx, db, schema, enum.Name)
+	enumValues, err := loader.EnumValues(ctx, enum.Name)
 	if err != nil {
 		return err
 	}
@@ -103,13 +97,9 @@ func LoadEnumValues(ctx context.Context, args *Args, enum *xo.Enum) error {
 
 // LoadProcs loads stored procedures definitions.
 func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
-	db, l, schema := DbLoaderSchema(ctx)
-	// not supplied, so bail
-	if l.Procs == nil {
-		return nil, nil
-	}
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	// load procs
-	procs, err := l.Procs(ctx, db, schema)
+	procs, err := loader.Procs(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +111,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 		}
 		// parse return type into template
 		// TODO: fix this so that nullable types can be returned
-		d, err := xo.ParseType(ctx, proc.ReturnType)
+		d, err := xo.ParseType(proc.ReturnType, driver)
 		if err != nil {
 			return nil, err
 		}
@@ -139,8 +129,8 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 			ID:   proc.ProcID,
 			Name: proc.ProcName,
 			Returns: append(returnFields, xo.Field{
-				Name:     name,
-				Datatype: d,
+				Name: name,
+				Type: d,
 			}),
 			Definition: strings.TrimSpace(proc.ProcDef),
 		}
@@ -152,7 +142,7 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 	}
 	var m []xo.Proc
 	for _, proc := range procMap {
-		if len(proc.Returns) == 1 && proc.Returns[0].Datatype.Type == "void" {
+		if len(proc.Returns) == 1 && proc.Returns[0].Type.Type == "void" {
 			proc.Void, proc.Returns = true, proc.Returns[1:]
 		}
 		m = append(m, proc)
@@ -168,15 +158,15 @@ func LoadProcs(ctx context.Context, args *Args) ([]xo.Proc, error) {
 
 // LoadProcParams loads stored procedure parameters.
 func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
-	db, l, schema := DbLoaderSchema(ctx)
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	// load proc params
-	params, err := l.ProcParams(ctx, db, schema, proc.ID)
+	params, err := loader.ProcParams(ctx, proc.ID)
 	if err != nil {
 		return err
 	}
 	// process
 	for i, param := range params {
-		d, err := xo.ParseType(ctx, param.ParamType)
+		d, err := xo.ParseType(param.ParamType, driver)
 		if err != nil {
 			return err
 		}
@@ -185,8 +175,8 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 			name = fmt.Sprintf("p%d", i)
 		}
 		proc.Params = append(proc.Params, xo.Field{
-			Name:     name,
-			Datatype: d,
+			Name: name,
+			Type: d,
 		})
 	}
 	return nil
@@ -194,9 +184,8 @@ func LoadProcParams(ctx context.Context, args *Args, proc *xo.Proc) error {
 
 // LoadTables loads types for the type (ie, table/view definitions).
 func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error) {
-	db, l, schema := DbLoaderSchema(ctx)
 	// load tables
-	tables, err := l.Tables(ctx, db, schema, typ)
+	tables, err := loader.Tables(ctx, typ)
 	if err != nil {
 		return nil, err
 	}
@@ -237,9 +226,9 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 
 // LoadColumns loads table/view columns.
 func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
-	db, l, schema := DbLoaderSchema(ctx)
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	// load sequences
-	sequences, err := l.TableSequences(ctx, db, schema, table.Name)
+	sequences, err := loader.TableSequences(ctx, table.Name)
 	if err != nil {
 		return err
 	}
@@ -249,7 +238,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 		sqMap[s.ColumnName] = true
 	}
 	// load columns
-	columns, err := l.TableColumns(ctx, db, schema, table.Name)
+	columns, err := loader.TableColumns(ctx, table.Name)
 	if err != nil {
 		return err
 	}
@@ -259,7 +248,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			continue
 		}
 		// set col info
-		d, err := xo.ParseType(ctx, c.DataType)
+		d, err := xo.ParseType(c.DataType, driver)
 		if err != nil {
 			return err
 		}
@@ -270,7 +259,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 		}
 		col := xo.Field{
 			Name:       c.ColumnName,
-			Datatype:   d,
+			Type:       d,
 			Default:    defaultValue,
 			IsPrimary:  c.IsPrimaryKey,
 			IsSequence: sqMap[c.ColumnName],
@@ -285,9 +274,8 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 
 // LoadTableIndexes loads index definitions per table.
 func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
-	db, l, schema := DbLoaderSchema(ctx)
 	// load indexes
-	indexes, err := l.TableIndexes(ctx, db, schema, table.Name)
+	indexes, err := loader.TableIndexes(ctx, table.Name)
 	if err != nil {
 		return err
 	}
@@ -310,7 +298,7 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 			return err
 		}
 		// load index func name
-		index.FuncName = indexFuncName(table.Name, *index, args.SchemaParams.UseIndexNames)
+		index.Func = indexFuncName(*index, table.Name, args.SchemaParams.UseIndexNames)
 		table.Indexes = append(table.Indexes, *index)
 	}
 	pkeys := table.PrimaryKeys
@@ -319,7 +307,8 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 	// sqlite doesn't define primary keys in its index list.
 	// however, oracle is omitted because indexes for primary keys are not marked
 	// as such from introspection queries.
-	if l.Driver != "oracle" && !priIxLoaded && len(pkeys) != 0 {
+	driver, _, _ := xo.DriverDbSchema(ctx)
+	if driver != "oracle" && !priIxLoaded && len(pkeys) != 0 {
 		indexName := table.Name + "_"
 		for _, pkey := range pkeys {
 			indexName += pkey.Name + "_"
@@ -330,9 +319,9 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 			IsUnique:  true,
 			IsPrimary: true,
 		}
-		index.FuncName = indexFuncName(table.Name, index, args.SchemaParams.UseIndexNames)
+		index.Func = indexFuncName(index, table.Name, args.SchemaParams.UseIndexNames)
 		table.Indexes = append(table.Indexes, index)
-	} else if l.Driver == "oracle" && len(table.PrimaryKeys) != 0 {
+	} else if driver == "oracle" && len(table.PrimaryKeys) != 0 {
 	loop:
 		for i, index := range table.Indexes {
 			for _, field := range index.Fields {
@@ -349,9 +338,8 @@ func LoadTableIndexes(ctx context.Context, args *Args, table *xo.Table) error {
 
 // LoadIndexColumns loads the index column information.
 func LoadIndexColumns(ctx context.Context, args *Args, table *xo.Table, index *xo.Index) error {
-	db, l, schema := DbLoaderSchema(ctx)
 	// load index columns
-	cols, err := l.IndexColumns(ctx, db, schema, table.Name, index.Name)
+	cols, err := loader.IndexColumns(ctx, table.Name, index.Name)
 	if err != nil {
 		return err
 	}
@@ -376,9 +364,8 @@ func LoadIndexColumns(ctx context.Context, args *Args, table *xo.Table, index *x
 
 // LoadTableForeignKeys loads foreign key definitions per table.
 func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, table xo.Table) ([]xo.ForeignKey, error) {
-	db, l, schema := DbLoaderSchema(ctx)
 	// load foreign keys
-	foreignKeys, err := l.TableForeignKeys(ctx, db, schema, table.Name)
+	foreignKeys, err := loader.TableForeignKeys(ctx, table.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -421,13 +408,13 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 			}
 			fkey.Name = table.Name + "_" + strings.Join(names, "_") + "_fkey"
 		}
+		// determine foreign key func name
+		fkey.Func = resolveFkName(fkey, table, args.SchemaParams.FkMode)
 		// foreign key called func name
-		fkey.RefFuncName = indexFuncName(fkey.RefTable, xo.Index{
+		fkey.RefFunc = indexFuncName(xo.Index{
 			IsUnique: true,
 			Fields:   fkey.RefFields,
-		}, false)
-		// determine foreign key func name
-		fkey.FuncName = resolveFkName(args.SchemaParams.FkMode, table, fkey)
+		}, fkey.RefTable, false)
 		fkeys = append(fkeys, fkey)
 	}
 	// sort fkeys
@@ -499,7 +486,7 @@ func checkFk(tables []xo.Table, table xo.Table, fkey *models.ForeignKey, field *
 
 // resolveFkName returns the foreign key name for the passed foreign key.
 // The function converts all names to snake_case.
-func resolveFkName(mode string, table xo.Table, fkey xo.ForeignKey) string {
+func resolveFkName(fkey xo.ForeignKey, table xo.Table, mode string) string {
 	tableName := singularize(fkey.RefTable)
 	switch mode {
 	case "parent":
@@ -537,17 +524,17 @@ func resolveFkName(mode string, table xo.Table, fkey xo.ForeignKey) string {
 		// inspect all foreign keys and use field if conflict found
 		for _, v := range table.ForeignKeys {
 			if fkey.Name != v.Name && fkey.RefTable == v.RefTable {
-				return resolveFkName("field", table, fkey)
+				return resolveFkName(fkey, table, "field")
 			}
 		}
 		// no conflict, so use parent mode
-		return resolveFkName("parent", table, fkey)
+		return resolveFkName(fkey, table, "parent")
 	}
 	panic(fmt.Sprintf("invalid mode %q", mode))
 }
 
 // indexFuncName creates the func name for an index and its supplied fields.
-func indexFuncName(tableName string, index xo.Index, useIndexNames bool) string {
+func indexFuncName(index xo.Index, tableName string, useIndexNames bool) string {
 	// func name
 	if index.IsUnique {
 		tableName = inflector.Singularize(tableName)

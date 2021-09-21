@@ -38,8 +38,8 @@ func init() {
 			{
 				ContextKey:  RowKey,
 				Type:        "string",
-				Desc:        "row value template (default:  {{ .Name }}: {{ .Datatype.Type }})",
-				Default:     "{{ .Name }}: {{ .Datatype.Type }}",
+				Desc:        "row value template (default:  {{ .Name }}: {{ .Type.Type }})",
+				Default:     "{{ .Name }}: {{ .Type.Type }}",
 				PlaceHolder: `""`,
 			},
 			{

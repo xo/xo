@@ -7,12 +7,15 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
-	xo "github.com/xo/xo/types"
+	"github.com/xo/xo/loader"
 )
 
 // addLegacyFuncs adds the legacy template funcs.
 func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
-	_, _, nthParam := xo.DriverSchemaNthParam(ctx)
+	nth, err := loader.NthParam(ctx)
+	if err != nil {
+		return
+	}
 	// colnames creates a list of the column names found in fields, excluding any
 	// Field with Name contained in ignoreNames.
 	//
@@ -83,7 +86,7 @@ func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
 			if i != 0 {
 				str = str + sep
 			}
-			str = str + f.SQLName + " = " + nthParam(i)
+			str = str + f.SQLName + " = " + nth(i)
 			i++
 		}
 		return str
@@ -108,7 +111,7 @@ func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
 			if i > startCount {
 				str = str + sep
 			}
-			str = str + f.SQLName + " = " + nthParam(i)
+			str = str + f.SQLName + " = " + nth(i)
 			i++
 		}
 		return str
@@ -156,7 +159,7 @@ func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
 			if i != 0 {
 				str = str + ", "
 			}
-			str = str + nthParam(i)
+			str = str + nth(i)
 			i++
 		}
 		return str
@@ -180,7 +183,7 @@ func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
 			if i != 0 {
 				str = str + ", "
 			}
-			str = str + nthParam(i)
+			str = str + nth(i)
 			i++
 		}
 		return str

@@ -10,10 +10,8 @@ import (
 )
 
 func init() {
-	Register(&Loader{
-		Driver:           "mysql",
+	Register("mysql", Loader{
 		Mask:             "?",
-		GoType:           MysqlGoType,
 		Schema:           models.MysqlSchema,
 		Enums:            models.MysqlEnums,
 		EnumValues:       MysqlEnumValues,
@@ -32,7 +30,7 @@ func init() {
 
 // MysqlGoType parse a mysql type into a Go type based on the column
 // definition.
-func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+func MysqlGoType(d xo.Type, schema, itype, utype string) (string, string, error) {
 	var goType, zero string
 	switch d.Type {
 	case "bit":
@@ -79,7 +77,7 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "mediumint", "int", "integer":
-		goType, zero = Int32(ctx), "0"
+		goType, zero = itype, "0"
 		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -112,7 +110,7 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	default:
-		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
+		goType, zero = schemaType(d.Type, d.Nullable, schema)
 	}
 	// force []byte for SET('a',...)
 	if setRE.MatchString(d.Type) {
@@ -120,8 +118,8 @@ func MysqlGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	}
 	// if unsigned ...
 	if intRE.MatchString(goType) && d.Unsigned {
-		if goType == Int32(ctx) {
-			goType, zero = Uint32(ctx), "0"
+		if goType == itype {
+			goType, zero = utype, "0"
 		} else {
 			goType = "u" + goType
 		}

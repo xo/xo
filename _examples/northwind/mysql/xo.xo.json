@@ -51,7 +51,6 @@
           "indexes": [
             {
               "name": "categories_category_id_pkey",
-              "func_name": "category_by_category_id",
               "fields": [
                 {
                   "name": "category_id",
@@ -110,7 +109,6 @@
           "indexes": [
             {
               "name": "customer_type_id",
-              "func_name": "customer_customer_demo_by_customer_type_id",
               "fields": [
                 {
                   "name": "customer_type_id",
@@ -124,7 +122,6 @@
             },
             {
               "name": "customer_customer_demo_customer_id_customer_type_id_pkey",
-              "func_name": "customer_customer_demo_by_customer_id_customer_type_id",
               "fields": [
                 {
                   "name": "customer_id",
@@ -150,7 +147,6 @@
           "foreign_keys": [
             {
               "name": "customer_customer_demo_ibfk_1",
-              "func_name": "customer",
               "column": [
                 {
                   "name": "customer_id",
@@ -171,12 +167,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "customer_by_customer_id"
+              ]
             },
             {
               "name": "customer_customer_demo_ibfk_2",
-              "func_name": "customer_demographic",
               "column": [
                 {
                   "name": "customer_type_id",
@@ -197,8 +191,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "customer_demographic_by_customer_type_id"
+              ]
             }
           ],
           "manual": true
@@ -236,7 +229,6 @@
           "indexes": [
             {
               "name": "customer_demographics_customer_type_id_pkey",
-              "func_name": "customer_demographic_by_customer_type_id",
               "fields": [
                 {
                   "name": "customer_type_id",
@@ -358,7 +350,6 @@
           "indexes": [
             {
               "name": "customers_customer_id_pkey",
-              "func_name": "customer_by_customer_id",
               "fields": [
                 {
                   "name": "customer_id",
@@ -417,7 +408,6 @@
           "indexes": [
             {
               "name": "territory_id",
-              "func_name": "employee_territories_by_territory_id",
               "fields": [
                 {
                   "name": "territory_id",
@@ -431,7 +421,6 @@
             },
             {
               "name": "employee_territories_employee_id_territory_id_pkey",
-              "func_name": "employee_territory_by_employee_id_territory_id",
               "fields": [
                 {
                   "name": "employee_id",
@@ -457,7 +446,6 @@
           "foreign_keys": [
             {
               "name": "employee_territories_ibfk_1",
-              "func_name": "employee",
               "column": [
                 {
                   "name": "employee_id",
@@ -478,12 +466,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "employee_by_employee_id"
+              ]
             },
             {
               "name": "employee_territories_ibfk_2",
-              "func_name": "territory",
               "column": [
                 {
                   "name": "territory_id",
@@ -504,8 +490,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "territory_by_territory_id"
+              ]
             }
           ],
           "manual": true
@@ -666,7 +651,6 @@
           "indexes": [
             {
               "name": "reports_to",
-              "func_name": "employees_by_reports_to",
               "fields": [
                 {
                   "name": "reports_to",
@@ -680,7 +664,6 @@
             },
             {
               "name": "employees_employee_id_pkey",
-              "func_name": "employee_by_employee_id",
               "fields": [
                 {
                   "name": "employee_id",
@@ -698,7 +681,6 @@
           "foreign_keys": [
             {
               "name": "employees_ibfk_1",
-              "func_name": "employee",
               "column": [
                 {
                   "name": "reports_to",
@@ -719,8 +701,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "employee_by_employee_id"
+              ]
             }
           ],
           "manual": true
@@ -786,7 +767,6 @@
           "indexes": [
             {
               "name": "product_id",
-              "func_name": "order_details_by_product_id",
               "fields": [
                 {
                   "name": "product_id",
@@ -800,7 +780,6 @@
             },
             {
               "name": "order_details_order_id_product_id_pkey",
-              "func_name": "order_detail_by_order_id_product_id",
               "fields": [
                 {
                   "name": "order_id",
@@ -826,7 +805,6 @@
           "foreign_keys": [
             {
               "name": "order_details_ibfk_1",
-              "func_name": "order",
               "column": [
                 {
                   "name": "order_id",
@@ -847,12 +825,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "order_by_order_id"
+              ]
             },
             {
               "name": "order_details_ibfk_2",
-              "func_name": "product",
               "column": [
                 {
                   "name": "product_id",
@@ -873,8 +849,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "product_by_product_id"
+              ]
             }
           ],
           "manual": true
@@ -1005,7 +980,6 @@
           "indexes": [
             {
               "name": "customer_id",
-              "func_name": "orders_by_customer_id",
               "fields": [
                 {
                   "name": "customer_id",
@@ -1019,7 +993,6 @@
             },
             {
               "name": "employee_id",
-              "func_name": "orders_by_employee_id",
               "fields": [
                 {
                   "name": "employee_id",
@@ -1033,7 +1006,6 @@
             },
             {
               "name": "ship_via",
-              "func_name": "orders_by_ship_via",
               "fields": [
                 {
                   "name": "ship_via",
@@ -1047,7 +1019,6 @@
             },
             {
               "name": "orders_order_id_pkey",
-              "func_name": "order_by_order_id",
               "fields": [
                 {
                   "name": "order_id",
@@ -1065,7 +1036,6 @@
           "foreign_keys": [
             {
               "name": "orders_ibfk_1",
-              "func_name": "customer",
               "column": [
                 {
                   "name": "customer_id",
@@ -1086,12 +1056,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "customer_by_customer_id"
+              ]
             },
             {
               "name": "orders_ibfk_2",
-              "func_name": "employee",
               "column": [
                 {
                   "name": "employee_id",
@@ -1112,12 +1080,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "employee_by_employee_id"
+              ]
             },
             {
               "name": "orders_ibfk_3",
-              "func_name": "shipper",
               "column": [
                 {
                   "name": "ship_via",
@@ -1138,8 +1104,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "shipper_by_shipper_id"
+              ]
             }
           ],
           "manual": true
@@ -1239,7 +1204,6 @@
           "indexes": [
             {
               "name": "category_id",
-              "func_name": "products_by_category_id",
               "fields": [
                 {
                   "name": "category_id",
@@ -1253,7 +1217,6 @@
             },
             {
               "name": "supplier_id",
-              "func_name": "products_by_supplier_id",
               "fields": [
                 {
                   "name": "supplier_id",
@@ -1267,7 +1230,6 @@
             },
             {
               "name": "products_product_id_pkey",
-              "func_name": "product_by_product_id",
               "fields": [
                 {
                   "name": "product_id",
@@ -1285,7 +1247,6 @@
           "foreign_keys": [
             {
               "name": "products_ibfk_1",
-              "func_name": "supplier",
               "column": [
                 {
                   "name": "supplier_id",
@@ -1306,12 +1267,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "supplier_by_supplier_id"
+              ]
             },
             {
               "name": "products_ibfk_2",
-              "func_name": "category",
               "column": [
                 {
                   "name": "category_id",
@@ -1332,8 +1291,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "category_by_category_id"
+              ]
             }
           ],
           "manual": true
@@ -1371,7 +1329,6 @@
           "indexes": [
             {
               "name": "region_region_id_pkey",
-              "func_name": "region_by_region_id",
               "fields": [
                 {
                   "name": "region_id",
@@ -1429,7 +1386,6 @@
           "indexes": [
             {
               "name": "shippers_shipper_id_pkey",
-              "func_name": "shipper_by_shipper_id",
               "fields": [
                 {
                   "name": "shipper_id",
@@ -1558,7 +1514,6 @@
           "indexes": [
             {
               "name": "suppliers_supplier_id_pkey",
-              "func_name": "supplier_by_supplier_id",
               "fields": [
                 {
                   "name": "supplier_id",
@@ -1615,7 +1570,6 @@
           "indexes": [
             {
               "name": "region_id",
-              "func_name": "territories_by_region_id",
               "fields": [
                 {
                   "name": "region_id",
@@ -1628,7 +1582,6 @@
             },
             {
               "name": "territories_territory_id_pkey",
-              "func_name": "territory_by_territory_id",
               "fields": [
                 {
                   "name": "territory_id",
@@ -1646,7 +1599,6 @@
           "foreign_keys": [
             {
               "name": "territories_ibfk_1",
-              "func_name": "region",
               "column": [
                 {
                   "name": "region_id",
@@ -1666,8 +1618,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "region_by_region_id"
+              ]
             }
           ],
           "manual": true
@@ -1722,7 +1673,6 @@
           "indexes": [
             {
               "name": "us_states_state_id_pkey",
-              "func_name": "us_state_by_state_id",
               "fields": [
                 {
                   "name": "state_id",

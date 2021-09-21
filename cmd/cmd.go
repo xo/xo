@@ -373,39 +373,22 @@ func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	// grab loader
-	l := loader.Get(u.Driver)
-	if l == nil {
-		return nil, fmt.Errorf("no database loader available for %q", u.Driver)
-	}
 	// open database
 	db, err := passfile.OpenURL(u, v.HomeDir, "xopass")
 	if err != nil {
 		return nil, err
 	}
-	// determine schema
-	if schema == "" {
-		if schema, err = l.SchemaName(ctx, db); err != nil {
-			return nil, err
-		}
-	}
 	// add driver to context
 	ctx = context.WithValue(ctx, xo.DriverKey, u.Driver)
 	// add db to context
 	ctx = context.WithValue(ctx, xo.DbKey, db)
-	// add loader to context
-	ctx = context.WithValue(ctx, xo.LoaderKey, l)
+	// determine schema
+	if schema == "" {
+		if schema, err = loader.Schema(ctx); err != nil {
+			return nil, err
+		}
+	}
 	// add schema to context
 	ctx = context.WithValue(ctx, xo.SchemaKey, schema)
-	// add nth-func to context
-	ctx = context.WithValue(ctx, xo.NthParamKey, l.NthParam)
 	return ctx, nil
-}
-
-// DbLoaderSchema returns the database, loader, and schema name from the context.
-func DbLoaderSchema(ctx context.Context) (models.DB, *loader.Loader, string) {
-	db, _ := ctx.Value(xo.DbKey).(models.DB)
-	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
-	schema, _ := ctx.Value(xo.SchemaKey).(string)
-	return db, l, schema
 }

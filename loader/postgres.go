@@ -12,11 +12,9 @@ import (
 )
 
 func init() {
-	Register(&Loader{
-		Driver:           "postgres",
+	Register("postgres", Loader{
 		Mask:             "$%d",
 		Flags:            PostgresFlags,
-		GoType:           PostgresGoType,
 		Schema:           models.PostgresSchema,
 		Enums:            models.PostgresEnums,
 		EnumValues:       models.PostgresEnumValues,
@@ -28,10 +26,10 @@ func init() {
 		TableForeignKeys: models.PostgresTableForeignKeys,
 		TableIndexes:     models.PostgresTableIndexes,
 		IndexColumns:     PostgresIndexColumns,
-		ViewStrip:        PostgresViewStrip,
 		ViewCreate:       models.PostgresViewCreate,
 		ViewSchema:       models.PostgresViewSchema,
 		ViewDrop:         models.PostgresViewDrop,
+		ViewStrip:        PostgresViewStrip,
 	})
 }
 
@@ -49,11 +47,11 @@ func PostgresFlags() []xo.Flag {
 
 // PostgresGoType parse a type into a Go type based on the database type
 // definition.
-func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+func PostgresGoType(d xo.Type, schema, itype, utype string) (string, string, error) {
 	// SETOF -> []T
 	if strings.HasPrefix(d.Type, "SETOF ") {
 		d.Type = d.Type[len("SETOF "):]
-		goType, _, err := PostgresGoType(ctx, d)
+		goType, _, err := PostgresGoType(d, schema, itype, utype)
 		if err != nil {
 			return "", "", err
 		}
@@ -92,7 +90,7 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "integer":
-		goType, zero = Int32(ctx), "0"
+		goType, zero = itype, "0"
 		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -133,7 +131,7 @@ func PostgresGoType(ctx context.Context, d xo.Datatype) (string, string, error) 
 			goType, zero = "uuid.NullUUID", "uuid.NullUUID{}"
 		}
 	default:
-		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
+		goType, zero = schemaType(d.Type, d.Nullable, schema)
 	}
 	// handle slices
 	switch {
@@ -195,7 +193,7 @@ func PostgresIndexColumns(ctx context.Context, db models.DB, schema string, tabl
 }
 
 // PostgresViewStrip strips '::type AS name' in queries.
-func PostgresViewStrip(query []string) ([]string, []string) {
+func PostgresViewStrip(query, inspect []string) ([]string, []string, []string, error) {
 	comments := make([]string, len(query))
 	for i, line := range query {
 		if pos := stripRE.FindStringIndex(line); pos != nil {
@@ -203,7 +201,7 @@ func PostgresViewStrip(query []string) ([]string, []string) {
 			comments[i] = line[pos[0]:pos[1]]
 		}
 	}
-	return query, comments
+	return query, inspect, comments, nil
 }
 
 // stripRE is the regexp to match the '::type AS name' portion in a query,

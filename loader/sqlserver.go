@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"context"
 	"regexp"
 
 	"github.com/xo/xo/models"
@@ -9,10 +8,8 @@ import (
 )
 
 func init() {
-	Register(&Loader{
-		Driver:           "sqlserver",
+	Register("sqlserver", Loader{
 		Mask:             "@p%d",
-		GoType:           SqlserverGoType,
 		Schema:           models.SqlserverSchema,
 		Procs:            models.SqlserverProcs,
 		ProcParams:       models.SqlserverProcParams,
@@ -22,15 +19,15 @@ func init() {
 		TableForeignKeys: models.SqlserverTableForeignKeys,
 		TableIndexes:     models.SqlserverTableIndexes,
 		IndexColumns:     models.SqlserverIndexColumns,
-		ViewStrip:        SqlserverViewStrip,
 		ViewCreate:       models.SqlserverViewCreate,
 		ViewDrop:         models.SqlserverViewDrop,
+		ViewStrip:        SqlserverViewStrip,
 	})
 }
 
 // SqlserverGoType parse a mssql type into a Go type based on the column
 // definition.
-func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+func SqlserverGoType(d xo.Type, schema, itype, utype string) (string, string, error) {
 	var goType, zero string
 	switch d.Type {
 	case "tinyint", "bit":
@@ -49,7 +46,7 @@ func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error)
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "int":
-		goType, zero = Int32(ctx), "0"
+		goType, zero = itype, "0"
 		if d.Nullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
@@ -76,22 +73,22 @@ func SqlserverGoType(ctx context.Context, d xo.Datatype) (string, string, error)
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	default:
-		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
+		goType, zero = schemaType(d.Type, d.Nullable, schema)
 	}
 	return goType, zero, nil
 }
 
 // SqlserverViewStrip strips ORDER BY clauses from the passed query.
-func SqlserverViewStrip(query []string) ([]string, []string) {
+func SqlserverViewStrip(query, inspect []string) ([]string, []string, []string, error) {
 	// sqlserver cannot have an 'ORDER BY' clause in a CREATE VIEW
-	var inspect []string
-	for _, line := range query {
+	var res []string
+	for _, line := range inspect {
 		if orderByRE.MatchString(line) {
 			continue
 		}
-		inspect = append(inspect, line)
+		res = append(res, line)
 	}
-	return inspect, make([]string, len(inspect))
+	return query, res, make([]string, len(query)), nil
 }
 
 // orderByRE is a regexp matching ORDER by clauses in sqlserver queries.

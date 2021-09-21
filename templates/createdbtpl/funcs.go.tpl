@@ -14,7 +14,7 @@ import (
 
 // Init intializes the custom template funcs.
 func Init(ctx context.Context) (template.FuncMap, error) {
-	driver, _, _ := xo.DriverSchemaNthParam(ctx)
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	funcs := &Funcs{
 		driver:      driver,
 		constraint:  createdbtpl.Constraint(ctx),
@@ -50,7 +50,7 @@ type Funcs struct {
 
 func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 	// normalize type
-	typ := f.normalize(field.Datatype)
+	typ := f.normalize(field.Type)
 	// add sequence definition
 	if field.IsSequence {
 		typ = f.resolveSequence(typ, field)
@@ -61,7 +61,7 @@ func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 	if field.Default != "" && !field.IsSequence {
 		def = append(def, "DEFAULT", f.alterDefault(field.Default))
 	}
-	if !field.Datatype.Nullable && !field.IsSequence {
+	if !field.Type.Nullable && !field.IsSequence {
 		def = append(def, "NOT NULL")
 	}
 	// add constraints
@@ -116,7 +116,7 @@ func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 		return typ + " AUTO_INCREMENT"
 	case "sqlite3":
 		ext := " PRIMARY KEY AUTOINCREMENT"
-		if !field.Datatype.Nullable {
+		if !field.Type.Nullable {
 			ext = " NOT NULL" + ext
 		}
 		return typ + ext
@@ -192,14 +192,14 @@ func (f *Funcs) procSignature(proc xo.Proc) string {
 	var end string
 	// add params
 	for _, field := range proc.Params {
-		params = append(params, fmt.Sprintf("%s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
+		params = append(params, fmt.Sprintf("%s %s", f.escCol(field.Name), f.normalize(field.Type)))
 	}
 	// add return values
 	if len(proc.Returns) == 1 && proc.Returns[0].Name == "r0" {
-		end += " RETURNS " + f.normalize(proc.Returns[0].Datatype)
+		end += " RETURNS " + f.normalize(proc.Returns[0].Type)
 	} else {
 		for _, field := range proc.Returns {
-			params = append(params, fmt.Sprintf("OUT %s %s", f.escCol(field.Name), f.normalize(field.Datatype)))
+			params = append(params, fmt.Sprintf("OUT %s %s", f.escCol(field.Name), f.normalize(field.Type)))
 		}
 	}
 	signature := fmt.Sprintf("CREATE %s %s(%s)%s", typ, f.escType(proc.Name), strings.Join(params, ", "), end)
@@ -268,7 +268,7 @@ func (f *Funcs) enginefn() string {
 	return fmt.Sprintf(" ENGINE=%s", f.engine)
 }
 
-func (f *Funcs) normalize(datatype xo.Datatype) string {
+func (f *Funcs) normalize(datatype xo.Type) string {
 	typ := f.convert(datatype)
 	if datatype.Scale > 0 && !omitPrecision[f.driver][typ] {
 		typ += fmt.Sprintf("(%d, %d)", datatype.Prec, datatype.Scale)
@@ -284,7 +284,7 @@ func (f *Funcs) normalize(datatype xo.Datatype) string {
 	return typ
 }
 
-func (f *Funcs) convert(datatype xo.Datatype) string {
+func (f *Funcs) convert(datatype xo.Type) string {
 	// mysql enums
 	if f.driver == "mysql" && datatype.Enum != nil {
 		var enums []string
@@ -307,7 +307,7 @@ func (f *Funcs) literal(literal string) string {
 	return fmt.Sprint("'", strings.ReplaceAll(literal, "'", "''"), "'")
 }
 
-func (f *Funcs) isEndConstraint(idx *xo.Index) bool {
+func (f *Funcs) isEndConstraint(idx xo.Index) bool {
 	if f.driver == "sqlite3" && idx.Fields[0].IsSequence {
 		return false
 	}

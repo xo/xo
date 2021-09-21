@@ -15,9 +15,11 @@ func init() {
 		// function, constant and variable definitions
 		"CommentHeadPosition":            reflect.ValueOf(yaml.CommentHeadPosition),
 		"CommentLinePosition":            reflect.ValueOf(yaml.CommentLinePosition),
+		"CommentToMap":                   reflect.ValueOf(yaml.CommentToMap),
 		"DefaultIndentSpaces":            reflect.ValueOf(constant.MakeFromLiteral("2", token.INT, 0)),
 		"DisallowDuplicateKey":           reflect.ValueOf(yaml.DisallowDuplicateKey),
 		"DisallowUnknownField":           reflect.ValueOf(yaml.DisallowUnknownField),
+		"ErrInvalidCommentMapValue":      reflect.ValueOf(&yaml.ErrInvalidCommentMapValue).Elem(),
 		"ErrInvalidPath":                 reflect.ValueOf(&yaml.ErrInvalidPath).Elem(),
 		"ErrInvalidPathString":           reflect.ValueOf(&yaml.ErrInvalidPathString).Elem(),
 		"ErrInvalidQuery":                reflect.ValueOf(&yaml.ErrInvalidQuery).Elem(),

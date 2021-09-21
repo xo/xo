@@ -73,14 +73,14 @@ func init() {
 				Default:    "false",
 			},
 			{
-				ContextKey:  xo.Int32Key,
+				ContextKey:  Int32Key,
 				Type:        "string",
 				Desc:        "int32 type (default: int)",
 				PlaceHolder: "int",
 				Default:     "int",
 			},
 			{
-				ContextKey:  xo.Uint32Key,
+				ContextKey:  Uint32Key,
 				Type:        "string",
 				Desc:        "uint32 type (default: uint)",
 				PlaceHolder: "uint",
@@ -274,7 +274,7 @@ func emitQuery(ctx context.Context, doAppend bool, set *templates.TemplateSet, q
 	for _, z := range query.Params {
 		params = append(params, QueryParam{
 			Name:        z.Name,
-			Type:        z.Datatype.Type,
+			Type:        z.Type.Type,
 			Interpolate: z.Interpolate,
 			Join:        z.Join,
 		})
@@ -315,7 +315,7 @@ func buildQueryType(ctx context.Context, query xo.Query) (Table, error) {
 			f = Field{
 				GoName:  z.Name,
 				SQLName: snake(z.Name),
-				Type:    z.Datatype.Type,
+				Type:    z.Type.Type,
 			}
 		}
 		fields = append(fields, f)
@@ -469,7 +469,7 @@ func convertEnum(e xo.Enum) Enum {
 
 // convertProc converts a xo.Proc.
 func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []string, p xo.Proc) ([]string, error) {
-	_, schema, _ := xo.DriverSchemaNthParam(ctx)
+	_, _, schema := xo.DriverDbSchema(ctx)
 	proc := Proc{
 		Type:      p.Type,
 		GoName:    camelExport(p.Name),
@@ -485,7 +485,7 @@ func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []str
 			return nil, err
 		}
 		proc.Params = append(proc.Params, f)
-		types = append(types, z.Datatype.Type)
+		types = append(types, z.Type.Type)
 	}
 	// add to signature, generate name
 	proc.Signature += "(" + strings.Join(types, ", ") + ")"
@@ -498,7 +498,7 @@ func convertProc(ctx context.Context, overloadMap map[string][]Proc, order []str
 			return nil, err
 		}
 		proc.Returns = append(proc.Returns, f)
-		types = append(types, z.Datatype.Type)
+		types = append(types, z.Type.Type)
 	}
 	// append signature
 	if !p.Void {
@@ -530,10 +530,9 @@ func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 			pkCols = append(pkCols, f)
 		}
 	}
-	name := snaker.ForceCamelIdentifier(singularize(t.Name))
 	return Table{
 		Type:        t.Type,
-		GoName:      name,
+		GoName:      snaker.ForceCamelIdentifier(singularize(t.Name)),
 		SQLName:     t.Name,
 		Fields:      cols,
 		PrimaryKeys: pkCols,
@@ -550,10 +549,9 @@ func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 		}
 		fields = append(fields, f)
 	}
-	funcName := snaker.ForceCamelIdentifier(i.FuncName)
 	return Index{
 		SQLName:   i.Name,
-		FuncName:  funcName,
+		Func:      snaker.ForceCamelIdentifier(i.Func),
 		Table:     t,
 		Fields:    fields,
 		IsUnique:  i.IsUnique,
@@ -580,13 +578,13 @@ func convertFKey(ctx context.Context, t Table, fk xo.ForeignKey) (ForeignKey, er
 		refFields = append(refFields, refField)
 	}
 	return ForeignKey{
-		GoName:      camelExport(fk.FuncName),
-		SQLName:     fk.Name,
-		Table:       t,
-		Fields:      fields,
-		RefTable:    camelExport(singularize(fk.RefTable)),
-		RefFields:   refFields,
-		RefFuncName: camelExport(fk.RefFuncName),
+		GoName:    camelExport(fk.Func),
+		SQLName:   fk.Name,
+		Table:     t,
+		Fields:    fields,
+		RefTable:  camelExport(singularize(fk.RefTable)),
+		RefFields: refFields,
+		RefFunc:   camelExport(fk.RefFunc),
 	}, nil
 }
 
@@ -612,8 +610,7 @@ func overloadedName(sqlTypes []string, proc Proc) string {
 }
 
 func convertField(ctx context.Context, tf transformFunc, f xo.Field) (Field, error) {
-	l := Loader(ctx)
-	typ, zero, err := l.GoType(ctx, f.Datatype)
+	typ, zero, err := goType(ctx, f.Type)
 	if err != nil {
 		return Field{}, err
 	}
@@ -625,6 +622,26 @@ func convertField(ctx context.Context, tf transformFunc, f xo.Field) (Field, err
 		IsPrimary:  f.IsPrimary,
 		IsSequence: f.IsSequence,
 	}, nil
+}
+
+func goType(ctx context.Context, typ xo.Type) (string, string, error) {
+	driver, _, schema := xo.DriverDbSchema(ctx)
+	var f func(xo.Type, string, string, string) (string, string, error)
+	switch driver {
+	case "mysql":
+		f = loader.MysqlGoType
+	case "oracle":
+		f = loader.OracleGoType
+	case "postgres":
+		f = loader.PostgresGoType
+	case "sqlite3":
+		f = loader.Sqlite3GoType
+	case "sqlserver":
+		f = loader.SqlserverGoType
+	default:
+		return "", "", fmt.Errorf("unknown driver %q", driver)
+	}
+	return f(typ, schema, Int32(ctx), Uint32(ctx))
 }
 
 type transformFunc func(...string) string
@@ -647,6 +664,8 @@ const (
 	KnownTypesKey xo.ContextKey = "known-types"
 	ShortsKey     xo.ContextKey = "shorts"
 	NotFirstKey   xo.ContextKey = "not-first"
+	Int32Key      xo.ContextKey = "int32"
+	Uint32Key     xo.ContextKey = "uint32"
 	PkgKey        xo.ContextKey = "pkg"
 	TagKey        xo.ContextKey = "tag"
 	ImportKey     xo.ContextKey = "import"
@@ -661,12 +680,6 @@ const (
 	InjectFileKey xo.ContextKey = "inject-file"
 	LegacyKey     xo.ContextKey = "legacy"
 )
-
-// Loader returns the loader from the context.
-func Loader(ctx context.Context) *loader.Loader {
-	l, _ := ctx.Value(xo.LoaderKey).(*loader.Loader)
-	return l
-}
 
 // First returns first from the context.
 func First(ctx context.Context) *bool {
@@ -690,6 +703,18 @@ func Shorts(ctx context.Context) map[string]string {
 func NotFirst(ctx context.Context) bool {
 	b, _ := ctx.Value(NotFirstKey).(bool)
 	return b
+}
+
+// Int32 returns int32 from the context.
+func Int32(ctx context.Context) string {
+	s, _ := ctx.Value(Int32Key).(string)
+	return s
+}
+
+// Uint32 returns uint32 from the context.
+func Uint32(ctx context.Context) string {
+	s, _ := ctx.Value(Uint32Key).(string)
+	return s
 }
 
 // Pkg returns pkg from the context.
@@ -790,7 +815,7 @@ func addInitialisms(ctx context.Context) error {
 	return snaker.DefaultInitialisms.Add(v...)
 }
 
-// contains returns true when s is in v.
+// contains determines if v contains s.
 func contains(v []string, s string) bool {
 	for _, z := range v {
 		if z == s {
@@ -800,7 +825,7 @@ func contains(v []string, s string) bool {
 	return false
 }
 
-// singuralize will singularize a identifier, returning in CamelCase.
+// singuralize singularizes s.
 func singularize(s string) string {
 	if i := strings.LastIndex(s, "_"); i != -1 {
 		return s[:i+1] + inflector.Singularize(s[i+1:])

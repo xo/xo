@@ -1,6 +1,8 @@
 package gotpl
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // EnumValue is a enum value template.
 type EnumValue struct {
@@ -44,20 +46,20 @@ type Table struct {
 
 // ForeignKey is a foreign key template.
 type ForeignKey struct {
-	GoName      string
-	SQLName     string
-	Table       Table
-	Fields      []Field
-	RefTable    string
-	RefFields   []Field
-	RefFuncName string
-	Comment     string
+	GoName    string
+	SQLName   string
+	Table     Table
+	Fields    []Field
+	RefTable  string
+	RefFields []Field
+	RefFunc   string
+	Comment   string
 }
 
 // Index is an index template.
 type Index struct {
 	SQLName   string
-	FuncName  string
+	Func      string
 	Table     Table
 	Fields    []Field
 	IsUnique  bool

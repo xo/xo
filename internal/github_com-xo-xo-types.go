@@ -10,20 +10,14 @@ import (
 func init() {
 	Symbols["github.com/xo/xo/types/types"] = map[string]reflect.Value{
 		// function, constant and variable definitions
-		"DbKey":                reflect.ValueOf(types.DbKey),
-		"DriverKey":            reflect.ValueOf(types.DriverKey),
-		"DriverSchemaNthParam": reflect.ValueOf(types.DriverSchemaNthParam),
-		"EmitterKey":           reflect.ValueOf(types.EmitterKey),
-		"Int32Key":             reflect.ValueOf(types.Int32Key),
-		"LoaderKey":            reflect.ValueOf(types.LoaderKey),
-		"NthParamKey":          reflect.ValueOf(types.NthParamKey),
-		"ParseType":            reflect.ValueOf(types.ParseType),
-		"SchemaKey":            reflect.ValueOf(types.SchemaKey),
-		"Uint32Key":            reflect.ValueOf(types.Uint32Key),
+		"DbKey":          reflect.ValueOf(types.DbKey),
+		"DriverDbSchema": reflect.ValueOf(types.DriverDbSchema),
+		"DriverKey":      reflect.ValueOf(types.DriverKey),
+		"ParseType":      reflect.ValueOf(types.ParseType),
+		"SchemaKey":      reflect.ValueOf(types.SchemaKey),
 
 		// type definitions
 		"ContextKey": reflect.ValueOf((*types.ContextKey)(nil)),
-		"Datatype":   reflect.ValueOf((*types.Datatype)(nil)),
 		"Enum":       reflect.ValueOf((*types.Enum)(nil)),
 		"Field":      reflect.ValueOf((*types.Field)(nil)),
 		"Flag":       reflect.ValueOf((*types.Flag)(nil)),
@@ -34,6 +28,7 @@ func init() {
 		"Query":      reflect.ValueOf((*types.Query)(nil)),
 		"Schema":     reflect.ValueOf((*types.Schema)(nil)),
 		"Table":      reflect.ValueOf((*types.Table)(nil)),
+		"Type":       reflect.ValueOf((*types.Type)(nil)),
 		"XO":         reflect.ValueOf((*types.XO)(nil)),
 	}
 }

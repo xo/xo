@@ -2,8 +2,10 @@
 package funcs
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"strings"
 	"text/template"
 
 	"github.com/xo/xo/templates/jsontpl"
@@ -11,36 +13,18 @@ import (
 
 // Init intializes the custom template funcs.
 func Init(ctx context.Context) (template.FuncMap, error) {
-	funcs := &Funcs{
-		indent: jsontpl.Indent(ctx),
-		ugly:   jsontpl.Ugly(ctx),
-	}
 	return template.FuncMap{
-		"json": funcs.jsonfn,
+		// json marshals v as json.
+		"json": func(v interface{}) (string, error) {
+			buf := new(bytes.Buffer)
+			enc := json.NewEncoder(buf)
+			if !jsontpl.Ugly(ctx) {
+				enc.SetIndent("", jsontpl.Indent(ctx))
+			}
+			if err := enc.Encode(v); err != nil {
+				return "", err
+			}
+			return strings.TrimSpace(buf.String()), nil
+		},
 	}, nil
-}
-
-// Funcs is a set of template funcs.
-type Funcs struct {
-	indent string
-	ugly   bool
-}
-
-// jsonfn marshals v as json.
-func (f *Funcs) jsonfn(v interface{}) (string, error) {
-	z := json.MarshalIndent
-	if f.ugly {
-		z = uglyMarshal
-	}
-	// marshal
-	buf, err := z(v, "", f.indent)
-	if err != nil {
-		return "", err
-	}
-	return string(buf), nil
-}
-
-// uglyMarshal marshals v without indentation.
-func uglyMarshal(v interface{}, _, _ string) ([]byte, error) {
-	return json.Marshal(v)
 }

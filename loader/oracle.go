@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"context"
 	"regexp"
 
 	"github.com/xo/xo/models"
@@ -9,10 +8,8 @@ import (
 )
 
 func init() {
-	Register(&Loader{
-		Driver:           "oracle",
+	Register("oracle", Loader{
 		Mask:             ":%d",
-		GoType:           OracleGoType,
 		Schema:           models.OracleSchema,
 		Procs:            models.OracleProcs,
 		ProcParams:       models.OracleProcParams,
@@ -30,7 +27,7 @@ func init() {
 
 // OracleGoType parse a oracle type into a Go type based on the column
 // definition.
-func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
+func OracleGoType(d xo.Type, schema, itype, utype string) (string, string, error) {
 	var goType, zero string
 	// strip remaining length (on things like timestamp)
 	switch orLenRE.ReplaceAllString(d.Type, "") {
@@ -65,7 +62,7 @@ func OracleGoType(ctx context.Context, d xo.Datatype) (string, string, error) {
 	case "blob", "long raw", "raw", "xmltype":
 		goType, zero = "[]byte", "nil"
 	default:
-		goType, zero = SchemaGoType(ctx, d.Type, d.Nullable)
+		goType, zero = schemaType(d.Type, d.Nullable, schema)
 	}
 	// handle bools
 	switch {

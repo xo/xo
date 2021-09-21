@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/kenshaw/snaker"
+	"github.com/xo/xo/loader"
 	"github.com/xo/xo/templates/gotpl"
 	xo "github.com/xo/xo/types"
 )
@@ -37,11 +38,15 @@ func Init(ctx context.Context) (template.FuncMap, error) {
 		}
 		inject = string(buf)
 	}
-	driver, schema, nthParam := xo.DriverSchemaNthParam(ctx)
+	driver, _, schema := xo.DriverDbSchema(ctx)
+	nth, err := loader.NthParam(ctx)
+	if err != nil {
+		return nil, err
+	}
 	funcs := &Funcs{
 		driver:     driver,
 		schema:     schema,
-		nth:        nthParam,
+		nth:        nth,
 		first:      first,
 		pkg:        gotpl.Pkg(ctx),
 		tags:       gotpl.Tags(ctx),
@@ -241,7 +246,7 @@ func (f *Funcs) func_name_none(v interface{}) string {
 		}
 		return n
 	case gotpl.Index:
-		return x.FuncName
+		return x.Func
 	}
 	return fmt.Sprintf("[[ UNSUPPORTED TYPE 1: %T ]]", v)
 }
@@ -264,7 +269,7 @@ func (f *Funcs) func_name_context(v interface{}) string {
 		}
 		return nameContext(f.context_both(), n)
 	case gotpl.Index:
-		return nameContext(f.context_both(), x.FuncName)
+		return nameContext(f.context_both(), x.Func)
 	}
 	return fmt.Sprintf("[[ UNSUPPORTED TYPE 2: %T ]]", v)
 }
@@ -375,7 +380,7 @@ func (f *Funcs) foreign_key_context(v interface{}) string {
 	}
 	switch x := v.(type) {
 	case gotpl.ForeignKey:
-		name = x.RefFuncName
+		name = x.RefFunc
 		if f.context_both() {
 			name += "Context"
 		}
@@ -392,7 +397,7 @@ func (f *Funcs) foreign_key_none(v interface{}) string {
 	var p []string
 	switch x := v.(type) {
 	case gotpl.ForeignKey:
-		name = x.RefFuncName
+		name = x.RefFunc
 		p = append(p, "context.Background()", "db", f.convertTypes(x))
 	default:
 		return fmt.Sprintf("[[ UNSUPPORTED TYPE 7: %T ]]", v)

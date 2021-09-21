@@ -35,7 +35,6 @@
           "indexes": [
             {
               "name": "sqlite_autoindex_auth_group_1",
-              "func_name": "auth_group_by_name",
               "fields": [
                 {
                   "name": "name",
@@ -49,7 +48,6 @@
             },
             {
               "name": "auth_group_id_pkey",
-              "func_name": "auth_group_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -100,7 +98,6 @@
           "indexes": [
             {
               "name": "auth_group_permissions_group_id_b120cbf9",
-              "func_name": "auth_group_permissions_by_group_id",
               "fields": [
                 {
                   "name": "group_id",
@@ -112,7 +109,6 @@
             },
             {
               "name": "auth_group_permissions_group_id_permission_id_0cd325b0_uniq",
-              "func_name": "auth_group_permission_by_group_id_permission_id",
               "fields": [
                 {
                   "name": "group_id",
@@ -131,7 +127,6 @@
             },
             {
               "name": "auth_group_permissions_permission_id_84c5c92e",
-              "func_name": "auth_group_permissions_by_permission_id",
               "fields": [
                 {
                   "name": "permission_id",
@@ -143,7 +138,6 @@
             },
             {
               "name": "auth_group_permissions_id_pkey",
-              "func_name": "auth_group_permission_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -160,7 +154,6 @@
           "foreign_keys": [
             {
               "name": "auth_group_permissions_group_id_fkey",
-              "func_name": "auth_group",
               "column": [
                 {
                   "name": "group_id",
@@ -178,12 +171,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_group_by_id"
+              ]
             },
             {
               "name": "auth_group_permissions_permission_id_fkey",
-              "func_name": "auth_permission",
               "column": [
                 {
                   "name": "permission_id",
@@ -201,8 +192,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_permission_by_id"
+              ]
             }
           ]
         },
@@ -250,7 +240,6 @@
           "indexes": [
             {
               "name": "auth_permission_content_type_id_2f476e4b",
-              "func_name": "auth_permission_by_content_type_id",
               "fields": [
                 {
                   "name": "content_type_id",
@@ -262,7 +251,6 @@
             },
             {
               "name": "auth_permission_content_type_id_codename_01ab375a_uniq",
-              "func_name": "auth_permission_by_content_type_id_codename",
               "fields": [
                 {
                   "name": "content_type_id",
@@ -282,7 +270,6 @@
             },
             {
               "name": "auth_permission_id_pkey",
-              "func_name": "auth_permission_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -299,7 +286,6 @@
           "foreign_keys": [
             {
               "name": "auth_permission_content_type_id_fkey",
-              "func_name": "django_content_type",
               "column": [
                 {
                   "name": "content_type_id",
@@ -317,8 +303,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "django_content_type_by_id"
+              ]
             }
           ]
         },
@@ -412,7 +397,6 @@
           "indexes": [
             {
               "name": "sqlite_autoindex_auth_user_1",
-              "func_name": "auth_user_by_username",
               "fields": [
                 {
                   "name": "username",
@@ -426,7 +410,6 @@
             },
             {
               "name": "auth_user_id_pkey",
-              "func_name": "auth_user_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -477,7 +460,6 @@
           "indexes": [
             {
               "name": "auth_user_groups_group_id_97559544",
-              "func_name": "auth_user_groups_by_group_id",
               "fields": [
                 {
                   "name": "group_id",
@@ -489,7 +471,6 @@
             },
             {
               "name": "auth_user_groups_user_id_6a12ed8b",
-              "func_name": "auth_user_groups_by_user_id",
               "fields": [
                 {
                   "name": "user_id",
@@ -501,7 +482,6 @@
             },
             {
               "name": "auth_user_groups_user_id_group_id_94350c0c_uniq",
-              "func_name": "auth_user_group_by_user_id_group_id",
               "fields": [
                 {
                   "name": "user_id",
@@ -520,7 +500,6 @@
             },
             {
               "name": "auth_user_groups_id_pkey",
-              "func_name": "auth_user_group_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -537,7 +516,6 @@
           "foreign_keys": [
             {
               "name": "auth_user_groups_group_id_fkey",
-              "func_name": "auth_group",
               "column": [
                 {
                   "name": "group_id",
@@ -555,12 +533,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_group_by_id"
+              ]
             },
             {
               "name": "auth_user_groups_user_id_fkey",
-              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",
@@ -578,8 +554,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_user_by_id"
+              ]
             }
           ]
         },
@@ -619,7 +594,6 @@
           "indexes": [
             {
               "name": "auth_user_user_permissions_permission_id_1fbb5f2c",
-              "func_name": "auth_user_user_permissions_by_permission_id",
               "fields": [
                 {
                   "name": "permission_id",
@@ -631,7 +605,6 @@
             },
             {
               "name": "auth_user_user_permissions_user_id_a95ead1b",
-              "func_name": "auth_user_user_permissions_by_user_id",
               "fields": [
                 {
                   "name": "user_id",
@@ -643,7 +616,6 @@
             },
             {
               "name": "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq",
-              "func_name": "auth_user_user_permission_by_user_id_permission_id",
               "fields": [
                 {
                   "name": "user_id",
@@ -662,7 +634,6 @@
             },
             {
               "name": "auth_user_user_permissions_id_pkey",
-              "func_name": "auth_user_user_permission_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -679,7 +650,6 @@
           "foreign_keys": [
             {
               "name": "auth_user_user_permissions_permission_id_fkey",
-              "func_name": "auth_permission",
               "column": [
                 {
                   "name": "permission_id",
@@ -697,12 +667,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_permission_by_id"
+              ]
             },
             {
               "name": "auth_user_user_permissions_user_id_fkey",
-              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",
@@ -720,8 +688,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_user_by_id"
+              ]
             }
           ]
         },
@@ -755,7 +722,6 @@
           "indexes": [
             {
               "name": "authors_author_id_pkey",
-              "func_name": "author_by_author_id",
               "fields": [
                 {
                   "name": "author_id",
@@ -832,7 +798,6 @@
           "indexes": [
             {
               "name": "books_books_author_id_fkey_73ac0c26",
-              "func_name": "books_by_books_author_id_fkey",
               "fields": [
                 {
                   "name": "books_author_id_fkey",
@@ -844,7 +809,6 @@
             },
             {
               "name": "books_book_id_pkey",
-              "func_name": "book_by_book_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -861,7 +825,6 @@
           "foreign_keys": [
             {
               "name": "books_books_author_id_fkey_fkey",
-              "func_name": "author",
               "column": [
                 {
                   "name": "books_author_id_fkey",
@@ -879,8 +842,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "author_by_author_id"
+              ]
             }
           ]
         },
@@ -920,7 +882,6 @@
           "indexes": [
             {
               "name": "books_tags_book_id_73d7d8e8",
-              "func_name": "books_tags_by_book_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -932,7 +893,6 @@
             },
             {
               "name": "books_tags_book_id_tag_id_29db9e39_uniq",
-              "func_name": "books_tag_by_book_id_tag_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -951,7 +911,6 @@
             },
             {
               "name": "books_tags_tag_id_8d70b40a",
-              "func_name": "books_tags_by_tag_id",
               "fields": [
                 {
                   "name": "tag_id",
@@ -963,7 +922,6 @@
             },
             {
               "name": "books_tags_id_pkey",
-              "func_name": "books_tag_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -980,7 +938,6 @@
           "foreign_keys": [
             {
               "name": "books_tags_book_id_fkey",
-              "func_name": "book",
               "column": [
                 {
                   "name": "book_id",
@@ -998,12 +955,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "book_by_book_id"
+              ]
             },
             {
               "name": "books_tags_tag_id_fkey",
-              "func_name": "tag",
               "column": [
                 {
                   "name": "tag_id",
@@ -1021,8 +976,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "tag_by_tag_id"
+              ]
             }
           ]
         },
@@ -1096,7 +1050,6 @@
           "indexes": [
             {
               "name": "django_admin_log_content_type_id_c4bce8eb",
-              "func_name": "django_admin_log_by_content_type_id",
               "fields": [
                 {
                   "name": "content_type_id",
@@ -1109,7 +1062,6 @@
             },
             {
               "name": "django_admin_log_user_id_c564eba6",
-              "func_name": "django_admin_log_by_user_id",
               "fields": [
                 {
                   "name": "user_id",
@@ -1121,7 +1073,6 @@
             },
             {
               "name": "django_admin_log_id_pkey",
-              "func_name": "django_admin_log_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -1138,7 +1089,6 @@
           "foreign_keys": [
             {
               "name": "django_admin_log_content_type_id_fkey",
-              "func_name": "django_content_type",
               "column": [
                 {
                   "name": "content_type_id",
@@ -1157,12 +1107,10 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "django_content_type_by_id"
+              ]
             },
             {
               "name": "django_admin_log_user_id_fkey",
-              "func_name": "auth_user",
               "column": [
                 {
                   "name": "user_id",
@@ -1180,8 +1128,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "auth_user_by_id"
+              ]
             }
           ]
         },
@@ -1223,7 +1170,6 @@
           "indexes": [
             {
               "name": "django_content_type_app_label_model_76bd3d3b_uniq",
-              "func_name": "django_content_type_by_app_label_model",
               "fields": [
                 {
                   "name": "app_label",
@@ -1244,7 +1190,6 @@
             },
             {
               "name": "django_content_type_id_pkey",
-              "func_name": "django_content_type_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -1303,7 +1248,6 @@
           "indexes": [
             {
               "name": "django_migrations_id_pkey",
-              "func_name": "django_migration_by_id",
               "fields": [
                 {
                   "name": "id",
@@ -1356,7 +1300,6 @@
           "indexes": [
             {
               "name": "django_session_expire_date_a5c62663",
-              "func_name": "django_session_by_expire_date",
               "fields": [
                 {
                   "name": "expire_date",
@@ -1368,7 +1311,6 @@
             },
             {
               "name": "sqlite_autoindex_django_session_1",
-              "func_name": "django_session_by_session_key",
               "fields": [
                 {
                   "name": "session_key",
@@ -1416,7 +1358,6 @@
           "indexes": [
             {
               "name": "tags_tag_id_pkey",
-              "func_name": "tag_by_tag_id",
               "fields": [
                 {
                   "name": "tag_id",

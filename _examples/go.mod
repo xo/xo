@@ -12,7 +12,7 @@ require (
 	github.com/lib/pq v1.10.3
 	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/xo/dburl v0.9.0
-	golang.org/x/crypto v0.0.0-20210915214749-c084706c2272 // indirect
+	golang.org/x/crypto v0.0.0-20210920023735-84f357641f63 // indirect
 	mvdan.cc/gofumpt v0.1.1
 )
 

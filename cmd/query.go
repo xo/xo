@@ -9,13 +9,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/xo/xo/loader"
 	xo "github.com/xo/xo/types"
 )
 
 // BuildQuery builds a query.
 func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
-	// driver info
-	_, l, _ := DbLoaderSchema(ctx)
+	driver, _, _ := xo.DriverDbSchema(ctx)
 	// introspect query if not exec mode
 	query, inspect, comments, fields, err := ParseQuery(
 		ctx,
@@ -31,19 +31,19 @@ func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
 	var typeFields []xo.Field
 	if !args.QueryParams.Exec {
 		// build query type
-		typeFields, err = LoadTypeFields(
+		typeFields, err = LoadQueryFields(
 			ctx,
-			args.QueryParams.AllowNulls,
-			args.QueryParams.Flat,
 			inspect,
 			args.QueryParams.Fields,
+			args.QueryParams.AllowNulls,
+			args.QueryParams.Flat,
 		)
 		if err != nil {
 			return err
 		}
 	}
 	dest.Emit(xo.Query{
-		Driver:       l.Driver,
+		Driver:       driver,
 		Name:         args.QueryParams.Func,
 		Comment:      args.QueryParams.FuncComment,
 		Exec:         args.QueryParams.Exec,
@@ -64,14 +64,18 @@ func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
 // ParseQuery parses a query returning the processed query, a query for
 // introspection, related comments, and extracted params.
 func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim, strip bool) ([]string, []string, []string, []xo.Field, error) {
-	_, l, _ := DbLoaderSchema(ctx)
+	// nth func
+	nth, err := loader.NthParam(ctx)
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
 	// build query
 	qstr, fields, err := ParseQueryFields(
 		sqlstr,
 		delimiter,
 		interpolate,
 		true,
-		l.NthParam,
+		nth,
 	)
 	if err != nil {
 		return nil, nil, nil, nil, err
@@ -106,14 +110,11 @@ func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim
 	}
 	// build comments
 	var comments []string
-	switch {
-	case strip && l.Driver == "postgres":
-		query, comments = l.ViewStrip(query)
-	case strip && l.Driver == "sqlserver":
-		inspect, _ = l.ViewStrip(inspect)
-		comments = make([]string, len(query))
-	default:
-		comments = make([]string, len(query))
+	if strip {
+		// strip view
+		if query, inspect, comments, err = loader.ViewStrip(ctx, query, inspect); err != nil {
+			return nil, nil, nil, nil, err
+		}
 	}
 	return query, inspect, comments, fields, nil
 }
@@ -142,13 +143,13 @@ func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, n
 		name, typ := p[0], p[1]
 		field := xo.Field{
 			Name: name,
-			Datatype: xo.Datatype{
+			Type: xo.Type{
 				Type: typ,
 			},
 		}
 		// parse parameter options if present
 		if opts := strings.Split(typ, ","); len(opts) > 1 {
-			field.Datatype.Type = opts[0]
+			field.Type.Type = opts[0]
 			for _, o := range opts[1:] {
 				switch o {
 				case "interpolate": // enable interpolation of the variable
@@ -195,8 +196,8 @@ func ParseQueryFields(query, delim string, interpolate, paramInterpolate bool, n
 	return sqlstr + query[last:], fields, nil
 }
 
-// LoadTypeFields loads the query type fields.
-func LoadTypeFields(ctx context.Context, allowNulls, flat bool, query []string, fields string) ([]xo.Field, error) {
+// LoadQueryFields loads the query type fields.
+func LoadQueryFields(ctx context.Context, query []string, fields string, allowNulls, flat bool) ([]xo.Field, error) {
 	// introspect or use defined user fields
 	f := Introspect
 	if fields != "" {
@@ -214,58 +215,56 @@ func LoadTypeFields(ctx context.Context, allowNulls, flat bool, query []string, 
 // Creates a temporary view/table, retrieves its column definitions and
 // dropping the temporary view/table.
 func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]xo.Field, error) {
+	// determine prefix
+	driver, _, _ := xo.DriverDbSchema(ctx)
+	prefix := "_xo_"
+	if driver == "oracle" {
+		prefix = "XO$"
+	}
 	// create random id
 	id := func(r *rand.Rand) string {
 		buf := make([]byte, 8)
 		for i := range buf {
 			buf[i] = letters[r.Intn(len(letters))]
 		}
-		return string(buf)
+		return prefix + string(buf)
 	}(rand.New(rand.NewSource(time.Now().UTC().UnixNano())))
-	// determine prefix
-	db, l, schema := DbLoaderSchema(ctx)
-	prefix := "_xo_"
-	if l.Driver == "oracle" {
-		prefix = "XO$"
-	}
-	id = prefix + id
 	// create introspection view
-	if _, err := l.ViewCreate(ctx, db, schema, id, query); err != nil {
+	if _, err := loader.ViewCreate(ctx, id, query); err != nil {
 		return nil, err
 	}
 	// determine schema the view was created in (if applicable)
-	if l.ViewSchema != nil {
-		var err error
-		if schema, err = l.ViewSchema(ctx, db, id); err != nil {
-			return nil, err
-		}
+	schema, err := loader.ViewSchema(ctx, id)
+	switch {
+	case err != nil:
+		return nil, err
+	case schema != "":
+		ctx = context.WithValue(ctx, xo.SchemaKey, schema)
 	}
 	// retrieve column info
-	cols, err := l.TableColumns(ctx, db, schema, id)
+	cols, err := loader.TableColumns(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	// truncate view
-	if l.ViewTruncate != nil {
-		if _, err := l.ViewTruncate(ctx, db, schema, id); err != nil {
-			return nil, err
-		}
+	if _, err := loader.ViewTruncate(ctx, id); err != nil {
+		return nil, err
 	}
 	// drop view
-	if _, err := l.ViewDrop(ctx, db, schema, id); err != nil {
+	if _, err := loader.ViewDrop(ctx, id); err != nil {
 		return nil, err
 	}
 	// process columns
 	var fields []xo.Field
 	for _, col := range cols {
 		// get type
-		d, err := xo.ParseType(ctx, col.DataType)
+		d, err := xo.ParseType(col.DataType, driver)
 		if err != nil {
 			return nil, err
 		}
 		fields = append(fields, xo.Field{
-			Name:     col.ColumnName,
-			Datatype: d,
+			Name: col.ColumnName,
+			Type: d,
 		})
 	}
 	return fields, nil
@@ -286,7 +285,7 @@ func SplitFields(s string) ([]xo.Field, error) {
 		}
 		fields = append(fields, xo.Field{
 			Name: name,
-			Datatype: xo.Datatype{
+			Type: xo.Type{
 				Type: typ,
 			},
 		})

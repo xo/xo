@@ -10,11 +10,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/user"
 	"sort"
 	"text/template"
 
-	"github.com/kenshaw/snaker"
 	_ "github.com/lib/pq"
+
+	"github.com/kenshaw/snaker"
 	"github.com/xo/dburl/passfile"
 	"github.com/xo/xo/_examples/pgcatalog/pgtypes"
 	"mvdan.cc/gofumpt/format"
@@ -31,8 +33,12 @@ func main() {
 }
 
 func run(ctx context.Context, dsn, out string) error {
+	u, err := user.Current()
+	if err != nil {
+		return err
+	}
 	// open
-	db, err := passfile.Open(dsn, "xopass")
+	db, err := passfile.Open(dsn, u.HomeDir, "xopass")
 	if err != nil {
 		return err
 	}

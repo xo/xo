@@ -3,6 +3,7 @@ package types
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -17,13 +18,13 @@ type XO struct {
 }
 
 // Emit emits values.
-func (xo *XO) Emit(z ...interface{}) {
-	for _, v := range z {
-		switch x := v.(type) {
+func (x *XO) Emit(v ...interface{}) {
+	for _, vv := range v {
+		switch z := vv.(type) {
 		case Query:
-			xo.Queries = append(xo.Queries, x)
+			x.Queries = append(x.Queries, z)
 		case Schema:
-			xo.Schemas = append(xo.Schemas, x)
+			x.Schemas = append(x.Schemas, z)
 		}
 	}
 }
@@ -119,36 +120,36 @@ func (t Table) MarshalYAML() (interface{}, error) {
 // Index is a index.
 type Index struct {
 	Name      string  `json:"name,omitempty"`
-	FuncName  string  `json:"func_name,omitempty"`
 	Fields    []Field `json:"fields,omitempty"`
 	IsUnique  bool    `json:"is_unique,omitempty"`
 	IsPrimary bool    `json:"is_primary,omitempty"`
+	Func      string  `json:"-"`
 }
 
 // ForeignKey is a foreign key.
 type ForeignKey struct {
-	Name        string  `json:"name,omitempty"`       // constraint name
-	FuncName    string  `json:"func_name,omitempty"`  // foreign key func name (based on fkey mode)
-	Fields      []Field `json:"column,omitempty"`     // column that has the key on it
-	RefTable    string  `json:"ref_table,omitempty"`  // table the foreign key refers to
-	RefFields   []Field `json:"ref_column,omitempty"` // column in ref table the index refers to
-	RefFuncName string  `json:"ref_func_name"`        // func name from ref index
+	Name      string  `json:"name,omitempty"`       // constraint name
+	Fields    []Field `json:"column,omitempty"`     // column that has the key on it
+	RefTable  string  `json:"ref_table,omitempty"`  // table the foreign key refers to
+	RefFields []Field `json:"ref_column,omitempty"` // column in ref table the index refers to
+	Func      string  `json:"-"`                    // foreign key func name (based on fkey mode)
+	RefFunc   string  `json:"-"`                    // func name from ref index
 }
 
 // Field is a column, index, enum value, or stored procedure parameter.
 type Field struct {
-	Name        string   `json:"name,omitempty"`
-	Datatype    Datatype `json:"datatype,omitempty"`
-	Default     string   `json:"default,omitempty"`
-	IsPrimary   bool     `json:"is_primary,omitempty"`
-	IsSequence  bool     `json:"is_sequence,omitempty"`
-	ConstValue  *int     `json:"const_value,omitempty"`
-	Interpolate bool     `json:"interpolate,omitempty"`
-	Join        bool     `json:"join,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Type        Type   `json:"datatype,omitempty"`
+	Default     string `json:"default,omitempty"`
+	IsPrimary   bool   `json:"is_primary,omitempty"`
+	IsSequence  bool   `json:"is_sequence,omitempty"`
+	ConstValue  *int   `json:"const_value,omitempty"`
+	Interpolate bool   `json:"interpolate,omitempty"`
+	Join        bool   `json:"join,omitempty"`
 }
 
-// Datatype is a datatype.
-type Datatype struct {
+// Type holds information for a database type.
+type Type struct {
 	Type     string `json:"type,omitempty"`
 	Prec     int    `json:"prec,omitempty"`
 	Scale    int    `json:"scale,omitempty"`
@@ -170,15 +171,14 @@ type Datatype struct {
 //	timestamp(n) with [local] time zone (oracle only)
 //
 // The returned type is stripped of precision and scale.
-func ParseType(ctx context.Context, typ string) (Datatype, error) {
-	driver, _, _ := DriverSchemaNthParam(ctx)
+func ParseType(typ, driver string) (Type, error) {
 	// special case for oracle timestamp(n) with [local] time zone
 	if m := oracleTimestampRE.FindStringSubmatch(typ); driver == "oracle" && m != nil {
 		prec, err := strconv.Atoi(m[1])
 		if err != nil {
-			return Datatype{}, fmt.Errorf("could not parse precision: %w", err)
+			return Type{}, fmt.Errorf("could not parse precision: %w", err)
 		}
-		return Datatype{
+		return Type{
 			Type: "timestamp " + m[2],
 			Prec: prec,
 		}, nil
@@ -200,18 +200,18 @@ func ParseType(ctx context.Context, typ string) (Datatype, error) {
 		if i := strings.LastIndex(s, ","); i != -1 {
 			var err error
 			if scale, err = strconv.Atoi(strings.TrimSpace(s[i+1:])); err != nil {
-				return Datatype{}, fmt.Errorf("could not parse scale: %w", err)
+				return Type{}, fmt.Errorf("could not parse scale: %w", err)
 			}
 			s = s[:i]
 		}
 		// extract precision
 		var err error
 		if prec, err = strconv.Atoi(strings.TrimSpace(s)); err != nil {
-			return Datatype{}, fmt.Errorf("could not parse precision: %w", err)
+			return Type{}, fmt.Errorf("could not parse precision: %w", err)
 		}
 		typ = typ[:m[0]]
 	}
-	return Datatype{
+	return Type{
 		Type:     strings.ToLower(strings.TrimSpace(typ)),
 		Prec:     prec,
 		Scale:    scale,
@@ -221,7 +221,7 @@ func ParseType(ctx context.Context, typ string) (Datatype, error) {
 }
 
 // oracleTimestampRE is the regexp that matches "timestamp(precision) with [local]
-// time zone" definitions in oracle databases
+// time zone" definitions in oracle databases.
 var oracleTimestampRE = regexp.MustCompile(`^timestamp\((\d)\) (with(?: local)? time zone)$`)
 
 // precRE is the regexp that matches "(precision[,scale])" definitions in a
@@ -275,23 +275,16 @@ type ContextKey string
 
 // Context key values.
 const (
-	// database and loader keys
-	DriverKey   ContextKey = "driver"
-	SchemaKey   ContextKey = "schema"
-	DbKey       ContextKey = "db"
-	EmitterKey  ContextKey = "emitter"
-	LoaderKey   ContextKey = "loader"
-	NthParamKey ContextKey = "nth-param"
-	// type keys
-	Int32Key  ContextKey = "int32"
-	Uint32Key ContextKey = "uint32"
+	DriverKey ContextKey = "driver"
+	DbKey     ContextKey = "db"
+	SchemaKey ContextKey = "schema"
 )
 
-// DriverSchemaNthParam returns the driver, schema, and nth-param from the
-// context.
-func DriverSchemaNthParam(ctx context.Context) (string, string, func(int) string) {
+// DriverDbSchema returns the driver, database connection, and schema name from
+// the context.
+func DriverDbSchema(ctx context.Context) (string, *sql.DB, string) {
 	driver, _ := ctx.Value(DriverKey).(string)
+	db, _ := ctx.Value(DbKey).(*sql.DB)
 	schema, _ := ctx.Value(SchemaKey).(string)
-	nthParam, _ := ctx.Value(NthParamKey).(func(int) string)
-	return driver, schema, nthParam
+	return driver, db, schema
 }

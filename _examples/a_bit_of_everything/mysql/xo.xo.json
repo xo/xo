@@ -713,7 +713,6 @@
           "indexes": [
             {
               "name": "a_key",
-              "func_name": "a_foreign_key_by_a_key",
               "fields": [
                 {
                   "name": "a_key",
@@ -729,7 +728,6 @@
           "foreign_keys": [
             {
               "name": "a_foreign_key_ibfk_1",
-              "func_name": "a_primary",
               "column": [
                 {
                   "name": "a_key",
@@ -750,8 +748,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "a_primary_by_a_key"
+              ]
             }
           ],
           "manual": true
@@ -780,7 +777,6 @@
           "indexes": [
             {
               "name": "a_key1",
-              "func_name": "a_foreign_key_composite_by_a_key1_a_key2",
               "fields": [
                 {
                   "name": "a_key1",
@@ -804,7 +800,6 @@
           "foreign_keys": [
             {
               "name": "a_foreign_key_composite_ibfk_1",
-              "func_name": "a_primary_composite",
               "column": [
                 {
                   "name": "a_key1",
@@ -841,8 +836,7 @@
                   },
                   "is_primary": true
                 }
-              ],
-              "ref_func_name": "a_primary_composite_by_a_key1_a_key2"
+              ]
             }
           ],
           "manual": true
@@ -863,7 +857,6 @@
           "indexes": [
             {
               "name": "a_index_idx",
-              "func_name": "a_index_by_a_key",
               "fields": [
                 {
                   "name": "a_key",
@@ -902,7 +895,6 @@
           "indexes": [
             {
               "name": "a_index_composite_idx",
-              "func_name": "a_index_composite_by_a_key1_a_key2",
               "fields": [
                 {
                   "name": "a_key1",
@@ -966,7 +958,6 @@
           "indexes": [
             {
               "name": "a_primary_a_key_pkey",
-              "func_name": "a_primary_by_a_key",
               "fields": [
                 {
                   "name": "a_key",
@@ -1025,7 +1016,6 @@
           "indexes": [
             {
               "name": "a_primary_composite_a_key1_a_key2_pkey",
-              "func_name": "a_primary_composite_by_a_key1_a_key2",
               "fields": [
                 {
                   "name": "a_key1",
@@ -1084,7 +1074,6 @@
           "indexes": [
             {
               "name": "a_primary_multi_a_key_pkey",
-              "func_name": "a_primary_multi_by_a_key",
               "fields": [
                 {
                   "name": "a_key",
@@ -1129,7 +1118,6 @@
           "indexes": [
             {
               "name": "a_sequence_a_seq_pkey",
-              "func_name": "a_sequence_by_a_seq",
               "fields": [
                 {
                   "name": "a_seq",
@@ -1182,7 +1170,6 @@
           "indexes": [
             {
               "name": "a_sequence_multi_a_seq_pkey",
-              "func_name": "a_sequence_multi_by_a_seq",
               "fields": [
                 {
                   "name": "a_seq",
@@ -1215,7 +1202,6 @@
           "indexes": [
             {
               "name": "a_key",
-              "func_name": "a_unique_index_by_a_key",
               "fields": [
                 {
                   "name": "a_key",
@@ -1255,7 +1241,6 @@
           "indexes": [
             {
               "name": "a_key1",
-              "func_name": "a_unique_index_composite_by_a_key1_a_key2",
               "fields": [
                 {
                   "name": "a_key1",

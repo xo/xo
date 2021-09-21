@@ -63,7 +63,6 @@
           "indexes": [
             {
               "name": "authors_name_idx",
-              "func_name": "authors_by_name",
               "fields": [
                 {
                   "name": "name",
@@ -77,7 +76,6 @@
             },
             {
               "name": "authors_pkey",
-              "func_name": "author_by_author_id",
               "fields": [
                 {
                   "name": "author_id",
@@ -176,7 +174,6 @@
           "indexes": [
             {
               "name": "books_isbn_key",
-              "func_name": "book_by_isbn",
               "fields": [
                 {
                   "name": "isbn",
@@ -191,7 +188,6 @@
             },
             {
               "name": "books_pkey",
-              "func_name": "book_by_book_id",
               "fields": [
                 {
                   "name": "book_id",
@@ -208,7 +204,6 @@
             },
             {
               "name": "books_title_idx",
-              "func_name": "books_by_title_year",
               "fields": [
                 {
                   "name": "title",
@@ -232,7 +227,6 @@
           "foreign_keys": [
             {
               "name": "books_author_id_fkey",
-              "func_name": "author",
               "column": [
                 {
                   "name": "author_id",
@@ -253,8 +247,7 @@
                   "is_primary": true,
                   "is_sequence": true
                 }
-              ],
-              "ref_func_name": "author_by_author_id"
+              ]
             }
           ]
         }

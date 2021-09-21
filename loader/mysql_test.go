@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"context"
 	"testing"
 
 	xo "github.com/xo/xo/types"
@@ -149,11 +148,8 @@ func TestMysqlGoType(t *testing.T) {
 			prec:   5,
 		},
 	}
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, xo.DriverKey, "mysql")
-	ctx = context.WithValue(ctx, xo.SchemaKey, "mysql")
 	for i, test := range tests {
-		d, err := xo.ParseType(ctx, test.typ)
+		d, err := xo.ParseType(test.typ, "mysql")
 		if err != nil {
 			t.Fatalf("test %d (%s) %q (nullable: %t) expected no error, got: %v", i, test.name, test.typ, test.nullable, err)
 		}
@@ -167,7 +163,7 @@ func TestMysqlGoType(t *testing.T) {
 			t.Errorf("test %d (%s) %q (nullable: %t) expected d.IsArray = false", i, test.name, test.typ, test.nullable)
 		}
 		d.Nullable = test.nullable
-		goType, zero, err := MysqlGoType(ctx, d)
+		goType, zero, err := MysqlGoType(d, "mysql", "int", "uint")
 		if err != nil {
 			t.Fatalf("test %d (%s) %q MysqlGoType(%#v) expected no error, got: %v", i, test.name, test.typ, d, err)
 		}
