@@ -63,7 +63,7 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 	// update with primary key
 	const sqlstr = `UPDATE northwind.order_details SET ` +
 		`unit_price = ?, quantity = ?, discount = ? ` +
-		`WHERE order_id = ?, product_id = ?`
+		`WHERE order_id = ? AND product_id = ?`
 	// run
 	logf(sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID)
 	if _, err := db.ExecContext(ctx, sqlstr, od.UnitPrice, od.Quantity, od.Discount, od.OrderID, od.ProductID); err != nil {
