@@ -3,16 +3,16 @@ module github.com/xo/xo/_examples
 go 1.17
 
 require (
-	github.com/denisenkom/go-mssqldb v0.10.0
+	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/godror/godror v0.25.5
+	github.com/godror/godror v0.27.1
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/kenshaw/snaker v0.1.6
 	github.com/lib/pq v1.10.3
 	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/xo/dburl v0.9.0
-	golang.org/x/crypto v0.0.0-20210920023735-84f357641f63 // indirect
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	mvdan.cc/gofumpt v0.1.1
 )
 

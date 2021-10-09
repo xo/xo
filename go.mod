@@ -6,9 +6,9 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
-	github.com/alecthomas/units v0.0.0-20210912230133-d1bdfacee922 // indirect
-	github.com/denisenkom/go-mssqldb v0.10.0
-	github.com/fatih/color v1.12.0 // indirect
+	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a // indirect
+	github.com/denisenkom/go-mssqldb v0.11.0
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobwas/glob v0.2.3
 	github.com/goccy/go-yaml v1.9.3
@@ -22,10 +22,10 @@ require (
 	github.com/traefik/yaegi v0.10.0
 	github.com/xo/dburl v0.9.0
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/crypto v0.0.0-20210920023735-84f357641f63 // indirect
-	golang.org/x/mod v0.5.0 // indirect
-	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
-	golang.org/x/tools v0.1.6
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/mod v0.5.1 // indirect
+	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
+	golang.org/x/tools v0.1.7
 	mvdan.cc/gofumpt v0.1.1
 )
 
@@ -36,7 +36,7 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/mattn/go-colorable v0.1.9 // indirect
+	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
