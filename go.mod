@@ -11,22 +11,22 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobwas/glob v0.2.3
-	github.com/goccy/go-yaml v1.9.3
+	github.com/goccy/go-yaml v1.9.4
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/kenshaw/inflector v0.2.0
 	github.com/kenshaw/snaker v0.1.6
-	github.com/lib/pq v1.10.3
+	github.com/lib/pq v1.10.4
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/mattn/go-sqlite3 v1.14.8
-	github.com/sijms/go-ora/v2 v2.2.9
-	github.com/traefik/yaegi v0.10.0
+	github.com/mattn/go-sqlite3 v1.14.9
+	github.com/sijms/go-ora/v2 v2.2.15
+	github.com/traefik/yaegi v0.11.0
 	github.com/xo/dburl v0.9.0
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
 	golang.org/x/mod v0.5.1 // indirect
-	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
-	golang.org/x/tools v0.1.7
-	mvdan.cc/gofumpt v0.1.1
+	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
+	golang.org/x/tools v0.1.8-0.20211102182255-bb4add04ddef
+	mvdan.cc/gofumpt v0.2.0
 )
 
 require (
@@ -36,10 +36,10 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/mattn/go-colorable v0.1.11 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/shopspring/decimal v1.2.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )

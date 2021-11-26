@@ -4,16 +4,17 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 )
 
 // AuthorBookResult is the result of a search.
 type AuthorBookResult struct {
-	AuthorID   int         `json:"author_id"`   // author_id
-	AuthorName string      `json:"author_name"` // author_name
-	BookID     int         `json:"book_id"`     // book_id
-	BookISBN   string      `json:"book_isbn"`   // book_isbn
-	BookTitle  string      `json:"book_title"`  // book_title
-	BookTags   StringSlice `json:"book_tags"`   // book_tags
+	AuthorID   sql.NullInt64    `json:"author_id"`   // author_id
+	AuthorName sql.NullString   `json:"author_name"` // author_name
+	BookID     sql.NullInt64    `json:"book_id"`     // book_id
+	BookISBN   sql.NullString   `json:"book_isbn"`   // book_isbn
+	BookTitle  sql.NullString   `json:"book_title"`  // book_title
+	BookTags   []sql.NullString `json:"book_tags"`   // book_tags
 }
 
 // AuthorBookResultsByTags runs a custom query, returning results as AuthorBookResult.

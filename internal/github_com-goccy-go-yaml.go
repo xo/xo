@@ -154,7 +154,9 @@ type _github_com_goccy_go_yaml_FieldError struct {
 	WStructField func() string
 }
 
-func (W _github_com_goccy_go_yaml_FieldError) StructField() string { return W.WStructField() }
+func (W _github_com_goccy_go_yaml_FieldError) StructField() string {
+	return W.WStructField()
+}
 
 // _github_com_goccy_go_yaml_InterfaceMarshaler is an interface wrapper for InterfaceMarshaler type
 type _github_com_goccy_go_yaml_InterfaceMarshaler struct {
@@ -202,7 +204,9 @@ type _github_com_goccy_go_yaml_IsZeroer struct {
 	WIsZero func() bool
 }
 
-func (W _github_com_goccy_go_yaml_IsZeroer) IsZero() bool { return W.WIsZero() }
+func (W _github_com_goccy_go_yaml_IsZeroer) IsZero() bool {
+	return W.WIsZero()
+}
 
 // _github_com_goccy_go_yaml_StructValidator is an interface wrapper for StructValidator type
 type _github_com_goccy_go_yaml_StructValidator struct {
@@ -210,4 +214,6 @@ type _github_com_goccy_go_yaml_StructValidator struct {
 	WStruct func(a0 interface{}) error
 }
 
-func (W _github_com_goccy_go_yaml_StructValidator) Struct(a0 interface{}) error { return W.WStruct(a0) }
+func (W _github_com_goccy_go_yaml_StructValidator) Struct(a0 interface{}) error {
+	return W.WStruct(a0)
+}
