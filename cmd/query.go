@@ -262,7 +262,9 @@ func Introspect(ctx context.Context, query []string, allowNulls, flat bool) ([]x
 		if err != nil {
 			return nil, err
 		}
-		d.Nullable = !col.NotNull
+		if allowNulls {
+			d.Nullable = !col.NotNull
+		}
 		fields = append(fields, xo.Field{
 			Name: col.ColumnName,
 			Type: d,
