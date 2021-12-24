@@ -922,7 +922,7 @@ func (f *Funcs) sqlstr_delete(v interface{}) []string {
 	return []string{fmt.Sprintf("[[ UNSUPPORTED TYPE 25: %T ]]", v)}
 }
 
-// sqlstr_index builds a
+// sqlstr_index builds a index fields.
 func (f *Funcs) sqlstr_index(v interface{}) []string {
 	switch x := v.(type) {
 	case gotpl.Index:
