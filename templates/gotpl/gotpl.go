@@ -687,7 +687,7 @@ func First(ctx context.Context) *bool {
 	return b
 }
 
-// KnownTYpes returns known-types from the context.
+// KnownTypes returns known-types from the context.
 func KnownTypes(ctx context.Context) map[string]bool {
 	m, _ := ctx.Value(KnownTypesKey).(map[string]bool)
 	return m
@@ -825,7 +825,7 @@ func contains(v []string, s string) bool {
 	return false
 }
 
-// singuralize singularizes s.
+// singularize singularizes s.
 func singularize(s string) string {
 	if i := strings.LastIndex(s, "_"); i != -1 {
 		return s[:i+1] + inflector.Singularize(s[i+1:])

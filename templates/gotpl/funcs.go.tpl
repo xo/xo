@@ -591,7 +591,7 @@ func (f *Funcs) names_all(prefix string, z ...interface{}) string {
 	return f.namesfn(true, prefix, z...)
 }
 
-// names_all generates a list of all names, ignoring fields that match the value in ignore.
+// names_ignore generates a list of all names, ignoring fields that match the value in ignore.
 func (f *Funcs) names_ignore(prefix string, v interface{}, ignore ...string) string {
 	m := map[string]bool{}
 	for _, n := range ignore {
@@ -674,7 +674,7 @@ func (f *Funcs) sqlstr(typ string, v interface{}) string {
 	return fmt.Sprintf("const sqlstr = `%s`", strings.Join(lines, "` +\n\t`"))
 }
 
-// sqlstr_insert_manual builds an INSERT query
+// sqlstr_insert_base builds an INSERT query
 // If not all, sequence columns are skipped.
 func (f *Funcs) sqlstr_insert_base(all bool, v interface{}) []string {
 	switch x := v.(type) {
