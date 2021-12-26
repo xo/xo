@@ -12,18 +12,19 @@ type MysqlEnumValue struct {
 }
 
 // MysqlEnumValues runs a custom query, returning results as MysqlEnumValue.
-func MysqlEnumValues(ctx context.Context, db DB, schema, enum string) (*MysqlEnumValue, error) {
+func MysqlEnumValues(ctx context.Context, db DB, schema, table, enum string) (*MysqlEnumValue, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`SUBSTRING(column_type, 6, CHAR_LENGTH(column_type) - 6) AS enum_values ` +
 		`FROM information_schema.columns ` +
 		`WHERE data_type = 'enum' ` +
 		`AND table_schema = ? ` +
+		`AND table_name = ? ` +
 		`AND column_name = ?`
 	// run
-	logf(sqlstr, schema, enum)
+	logf(sqlstr, schema, table, enum)
 	var mev MysqlEnumValue
-	if err := db.QueryRowContext(ctx, sqlstr, schema, enum).Scan(&mev.EnumValues); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, schema, table, enum).Scan(&mev.EnumValues); err != nil {
 		return nil, logerror(err)
 	}
 	return &mev, nil

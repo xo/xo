@@ -76,6 +76,7 @@ type Field struct {
 	IsPrimary  bool
 	IsSequence bool
 	Comment    string
+	IsEnum     bool
 }
 
 // QueryParam is a custom query parameter template.

@@ -76,8 +76,9 @@ func (s Schema) EnumByName(name string) *Enum {
 
 // Enum is a enum type.
 type Enum struct {
-	Name   string  `json:"name,omitempty"`
-	Values []Field `json:"values,omitempty"`
+	TableName string  `json:"table_name,omitempty"`
+	Name      string  `json:"name,omitempty"`
+	Values    []Field `json:"values,omitempty"`
 }
 
 // Proc is a stored procedure.
@@ -146,6 +147,7 @@ type Field struct {
 	ConstValue  *int   `json:"const_value,omitempty"`
 	Interpolate bool   `json:"interpolate,omitempty"`
 	Join        bool   `json:"join,omitempty"`
+	IsEnum      bool   `json:"is_enum,omitempty"`
 }
 
 // Type holds information for a database type.

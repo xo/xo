@@ -57,7 +57,7 @@ type Loader struct {
 	Flags            func() []xo.Flag
 	Schema           func(context.Context, models.DB) (string, error)
 	Enums            func(context.Context, models.DB, string) ([]*models.Enum, error)
-	EnumValues       func(context.Context, models.DB, string, string) ([]*models.EnumValue, error)
+	EnumValues       func(context.Context, models.DB, string, string, string) ([]*models.EnumValue, error)
 	Procs            func(context.Context, models.DB, string) ([]*models.Proc, error)
 	ProcParams       func(context.Context, models.DB, string, string) ([]*models.ProcParam, error)
 	Tables           func(context.Context, models.DB, string, string) ([]*models.Table, error)
@@ -129,12 +129,12 @@ func Enums(ctx context.Context) ([]*models.Enum, error) {
 }
 
 // EnumValues returns the database enum values.
-func EnumValues(ctx context.Context, enum string) ([]*models.EnumValue, error) {
+func EnumValues(ctx context.Context, table, enum string) ([]*models.EnumValue, error) {
 	db, l, schema, err := get(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return l.EnumValues(ctx, db, schema, enum)
+	return l.EnumValues(ctx, db, schema, table, enum)
 }
 
 // Procs returns the database procs.

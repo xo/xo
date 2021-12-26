@@ -68,7 +68,8 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 			continue
 		}
 		e := &xo.Enum{
-			Name: enum.EnumName,
+			TableName: enum.TableName,
+			Name:      enum.EnumName,
 		}
 		if err := LoadEnumValues(ctx, args, e); err != nil {
 			return nil, err
@@ -81,7 +82,7 @@ func LoadEnums(ctx context.Context, args *Args) ([]xo.Enum, error) {
 // LoadEnumValues loads enum values.
 func LoadEnumValues(ctx context.Context, args *Args, enum *xo.Enum) error {
 	// load enum values
-	enumValues, err := loader.EnumValues(ctx, enum.Name)
+	enumValues, err := loader.EnumValues(ctx, enum.TableName, enum.Name)
 	if err != nil {
 		return err
 	}
@@ -263,6 +264,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			Default:    defaultValue,
 			IsPrimary:  c.IsPrimaryKey,
 			IsSequence: sqMap[c.ColumnName],
+			IsEnum:     c.IsEnum,
 		}
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {

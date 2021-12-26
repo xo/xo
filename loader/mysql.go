@@ -131,9 +131,9 @@ func MysqlGoType(d xo.Type, schema, itype, utype string) (string, string, error)
 var setRE = regexp.MustCompile(`(?i)^set\([^)]*\)$`)
 
 // MysqlEnumValues loads the enum values.
-func MysqlEnumValues(ctx context.Context, db models.DB, schema string, enum string) ([]*models.EnumValue, error) {
+func MysqlEnumValues(ctx context.Context, db models.DB, schema string, table string, enum string) ([]*models.EnumValue, error) {
 	// load enum vals
-	res, err := models.MysqlEnumValues(ctx, db, schema, enum)
+	res, err := models.MysqlEnumValues(ctx, db, schema, table, enum)
 	if err != nil {
 		return nil, err
 	}

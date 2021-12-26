@@ -44,44 +44,46 @@ func Init(ctx context.Context) (template.FuncMap, error) {
 		return nil, err
 	}
 	funcs := &Funcs{
-		driver:     driver,
-		schema:     schema,
-		nth:        nth,
-		first:      first,
-		pkg:        gotpl.Pkg(ctx),
-		tags:       gotpl.Tags(ctx),
-		imports:    gotpl.Imports(ctx),
-		conflict:   gotpl.Conflict(ctx),
-		custom:     gotpl.Custom(ctx),
-		escSchema:  gotpl.Esc(ctx, "schema"),
-		escTable:   gotpl.Esc(ctx, "table"),
-		escColumn:  gotpl.Esc(ctx, "column"),
-		fieldtag:   fieldtag,
-		context:    gotpl.Context(ctx),
-		inject:     inject,
-		knownTypes: gotpl.KnownTypes(ctx),
-		shorts:     gotpl.Shorts(ctx),
+		driver:          driver,
+		schema:          schema,
+		nth:             nth,
+		first:           first,
+		pkg:             gotpl.Pkg(ctx),
+		tags:            gotpl.Tags(ctx),
+		imports:         gotpl.Imports(ctx),
+		conflict:        gotpl.Conflict(ctx),
+		custom:          gotpl.Custom(ctx),
+		escSchema:       gotpl.Esc(ctx, "schema"),
+		escTable:        gotpl.Esc(ctx, "table"),
+		escColumn:       gotpl.Esc(ctx, "column"),
+		fieldtag:        fieldtag,
+		context:         gotpl.Context(ctx),
+		inject:          inject,
+		knownTypes:      gotpl.KnownTypes(ctx),
+		shorts:          gotpl.Shorts(ctx),
+		enumTablePrefix: gotpl.EnumTablePrefix(ctx),
 	}
 	return funcs.FuncMap(), nil
 }
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	driver    string
-	schema    string
-	nth       func(int) string
-	first     *bool
-	pkg       string
-	tags      []string
-	imports   []string
-	conflict  string
-	custom    string
-	escSchema bool
-	escTable  bool
-	escColumn bool
-	fieldtag  *template.Template
-	context   string
-	inject    string
+	driver          string
+	schema          string
+	nth             func(int) string
+	first           *bool
+	pkg             string
+	tags            []string
+	imports         []string
+	conflict        string
+	custom          string
+	escSchema       bool
+	escTable        bool
+	escColumn       bool
+	fieldtag        *template.Template
+	context         string
+	inject          string
+	enumTablePrefix bool
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shorts is the collection of Go style short names for types, mainly
@@ -129,6 +131,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"zero":         f.zero,
 		"type":         f.typefn,
 		"field":        f.field,
+		"table":        f.table,
 		"short":        f.short,
 		// sqlstr funcs
 		"querystr": f.querystr,
@@ -1131,6 +1134,37 @@ func (f *Funcs) field(field gotpl.Field) (string, error) {
 	}
 	s := fmt.Sprintf("\t%s %s%s %s", field.GoName, f.typefn(field.Type), tag, "// "+field.SQLName)
 	return s, nil
+}
+
+// table generates a struct definition.
+func (f *Funcs) table(table gotpl.Table) (string, error) {
+	sb := new(strings.Builder)
+	tmp := new(strings.Builder)
+	for i, field := range table.Fields {
+		tag := ""
+		if err := f.fieldtag.Funcs(f.FuncMap()).Execute(tmp, field); err != nil {
+			return "", err
+		}
+		if s := tmp.String(); s != "" {
+			tag = " " + s
+		}
+		tmp.Reset()
+
+		if field.IsEnum && f.enumTablePrefix {
+			typ := field.Type
+			typ = table.GoName + typ
+			if strings.HasPrefix(field.Type, "Null") {
+				typ = strings.ReplaceAll(typ, "Null", "")
+				typ = "Null" + typ
+			}
+			field.Type = typ
+		}
+		sb.WriteString(fmt.Sprintf("\t%s %s%s %s", field.GoName, f.typefn(field.Type), tag, "// "+field.SQLName))
+		if i < len(table.Fields)-1 {
+			sb.WriteByte('\n')
+		}
+	}
+	return sb.String(), nil
 }
 
 // short generates a safe Go identifier for typ. typ is first checked
