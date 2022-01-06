@@ -61,8 +61,10 @@ ENDSQL
 COMMENT='{{ . }} is a enum.'
 $XOBIN query $PGDB -M -B -2 -T Enum -F PostgresEnums --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  c.relname AS table_name, t.typname::varchar AS enum_name
-FROM pg_class c, pg_type t
+  DISTINCT c.relname AS table_name, t.typname::varchar AS enum_name
+FROM pg_class c
+  JOIN pg_attribute a ON c.oid = a.attrelid
+  JOIN pg_type t on a.atttypid = t.oid
   JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
   JOIN ONLY pg_enum e ON t.oid = e.enumtypid
 WHERE n.nspname = %%schema string%%
@@ -74,7 +76,9 @@ $XOBIN query $PGDB -M -B -2 -T EnumValue -F PostgresEnumValues --type-comment "$
 SELECT
   e.enumlabel::varchar AS enum_value,
   e.enumsortorder::integer AS const_value
-FROM pg_class c, pg_type t
+FROM pg_class c
+  JOIN pg_attribute a ON c.oid = a.attrelid
+  JOIN pg_type t on a.atttypid = t.oid
   JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
   LEFT JOIN pg_enum e ON t.oid = e.enumtypid
 WHERE n.nspname = %%schema string%%
