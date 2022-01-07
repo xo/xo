@@ -6,7 +6,7 @@
 {{- end }}
 type {{ $t.GoName }} struct {
 {{ structfields $t }}
-{{- if $t.PrimaryKeys }}
+{{ if $t.PrimaryKeys -}}
 	// xo fields
 	_exists, _deleted bool
 {{ end -}}
