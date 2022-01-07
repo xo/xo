@@ -5,6 +5,6 @@
 // {{ $q.GoName }} represents a row from '{{ schema $q.SQLName }}'.
 {{- end }}
 type {{ $q.GoName }} struct {
-{{ table $q }}
+{{ structfields $q }}
 }
 

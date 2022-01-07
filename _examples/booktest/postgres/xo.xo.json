@@ -5,6 +5,7 @@
       "name": "public",
       "enums": [
         {
+          "table_name": "books",
           "name": "book_type",
           "values": [
             {
@@ -54,7 +55,8 @@
                 "type": "integer"
               },
               "is_primary": true,
-              "is_sequence": true
+              "is_sequence": true,
+              "is_enum": true
             },
             {
               "name": "name",
@@ -62,7 +64,8 @@
                 "type": "character varying",
                 "prec": 255
               },
-              "default": "''::character varying"
+              "default": "''::character varying",
+              "is_enum": true
             }
           ],
           "primary_keys": [
@@ -72,7 +75,8 @@
                 "type": "integer"
               },
               "is_primary": true,
-              "is_sequence": true
+              "is_sequence": true,
+              "is_enum": true
             }
           ],
           "indexes": [
@@ -85,7 +89,8 @@
                     "type": "character varying",
                     "prec": 255
                   },
-                  "default": "''::character varying"
+                  "default": "''::character varying",
+                  "is_enum": true
                 }
               ]
             },
@@ -98,7 +103,8 @@
                     "type": "integer"
                   },
                   "is_primary": true,
-                  "is_sequence": true
+                  "is_sequence": true,
+                  "is_enum": true
                 }
               ],
               "is_unique": true,
@@ -116,13 +122,15 @@
                 "type": "integer"
               },
               "is_primary": true,
-              "is_sequence": true
+              "is_sequence": true,
+              "is_enum": true
             },
             {
               "name": "author_id",
               "datatype": {
                 "type": "integer"
-              }
+              },
+              "is_enum": true
             },
             {
               "name": "isbn",
@@ -130,14 +138,16 @@
                 "type": "character varying",
                 "prec": 255
               },
-              "default": "''::character varying"
+              "default": "''::character varying",
+              "is_enum": true
             },
             {
               "name": "book_type",
               "datatype": {
                 "type": "book_type"
               },
-              "default": "'FICTION'::book_type"
+              "default": "'FICTION'::book_type",
+              "is_enum": true
             },
             {
               "name": "title",
@@ -145,28 +155,32 @@
                 "type": "character varying",
                 "prec": 255
               },
-              "default": "''::character varying"
+              "default": "''::character varying",
+              "is_enum": true
             },
             {
               "name": "year",
               "datatype": {
                 "type": "integer"
               },
-              "default": "2000"
+              "default": "2000",
+              "is_enum": true
             },
             {
               "name": "available",
               "datatype": {
                 "type": "timestamp with time zone"
               },
-              "default": "CURRENT_TIMESTAMP"
+              "default": "CURRENT_TIMESTAMP",
+              "is_enum": true
             },
             {
               "name": "description",
               "datatype": {
                 "type": "text"
               },
-              "default": "''::text"
+              "default": "''::text",
+              "is_enum": true
             },
             {
               "name": "tags",
@@ -184,7 +198,8 @@
                 "type": "integer"
               },
               "is_primary": true,
-              "is_sequence": true
+              "is_sequence": true,
+              "is_enum": true
             }
           ],
           "indexes": [
@@ -197,7 +212,8 @@
                     "type": "character varying",
                     "prec": 255
                   },
-                  "default": "''::character varying"
+                  "default": "''::character varying",
+                  "is_enum": true
                 }
               ],
               "is_unique": true
@@ -211,7 +227,8 @@
                     "type": "integer"
                   },
                   "is_primary": true,
-                  "is_sequence": true
+                  "is_sequence": true,
+                  "is_enum": true
                 }
               ],
               "is_unique": true,
@@ -226,14 +243,16 @@
                     "type": "character varying",
                     "prec": 255
                   },
-                  "default": "''::character varying"
+                  "default": "''::character varying",
+                  "is_enum": true
                 },
                 {
                   "name": "year",
                   "datatype": {
                     "type": "integer"
                   },
-                  "default": "2000"
+                  "default": "2000",
+                  "is_enum": true
                 }
               ]
             }
@@ -246,7 +265,8 @@
                   "name": "author_id",
                   "datatype": {
                     "type": "integer"
-                  }
+                  },
+                  "is_enum": true
                 }
               ],
               "ref_table": "authors",
@@ -257,7 +277,8 @@
                     "type": "integer"
                   },
                   "is_primary": true,
-                  "is_sequence": true
+                  "is_sequence": true,
+                  "is_enum": true
                 }
               ]
             }

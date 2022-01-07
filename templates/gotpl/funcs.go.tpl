@@ -131,7 +131,7 @@ func (f *Funcs) FuncMap() template.FuncMap {
 		"zero":         f.zero,
 		"type":         f.typefn,
 		"field":        f.field,
-		"table":        f.table,
+		"structfields": f.structfields,
 		"short":        f.short,
 		// sqlstr funcs
 		"querystr": f.querystr,
@@ -1136,35 +1136,28 @@ func (f *Funcs) field(field gotpl.Field) (string, error) {
 	return s, nil
 }
 
-// table generates a struct definition.
-func (f *Funcs) table(table gotpl.Table) (string, error) {
-	sb := new(strings.Builder)
-	tmp := new(strings.Builder)
+// structfields generates the struct field definitions.
+func (f *Funcs) structfields(table gotpl.Table) (string, error) {
+	var s string
 	for i, field := range table.Fields {
-		tag := ""
-		if err := f.fieldtag.Funcs(f.FuncMap()).Execute(tmp, field); err != nil {
+		buf := new(bytes.Buffer)
+		if err := f.fieldtag.Funcs(f.FuncMap()).Execute(buf, field); err != nil {
 			return "", err
 		}
-		if s := tmp.String(); s != "" {
-			tag = " " + s
+		var tag string
+		if v := buf.String(); v != "" {
+			tag = " " + v
 		}
-		tmp.Reset()
-
 		if field.IsEnum && f.enumTablePrefix {
-			typ := field.Type
-			typ = table.GoName + typ
+			typ := table.GoName + field.Type
 			if strings.HasPrefix(field.Type, "Null") {
-				typ = strings.ReplaceAll(typ, "Null", "")
-				typ = "Null" + typ
+				typ = "Null" + strings.ReplaceAll(typ, "Null", "")
 			}
 			field.Type = typ
 		}
-		sb.WriteString(fmt.Sprintf("\t%s %s%s %s", field.GoName, f.typefn(field.Type), tag, "// "+field.SQLName))
-		if i < len(table.Fields)-1 {
-			sb.WriteByte('\n')
-		}
+		s += fmt.Sprintf("\t%s %s%s // %s\n", field.GoName, f.typefn(field.Type), tag, field.SQLName)
 	}
-	return sb.String(), nil
+	return strings.TrimSuffix(s, "\n"), nil
 }
 
 // short generates a safe Go identifier for typ. typ is first checked

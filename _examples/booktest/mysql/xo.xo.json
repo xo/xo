@@ -5,6 +5,7 @@
       "name": "booktest",
       "enums": [
         {
+          "table_name": "books",
           "name": "book_type",
           "values": [
             {
@@ -144,7 +145,8 @@
               "datatype": {
                 "type": "book_type"
               },
-              "default": "'FICTION'"
+              "default": "'FICTION'",
+              "is_enum": true
             },
             {
               "name": "title",

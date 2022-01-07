@@ -5,8 +5,8 @@
 // {{ $t.GoName }} represents a row from '{{ schema $t.SQLName }}'.
 {{- end }}
 type {{ $t.GoName }} struct {
-{{ table $t }}
-{{- if $t.PrimaryKeys -}}
+{{ structfields $t }}
+{{- if $t.PrimaryKeys }}
 	// xo fields
 	_exists, _deleted bool
 {{ end -}}
