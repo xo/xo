@@ -61,10 +61,8 @@ ENDSQL
 COMMENT='{{ . }} is a enum.'
 $XOBIN query $PGDB -M -B -2 -T Enum -F PostgresEnums --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
-  DISTINCT c.relname AS table_name, t.typname::varchar AS enum_name
-FROM pg_class c
-  JOIN pg_attribute a ON c.oid = a.attrelid
-  JOIN pg_type t on a.atttypid = t.oid
+  DISTINCT t.typname::varchar AS enum_name
+FROM pg_type t
   JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
   JOIN ONLY pg_enum e ON t.oid = e.enumtypid
 WHERE n.nspname = %%schema string%%
@@ -76,13 +74,10 @@ $XOBIN query $PGDB -M -B -2 -T EnumValue -F PostgresEnumValues --type-comment "$
 SELECT
   e.enumlabel::varchar AS enum_value,
   e.enumsortorder::integer AS const_value
-FROM pg_class c
-  JOIN pg_attribute a ON c.oid = a.attrelid
-  JOIN pg_type t on a.atttypid = t.oid
+FROM pg_type t
   JOIN ONLY pg_namespace n ON n.oid = t.typnamespace
   LEFT JOIN pg_enum e ON t.oid = e.enumtypid
 WHERE n.nspname = %%schema string%%
-  AND c.relname::varchar = %%table string%%
   AND t.typname = %%enum string%%
 ENDSQL
 
@@ -177,7 +172,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres table column list query
-FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool,IsEnum bool'
+FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
 COMMENT='{{ . }} is a column.'
 $XOBIN query $PGDB -M -B -2 -T Column -F PostgresTableColumns -Z "$FIELDS" --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
@@ -186,8 +181,7 @@ SELECT
   format_type(a.atttypid, a.atttypmod)::varchar AS data_type,
   a.attnotnull::boolean AS not_null,
   COALESCE(pg_get_expr(ad.adbin, ad.adrelid), '')::varchar AS default_value,
-  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key,
-  COALESCE(a.attndims = 0, false)::boolean AS is_enum
+  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key
 FROM pg_attribute a
   JOIN ONLY pg_class c ON c.oid = a.attrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
@@ -332,7 +326,7 @@ ENDSQL
 # mysql enum list query
 $XOBIN query $MYDB -M -B -2 -T Enum -F MysqlEnums -a -o $DEST $@ << ENDSQL
 SELECT
-  table_name AS table_name, column_name AS enum_name
+  DISTINCT column_name AS enum_name
 FROM information_schema.columns
 WHERE data_type = 'enum'
   AND table_schema = %%schema string%%
@@ -345,7 +339,6 @@ SELECT
 FROM information_schema.columns
 WHERE data_type = 'enum'
   AND table_schema = %%schema string%%
-  AND table_name = %%table string%%
   AND column_name = %%enum string%%
 ENDSQL
 
@@ -410,8 +403,7 @@ SELECT
   IF(data_type = 'enum', column_name, column_type) AS data_type,
   IF(is_nullable = 'YES', false, true) AS not_null,
   column_default AS default_value,
-  IF(column_key = 'PRI', true, false) AS is_primary_key,
-  IF(data_type = 'enum', true, false) AS is_enum
+  IF(column_key = 'PRI', true, false) AS is_primary_key
 FROM information_schema.columns
 WHERE table_schema = %%schema string%%
   AND table_name = %%table string%%

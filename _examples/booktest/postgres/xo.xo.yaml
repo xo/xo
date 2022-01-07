@@ -4,8 +4,7 @@ schemas:
 - type: postgres
   name: public
   enums:
-  - table_name: books
-    name: book_type
+  - name: book_type
     values:
     - name: FICTION
       const_value: 1
@@ -35,20 +34,17 @@ schemas:
         type: integer
       is_primary: true
       is_sequence: true
-      is_enum: true
     - name: name
       datatype:
         type: character varying
         prec: 255
       default: "''::character varying"
-      is_enum: true
     primary_keys:
     - name: author_id
       datatype:
         type: integer
       is_primary: true
       is_sequence: true
-      is_enum: true
     indexes:
     - name: authors_name_idx
       fields:
@@ -57,7 +53,6 @@ schemas:
           type: character varying
           prec: 255
         default: "''::character varying"
-        is_enum: true
     - name: authors_pkey
       fields:
       - name: author_id
@@ -65,7 +60,6 @@ schemas:
           type: integer
         is_primary: true
         is_sequence: true
-        is_enum: true
       is_unique: true
       is_primary: true
   - type: table
@@ -76,43 +70,35 @@ schemas:
         type: integer
       is_primary: true
       is_sequence: true
-      is_enum: true
     - name: author_id
       datatype:
         type: integer
-      is_enum: true
     - name: isbn
       datatype:
         type: character varying
         prec: 255
       default: "''::character varying"
-      is_enum: true
     - name: book_type
       datatype:
         type: book_type
       default: "'FICTION'::book_type"
-      is_enum: true
     - name: title
       datatype:
         type: character varying
         prec: 255
       default: "''::character varying"
-      is_enum: true
     - name: year
       datatype:
         type: integer
       default: "2000"
-      is_enum: true
     - name: available
       datatype:
         type: timestamp with time zone
       default: CURRENT_TIMESTAMP
-      is_enum: true
     - name: description
       datatype:
         type: text
       default: "''::text"
-      is_enum: true
     - name: tags
       datatype:
         type: character varying
@@ -124,7 +110,6 @@ schemas:
         type: integer
       is_primary: true
       is_sequence: true
-      is_enum: true
     indexes:
     - name: books_isbn_key
       fields:
@@ -133,7 +118,6 @@ schemas:
           type: character varying
           prec: 255
         default: "''::character varying"
-        is_enum: true
       is_unique: true
     - name: books_pkey
       fields:
@@ -142,7 +126,6 @@ schemas:
           type: integer
         is_primary: true
         is_sequence: true
-        is_enum: true
       is_unique: true
       is_primary: true
     - name: books_title_idx
@@ -152,19 +135,16 @@ schemas:
           type: character varying
           prec: 255
         default: "''::character varying"
-        is_enum: true
       - name: year
         datatype:
           type: integer
         default: "2000"
-        is_enum: true
     foreign_keys:
     - name: books_author_id_fkey
       column:
       - name: author_id
         datatype:
           type: integer
-        is_enum: true
       ref_table: authors
       ref_column:
       - name: author_id
@@ -172,4 +152,3 @@ schemas:
           type: integer
         is_primary: true
         is_sequence: true
-        is_enum: true

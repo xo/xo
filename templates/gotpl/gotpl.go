@@ -174,12 +174,6 @@ func init() {
 				Desc:       "enables legacy v1 template funcs",
 				Default:    "false",
 			},
-			{
-				ContextKey: EnumTablePrefixKey,
-				Type:       "bool",
-				Desc:       "enables table name prefix to enums",
-				Default:    "false",
-			},
 		},
 		Funcs: func(ctx context.Context) template.FuncMap {
 			funcs := templates.BaseFuncs()
@@ -361,7 +355,7 @@ func buildQueryName(query xo.Query) string {
 func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) error {
 	// emit enums
 	for _, e := range s.Enums {
-		enum := convertEnum(ctx, e)
+		enum := convertEnum(e)
 		if err := set.Emit(ctx, &templates.Template{
 			Set:      "schema",
 			Template: "enum",
@@ -452,12 +446,9 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 	return nil
 }
 
-func convertEnum(ctx context.Context, e xo.Enum) Enum {
+func convertEnum(e xo.Enum) Enum {
 	var vals []EnumValue
 	goName := camelExport(e.Name)
-	if EnumTablePrefix(ctx) {
-		goName = singularize(camelExport(strings.ToLower(e.TableName))) + goName
-	}
 	for _, v := range e.Values {
 		name := camelExport(strings.ToLower(v.Name))
 		if strings.HasSuffix(name, goName) && goName != name {
@@ -630,7 +621,6 @@ func convertField(ctx context.Context, tf transformFunc, f xo.Field) (Field, err
 		Zero:       zero,
 		IsPrimary:  f.IsPrimary,
 		IsSequence: f.IsSequence,
-		IsEnum:     f.IsEnum,
 	}, nil
 }
 
@@ -670,26 +660,25 @@ func camelExport(names ...string) string {
 
 // Context keys.
 const (
-	FirstKey           xo.ContextKey = "first"
-	KnownTypesKey      xo.ContextKey = "known-types"
-	ShortsKey          xo.ContextKey = "shorts"
-	NotFirstKey        xo.ContextKey = "not-first"
-	Int32Key           xo.ContextKey = "int32"
-	Uint32Key          xo.ContextKey = "uint32"
-	PkgKey             xo.ContextKey = "pkg"
-	TagKey             xo.ContextKey = "tag"
-	ImportKey          xo.ContextKey = "import"
-	UUIDKey            xo.ContextKey = "uuid"
-	CustomKey          xo.ContextKey = "custom"
-	ConflictKey        xo.ContextKey = "conflict"
-	InitialismKey      xo.ContextKey = "initialism"
-	EscKey             xo.ContextKey = "esc"
-	FieldTagKey        xo.ContextKey = "field-tag"
-	ContextKey         xo.ContextKey = "context"
-	InjectKey          xo.ContextKey = "inject"
-	InjectFileKey      xo.ContextKey = "inject-file"
-	LegacyKey          xo.ContextKey = "legacy"
-	EnumTablePrefixKey xo.ContextKey = "enum-table-prefix"
+	FirstKey      xo.ContextKey = "first"
+	KnownTypesKey xo.ContextKey = "known-types"
+	ShortsKey     xo.ContextKey = "shorts"
+	NotFirstKey   xo.ContextKey = "not-first"
+	Int32Key      xo.ContextKey = "int32"
+	Uint32Key     xo.ContextKey = "uint32"
+	PkgKey        xo.ContextKey = "pkg"
+	TagKey        xo.ContextKey = "tag"
+	ImportKey     xo.ContextKey = "import"
+	UUIDKey       xo.ContextKey = "uuid"
+	CustomKey     xo.ContextKey = "custom"
+	ConflictKey   xo.ContextKey = "conflict"
+	InitialismKey xo.ContextKey = "initialism"
+	EscKey        xo.ContextKey = "esc"
+	FieldTagKey   xo.ContextKey = "field-tag"
+	ContextKey    xo.ContextKey = "context"
+	InjectKey     xo.ContextKey = "inject"
+	InjectFileKey xo.ContextKey = "inject-file"
+	LegacyKey     xo.ContextKey = "legacy"
 )
 
 // First returns first from the context.
@@ -812,12 +801,6 @@ func InjectFile(ctx context.Context) string {
 // Legacy returns legacy from the context.
 func Legacy(ctx context.Context) bool {
 	b, _ := ctx.Value(LegacyKey).(bool)
-	return b
-}
-
-// EnumTablePrefix returns enum-table-prefix from the context.
-func EnumTablePrefix(ctx context.Context) bool {
-	b, _ := ctx.Value(EnumTablePrefixKey).(bool)
 	return b
 }
 

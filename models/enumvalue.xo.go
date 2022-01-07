@@ -13,22 +13,19 @@ type EnumValue struct {
 }
 
 // PostgresEnumValues runs a custom query, returning results as EnumValue.
-func PostgresEnumValues(ctx context.Context, db DB, schema, table, enum string) ([]*EnumValue, error) {
+func PostgresEnumValues(ctx context.Context, db DB, schema, enum string) ([]*EnumValue, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`e.enumlabel, ` + // ::varchar AS enum_value
 		`e.enumsortorder ` + // ::integer AS const_value
-		`FROM pg_class c ` +
-		`JOIN pg_attribute a ON c.oid = a.attrelid ` +
-		`JOIN pg_type t on a.atttypid = t.oid ` +
+		`FROM pg_type t ` +
 		`JOIN ONLY pg_namespace n ON n.oid = t.typnamespace ` +
 		`LEFT JOIN pg_enum e ON t.oid = e.enumtypid ` +
 		`WHERE n.nspname = $1 ` +
-		`AND c.relname::varchar = $2 ` +
-		`AND t.typname = $3`
+		`AND t.typname = $2`
 	// run
-	logf(sqlstr, schema, table, enum)
-	rows, err := db.QueryContext(ctx, sqlstr, schema, table, enum)
+	logf(sqlstr, schema, enum)
+	rows, err := db.QueryContext(ctx, sqlstr, schema, enum)
 	if err != nil {
 		return nil, logerror(err)
 	}

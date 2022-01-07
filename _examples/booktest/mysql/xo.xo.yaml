@@ -4,8 +4,7 @@ schemas:
 - type: mysql
   name: booktest
   enums:
-  - table_name: books
-    name: book_type
+  - name: book_type
     values:
     - name: FICTION
       const_value: 1
@@ -90,7 +89,6 @@ schemas:
       datatype:
         type: book_type
       default: "'FICTION'"
-      is_enum: true
     - name: title
       datatype:
         type: varchar

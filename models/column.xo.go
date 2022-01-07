@@ -15,7 +15,6 @@ type Column struct {
 	NotNull      bool           `json:"not_null"`       // not_null
 	DefaultValue sql.NullString `json:"default_value"`  // default_value
 	IsPrimaryKey bool           `json:"is_primary_key"` // is_primary_key
-	IsEnum       bool           `json:"is_enum"`        // is_enum
 }
 
 // PostgresTableColumns runs a custom query, returning results as Column.
@@ -27,8 +26,7 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 		`format_type(a.atttypid, a.atttypmod), ` + // ::varchar AS data_type
 		`a.attnotnull, ` + // ::boolean AS not_null
 		`COALESCE(pg_get_expr(ad.adbin, ad.adrelid), ''), ` + // ::varchar AS default_value
-		`COALESCE(ct.contype = 'p', false), ` + // ::boolean AS is_primary_key
-		`COALESCE(a.attndims = 0, false) ` + // ::boolean AS is_enum
+		`COALESCE(ct.contype = 'p', false) ` + // ::boolean AS is_primary_key
 		`FROM pg_attribute a ` +
 		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
@@ -54,7 +52,7 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 	for rows.Next() {
 		var c Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.IsEnum); err != nil {
+		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &c)
@@ -74,8 +72,7 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 		`IF(data_type = 'enum', column_name, column_type) AS data_type, ` +
 		`IF(is_nullable = 'YES', false, true) AS not_null, ` +
 		`column_default AS default_value, ` +
-		`IF(column_key = 'PRI', true, false) AS is_primary_key, ` +
-		`IF(data_type = 'enum', true, false) AS is_enum ` +
+		`IF(column_key = 'PRI', true, false) AS is_primary_key ` +
 		`FROM information_schema.columns ` +
 		`WHERE table_schema = ? ` +
 		`AND table_name = ? ` +
@@ -92,7 +89,7 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 	for rows.Next() {
 		var c Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.IsEnum); err != nil {
+		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &c)
