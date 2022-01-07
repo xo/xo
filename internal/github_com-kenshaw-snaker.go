@@ -19,6 +19,7 @@ func init() {
 		"IsIdentifierChar":          reflect.ValueOf(snaker.IsIdentifierChar),
 		"IsInitialism":              reflect.ValueOf(snaker.IsInitialism),
 		"New":                       reflect.ValueOf(snaker.New),
+		"NewDefaultInitialisms":     reflect.ValueOf(snaker.NewDefaultInitialisms),
 		"Peek":                      reflect.ValueOf(snaker.Peek),
 		"SnakeToCamel":              reflect.ValueOf(snaker.SnakeToCamel),
 		"SnakeToCamelIdentifier":    reflect.ValueOf(snaker.SnakeToCamelIdentifier),
