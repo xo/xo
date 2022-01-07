@@ -238,6 +238,117 @@ type PgAggregate struct {
 	Aggmtransspace   int             `json:"aggmtransspace"`   // aggmtransspace
 	Agginitval       sql.NullString  `json:"agginitval"`       // agginitval
 	Aggminitval      sql.NullString  `json:"aggminitval"`      // aggminitval
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAggregate exists in the database.
+func (pa *PgAggregate) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAggregate has been marked for deletion from
+// the database.
+func (pa *PgAggregate) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAggregate to the database.
+func (pa *PgAggregate) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_aggregate (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, aggfnoid, aggkind, aggnumdirectargs, aggtransfn, aggfinalfn, aggcombinefn, aggserialfn, aggdeserialfn, aggmtransfn, aggminvtransfn, aggmfinalfn, aggfinalextra, aggmfinalextra, aggfinalmodify, aggmfinalmodify, aggsortop, aggtranstype, aggtransspace, aggmtranstype, aggmtransspace, agginitval, aggminitval` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggfnoid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggfnoid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAggregate in the database.
+func (pa *PgAggregate) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_aggregate SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, aggkind = $7, aggnumdirectargs = $8, aggtransfn = $9, aggfinalfn = $10, aggcombinefn = $11, aggserialfn = $12, aggdeserialfn = $13, aggmtransfn = $14, aggminvtransfn = $15, aggmfinalfn = $16, aggfinalextra = $17, aggmfinalextra = $18, aggfinalmodify = $19, aggmfinalmodify = $20, aggsortop = $21, aggtranstype = $22, aggtransspace = $23, aggmtranstype = $24, aggmtransspace = $25, agginitval = $26, aggminitval = $27 ` +
+		`WHERE aggfnoid = $28`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval, pa.Aggfnoid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval, pa.Aggfnoid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAggregate to the database.
+func (pa *PgAggregate) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAggregate.
+func (pa *PgAggregate) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_aggregate (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, aggfnoid, aggkind, aggnumdirectargs, aggtransfn, aggfinalfn, aggcombinefn, aggserialfn, aggdeserialfn, aggmtransfn, aggminvtransfn, aggmfinalfn, aggfinalextra, aggmfinalextra, aggfinalmodify, aggmfinalmodify, aggsortop, aggtranstype, aggtransspace, aggmtranstype, aggmtransspace, agginitval, aggminitval` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28` +
+		`)` +
+		` ON CONFLICT (aggfnoid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, aggkind = EXCLUDED.aggkind, aggnumdirectargs = EXCLUDED.aggnumdirectargs, aggtransfn = EXCLUDED.aggtransfn, aggfinalfn = EXCLUDED.aggfinalfn, aggcombinefn = EXCLUDED.aggcombinefn, aggserialfn = EXCLUDED.aggserialfn, aggdeserialfn = EXCLUDED.aggdeserialfn, aggmtransfn = EXCLUDED.aggmtransfn, aggminvtransfn = EXCLUDED.aggminvtransfn, aggmfinalfn = EXCLUDED.aggmfinalfn, aggfinalextra = EXCLUDED.aggfinalextra, aggmfinalextra = EXCLUDED.aggmfinalextra, aggfinalmodify = EXCLUDED.aggfinalmodify, aggmfinalmodify = EXCLUDED.aggmfinalmodify, aggsortop = EXCLUDED.aggsortop, aggtranstype = EXCLUDED.aggtranstype, aggtransspace = EXCLUDED.aggtransspace, aggmtranstype = EXCLUDED.aggmtranstype, aggmtransspace = EXCLUDED.aggmtransspace, agginitval = EXCLUDED.agginitval, aggminitval = EXCLUDED.aggminitval `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggfnoid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Aggfnoid, pa.Aggkind, pa.Aggnumdirectargs, pa.Aggtransfn, pa.Aggfinalfn, pa.Aggcombinefn, pa.Aggserialfn, pa.Aggdeserialfn, pa.Aggmtransfn, pa.Aggminvtransfn, pa.Aggmfinalfn, pa.Aggfinalextra, pa.Aggmfinalextra, pa.Aggfinalmodify, pa.Aggmfinalmodify, pa.Aggsortop, pa.Aggtranstype, pa.Aggtransspace, pa.Aggmtranstype, pa.Aggmtransspace, pa.Agginitval, pa.Aggminitval); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAggregate from the database.
+func (pa *PgAggregate) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_aggregate ` +
+		`WHERE aggfnoid = $1`
+	// run
+	logf(sqlstr, pa.Aggfnoid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Aggfnoid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAm represents a row from 'pg_catalog.pg_am'.
@@ -252,6 +363,117 @@ type PgAm struct {
 	Amname    string          `json:"amname"`    // amname
 	Amhandler pgtypes.Regproc `json:"amhandler"` // amhandler
 	Amtype    pgtypes.Char    `json:"amtype"`    // amtype
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAm exists in the database.
+func (pa *PgAm) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAm has been marked for deletion from
+// the database.
+func (pa *PgAm) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAm to the database.
+func (pa *PgAm) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_am (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amname, amhandler, amtype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amname, pa.Amhandler, pa.Amtype)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amname, pa.Amhandler, pa.Amtype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAm in the database.
+func (pa *PgAm) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_am SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, amname = $7, amhandler = $8, amtype = $9 ` +
+		`WHERE oid = $10`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amname, pa.Amhandler, pa.Amtype, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amname, pa.Amhandler, pa.Amtype, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAm to the database.
+func (pa *PgAm) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAm.
+func (pa *PgAm) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_am (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amname, amhandler, amtype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, amname = EXCLUDED.amname, amhandler = EXCLUDED.amhandler, amtype = EXCLUDED.amtype `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amname, pa.Amhandler, pa.Amtype)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amname, pa.Amhandler, pa.Amtype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAm from the database.
+func (pa *PgAm) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_am ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAmop represents a row from 'pg_catalog.pg_amop'.
@@ -271,6 +493,117 @@ type PgAmop struct {
 	Amopopr        pgtypes.Oid  `json:"amopopr"`        // amopopr
 	Amopmethod     pgtypes.Oid  `json:"amopmethod"`     // amopmethod
 	Amopsortfamily pgtypes.Oid  `json:"amopsortfamily"` // amopsortfamily
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAmop exists in the database.
+func (pa *PgAmop) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAmop has been marked for deletion from
+// the database.
+func (pa *PgAmop) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAmop to the database.
+func (pa *PgAmop) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_amop (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amopfamily, amoplefttype, amoprighttype, amopstrategy, amoppurpose, amopopr, amopmethod, amopsortfamily` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAmop in the database.
+func (pa *PgAmop) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_amop SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, amopfamily = $7, amoplefttype = $8, amoprighttype = $9, amopstrategy = $10, amoppurpose = $11, amopopr = $12, amopmethod = $13, amopsortfamily = $14 ` +
+		`WHERE oid = $15`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAmop to the database.
+func (pa *PgAmop) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAmop.
+func (pa *PgAmop) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_amop (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amopfamily, amoplefttype, amoprighttype, amopstrategy, amoppurpose, amopopr, amopmethod, amopsortfamily` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, amopfamily = EXCLUDED.amopfamily, amoplefttype = EXCLUDED.amoplefttype, amoprighttype = EXCLUDED.amoprighttype, amopstrategy = EXCLUDED.amopstrategy, amoppurpose = EXCLUDED.amoppurpose, amopopr = EXCLUDED.amopopr, amopmethod = EXCLUDED.amopmethod, amopsortfamily = EXCLUDED.amopsortfamily `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amopfamily, pa.Amoplefttype, pa.Amoprighttype, pa.Amopstrategy, pa.Amoppurpose, pa.Amopopr, pa.Amopmethod, pa.Amopsortfamily); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAmop from the database.
+func (pa *PgAmop) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_amop ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAmproc represents a row from 'pg_catalog.pg_amproc'.
@@ -287,6 +620,117 @@ type PgAmproc struct {
 	Amprocrighttype pgtypes.Oid     `json:"amprocrighttype"` // amprocrighttype
 	Amprocnum       int16           `json:"amprocnum"`       // amprocnum
 	Amproc          pgtypes.Regproc `json:"amproc"`          // amproc
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAmproc exists in the database.
+func (pa *PgAmproc) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAmproc has been marked for deletion from
+// the database.
+func (pa *PgAmproc) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAmproc to the database.
+func (pa *PgAmproc) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_amproc (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amprocfamily, amproclefttype, amprocrighttype, amprocnum, amproc` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAmproc in the database.
+func (pa *PgAmproc) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_amproc SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, amprocfamily = $7, amproclefttype = $8, amprocrighttype = $9, amprocnum = $10, amproc = $11 ` +
+		`WHERE oid = $12`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAmproc to the database.
+func (pa *PgAmproc) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAmproc.
+func (pa *PgAmproc) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_amproc (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, amprocfamily, amproclefttype, amprocrighttype, amprocnum, amproc` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, amprocfamily = EXCLUDED.amprocfamily, amproclefttype = EXCLUDED.amproclefttype, amprocrighttype = EXCLUDED.amprocrighttype, amprocnum = EXCLUDED.amprocnum, amproc = EXCLUDED.amproc `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Amprocfamily, pa.Amproclefttype, pa.Amprocrighttype, pa.Amprocnum, pa.Amproc); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAmproc from the database.
+func (pa *PgAmproc) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_amproc ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAttrdef represents a row from 'pg_catalog.pg_attrdef'.
@@ -301,41 +745,264 @@ type PgAttrdef struct {
 	Adrelid  pgtypes.Oid        `json:"adrelid"`  // adrelid
 	Adnum    int16              `json:"adnum"`    // adnum
 	Adbin    pgtypes.PgNodeTree `json:"adbin"`    // adbin
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAttrdef exists in the database.
+func (pa *PgAttrdef) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAttrdef has been marked for deletion from
+// the database.
+func (pa *PgAttrdef) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAttrdef to the database.
+func (pa *PgAttrdef) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_attrdef (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, adrelid, adnum, adbin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Adrelid, pa.Adnum, pa.Adbin)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Adrelid, pa.Adnum, pa.Adbin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAttrdef in the database.
+func (pa *PgAttrdef) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_attrdef SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, adrelid = $7, adnum = $8, adbin = $9 ` +
+		`WHERE oid = $10`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Adrelid, pa.Adnum, pa.Adbin, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Adrelid, pa.Adnum, pa.Adbin, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAttrdef to the database.
+func (pa *PgAttrdef) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAttrdef.
+func (pa *PgAttrdef) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_attrdef (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, adrelid, adnum, adbin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, adrelid = EXCLUDED.adrelid, adnum = EXCLUDED.adnum, adbin = EXCLUDED.adbin `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Adrelid, pa.Adnum, pa.Adbin)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Adrelid, pa.Adnum, pa.Adbin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAttrdef from the database.
+func (pa *PgAttrdef) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_attrdef ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAttribute represents a row from 'pg_catalog.pg_attribute'.
 type PgAttribute struct {
-	Tableoid      pgtypes.Oid           `json:"tableoid"`      // tableoid
-	Cmax          pgtypes.Cid           `json:"cmax"`          // cmax
-	Xmax          pgtypes.Xid           `json:"xmax"`          // xmax
-	Cmin          pgtypes.Cid           `json:"cmin"`          // cmin
-	Xmin          pgtypes.Xid           `json:"xmin"`          // xmin
-	Ctid          pgtypes.Tid           `json:"ctid"`          // ctid
-	Attrelid      pgtypes.Oid           `json:"attrelid"`      // attrelid
-	Attname       string                `json:"attname"`       // attname
-	Atttypid      pgtypes.Oid           `json:"atttypid"`      // atttypid
-	Attstattarget int                   `json:"attstattarget"` // attstattarget
-	Attlen        int16                 `json:"attlen"`        // attlen
-	Attnum        int16                 `json:"attnum"`        // attnum
-	Attndims      int                   `json:"attndims"`      // attndims
-	Attcacheoff   int                   `json:"attcacheoff"`   // attcacheoff
-	Atttypmod     int                   `json:"atttypmod"`     // atttypmod
-	Attbyval      bool                  `json:"attbyval"`      // attbyval
-	Attstorage    pgtypes.Char          `json:"attstorage"`    // attstorage
-	Attalign      pgtypes.Char          `json:"attalign"`      // attalign
-	Attnotnull    bool                  `json:"attnotnull"`    // attnotnull
-	Atthasdef     bool                  `json:"atthasdef"`     // atthasdef
-	Atthasmissing bool                  `json:"atthasmissing"` // atthasmissing
-	Attidentity   pgtypes.Char          `json:"attidentity"`   // attidentity
-	Attgenerated  pgtypes.Char          `json:"attgenerated"`  // attgenerated
-	Attisdropped  bool                  `json:"attisdropped"`  // attisdropped
-	Attislocal    bool                  `json:"attislocal"`    // attislocal
-	Attinhcount   int                   `json:"attinhcount"`   // attinhcount
-	Attcollation  pgtypes.Oid           `json:"attcollation"`  // attcollation
-	Attacl        []pgtypes.NullAclitem `json:"attacl"`        // attacl
-	Attoptions    []sql.NullString      `json:"attoptions"`    // attoptions
-	Attfdwoptions []sql.NullString      `json:"attfdwoptions"` // attfdwoptions
-	Attmissingval pgtypes.NullAnyarray  `json:"attmissingval"` // attmissingval
+	Tableoid       pgtypes.Oid           `json:"tableoid"`       // tableoid
+	Cmax           pgtypes.Cid           `json:"cmax"`           // cmax
+	Xmax           pgtypes.Xid           `json:"xmax"`           // xmax
+	Cmin           pgtypes.Cid           `json:"cmin"`           // cmin
+	Xmin           pgtypes.Xid           `json:"xmin"`           // xmin
+	Ctid           pgtypes.Tid           `json:"ctid"`           // ctid
+	Attrelid       pgtypes.Oid           `json:"attrelid"`       // attrelid
+	Attname        string                `json:"attname"`        // attname
+	Atttypid       pgtypes.Oid           `json:"atttypid"`       // atttypid
+	Attstattarget  int                   `json:"attstattarget"`  // attstattarget
+	Attlen         int16                 `json:"attlen"`         // attlen
+	Attnum         int16                 `json:"attnum"`         // attnum
+	Attndims       int                   `json:"attndims"`       // attndims
+	Attcacheoff    int                   `json:"attcacheoff"`    // attcacheoff
+	Atttypmod      int                   `json:"atttypmod"`      // atttypmod
+	Attbyval       bool                  `json:"attbyval"`       // attbyval
+	Attalign       pgtypes.Char          `json:"attalign"`       // attalign
+	Attstorage     pgtypes.Char          `json:"attstorage"`     // attstorage
+	Attcompression pgtypes.Char          `json:"attcompression"` // attcompression
+	Attnotnull     bool                  `json:"attnotnull"`     // attnotnull
+	Atthasdef      bool                  `json:"atthasdef"`      // atthasdef
+	Atthasmissing  bool                  `json:"atthasmissing"`  // atthasmissing
+	Attidentity    pgtypes.Char          `json:"attidentity"`    // attidentity
+	Attgenerated   pgtypes.Char          `json:"attgenerated"`   // attgenerated
+	Attisdropped   bool                  `json:"attisdropped"`   // attisdropped
+	Attislocal     bool                  `json:"attislocal"`     // attislocal
+	Attinhcount    int                   `json:"attinhcount"`    // attinhcount
+	Attcollation   pgtypes.Oid           `json:"attcollation"`   // attcollation
+	Attacl         []pgtypes.NullAclitem `json:"attacl"`         // attacl
+	Attoptions     []sql.NullString      `json:"attoptions"`     // attoptions
+	Attfdwoptions  []sql.NullString      `json:"attfdwoptions"`  // attfdwoptions
+	Attmissingval  pgtypes.NullAnyarray  `json:"attmissingval"`  // attmissingval
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAttribute exists in the database.
+func (pa *PgAttribute) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAttribute has been marked for deletion from
+// the database.
+func (pa *PgAttribute) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAttribute to the database.
+func (pa *PgAttribute) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_attribute (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attalign, attstorage, attcompression, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attrelid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attnum, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attrelid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attnum, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAttribute in the database.
+func (pa *PgAttribute) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_attribute SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, attname = $7, atttypid = $8, attstattarget = $9, attlen = $10, attndims = $11, attcacheoff = $12, atttypmod = $13, attbyval = $14, attalign = $15, attstorage = $16, attcompression = $17, attnotnull = $18, atthasdef = $19, atthasmissing = $20, attidentity = $21, attgenerated = $22, attisdropped = $23, attislocal = $24, attinhcount = $25, attcollation = $26, attacl = $27, attoptions = $28, attfdwoptions = $29, attmissingval = $30 ` +
+		`WHERE attrelid = $31 AND attnum = $32`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval, pa.Attrelid, pa.Attnum)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval, pa.Attrelid, pa.Attnum); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAttribute to the database.
+func (pa *PgAttribute) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAttribute.
+func (pa *PgAttribute) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_attribute (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attalign, attstorage, attcompression, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32` +
+		`)` +
+		` ON CONFLICT (attrelid, attnum) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, attname = EXCLUDED.attname, atttypid = EXCLUDED.atttypid, attstattarget = EXCLUDED.attstattarget, attlen = EXCLUDED.attlen, attndims = EXCLUDED.attndims, attcacheoff = EXCLUDED.attcacheoff, atttypmod = EXCLUDED.atttypmod, attbyval = EXCLUDED.attbyval, attalign = EXCLUDED.attalign, attstorage = EXCLUDED.attstorage, attcompression = EXCLUDED.attcompression, attnotnull = EXCLUDED.attnotnull, atthasdef = EXCLUDED.atthasdef, atthasmissing = EXCLUDED.atthasmissing, attidentity = EXCLUDED.attidentity, attgenerated = EXCLUDED.attgenerated, attisdropped = EXCLUDED.attisdropped, attislocal = EXCLUDED.attislocal, attinhcount = EXCLUDED.attinhcount, attcollation = EXCLUDED.attcollation, attacl = EXCLUDED.attacl, attoptions = EXCLUDED.attoptions, attfdwoptions = EXCLUDED.attfdwoptions, attmissingval = EXCLUDED.attmissingval `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attrelid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attnum, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Attrelid, pa.Attname, pa.Atttypid, pa.Attstattarget, pa.Attlen, pa.Attnum, pa.Attndims, pa.Attcacheoff, pa.Atttypmod, pa.Attbyval, pa.Attalign, pa.Attstorage, pa.Attcompression, pa.Attnotnull, pa.Atthasdef, pa.Atthasmissing, pa.Attidentity, pa.Attgenerated, pa.Attisdropped, pa.Attislocal, pa.Attinhcount, pa.Attcollation, pa.Attacl, pa.Attoptions, pa.Attfdwoptions, pa.Attmissingval); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAttribute from the database.
+func (pa *PgAttribute) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_attribute ` +
+		`WHERE attrelid = $1 AND attnum = $2`
+	// run
+	logf(sqlstr, pa.Attrelid, pa.Attnum)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Attrelid, pa.Attnum); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAuthMember represents a row from 'pg_catalog.pg_auth_members'.
@@ -350,6 +1017,117 @@ type PgAuthMember struct {
 	Member      pgtypes.Oid `json:"member"`       // member
 	Grantor     pgtypes.Oid `json:"grantor"`      // grantor
 	AdminOption bool        `json:"admin_option"` // admin_option
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAuthMember exists in the database.
+func (pam *PgAuthMember) Exists() bool {
+	return pam._exists
+}
+
+// Deleted returns true when the PgAuthMember has been marked for deletion from
+// the database.
+func (pam *PgAuthMember) Deleted() bool {
+	return pam._deleted
+}
+
+// Insert inserts the PgAuthMember to the database.
+func (pam *PgAuthMember) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pam._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pam._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_auth_members (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, roleid, member, grantor, admin_option` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Roleid, pam.Member, pam.Grantor, pam.AdminOption)
+	if _, err := db.ExecContext(ctx, sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Roleid, pam.Member, pam.Grantor, pam.AdminOption); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pam._exists = true
+	return nil
+}
+
+// Update updates a PgAuthMember in the database.
+func (pam *PgAuthMember) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pam._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pam._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_auth_members SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, grantor = $7, admin_option = $8 ` +
+		`WHERE roleid = $9 AND member = $10`
+	// run
+	logf(sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Grantor, pam.AdminOption, pam.Roleid, pam.Member)
+	if _, err := db.ExecContext(ctx, sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Grantor, pam.AdminOption, pam.Roleid, pam.Member); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAuthMember to the database.
+func (pam *PgAuthMember) Save(ctx context.Context, db DB) error {
+	if pam.Exists() {
+		return pam.Update(ctx, db)
+	}
+	return pam.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAuthMember.
+func (pam *PgAuthMember) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pam._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_auth_members (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, roleid, member, grantor, admin_option` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (roleid, member) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, grantor = EXCLUDED.grantor, admin_option = EXCLUDED.admin_option `
+	// run
+	logf(sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Roleid, pam.Member, pam.Grantor, pam.AdminOption)
+	if _, err := db.ExecContext(ctx, sqlstr, pam.Tableoid, pam.Cmax, pam.Xmax, pam.Cmin, pam.Xmin, pam.Ctid, pam.Roleid, pam.Member, pam.Grantor, pam.AdminOption); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pam._exists = true
+	return nil
+}
+
+// Delete deletes the PgAuthMember from the database.
+func (pam *PgAuthMember) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pam._exists: // doesn't exist
+		return nil
+	case pam._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_auth_members ` +
+		`WHERE roleid = $1 AND member = $2`
+	// run
+	logf(sqlstr, pam.Roleid, pam.Member)
+	if _, err := db.ExecContext(ctx, sqlstr, pam.Roleid, pam.Member); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pam._deleted = true
+	return nil
 }
 
 // PgAuthid represents a row from 'pg_catalog.pg_authid'.
@@ -372,6 +1150,117 @@ type PgAuthid struct {
 	Rolconnlimit   int            `json:"rolconnlimit"`   // rolconnlimit
 	Rolpassword    sql.NullString `json:"rolpassword"`    // rolpassword
 	Rolvaliduntil  sql.NullTime   `json:"rolvaliduntil"`  // rolvaliduntil
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgAuthid exists in the database.
+func (pa *PgAuthid) Exists() bool {
+	return pa._exists
+}
+
+// Deleted returns true when the PgAuthid has been marked for deletion from
+// the database.
+func (pa *PgAuthid) Deleted() bool {
+	return pa._deleted
+}
+
+// Insert inserts the PgAuthid to the database.
+func (pa *PgAuthid) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pa._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pa._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_authid (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rolname, rolsuper, rolinherit, rolcreaterole, rolcreatedb, rolcanlogin, rolreplication, rolbypassrls, rolconnlimit, rolpassword, rolvaliduntil` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18` +
+		`)`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Update updates a PgAuthid in the database.
+func (pa *PgAuthid) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pa._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_authid SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, rolname = $7, rolsuper = $8, rolinherit = $9, rolcreaterole = $10, rolcreatedb = $11, rolcanlogin = $12, rolreplication = $13, rolbypassrls = $14, rolconnlimit = $15, rolpassword = $16, rolvaliduntil = $17 ` +
+		`WHERE oid = $18`
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgAuthid to the database.
+func (pa *PgAuthid) Save(ctx context.Context, db DB) error {
+	if pa.Exists() {
+		return pa.Update(ctx, db)
+	}
+	return pa.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgAuthid.
+func (pa *PgAuthid) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pa._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_authid (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rolname, rolsuper, rolinherit, rolcreaterole, rolcreatedb, rolcanlogin, rolreplication, rolbypassrls, rolconnlimit, rolpassword, rolvaliduntil` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, rolname = EXCLUDED.rolname, rolsuper = EXCLUDED.rolsuper, rolinherit = EXCLUDED.rolinherit, rolcreaterole = EXCLUDED.rolcreaterole, rolcreatedb = EXCLUDED.rolcreatedb, rolcanlogin = EXCLUDED.rolcanlogin, rolreplication = EXCLUDED.rolreplication, rolbypassrls = EXCLUDED.rolbypassrls, rolconnlimit = EXCLUDED.rolconnlimit, rolpassword = EXCLUDED.rolpassword, rolvaliduntil = EXCLUDED.rolvaliduntil `
+	// run
+	logf(sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Tableoid, pa.Cmax, pa.Xmax, pa.Cmin, pa.Xmin, pa.Ctid, pa.Oid, pa.Rolname, pa.Rolsuper, pa.Rolinherit, pa.Rolcreaterole, pa.Rolcreatedb, pa.Rolcanlogin, pa.Rolreplication, pa.Rolbypassrls, pa.Rolconnlimit, pa.Rolpassword, pa.Rolvaliduntil); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pa._exists = true
+	return nil
+}
+
+// Delete deletes the PgAuthid from the database.
+func (pa *PgAuthid) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pa._exists: // doesn't exist
+		return nil
+	case pa._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_authid ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pa.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pa.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pa._deleted = true
+	return nil
 }
 
 // PgAvailableExtension represents a row from 'pg_catalog.pg_available_extensions'.
@@ -395,6 +1284,19 @@ type PgAvailableExtensionVersion struct {
 	Comment     sql.NullString   `json:"comment"`     // comment
 }
 
+// PgBackendMemoryContext represents a row from 'pg_catalog.pg_backend_memory_contexts'.
+type PgBackendMemoryContext struct {
+	Name         sql.NullString `json:"name"`          // name
+	Ident        sql.NullString `json:"ident"`         // ident
+	Parent       sql.NullString `json:"parent"`        // parent
+	Level        sql.NullInt64  `json:"level"`         // level
+	TotalBytes   sql.NullInt64  `json:"total_bytes"`   // total_bytes
+	TotalNblocks sql.NullInt64  `json:"total_nblocks"` // total_nblocks
+	FreeBytes    sql.NullInt64  `json:"free_bytes"`    // free_bytes
+	FreeChunks   sql.NullInt64  `json:"free_chunks"`   // free_chunks
+	UsedBytes    sql.NullInt64  `json:"used_bytes"`    // used_bytes
+}
+
 // PgCast represents a row from 'pg_catalog.pg_cast'.
 type PgCast struct {
 	Tableoid    pgtypes.Oid  `json:"tableoid"`    // tableoid
@@ -409,6 +1311,117 @@ type PgCast struct {
 	Castfunc    pgtypes.Oid  `json:"castfunc"`    // castfunc
 	Castcontext pgtypes.Char `json:"castcontext"` // castcontext
 	Castmethod  pgtypes.Char `json:"castmethod"`  // castmethod
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgCast exists in the database.
+func (pc *PgCast) Exists() bool {
+	return pc._exists
+}
+
+// Deleted returns true when the PgCast has been marked for deletion from
+// the database.
+func (pc *PgCast) Deleted() bool {
+	return pc._deleted
+}
+
+// Insert inserts the PgCast to the database.
+func (pc *PgCast) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_cast (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, castsource, casttarget, castfunc, castcontext, castmethod` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Update updates a PgCast in the database.
+func (pc *PgCast) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_cast SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, castsource = $7, casttarget = $8, castfunc = $9, castcontext = $10, castmethod = $11 ` +
+		`WHERE oid = $12`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgCast to the database.
+func (pc *PgCast) Save(ctx context.Context, db DB) error {
+	if pc.Exists() {
+		return pc.Update(ctx, db)
+	}
+	return pc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgCast.
+func (pc *PgCast) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_cast (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, castsource, casttarget, castfunc, castcontext, castmethod` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, castsource = EXCLUDED.castsource, casttarget = EXCLUDED.casttarget, castfunc = EXCLUDED.castfunc, castcontext = EXCLUDED.castcontext, castmethod = EXCLUDED.castmethod `
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Castsource, pc.Casttarget, pc.Castfunc, pc.Castcontext, pc.Castmethod); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Delete deletes the PgCast from the database.
+func (pc *PgCast) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return nil
+	case pc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_cast ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pc._deleted = true
+	return nil
 }
 
 // PgClass represents a row from 'pg_catalog.pg_class'.
@@ -452,6 +1465,117 @@ type PgClass struct {
 	Relacl              []pgtypes.NullAclitem  `json:"relacl"`              // relacl
 	Reloptions          []sql.NullString       `json:"reloptions"`          // reloptions
 	Relpartbound        pgtypes.NullPgNodeTree `json:"relpartbound"`        // relpartbound
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgClass exists in the database.
+func (pc *PgClass) Exists() bool {
+	return pc._exists
+}
+
+// Deleted returns true when the PgClass has been marked for deletion from
+// the database.
+func (pc *PgClass) Deleted() bool {
+	return pc._deleted
+}
+
+// Insert inserts the PgClass to the database.
+func (pc *PgClass) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_class (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, relname, relnamespace, reltype, reloftype, relowner, relam, relfilenode, reltablespace, relpages, reltuples, relallvisible, reltoastrelid, relhasindex, relisshared, relpersistence, relkind, relnatts, relchecks, relhasrules, relhastriggers, relhassubclass, relrowsecurity, relforcerowsecurity, relispopulated, relreplident, relispartition, relrewrite, relfrozenxid, relminmxid, relacl, reloptions, relpartbound` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39` +
+		`)`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Update updates a PgClass in the database.
+func (pc *PgClass) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_class SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, relname = $7, relnamespace = $8, reltype = $9, reloftype = $10, relowner = $11, relam = $12, relfilenode = $13, reltablespace = $14, relpages = $15, reltuples = $16, relallvisible = $17, reltoastrelid = $18, relhasindex = $19, relisshared = $20, relpersistence = $21, relkind = $22, relnatts = $23, relchecks = $24, relhasrules = $25, relhastriggers = $26, relhassubclass = $27, relrowsecurity = $28, relforcerowsecurity = $29, relispopulated = $30, relreplident = $31, relispartition = $32, relrewrite = $33, relfrozenxid = $34, relminmxid = $35, relacl = $36, reloptions = $37, relpartbound = $38 ` +
+		`WHERE oid = $39`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgClass to the database.
+func (pc *PgClass) Save(ctx context.Context, db DB) error {
+	if pc.Exists() {
+		return pc.Update(ctx, db)
+	}
+	return pc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgClass.
+func (pc *PgClass) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_class (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, relname, relnamespace, reltype, reloftype, relowner, relam, relfilenode, reltablespace, relpages, reltuples, relallvisible, reltoastrelid, relhasindex, relisshared, relpersistence, relkind, relnatts, relchecks, relhasrules, relhastriggers, relhassubclass, relrowsecurity, relforcerowsecurity, relispopulated, relreplident, relispartition, relrewrite, relfrozenxid, relminmxid, relacl, reloptions, relpartbound` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, relname = EXCLUDED.relname, relnamespace = EXCLUDED.relnamespace, reltype = EXCLUDED.reltype, reloftype = EXCLUDED.reloftype, relowner = EXCLUDED.relowner, relam = EXCLUDED.relam, relfilenode = EXCLUDED.relfilenode, reltablespace = EXCLUDED.reltablespace, relpages = EXCLUDED.relpages, reltuples = EXCLUDED.reltuples, relallvisible = EXCLUDED.relallvisible, reltoastrelid = EXCLUDED.reltoastrelid, relhasindex = EXCLUDED.relhasindex, relisshared = EXCLUDED.relisshared, relpersistence = EXCLUDED.relpersistence, relkind = EXCLUDED.relkind, relnatts = EXCLUDED.relnatts, relchecks = EXCLUDED.relchecks, relhasrules = EXCLUDED.relhasrules, relhastriggers = EXCLUDED.relhastriggers, relhassubclass = EXCLUDED.relhassubclass, relrowsecurity = EXCLUDED.relrowsecurity, relforcerowsecurity = EXCLUDED.relforcerowsecurity, relispopulated = EXCLUDED.relispopulated, relreplident = EXCLUDED.relreplident, relispartition = EXCLUDED.relispartition, relrewrite = EXCLUDED.relrewrite, relfrozenxid = EXCLUDED.relfrozenxid, relminmxid = EXCLUDED.relminmxid, relacl = EXCLUDED.relacl, reloptions = EXCLUDED.reloptions, relpartbound = EXCLUDED.relpartbound `
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Relname, pc.Relnamespace, pc.Reltype, pc.Reloftype, pc.Relowner, pc.Relam, pc.Relfilenode, pc.Reltablespace, pc.Relpages, pc.Reltuples, pc.Relallvisible, pc.Reltoastrelid, pc.Relhasindex, pc.Relisshared, pc.Relpersistence, pc.Relkind, pc.Relnatts, pc.Relchecks, pc.Relhasrules, pc.Relhastriggers, pc.Relhassubclass, pc.Relrowsecurity, pc.Relforcerowsecurity, pc.Relispopulated, pc.Relreplident, pc.Relispartition, pc.Relrewrite, pc.Relfrozenxid, pc.Relminmxid, pc.Relacl, pc.Reloptions, pc.Relpartbound); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Delete deletes the PgClass from the database.
+func (pc *PgClass) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return nil
+	case pc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_class ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pc._deleted = true
+	return nil
 }
 
 // PgCollation represents a row from 'pg_catalog.pg_collation'.
@@ -472,6 +1596,117 @@ type PgCollation struct {
 	Collcollate         string         `json:"collcollate"`         // collcollate
 	Collctype           string         `json:"collctype"`           // collctype
 	Collversion         sql.NullString `json:"collversion"`         // collversion
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgCollation exists in the database.
+func (pc *PgCollation) Exists() bool {
+	return pc._exists
+}
+
+// Deleted returns true when the PgCollation has been marked for deletion from
+// the database.
+func (pc *PgCollation) Deleted() bool {
+	return pc._deleted
+}
+
+// Insert inserts the PgCollation to the database.
+func (pc *PgCollation) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_collation (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, collname, collnamespace, collowner, collprovider, collisdeterministic, collencoding, collcollate, collctype, collversion` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16` +
+		`)`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Update updates a PgCollation in the database.
+func (pc *PgCollation) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_collation SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, collname = $7, collnamespace = $8, collowner = $9, collprovider = $10, collisdeterministic = $11, collencoding = $12, collcollate = $13, collctype = $14, collversion = $15 ` +
+		`WHERE oid = $16`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgCollation to the database.
+func (pc *PgCollation) Save(ctx context.Context, db DB) error {
+	if pc.Exists() {
+		return pc.Update(ctx, db)
+	}
+	return pc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgCollation.
+func (pc *PgCollation) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_collation (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, collname, collnamespace, collowner, collprovider, collisdeterministic, collencoding, collcollate, collctype, collversion` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, collname = EXCLUDED.collname, collnamespace = EXCLUDED.collnamespace, collowner = EXCLUDED.collowner, collprovider = EXCLUDED.collprovider, collisdeterministic = EXCLUDED.collisdeterministic, collencoding = EXCLUDED.collencoding, collcollate = EXCLUDED.collcollate, collctype = EXCLUDED.collctype, collversion = EXCLUDED.collversion `
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Collname, pc.Collnamespace, pc.Collowner, pc.Collprovider, pc.Collisdeterministic, pc.Collencoding, pc.Collcollate, pc.Collctype, pc.Collversion); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Delete deletes the PgCollation from the database.
+func (pc *PgCollation) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return nil
+	case pc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_collation ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pc._deleted = true
+	return nil
 }
 
 // PgConfig represents a row from 'pg_catalog.pg_config'.
@@ -513,6 +1748,117 @@ type PgConstraint struct {
 	Conffeqop     []pgtypes.NullOid      `json:"conffeqop"`     // conffeqop
 	Conexclop     []pgtypes.NullOid      `json:"conexclop"`     // conexclop
 	Conbin        pgtypes.NullPgNodeTree `json:"conbin"`        // conbin
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgConstraint exists in the database.
+func (pc *PgConstraint) Exists() bool {
+	return pc._exists
+}
+
+// Deleted returns true when the PgConstraint has been marked for deletion from
+// the database.
+func (pc *PgConstraint) Deleted() bool {
+	return pc._deleted
+}
+
+// Insert inserts the PgConstraint to the database.
+func (pc *PgConstraint) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_constraint (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, contype, condeferrable, condeferred, convalidated, conrelid, contypid, conindid, conparentid, confrelid, confupdtype, confdeltype, confmatchtype, conislocal, coninhcount, connoinherit, conkey, confkey, conpfeqop, conppeqop, conffeqop, conexclop, conbin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31` +
+		`)`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Update updates a PgConstraint in the database.
+func (pc *PgConstraint) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_constraint SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, conname = $7, connamespace = $8, contype = $9, condeferrable = $10, condeferred = $11, convalidated = $12, conrelid = $13, contypid = $14, conindid = $15, conparentid = $16, confrelid = $17, confupdtype = $18, confdeltype = $19, confmatchtype = $20, conislocal = $21, coninhcount = $22, connoinherit = $23, conkey = $24, confkey = $25, conpfeqop = $26, conppeqop = $27, conffeqop = $28, conexclop = $29, conbin = $30 ` +
+		`WHERE oid = $31`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgConstraint to the database.
+func (pc *PgConstraint) Save(ctx context.Context, db DB) error {
+	if pc.Exists() {
+		return pc.Update(ctx, db)
+	}
+	return pc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgConstraint.
+func (pc *PgConstraint) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_constraint (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, contype, condeferrable, condeferred, convalidated, conrelid, contypid, conindid, conparentid, confrelid, confupdtype, confdeltype, confmatchtype, conislocal, coninhcount, connoinherit, conkey, confkey, conpfeqop, conppeqop, conffeqop, conexclop, conbin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, conname = EXCLUDED.conname, connamespace = EXCLUDED.connamespace, contype = EXCLUDED.contype, condeferrable = EXCLUDED.condeferrable, condeferred = EXCLUDED.condeferred, convalidated = EXCLUDED.convalidated, conrelid = EXCLUDED.conrelid, contypid = EXCLUDED.contypid, conindid = EXCLUDED.conindid, conparentid = EXCLUDED.conparentid, confrelid = EXCLUDED.confrelid, confupdtype = EXCLUDED.confupdtype, confdeltype = EXCLUDED.confdeltype, confmatchtype = EXCLUDED.confmatchtype, conislocal = EXCLUDED.conislocal, coninhcount = EXCLUDED.coninhcount, connoinherit = EXCLUDED.connoinherit, conkey = EXCLUDED.conkey, confkey = EXCLUDED.confkey, conpfeqop = EXCLUDED.conpfeqop, conppeqop = EXCLUDED.conppeqop, conffeqop = EXCLUDED.conffeqop, conexclop = EXCLUDED.conexclop, conbin = EXCLUDED.conbin `
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Contype, pc.Condeferrable, pc.Condeferred, pc.Convalidated, pc.Conrelid, pc.Contypid, pc.Conindid, pc.Conparentid, pc.Confrelid, pc.Confupdtype, pc.Confdeltype, pc.Confmatchtype, pc.Conislocal, pc.Coninhcount, pc.Connoinherit, pc.Conkey, pc.Confkey, pc.Conpfeqop, pc.Conppeqop, pc.Conffeqop, pc.Conexclop, pc.Conbin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Delete deletes the PgConstraint from the database.
+func (pc *PgConstraint) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return nil
+	case pc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_constraint ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pc._deleted = true
+	return nil
 }
 
 // PgConversion represents a row from 'pg_catalog.pg_conversion'.
@@ -531,6 +1877,117 @@ type PgConversion struct {
 	Contoencoding  int             `json:"contoencoding"`  // contoencoding
 	Conproc        pgtypes.Regproc `json:"conproc"`        // conproc
 	Condefault     bool            `json:"condefault"`     // condefault
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgConversion exists in the database.
+func (pc *PgConversion) Exists() bool {
+	return pc._exists
+}
+
+// Deleted returns true when the PgConversion has been marked for deletion from
+// the database.
+func (pc *PgConversion) Deleted() bool {
+	return pc._deleted
+}
+
+// Insert inserts the PgConversion to the database.
+func (pc *PgConversion) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_conversion (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, conowner, conforencoding, contoencoding, conproc, condefault` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Update updates a PgConversion in the database.
+func (pc *PgConversion) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_conversion SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, conname = $7, connamespace = $8, conowner = $9, conforencoding = $10, contoencoding = $11, conproc = $12, condefault = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgConversion to the database.
+func (pc *PgConversion) Save(ctx context.Context, db DB) error {
+	if pc.Exists() {
+		return pc.Update(ctx, db)
+	}
+	return pc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgConversion.
+func (pc *PgConversion) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_conversion (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, conname, connamespace, conowner, conforencoding, contoencoding, conproc, condefault` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, conname = EXCLUDED.conname, connamespace = EXCLUDED.connamespace, conowner = EXCLUDED.conowner, conforencoding = EXCLUDED.conforencoding, contoencoding = EXCLUDED.contoencoding, conproc = EXCLUDED.conproc, condefault = EXCLUDED.condefault `
+	// run
+	logf(sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Tableoid, pc.Cmax, pc.Xmax, pc.Cmin, pc.Xmin, pc.Ctid, pc.Oid, pc.Conname, pc.Connamespace, pc.Conowner, pc.Conforencoding, pc.Contoencoding, pc.Conproc, pc.Condefault); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pc._exists = true
+	return nil
+}
+
+// Delete deletes the PgConversion from the database.
+func (pc *PgConversion) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pc._exists: // doesn't exist
+		return nil
+	case pc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_conversion ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pc._deleted = true
+	return nil
 }
 
 // PgCursor represents a row from 'pg_catalog.pg_cursors'.
@@ -565,6 +2022,117 @@ type PgDatabase struct {
 	Datminmxid    pgtypes.Xid           `json:"datminmxid"`    // datminmxid
 	Dattablespace pgtypes.Oid           `json:"dattablespace"` // dattablespace
 	Datacl        []pgtypes.NullAclitem `json:"datacl"`        // datacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgDatabase exists in the database.
+func (pd *PgDatabase) Exists() bool {
+	return pd._exists
+}
+
+// Deleted returns true when the PgDatabase has been marked for deletion from
+// the database.
+func (pd *PgDatabase) Deleted() bool {
+	return pd._deleted
+}
+
+// Insert inserts the PgDatabase to the database.
+func (pd *PgDatabase) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pd._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pd._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_database (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, datname, datdba, encoding, datcollate, datctype, datistemplate, datallowconn, datconnlimit, datlastsysoid, datfrozenxid, datminmxid, dattablespace, datacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20` +
+		`)`
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Oid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Oid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pd._exists = true
+	return nil
+}
+
+// Update updates a PgDatabase in the database.
+func (pd *PgDatabase) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pd._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pd._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_database SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, datname = $7, datdba = $8, encoding = $9, datcollate = $10, datctype = $11, datistemplate = $12, datallowconn = $13, datconnlimit = $14, datlastsysoid = $15, datfrozenxid = $16, datminmxid = $17, dattablespace = $18, datacl = $19 ` +
+		`WHERE oid = $20`
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl, pd.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl, pd.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgDatabase to the database.
+func (pd *PgDatabase) Save(ctx context.Context, db DB) error {
+	if pd.Exists() {
+		return pd.Update(ctx, db)
+	}
+	return pd.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgDatabase.
+func (pd *PgDatabase) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pd._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_database (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, datname, datdba, encoding, datcollate, datctype, datistemplate, datallowconn, datconnlimit, datlastsysoid, datfrozenxid, datminmxid, dattablespace, datacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, datname = EXCLUDED.datname, datdba = EXCLUDED.datdba, encoding = EXCLUDED.encoding, datcollate = EXCLUDED.datcollate, datctype = EXCLUDED.datctype, datistemplate = EXCLUDED.datistemplate, datallowconn = EXCLUDED.datallowconn, datconnlimit = EXCLUDED.datconnlimit, datlastsysoid = EXCLUDED.datlastsysoid, datfrozenxid = EXCLUDED.datfrozenxid, datminmxid = EXCLUDED.datminmxid, dattablespace = EXCLUDED.dattablespace, datacl = EXCLUDED.datacl `
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Oid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Oid, pd.Datname, pd.Datdba, pd.Encoding, pd.Datcollate, pd.Datctype, pd.Datistemplate, pd.Datallowconn, pd.Datconnlimit, pd.Datlastsysoid, pd.Datfrozenxid, pd.Datminmxid, pd.Dattablespace, pd.Datacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pd._exists = true
+	return nil
+}
+
+// Delete deletes the PgDatabase from the database.
+func (pd *PgDatabase) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pd._exists: // doesn't exist
+		return nil
+	case pd._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_database ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pd.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pd._deleted = true
+	return nil
 }
 
 // PgDbRoleSetting represents a row from 'pg_catalog.pg_db_role_setting'.
@@ -578,6 +2146,117 @@ type PgDbRoleSetting struct {
 	Setdatabase pgtypes.Oid      `json:"setdatabase"` // setdatabase
 	Setrole     pgtypes.Oid      `json:"setrole"`     // setrole
 	Setconfig   []sql.NullString `json:"setconfig"`   // setconfig
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgDbRoleSetting exists in the database.
+func (pdrs *PgDbRoleSetting) Exists() bool {
+	return pdrs._exists
+}
+
+// Deleted returns true when the PgDbRoleSetting has been marked for deletion from
+// the database.
+func (pdrs *PgDbRoleSetting) Deleted() bool {
+	return pdrs._deleted
+}
+
+// Insert inserts the PgDbRoleSetting to the database.
+func (pdrs *PgDbRoleSetting) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pdrs._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pdrs._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_db_role_setting (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, setdatabase, setrole, setconfig` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setdatabase, pdrs.Setrole, pdrs.Setconfig)
+	if _, err := db.ExecContext(ctx, sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setdatabase, pdrs.Setrole, pdrs.Setconfig); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pdrs._exists = true
+	return nil
+}
+
+// Update updates a PgDbRoleSetting in the database.
+func (pdrs *PgDbRoleSetting) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pdrs._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pdrs._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_db_role_setting SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, setconfig = $7 ` +
+		`WHERE setdatabase = $8 AND setrole = $9`
+	// run
+	logf(sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setconfig, pdrs.Setdatabase, pdrs.Setrole)
+	if _, err := db.ExecContext(ctx, sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setconfig, pdrs.Setdatabase, pdrs.Setrole); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgDbRoleSetting to the database.
+func (pdrs *PgDbRoleSetting) Save(ctx context.Context, db DB) error {
+	if pdrs.Exists() {
+		return pdrs.Update(ctx, db)
+	}
+	return pdrs.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgDbRoleSetting.
+func (pdrs *PgDbRoleSetting) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pdrs._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_db_role_setting (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, setdatabase, setrole, setconfig` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (setdatabase, setrole) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, setconfig = EXCLUDED.setconfig `
+	// run
+	logf(sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setdatabase, pdrs.Setrole, pdrs.Setconfig)
+	if _, err := db.ExecContext(ctx, sqlstr, pdrs.Tableoid, pdrs.Cmax, pdrs.Xmax, pdrs.Cmin, pdrs.Xmin, pdrs.Ctid, pdrs.Setdatabase, pdrs.Setrole, pdrs.Setconfig); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pdrs._exists = true
+	return nil
+}
+
+// Delete deletes the PgDbRoleSetting from the database.
+func (pdrs *PgDbRoleSetting) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pdrs._exists: // doesn't exist
+		return nil
+	case pdrs._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_db_role_setting ` +
+		`WHERE setdatabase = $1 AND setrole = $2`
+	// run
+	logf(sqlstr, pdrs.Setdatabase, pdrs.Setrole)
+	if _, err := db.ExecContext(ctx, sqlstr, pdrs.Setdatabase, pdrs.Setrole); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pdrs._deleted = true
+	return nil
 }
 
 // PgDefaultACL represents a row from 'pg_catalog.pg_default_acl'.
@@ -593,6 +2272,117 @@ type PgDefaultACL struct {
 	Defaclnamespace pgtypes.Oid       `json:"defaclnamespace"` // defaclnamespace
 	Defaclobjtype   pgtypes.Char      `json:"defaclobjtype"`   // defaclobjtype
 	Defaclacl       []pgtypes.Aclitem `json:"defaclacl"`       // defaclacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgDefaultACL exists in the database.
+func (pda *PgDefaultACL) Exists() bool {
+	return pda._exists
+}
+
+// Deleted returns true when the PgDefaultACL has been marked for deletion from
+// the database.
+func (pda *PgDefaultACL) Deleted() bool {
+	return pda._deleted
+}
+
+// Insert inserts the PgDefaultACL to the database.
+func (pda *PgDefaultACL) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pda._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pda._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_default_acl (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, defaclrole, defaclnamespace, defaclobjtype, defaclacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Oid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Oid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pda._exists = true
+	return nil
+}
+
+// Update updates a PgDefaultACL in the database.
+func (pda *PgDefaultACL) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pda._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pda._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_default_acl SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, defaclrole = $7, defaclnamespace = $8, defaclobjtype = $9, defaclacl = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl, pda.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl, pda.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgDefaultACL to the database.
+func (pda *PgDefaultACL) Save(ctx context.Context, db DB) error {
+	if pda.Exists() {
+		return pda.Update(ctx, db)
+	}
+	return pda.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgDefaultACL.
+func (pda *PgDefaultACL) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pda._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_default_acl (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, defaclrole, defaclnamespace, defaclobjtype, defaclacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, defaclrole = EXCLUDED.defaclrole, defaclnamespace = EXCLUDED.defaclnamespace, defaclobjtype = EXCLUDED.defaclobjtype, defaclacl = EXCLUDED.defaclacl `
+	// run
+	logf(sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Oid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pda.Tableoid, pda.Cmax, pda.Xmax, pda.Cmin, pda.Xmin, pda.Ctid, pda.Oid, pda.Defaclrole, pda.Defaclnamespace, pda.Defaclobjtype, pda.Defaclacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pda._exists = true
+	return nil
+}
+
+// Delete deletes the PgDefaultACL from the database.
+func (pda *PgDefaultACL) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pda._exists: // doesn't exist
+		return nil
+	case pda._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_default_acl ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pda.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pda.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pda._deleted = true
+	return nil
 }
 
 // PgDepend represents a row from 'pg_catalog.pg_depend'.
@@ -624,6 +2414,117 @@ type PgDescription struct {
 	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
 	Objsubid    int         `json:"objsubid"`    // objsubid
 	Description string      `json:"description"` // description
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgDescription exists in the database.
+func (pd *PgDescription) Exists() bool {
+	return pd._exists
+}
+
+// Deleted returns true when the PgDescription has been marked for deletion from
+// the database.
+func (pd *PgDescription) Deleted() bool {
+	return pd._deleted
+}
+
+// Insert inserts the PgDescription to the database.
+func (pd *PgDescription) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pd._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pd._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_description (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, description` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Objoid, pd.Classoid, pd.Objsubid, pd.Description)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Objoid, pd.Classoid, pd.Objsubid, pd.Description); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pd._exists = true
+	return nil
+}
+
+// Update updates a PgDescription in the database.
+func (pd *PgDescription) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pd._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pd._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_description SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, description = $7 ` +
+		`WHERE objoid = $8 AND classoid = $9 AND objsubid = $10`
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Description, pd.Objoid, pd.Classoid, pd.Objsubid)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Description, pd.Objoid, pd.Classoid, pd.Objsubid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgDescription to the database.
+func (pd *PgDescription) Save(ctx context.Context, db DB) error {
+	if pd.Exists() {
+		return pd.Update(ctx, db)
+	}
+	return pd.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgDescription.
+func (pd *PgDescription) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pd._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_description (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, description` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (objoid, classoid, objsubid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, description = EXCLUDED.description `
+	// run
+	logf(sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Objoid, pd.Classoid, pd.Objsubid, pd.Description)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Tableoid, pd.Cmax, pd.Xmax, pd.Cmin, pd.Xmin, pd.Ctid, pd.Objoid, pd.Classoid, pd.Objsubid, pd.Description); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pd._exists = true
+	return nil
+}
+
+// Delete deletes the PgDescription from the database.
+func (pd *PgDescription) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pd._exists: // doesn't exist
+		return nil
+	case pd._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_description ` +
+		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3`
+	// run
+	logf(sqlstr, pd.Objoid, pd.Classoid, pd.Objsubid)
+	if _, err := db.ExecContext(ctx, sqlstr, pd.Objoid, pd.Classoid, pd.Objsubid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pd._deleted = true
+	return nil
 }
 
 // PgEnum represents a row from 'pg_catalog.pg_enum'.
@@ -638,6 +2539,117 @@ type PgEnum struct {
 	Enumtypid     pgtypes.Oid `json:"enumtypid"`     // enumtypid
 	Enumsortorder float32     `json:"enumsortorder"` // enumsortorder
 	Enumlabel     string      `json:"enumlabel"`     // enumlabel
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgEnum exists in the database.
+func (pe *PgEnum) Exists() bool {
+	return pe._exists
+}
+
+// Deleted returns true when the PgEnum has been marked for deletion from
+// the database.
+func (pe *PgEnum) Deleted() bool {
+	return pe._deleted
+}
+
+// Insert inserts the PgEnum to the database.
+func (pe *PgEnum) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pe._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pe._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_enum (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, enumtypid, enumsortorder, enumlabel` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pe._exists = true
+	return nil
+}
+
+// Update updates a PgEnum in the database.
+func (pe *PgEnum) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pe._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pe._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_enum SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, enumtypid = $7, enumsortorder = $8, enumlabel = $9 ` +
+		`WHERE oid = $10`
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel, pe.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel, pe.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgEnum to the database.
+func (pe *PgEnum) Save(ctx context.Context, db DB) error {
+	if pe.Exists() {
+		return pe.Update(ctx, db)
+	}
+	return pe.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgEnum.
+func (pe *PgEnum) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pe._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_enum (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, enumtypid, enumsortorder, enumlabel` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, enumtypid = EXCLUDED.enumtypid, enumsortorder = EXCLUDED.enumsortorder, enumlabel = EXCLUDED.enumlabel `
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Enumtypid, pe.Enumsortorder, pe.Enumlabel); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pe._exists = true
+	return nil
+}
+
+// Delete deletes the PgEnum from the database.
+func (pe *PgEnum) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pe._exists: // doesn't exist
+		return nil
+	case pe._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_enum ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pe.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pe._deleted = true
+	return nil
 }
 
 // PgEventTrigger represents a row from 'pg_catalog.pg_event_trigger'.
@@ -655,6 +2667,117 @@ type PgEventTrigger struct {
 	Evtfoid    pgtypes.Oid      `json:"evtfoid"`    // evtfoid
 	Evtenabled pgtypes.Char     `json:"evtenabled"` // evtenabled
 	Evttags    []sql.NullString `json:"evttags"`    // evttags
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgEventTrigger exists in the database.
+func (pet *PgEventTrigger) Exists() bool {
+	return pet._exists
+}
+
+// Deleted returns true when the PgEventTrigger has been marked for deletion from
+// the database.
+func (pet *PgEventTrigger) Deleted() bool {
+	return pet._deleted
+}
+
+// Insert inserts the PgEventTrigger to the database.
+func (pet *PgEventTrigger) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pet._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pet._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_event_trigger (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, evtname, evtevent, evtowner, evtfoid, evtenabled, evttags` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)`
+	// run
+	logf(sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Oid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags)
+	if _, err := db.ExecContext(ctx, sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Oid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pet._exists = true
+	return nil
+}
+
+// Update updates a PgEventTrigger in the database.
+func (pet *PgEventTrigger) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pet._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pet._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_event_trigger SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, evtname = $7, evtevent = $8, evtowner = $9, evtfoid = $10, evtenabled = $11, evttags = $12 ` +
+		`WHERE oid = $13`
+	// run
+	logf(sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags, pet.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags, pet.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgEventTrigger to the database.
+func (pet *PgEventTrigger) Save(ctx context.Context, db DB) error {
+	if pet.Exists() {
+		return pet.Update(ctx, db)
+	}
+	return pet.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgEventTrigger.
+func (pet *PgEventTrigger) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pet._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_event_trigger (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, evtname, evtevent, evtowner, evtfoid, evtenabled, evttags` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, evtname = EXCLUDED.evtname, evtevent = EXCLUDED.evtevent, evtowner = EXCLUDED.evtowner, evtfoid = EXCLUDED.evtfoid, evtenabled = EXCLUDED.evtenabled, evttags = EXCLUDED.evttags `
+	// run
+	logf(sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Oid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags)
+	if _, err := db.ExecContext(ctx, sqlstr, pet.Tableoid, pet.Cmax, pet.Xmax, pet.Cmin, pet.Xmin, pet.Ctid, pet.Oid, pet.Evtname, pet.Evtevent, pet.Evtowner, pet.Evtfoid, pet.Evtenabled, pet.Evttags); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pet._exists = true
+	return nil
+}
+
+// Delete deletes the PgEventTrigger from the database.
+func (pet *PgEventTrigger) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pet._exists: // doesn't exist
+		return nil
+	case pet._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_event_trigger ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pet.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pet.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pet._deleted = true
+	return nil
 }
 
 // PgExtension represents a row from 'pg_catalog.pg_extension'.
@@ -673,6 +2796,117 @@ type PgExtension struct {
 	Extversion     string            `json:"extversion"`     // extversion
 	Extconfig      []pgtypes.NullOid `json:"extconfig"`      // extconfig
 	Extcondition   []sql.NullString  `json:"extcondition"`   // extcondition
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgExtension exists in the database.
+func (pe *PgExtension) Exists() bool {
+	return pe._exists
+}
+
+// Deleted returns true when the PgExtension has been marked for deletion from
+// the database.
+func (pe *PgExtension) Deleted() bool {
+	return pe._deleted
+}
+
+// Insert inserts the PgExtension to the database.
+func (pe *PgExtension) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pe._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pe._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_extension (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, extname, extowner, extnamespace, extrelocatable, extversion, extconfig, extcondition` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pe._exists = true
+	return nil
+}
+
+// Update updates a PgExtension in the database.
+func (pe *PgExtension) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pe._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pe._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_extension SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, extname = $7, extowner = $8, extnamespace = $9, extrelocatable = $10, extversion = $11, extconfig = $12, extcondition = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition, pe.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition, pe.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgExtension to the database.
+func (pe *PgExtension) Save(ctx context.Context, db DB) error {
+	if pe.Exists() {
+		return pe.Update(ctx, db)
+	}
+	return pe.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgExtension.
+func (pe *PgExtension) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pe._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_extension (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, extname, extowner, extnamespace, extrelocatable, extversion, extconfig, extcondition` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, extname = EXCLUDED.extname, extowner = EXCLUDED.extowner, extnamespace = EXCLUDED.extnamespace, extrelocatable = EXCLUDED.extrelocatable, extversion = EXCLUDED.extversion, extconfig = EXCLUDED.extconfig, extcondition = EXCLUDED.extcondition `
+	// run
+	logf(sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Tableoid, pe.Cmax, pe.Xmax, pe.Cmin, pe.Xmin, pe.Ctid, pe.Oid, pe.Extname, pe.Extowner, pe.Extnamespace, pe.Extrelocatable, pe.Extversion, pe.Extconfig, pe.Extcondition); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pe._exists = true
+	return nil
+}
+
+// Delete deletes the PgExtension from the database.
+func (pe *PgExtension) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pe._exists: // doesn't exist
+		return nil
+	case pe._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_extension ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pe.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pe.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pe._deleted = true
+	return nil
 }
 
 // PgFileSetting represents a row from 'pg_catalog.pg_file_settings'.
@@ -701,6 +2935,117 @@ type PgForeignDataWrapper struct {
 	Fdwvalidator pgtypes.Oid           `json:"fdwvalidator"` // fdwvalidator
 	Fdwacl       []pgtypes.NullAclitem `json:"fdwacl"`       // fdwacl
 	Fdwoptions   []sql.NullString      `json:"fdwoptions"`   // fdwoptions
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgForeignDataWrapper exists in the database.
+func (pfdw *PgForeignDataWrapper) Exists() bool {
+	return pfdw._exists
+}
+
+// Deleted returns true when the PgForeignDataWrapper has been marked for deletion from
+// the database.
+func (pfdw *PgForeignDataWrapper) Deleted() bool {
+	return pfdw._deleted
+}
+
+// Insert inserts the PgForeignDataWrapper to the database.
+func (pfdw *PgForeignDataWrapper) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pfdw._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pfdw._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_data_wrapper (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, fdwname, fdwowner, fdwhandler, fdwvalidator, fdwacl, fdwoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)`
+	// run
+	logf(sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Oid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Oid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pfdw._exists = true
+	return nil
+}
+
+// Update updates a PgForeignDataWrapper in the database.
+func (pfdw *PgForeignDataWrapper) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pfdw._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pfdw._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_foreign_data_wrapper SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, fdwname = $7, fdwowner = $8, fdwhandler = $9, fdwvalidator = $10, fdwacl = $11, fdwoptions = $12 ` +
+		`WHERE oid = $13`
+	// run
+	logf(sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions, pfdw.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions, pfdw.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgForeignDataWrapper to the database.
+func (pfdw *PgForeignDataWrapper) Save(ctx context.Context, db DB) error {
+	if pfdw.Exists() {
+		return pfdw.Update(ctx, db)
+	}
+	return pfdw.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgForeignDataWrapper.
+func (pfdw *PgForeignDataWrapper) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pfdw._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_data_wrapper (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, fdwname, fdwowner, fdwhandler, fdwvalidator, fdwacl, fdwoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, fdwname = EXCLUDED.fdwname, fdwowner = EXCLUDED.fdwowner, fdwhandler = EXCLUDED.fdwhandler, fdwvalidator = EXCLUDED.fdwvalidator, fdwacl = EXCLUDED.fdwacl, fdwoptions = EXCLUDED.fdwoptions `
+	// run
+	logf(sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Oid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pfdw.Tableoid, pfdw.Cmax, pfdw.Xmax, pfdw.Cmin, pfdw.Xmin, pfdw.Ctid, pfdw.Oid, pfdw.Fdwname, pfdw.Fdwowner, pfdw.Fdwhandler, pfdw.Fdwvalidator, pfdw.Fdwacl, pfdw.Fdwoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pfdw._exists = true
+	return nil
+}
+
+// Delete deletes the PgForeignDataWrapper from the database.
+func (pfdw *PgForeignDataWrapper) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pfdw._exists: // doesn't exist
+		return nil
+	case pfdw._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_foreign_data_wrapper ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pfdw.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pfdw.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pfdw._deleted = true
+	return nil
 }
 
 // PgForeignServer represents a row from 'pg_catalog.pg_foreign_server'.
@@ -719,6 +3064,117 @@ type PgForeignServer struct {
 	Srvversion sql.NullString        `json:"srvversion"` // srvversion
 	Srvacl     []pgtypes.NullAclitem `json:"srvacl"`     // srvacl
 	Srvoptions []sql.NullString      `json:"srvoptions"` // srvoptions
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgForeignServer exists in the database.
+func (pfs *PgForeignServer) Exists() bool {
+	return pfs._exists
+}
+
+// Deleted returns true when the PgForeignServer has been marked for deletion from
+// the database.
+func (pfs *PgForeignServer) Deleted() bool {
+	return pfs._deleted
+}
+
+// Insert inserts the PgForeignServer to the database.
+func (pfs *PgForeignServer) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pfs._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pfs._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_server (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, srvname, srvowner, srvfdw, srvtype, srvversion, srvacl, srvoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Oid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Oid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pfs._exists = true
+	return nil
+}
+
+// Update updates a PgForeignServer in the database.
+func (pfs *PgForeignServer) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pfs._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pfs._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_foreign_server SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, srvname = $7, srvowner = $8, srvfdw = $9, srvtype = $10, srvversion = $11, srvacl = $12, srvoptions = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions, pfs.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions, pfs.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgForeignServer to the database.
+func (pfs *PgForeignServer) Save(ctx context.Context, db DB) error {
+	if pfs.Exists() {
+		return pfs.Update(ctx, db)
+	}
+	return pfs.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgForeignServer.
+func (pfs *PgForeignServer) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pfs._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_server (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, srvname, srvowner, srvfdw, srvtype, srvversion, srvacl, srvoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, srvname = EXCLUDED.srvname, srvowner = EXCLUDED.srvowner, srvfdw = EXCLUDED.srvfdw, srvtype = EXCLUDED.srvtype, srvversion = EXCLUDED.srvversion, srvacl = EXCLUDED.srvacl, srvoptions = EXCLUDED.srvoptions `
+	// run
+	logf(sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Oid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pfs.Tableoid, pfs.Cmax, pfs.Xmax, pfs.Cmin, pfs.Xmin, pfs.Ctid, pfs.Oid, pfs.Srvname, pfs.Srvowner, pfs.Srvfdw, pfs.Srvtype, pfs.Srvversion, pfs.Srvacl, pfs.Srvoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pfs._exists = true
+	return nil
+}
+
+// Delete deletes the PgForeignServer from the database.
+func (pfs *PgForeignServer) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pfs._exists: // doesn't exist
+		return nil
+	case pfs._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_foreign_server ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pfs.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pfs.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pfs._deleted = true
+	return nil
 }
 
 // PgForeignTable represents a row from 'pg_catalog.pg_foreign_table'.
@@ -732,6 +3188,117 @@ type PgForeignTable struct {
 	Ftrelid   pgtypes.Oid      `json:"ftrelid"`   // ftrelid
 	Ftserver  pgtypes.Oid      `json:"ftserver"`  // ftserver
 	Ftoptions []sql.NullString `json:"ftoptions"` // ftoptions
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgForeignTable exists in the database.
+func (pft *PgForeignTable) Exists() bool {
+	return pft._exists
+}
+
+// Deleted returns true when the PgForeignTable has been marked for deletion from
+// the database.
+func (pft *PgForeignTable) Deleted() bool {
+	return pft._deleted
+}
+
+// Insert inserts the PgForeignTable to the database.
+func (pft *PgForeignTable) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pft._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pft._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_table (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, ftrelid, ftserver, ftoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftrelid, pft.Ftserver, pft.Ftoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftrelid, pft.Ftserver, pft.Ftoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pft._exists = true
+	return nil
+}
+
+// Update updates a PgForeignTable in the database.
+func (pft *PgForeignTable) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pft._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pft._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_foreign_table SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, ftserver = $7, ftoptions = $8 ` +
+		`WHERE ftrelid = $9`
+	// run
+	logf(sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftserver, pft.Ftoptions, pft.Ftrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftserver, pft.Ftoptions, pft.Ftrelid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgForeignTable to the database.
+func (pft *PgForeignTable) Save(ctx context.Context, db DB) error {
+	if pft.Exists() {
+		return pft.Update(ctx, db)
+	}
+	return pft.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgForeignTable.
+func (pft *PgForeignTable) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pft._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_foreign_table (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, ftrelid, ftserver, ftoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (ftrelid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, ftserver = EXCLUDED.ftserver, ftoptions = EXCLUDED.ftoptions `
+	// run
+	logf(sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftrelid, pft.Ftserver, pft.Ftoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pft.Tableoid, pft.Cmax, pft.Xmax, pft.Cmin, pft.Xmin, pft.Ctid, pft.Ftrelid, pft.Ftserver, pft.Ftoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pft._exists = true
+	return nil
+}
+
+// Delete deletes the PgForeignTable from the database.
+func (pft *PgForeignTable) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pft._exists: // doesn't exist
+		return nil
+	case pft._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_foreign_table ` +
+		`WHERE ftrelid = $1`
+	// run
+	logf(sqlstr, pft.Ftrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, pft.Ftrelid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pft._deleted = true
+	return nil
 }
 
 // PgGroup represents a row from 'pg_catalog.pg_group'.
@@ -791,19 +3358,242 @@ type PgIndex struct {
 	Indoption      pgtypes.Int2vector     `json:"indoption"`      // indoption
 	Indexprs       pgtypes.NullPgNodeTree `json:"indexprs"`       // indexprs
 	Indpred        pgtypes.NullPgNodeTree `json:"indpred"`        // indpred
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgIndex exists in the database.
+func (pi *PgIndex) Exists() bool {
+	return pi._exists
+}
+
+// Deleted returns true when the PgIndex has been marked for deletion from
+// the database.
+func (pi *PgIndex) Deleted() bool {
+	return pi._deleted
+}
+
+// Insert inserts the PgIndex to the database.
+func (pi *PgIndex) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pi._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pi._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_index (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, indexrelid, indrelid, indnatts, indnkeyatts, indisunique, indisprimary, indisexclusion, indimmediate, indisclustered, indisvalid, indcheckxmin, indisready, indislive, indisreplident, indkey, indcollation, indclass, indoption, indexprs, indpred` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26` +
+		`)`
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indexrelid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indexrelid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pi._exists = true
+	return nil
+}
+
+// Update updates a PgIndex in the database.
+func (pi *PgIndex) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pi._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pi._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_index SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, indrelid = $7, indnatts = $8, indnkeyatts = $9, indisunique = $10, indisprimary = $11, indisexclusion = $12, indimmediate = $13, indisclustered = $14, indisvalid = $15, indcheckxmin = $16, indisready = $17, indislive = $18, indisreplident = $19, indkey = $20, indcollation = $21, indclass = $22, indoption = $23, indexprs = $24, indpred = $25 ` +
+		`WHERE indexrelid = $26`
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred, pi.Indexrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred, pi.Indexrelid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgIndex to the database.
+func (pi *PgIndex) Save(ctx context.Context, db DB) error {
+	if pi.Exists() {
+		return pi.Update(ctx, db)
+	}
+	return pi.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgIndex.
+func (pi *PgIndex) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pi._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_index (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, indexrelid, indrelid, indnatts, indnkeyatts, indisunique, indisprimary, indisexclusion, indimmediate, indisclustered, indisvalid, indcheckxmin, indisready, indislive, indisreplident, indkey, indcollation, indclass, indoption, indexprs, indpred` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26` +
+		`)` +
+		` ON CONFLICT (indexrelid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, indrelid = EXCLUDED.indrelid, indnatts = EXCLUDED.indnatts, indnkeyatts = EXCLUDED.indnkeyatts, indisunique = EXCLUDED.indisunique, indisprimary = EXCLUDED.indisprimary, indisexclusion = EXCLUDED.indisexclusion, indimmediate = EXCLUDED.indimmediate, indisclustered = EXCLUDED.indisclustered, indisvalid = EXCLUDED.indisvalid, indcheckxmin = EXCLUDED.indcheckxmin, indisready = EXCLUDED.indisready, indislive = EXCLUDED.indislive, indisreplident = EXCLUDED.indisreplident, indkey = EXCLUDED.indkey, indcollation = EXCLUDED.indcollation, indclass = EXCLUDED.indclass, indoption = EXCLUDED.indoption, indexprs = EXCLUDED.indexprs, indpred = EXCLUDED.indpred `
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indexrelid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Indexrelid, pi.Indrelid, pi.Indnatts, pi.Indnkeyatts, pi.Indisunique, pi.Indisprimary, pi.Indisexclusion, pi.Indimmediate, pi.Indisclustered, pi.Indisvalid, pi.Indcheckxmin, pi.Indisready, pi.Indislive, pi.Indisreplident, pi.Indkey, pi.Indcollation, pi.Indclass, pi.Indoption, pi.Indexprs, pi.Indpred); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pi._exists = true
+	return nil
+}
+
+// Delete deletes the PgIndex from the database.
+func (pi *PgIndex) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pi._exists: // doesn't exist
+		return nil
+	case pi._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_index ` +
+		`WHERE indexrelid = $1`
+	// run
+	logf(sqlstr, pi.Indexrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Indexrelid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pi._deleted = true
+	return nil
 }
 
 // PgInherit represents a row from 'pg_catalog.pg_inherits'.
 type PgInherit struct {
-	Tableoid  pgtypes.Oid `json:"tableoid"`  // tableoid
-	Cmax      pgtypes.Cid `json:"cmax"`      // cmax
-	Xmax      pgtypes.Xid `json:"xmax"`      // xmax
-	Cmin      pgtypes.Cid `json:"cmin"`      // cmin
-	Xmin      pgtypes.Xid `json:"xmin"`      // xmin
-	Ctid      pgtypes.Tid `json:"ctid"`      // ctid
-	Inhrelid  pgtypes.Oid `json:"inhrelid"`  // inhrelid
-	Inhparent pgtypes.Oid `json:"inhparent"` // inhparent
-	Inhseqno  int         `json:"inhseqno"`  // inhseqno
+	Tableoid         pgtypes.Oid `json:"tableoid"`         // tableoid
+	Cmax             pgtypes.Cid `json:"cmax"`             // cmax
+	Xmax             pgtypes.Xid `json:"xmax"`             // xmax
+	Cmin             pgtypes.Cid `json:"cmin"`             // cmin
+	Xmin             pgtypes.Xid `json:"xmin"`             // xmin
+	Ctid             pgtypes.Tid `json:"ctid"`             // ctid
+	Inhrelid         pgtypes.Oid `json:"inhrelid"`         // inhrelid
+	Inhparent        pgtypes.Oid `json:"inhparent"`        // inhparent
+	Inhseqno         int         `json:"inhseqno"`         // inhseqno
+	Inhdetachpending bool        `json:"inhdetachpending"` // inhdetachpending
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgInherit exists in the database.
+func (pi *PgInherit) Exists() bool {
+	return pi._exists
+}
+
+// Deleted returns true when the PgInherit has been marked for deletion from
+// the database.
+func (pi *PgInherit) Deleted() bool {
+	return pi._deleted
+}
+
+// Insert inserts the PgInherit to the database.
+func (pi *PgInherit) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pi._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pi._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_inherits (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno, inhdetachpending` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhrelid, pi.Inhparent, pi.Inhseqno, pi.Inhdetachpending)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhrelid, pi.Inhparent, pi.Inhseqno, pi.Inhdetachpending); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pi._exists = true
+	return nil
+}
+
+// Update updates a PgInherit in the database.
+func (pi *PgInherit) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pi._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pi._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_inherits SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, inhparent = $7, inhdetachpending = $8 ` +
+		`WHERE inhrelid = $9 AND inhseqno = $10`
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhparent, pi.Inhdetachpending, pi.Inhrelid, pi.Inhseqno)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhparent, pi.Inhdetachpending, pi.Inhrelid, pi.Inhseqno); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgInherit to the database.
+func (pi *PgInherit) Save(ctx context.Context, db DB) error {
+	if pi.Exists() {
+		return pi.Update(ctx, db)
+	}
+	return pi.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgInherit.
+func (pi *PgInherit) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pi._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_inherits (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno, inhdetachpending` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (inhrelid, inhseqno) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, inhparent = EXCLUDED.inhparent, inhdetachpending = EXCLUDED.inhdetachpending `
+	// run
+	logf(sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhrelid, pi.Inhparent, pi.Inhseqno, pi.Inhdetachpending)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Tableoid, pi.Cmax, pi.Xmax, pi.Cmin, pi.Xmin, pi.Ctid, pi.Inhrelid, pi.Inhparent, pi.Inhseqno, pi.Inhdetachpending); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pi._exists = true
+	return nil
+}
+
+// Delete deletes the PgInherit from the database.
+func (pi *PgInherit) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pi._exists: // doesn't exist
+		return nil
+	case pi._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_inherits ` +
+		`WHERE inhrelid = $1 AND inhseqno = $2`
+	// run
+	logf(sqlstr, pi.Inhrelid, pi.Inhseqno)
+	if _, err := db.ExecContext(ctx, sqlstr, pi.Inhrelid, pi.Inhseqno); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pi._deleted = true
+	return nil
 }
 
 // PgInitPriv represents a row from 'pg_catalog.pg_init_privs'.
@@ -819,6 +3609,117 @@ type PgInitPriv struct {
 	Objsubid  int               `json:"objsubid"`  // objsubid
 	Privtype  pgtypes.Char      `json:"privtype"`  // privtype
 	Initprivs []pgtypes.Aclitem `json:"initprivs"` // initprivs
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgInitPriv exists in the database.
+func (pip *PgInitPriv) Exists() bool {
+	return pip._exists
+}
+
+// Deleted returns true when the PgInitPriv has been marked for deletion from
+// the database.
+func (pip *PgInitPriv) Deleted() bool {
+	return pip._deleted
+}
+
+// Insert inserts the PgInitPriv to the database.
+func (pip *PgInitPriv) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pip._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pip._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_init_privs (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, privtype, initprivs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Objoid, pip.Classoid, pip.Objsubid, pip.Privtype, pip.Initprivs)
+	if _, err := db.ExecContext(ctx, sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Objoid, pip.Classoid, pip.Objsubid, pip.Privtype, pip.Initprivs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pip._exists = true
+	return nil
+}
+
+// Update updates a PgInitPriv in the database.
+func (pip *PgInitPriv) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pip._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pip._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_init_privs SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, privtype = $7, initprivs = $8 ` +
+		`WHERE objoid = $9 AND classoid = $10 AND objsubid = $11`
+	// run
+	logf(sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Privtype, pip.Initprivs, pip.Objoid, pip.Classoid, pip.Objsubid)
+	if _, err := db.ExecContext(ctx, sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Privtype, pip.Initprivs, pip.Objoid, pip.Classoid, pip.Objsubid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgInitPriv to the database.
+func (pip *PgInitPriv) Save(ctx context.Context, db DB) error {
+	if pip.Exists() {
+		return pip.Update(ctx, db)
+	}
+	return pip.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgInitPriv.
+func (pip *PgInitPriv) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pip._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_init_privs (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, privtype, initprivs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (objoid, classoid, objsubid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, privtype = EXCLUDED.privtype, initprivs = EXCLUDED.initprivs `
+	// run
+	logf(sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Objoid, pip.Classoid, pip.Objsubid, pip.Privtype, pip.Initprivs)
+	if _, err := db.ExecContext(ctx, sqlstr, pip.Tableoid, pip.Cmax, pip.Xmax, pip.Cmin, pip.Xmin, pip.Ctid, pip.Objoid, pip.Classoid, pip.Objsubid, pip.Privtype, pip.Initprivs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pip._exists = true
+	return nil
+}
+
+// Delete deletes the PgInitPriv from the database.
+func (pip *PgInitPriv) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pip._exists: // doesn't exist
+		return nil
+	case pip._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_init_privs ` +
+		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3`
+	// run
+	logf(sqlstr, pip.Objoid, pip.Classoid, pip.Objsubid)
+	if _, err := db.ExecContext(ctx, sqlstr, pip.Objoid, pip.Classoid, pip.Objsubid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pip._deleted = true
+	return nil
 }
 
 // PgLanguage represents a row from 'pg_catalog.pg_language'.
@@ -838,6 +3739,117 @@ type PgLanguage struct {
 	Laninline     pgtypes.Oid           `json:"laninline"`     // laninline
 	Lanvalidator  pgtypes.Oid           `json:"lanvalidator"`  // lanvalidator
 	Lanacl        []pgtypes.NullAclitem `json:"lanacl"`        // lanacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgLanguage exists in the database.
+func (pl *PgLanguage) Exists() bool {
+	return pl._exists
+}
+
+// Deleted returns true when the PgLanguage has been marked for deletion from
+// the database.
+func (pl *PgLanguage) Deleted() bool {
+	return pl._deleted
+}
+
+// Insert inserts the PgLanguage to the database.
+func (pl *PgLanguage) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pl._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pl._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_language (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, lanname, lanowner, lanispl, lanpltrusted, lanplcallfoid, laninline, lanvalidator, lanacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)`
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Oid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Oid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pl._exists = true
+	return nil
+}
+
+// Update updates a PgLanguage in the database.
+func (pl *PgLanguage) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pl._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pl._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_language SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, lanname = $7, lanowner = $8, lanispl = $9, lanpltrusted = $10, lanplcallfoid = $11, laninline = $12, lanvalidator = $13, lanacl = $14 ` +
+		`WHERE oid = $15`
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl, pl.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl, pl.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgLanguage to the database.
+func (pl *PgLanguage) Save(ctx context.Context, db DB) error {
+	if pl.Exists() {
+		return pl.Update(ctx, db)
+	}
+	return pl.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgLanguage.
+func (pl *PgLanguage) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pl._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_language (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, lanname, lanowner, lanispl, lanpltrusted, lanplcallfoid, laninline, lanvalidator, lanacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, lanname = EXCLUDED.lanname, lanowner = EXCLUDED.lanowner, lanispl = EXCLUDED.lanispl, lanpltrusted = EXCLUDED.lanpltrusted, lanplcallfoid = EXCLUDED.lanplcallfoid, laninline = EXCLUDED.laninline, lanvalidator = EXCLUDED.lanvalidator, lanacl = EXCLUDED.lanacl `
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Oid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Oid, pl.Lanname, pl.Lanowner, pl.Lanispl, pl.Lanpltrusted, pl.Lanplcallfoid, pl.Laninline, pl.Lanvalidator, pl.Lanacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pl._exists = true
+	return nil
+}
+
+// Delete deletes the PgLanguage from the database.
+func (pl *PgLanguage) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pl._exists: // doesn't exist
+		return nil
+	case pl._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_language ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pl.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pl._deleted = true
+	return nil
 }
 
 // PgLargeobject represents a row from 'pg_catalog.pg_largeobject'.
@@ -851,6 +3863,117 @@ type PgLargeobject struct {
 	Loid     pgtypes.Oid `json:"loid"`     // loid
 	Pageno   int         `json:"pageno"`   // pageno
 	Data     []byte      `json:"data"`     // data
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgLargeobject exists in the database.
+func (pl *PgLargeobject) Exists() bool {
+	return pl._exists
+}
+
+// Deleted returns true when the PgLargeobject has been marked for deletion from
+// the database.
+func (pl *PgLargeobject) Deleted() bool {
+	return pl._deleted
+}
+
+// Insert inserts the PgLargeobject to the database.
+func (pl *PgLargeobject) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pl._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pl._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_largeobject (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, loid, pageno, data` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Loid, pl.Pageno, pl.Data)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Loid, pl.Pageno, pl.Data); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pl._exists = true
+	return nil
+}
+
+// Update updates a PgLargeobject in the database.
+func (pl *PgLargeobject) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pl._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pl._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_largeobject SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, data = $7 ` +
+		`WHERE loid = $8 AND pageno = $9`
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Data, pl.Loid, pl.Pageno)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Data, pl.Loid, pl.Pageno); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgLargeobject to the database.
+func (pl *PgLargeobject) Save(ctx context.Context, db DB) error {
+	if pl.Exists() {
+		return pl.Update(ctx, db)
+	}
+	return pl.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgLargeobject.
+func (pl *PgLargeobject) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pl._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_largeobject (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, loid, pageno, data` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (loid, pageno) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, data = EXCLUDED.data `
+	// run
+	logf(sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Loid, pl.Pageno, pl.Data)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Tableoid, pl.Cmax, pl.Xmax, pl.Cmin, pl.Xmin, pl.Ctid, pl.Loid, pl.Pageno, pl.Data); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pl._exists = true
+	return nil
+}
+
+// Delete deletes the PgLargeobject from the database.
+func (pl *PgLargeobject) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pl._exists: // doesn't exist
+		return nil
+	case pl._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_largeobject ` +
+		`WHERE loid = $1 AND pageno = $2`
+	// run
+	logf(sqlstr, pl.Loid, pl.Pageno)
+	if _, err := db.ExecContext(ctx, sqlstr, pl.Loid, pl.Pageno); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pl._deleted = true
+	return nil
 }
 
 // PgLargeobjectMetadatum represents a row from 'pg_catalog.pg_largeobject_metadata'.
@@ -864,6 +3987,117 @@ type PgLargeobjectMetadatum struct {
 	Oid      pgtypes.Oid           `json:"oid"`      // oid
 	Lomowner pgtypes.Oid           `json:"lomowner"` // lomowner
 	Lomacl   []pgtypes.NullAclitem `json:"lomacl"`   // lomacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgLargeobjectMetadatum exists in the database.
+func (plm *PgLargeobjectMetadatum) Exists() bool {
+	return plm._exists
+}
+
+// Deleted returns true when the PgLargeobjectMetadatum has been marked for deletion from
+// the database.
+func (plm *PgLargeobjectMetadatum) Deleted() bool {
+	return plm._deleted
+}
+
+// Insert inserts the PgLargeobjectMetadatum to the database.
+func (plm *PgLargeobjectMetadatum) Insert(ctx context.Context, db DB) error {
+	switch {
+	case plm._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case plm._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_largeobject_metadata (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, lomowner, lomacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Oid, plm.Lomowner, plm.Lomacl)
+	if _, err := db.ExecContext(ctx, sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Oid, plm.Lomowner, plm.Lomacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	plm._exists = true
+	return nil
+}
+
+// Update updates a PgLargeobjectMetadatum in the database.
+func (plm *PgLargeobjectMetadatum) Update(ctx context.Context, db DB) error {
+	switch {
+	case !plm._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case plm._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_largeobject_metadata SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, lomowner = $7, lomacl = $8 ` +
+		`WHERE oid = $9`
+	// run
+	logf(sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Lomowner, plm.Lomacl, plm.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Lomowner, plm.Lomacl, plm.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgLargeobjectMetadatum to the database.
+func (plm *PgLargeobjectMetadatum) Save(ctx context.Context, db DB) error {
+	if plm.Exists() {
+		return plm.Update(ctx, db)
+	}
+	return plm.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgLargeobjectMetadatum.
+func (plm *PgLargeobjectMetadatum) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case plm._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_largeobject_metadata (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, lomowner, lomacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, lomowner = EXCLUDED.lomowner, lomacl = EXCLUDED.lomacl `
+	// run
+	logf(sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Oid, plm.Lomowner, plm.Lomacl)
+	if _, err := db.ExecContext(ctx, sqlstr, plm.Tableoid, plm.Cmax, plm.Xmax, plm.Cmin, plm.Xmin, plm.Ctid, plm.Oid, plm.Lomowner, plm.Lomacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	plm._exists = true
+	return nil
+}
+
+// Delete deletes the PgLargeobjectMetadatum from the database.
+func (plm *PgLargeobjectMetadatum) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !plm._exists: // doesn't exist
+		return nil
+	case plm._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_largeobject_metadata ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, plm.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, plm.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	plm._deleted = true
+	return nil
 }
 
 // PgLock represents a row from 'pg_catalog.pg_locks'.
@@ -883,6 +4117,7 @@ type PgLock struct {
 	Mode               sql.NullString  `json:"mode"`               // mode
 	Granted            sql.NullBool    `json:"granted"`            // granted
 	Fastpath           sql.NullBool    `json:"fastpath"`           // fastpath
+	Waitstart          sql.NullTime    `json:"waitstart"`          // waitstart
 }
 
 // PgMatview represents a row from 'pg_catalog.pg_matviews'.
@@ -908,6 +4143,117 @@ type PgNamespace struct {
 	Nspname  string                `json:"nspname"`  // nspname
 	Nspowner pgtypes.Oid           `json:"nspowner"` // nspowner
 	Nspacl   []pgtypes.NullAclitem `json:"nspacl"`   // nspacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgNamespace exists in the database.
+func (pn *PgNamespace) Exists() bool {
+	return pn._exists
+}
+
+// Deleted returns true when the PgNamespace has been marked for deletion from
+// the database.
+func (pn *PgNamespace) Deleted() bool {
+	return pn._deleted
+}
+
+// Insert inserts the PgNamespace to the database.
+func (pn *PgNamespace) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pn._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pn._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_namespace (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, nspname, nspowner, nspacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Oid, pn.Nspname, pn.Nspowner, pn.Nspacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Oid, pn.Nspname, pn.Nspowner, pn.Nspacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pn._exists = true
+	return nil
+}
+
+// Update updates a PgNamespace in the database.
+func (pn *PgNamespace) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pn._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pn._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_namespace SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, nspname = $7, nspowner = $8, nspacl = $9 ` +
+		`WHERE oid = $10`
+	// run
+	logf(sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Nspname, pn.Nspowner, pn.Nspacl, pn.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Nspname, pn.Nspowner, pn.Nspacl, pn.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgNamespace to the database.
+func (pn *PgNamespace) Save(ctx context.Context, db DB) error {
+	if pn.Exists() {
+		return pn.Update(ctx, db)
+	}
+	return pn.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgNamespace.
+func (pn *PgNamespace) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pn._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_namespace (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, nspname, nspowner, nspacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, nspname = EXCLUDED.nspname, nspowner = EXCLUDED.nspowner, nspacl = EXCLUDED.nspacl `
+	// run
+	logf(sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Oid, pn.Nspname, pn.Nspowner, pn.Nspacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pn.Tableoid, pn.Cmax, pn.Xmax, pn.Cmin, pn.Xmin, pn.Ctid, pn.Oid, pn.Nspname, pn.Nspowner, pn.Nspacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pn._exists = true
+	return nil
+}
+
+// Delete deletes the PgNamespace from the database.
+func (pn *PgNamespace) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pn._exists: // doesn't exist
+		return nil
+	case pn._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_namespace ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pn.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pn.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pn._deleted = true
+	return nil
 }
 
 // PgOpclass represents a row from 'pg_catalog.pg_opclass'.
@@ -927,6 +4273,117 @@ type PgOpclass struct {
 	Opcintype    pgtypes.Oid `json:"opcintype"`    // opcintype
 	Opcdefault   bool        `json:"opcdefault"`   // opcdefault
 	Opckeytype   pgtypes.Oid `json:"opckeytype"`   // opckeytype
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgOpclass exists in the database.
+func (po *PgOpclass) Exists() bool {
+	return po._exists
+}
+
+// Deleted returns true when the PgOpclass has been marked for deletion from
+// the database.
+func (po *PgOpclass) Deleted() bool {
+	return po._deleted
+}
+
+// Insert inserts the PgOpclass to the database.
+func (po *PgOpclass) Insert(ctx context.Context, db DB) error {
+	switch {
+	case po._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case po._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_opclass (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opcmethod, opcname, opcnamespace, opcowner, opcfamily, opcintype, opcdefault, opckeytype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Update updates a PgOpclass in the database.
+func (po *PgOpclass) Update(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case po._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_opclass SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, opcmethod = $7, opcname = $8, opcnamespace = $9, opcowner = $10, opcfamily = $11, opcintype = $12, opcdefault = $13, opckeytype = $14 ` +
+		`WHERE oid = $15`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype, po.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgOpclass to the database.
+func (po *PgOpclass) Save(ctx context.Context, db DB) error {
+	if po.Exists() {
+		return po.Update(ctx, db)
+	}
+	return po.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgOpclass.
+func (po *PgOpclass) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case po._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_opclass (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opcmethod, opcname, opcnamespace, opcowner, opcfamily, opcintype, opcdefault, opckeytype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, opcmethod = EXCLUDED.opcmethod, opcname = EXCLUDED.opcname, opcnamespace = EXCLUDED.opcnamespace, opcowner = EXCLUDED.opcowner, opcfamily = EXCLUDED.opcfamily, opcintype = EXCLUDED.opcintype, opcdefault = EXCLUDED.opcdefault, opckeytype = EXCLUDED.opckeytype `
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opcmethod, po.Opcname, po.Opcnamespace, po.Opcowner, po.Opcfamily, po.Opcintype, po.Opcdefault, po.Opckeytype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Delete deletes the PgOpclass from the database.
+func (po *PgOpclass) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return nil
+	case po._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_opclass ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	po._deleted = true
+	return nil
 }
 
 // PgOperator represents a row from 'pg_catalog.pg_operator'.
@@ -952,6 +4409,117 @@ type PgOperator struct {
 	Oprcode      pgtypes.Regproc `json:"oprcode"`      // oprcode
 	Oprrest      pgtypes.Regproc `json:"oprrest"`      // oprrest
 	Oprjoin      pgtypes.Regproc `json:"oprjoin"`      // oprjoin
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgOperator exists in the database.
+func (po *PgOperator) Exists() bool {
+	return po._exists
+}
+
+// Deleted returns true when the PgOperator has been marked for deletion from
+// the database.
+func (po *PgOperator) Deleted() bool {
+	return po._deleted
+}
+
+// Insert inserts the PgOperator to the database.
+func (po *PgOperator) Insert(ctx context.Context, db DB) error {
+	switch {
+	case po._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case po._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_operator (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, oprname, oprnamespace, oprowner, oprkind, oprcanmerge, oprcanhash, oprleft, oprright, oprresult, oprcom, oprnegate, oprcode, oprrest, oprjoin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21` +
+		`)`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Update updates a PgOperator in the database.
+func (po *PgOperator) Update(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case po._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_operator SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, oprname = $7, oprnamespace = $8, oprowner = $9, oprkind = $10, oprcanmerge = $11, oprcanhash = $12, oprleft = $13, oprright = $14, oprresult = $15, oprcom = $16, oprnegate = $17, oprcode = $18, oprrest = $19, oprjoin = $20 ` +
+		`WHERE oid = $21`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin, po.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgOperator to the database.
+func (po *PgOperator) Save(ctx context.Context, db DB) error {
+	if po.Exists() {
+		return po.Update(ctx, db)
+	}
+	return po.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgOperator.
+func (po *PgOperator) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case po._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_operator (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, oprname, oprnamespace, oprowner, oprkind, oprcanmerge, oprcanhash, oprleft, oprright, oprresult, oprcom, oprnegate, oprcode, oprrest, oprjoin` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, oprname = EXCLUDED.oprname, oprnamespace = EXCLUDED.oprnamespace, oprowner = EXCLUDED.oprowner, oprkind = EXCLUDED.oprkind, oprcanmerge = EXCLUDED.oprcanmerge, oprcanhash = EXCLUDED.oprcanhash, oprleft = EXCLUDED.oprleft, oprright = EXCLUDED.oprright, oprresult = EXCLUDED.oprresult, oprcom = EXCLUDED.oprcom, oprnegate = EXCLUDED.oprnegate, oprcode = EXCLUDED.oprcode, oprrest = EXCLUDED.oprrest, oprjoin = EXCLUDED.oprjoin `
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Oprname, po.Oprnamespace, po.Oprowner, po.Oprkind, po.Oprcanmerge, po.Oprcanhash, po.Oprleft, po.Oprright, po.Oprresult, po.Oprcom, po.Oprnegate, po.Oprcode, po.Oprrest, po.Oprjoin); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Delete deletes the PgOperator from the database.
+func (po *PgOperator) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return nil
+	case po._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_operator ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	po._deleted = true
+	return nil
 }
 
 // PgOpfamily represents a row from 'pg_catalog.pg_opfamily'.
@@ -967,6 +4535,117 @@ type PgOpfamily struct {
 	Opfname      string      `json:"opfname"`      // opfname
 	Opfnamespace pgtypes.Oid `json:"opfnamespace"` // opfnamespace
 	Opfowner     pgtypes.Oid `json:"opfowner"`     // opfowner
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgOpfamily exists in the database.
+func (po *PgOpfamily) Exists() bool {
+	return po._exists
+}
+
+// Deleted returns true when the PgOpfamily has been marked for deletion from
+// the database.
+func (po *PgOpfamily) Deleted() bool {
+	return po._deleted
+}
+
+// Insert inserts the PgOpfamily to the database.
+func (po *PgOpfamily) Insert(ctx context.Context, db DB) error {
+	switch {
+	case po._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case po._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_opfamily (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opfmethod, opfname, opfnamespace, opfowner` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Update updates a PgOpfamily in the database.
+func (po *PgOpfamily) Update(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case po._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_opfamily SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, opfmethod = $7, opfname = $8, opfnamespace = $9, opfowner = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner, po.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgOpfamily to the database.
+func (po *PgOpfamily) Save(ctx context.Context, db DB) error {
+	if po.Exists() {
+		return po.Update(ctx, db)
+	}
+	return po.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgOpfamily.
+func (po *PgOpfamily) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case po._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_opfamily (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, opfmethod, opfname, opfnamespace, opfowner` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, opfmethod = EXCLUDED.opfmethod, opfname = EXCLUDED.opfname, opfnamespace = EXCLUDED.opfnamespace, opfowner = EXCLUDED.opfowner `
+	// run
+	logf(sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Tableoid, po.Cmax, po.Xmax, po.Cmin, po.Xmin, po.Ctid, po.Oid, po.Opfmethod, po.Opfname, po.Opfnamespace, po.Opfowner); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	po._exists = true
+	return nil
+}
+
+// Delete deletes the PgOpfamily from the database.
+func (po *PgOpfamily) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !po._exists: // doesn't exist
+		return nil
+	case po._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_opfamily ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, po.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, po.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	po._deleted = true
+	return nil
 }
 
 // PgPartitionedTable represents a row from 'pg_catalog.pg_partitioned_table'.
@@ -985,18 +4664,117 @@ type PgPartitionedTable struct {
 	Partclass     pgtypes.Oidvector      `json:"partclass"`     // partclass
 	Partcollation pgtypes.Oidvector      `json:"partcollation"` // partcollation
 	Partexprs     pgtypes.NullPgNodeTree `json:"partexprs"`     // partexprs
+	// xo fields
+	_exists, _deleted bool
 }
 
-// PgPolicy represents a row from 'pg_catalog.pg_policies'.
-type PgPolicy struct {
-	Schemaname sql.NullString   `json:"schemaname"` // schemaname
-	Tablename  sql.NullString   `json:"tablename"`  // tablename
-	Policyname sql.NullString   `json:"policyname"` // policyname
-	Permissive sql.NullString   `json:"permissive"` // permissive
-	Roles      []sql.NullString `json:"roles"`      // roles
-	Cmd        sql.NullString   `json:"cmd"`        // cmd
-	Qual       sql.NullString   `json:"qual"`       // qual
-	WithCheck  sql.NullString   `json:"with_check"` // with_check
+// Exists returns true when the PgPartitionedTable exists in the database.
+func (ppt *PgPartitionedTable) Exists() bool {
+	return ppt._exists
+}
+
+// Deleted returns true when the PgPartitionedTable has been marked for deletion from
+// the database.
+func (ppt *PgPartitionedTable) Deleted() bool {
+	return ppt._deleted
+}
+
+// Insert inserts the PgPartitionedTable to the database.
+func (ppt *PgPartitionedTable) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ppt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ppt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_partitioned_table (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, partrelid, partstrat, partnatts, partdefid, partattrs, partclass, partcollation, partexprs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partrelid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs)
+	if _, err := db.ExecContext(ctx, sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partrelid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ppt._exists = true
+	return nil
+}
+
+// Update updates a PgPartitionedTable in the database.
+func (ppt *PgPartitionedTable) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ppt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ppt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_partitioned_table SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, partstrat = $7, partnatts = $8, partdefid = $9, partattrs = $10, partclass = $11, partcollation = $12, partexprs = $13 ` +
+		`WHERE partrelid = $14`
+	// run
+	logf(sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs, ppt.Partrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs, ppt.Partrelid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgPartitionedTable to the database.
+func (ppt *PgPartitionedTable) Save(ctx context.Context, db DB) error {
+	if ppt.Exists() {
+		return ppt.Update(ctx, db)
+	}
+	return ppt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgPartitionedTable.
+func (ppt *PgPartitionedTable) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ppt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_partitioned_table (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, partrelid, partstrat, partnatts, partdefid, partattrs, partclass, partcollation, partexprs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (partrelid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, partstrat = EXCLUDED.partstrat, partnatts = EXCLUDED.partnatts, partdefid = EXCLUDED.partdefid, partattrs = EXCLUDED.partattrs, partclass = EXCLUDED.partclass, partcollation = EXCLUDED.partcollation, partexprs = EXCLUDED.partexprs `
+	// run
+	logf(sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partrelid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs)
+	if _, err := db.ExecContext(ctx, sqlstr, ppt.Tableoid, ppt.Cmax, ppt.Xmax, ppt.Cmin, ppt.Xmin, ppt.Ctid, ppt.Partrelid, ppt.Partstrat, ppt.Partnatts, ppt.Partdefid, ppt.Partattrs, ppt.Partclass, ppt.Partcollation, ppt.Partexprs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ppt._exists = true
+	return nil
+}
+
+// Delete deletes the PgPartitionedTable from the database.
+func (ppt *PgPartitionedTable) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ppt._exists: // doesn't exist
+		return nil
+	case ppt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_partitioned_table ` +
+		`WHERE partrelid = $1`
+	// run
+	logf(sqlstr, ppt.Partrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppt.Partrelid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ppt._deleted = true
+	return nil
 }
 
 // PgPolicy represents a row from 'pg_catalog.pg_policy'.
@@ -1015,6 +4793,129 @@ type PgPolicy struct {
 	Polroles      []pgtypes.Oid          `json:"polroles"`      // polroles
 	Polqual       pgtypes.NullPgNodeTree `json:"polqual"`       // polqual
 	Polwithcheck  pgtypes.NullPgNodeTree `json:"polwithcheck"`  // polwithcheck
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgPolicy exists in the database.
+func (pp *PgPolicy) Exists() bool {
+	return pp._exists
+}
+
+// Deleted returns true when the PgPolicy has been marked for deletion from
+// the database.
+func (pp *PgPolicy) Deleted() bool {
+	return pp._deleted
+}
+
+// Insert inserts the PgPolicy to the database.
+func (pp *PgPolicy) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pp._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pp._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_policy (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, polname, polrelid, polcmd, polpermissive, polroles, polqual, polwithcheck` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Update updates a PgPolicy in the database.
+func (pp *PgPolicy) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pp._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_policy SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, polname = $7, polrelid = $8, polcmd = $9, polpermissive = $10, polroles = $11, polqual = $12, polwithcheck = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgPolicy to the database.
+func (pp *PgPolicy) Save(ctx context.Context, db DB) error {
+	if pp.Exists() {
+		return pp.Update(ctx, db)
+	}
+	return pp.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgPolicy.
+func (pp *PgPolicy) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pp._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_policy (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, polname, polrelid, polcmd, polpermissive, polroles, polqual, polwithcheck` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, polname = EXCLUDED.polname, polrelid = EXCLUDED.polrelid, polcmd = EXCLUDED.polcmd, polpermissive = EXCLUDED.polpermissive, polroles = EXCLUDED.polroles, polqual = EXCLUDED.polqual, polwithcheck = EXCLUDED.polwithcheck `
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Polname, pp.Polrelid, pp.Polcmd, pp.Polpermissive, pp.Polroles, pp.Polqual, pp.Polwithcheck); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Delete deletes the PgPolicy from the database.
+func (pp *PgPolicy) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return nil
+	case pp._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_policy ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pp._deleted = true
+	return nil
+}
+
+// PgPolicy represents a row from 'pg_catalog.pg_policies'.
+type PgPolicy struct {
+	Schemaname sql.NullString   `json:"schemaname"` // schemaname
+	Tablename  sql.NullString   `json:"tablename"`  // tablename
+	Policyname sql.NullString   `json:"policyname"` // policyname
+	Permissive sql.NullString   `json:"permissive"` // permissive
+	Roles      []sql.NullString `json:"roles"`      // roles
+	Cmd        sql.NullString   `json:"cmd"`        // cmd
+	Qual       sql.NullString   `json:"qual"`       // qual
+	WithCheck  sql.NullString   `json:"with_check"` // with_check
 }
 
 // PgPreparedStatement represents a row from 'pg_catalog.pg_prepared_statements'.
@@ -1024,6 +4925,8 @@ type PgPreparedStatement struct {
 	PrepareTime    sql.NullTime          `json:"prepare_time"`    // prepare_time
 	ParameterTypes []pgtypes.NullRegtype `json:"parameter_types"` // parameter_types
 	FromSQL        sql.NullBool          `json:"from_sql"`        // from_sql
+	GenericPlans   sql.NullInt64         `json:"generic_plans"`   // generic_plans
+	CustomPlans    sql.NullInt64         `json:"custom_plans"`    // custom_plans
 }
 
 // PgPreparedXact represents a row from 'pg_catalog.pg_prepared_xacts'.
@@ -1070,8 +4973,120 @@ type PgProc struct {
 	Protrftypes     []pgtypes.NullOid      `json:"protrftypes"`     // protrftypes
 	Prosrc          string                 `json:"prosrc"`          // prosrc
 	Probin          sql.NullString         `json:"probin"`          // probin
+	Prosqlbody      pgtypes.NullPgNodeTree `json:"prosqlbody"`      // prosqlbody
 	Proconfig       []sql.NullString       `json:"proconfig"`       // proconfig
 	Proacl          []pgtypes.NullAclitem  `json:"proacl"`          // proacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgProc exists in the database.
+func (pp *PgProc) Exists() bool {
+	return pp._exists
+}
+
+// Deleted returns true when the PgProc has been marked for deletion from
+// the database.
+func (pp *PgProc) Deleted() bool {
+	return pp._deleted
+}
+
+// Insert inserts the PgProc to the database.
+func (pp *PgProc) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pp._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pp._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_proc (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, prosqlbody, proconfig, proacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36` +
+		`)`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Update updates a PgProc in the database.
+func (pp *PgProc) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pp._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_proc SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, proname = $7, pronamespace = $8, proowner = $9, prolang = $10, procost = $11, prorows = $12, provariadic = $13, prosupport = $14, prokind = $15, prosecdef = $16, proleakproof = $17, proisstrict = $18, proretset = $19, provolatile = $20, proparallel = $21, pronargs = $22, pronargdefaults = $23, prorettype = $24, proargtypes = $25, proallargtypes = $26, proargmodes = $27, proargnames = $28, proargdefaults = $29, protrftypes = $30, prosrc = $31, probin = $32, prosqlbody = $33, proconfig = $34, proacl = $35 ` +
+		`WHERE oid = $36`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgProc to the database.
+func (pp *PgProc) Save(ctx context.Context, db DB) error {
+	if pp.Exists() {
+		return pp.Update(ctx, db)
+	}
+	return pp.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgProc.
+func (pp *PgProc) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pp._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_proc (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, prosqlbody, proconfig, proacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, proname = EXCLUDED.proname, pronamespace = EXCLUDED.pronamespace, proowner = EXCLUDED.proowner, prolang = EXCLUDED.prolang, procost = EXCLUDED.procost, prorows = EXCLUDED.prorows, provariadic = EXCLUDED.provariadic, prosupport = EXCLUDED.prosupport, prokind = EXCLUDED.prokind, prosecdef = EXCLUDED.prosecdef, proleakproof = EXCLUDED.proleakproof, proisstrict = EXCLUDED.proisstrict, proretset = EXCLUDED.proretset, provolatile = EXCLUDED.provolatile, proparallel = EXCLUDED.proparallel, pronargs = EXCLUDED.pronargs, pronargdefaults = EXCLUDED.pronargdefaults, prorettype = EXCLUDED.prorettype, proargtypes = EXCLUDED.proargtypes, proallargtypes = EXCLUDED.proallargtypes, proargmodes = EXCLUDED.proargmodes, proargnames = EXCLUDED.proargnames, proargdefaults = EXCLUDED.proargdefaults, protrftypes = EXCLUDED.protrftypes, prosrc = EXCLUDED.prosrc, probin = EXCLUDED.probin, prosqlbody = EXCLUDED.prosqlbody, proconfig = EXCLUDED.proconfig, proacl = EXCLUDED.proacl `
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Proname, pp.Pronamespace, pp.Proowner, pp.Prolang, pp.Procost, pp.Prorows, pp.Provariadic, pp.Prosupport, pp.Prokind, pp.Prosecdef, pp.Proleakproof, pp.Proisstrict, pp.Proretset, pp.Provolatile, pp.Proparallel, pp.Pronargs, pp.Pronargdefaults, pp.Prorettype, pp.Proargtypes, pp.Proallargtypes, pp.Proargmodes, pp.Proargnames, pp.Proargdefaults, pp.Protrftypes, pp.Prosrc, pp.Probin, pp.Prosqlbody, pp.Proconfig, pp.Proacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Delete deletes the PgProc from the database.
+func (pp *PgProc) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return nil
+	case pp._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_proc ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pp._deleted = true
+	return nil
 }
 
 // PgPublication represents a row from 'pg_catalog.pg_publication'.
@@ -1091,6 +5106,117 @@ type PgPublication struct {
 	Pubdelete    bool        `json:"pubdelete"`    // pubdelete
 	Pubtruncate  bool        `json:"pubtruncate"`  // pubtruncate
 	Pubviaroot   bool        `json:"pubviaroot"`   // pubviaroot
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgPublication exists in the database.
+func (pp *PgPublication) Exists() bool {
+	return pp._exists
+}
+
+// Deleted returns true when the PgPublication has been marked for deletion from
+// the database.
+func (pp *PgPublication) Deleted() bool {
+	return pp._deleted
+}
+
+// Insert inserts the PgPublication to the database.
+func (pp *PgPublication) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pp._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pp._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_publication (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, pubname, pubowner, puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Update updates a PgPublication in the database.
+func (pp *PgPublication) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pp._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_publication SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, pubname = $7, pubowner = $8, puballtables = $9, pubinsert = $10, pubupdate = $11, pubdelete = $12, pubtruncate = $13, pubviaroot = $14 ` +
+		`WHERE oid = $15`
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgPublication to the database.
+func (pp *PgPublication) Save(ctx context.Context, db DB) error {
+	if pp.Exists() {
+		return pp.Update(ctx, db)
+	}
+	return pp.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgPublication.
+func (pp *PgPublication) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pp._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_publication (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, pubname, pubowner, puballtables, pubinsert, pubupdate, pubdelete, pubtruncate, pubviaroot` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, pubname = EXCLUDED.pubname, pubowner = EXCLUDED.pubowner, puballtables = EXCLUDED.puballtables, pubinsert = EXCLUDED.pubinsert, pubupdate = EXCLUDED.pubupdate, pubdelete = EXCLUDED.pubdelete, pubtruncate = EXCLUDED.pubtruncate, pubviaroot = EXCLUDED.pubviaroot `
+	// run
+	logf(sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Tableoid, pp.Cmax, pp.Xmax, pp.Cmin, pp.Xmin, pp.Ctid, pp.Oid, pp.Pubname, pp.Pubowner, pp.Puballtables, pp.Pubinsert, pp.Pubupdate, pp.Pubdelete, pp.Pubtruncate, pp.Pubviaroot); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pp._exists = true
+	return nil
+}
+
+// Delete deletes the PgPublication from the database.
+func (pp *PgPublication) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pp._exists: // doesn't exist
+		return nil
+	case pp._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_publication ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pp.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pp._deleted = true
+	return nil
 }
 
 // PgPublicationRel represents a row from 'pg_catalog.pg_publication_rel'.
@@ -1104,6 +5230,117 @@ type PgPublicationRel struct {
 	Oid      pgtypes.Oid `json:"oid"`      // oid
 	Prpubid  pgtypes.Oid `json:"prpubid"`  // prpubid
 	Prrelid  pgtypes.Oid `json:"prrelid"`  // prrelid
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgPublicationRel exists in the database.
+func (ppr *PgPublicationRel) Exists() bool {
+	return ppr._exists
+}
+
+// Deleted returns true when the PgPublicationRel has been marked for deletion from
+// the database.
+func (ppr *PgPublicationRel) Deleted() bool {
+	return ppr._deleted
+}
+
+// Insert inserts the PgPublicationRel to the database.
+func (ppr *PgPublicationRel) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ppr._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ppr._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_publication_rel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, prpubid, prrelid` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Oid, ppr.Prpubid, ppr.Prrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Oid, ppr.Prpubid, ppr.Prrelid); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ppr._exists = true
+	return nil
+}
+
+// Update updates a PgPublicationRel in the database.
+func (ppr *PgPublicationRel) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ppr._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ppr._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_publication_rel SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, prpubid = $7, prrelid = $8 ` +
+		`WHERE oid = $9`
+	// run
+	logf(sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Prpubid, ppr.Prrelid, ppr.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Prpubid, ppr.Prrelid, ppr.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgPublicationRel to the database.
+func (ppr *PgPublicationRel) Save(ctx context.Context, db DB) error {
+	if ppr.Exists() {
+		return ppr.Update(ctx, db)
+	}
+	return ppr.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgPublicationRel.
+func (ppr *PgPublicationRel) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ppr._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_publication_rel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, prpubid, prrelid` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, prpubid = EXCLUDED.prpubid, prrelid = EXCLUDED.prrelid `
+	// run
+	logf(sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Oid, ppr.Prpubid, ppr.Prrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppr.Tableoid, ppr.Cmax, ppr.Xmax, ppr.Cmin, ppr.Xmin, ppr.Ctid, ppr.Oid, ppr.Prpubid, ppr.Prrelid); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ppr._exists = true
+	return nil
+}
+
+// Delete deletes the PgPublicationRel from the database.
+func (ppr *PgPublicationRel) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ppr._exists: // doesn't exist
+		return nil
+	case ppr._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_publication_rel ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ppr.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ppr.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ppr._deleted = true
+	return nil
 }
 
 // PgPublicationTable represents a row from 'pg_catalog.pg_publication_tables'.
@@ -1115,18 +5352,130 @@ type PgPublicationTable struct {
 
 // PgRange represents a row from 'pg_catalog.pg_range'.
 type PgRange struct {
-	Tableoid     pgtypes.Oid     `json:"tableoid"`     // tableoid
-	Cmax         pgtypes.Cid     `json:"cmax"`         // cmax
-	Xmax         pgtypes.Xid     `json:"xmax"`         // xmax
-	Cmin         pgtypes.Cid     `json:"cmin"`         // cmin
-	Xmin         pgtypes.Xid     `json:"xmin"`         // xmin
-	Ctid         pgtypes.Tid     `json:"ctid"`         // ctid
-	Rngtypid     pgtypes.Oid     `json:"rngtypid"`     // rngtypid
-	Rngsubtype   pgtypes.Oid     `json:"rngsubtype"`   // rngsubtype
-	Rngcollation pgtypes.Oid     `json:"rngcollation"` // rngcollation
-	Rngsubopc    pgtypes.Oid     `json:"rngsubopc"`    // rngsubopc
-	Rngcanonical pgtypes.Regproc `json:"rngcanonical"` // rngcanonical
-	Rngsubdiff   pgtypes.Regproc `json:"rngsubdiff"`   // rngsubdiff
+	Tableoid      pgtypes.Oid     `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid     `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid     `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid     `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid     `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid     `json:"ctid"`          // ctid
+	Rngtypid      pgtypes.Oid     `json:"rngtypid"`      // rngtypid
+	Rngsubtype    pgtypes.Oid     `json:"rngsubtype"`    // rngsubtype
+	Rngmultitypid pgtypes.Oid     `json:"rngmultitypid"` // rngmultitypid
+	Rngcollation  pgtypes.Oid     `json:"rngcollation"`  // rngcollation
+	Rngsubopc     pgtypes.Oid     `json:"rngsubopc"`     // rngsubopc
+	Rngcanonical  pgtypes.Regproc `json:"rngcanonical"`  // rngcanonical
+	Rngsubdiff    pgtypes.Regproc `json:"rngsubdiff"`    // rngsubdiff
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgRange exists in the database.
+func (pr *PgRange) Exists() bool {
+	return pr._exists
+}
+
+// Deleted returns true when the PgRange has been marked for deletion from
+// the database.
+func (pr *PgRange) Deleted() bool {
+	return pr._deleted
+}
+
+// Insert inserts the PgRange to the database.
+func (pr *PgRange) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pr._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pr._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_range (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, rngtypid, rngsubtype, rngmultitypid, rngcollation, rngsubopc, rngcanonical, rngsubdiff` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)`
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngtypid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngtypid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pr._exists = true
+	return nil
+}
+
+// Update updates a PgRange in the database.
+func (pr *PgRange) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pr._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pr._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_range SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, rngsubtype = $7, rngmultitypid = $8, rngcollation = $9, rngsubopc = $10, rngcanonical = $11, rngsubdiff = $12 ` +
+		`WHERE rngtypid = $13`
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff, pr.Rngtypid)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff, pr.Rngtypid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgRange to the database.
+func (pr *PgRange) Save(ctx context.Context, db DB) error {
+	if pr.Exists() {
+		return pr.Update(ctx, db)
+	}
+	return pr.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgRange.
+func (pr *PgRange) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pr._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_range (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, rngtypid, rngsubtype, rngmultitypid, rngcollation, rngsubopc, rngcanonical, rngsubdiff` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13` +
+		`)` +
+		` ON CONFLICT (rngtypid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, rngsubtype = EXCLUDED.rngsubtype, rngmultitypid = EXCLUDED.rngmultitypid, rngcollation = EXCLUDED.rngcollation, rngsubopc = EXCLUDED.rngsubopc, rngcanonical = EXCLUDED.rngcanonical, rngsubdiff = EXCLUDED.rngsubdiff `
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngtypid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rngtypid, pr.Rngsubtype, pr.Rngmultitypid, pr.Rngcollation, pr.Rngsubopc, pr.Rngcanonical, pr.Rngsubdiff); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pr._exists = true
+	return nil
+}
+
+// Delete deletes the PgRange from the database.
+func (pr *PgRange) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pr._exists: // doesn't exist
+		return nil
+	case pr._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_range ` +
+		`WHERE rngtypid = $1`
+	// run
+	logf(sqlstr, pr.Rngtypid)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Rngtypid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pr._deleted = true
+	return nil
 }
 
 // PgReplicationOrigin represents a row from 'pg_catalog.pg_replication_origin'.
@@ -1139,6 +5488,117 @@ type PgReplicationOrigin struct {
 	Ctid     pgtypes.Tid `json:"ctid"`     // ctid
 	Roident  pgtypes.Oid `json:"roident"`  // roident
 	Roname   string      `json:"roname"`   // roname
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgReplicationOrigin exists in the database.
+func (pro *PgReplicationOrigin) Exists() bool {
+	return pro._exists
+}
+
+// Deleted returns true when the PgReplicationOrigin has been marked for deletion from
+// the database.
+func (pro *PgReplicationOrigin) Deleted() bool {
+	return pro._deleted
+}
+
+// Insert inserts the PgReplicationOrigin to the database.
+func (pro *PgReplicationOrigin) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pro._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pro._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_replication_origin (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, roident, roname` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8` +
+		`)`
+	// run
+	logf(sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roident, pro.Roname)
+	if _, err := db.ExecContext(ctx, sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roident, pro.Roname); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pro._exists = true
+	return nil
+}
+
+// Update updates a PgReplicationOrigin in the database.
+func (pro *PgReplicationOrigin) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pro._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pro._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_replication_origin SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, roname = $7 ` +
+		`WHERE roident = $8`
+	// run
+	logf(sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roname, pro.Roident)
+	if _, err := db.ExecContext(ctx, sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roname, pro.Roident); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgReplicationOrigin to the database.
+func (pro *PgReplicationOrigin) Save(ctx context.Context, db DB) error {
+	if pro.Exists() {
+		return pro.Update(ctx, db)
+	}
+	return pro.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgReplicationOrigin.
+func (pro *PgReplicationOrigin) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pro._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_replication_origin (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, roident, roname` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8` +
+		`)` +
+		` ON CONFLICT (roident) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, roname = EXCLUDED.roname `
+	// run
+	logf(sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roident, pro.Roname)
+	if _, err := db.ExecContext(ctx, sqlstr, pro.Tableoid, pro.Cmax, pro.Xmax, pro.Cmin, pro.Xmin, pro.Ctid, pro.Roident, pro.Roname); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pro._exists = true
+	return nil
+}
+
+// Delete deletes the PgReplicationOrigin from the database.
+func (pro *PgReplicationOrigin) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pro._exists: // doesn't exist
+		return nil
+	case pro._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_replication_origin ` +
+		`WHERE roident = $1`
+	// run
+	logf(sqlstr, pro.Roident)
+	if _, err := db.ExecContext(ctx, sqlstr, pro.Roident); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pro._deleted = true
+	return nil
 }
 
 // PgReplicationOriginStatus represents a row from 'pg_catalog.pg_replication_origin_status'.
@@ -1165,6 +5625,7 @@ type PgReplicationSlot struct {
 	ConfirmedFlushLsn pgtypes.NullPgLsn `json:"confirmed_flush_lsn"` // confirmed_flush_lsn
 	WalStatus         sql.NullString    `json:"wal_status"`          // wal_status
 	SafeWalSize       sql.NullInt64     `json:"safe_wal_size"`       // safe_wal_size
+	TwoPhase          sql.NullBool      `json:"two_phase"`           // two_phase
 }
 
 // PgRewrite represents a row from 'pg_catalog.pg_rewrite'.
@@ -1183,6 +5644,117 @@ type PgRewrite struct {
 	IsInstead bool               `json:"is_instead"` // is_instead
 	EvQual    pgtypes.PgNodeTree `json:"ev_qual"`    // ev_qual
 	EvAction  pgtypes.PgNodeTree `json:"ev_action"`  // ev_action
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgRewrite exists in the database.
+func (pr *PgRewrite) Exists() bool {
+	return pr._exists
+}
+
+// Deleted returns true when the PgRewrite has been marked for deletion from
+// the database.
+func (pr *PgRewrite) Deleted() bool {
+	return pr._deleted
+}
+
+// Insert inserts the PgRewrite to the database.
+func (pr *PgRewrite) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pr._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pr._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_rewrite (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rulename, ev_class, ev_type, ev_enabled, is_instead, ev_qual, ev_action` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Oid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Oid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pr._exists = true
+	return nil
+}
+
+// Update updates a PgRewrite in the database.
+func (pr *PgRewrite) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pr._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pr._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_rewrite SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, rulename = $7, ev_class = $8, ev_type = $9, ev_enabled = $10, is_instead = $11, ev_qual = $12, ev_action = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction, pr.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction, pr.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgRewrite to the database.
+func (pr *PgRewrite) Save(ctx context.Context, db DB) error {
+	if pr.Exists() {
+		return pr.Update(ctx, db)
+	}
+	return pr.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgRewrite.
+func (pr *PgRewrite) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pr._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_rewrite (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, rulename, ev_class, ev_type, ev_enabled, is_instead, ev_qual, ev_action` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, rulename = EXCLUDED.rulename, ev_class = EXCLUDED.ev_class, ev_type = EXCLUDED.ev_type, ev_enabled = EXCLUDED.ev_enabled, is_instead = EXCLUDED.is_instead, ev_qual = EXCLUDED.ev_qual, ev_action = EXCLUDED.ev_action `
+	// run
+	logf(sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Oid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Tableoid, pr.Cmax, pr.Xmax, pr.Cmin, pr.Xmin, pr.Ctid, pr.Oid, pr.Rulename, pr.EvClass, pr.EvType, pr.EvEnabled, pr.IsInstead, pr.EvQual, pr.EvAction); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pr._exists = true
+	return nil
+}
+
+// Delete deletes the PgRewrite from the database.
+func (pr *PgRewrite) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pr._exists: // doesn't exist
+		return nil
+	case pr._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_rewrite ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pr.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pr.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pr._deleted = true
+	return nil
 }
 
 // PgRole represents a row from 'pg_catalog.pg_roles'.
@@ -1223,6 +5795,117 @@ type PgSeclabel struct {
 	Objsubid int         `json:"objsubid"` // objsubid
 	Provider string      `json:"provider"` // provider
 	Label    string      `json:"label"`    // label
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgSeclabel exists in the database.
+func (ps *PgSeclabel) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgSeclabel has been marked for deletion from
+// the database.
+func (ps *PgSeclabel) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgSeclabel to the database.
+func (ps *PgSeclabel) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_seclabel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, provider, label` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider, ps.Label)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider, ps.Label); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgSeclabel in the database.
+func (ps *PgSeclabel) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_seclabel SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, label = $7 ` +
+		`WHERE objoid = $8 AND classoid = $9 AND objsubid = $10 AND provider = $11`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Label, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Label, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgSeclabel to the database.
+func (ps *PgSeclabel) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgSeclabel.
+func (ps *PgSeclabel) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_seclabel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, objsubid, provider, label` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (objoid, classoid, objsubid, provider) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, label = EXCLUDED.label `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider, ps.Label)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider, ps.Label); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgSeclabel from the database.
+func (ps *PgSeclabel) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_seclabel ` +
+		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3 AND provider = $4`
+	// run
+	logf(sqlstr, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Objoid, ps.Classoid, ps.Objsubid, ps.Provider); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgSeclabel represents a row from 'pg_catalog.pg_seclabels'.
@@ -1253,6 +5936,117 @@ type PgSequence struct {
 	Seqmin       int64       `json:"seqmin"`       // seqmin
 	Seqcache     int64       `json:"seqcache"`     // seqcache
 	Seqcycle     bool        `json:"seqcycle"`     // seqcycle
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgSequence exists in the database.
+func (ps *PgSequence) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgSequence has been marked for deletion from
+// the database.
+func (ps *PgSequence) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgSequence to the database.
+func (ps *PgSequence) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_sequence (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, seqrelid, seqtypid, seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqrelid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqrelid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgSequence in the database.
+func (ps *PgSequence) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_sequence SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, seqtypid = $7, seqstart = $8, seqincrement = $9, seqmax = $10, seqmin = $11, seqcache = $12, seqcycle = $13 ` +
+		`WHERE seqrelid = $14`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle, ps.Seqrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle, ps.Seqrelid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgSequence to the database.
+func (ps *PgSequence) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgSequence.
+func (ps *PgSequence) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_sequence (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, seqrelid, seqtypid, seqstart, seqincrement, seqmax, seqmin, seqcache, seqcycle` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (seqrelid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, seqtypid = EXCLUDED.seqtypid, seqstart = EXCLUDED.seqstart, seqincrement = EXCLUDED.seqincrement, seqmax = EXCLUDED.seqmax, seqmin = EXCLUDED.seqmin, seqcache = EXCLUDED.seqcache, seqcycle = EXCLUDED.seqcycle `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqrelid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Seqrelid, ps.Seqtypid, ps.Seqstart, ps.Seqincrement, ps.Seqmax, ps.Seqmin, ps.Seqcache, ps.Seqcycle); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgSequence from the database.
+func (ps *PgSequence) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_sequence ` +
+		`WHERE seqrelid = $1`
+	// run
+	logf(sqlstr, ps.Seqrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Seqrelid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgSequence represents a row from 'pg_catalog.pg_sequences'.
@@ -1332,6 +6126,117 @@ type PgShdescription struct {
 	Objoid      pgtypes.Oid `json:"objoid"`      // objoid
 	Classoid    pgtypes.Oid `json:"classoid"`    // classoid
 	Description string      `json:"description"` // description
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgShdescription exists in the database.
+func (ps *PgShdescription) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgShdescription has been marked for deletion from
+// the database.
+func (ps *PgShdescription) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgShdescription to the database.
+func (ps *PgShdescription) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_shdescription (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, description` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Description)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Description); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgShdescription in the database.
+func (ps *PgShdescription) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_shdescription SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, description = $7 ` +
+		`WHERE objoid = $8 AND classoid = $9`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Description, ps.Objoid, ps.Classoid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Description, ps.Objoid, ps.Classoid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgShdescription to the database.
+func (ps *PgShdescription) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgShdescription.
+func (ps *PgShdescription) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_shdescription (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, description` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9` +
+		`)` +
+		` ON CONFLICT (objoid, classoid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, description = EXCLUDED.description `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Description)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Description); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgShdescription from the database.
+func (ps *PgShdescription) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_shdescription ` +
+		`WHERE objoid = $1 AND classoid = $2`
+	// run
+	logf(sqlstr, ps.Objoid, ps.Classoid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Objoid, ps.Classoid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgShmemAllocation represents a row from 'pg_catalog.pg_shmem_allocations'.
@@ -1354,6 +6259,117 @@ type PgShseclabel struct {
 	Classoid pgtypes.Oid `json:"classoid"` // classoid
 	Provider string      `json:"provider"` // provider
 	Label    string      `json:"label"`    // label
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgShseclabel exists in the database.
+func (ps *PgShseclabel) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgShseclabel has been marked for deletion from
+// the database.
+func (ps *PgShseclabel) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgShseclabel to the database.
+func (ps *PgShseclabel) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_shseclabel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, provider, label` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Provider, ps.Label)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Provider, ps.Label); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgShseclabel in the database.
+func (ps *PgShseclabel) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_shseclabel SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, label = $7 ` +
+		`WHERE objoid = $8 AND classoid = $9 AND provider = $10`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Label, ps.Objoid, ps.Classoid, ps.Provider)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Label, ps.Objoid, ps.Classoid, ps.Provider); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgShseclabel to the database.
+func (ps *PgShseclabel) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgShseclabel.
+func (ps *PgShseclabel) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_shseclabel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, objoid, classoid, provider, label` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (objoid, classoid, provider) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, label = EXCLUDED.label `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Provider, ps.Label)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Objoid, ps.Classoid, ps.Provider, ps.Label); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgShseclabel from the database.
+func (ps *PgShseclabel) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_shseclabel ` +
+		`WHERE objoid = $1 AND classoid = $2 AND provider = $3`
+	// run
+	logf(sqlstr, ps.Objoid, ps.Classoid, ps.Provider)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Objoid, ps.Classoid, ps.Provider); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgStat represents a row from 'pg_catalog.pg_stats'.
@@ -1395,6 +6411,7 @@ type PgStatActivity struct {
 	State           sql.NullString  `json:"state"`            // state
 	BackendXid      pgtypes.NullXid `json:"backend_xid"`      // backend_xid
 	BackendXmin     pgtypes.NullXid `json:"backend_xmin"`     // backend_xmin
+	QueryID         sql.NullInt64   `json:"query_id"`         // query_id
 	Query           sql.NullString  `json:"query"`            // query
 	BackendType     sql.NullString  `json:"backend_type"`     // backend_type
 }
@@ -1466,27 +6483,34 @@ type PgStatBgwriter struct {
 
 // PgStatDatabase represents a row from 'pg_catalog.pg_stat_database'.
 type PgStatDatabase struct {
-	Datid               pgtypes.NullOid `json:"datid"`                 // datid
-	Datname             sql.NullString  `json:"datname"`               // datname
-	Numbackends         sql.NullInt64   `json:"numbackends"`           // numbackends
-	XactCommit          sql.NullInt64   `json:"xact_commit"`           // xact_commit
-	XactRollback        sql.NullInt64   `json:"xact_rollback"`         // xact_rollback
-	BlksRead            sql.NullInt64   `json:"blks_read"`             // blks_read
-	BlksHit             sql.NullInt64   `json:"blks_hit"`              // blks_hit
-	TupReturned         sql.NullInt64   `json:"tup_returned"`          // tup_returned
-	TupFetched          sql.NullInt64   `json:"tup_fetched"`           // tup_fetched
-	TupInserted         sql.NullInt64   `json:"tup_inserted"`          // tup_inserted
-	TupUpdated          sql.NullInt64   `json:"tup_updated"`           // tup_updated
-	TupDeleted          sql.NullInt64   `json:"tup_deleted"`           // tup_deleted
-	Conflicts           sql.NullInt64   `json:"conflicts"`             // conflicts
-	TempFiles           sql.NullInt64   `json:"temp_files"`            // temp_files
-	TempBytes           sql.NullInt64   `json:"temp_bytes"`            // temp_bytes
-	Deadlocks           sql.NullInt64   `json:"deadlocks"`             // deadlocks
-	ChecksumFailures    sql.NullInt64   `json:"checksum_failures"`     // checksum_failures
-	ChecksumLastFailure sql.NullTime    `json:"checksum_last_failure"` // checksum_last_failure
-	BlkReadTime         sql.NullFloat64 `json:"blk_read_time"`         // blk_read_time
-	BlkWriteTime        sql.NullFloat64 `json:"blk_write_time"`        // blk_write_time
-	StatsReset          sql.NullTime    `json:"stats_reset"`           // stats_reset
+	Datid                 pgtypes.NullOid `json:"datid"`                    // datid
+	Datname               sql.NullString  `json:"datname"`                  // datname
+	Numbackends           sql.NullInt64   `json:"numbackends"`              // numbackends
+	XactCommit            sql.NullInt64   `json:"xact_commit"`              // xact_commit
+	XactRollback          sql.NullInt64   `json:"xact_rollback"`            // xact_rollback
+	BlksRead              sql.NullInt64   `json:"blks_read"`                // blks_read
+	BlksHit               sql.NullInt64   `json:"blks_hit"`                 // blks_hit
+	TupReturned           sql.NullInt64   `json:"tup_returned"`             // tup_returned
+	TupFetched            sql.NullInt64   `json:"tup_fetched"`              // tup_fetched
+	TupInserted           sql.NullInt64   `json:"tup_inserted"`             // tup_inserted
+	TupUpdated            sql.NullInt64   `json:"tup_updated"`              // tup_updated
+	TupDeleted            sql.NullInt64   `json:"tup_deleted"`              // tup_deleted
+	Conflicts             sql.NullInt64   `json:"conflicts"`                // conflicts
+	TempFiles             sql.NullInt64   `json:"temp_files"`               // temp_files
+	TempBytes             sql.NullInt64   `json:"temp_bytes"`               // temp_bytes
+	Deadlocks             sql.NullInt64   `json:"deadlocks"`                // deadlocks
+	ChecksumFailures      sql.NullInt64   `json:"checksum_failures"`        // checksum_failures
+	ChecksumLastFailure   sql.NullTime    `json:"checksum_last_failure"`    // checksum_last_failure
+	BlkReadTime           sql.NullFloat64 `json:"blk_read_time"`            // blk_read_time
+	BlkWriteTime          sql.NullFloat64 `json:"blk_write_time"`           // blk_write_time
+	SessionTime           sql.NullFloat64 `json:"session_time"`             // session_time
+	ActiveTime            sql.NullFloat64 `json:"active_time"`              // active_time
+	IdleInTransactionTime sql.NullFloat64 `json:"idle_in_transaction_time"` // idle_in_transaction_time
+	Sessions              sql.NullInt64   `json:"sessions"`                 // sessions
+	SessionsAbandoned     sql.NullInt64   `json:"sessions_abandoned"`       // sessions_abandoned
+	SessionsFatal         sql.NullInt64   `json:"sessions_fatal"`           // sessions_fatal
+	SessionsKilled        sql.NullInt64   `json:"sessions_killed"`          // sessions_killed
+	StatsReset            sql.NullTime    `json:"stats_reset"`              // stats_reset
 }
 
 // PgStatDatabaseConflict represents a row from 'pg_catalog.pg_stat_database_conflicts'.
@@ -1550,6 +6574,20 @@ type PgStatProgressCluster struct {
 	IndexRebuildCount sql.NullInt64   `json:"index_rebuild_count"` // index_rebuild_count
 }
 
+// PgStatProgressCopy represents a row from 'pg_catalog.pg_stat_progress_copy'.
+type PgStatProgressCopy struct {
+	Pid             sql.NullInt64   `json:"pid"`              // pid
+	Datid           pgtypes.NullOid `json:"datid"`            // datid
+	Datname         sql.NullString  `json:"datname"`          // datname
+	Relid           pgtypes.NullOid `json:"relid"`            // relid
+	Command         sql.NullString  `json:"command"`          // command
+	Type            sql.NullString  `json:"type"`             // type
+	BytesProcessed  sql.NullInt64   `json:"bytes_processed"`  // bytes_processed
+	BytesTotal      sql.NullInt64   `json:"bytes_total"`      // bytes_total
+	TuplesProcessed sql.NullInt64   `json:"tuples_processed"` // tuples_processed
+	TuplesExcluded  sql.NullInt64   `json:"tuples_excluded"`  // tuples_excluded
+}
+
 // PgStatProgressCreateIndex represents a row from 'pg_catalog.pg_stat_progress_create_index'.
 type PgStatProgressCreateIndex struct {
 	Pid              sql.NullInt64   `json:"pid"`                // pid
@@ -1609,6 +6647,20 @@ type PgStatReplication struct {
 	ReplyTime       sql.NullTime      `json:"reply_time"`       // reply_time
 }
 
+// PgStatReplicationSlot represents a row from 'pg_catalog.pg_stat_replication_slots'.
+type PgStatReplicationSlot struct {
+	SlotName    sql.NullString `json:"slot_name"`    // slot_name
+	SpillTxns   sql.NullInt64  `json:"spill_txns"`   // spill_txns
+	SpillCount  sql.NullInt64  `json:"spill_count"`  // spill_count
+	SpillBytes  sql.NullInt64  `json:"spill_bytes"`  // spill_bytes
+	StreamTxns  sql.NullInt64  `json:"stream_txns"`  // stream_txns
+	StreamCount sql.NullInt64  `json:"stream_count"` // stream_count
+	StreamBytes sql.NullInt64  `json:"stream_bytes"` // stream_bytes
+	TotalTxns   sql.NullInt64  `json:"total_txns"`   // total_txns
+	TotalBytes  sql.NullInt64  `json:"total_bytes"`  // total_bytes
+	StatsReset  sql.NullTime   `json:"stats_reset"`  // stats_reset
+}
+
 // PgStatSlru represents a row from 'pg_catalog.pg_stat_slru'.
 type PgStatSlru struct {
 	Name        sql.NullString `json:"name"`         // name
@@ -1629,7 +6681,6 @@ type PgStatSsl struct {
 	Version      sql.NullString  `json:"version"`       // version
 	Cipher       sql.NullString  `json:"cipher"`        // cipher
 	Bits         sql.NullInt64   `json:"bits"`          // bits
-	Compression  sql.NullBool    `json:"compression"`   // compression
 	ClientDn     sql.NullString  `json:"client_dn"`     // client_dn
 	ClientSerial sql.NullFloat64 `json:"client_serial"` // client_serial
 	IssuerDn     sql.NullString  `json:"issuer_dn"`     // issuer_dn
@@ -1734,6 +6785,19 @@ type PgStatUserTable struct {
 	AutovacuumCount  sql.NullInt64   `json:"autovacuum_count"`    // autovacuum_count
 	AnalyzeCount     sql.NullInt64   `json:"analyze_count"`       // analyze_count
 	AutoanalyzeCount sql.NullInt64   `json:"autoanalyze_count"`   // autoanalyze_count
+}
+
+// PgStatWal represents a row from 'pg_catalog.pg_stat_wal'.
+type PgStatWal struct {
+	WalRecords     sql.NullInt64   `json:"wal_records"`      // wal_records
+	WalFpi         sql.NullInt64   `json:"wal_fpi"`          // wal_fpi
+	WalBytes       sql.NullFloat64 `json:"wal_bytes"`        // wal_bytes
+	WalBuffersFull sql.NullInt64   `json:"wal_buffers_full"` // wal_buffers_full
+	WalWrite       sql.NullInt64   `json:"wal_write"`        // wal_write
+	WalSync        sql.NullInt64   `json:"wal_sync"`         // wal_sync
+	WalWriteTime   sql.NullFloat64 `json:"wal_write_time"`   // wal_write_time
+	WalSyncTime    sql.NullFloat64 `json:"wal_sync_time"`    // wal_sync_time
+	StatsReset     sql.NullTime    `json:"stats_reset"`      // stats_reset
 }
 
 // PgStatWalReceiver represents a row from 'pg_catalog.pg_stat_wal_receiver'.
@@ -1954,24 +7018,247 @@ type PgStatistic struct {
 	Stavalues3  pgtypes.NullAnyarray `json:"stavalues3"`  // stavalues3
 	Stavalues4  pgtypes.NullAnyarray `json:"stavalues4"`  // stavalues4
 	Stavalues5  pgtypes.NullAnyarray `json:"stavalues5"`  // stavalues5
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgStatistic exists in the database.
+func (ps *PgStatistic) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgStatistic has been marked for deletion from
+// the database.
+func (ps *PgStatistic) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgStatistic to the database.
+func (ps *PgStatistic) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, starelid, staattnum, stainherit, stanullfrac, stawidth, stadistinct, stakind1, stakind2, stakind3, stakind4, stakind5, staop1, staop2, staop3, staop4, staop5, stacoll1, stacoll2, stacoll3, stacoll4, stacoll5, stanumbers1, stanumbers2, stanumbers3, stanumbers4, stanumbers5, stavalues1, stavalues2, stavalues3, stavalues4, stavalues5` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Starelid, ps.Staattnum, ps.Stainherit, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Starelid, ps.Staattnum, ps.Stainherit, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgStatistic in the database.
+func (ps *PgStatistic) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_statistic SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, stanullfrac = $7, stawidth = $8, stadistinct = $9, stakind1 = $10, stakind2 = $11, stakind3 = $12, stakind4 = $13, stakind5 = $14, staop1 = $15, staop2 = $16, staop3 = $17, staop4 = $18, staop5 = $19, stacoll1 = $20, stacoll2 = $21, stacoll3 = $22, stacoll4 = $23, stacoll5 = $24, stanumbers1 = $25, stanumbers2 = $26, stanumbers3 = $27, stanumbers4 = $28, stanumbers5 = $29, stavalues1 = $30, stavalues2 = $31, stavalues3 = $32, stavalues4 = $33, stavalues5 = $34 ` +
+		`WHERE starelid = $35 AND staattnum = $36 AND stainherit = $37`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5, ps.Starelid, ps.Staattnum, ps.Stainherit)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5, ps.Starelid, ps.Staattnum, ps.Stainherit); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgStatistic to the database.
+func (ps *PgStatistic) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgStatistic.
+func (ps *PgStatistic) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, starelid, staattnum, stainherit, stanullfrac, stawidth, stadistinct, stakind1, stakind2, stakind3, stakind4, stakind5, staop1, staop2, staop3, staop4, staop5, stacoll1, stacoll2, stacoll3, stacoll4, stacoll5, stanumbers1, stanumbers2, stanumbers3, stanumbers4, stanumbers5, stavalues1, stavalues2, stavalues3, stavalues4, stavalues5` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37` +
+		`)` +
+		` ON CONFLICT (starelid, staattnum, stainherit) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, stanullfrac = EXCLUDED.stanullfrac, stawidth = EXCLUDED.stawidth, stadistinct = EXCLUDED.stadistinct, stakind1 = EXCLUDED.stakind1, stakind2 = EXCLUDED.stakind2, stakind3 = EXCLUDED.stakind3, stakind4 = EXCLUDED.stakind4, stakind5 = EXCLUDED.stakind5, staop1 = EXCLUDED.staop1, staop2 = EXCLUDED.staop2, staop3 = EXCLUDED.staop3, staop4 = EXCLUDED.staop4, staop5 = EXCLUDED.staop5, stacoll1 = EXCLUDED.stacoll1, stacoll2 = EXCLUDED.stacoll2, stacoll3 = EXCLUDED.stacoll3, stacoll4 = EXCLUDED.stacoll4, stacoll5 = EXCLUDED.stacoll5, stanumbers1 = EXCLUDED.stanumbers1, stanumbers2 = EXCLUDED.stanumbers2, stanumbers3 = EXCLUDED.stanumbers3, stanumbers4 = EXCLUDED.stanumbers4, stanumbers5 = EXCLUDED.stanumbers5, stavalues1 = EXCLUDED.stavalues1, stavalues2 = EXCLUDED.stavalues2, stavalues3 = EXCLUDED.stavalues3, stavalues4 = EXCLUDED.stavalues4, stavalues5 = EXCLUDED.stavalues5 `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Starelid, ps.Staattnum, ps.Stainherit, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Starelid, ps.Staattnum, ps.Stainherit, ps.Stanullfrac, ps.Stawidth, ps.Stadistinct, ps.Stakind1, ps.Stakind2, ps.Stakind3, ps.Stakind4, ps.Stakind5, ps.Staop1, ps.Staop2, ps.Staop3, ps.Staop4, ps.Staop5, ps.Stacoll1, ps.Stacoll2, ps.Stacoll3, ps.Stacoll4, ps.Stacoll5, ps.Stanumbers1, ps.Stanumbers2, ps.Stanumbers3, ps.Stanumbers4, ps.Stanumbers5, ps.Stavalues1, ps.Stavalues2, ps.Stavalues3, ps.Stavalues4, ps.Stavalues5); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgStatistic from the database.
+func (ps *PgStatistic) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_statistic ` +
+		`WHERE starelid = $1 AND staattnum = $2 AND stainherit = $3`
+	// run
+	logf(sqlstr, ps.Starelid, ps.Staattnum, ps.Stainherit)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Starelid, ps.Staattnum, ps.Stainherit); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgStatisticExt represents a row from 'pg_catalog.pg_statistic_ext'.
 type PgStatisticExt struct {
-	Tableoid      pgtypes.Oid        `json:"tableoid"`      // tableoid
-	Cmax          pgtypes.Cid        `json:"cmax"`          // cmax
-	Xmax          pgtypes.Xid        `json:"xmax"`          // xmax
-	Cmin          pgtypes.Cid        `json:"cmin"`          // cmin
-	Xmin          pgtypes.Xid        `json:"xmin"`          // xmin
-	Ctid          pgtypes.Tid        `json:"ctid"`          // ctid
-	Oid           pgtypes.Oid        `json:"oid"`           // oid
-	Stxrelid      pgtypes.Oid        `json:"stxrelid"`      // stxrelid
-	Stxname       string             `json:"stxname"`       // stxname
-	Stxnamespace  pgtypes.Oid        `json:"stxnamespace"`  // stxnamespace
-	Stxowner      pgtypes.Oid        `json:"stxowner"`      // stxowner
-	Stxstattarget int                `json:"stxstattarget"` // stxstattarget
-	Stxkeys       pgtypes.Int2vector `json:"stxkeys"`       // stxkeys
-	Stxkind       []pgtypes.Char     `json:"stxkind"`       // stxkind
+	Tableoid      pgtypes.Oid            `json:"tableoid"`      // tableoid
+	Cmax          pgtypes.Cid            `json:"cmax"`          // cmax
+	Xmax          pgtypes.Xid            `json:"xmax"`          // xmax
+	Cmin          pgtypes.Cid            `json:"cmin"`          // cmin
+	Xmin          pgtypes.Xid            `json:"xmin"`          // xmin
+	Ctid          pgtypes.Tid            `json:"ctid"`          // ctid
+	Oid           pgtypes.Oid            `json:"oid"`           // oid
+	Stxrelid      pgtypes.Oid            `json:"stxrelid"`      // stxrelid
+	Stxname       string                 `json:"stxname"`       // stxname
+	Stxnamespace  pgtypes.Oid            `json:"stxnamespace"`  // stxnamespace
+	Stxowner      pgtypes.Oid            `json:"stxowner"`      // stxowner
+	Stxstattarget int                    `json:"stxstattarget"` // stxstattarget
+	Stxkeys       pgtypes.Int2vector     `json:"stxkeys"`       // stxkeys
+	Stxkind       []pgtypes.Char         `json:"stxkind"`       // stxkind
+	Stxexprs      pgtypes.NullPgNodeTree `json:"stxexprs"`      // stxexprs
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgStatisticExt exists in the database.
+func (pse *PgStatisticExt) Exists() bool {
+	return pse._exists
+}
+
+// Deleted returns true when the PgStatisticExt has been marked for deletion from
+// the database.
+func (pse *PgStatisticExt) Deleted() bool {
+	return pse._deleted
+}
+
+// Insert inserts the PgStatisticExt to the database.
+func (pse *PgStatisticExt) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pse._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pse._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic_ext (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind, stxexprs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)`
+	// run
+	logf(sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Oid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs)
+	if _, err := db.ExecContext(ctx, sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Oid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pse._exists = true
+	return nil
+}
+
+// Update updates a PgStatisticExt in the database.
+func (pse *PgStatisticExt) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pse._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pse._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_statistic_ext SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, stxrelid = $7, stxname = $8, stxnamespace = $9, stxowner = $10, stxstattarget = $11, stxkeys = $12, stxkind = $13, stxexprs = $14 ` +
+		`WHERE oid = $15`
+	// run
+	logf(sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs, pse.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs, pse.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgStatisticExt to the database.
+func (pse *PgStatisticExt) Save(ctx context.Context, db DB) error {
+	if pse.Exists() {
+		return pse.Update(ctx, db)
+	}
+	return pse.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgStatisticExt.
+func (pse *PgStatisticExt) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pse._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic_ext (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind, stxexprs` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, stxrelid = EXCLUDED.stxrelid, stxname = EXCLUDED.stxname, stxnamespace = EXCLUDED.stxnamespace, stxowner = EXCLUDED.stxowner, stxstattarget = EXCLUDED.stxstattarget, stxkeys = EXCLUDED.stxkeys, stxkind = EXCLUDED.stxkind, stxexprs = EXCLUDED.stxexprs `
+	// run
+	logf(sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Oid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs)
+	if _, err := db.ExecContext(ctx, sqlstr, pse.Tableoid, pse.Cmax, pse.Xmax, pse.Cmin, pse.Xmin, pse.Ctid, pse.Oid, pse.Stxrelid, pse.Stxname, pse.Stxnamespace, pse.Stxowner, pse.Stxstattarget, pse.Stxkeys, pse.Stxkind, pse.Stxexprs); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pse._exists = true
+	return nil
+}
+
+// Delete deletes the PgStatisticExt from the database.
+func (pse *PgStatisticExt) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pse._exists: // doesn't exist
+		return nil
+	case pse._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_statistic_ext ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pse.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pse.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pse._deleted = true
+	return nil
 }
 
 // PgStatisticExtDatum represents a row from 'pg_catalog.pg_statistic_ext_data'.
@@ -1986,6 +7273,118 @@ type PgStatisticExtDatum struct {
 	Stxdndistinct    pgtypes.NullPgNdistinct    `json:"stxdndistinct"`    // stxdndistinct
 	Stxddependencies pgtypes.NullPgDependencies `json:"stxddependencies"` // stxddependencies
 	Stxdmcv          pgtypes.NullPgMcvList      `json:"stxdmcv"`          // stxdmcv
+	Stxdexpr         []pgtypes.NullPgStatistic  `json:"stxdexpr"`         // stxdexpr
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgStatisticExtDatum exists in the database.
+func (psed *PgStatisticExtDatum) Exists() bool {
+	return psed._exists
+}
+
+// Deleted returns true when the PgStatisticExtDatum has been marked for deletion from
+// the database.
+func (psed *PgStatisticExtDatum) Deleted() bool {
+	return psed._deleted
+}
+
+// Insert inserts the PgStatisticExtDatum to the database.
+func (psed *PgStatisticExtDatum) Insert(ctx context.Context, db DB) error {
+	switch {
+	case psed._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case psed._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic_ext_data (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, stxoid, stxdndistinct, stxddependencies, stxdmcv, stxdexpr` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxoid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr)
+	if _, err := db.ExecContext(ctx, sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxoid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	psed._exists = true
+	return nil
+}
+
+// Update updates a PgStatisticExtDatum in the database.
+func (psed *PgStatisticExtDatum) Update(ctx context.Context, db DB) error {
+	switch {
+	case !psed._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case psed._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_statistic_ext_data SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, stxdndistinct = $7, stxddependencies = $8, stxdmcv = $9, stxdexpr = $10 ` +
+		`WHERE stxoid = $11`
+	// run
+	logf(sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr, psed.Stxoid)
+	if _, err := db.ExecContext(ctx, sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr, psed.Stxoid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgStatisticExtDatum to the database.
+func (psed *PgStatisticExtDatum) Save(ctx context.Context, db DB) error {
+	if psed.Exists() {
+		return psed.Update(ctx, db)
+	}
+	return psed.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgStatisticExtDatum.
+func (psed *PgStatisticExtDatum) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case psed._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_statistic_ext_data (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, stxoid, stxdndistinct, stxddependencies, stxdmcv, stxdexpr` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (stxoid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, stxdndistinct = EXCLUDED.stxdndistinct, stxddependencies = EXCLUDED.stxddependencies, stxdmcv = EXCLUDED.stxdmcv, stxdexpr = EXCLUDED.stxdexpr `
+	// run
+	logf(sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxoid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr)
+	if _, err := db.ExecContext(ctx, sqlstr, psed.Tableoid, psed.Cmax, psed.Xmax, psed.Cmin, psed.Xmin, psed.Ctid, psed.Stxoid, psed.Stxdndistinct, psed.Stxddependencies, psed.Stxdmcv, psed.Stxdexpr); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	psed._exists = true
+	return nil
+}
+
+// Delete deletes the PgStatisticExtDatum from the database.
+func (psed *PgStatisticExtDatum) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !psed._exists: // doesn't exist
+		return nil
+	case psed._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_statistic_ext_data ` +
+		`WHERE stxoid = $1`
+	// run
+	logf(sqlstr, psed.Stxoid)
+	if _, err := db.ExecContext(ctx, sqlstr, psed.Stxoid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	psed._deleted = true
+	return nil
 }
 
 // PgStatsExt represents a row from 'pg_catalog.pg_stats_ext'.
@@ -1996,6 +7395,7 @@ type PgStatsExt struct {
 	StatisticsName       sql.NullString             `json:"statistics_name"`        // statistics_name
 	StatisticsOwner      sql.NullString             `json:"statistics_owner"`       // statistics_owner
 	Attnames             []sql.NullString           `json:"attnames"`               // attnames
+	Exprs                []sql.NullString           `json:"exprs"`                  // exprs
 	Kinds                []pgtypes.NullChar         `json:"kinds"`                  // kinds
 	NDistinct            pgtypes.NullPgNdistinct    `json:"n_distinct"`             // n_distinct
 	Dependencies         pgtypes.NullPgDependencies `json:"dependencies"`           // dependencies
@@ -2003,6 +7403,26 @@ type PgStatsExt struct {
 	MostCommonValNulls   []sql.NullBool             `json:"most_common_val_nulls"`  // most_common_val_nulls
 	MostCommonFreqs      []sql.NullFloat64          `json:"most_common_freqs"`      // most_common_freqs
 	MostCommonBaseFreqs  []sql.NullFloat64          `json:"most_common_base_freqs"` // most_common_base_freqs
+}
+
+// PgStatsExtExpr represents a row from 'pg_catalog.pg_stats_ext_exprs'.
+type PgStatsExtExpr struct {
+	Schemaname           sql.NullString       `json:"schemaname"`             // schemaname
+	Tablename            sql.NullString       `json:"tablename"`              // tablename
+	StatisticsSchemaname sql.NullString       `json:"statistics_schemaname"`  // statistics_schemaname
+	StatisticsName       sql.NullString       `json:"statistics_name"`        // statistics_name
+	StatisticsOwner      sql.NullString       `json:"statistics_owner"`       // statistics_owner
+	Expr                 sql.NullString       `json:"expr"`                   // expr
+	NullFrac             sql.NullFloat64      `json:"null_frac"`              // null_frac
+	AvgWidth             sql.NullInt64        `json:"avg_width"`              // avg_width
+	NDistinct            sql.NullFloat64      `json:"n_distinct"`             // n_distinct
+	MostCommonVals       pgtypes.NullAnyarray `json:"most_common_vals"`       // most_common_vals
+	MostCommonFreqs      []sql.NullFloat64    `json:"most_common_freqs"`      // most_common_freqs
+	HistogramBounds      pgtypes.NullAnyarray `json:"histogram_bounds"`       // histogram_bounds
+	Correlation          sql.NullFloat64      `json:"correlation"`            // correlation
+	MostCommonElems      pgtypes.NullAnyarray `json:"most_common_elems"`      // most_common_elems
+	MostCommonElemFreqs  []sql.NullFloat64    `json:"most_common_elem_freqs"` // most_common_elem_freqs
+	ElemCountHistogram   []sql.NullFloat64    `json:"elem_count_histogram"`   // elem_count_histogram
 }
 
 // PgSubscription represents a row from 'pg_catalog.pg_subscription'.
@@ -2018,10 +7438,123 @@ type PgSubscription struct {
 	Subname         string         `json:"subname"`         // subname
 	Subowner        pgtypes.Oid    `json:"subowner"`        // subowner
 	Subenabled      bool           `json:"subenabled"`      // subenabled
+	Subbinary       bool           `json:"subbinary"`       // subbinary
+	Substream       bool           `json:"substream"`       // substream
 	Subconninfo     string         `json:"subconninfo"`     // subconninfo
 	Subslotname     sql.NullString `json:"subslotname"`     // subslotname
 	Subsynccommit   string         `json:"subsynccommit"`   // subsynccommit
 	Subpublications StringSlice    `json:"subpublications"` // subpublications
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgSubscription exists in the database.
+func (ps *PgSubscription) Exists() bool {
+	return ps._exists
+}
+
+// Deleted returns true when the PgSubscription has been marked for deletion from
+// the database.
+func (ps *PgSubscription) Deleted() bool {
+	return ps._deleted
+}
+
+// Insert inserts the PgSubscription to the database.
+func (ps *PgSubscription) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ps._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ps._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_subscription (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subbinary, substream, subconninfo, subslotname, subsynccommit, subpublications` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17` +
+		`)`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Oid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Oid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Update updates a PgSubscription in the database.
+func (ps *PgSubscription) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ps._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_subscription SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, subdbid = $7, subname = $8, subowner = $9, subenabled = $10, subbinary = $11, substream = $12, subconninfo = $13, subslotname = $14, subsynccommit = $15, subpublications = $16 ` +
+		`WHERE oid = $17`
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications, ps.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications, ps.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgSubscription to the database.
+func (ps *PgSubscription) Save(ctx context.Context, db DB) error {
+	if ps.Exists() {
+		return ps.Update(ctx, db)
+	}
+	return ps.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgSubscription.
+func (ps *PgSubscription) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ps._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_subscription (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subbinary, substream, subconninfo, subslotname, subsynccommit, subpublications` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, subdbid = EXCLUDED.subdbid, subname = EXCLUDED.subname, subowner = EXCLUDED.subowner, subenabled = EXCLUDED.subenabled, subbinary = EXCLUDED.subbinary, substream = EXCLUDED.substream, subconninfo = EXCLUDED.subconninfo, subslotname = EXCLUDED.subslotname, subsynccommit = EXCLUDED.subsynccommit, subpublications = EXCLUDED.subpublications `
+	// run
+	logf(sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Oid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Tableoid, ps.Cmax, ps.Xmax, ps.Cmin, ps.Xmin, ps.Ctid, ps.Oid, ps.Subdbid, ps.Subname, ps.Subowner, ps.Subenabled, ps.Subbinary, ps.Substream, ps.Subconninfo, ps.Subslotname, ps.Subsynccommit, ps.Subpublications); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ps._exists = true
+	return nil
+}
+
+// Delete deletes the PgSubscription from the database.
+func (ps *PgSubscription) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ps._exists: // doesn't exist
+		return nil
+	case ps._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_subscription ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ps.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ps.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ps._deleted = true
+	return nil
 }
 
 // PgSubscriptionRel represents a row from 'pg_catalog.pg_subscription_rel'.
@@ -2036,6 +7569,117 @@ type PgSubscriptionRel struct {
 	Srrelid    pgtypes.Oid       `json:"srrelid"`    // srrelid
 	Srsubstate pgtypes.Char      `json:"srsubstate"` // srsubstate
 	Srsublsn   pgtypes.NullPgLsn `json:"srsublsn"`   // srsublsn
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgSubscriptionRel exists in the database.
+func (psr *PgSubscriptionRel) Exists() bool {
+	return psr._exists
+}
+
+// Deleted returns true when the PgSubscriptionRel has been marked for deletion from
+// the database.
+func (psr *PgSubscriptionRel) Deleted() bool {
+	return psr._deleted
+}
+
+// Insert inserts the PgSubscriptionRel to the database.
+func (psr *PgSubscriptionRel) Insert(ctx context.Context, db DB) error {
+	switch {
+	case psr._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case psr._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_subscription_rel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, srsubid, srrelid, srsubstate, srsublsn` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubid, psr.Srrelid, psr.Srsubstate, psr.Srsublsn)
+	if _, err := db.ExecContext(ctx, sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubid, psr.Srrelid, psr.Srsubstate, psr.Srsublsn); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	psr._exists = true
+	return nil
+}
+
+// Update updates a PgSubscriptionRel in the database.
+func (psr *PgSubscriptionRel) Update(ctx context.Context, db DB) error {
+	switch {
+	case !psr._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case psr._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_subscription_rel SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, srsubstate = $7, srsublsn = $8 ` +
+		`WHERE srsubid = $9 AND srrelid = $10`
+	// run
+	logf(sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubstate, psr.Srsublsn, psr.Srsubid, psr.Srrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubstate, psr.Srsublsn, psr.Srsubid, psr.Srrelid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgSubscriptionRel to the database.
+func (psr *PgSubscriptionRel) Save(ctx context.Context, db DB) error {
+	if psr.Exists() {
+		return psr.Update(ctx, db)
+	}
+	return psr.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgSubscriptionRel.
+func (psr *PgSubscriptionRel) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case psr._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_subscription_rel (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, srsubid, srrelid, srsubstate, srsublsn` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (srsubid, srrelid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, srsubstate = EXCLUDED.srsubstate, srsublsn = EXCLUDED.srsublsn `
+	// run
+	logf(sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubid, psr.Srrelid, psr.Srsubstate, psr.Srsublsn)
+	if _, err := db.ExecContext(ctx, sqlstr, psr.Tableoid, psr.Cmax, psr.Xmax, psr.Cmin, psr.Xmin, psr.Ctid, psr.Srsubid, psr.Srrelid, psr.Srsubstate, psr.Srsublsn); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	psr._exists = true
+	return nil
+}
+
+// Delete deletes the PgSubscriptionRel from the database.
+func (psr *PgSubscriptionRel) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !psr._exists: // doesn't exist
+		return nil
+	case psr._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_subscription_rel ` +
+		`WHERE srsubid = $1 AND srrelid = $2`
+	// run
+	logf(sqlstr, psr.Srsubid, psr.Srrelid)
+	if _, err := db.ExecContext(ctx, sqlstr, psr.Srsubid, psr.Srrelid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	psr._deleted = true
+	return nil
 }
 
 // PgTable represents a row from 'pg_catalog.pg_tables'.
@@ -2063,6 +7707,117 @@ type PgTablespace struct {
 	Spcowner   pgtypes.Oid           `json:"spcowner"`   // spcowner
 	Spcacl     []pgtypes.NullAclitem `json:"spcacl"`     // spcacl
 	Spcoptions []sql.NullString      `json:"spcoptions"` // spcoptions
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTablespace exists in the database.
+func (pt *PgTablespace) Exists() bool {
+	return pt._exists
+}
+
+// Deleted returns true when the PgTablespace has been marked for deletion from
+// the database.
+func (pt *PgTablespace) Deleted() bool {
+	return pt._deleted
+}
+
+// Insert inserts the PgTablespace to the database.
+func (pt *PgTablespace) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_tablespace (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, spcname, spcowner, spcacl, spcoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Update updates a PgTablespace in the database.
+func (pt *PgTablespace) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_tablespace SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, spcname = $7, spcowner = $8, spcacl = $9, spcoptions = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTablespace to the database.
+func (pt *PgTablespace) Save(ctx context.Context, db DB) error {
+	if pt.Exists() {
+		return pt.Update(ctx, db)
+	}
+	return pt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTablespace.
+func (pt *PgTablespace) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_tablespace (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, spcname, spcowner, spcacl, spcoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, spcname = EXCLUDED.spcname, spcowner = EXCLUDED.spcowner, spcacl = EXCLUDED.spcacl, spcoptions = EXCLUDED.spcoptions `
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Spcname, pt.Spcowner, pt.Spcacl, pt.Spcoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Delete deletes the PgTablespace from the database.
+func (pt *PgTablespace) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return nil
+	case pt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_tablespace ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pt._deleted = true
+	return nil
 }
 
 // PgTimezoneAbbrev represents a row from 'pg_catalog.pg_timezone_abbrevs'.
@@ -2093,6 +7848,117 @@ type PgTransform struct {
 	Trflang    pgtypes.Oid     `json:"trflang"`    // trflang
 	Trffromsql pgtypes.Regproc `json:"trffromsql"` // trffromsql
 	Trftosql   pgtypes.Regproc `json:"trftosql"`   // trftosql
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTransform exists in the database.
+func (pt *PgTransform) Exists() bool {
+	return pt._exists
+}
+
+// Deleted returns true when the PgTransform has been marked for deletion from
+// the database.
+func (pt *PgTransform) Deleted() bool {
+	return pt._deleted
+}
+
+// Insert inserts the PgTransform to the database.
+func (pt *PgTransform) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_transform (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, trftype, trflang, trffromsql, trftosql` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Update updates a PgTransform in the database.
+func (pt *PgTransform) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_transform SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, trftype = $7, trflang = $8, trffromsql = $9, trftosql = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTransform to the database.
+func (pt *PgTransform) Save(ctx context.Context, db DB) error {
+	if pt.Exists() {
+		return pt.Update(ctx, db)
+	}
+	return pt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTransform.
+func (pt *PgTransform) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_transform (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, trftype, trflang, trffromsql, trftosql` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, trftype = EXCLUDED.trftype, trflang = EXCLUDED.trflang, trffromsql = EXCLUDED.trffromsql, trftosql = EXCLUDED.trftosql `
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Trftype, pt.Trflang, pt.Trffromsql, pt.Trftosql); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Delete deletes the PgTransform from the database.
+func (pt *PgTransform) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return nil
+	case pt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_transform ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pt._deleted = true
+	return nil
 }
 
 // PgTrigger represents a row from 'pg_catalog.pg_trigger'.
@@ -2122,6 +7988,117 @@ type PgTrigger struct {
 	Tgqual         pgtypes.NullPgNodeTree `json:"tgqual"`         // tgqual
 	Tgoldtable     sql.NullString         `json:"tgoldtable"`     // tgoldtable
 	Tgnewtable     sql.NullString         `json:"tgnewtable"`     // tgnewtable
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTrigger exists in the database.
+func (pt *PgTrigger) Exists() bool {
+	return pt._exists
+}
+
+// Deleted returns true when the PgTrigger has been marked for deletion from
+// the database.
+func (pt *PgTrigger) Deleted() bool {
+	return pt._deleted
+}
+
+// Insert inserts the PgTrigger to the database.
+func (pt *PgTrigger) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_trigger (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tgrelid, tgparentid, tgname, tgfoid, tgtype, tgenabled, tgisinternal, tgconstrrelid, tgconstrindid, tgconstraint, tgdeferrable, tginitdeferred, tgnargs, tgattr, tgargs, tgqual, tgoldtable, tgnewtable` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25` +
+		`)`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Update updates a PgTrigger in the database.
+func (pt *PgTrigger) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_trigger SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, tgrelid = $7, tgparentid = $8, tgname = $9, tgfoid = $10, tgtype = $11, tgenabled = $12, tgisinternal = $13, tgconstrrelid = $14, tgconstrindid = $15, tgconstraint = $16, tgdeferrable = $17, tginitdeferred = $18, tgnargs = $19, tgattr = $20, tgargs = $21, tgqual = $22, tgoldtable = $23, tgnewtable = $24 ` +
+		`WHERE oid = $25`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTrigger to the database.
+func (pt *PgTrigger) Save(ctx context.Context, db DB) error {
+	if pt.Exists() {
+		return pt.Update(ctx, db)
+	}
+	return pt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTrigger.
+func (pt *PgTrigger) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_trigger (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tgrelid, tgparentid, tgname, tgfoid, tgtype, tgenabled, tgisinternal, tgconstrrelid, tgconstrindid, tgconstraint, tgdeferrable, tginitdeferred, tgnargs, tgattr, tgargs, tgqual, tgoldtable, tgnewtable` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, tgrelid = EXCLUDED.tgrelid, tgparentid = EXCLUDED.tgparentid, tgname = EXCLUDED.tgname, tgfoid = EXCLUDED.tgfoid, tgtype = EXCLUDED.tgtype, tgenabled = EXCLUDED.tgenabled, tgisinternal = EXCLUDED.tgisinternal, tgconstrrelid = EXCLUDED.tgconstrrelid, tgconstrindid = EXCLUDED.tgconstrindid, tgconstraint = EXCLUDED.tgconstraint, tgdeferrable = EXCLUDED.tgdeferrable, tginitdeferred = EXCLUDED.tginitdeferred, tgnargs = EXCLUDED.tgnargs, tgattr = EXCLUDED.tgattr, tgargs = EXCLUDED.tgargs, tgqual = EXCLUDED.tgqual, tgoldtable = EXCLUDED.tgoldtable, tgnewtable = EXCLUDED.tgnewtable `
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Tgrelid, pt.Tgparentid, pt.Tgname, pt.Tgfoid, pt.Tgtype, pt.Tgenabled, pt.Tgisinternal, pt.Tgconstrrelid, pt.Tgconstrindid, pt.Tgconstraint, pt.Tgdeferrable, pt.Tginitdeferred, pt.Tgnargs, pt.Tgattr, pt.Tgargs, pt.Tgqual, pt.Tgoldtable, pt.Tgnewtable); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Delete deletes the PgTrigger from the database.
+func (pt *PgTrigger) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return nil
+	case pt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_trigger ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pt._deleted = true
+	return nil
 }
 
 // PgTsConfig represents a row from 'pg_catalog.pg_ts_config'.
@@ -2137,6 +8114,117 @@ type PgTsConfig struct {
 	Cfgnamespace pgtypes.Oid `json:"cfgnamespace"` // cfgnamespace
 	Cfgowner     pgtypes.Oid `json:"cfgowner"`     // cfgowner
 	Cfgparser    pgtypes.Oid `json:"cfgparser"`    // cfgparser
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTsConfig exists in the database.
+func (ptc *PgTsConfig) Exists() bool {
+	return ptc._exists
+}
+
+// Deleted returns true when the PgTsConfig has been marked for deletion from
+// the database.
+func (ptc *PgTsConfig) Deleted() bool {
+	return ptc._deleted
+}
+
+// Insert inserts the PgTsConfig to the database.
+func (ptc *PgTsConfig) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ptc._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ptc._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_config (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, cfgname, cfgnamespace, cfgowner, cfgparser` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Oid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser)
+	if _, err := db.ExecContext(ctx, sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Oid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptc._exists = true
+	return nil
+}
+
+// Update updates a PgTsConfig in the database.
+func (ptc *PgTsConfig) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ptc._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ptc._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_ts_config SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, cfgname = $7, cfgnamespace = $8, cfgowner = $9, cfgparser = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser, ptc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser, ptc.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTsConfig to the database.
+func (ptc *PgTsConfig) Save(ctx context.Context, db DB) error {
+	if ptc.Exists() {
+		return ptc.Update(ctx, db)
+	}
+	return ptc.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTsConfig.
+func (ptc *PgTsConfig) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ptc._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_config (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, cfgname, cfgnamespace, cfgowner, cfgparser` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, cfgname = EXCLUDED.cfgname, cfgnamespace = EXCLUDED.cfgnamespace, cfgowner = EXCLUDED.cfgowner, cfgparser = EXCLUDED.cfgparser `
+	// run
+	logf(sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Oid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser)
+	if _, err := db.ExecContext(ctx, sqlstr, ptc.Tableoid, ptc.Cmax, ptc.Xmax, ptc.Cmin, ptc.Xmin, ptc.Ctid, ptc.Oid, ptc.Cfgname, ptc.Cfgnamespace, ptc.Cfgowner, ptc.Cfgparser); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptc._exists = true
+	return nil
+}
+
+// Delete deletes the PgTsConfig from the database.
+func (ptc *PgTsConfig) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ptc._exists: // doesn't exist
+		return nil
+	case ptc._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_ts_config ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ptc.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptc.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ptc._deleted = true
+	return nil
 }
 
 // PgTsConfigMap represents a row from 'pg_catalog.pg_ts_config_map'.
@@ -2151,6 +8239,117 @@ type PgTsConfigMap struct {
 	Maptokentype int         `json:"maptokentype"` // maptokentype
 	Mapseqno     int         `json:"mapseqno"`     // mapseqno
 	Mapdict      pgtypes.Oid `json:"mapdict"`      // mapdict
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTsConfigMap exists in the database.
+func (ptcm *PgTsConfigMap) Exists() bool {
+	return ptcm._exists
+}
+
+// Deleted returns true when the PgTsConfigMap has been marked for deletion from
+// the database.
+func (ptcm *PgTsConfigMap) Deleted() bool {
+	return ptcm._deleted
+}
+
+// Insert inserts the PgTsConfigMap to the database.
+func (ptcm *PgTsConfigMap) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ptcm._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ptcm._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_config_map (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, mapcfg, maptokentype, mapseqno, mapdict` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno, ptcm.Mapdict)
+	if _, err := db.ExecContext(ctx, sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno, ptcm.Mapdict); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptcm._exists = true
+	return nil
+}
+
+// Update updates a PgTsConfigMap in the database.
+func (ptcm *PgTsConfigMap) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ptcm._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ptcm._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_ts_config_map SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, mapdict = $7 ` +
+		`WHERE mapcfg = $8 AND maptokentype = $9 AND mapseqno = $10`
+	// run
+	logf(sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapdict, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno)
+	if _, err := db.ExecContext(ctx, sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapdict, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTsConfigMap to the database.
+func (ptcm *PgTsConfigMap) Save(ctx context.Context, db DB) error {
+	if ptcm.Exists() {
+		return ptcm.Update(ctx, db)
+	}
+	return ptcm.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTsConfigMap.
+func (ptcm *PgTsConfigMap) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ptcm._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_config_map (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, mapcfg, maptokentype, mapseqno, mapdict` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (mapcfg, maptokentype, mapseqno) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, mapdict = EXCLUDED.mapdict `
+	// run
+	logf(sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno, ptcm.Mapdict)
+	if _, err := db.ExecContext(ctx, sqlstr, ptcm.Tableoid, ptcm.Cmax, ptcm.Xmax, ptcm.Cmin, ptcm.Xmin, ptcm.Ctid, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno, ptcm.Mapdict); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptcm._exists = true
+	return nil
+}
+
+// Delete deletes the PgTsConfigMap from the database.
+func (ptcm *PgTsConfigMap) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ptcm._exists: // doesn't exist
+		return nil
+	case ptcm._deleted: // deleted
+		return nil
+	}
+	// delete with composite primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_ts_config_map ` +
+		`WHERE mapcfg = $1 AND maptokentype = $2 AND mapseqno = $3`
+	// run
+	logf(sqlstr, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno)
+	if _, err := db.ExecContext(ctx, sqlstr, ptcm.Mapcfg, ptcm.Maptokentype, ptcm.Mapseqno); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ptcm._deleted = true
+	return nil
 }
 
 // PgTsDict represents a row from 'pg_catalog.pg_ts_dict'.
@@ -2167,6 +8366,117 @@ type PgTsDict struct {
 	Dictowner      pgtypes.Oid    `json:"dictowner"`      // dictowner
 	Dicttemplate   pgtypes.Oid    `json:"dicttemplate"`   // dicttemplate
 	Dictinitoption sql.NullString `json:"dictinitoption"` // dictinitoption
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTsDict exists in the database.
+func (ptd *PgTsDict) Exists() bool {
+	return ptd._exists
+}
+
+// Deleted returns true when the PgTsDict has been marked for deletion from
+// the database.
+func (ptd *PgTsDict) Deleted() bool {
+	return ptd._deleted
+}
+
+// Insert inserts the PgTsDict to the database.
+func (ptd *PgTsDict) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ptd._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ptd._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_dict (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, dictname, dictnamespace, dictowner, dicttemplate, dictinitoption` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)`
+	// run
+	logf(sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Oid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption)
+	if _, err := db.ExecContext(ctx, sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Oid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptd._exists = true
+	return nil
+}
+
+// Update updates a PgTsDict in the database.
+func (ptd *PgTsDict) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ptd._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ptd._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_ts_dict SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, dictname = $7, dictnamespace = $8, dictowner = $9, dicttemplate = $10, dictinitoption = $11 ` +
+		`WHERE oid = $12`
+	// run
+	logf(sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption, ptd.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption, ptd.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTsDict to the database.
+func (ptd *PgTsDict) Save(ctx context.Context, db DB) error {
+	if ptd.Exists() {
+		return ptd.Update(ctx, db)
+	}
+	return ptd.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTsDict.
+func (ptd *PgTsDict) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ptd._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_dict (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, dictname, dictnamespace, dictowner, dicttemplate, dictinitoption` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, dictname = EXCLUDED.dictname, dictnamespace = EXCLUDED.dictnamespace, dictowner = EXCLUDED.dictowner, dicttemplate = EXCLUDED.dicttemplate, dictinitoption = EXCLUDED.dictinitoption `
+	// run
+	logf(sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Oid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption)
+	if _, err := db.ExecContext(ctx, sqlstr, ptd.Tableoid, ptd.Cmax, ptd.Xmax, ptd.Cmin, ptd.Xmin, ptd.Ctid, ptd.Oid, ptd.Dictname, ptd.Dictnamespace, ptd.Dictowner, ptd.Dicttemplate, ptd.Dictinitoption); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptd._exists = true
+	return nil
+}
+
+// Delete deletes the PgTsDict from the database.
+func (ptd *PgTsDict) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ptd._exists: // doesn't exist
+		return nil
+	case ptd._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_ts_dict ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ptd.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptd.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ptd._deleted = true
+	return nil
 }
 
 // PgTsParser represents a row from 'pg_catalog.pg_ts_parser'.
@@ -2185,6 +8495,117 @@ type PgTsParser struct {
 	Prsend       pgtypes.Regproc `json:"prsend"`       // prsend
 	Prsheadline  pgtypes.Regproc `json:"prsheadline"`  // prsheadline
 	Prslextype   pgtypes.Regproc `json:"prslextype"`   // prslextype
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTsParser exists in the database.
+func (ptp *PgTsParser) Exists() bool {
+	return ptp._exists
+}
+
+// Deleted returns true when the PgTsParser has been marked for deletion from
+// the database.
+func (ptp *PgTsParser) Deleted() bool {
+	return ptp._deleted
+}
+
+// Insert inserts the PgTsParser to the database.
+func (ptp *PgTsParser) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ptp._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ptp._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_parser (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, prsname, prsnamespace, prsstart, prstoken, prsend, prsheadline, prslextype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)`
+	// run
+	logf(sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Oid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype)
+	if _, err := db.ExecContext(ctx, sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Oid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptp._exists = true
+	return nil
+}
+
+// Update updates a PgTsParser in the database.
+func (ptp *PgTsParser) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ptp._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ptp._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_ts_parser SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, prsname = $7, prsnamespace = $8, prsstart = $9, prstoken = $10, prsend = $11, prsheadline = $12, prslextype = $13 ` +
+		`WHERE oid = $14`
+	// run
+	logf(sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype, ptp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype, ptp.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTsParser to the database.
+func (ptp *PgTsParser) Save(ctx context.Context, db DB) error {
+	if ptp.Exists() {
+		return ptp.Update(ctx, db)
+	}
+	return ptp.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTsParser.
+func (ptp *PgTsParser) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ptp._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_parser (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, prsname, prsnamespace, prsstart, prstoken, prsend, prsheadline, prslextype` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, prsname = EXCLUDED.prsname, prsnamespace = EXCLUDED.prsnamespace, prsstart = EXCLUDED.prsstart, prstoken = EXCLUDED.prstoken, prsend = EXCLUDED.prsend, prsheadline = EXCLUDED.prsheadline, prslextype = EXCLUDED.prslextype `
+	// run
+	logf(sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Oid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype)
+	if _, err := db.ExecContext(ctx, sqlstr, ptp.Tableoid, ptp.Cmax, ptp.Xmax, ptp.Cmin, ptp.Xmin, ptp.Ctid, ptp.Oid, ptp.Prsname, ptp.Prsnamespace, ptp.Prsstart, ptp.Prstoken, ptp.Prsend, ptp.Prsheadline, ptp.Prslextype); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptp._exists = true
+	return nil
+}
+
+// Delete deletes the PgTsParser from the database.
+func (ptp *PgTsParser) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ptp._exists: // doesn't exist
+		return nil
+	case ptp._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_ts_parser ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ptp.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptp.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ptp._deleted = true
+	return nil
 }
 
 // PgTsTemplate represents a row from 'pg_catalog.pg_ts_template'.
@@ -2200,6 +8621,117 @@ type PgTsTemplate struct {
 	Tmplnamespace pgtypes.Oid     `json:"tmplnamespace"` // tmplnamespace
 	Tmplinit      pgtypes.Regproc `json:"tmplinit"`      // tmplinit
 	Tmpllexize    pgtypes.Regproc `json:"tmpllexize"`    // tmpllexize
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgTsTemplate exists in the database.
+func (ptt *PgTsTemplate) Exists() bool {
+	return ptt._exists
+}
+
+// Deleted returns true when the PgTsTemplate has been marked for deletion from
+// the database.
+func (ptt *PgTsTemplate) Deleted() bool {
+	return ptt._deleted
+}
+
+// Insert inserts the PgTsTemplate to the database.
+func (ptt *PgTsTemplate) Insert(ctx context.Context, db DB) error {
+	switch {
+	case ptt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case ptt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_template (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tmplname, tmplnamespace, tmplinit, tmpllexize` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)`
+	// run
+	logf(sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Oid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize)
+	if _, err := db.ExecContext(ctx, sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Oid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptt._exists = true
+	return nil
+}
+
+// Update updates a PgTsTemplate in the database.
+func (ptt *PgTsTemplate) Update(ctx context.Context, db DB) error {
+	switch {
+	case !ptt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case ptt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_ts_template SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, tmplname = $7, tmplnamespace = $8, tmplinit = $9, tmpllexize = $10 ` +
+		`WHERE oid = $11`
+	// run
+	logf(sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize, ptt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize, ptt.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgTsTemplate to the database.
+func (ptt *PgTsTemplate) Save(ctx context.Context, db DB) error {
+	if ptt.Exists() {
+		return ptt.Update(ctx, db)
+	}
+	return ptt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgTsTemplate.
+func (ptt *PgTsTemplate) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case ptt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_ts_template (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, tmplname, tmplnamespace, tmplinit, tmpllexize` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, tmplname = EXCLUDED.tmplname, tmplnamespace = EXCLUDED.tmplnamespace, tmplinit = EXCLUDED.tmplinit, tmpllexize = EXCLUDED.tmpllexize `
+	// run
+	logf(sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Oid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize)
+	if _, err := db.ExecContext(ctx, sqlstr, ptt.Tableoid, ptt.Cmax, ptt.Xmax, ptt.Cmin, ptt.Xmin, ptt.Ctid, ptt.Oid, ptt.Tmplname, ptt.Tmplnamespace, ptt.Tmplinit, ptt.Tmpllexize); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	ptt._exists = true
+	return nil
+}
+
+// Delete deletes the PgTsTemplate from the database.
+func (ptt *PgTsTemplate) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !ptt._exists: // doesn't exist
+		return nil
+	case ptt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_ts_template ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, ptt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, ptt.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	ptt._deleted = true
+	return nil
 }
 
 // PgType represents a row from 'pg_catalog.pg_type'.
@@ -2222,6 +8754,7 @@ type PgType struct {
 	Typisdefined   bool                   `json:"typisdefined"`   // typisdefined
 	Typdelim       pgtypes.Char           `json:"typdelim"`       // typdelim
 	Typrelid       pgtypes.Oid            `json:"typrelid"`       // typrelid
+	Typsubscript   pgtypes.Regproc        `json:"typsubscript"`   // typsubscript
 	Typelem        pgtypes.Oid            `json:"typelem"`        // typelem
 	Typarray       pgtypes.Oid            `json:"typarray"`       // typarray
 	Typinput       pgtypes.Regproc        `json:"typinput"`       // typinput
@@ -2241,6 +8774,117 @@ type PgType struct {
 	Typdefaultbin  pgtypes.NullPgNodeTree `json:"typdefaultbin"`  // typdefaultbin
 	Typdefault     sql.NullString         `json:"typdefault"`     // typdefault
 	Typacl         []pgtypes.NullAclitem  `json:"typacl"`         // typacl
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgType exists in the database.
+func (pt *PgType) Exists() bool {
+	return pt._exists
+}
+
+// Deleted returns true when the PgType has been marked for deletion from
+// the database.
+func (pt *PgType) Deleted() bool {
+	return pt._deleted
+}
+
+// Insert inserts the PgType to the database.
+func (pt *PgType) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pt._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pt._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_type (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typsubscript, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38` +
+		`)`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Update updates a PgType in the database.
+func (pt *PgType) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pt._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_type SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, typname = $7, typnamespace = $8, typowner = $9, typlen = $10, typbyval = $11, typtype = $12, typcategory = $13, typispreferred = $14, typisdefined = $15, typdelim = $16, typrelid = $17, typsubscript = $18, typelem = $19, typarray = $20, typinput = $21, typoutput = $22, typreceive = $23, typsend = $24, typmodin = $25, typmodout = $26, typanalyze = $27, typalign = $28, typstorage = $29, typnotnull = $30, typbasetype = $31, typtypmod = $32, typndims = $33, typcollation = $34, typdefaultbin = $35, typdefault = $36, typacl = $37 ` +
+		`WHERE oid = $38`
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgType to the database.
+func (pt *PgType) Save(ctx context.Context, db DB) error {
+	if pt.Exists() {
+		return pt.Update(ctx, db)
+	}
+	return pt.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgType.
+func (pt *PgType) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pt._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_type (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typsubscript, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, typname = EXCLUDED.typname, typnamespace = EXCLUDED.typnamespace, typowner = EXCLUDED.typowner, typlen = EXCLUDED.typlen, typbyval = EXCLUDED.typbyval, typtype = EXCLUDED.typtype, typcategory = EXCLUDED.typcategory, typispreferred = EXCLUDED.typispreferred, typisdefined = EXCLUDED.typisdefined, typdelim = EXCLUDED.typdelim, typrelid = EXCLUDED.typrelid, typsubscript = EXCLUDED.typsubscript, typelem = EXCLUDED.typelem, typarray = EXCLUDED.typarray, typinput = EXCLUDED.typinput, typoutput = EXCLUDED.typoutput, typreceive = EXCLUDED.typreceive, typsend = EXCLUDED.typsend, typmodin = EXCLUDED.typmodin, typmodout = EXCLUDED.typmodout, typanalyze = EXCLUDED.typanalyze, typalign = EXCLUDED.typalign, typstorage = EXCLUDED.typstorage, typnotnull = EXCLUDED.typnotnull, typbasetype = EXCLUDED.typbasetype, typtypmod = EXCLUDED.typtypmod, typndims = EXCLUDED.typndims, typcollation = EXCLUDED.typcollation, typdefaultbin = EXCLUDED.typdefaultbin, typdefault = EXCLUDED.typdefault, typacl = EXCLUDED.typacl `
+	// run
+	logf(sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Tableoid, pt.Cmax, pt.Xmax, pt.Cmin, pt.Xmin, pt.Ctid, pt.Oid, pt.Typname, pt.Typnamespace, pt.Typowner, pt.Typlen, pt.Typbyval, pt.Typtype, pt.Typcategory, pt.Typispreferred, pt.Typisdefined, pt.Typdelim, pt.Typrelid, pt.Typsubscript, pt.Typelem, pt.Typarray, pt.Typinput, pt.Typoutput, pt.Typreceive, pt.Typsend, pt.Typmodin, pt.Typmodout, pt.Typanalyze, pt.Typalign, pt.Typstorage, pt.Typnotnull, pt.Typbasetype, pt.Typtypmod, pt.Typndims, pt.Typcollation, pt.Typdefaultbin, pt.Typdefault, pt.Typacl); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pt._exists = true
+	return nil
+}
+
+// Delete deletes the PgType from the database.
+func (pt *PgType) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pt._exists: // doesn't exist
+		return nil
+	case pt._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_type ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pt.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pt.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pt._deleted = true
+	return nil
 }
 
 // PgUser represents a row from 'pg_catalog.pg_user'.
@@ -2268,6 +8912,117 @@ type PgUserMapping struct {
 	Umuser    pgtypes.Oid      `json:"umuser"`    // umuser
 	Umserver  pgtypes.Oid      `json:"umserver"`  // umserver
 	Umoptions []sql.NullString `json:"umoptions"` // umoptions
+	// xo fields
+	_exists, _deleted bool
+}
+
+// Exists returns true when the PgUserMapping exists in the database.
+func (pum *PgUserMapping) Exists() bool {
+	return pum._exists
+}
+
+// Deleted returns true when the PgUserMapping has been marked for deletion from
+// the database.
+func (pum *PgUserMapping) Deleted() bool {
+	return pum._deleted
+}
+
+// Insert inserts the PgUserMapping to the database.
+func (pum *PgUserMapping) Insert(ctx context.Context, db DB) error {
+	switch {
+	case pum._exists: // already exists
+		return logerror(&ErrInsertFailed{ErrAlreadyExists})
+	case pum._deleted: // deleted
+		return logerror(&ErrInsertFailed{ErrMarkedForDeletion})
+	}
+	// insert (manual)
+	const sqlstr = `INSERT INTO pg_catalog.pg_user_mapping (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, umuser, umserver, umoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)`
+	// run
+	logf(sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Oid, pum.Umuser, pum.Umserver, pum.Umoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Oid, pum.Umuser, pum.Umserver, pum.Umoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pum._exists = true
+	return nil
+}
+
+// Update updates a PgUserMapping in the database.
+func (pum *PgUserMapping) Update(ctx context.Context, db DB) error {
+	switch {
+	case !pum._exists: // doesn't exist
+		return logerror(&ErrUpdateFailed{ErrDoesNotExist})
+	case pum._deleted: // deleted
+		return logerror(&ErrUpdateFailed{ErrMarkedForDeletion})
+	}
+	// update with composite primary key
+	const sqlstr = `UPDATE pg_catalog.pg_user_mapping SET ` +
+		`tableoid = $1, cmax = $2, xmax = $3, cmin = $4, xmin = $5, ctid = $6, umuser = $7, umserver = $8, umoptions = $9 ` +
+		`WHERE oid = $10`
+	// run
+	logf(sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Umuser, pum.Umserver, pum.Umoptions, pum.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Umuser, pum.Umserver, pum.Umoptions, pum.Oid); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// Save saves the PgUserMapping to the database.
+func (pum *PgUserMapping) Save(ctx context.Context, db DB) error {
+	if pum.Exists() {
+		return pum.Update(ctx, db)
+	}
+	return pum.Insert(ctx, db)
+}
+
+// Upsert performs an upsert for PgUserMapping.
+func (pum *PgUserMapping) Upsert(ctx context.Context, db DB) error {
+	switch {
+	case pum._deleted: // deleted
+		return logerror(&ErrUpsertFailed{ErrMarkedForDeletion})
+	}
+	// upsert
+	const sqlstr = `INSERT INTO pg_catalog.pg_user_mapping (` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, umuser, umserver, umoptions` +
+		`) VALUES (` +
+		`$1, $2, $3, $4, $5, $6, $7, $8, $9, $10` +
+		`)` +
+		` ON CONFLICT (oid) DO ` +
+		`UPDATE SET ` +
+		`tableoid = EXCLUDED.tableoid, cmax = EXCLUDED.cmax, xmax = EXCLUDED.xmax, cmin = EXCLUDED.cmin, xmin = EXCLUDED.xmin, ctid = EXCLUDED.ctid, umuser = EXCLUDED.umuser, umserver = EXCLUDED.umserver, umoptions = EXCLUDED.umoptions `
+	// run
+	logf(sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Oid, pum.Umuser, pum.Umserver, pum.Umoptions)
+	if _, err := db.ExecContext(ctx, sqlstr, pum.Tableoid, pum.Cmax, pum.Xmax, pum.Cmin, pum.Xmin, pum.Ctid, pum.Oid, pum.Umuser, pum.Umserver, pum.Umoptions); err != nil {
+		return logerror(err)
+	}
+	// set exists
+	pum._exists = true
+	return nil
+}
+
+// Delete deletes the PgUserMapping from the database.
+func (pum *PgUserMapping) Delete(ctx context.Context, db DB) error {
+	switch {
+	case !pum._exists: // doesn't exist
+		return nil
+	case pum._deleted: // deleted
+		return nil
+	}
+	// delete with single primary key
+	const sqlstr = `DELETE FROM pg_catalog.pg_user_mapping ` +
+		`WHERE oid = $1`
+	// run
+	logf(sqlstr, pum.Oid)
+	if _, err := db.ExecContext(ctx, sqlstr, pum.Oid); err != nil {
+		return logerror(err)
+	}
+	// set deleted
+	pum._deleted = true
+	return nil
 }
 
 // PgUserMapping represents a row from 'pg_catalog.pg_user_mappings'.
@@ -2299,7 +9054,9 @@ func PgAggregateByAggfnoid(ctx context.Context, db DB, aggfnoid pgtypes.Regproc)
 		`WHERE aggfnoid = $1`
 	// run
 	logf(sqlstr, aggfnoid)
-	pa := PgAggregate{}
+	pa := PgAggregate{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, aggfnoid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Aggfnoid, &pa.Aggkind, &pa.Aggnumdirectargs, &pa.Aggtransfn, &pa.Aggfinalfn, &pa.Aggcombinefn, &pa.Aggserialfn, &pa.Aggdeserialfn, &pa.Aggmtransfn, &pa.Aggminvtransfn, &pa.Aggmfinalfn, &pa.Aggfinalextra, &pa.Aggmfinalextra, &pa.Aggfinalmodify, &pa.Aggmfinalmodify, &pa.Aggsortop, &pa.Aggtranstype, &pa.Aggtransspace, &pa.Aggmtranstype, &pa.Aggmtransspace, &pa.Agginitval, &pa.Aggminitval); err != nil {
 		return nil, logerror(err)
 	}
@@ -2317,7 +9074,9 @@ func PgAmByAmname(ctx context.Context, db DB, amname string) (*PgAm, error) {
 		`WHERE amname = $1`
 	// run
 	logf(sqlstr, amname)
-	pa := PgAm{}
+	pa := PgAm{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, amname).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amname, &pa.Amhandler, &pa.Amtype); err != nil {
 		return nil, logerror(err)
 	}
@@ -2335,7 +9094,9 @@ func PgAmByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAm, error) {
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pa := PgAm{}
+	pa := PgAm{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amname, &pa.Amhandler, &pa.Amtype); err != nil {
 		return nil, logerror(err)
 	}
@@ -2353,7 +9114,9 @@ func PgAmopByAmopfamilyAmoplefttypeAmoprighttypeAmopstrategy(ctx context.Context
 		`WHERE amopfamily = $1 AND amoplefttype = $2 AND amoprighttype = $3 AND amopstrategy = $4`
 	// run
 	logf(sqlstr, amopfamily, amoplefttype, amoprighttype, amopstrategy)
-	pa := PgAmop{}
+	pa := PgAmop{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, amopfamily, amoplefttype, amoprighttype, amopstrategy).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amopfamily, &pa.Amoplefttype, &pa.Amoprighttype, &pa.Amopstrategy, &pa.Amoppurpose, &pa.Amopopr, &pa.Amopmethod, &pa.Amopsortfamily); err != nil {
 		return nil, logerror(err)
 	}
@@ -2371,7 +9134,9 @@ func PgAmopByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAmop, error) {
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pa := PgAmop{}
+	pa := PgAmop{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amopfamily, &pa.Amoplefttype, &pa.Amoprighttype, &pa.Amopstrategy, &pa.Amoppurpose, &pa.Amopopr, &pa.Amopmethod, &pa.Amopsortfamily); err != nil {
 		return nil, logerror(err)
 	}
@@ -2389,7 +9154,9 @@ func PgAmopByAmopoprAmoppurposeAmopfamily(ctx context.Context, db DB, amopopr pg
 		`WHERE amopopr = $1 AND amoppurpose = $2 AND amopfamily = $3`
 	// run
 	logf(sqlstr, amopopr, amoppurpose, amopfamily)
-	pa := PgAmop{}
+	pa := PgAmop{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, amopopr, amoppurpose, amopfamily).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amopfamily, &pa.Amoplefttype, &pa.Amoprighttype, &pa.Amopstrategy, &pa.Amoppurpose, &pa.Amopopr, &pa.Amopmethod, &pa.Amopsortfamily); err != nil {
 		return nil, logerror(err)
 	}
@@ -2407,7 +9174,9 @@ func PgAmprocByAmprocfamilyAmproclefttypeAmprocrighttypeAmprocnum(ctx context.Co
 		`WHERE amprocfamily = $1 AND amproclefttype = $2 AND amprocrighttype = $3 AND amprocnum = $4`
 	// run
 	logf(sqlstr, amprocfamily, amproclefttype, amprocrighttype, amprocnum)
-	pa := PgAmproc{}
+	pa := PgAmproc{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, amprocfamily, amproclefttype, amprocrighttype, amprocnum).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amprocfamily, &pa.Amproclefttype, &pa.Amprocrighttype, &pa.Amprocnum, &pa.Amproc); err != nil {
 		return nil, logerror(err)
 	}
@@ -2425,7 +9194,9 @@ func PgAmprocByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAmproc, erro
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pa := PgAmproc{}
+	pa := PgAmproc{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Amprocfamily, &pa.Amproclefttype, &pa.Amprocrighttype, &pa.Amprocnum, &pa.Amproc); err != nil {
 		return nil, logerror(err)
 	}
@@ -2443,7 +9214,9 @@ func PgAttrdefByAdrelidAdnum(ctx context.Context, db DB, adrelid pgtypes.Oid, ad
 		`WHERE adrelid = $1 AND adnum = $2`
 	// run
 	logf(sqlstr, adrelid, adnum)
-	pa := PgAttrdef{}
+	pa := PgAttrdef{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, adrelid, adnum).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Adrelid, &pa.Adnum, &pa.Adbin); err != nil {
 		return nil, logerror(err)
 	}
@@ -2461,7 +9234,9 @@ func PgAttrdefByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAttrdef, er
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pa := PgAttrdef{}
+	pa := PgAttrdef{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Adrelid, &pa.Adnum, &pa.Adbin); err != nil {
 		return nil, logerror(err)
 	}
@@ -2474,13 +9249,15 @@ func PgAttrdefByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAttrdef, er
 func PgAttributeByAttrelidAttname(ctx context.Context, db DB, attrelid pgtypes.Oid, attname string) (*PgAttribute, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attstorage, attalign, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attalign, attstorage, attcompression, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval ` +
 		`FROM pg_catalog.pg_attribute ` +
 		`WHERE attrelid = $1 AND attname = $2`
 	// run
 	logf(sqlstr, attrelid, attname)
-	pa := PgAttribute{}
-	if err := db.QueryRowContext(ctx, sqlstr, attrelid, attname).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Attrelid, &pa.Attname, &pa.Atttypid, &pa.Attstattarget, &pa.Attlen, &pa.Attnum, &pa.Attndims, &pa.Attcacheoff, &pa.Atttypmod, &pa.Attbyval, &pa.Attstorage, &pa.Attalign, &pa.Attnotnull, &pa.Atthasdef, &pa.Atthasmissing, &pa.Attidentity, &pa.Attgenerated, &pa.Attisdropped, &pa.Attislocal, &pa.Attinhcount, &pa.Attcollation, &pa.Attacl, &pa.Attoptions, &pa.Attfdwoptions, &pa.Attmissingval); err != nil {
+	pa := PgAttribute{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, attrelid, attname).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Attrelid, &pa.Attname, &pa.Atttypid, &pa.Attstattarget, &pa.Attlen, &pa.Attnum, &pa.Attndims, &pa.Attcacheoff, &pa.Atttypmod, &pa.Attbyval, &pa.Attalign, &pa.Attstorage, &pa.Attcompression, &pa.Attnotnull, &pa.Atthasdef, &pa.Atthasmissing, &pa.Attidentity, &pa.Attgenerated, &pa.Attisdropped, &pa.Attislocal, &pa.Attinhcount, &pa.Attcollation, &pa.Attacl, &pa.Attoptions, &pa.Attfdwoptions, &pa.Attmissingval); err != nil {
 		return nil, logerror(err)
 	}
 	return &pa, nil
@@ -2492,13 +9269,15 @@ func PgAttributeByAttrelidAttname(ctx context.Context, db DB, attrelid pgtypes.O
 func PgAttributeByAttrelidAttnum(ctx context.Context, db DB, attrelid pgtypes.Oid, attnum int16) (*PgAttribute, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attstorage, attalign, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, attrelid, attname, atttypid, attstattarget, attlen, attnum, attndims, attcacheoff, atttypmod, attbyval, attalign, attstorage, attcompression, attnotnull, atthasdef, atthasmissing, attidentity, attgenerated, attisdropped, attislocal, attinhcount, attcollation, attacl, attoptions, attfdwoptions, attmissingval ` +
 		`FROM pg_catalog.pg_attribute ` +
 		`WHERE attrelid = $1 AND attnum = $2`
 	// run
 	logf(sqlstr, attrelid, attnum)
-	pa := PgAttribute{}
-	if err := db.QueryRowContext(ctx, sqlstr, attrelid, attnum).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Attrelid, &pa.Attname, &pa.Atttypid, &pa.Attstattarget, &pa.Attlen, &pa.Attnum, &pa.Attndims, &pa.Attcacheoff, &pa.Atttypmod, &pa.Attbyval, &pa.Attstorage, &pa.Attalign, &pa.Attnotnull, &pa.Atthasdef, &pa.Atthasmissing, &pa.Attidentity, &pa.Attgenerated, &pa.Attisdropped, &pa.Attislocal, &pa.Attinhcount, &pa.Attcollation, &pa.Attacl, &pa.Attoptions, &pa.Attfdwoptions, &pa.Attmissingval); err != nil {
+	pa := PgAttribute{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, attrelid, attnum).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Attrelid, &pa.Attname, &pa.Atttypid, &pa.Attstattarget, &pa.Attlen, &pa.Attnum, &pa.Attndims, &pa.Attcacheoff, &pa.Atttypmod, &pa.Attbyval, &pa.Attalign, &pa.Attstorage, &pa.Attcompression, &pa.Attnotnull, &pa.Atthasdef, &pa.Atthasmissing, &pa.Attidentity, &pa.Attgenerated, &pa.Attisdropped, &pa.Attislocal, &pa.Attinhcount, &pa.Attcollation, &pa.Attacl, &pa.Attoptions, &pa.Attfdwoptions, &pa.Attmissingval); err != nil {
 		return nil, logerror(err)
 	}
 	return &pa, nil
@@ -2515,7 +9294,9 @@ func PgAuthMemberByMemberRoleid(ctx context.Context, db DB, member, roleid pgtyp
 		`WHERE member = $1 AND roleid = $2`
 	// run
 	logf(sqlstr, member, roleid)
-	pam := PgAuthMember{}
+	pam := PgAuthMember{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, member, roleid).Scan(&pam.Tableoid, &pam.Cmax, &pam.Xmax, &pam.Cmin, &pam.Xmin, &pam.Ctid, &pam.Roleid, &pam.Member, &pam.Grantor, &pam.AdminOption); err != nil {
 		return nil, logerror(err)
 	}
@@ -2533,7 +9314,9 @@ func PgAuthMemberByRoleidMember(ctx context.Context, db DB, roleid, member pgtyp
 		`WHERE roleid = $1 AND member = $2`
 	// run
 	logf(sqlstr, roleid, member)
-	pam := PgAuthMember{}
+	pam := PgAuthMember{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, roleid, member).Scan(&pam.Tableoid, &pam.Cmax, &pam.Xmax, &pam.Cmin, &pam.Xmin, &pam.Ctid, &pam.Roleid, &pam.Member, &pam.Grantor, &pam.AdminOption); err != nil {
 		return nil, logerror(err)
 	}
@@ -2551,7 +9334,9 @@ func PgAuthidByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgAuthid, erro
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pa := PgAuthid{}
+	pa := PgAuthid{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Rolname, &pa.Rolsuper, &pa.Rolinherit, &pa.Rolcreaterole, &pa.Rolcreatedb, &pa.Rolcanlogin, &pa.Rolreplication, &pa.Rolbypassrls, &pa.Rolconnlimit, &pa.Rolpassword, &pa.Rolvaliduntil); err != nil {
 		return nil, logerror(err)
 	}
@@ -2569,7 +9354,9 @@ func PgAuthidByRolname(ctx context.Context, db DB, rolname string) (*PgAuthid, e
 		`WHERE rolname = $1`
 	// run
 	logf(sqlstr, rolname)
-	pa := PgAuthid{}
+	pa := PgAuthid{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, rolname).Scan(&pa.Tableoid, &pa.Cmax, &pa.Xmax, &pa.Cmin, &pa.Xmin, &pa.Ctid, &pa.Oid, &pa.Rolname, &pa.Rolsuper, &pa.Rolinherit, &pa.Rolcreaterole, &pa.Rolcreatedb, &pa.Rolcanlogin, &pa.Rolreplication, &pa.Rolbypassrls, &pa.Rolconnlimit, &pa.Rolpassword, &pa.Rolvaliduntil); err != nil {
 		return nil, logerror(err)
 	}
@@ -2587,7 +9374,9 @@ func PgCastByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgCast, error) {
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pc := PgCast{}
+	pc := PgCast{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Castsource, &pc.Casttarget, &pc.Castfunc, &pc.Castcontext, &pc.Castmethod); err != nil {
 		return nil, logerror(err)
 	}
@@ -2605,7 +9394,9 @@ func PgCastByCastsourceCasttarget(ctx context.Context, db DB, castsource, castta
 		`WHERE castsource = $1 AND casttarget = $2`
 	// run
 	logf(sqlstr, castsource, casttarget)
-	pc := PgCast{}
+	pc := PgCast{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, castsource, casttarget).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Castsource, &pc.Casttarget, &pc.Castfunc, &pc.Castcontext, &pc.Castmethod); err != nil {
 		return nil, logerror(err)
 	}
@@ -2623,7 +9414,9 @@ func PgClassByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgClass, error)
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pc := PgClass{}
+	pc := PgClass{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Relname, &pc.Relnamespace, &pc.Reltype, &pc.Reloftype, &pc.Relowner, &pc.Relam, &pc.Relfilenode, &pc.Reltablespace, &pc.Relpages, &pc.Reltuples, &pc.Relallvisible, &pc.Reltoastrelid, &pc.Relhasindex, &pc.Relisshared, &pc.Relpersistence, &pc.Relkind, &pc.Relnatts, &pc.Relchecks, &pc.Relhasrules, &pc.Relhastriggers, &pc.Relhassubclass, &pc.Relrowsecurity, &pc.Relforcerowsecurity, &pc.Relispopulated, &pc.Relreplident, &pc.Relispartition, &pc.Relrewrite, &pc.Relfrozenxid, &pc.Relminmxid, &pc.Relacl, &pc.Reloptions, &pc.Relpartbound); err != nil {
 		return nil, logerror(err)
 	}
@@ -2641,7 +9434,9 @@ func PgClassByRelnameRelnamespace(ctx context.Context, db DB, relname string, re
 		`WHERE relname = $1 AND relnamespace = $2`
 	// run
 	logf(sqlstr, relname, relnamespace)
-	pc := PgClass{}
+	pc := PgClass{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, relname, relnamespace).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Relname, &pc.Relnamespace, &pc.Reltype, &pc.Reloftype, &pc.Relowner, &pc.Relam, &pc.Relfilenode, &pc.Reltablespace, &pc.Relpages, &pc.Reltuples, &pc.Relallvisible, &pc.Reltoastrelid, &pc.Relhasindex, &pc.Relisshared, &pc.Relpersistence, &pc.Relkind, &pc.Relnatts, &pc.Relchecks, &pc.Relhasrules, &pc.Relhastriggers, &pc.Relhassubclass, &pc.Relrowsecurity, &pc.Relforcerowsecurity, &pc.Relispopulated, &pc.Relreplident, &pc.Relispartition, &pc.Relrewrite, &pc.Relfrozenxid, &pc.Relminmxid, &pc.Relacl, &pc.Reloptions, &pc.Relpartbound); err != nil {
 		return nil, logerror(err)
 	}
@@ -2667,7 +9462,9 @@ func PgClassByReltablespaceRelfilenode(ctx context.Context, db DB, reltablespace
 	// process
 	var res []*PgClass
 	for rows.Next() {
-		pc := PgClass{}
+		pc := PgClass{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Relname, &pc.Relnamespace, &pc.Reltype, &pc.Reloftype, &pc.Relowner, &pc.Relam, &pc.Relfilenode, &pc.Reltablespace, &pc.Relpages, &pc.Reltuples, &pc.Relallvisible, &pc.Reltoastrelid, &pc.Relhasindex, &pc.Relisshared, &pc.Relpersistence, &pc.Relkind, &pc.Relnatts, &pc.Relchecks, &pc.Relhasrules, &pc.Relhastriggers, &pc.Relhassubclass, &pc.Relrowsecurity, &pc.Relforcerowsecurity, &pc.Relispopulated, &pc.Relreplident, &pc.Relispartition, &pc.Relrewrite, &pc.Relfrozenxid, &pc.Relminmxid, &pc.Relacl, &pc.Reloptions, &pc.Relpartbound); err != nil {
 			return nil, logerror(err)
@@ -2691,7 +9488,9 @@ func PgCollationByCollnameCollencodingCollnamespace(ctx context.Context, db DB, 
 		`WHERE collname = $1 AND collencoding = $2 AND collnamespace = $3`
 	// run
 	logf(sqlstr, collname, collencoding, collnamespace)
-	pc := PgCollation{}
+	pc := PgCollation{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, collname, collencoding, collnamespace).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Collname, &pc.Collnamespace, &pc.Collowner, &pc.Collprovider, &pc.Collisdeterministic, &pc.Collencoding, &pc.Collcollate, &pc.Collctype, &pc.Collversion); err != nil {
 		return nil, logerror(err)
 	}
@@ -2709,7 +9508,9 @@ func PgCollationByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgCollation
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pc := PgCollation{}
+	pc := PgCollation{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Collname, &pc.Collnamespace, &pc.Collowner, &pc.Collprovider, &pc.Collisdeterministic, &pc.Collencoding, &pc.Collcollate, &pc.Collctype, &pc.Collversion); err != nil {
 		return nil, logerror(err)
 	}
@@ -2735,7 +9536,9 @@ func PgConstraintByConnameConnamespace(ctx context.Context, db DB, conname strin
 	// process
 	var res []*PgConstraint
 	for rows.Next() {
-		pc := PgConstraint{}
+		pc := PgConstraint{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Contype, &pc.Condeferrable, &pc.Condeferred, &pc.Convalidated, &pc.Conrelid, &pc.Contypid, &pc.Conindid, &pc.Conparentid, &pc.Confrelid, &pc.Confupdtype, &pc.Confdeltype, &pc.Confmatchtype, &pc.Conislocal, &pc.Coninhcount, &pc.Connoinherit, &pc.Conkey, &pc.Confkey, &pc.Conpfeqop, &pc.Conppeqop, &pc.Conffeqop, &pc.Conexclop, &pc.Conbin); err != nil {
 			return nil, logerror(err)
@@ -2767,7 +9570,9 @@ func PgConstraintByConparentid(ctx context.Context, db DB, conparentid pgtypes.O
 	// process
 	var res []*PgConstraint
 	for rows.Next() {
-		pc := PgConstraint{}
+		pc := PgConstraint{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Contype, &pc.Condeferrable, &pc.Condeferred, &pc.Convalidated, &pc.Conrelid, &pc.Contypid, &pc.Conindid, &pc.Conparentid, &pc.Confrelid, &pc.Confupdtype, &pc.Confdeltype, &pc.Confmatchtype, &pc.Conislocal, &pc.Coninhcount, &pc.Connoinherit, &pc.Conkey, &pc.Confkey, &pc.Conpfeqop, &pc.Conppeqop, &pc.Conffeqop, &pc.Conexclop, &pc.Conbin); err != nil {
 			return nil, logerror(err)
@@ -2791,7 +9596,9 @@ func PgConstraintByConrelidContypidConname(ctx context.Context, db DB, conrelid,
 		`WHERE conrelid = $1 AND contypid = $2 AND conname = $3`
 	// run
 	logf(sqlstr, conrelid, contypid, conname)
-	pc := PgConstraint{}
+	pc := PgConstraint{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, conrelid, contypid, conname).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Contype, &pc.Condeferrable, &pc.Condeferred, &pc.Convalidated, &pc.Conrelid, &pc.Contypid, &pc.Conindid, &pc.Conparentid, &pc.Confrelid, &pc.Confupdtype, &pc.Confdeltype, &pc.Confmatchtype, &pc.Conislocal, &pc.Coninhcount, &pc.Connoinherit, &pc.Conkey, &pc.Confkey, &pc.Conpfeqop, &pc.Conppeqop, &pc.Conffeqop, &pc.Conexclop, &pc.Conbin); err != nil {
 		return nil, logerror(err)
 	}
@@ -2817,7 +9624,9 @@ func PgConstraintByContypid(ctx context.Context, db DB, contypid pgtypes.Oid) ([
 	// process
 	var res []*PgConstraint
 	for rows.Next() {
-		pc := PgConstraint{}
+		pc := PgConstraint{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Contype, &pc.Condeferrable, &pc.Condeferred, &pc.Convalidated, &pc.Conrelid, &pc.Contypid, &pc.Conindid, &pc.Conparentid, &pc.Confrelid, &pc.Confupdtype, &pc.Confdeltype, &pc.Confmatchtype, &pc.Conislocal, &pc.Coninhcount, &pc.Connoinherit, &pc.Conkey, &pc.Confkey, &pc.Conpfeqop, &pc.Conppeqop, &pc.Conffeqop, &pc.Conexclop, &pc.Conbin); err != nil {
 			return nil, logerror(err)
@@ -2841,7 +9650,9 @@ func PgConstraintByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgConstrai
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pc := PgConstraint{}
+	pc := PgConstraint{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Contype, &pc.Condeferrable, &pc.Condeferred, &pc.Convalidated, &pc.Conrelid, &pc.Contypid, &pc.Conindid, &pc.Conparentid, &pc.Confrelid, &pc.Confupdtype, &pc.Confdeltype, &pc.Confmatchtype, &pc.Conislocal, &pc.Coninhcount, &pc.Connoinherit, &pc.Conkey, &pc.Confkey, &pc.Conpfeqop, &pc.Conppeqop, &pc.Conffeqop, &pc.Conexclop, &pc.Conbin); err != nil {
 		return nil, logerror(err)
 	}
@@ -2859,7 +9670,9 @@ func PgConversionByConnamespaceConforencodingContoencodingOid(ctx context.Contex
 		`WHERE connamespace = $1 AND conforencoding = $2 AND contoencoding = $3 AND oid = $4`
 	// run
 	logf(sqlstr, connamespace, conforencoding, contoencoding, oid)
-	pc := PgConversion{}
+	pc := PgConversion{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, connamespace, conforencoding, contoencoding, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Conowner, &pc.Conforencoding, &pc.Contoencoding, &pc.Conproc, &pc.Condefault); err != nil {
 		return nil, logerror(err)
 	}
@@ -2877,7 +9690,9 @@ func PgConversionByConnameConnamespace(ctx context.Context, db DB, conname strin
 		`WHERE conname = $1 AND connamespace = $2`
 	// run
 	logf(sqlstr, conname, connamespace)
-	pc := PgConversion{}
+	pc := PgConversion{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, conname, connamespace).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Conowner, &pc.Conforencoding, &pc.Contoencoding, &pc.Conproc, &pc.Condefault); err != nil {
 		return nil, logerror(err)
 	}
@@ -2895,7 +9710,9 @@ func PgConversionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgConversi
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pc := PgConversion{}
+	pc := PgConversion{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pc.Tableoid, &pc.Cmax, &pc.Xmax, &pc.Cmin, &pc.Xmin, &pc.Ctid, &pc.Oid, &pc.Conname, &pc.Connamespace, &pc.Conowner, &pc.Conforencoding, &pc.Contoencoding, &pc.Conproc, &pc.Condefault); err != nil {
 		return nil, logerror(err)
 	}
@@ -2913,7 +9730,9 @@ func PgDatabaseByDatname(ctx context.Context, db DB, datname string) (*PgDatabas
 		`WHERE datname = $1`
 	// run
 	logf(sqlstr, datname)
-	pd := PgDatabase{}
+	pd := PgDatabase{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, datname).Scan(&pd.Tableoid, &pd.Cmax, &pd.Xmax, &pd.Cmin, &pd.Xmin, &pd.Ctid, &pd.Oid, &pd.Datname, &pd.Datdba, &pd.Encoding, &pd.Datcollate, &pd.Datctype, &pd.Datistemplate, &pd.Datallowconn, &pd.Datconnlimit, &pd.Datlastsysoid, &pd.Datfrozenxid, &pd.Datminmxid, &pd.Dattablespace, &pd.Datacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -2931,7 +9750,9 @@ func PgDatabaseByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgDatabase, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pd := PgDatabase{}
+	pd := PgDatabase{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pd.Tableoid, &pd.Cmax, &pd.Xmax, &pd.Cmin, &pd.Xmin, &pd.Ctid, &pd.Oid, &pd.Datname, &pd.Datdba, &pd.Encoding, &pd.Datcollate, &pd.Datctype, &pd.Datistemplate, &pd.Datallowconn, &pd.Datconnlimit, &pd.Datlastsysoid, &pd.Datfrozenxid, &pd.Datminmxid, &pd.Dattablespace, &pd.Datacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -2949,7 +9770,9 @@ func PgDbRoleSettingBySetdatabaseSetrole(ctx context.Context, db DB, setdatabase
 		`WHERE setdatabase = $1 AND setrole = $2`
 	// run
 	logf(sqlstr, setdatabase, setrole)
-	pdrs := PgDbRoleSetting{}
+	pdrs := PgDbRoleSetting{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, setdatabase, setrole).Scan(&pdrs.Tableoid, &pdrs.Cmax, &pdrs.Xmax, &pdrs.Cmin, &pdrs.Xmin, &pdrs.Ctid, &pdrs.Setdatabase, &pdrs.Setrole, &pdrs.Setconfig); err != nil {
 		return nil, logerror(err)
 	}
@@ -2967,7 +9790,9 @@ func PgDefaultACLByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgDefaultA
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pda := PgDefaultACL{}
+	pda := PgDefaultACL{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pda.Tableoid, &pda.Cmax, &pda.Xmax, &pda.Cmin, &pda.Xmin, &pda.Ctid, &pda.Oid, &pda.Defaclrole, &pda.Defaclnamespace, &pda.Defaclobjtype, &pda.Defaclacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -2985,7 +9810,9 @@ func PgDefaultACLByDefaclroleDefaclnamespaceDefaclobjtype(ctx context.Context, d
 		`WHERE defaclrole = $1 AND defaclnamespace = $2 AND defaclobjtype = $3`
 	// run
 	logf(sqlstr, defaclrole, defaclnamespace, defaclobjtype)
-	pda := PgDefaultACL{}
+	pda := PgDefaultACL{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, defaclrole, defaclnamespace, defaclobjtype).Scan(&pda.Tableoid, &pda.Cmax, &pda.Xmax, &pda.Cmin, &pda.Xmin, &pda.Ctid, &pda.Oid, &pda.Defaclrole, &pda.Defaclnamespace, &pda.Defaclobjtype, &pda.Defaclacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3067,7 +9894,9 @@ func PgDescriptionByObjoidClassoidObjsubid(ctx context.Context, db DB, objoid, c
 		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3`
 	// run
 	logf(sqlstr, objoid, classoid, objsubid)
-	pd := PgDescription{}
+	pd := PgDescription{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, objoid, classoid, objsubid).Scan(&pd.Tableoid, &pd.Cmax, &pd.Xmax, &pd.Cmin, &pd.Xmin, &pd.Ctid, &pd.Objoid, &pd.Classoid, &pd.Objsubid, &pd.Description); err != nil {
 		return nil, logerror(err)
 	}
@@ -3085,7 +9914,9 @@ func PgEnumByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgEnum, error) {
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pe := PgEnum{}
+	pe := PgEnum{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pe.Tableoid, &pe.Cmax, &pe.Xmax, &pe.Cmin, &pe.Xmin, &pe.Ctid, &pe.Oid, &pe.Enumtypid, &pe.Enumsortorder, &pe.Enumlabel); err != nil {
 		return nil, logerror(err)
 	}
@@ -3103,7 +9934,9 @@ func PgEnumByEnumtypidEnumlabel(ctx context.Context, db DB, enumtypid pgtypes.Oi
 		`WHERE enumtypid = $1 AND enumlabel = $2`
 	// run
 	logf(sqlstr, enumtypid, enumlabel)
-	pe := PgEnum{}
+	pe := PgEnum{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, enumtypid, enumlabel).Scan(&pe.Tableoid, &pe.Cmax, &pe.Xmax, &pe.Cmin, &pe.Xmin, &pe.Ctid, &pe.Oid, &pe.Enumtypid, &pe.Enumsortorder, &pe.Enumlabel); err != nil {
 		return nil, logerror(err)
 	}
@@ -3121,7 +9954,9 @@ func PgEnumByEnumtypidEnumsortorder(ctx context.Context, db DB, enumtypid pgtype
 		`WHERE enumtypid = $1 AND enumsortorder = $2`
 	// run
 	logf(sqlstr, enumtypid, enumsortorder)
-	pe := PgEnum{}
+	pe := PgEnum{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, enumtypid, enumsortorder).Scan(&pe.Tableoid, &pe.Cmax, &pe.Xmax, &pe.Cmin, &pe.Xmin, &pe.Ctid, &pe.Oid, &pe.Enumtypid, &pe.Enumsortorder, &pe.Enumlabel); err != nil {
 		return nil, logerror(err)
 	}
@@ -3139,7 +9974,9 @@ func PgEventTriggerByEvtname(ctx context.Context, db DB, evtname string) (*PgEve
 		`WHERE evtname = $1`
 	// run
 	logf(sqlstr, evtname)
-	pet := PgEventTrigger{}
+	pet := PgEventTrigger{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, evtname).Scan(&pet.Tableoid, &pet.Cmax, &pet.Xmax, &pet.Cmin, &pet.Xmin, &pet.Ctid, &pet.Oid, &pet.Evtname, &pet.Evtevent, &pet.Evtowner, &pet.Evtfoid, &pet.Evtenabled, &pet.Evttags); err != nil {
 		return nil, logerror(err)
 	}
@@ -3157,7 +9994,9 @@ func PgEventTriggerByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgEventT
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pet := PgEventTrigger{}
+	pet := PgEventTrigger{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pet.Tableoid, &pet.Cmax, &pet.Xmax, &pet.Cmin, &pet.Xmin, &pet.Ctid, &pet.Oid, &pet.Evtname, &pet.Evtevent, &pet.Evtowner, &pet.Evtfoid, &pet.Evtenabled, &pet.Evttags); err != nil {
 		return nil, logerror(err)
 	}
@@ -3175,7 +10014,9 @@ func PgExtensionByExtname(ctx context.Context, db DB, extname string) (*PgExtens
 		`WHERE extname = $1`
 	// run
 	logf(sqlstr, extname)
-	pe := PgExtension{}
+	pe := PgExtension{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, extname).Scan(&pe.Tableoid, &pe.Cmax, &pe.Xmax, &pe.Cmin, &pe.Xmin, &pe.Ctid, &pe.Oid, &pe.Extname, &pe.Extowner, &pe.Extnamespace, &pe.Extrelocatable, &pe.Extversion, &pe.Extconfig, &pe.Extcondition); err != nil {
 		return nil, logerror(err)
 	}
@@ -3193,7 +10034,9 @@ func PgExtensionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgExtension
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pe := PgExtension{}
+	pe := PgExtension{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pe.Tableoid, &pe.Cmax, &pe.Xmax, &pe.Cmin, &pe.Xmin, &pe.Ctid, &pe.Oid, &pe.Extname, &pe.Extowner, &pe.Extnamespace, &pe.Extrelocatable, &pe.Extversion, &pe.Extconfig, &pe.Extcondition); err != nil {
 		return nil, logerror(err)
 	}
@@ -3211,7 +10054,9 @@ func PgForeignDataWrapperByFdwname(ctx context.Context, db DB, fdwname string) (
 		`WHERE fdwname = $1`
 	// run
 	logf(sqlstr, fdwname)
-	pfdw := PgForeignDataWrapper{}
+	pfdw := PgForeignDataWrapper{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, fdwname).Scan(&pfdw.Tableoid, &pfdw.Cmax, &pfdw.Xmax, &pfdw.Cmin, &pfdw.Xmin, &pfdw.Ctid, &pfdw.Oid, &pfdw.Fdwname, &pfdw.Fdwowner, &pfdw.Fdwhandler, &pfdw.Fdwvalidator, &pfdw.Fdwacl, &pfdw.Fdwoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -3229,7 +10074,9 @@ func PgForeignDataWrapperByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*Pg
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pfdw := PgForeignDataWrapper{}
+	pfdw := PgForeignDataWrapper{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pfdw.Tableoid, &pfdw.Cmax, &pfdw.Xmax, &pfdw.Cmin, &pfdw.Xmin, &pfdw.Ctid, &pfdw.Oid, &pfdw.Fdwname, &pfdw.Fdwowner, &pfdw.Fdwhandler, &pfdw.Fdwvalidator, &pfdw.Fdwacl, &pfdw.Fdwoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -3247,7 +10094,9 @@ func PgForeignServerBySrvname(ctx context.Context, db DB, srvname string) (*PgFo
 		`WHERE srvname = $1`
 	// run
 	logf(sqlstr, srvname)
-	pfs := PgForeignServer{}
+	pfs := PgForeignServer{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, srvname).Scan(&pfs.Tableoid, &pfs.Cmax, &pfs.Xmax, &pfs.Cmin, &pfs.Xmin, &pfs.Ctid, &pfs.Oid, &pfs.Srvname, &pfs.Srvowner, &pfs.Srvfdw, &pfs.Srvtype, &pfs.Srvversion, &pfs.Srvacl, &pfs.Srvoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -3265,7 +10114,9 @@ func PgForeignServerByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgForei
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pfs := PgForeignServer{}
+	pfs := PgForeignServer{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pfs.Tableoid, &pfs.Cmax, &pfs.Xmax, &pfs.Cmin, &pfs.Xmin, &pfs.Ctid, &pfs.Oid, &pfs.Srvname, &pfs.Srvowner, &pfs.Srvfdw, &pfs.Srvtype, &pfs.Srvversion, &pfs.Srvacl, &pfs.Srvoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -3283,7 +10134,9 @@ func PgForeignTableByFtrelid(ctx context.Context, db DB, ftrelid pgtypes.Oid) (*
 		`WHERE ftrelid = $1`
 	// run
 	logf(sqlstr, ftrelid)
-	pft := PgForeignTable{}
+	pft := PgForeignTable{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, ftrelid).Scan(&pft.Tableoid, &pft.Cmax, &pft.Xmax, &pft.Cmin, &pft.Xmin, &pft.Ctid, &pft.Ftrelid, &pft.Ftserver, &pft.Ftoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -3301,7 +10154,9 @@ func PgIndexByIndexrelid(ctx context.Context, db DB, indexrelid pgtypes.Oid) (*P
 		`WHERE indexrelid = $1`
 	// run
 	logf(sqlstr, indexrelid)
-	pi := PgIndex{}
+	pi := PgIndex{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, indexrelid).Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Indexrelid, &pi.Indrelid, &pi.Indnatts, &pi.Indnkeyatts, &pi.Indisunique, &pi.Indisprimary, &pi.Indisexclusion, &pi.Indimmediate, &pi.Indisclustered, &pi.Indisvalid, &pi.Indcheckxmin, &pi.Indisready, &pi.Indislive, &pi.Indisreplident, &pi.Indkey, &pi.Indcollation, &pi.Indclass, &pi.Indoption, &pi.Indexprs, &pi.Indpred); err != nil {
 		return nil, logerror(err)
 	}
@@ -3327,7 +10182,9 @@ func PgIndexByIndrelid(ctx context.Context, db DB, indrelid pgtypes.Oid) ([]*PgI
 	// process
 	var res []*PgIndex
 	for rows.Next() {
-		pi := PgIndex{}
+		pi := PgIndex{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Indexrelid, &pi.Indrelid, &pi.Indnatts, &pi.Indnkeyatts, &pi.Indisunique, &pi.Indisprimary, &pi.Indisexclusion, &pi.Indimmediate, &pi.Indisclustered, &pi.Indisvalid, &pi.Indcheckxmin, &pi.Indisready, &pi.Indislive, &pi.Indisreplident, &pi.Indkey, &pi.Indcollation, &pi.Indclass, &pi.Indoption, &pi.Indexprs, &pi.Indpred); err != nil {
 			return nil, logerror(err)
@@ -3346,7 +10203,7 @@ func PgIndexByIndrelid(ctx context.Context, db DB, indrelid pgtypes.Oid) ([]*PgI
 func PgInheritsByInhparent(ctx context.Context, db DB, inhparent pgtypes.Oid) ([]*PgInherit, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno, inhdetachpending ` +
 		`FROM pg_catalog.pg_inherits ` +
 		`WHERE inhparent = $1`
 	// run
@@ -3359,9 +10216,11 @@ func PgInheritsByInhparent(ctx context.Context, db DB, inhparent pgtypes.Oid) ([
 	// process
 	var res []*PgInherit
 	for rows.Next() {
-		pi := PgInherit{}
+		pi := PgInherit{
+			_exists: true,
+		}
 		// scan
-		if err := rows.Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Inhrelid, &pi.Inhparent, &pi.Inhseqno); err != nil {
+		if err := rows.Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Inhrelid, &pi.Inhparent, &pi.Inhseqno, &pi.Inhdetachpending); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &pi)
@@ -3378,13 +10237,15 @@ func PgInheritsByInhparent(ctx context.Context, db DB, inhparent pgtypes.Oid) ([
 func PgInheritByInhrelidInhseqno(ctx context.Context, db DB, inhrelid pgtypes.Oid, inhseqno int) (*PgInherit, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, inhrelid, inhparent, inhseqno, inhdetachpending ` +
 		`FROM pg_catalog.pg_inherits ` +
 		`WHERE inhrelid = $1 AND inhseqno = $2`
 	// run
 	logf(sqlstr, inhrelid, inhseqno)
-	pi := PgInherit{}
-	if err := db.QueryRowContext(ctx, sqlstr, inhrelid, inhseqno).Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Inhrelid, &pi.Inhparent, &pi.Inhseqno); err != nil {
+	pi := PgInherit{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, inhrelid, inhseqno).Scan(&pi.Tableoid, &pi.Cmax, &pi.Xmax, &pi.Cmin, &pi.Xmin, &pi.Ctid, &pi.Inhrelid, &pi.Inhparent, &pi.Inhseqno, &pi.Inhdetachpending); err != nil {
 		return nil, logerror(err)
 	}
 	return &pi, nil
@@ -3401,7 +10262,9 @@ func PgInitPrivByObjoidClassoidObjsubid(ctx context.Context, db DB, objoid, clas
 		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3`
 	// run
 	logf(sqlstr, objoid, classoid, objsubid)
-	pip := PgInitPriv{}
+	pip := PgInitPriv{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, objoid, classoid, objsubid).Scan(&pip.Tableoid, &pip.Cmax, &pip.Xmax, &pip.Cmin, &pip.Xmin, &pip.Ctid, &pip.Objoid, &pip.Classoid, &pip.Objsubid, &pip.Privtype, &pip.Initprivs); err != nil {
 		return nil, logerror(err)
 	}
@@ -3419,7 +10282,9 @@ func PgLanguageByLanname(ctx context.Context, db DB, lanname string) (*PgLanguag
 		`WHERE lanname = $1`
 	// run
 	logf(sqlstr, lanname)
-	pl := PgLanguage{}
+	pl := PgLanguage{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, lanname).Scan(&pl.Tableoid, &pl.Cmax, &pl.Xmax, &pl.Cmin, &pl.Xmin, &pl.Ctid, &pl.Oid, &pl.Lanname, &pl.Lanowner, &pl.Lanispl, &pl.Lanpltrusted, &pl.Lanplcallfoid, &pl.Laninline, &pl.Lanvalidator, &pl.Lanacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3437,7 +10302,9 @@ func PgLanguageByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgLanguage, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pl := PgLanguage{}
+	pl := PgLanguage{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pl.Tableoid, &pl.Cmax, &pl.Xmax, &pl.Cmin, &pl.Xmin, &pl.Ctid, &pl.Oid, &pl.Lanname, &pl.Lanowner, &pl.Lanispl, &pl.Lanpltrusted, &pl.Lanplcallfoid, &pl.Laninline, &pl.Lanvalidator, &pl.Lanacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3455,7 +10322,9 @@ func PgLargeobjectByLoidPageno(ctx context.Context, db DB, loid pgtypes.Oid, pag
 		`WHERE loid = $1 AND pageno = $2`
 	// run
 	logf(sqlstr, loid, pageno)
-	pl := PgLargeobject{}
+	pl := PgLargeobject{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, loid, pageno).Scan(&pl.Tableoid, &pl.Cmax, &pl.Xmax, &pl.Cmin, &pl.Xmin, &pl.Ctid, &pl.Loid, &pl.Pageno, &pl.Data); err != nil {
 		return nil, logerror(err)
 	}
@@ -3473,7 +10342,9 @@ func PgLargeobjectMetadatumByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	plm := PgLargeobjectMetadatum{}
+	plm := PgLargeobjectMetadatum{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&plm.Tableoid, &plm.Cmax, &plm.Xmax, &plm.Cmin, &plm.Xmin, &plm.Ctid, &plm.Oid, &plm.Lomowner, &plm.Lomacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3491,7 +10362,9 @@ func PgNamespaceByNspname(ctx context.Context, db DB, nspname string) (*PgNamesp
 		`WHERE nspname = $1`
 	// run
 	logf(sqlstr, nspname)
-	pn := PgNamespace{}
+	pn := PgNamespace{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, nspname).Scan(&pn.Tableoid, &pn.Cmax, &pn.Xmax, &pn.Cmin, &pn.Xmin, &pn.Ctid, &pn.Oid, &pn.Nspname, &pn.Nspowner, &pn.Nspacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3509,7 +10382,9 @@ func PgNamespaceByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgNamespace
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pn := PgNamespace{}
+	pn := PgNamespace{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pn.Tableoid, &pn.Cmax, &pn.Xmax, &pn.Cmin, &pn.Xmin, &pn.Ctid, &pn.Oid, &pn.Nspname, &pn.Nspowner, &pn.Nspacl); err != nil {
 		return nil, logerror(err)
 	}
@@ -3527,7 +10402,9 @@ func PgOpclassByOpcmethodOpcnameOpcnamespace(ctx context.Context, db DB, opcmeth
 		`WHERE opcmethod = $1 AND opcname = $2 AND opcnamespace = $3`
 	// run
 	logf(sqlstr, opcmethod, opcname, opcnamespace)
-	po := PgOpclass{}
+	po := PgOpclass{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, opcmethod, opcname, opcnamespace).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Opcmethod, &po.Opcname, &po.Opcnamespace, &po.Opcowner, &po.Opcfamily, &po.Opcintype, &po.Opcdefault, &po.Opckeytype); err != nil {
 		return nil, logerror(err)
 	}
@@ -3545,7 +10422,9 @@ func PgOpclassByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgOpclass, er
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	po := PgOpclass{}
+	po := PgOpclass{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Opcmethod, &po.Opcname, &po.Opcnamespace, &po.Opcowner, &po.Opcfamily, &po.Opcintype, &po.Opcdefault, &po.Opckeytype); err != nil {
 		return nil, logerror(err)
 	}
@@ -3563,7 +10442,9 @@ func PgOperatorByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgOperator, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	po := PgOperator{}
+	po := PgOperator{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Oprname, &po.Oprnamespace, &po.Oprowner, &po.Oprkind, &po.Oprcanmerge, &po.Oprcanhash, &po.Oprleft, &po.Oprright, &po.Oprresult, &po.Oprcom, &po.Oprnegate, &po.Oprcode, &po.Oprrest, &po.Oprjoin); err != nil {
 		return nil, logerror(err)
 	}
@@ -3581,7 +10462,9 @@ func PgOperatorByOprnameOprleftOprrightOprnamespace(ctx context.Context, db DB, 
 		`WHERE oprname = $1 AND oprleft = $2 AND oprright = $3 AND oprnamespace = $4`
 	// run
 	logf(sqlstr, oprname, oprleft, oprright, oprnamespace)
-	po := PgOperator{}
+	po := PgOperator{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oprname, oprleft, oprright, oprnamespace).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Oprname, &po.Oprnamespace, &po.Oprowner, &po.Oprkind, &po.Oprcanmerge, &po.Oprcanhash, &po.Oprleft, &po.Oprright, &po.Oprresult, &po.Oprcom, &po.Oprnegate, &po.Oprcode, &po.Oprrest, &po.Oprjoin); err != nil {
 		return nil, logerror(err)
 	}
@@ -3599,7 +10482,9 @@ func PgOpfamilyByOpfmethodOpfnameOpfnamespace(ctx context.Context, db DB, opfmet
 		`WHERE opfmethod = $1 AND opfname = $2 AND opfnamespace = $3`
 	// run
 	logf(sqlstr, opfmethod, opfname, opfnamespace)
-	po := PgOpfamily{}
+	po := PgOpfamily{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, opfmethod, opfname, opfnamespace).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Opfmethod, &po.Opfname, &po.Opfnamespace, &po.Opfowner); err != nil {
 		return nil, logerror(err)
 	}
@@ -3617,7 +10502,9 @@ func PgOpfamilyByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgOpfamily, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	po := PgOpfamily{}
+	po := PgOpfamily{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&po.Tableoid, &po.Cmax, &po.Xmax, &po.Cmin, &po.Xmin, &po.Ctid, &po.Oid, &po.Opfmethod, &po.Opfname, &po.Opfnamespace, &po.Opfowner); err != nil {
 		return nil, logerror(err)
 	}
@@ -3635,7 +10522,9 @@ func PgPartitionedTableByPartrelid(ctx context.Context, db DB, partrelid pgtypes
 		`WHERE partrelid = $1`
 	// run
 	logf(sqlstr, partrelid)
-	ppt := PgPartitionedTable{}
+	ppt := PgPartitionedTable{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, partrelid).Scan(&ppt.Tableoid, &ppt.Cmax, &ppt.Xmax, &ppt.Cmin, &ppt.Xmin, &ppt.Ctid, &ppt.Partrelid, &ppt.Partstrat, &ppt.Partnatts, &ppt.Partdefid, &ppt.Partattrs, &ppt.Partclass, &ppt.Partcollation, &ppt.Partexprs); err != nil {
 		return nil, logerror(err)
 	}
@@ -3653,7 +10542,9 @@ func PgPolicyByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgPolicy, erro
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pp := PgPolicy{}
+	pp := PgPolicy{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Polname, &pp.Polrelid, &pp.Polcmd, &pp.Polpermissive, &pp.Polroles, &pp.Polqual, &pp.Polwithcheck); err != nil {
 		return nil, logerror(err)
 	}
@@ -3671,7 +10562,9 @@ func PgPolicyByPolrelidPolname(ctx context.Context, db DB, polrelid pgtypes.Oid,
 		`WHERE polrelid = $1 AND polname = $2`
 	// run
 	logf(sqlstr, polrelid, polname)
-	pp := PgPolicy{}
+	pp := PgPolicy{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, polrelid, polname).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Polname, &pp.Polrelid, &pp.Polcmd, &pp.Polpermissive, &pp.Polroles, &pp.Polqual, &pp.Polwithcheck); err != nil {
 		return nil, logerror(err)
 	}
@@ -3684,13 +10577,15 @@ func PgPolicyByPolrelidPolname(ctx context.Context, db DB, polrelid pgtypes.Oid,
 func PgProcByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgProc, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, proconfig, proacl ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, prosqlbody, proconfig, proacl ` +
 		`FROM pg_catalog.pg_proc ` +
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pp := PgProc{}
-	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Proname, &pp.Pronamespace, &pp.Proowner, &pp.Prolang, &pp.Procost, &pp.Prorows, &pp.Provariadic, &pp.Prosupport, &pp.Prokind, &pp.Prosecdef, &pp.Proleakproof, &pp.Proisstrict, &pp.Proretset, &pp.Provolatile, &pp.Proparallel, &pp.Pronargs, &pp.Pronargdefaults, &pp.Prorettype, &pp.Proargtypes, &pp.Proallargtypes, &pp.Proargmodes, &pp.Proargnames, &pp.Proargdefaults, &pp.Protrftypes, &pp.Prosrc, &pp.Probin, &pp.Proconfig, &pp.Proacl); err != nil {
+	pp := PgProc{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Proname, &pp.Pronamespace, &pp.Proowner, &pp.Prolang, &pp.Procost, &pp.Prorows, &pp.Provariadic, &pp.Prosupport, &pp.Prokind, &pp.Prosecdef, &pp.Proleakproof, &pp.Proisstrict, &pp.Proretset, &pp.Provolatile, &pp.Proparallel, &pp.Pronargs, &pp.Pronargdefaults, &pp.Prorettype, &pp.Proargtypes, &pp.Proallargtypes, &pp.Proargmodes, &pp.Proargnames, &pp.Proargdefaults, &pp.Protrftypes, &pp.Prosrc, &pp.Probin, &pp.Prosqlbody, &pp.Proconfig, &pp.Proacl); err != nil {
 		return nil, logerror(err)
 	}
 	return &pp, nil
@@ -3702,13 +10597,15 @@ func PgProcByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgProc, error) {
 func PgProcByPronameProargtypesPronamespace(ctx context.Context, db DB, proname string, proargtypes pgtypes.Oidvector, pronamespace pgtypes.Oid) (*PgProc, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, proconfig, proacl ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, proname, pronamespace, proowner, prolang, procost, prorows, provariadic, prosupport, prokind, prosecdef, proleakproof, proisstrict, proretset, provolatile, proparallel, pronargs, pronargdefaults, prorettype, proargtypes, proallargtypes, proargmodes, proargnames, proargdefaults, protrftypes, prosrc, probin, prosqlbody, proconfig, proacl ` +
 		`FROM pg_catalog.pg_proc ` +
 		`WHERE proname = $1 AND proargtypes = $2 AND pronamespace = $3`
 	// run
 	logf(sqlstr, proname, proargtypes, pronamespace)
-	pp := PgProc{}
-	if err := db.QueryRowContext(ctx, sqlstr, proname, proargtypes, pronamespace).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Proname, &pp.Pronamespace, &pp.Proowner, &pp.Prolang, &pp.Procost, &pp.Prorows, &pp.Provariadic, &pp.Prosupport, &pp.Prokind, &pp.Prosecdef, &pp.Proleakproof, &pp.Proisstrict, &pp.Proretset, &pp.Provolatile, &pp.Proparallel, &pp.Pronargs, &pp.Pronargdefaults, &pp.Prorettype, &pp.Proargtypes, &pp.Proallargtypes, &pp.Proargmodes, &pp.Proargnames, &pp.Proargdefaults, &pp.Protrftypes, &pp.Prosrc, &pp.Probin, &pp.Proconfig, &pp.Proacl); err != nil {
+	pp := PgProc{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, proname, proargtypes, pronamespace).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Proname, &pp.Pronamespace, &pp.Proowner, &pp.Prolang, &pp.Procost, &pp.Prorows, &pp.Provariadic, &pp.Prosupport, &pp.Prokind, &pp.Prosecdef, &pp.Proleakproof, &pp.Proisstrict, &pp.Proretset, &pp.Provolatile, &pp.Proparallel, &pp.Pronargs, &pp.Pronargdefaults, &pp.Prorettype, &pp.Proargtypes, &pp.Proallargtypes, &pp.Proargmodes, &pp.Proargnames, &pp.Proargdefaults, &pp.Protrftypes, &pp.Prosrc, &pp.Probin, &pp.Prosqlbody, &pp.Proconfig, &pp.Proacl); err != nil {
 		return nil, logerror(err)
 	}
 	return &pp, nil
@@ -3725,7 +10622,9 @@ func PgPublicationByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgPublica
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pp := PgPublication{}
+	pp := PgPublication{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Pubname, &pp.Pubowner, &pp.Puballtables, &pp.Pubinsert, &pp.Pubupdate, &pp.Pubdelete, &pp.Pubtruncate, &pp.Pubviaroot); err != nil {
 		return nil, logerror(err)
 	}
@@ -3743,7 +10642,9 @@ func PgPublicationByPubname(ctx context.Context, db DB, pubname string) (*PgPubl
 		`WHERE pubname = $1`
 	// run
 	logf(sqlstr, pubname)
-	pp := PgPublication{}
+	pp := PgPublication{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, pubname).Scan(&pp.Tableoid, &pp.Cmax, &pp.Xmax, &pp.Cmin, &pp.Xmin, &pp.Ctid, &pp.Oid, &pp.Pubname, &pp.Pubowner, &pp.Puballtables, &pp.Pubinsert, &pp.Pubupdate, &pp.Pubdelete, &pp.Pubtruncate, &pp.Pubviaroot); err != nil {
 		return nil, logerror(err)
 	}
@@ -3761,7 +10662,9 @@ func PgPublicationRelByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgPubl
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ppr := PgPublicationRel{}
+	ppr := PgPublicationRel{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ppr.Tableoid, &ppr.Cmax, &ppr.Xmax, &ppr.Cmin, &ppr.Xmin, &ppr.Ctid, &ppr.Oid, &ppr.Prpubid, &ppr.Prrelid); err != nil {
 		return nil, logerror(err)
 	}
@@ -3779,11 +10682,33 @@ func PgPublicationRelByPrrelidPrpubid(ctx context.Context, db DB, prrelid, prpub
 		`WHERE prrelid = $1 AND prpubid = $2`
 	// run
 	logf(sqlstr, prrelid, prpubid)
-	ppr := PgPublicationRel{}
+	ppr := PgPublicationRel{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, prrelid, prpubid).Scan(&ppr.Tableoid, &ppr.Cmax, &ppr.Xmax, &ppr.Cmin, &ppr.Xmin, &ppr.Ctid, &ppr.Oid, &ppr.Prpubid, &ppr.Prrelid); err != nil {
 		return nil, logerror(err)
 	}
 	return &ppr, nil
+}
+
+// PgRangeByRngmultitypid retrieves a row from 'pg_catalog.pg_range' as a PgRange.
+//
+// Generated from index 'pg_range_rngmultitypid_index'.
+func PgRangeByRngmultitypid(ctx context.Context, db DB, rngmultitypid pgtypes.Oid) (*PgRange, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, rngtypid, rngsubtype, rngmultitypid, rngcollation, rngsubopc, rngcanonical, rngsubdiff ` +
+		`FROM pg_catalog.pg_range ` +
+		`WHERE rngmultitypid = $1`
+	// run
+	logf(sqlstr, rngmultitypid)
+	pr := PgRange{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, rngmultitypid).Scan(&pr.Tableoid, &pr.Cmax, &pr.Xmax, &pr.Cmin, &pr.Xmin, &pr.Ctid, &pr.Rngtypid, &pr.Rngsubtype, &pr.Rngmultitypid, &pr.Rngcollation, &pr.Rngsubopc, &pr.Rngcanonical, &pr.Rngsubdiff); err != nil {
+		return nil, logerror(err)
+	}
+	return &pr, nil
 }
 
 // PgRangeByRngtypid retrieves a row from 'pg_catalog.pg_range' as a PgRange.
@@ -3792,13 +10717,15 @@ func PgPublicationRelByPrrelidPrpubid(ctx context.Context, db DB, prrelid, prpub
 func PgRangeByRngtypid(ctx context.Context, db DB, rngtypid pgtypes.Oid) (*PgRange, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, rngtypid, rngsubtype, rngcollation, rngsubopc, rngcanonical, rngsubdiff ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, rngtypid, rngsubtype, rngmultitypid, rngcollation, rngsubopc, rngcanonical, rngsubdiff ` +
 		`FROM pg_catalog.pg_range ` +
 		`WHERE rngtypid = $1`
 	// run
 	logf(sqlstr, rngtypid)
-	pr := PgRange{}
-	if err := db.QueryRowContext(ctx, sqlstr, rngtypid).Scan(&pr.Tableoid, &pr.Cmax, &pr.Xmax, &pr.Cmin, &pr.Xmin, &pr.Ctid, &pr.Rngtypid, &pr.Rngsubtype, &pr.Rngcollation, &pr.Rngsubopc, &pr.Rngcanonical, &pr.Rngsubdiff); err != nil {
+	pr := PgRange{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, rngtypid).Scan(&pr.Tableoid, &pr.Cmax, &pr.Xmax, &pr.Cmin, &pr.Xmin, &pr.Ctid, &pr.Rngtypid, &pr.Rngsubtype, &pr.Rngmultitypid, &pr.Rngcollation, &pr.Rngsubopc, &pr.Rngcanonical, &pr.Rngsubdiff); err != nil {
 		return nil, logerror(err)
 	}
 	return &pr, nil
@@ -3815,7 +10742,9 @@ func PgReplicationOriginByRoident(ctx context.Context, db DB, roident pgtypes.Oi
 		`WHERE roident = $1`
 	// run
 	logf(sqlstr, roident)
-	pro := PgReplicationOrigin{}
+	pro := PgReplicationOrigin{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, roident).Scan(&pro.Tableoid, &pro.Cmax, &pro.Xmax, &pro.Cmin, &pro.Xmin, &pro.Ctid, &pro.Roident, &pro.Roname); err != nil {
 		return nil, logerror(err)
 	}
@@ -3833,7 +10762,9 @@ func PgReplicationOriginByRoname(ctx context.Context, db DB, roname string) (*Pg
 		`WHERE roname = $1`
 	// run
 	logf(sqlstr, roname)
-	pro := PgReplicationOrigin{}
+	pro := PgReplicationOrigin{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, roname).Scan(&pro.Tableoid, &pro.Cmax, &pro.Xmax, &pro.Cmin, &pro.Xmin, &pro.Ctid, &pro.Roident, &pro.Roname); err != nil {
 		return nil, logerror(err)
 	}
@@ -3851,7 +10782,9 @@ func PgRewriteByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgRewrite, er
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pr := PgRewrite{}
+	pr := PgRewrite{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pr.Tableoid, &pr.Cmax, &pr.Xmax, &pr.Cmin, &pr.Xmin, &pr.Ctid, &pr.Oid, &pr.Rulename, &pr.EvClass, &pr.EvType, &pr.EvEnabled, &pr.IsInstead, &pr.EvQual, &pr.EvAction); err != nil {
 		return nil, logerror(err)
 	}
@@ -3869,7 +10802,9 @@ func PgRewriteByEvClassRulename(ctx context.Context, db DB, evClass pgtypes.Oid,
 		`WHERE ev_class = $1 AND rulename = $2`
 	// run
 	logf(sqlstr, evClass, rulename)
-	pr := PgRewrite{}
+	pr := PgRewrite{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, evClass, rulename).Scan(&pr.Tableoid, &pr.Cmax, &pr.Xmax, &pr.Cmin, &pr.Xmin, &pr.Ctid, &pr.Oid, &pr.Rulename, &pr.EvClass, &pr.EvType, &pr.EvEnabled, &pr.IsInstead, &pr.EvQual, &pr.EvAction); err != nil {
 		return nil, logerror(err)
 	}
@@ -3887,7 +10822,9 @@ func PgSeclabelByObjoidClassoidObjsubidProvider(ctx context.Context, db DB, objo
 		`WHERE objoid = $1 AND classoid = $2 AND objsubid = $3 AND provider = $4`
 	// run
 	logf(sqlstr, objoid, classoid, objsubid, provider)
-	ps := PgSeclabel{}
+	ps := PgSeclabel{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, objoid, classoid, objsubid, provider).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Objoid, &ps.Classoid, &ps.Objsubid, &ps.Provider, &ps.Label); err != nil {
 		return nil, logerror(err)
 	}
@@ -3905,7 +10842,9 @@ func PgSequenceBySeqrelid(ctx context.Context, db DB, seqrelid pgtypes.Oid) (*Pg
 		`WHERE seqrelid = $1`
 	// run
 	logf(sqlstr, seqrelid)
-	ps := PgSequence{}
+	ps := PgSequence{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, seqrelid).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Seqrelid, &ps.Seqtypid, &ps.Seqstart, &ps.Seqincrement, &ps.Seqmax, &ps.Seqmin, &ps.Seqcache, &ps.Seqcycle); err != nil {
 		return nil, logerror(err)
 	}
@@ -3987,7 +10926,9 @@ func PgShdescriptionByObjoidClassoid(ctx context.Context, db DB, objoid, classoi
 		`WHERE objoid = $1 AND classoid = $2`
 	// run
 	logf(sqlstr, objoid, classoid)
-	ps := PgShdescription{}
+	ps := PgShdescription{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, objoid, classoid).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Objoid, &ps.Classoid, &ps.Description); err != nil {
 		return nil, logerror(err)
 	}
@@ -4005,7 +10946,9 @@ func PgShseclabelByObjoidClassoidProvider(ctx context.Context, db DB, objoid, cl
 		`WHERE objoid = $1 AND classoid = $2 AND provider = $3`
 	// run
 	logf(sqlstr, objoid, classoid, provider)
-	ps := PgShseclabel{}
+	ps := PgShseclabel{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, objoid, classoid, provider).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Objoid, &ps.Classoid, &ps.Provider, &ps.Label); err != nil {
 		return nil, logerror(err)
 	}
@@ -4023,7 +10966,9 @@ func PgStatisticByStarelidStaattnumStainherit(ctx context.Context, db DB, starel
 		`WHERE starelid = $1 AND staattnum = $2 AND stainherit = $3`
 	// run
 	logf(sqlstr, starelid, staattnum, stainherit)
-	ps := PgStatistic{}
+	ps := PgStatistic{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, starelid, staattnum, stainherit).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Starelid, &ps.Staattnum, &ps.Stainherit, &ps.Stanullfrac, &ps.Stawidth, &ps.Stadistinct, &ps.Stakind1, &ps.Stakind2, &ps.Stakind3, &ps.Stakind4, &ps.Stakind5, &ps.Staop1, &ps.Staop2, &ps.Staop3, &ps.Staop4, &ps.Staop5, &ps.Stacoll1, &ps.Stacoll2, &ps.Stacoll3, &ps.Stacoll4, &ps.Stacoll5, &ps.Stanumbers1, &ps.Stanumbers2, &ps.Stanumbers3, &ps.Stanumbers4, &ps.Stanumbers5, &ps.Stavalues1, &ps.Stavalues2, &ps.Stavalues3, &ps.Stavalues4, &ps.Stavalues5); err != nil {
 		return nil, logerror(err)
 	}
@@ -4036,13 +10981,15 @@ func PgStatisticByStarelidStaattnumStainherit(ctx context.Context, db DB, starel
 func PgStatisticExtByStxnameStxnamespace(ctx context.Context, db DB, stxname string, stxnamespace pgtypes.Oid) (*PgStatisticExt, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind, stxexprs ` +
 		`FROM pg_catalog.pg_statistic_ext ` +
 		`WHERE stxname = $1 AND stxnamespace = $2`
 	// run
 	logf(sqlstr, stxname, stxnamespace)
-	pse := PgStatisticExt{}
-	if err := db.QueryRowContext(ctx, sqlstr, stxname, stxnamespace).Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind); err != nil {
+	pse := PgStatisticExt{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, stxname, stxnamespace).Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind, &pse.Stxexprs); err != nil {
 		return nil, logerror(err)
 	}
 	return &pse, nil
@@ -4054,13 +11001,15 @@ func PgStatisticExtByStxnameStxnamespace(ctx context.Context, db DB, stxname str
 func PgStatisticExtByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgStatisticExt, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind, stxexprs ` +
 		`FROM pg_catalog.pg_statistic_ext ` +
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pse := PgStatisticExt{}
-	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind); err != nil {
+	pse := PgStatisticExt{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind, &pse.Stxexprs); err != nil {
 		return nil, logerror(err)
 	}
 	return &pse, nil
@@ -4072,7 +11021,7 @@ func PgStatisticExtByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgStatis
 func PgStatisticExtByStxrelid(ctx context.Context, db DB, stxrelid pgtypes.Oid) ([]*PgStatisticExt, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, stxrelid, stxname, stxnamespace, stxowner, stxstattarget, stxkeys, stxkind, stxexprs ` +
 		`FROM pg_catalog.pg_statistic_ext ` +
 		`WHERE stxrelid = $1`
 	// run
@@ -4085,9 +11034,11 @@ func PgStatisticExtByStxrelid(ctx context.Context, db DB, stxrelid pgtypes.Oid) 
 	// process
 	var res []*PgStatisticExt
 	for rows.Next() {
-		pse := PgStatisticExt{}
+		pse := PgStatisticExt{
+			_exists: true,
+		}
 		// scan
-		if err := rows.Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind); err != nil {
+		if err := rows.Scan(&pse.Tableoid, &pse.Cmax, &pse.Xmax, &pse.Cmin, &pse.Xmin, &pse.Ctid, &pse.Oid, &pse.Stxrelid, &pse.Stxname, &pse.Stxnamespace, &pse.Stxowner, &pse.Stxstattarget, &pse.Stxkeys, &pse.Stxkind, &pse.Stxexprs); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &pse)
@@ -4104,13 +11055,15 @@ func PgStatisticExtByStxrelid(ctx context.Context, db DB, stxrelid pgtypes.Oid) 
 func PgStatisticExtDatumByStxoid(ctx context.Context, db DB, stxoid pgtypes.Oid) (*PgStatisticExtDatum, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, stxoid, stxdndistinct, stxddependencies, stxdmcv ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, stxoid, stxdndistinct, stxddependencies, stxdmcv, stxdexpr ` +
 		`FROM pg_catalog.pg_statistic_ext_data ` +
 		`WHERE stxoid = $1`
 	// run
 	logf(sqlstr, stxoid)
-	psed := PgStatisticExtDatum{}
-	if err := db.QueryRowContext(ctx, sqlstr, stxoid).Scan(&psed.Tableoid, &psed.Cmax, &psed.Xmax, &psed.Cmin, &psed.Xmin, &psed.Ctid, &psed.Stxoid, &psed.Stxdndistinct, &psed.Stxddependencies, &psed.Stxdmcv); err != nil {
+	psed := PgStatisticExtDatum{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, stxoid).Scan(&psed.Tableoid, &psed.Cmax, &psed.Xmax, &psed.Cmin, &psed.Xmin, &psed.Ctid, &psed.Stxoid, &psed.Stxdndistinct, &psed.Stxddependencies, &psed.Stxdmcv, &psed.Stxdexpr); err != nil {
 		return nil, logerror(err)
 	}
 	return &psed, nil
@@ -4122,13 +11075,15 @@ func PgStatisticExtDatumByStxoid(ctx context.Context, db DB, stxoid pgtypes.Oid)
 func PgSubscriptionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgSubscription, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subconninfo, subslotname, subsynccommit, subpublications ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subbinary, substream, subconninfo, subslotname, subsynccommit, subpublications ` +
 		`FROM pg_catalog.pg_subscription ` +
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ps := PgSubscription{}
-	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Oid, &ps.Subdbid, &ps.Subname, &ps.Subowner, &ps.Subenabled, &ps.Subconninfo, &ps.Subslotname, &ps.Subsynccommit, &ps.Subpublications); err != nil {
+	ps := PgSubscription{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Oid, &ps.Subdbid, &ps.Subname, &ps.Subowner, &ps.Subenabled, &ps.Subbinary, &ps.Substream, &ps.Subconninfo, &ps.Subslotname, &ps.Subsynccommit, &ps.Subpublications); err != nil {
 		return nil, logerror(err)
 	}
 	return &ps, nil
@@ -4140,13 +11095,15 @@ func PgSubscriptionByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgSubscr
 func PgSubscriptionBySubdbidSubname(ctx context.Context, db DB, subdbid pgtypes.Oid, subname string) (*PgSubscription, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subconninfo, subslotname, subsynccommit, subpublications ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, subdbid, subname, subowner, subenabled, subbinary, substream, subconninfo, subslotname, subsynccommit, subpublications ` +
 		`FROM pg_catalog.pg_subscription ` +
 		`WHERE subdbid = $1 AND subname = $2`
 	// run
 	logf(sqlstr, subdbid, subname)
-	ps := PgSubscription{}
-	if err := db.QueryRowContext(ctx, sqlstr, subdbid, subname).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Oid, &ps.Subdbid, &ps.Subname, &ps.Subowner, &ps.Subenabled, &ps.Subconninfo, &ps.Subslotname, &ps.Subsynccommit, &ps.Subpublications); err != nil {
+	ps := PgSubscription{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, subdbid, subname).Scan(&ps.Tableoid, &ps.Cmax, &ps.Xmax, &ps.Cmin, &ps.Xmin, &ps.Ctid, &ps.Oid, &ps.Subdbid, &ps.Subname, &ps.Subowner, &ps.Subenabled, &ps.Subbinary, &ps.Substream, &ps.Subconninfo, &ps.Subslotname, &ps.Subsynccommit, &ps.Subpublications); err != nil {
 		return nil, logerror(err)
 	}
 	return &ps, nil
@@ -4163,7 +11120,9 @@ func PgSubscriptionRelBySrrelidSrsubid(ctx context.Context, db DB, srrelid, srsu
 		`WHERE srrelid = $1 AND srsubid = $2`
 	// run
 	logf(sqlstr, srrelid, srsubid)
-	psr := PgSubscriptionRel{}
+	psr := PgSubscriptionRel{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, srrelid, srsubid).Scan(&psr.Tableoid, &psr.Cmax, &psr.Xmax, &psr.Cmin, &psr.Xmin, &psr.Ctid, &psr.Srsubid, &psr.Srrelid, &psr.Srsubstate, &psr.Srsublsn); err != nil {
 		return nil, logerror(err)
 	}
@@ -4181,7 +11140,9 @@ func PgTablespaceByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTablespa
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pt := PgTablespace{}
+	pt := PgTablespace{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Spcname, &pt.Spcowner, &pt.Spcacl, &pt.Spcoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -4199,7 +11160,9 @@ func PgTablespaceBySpcname(ctx context.Context, db DB, spcname string) (*PgTable
 		`WHERE spcname = $1`
 	// run
 	logf(sqlstr, spcname)
-	pt := PgTablespace{}
+	pt := PgTablespace{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, spcname).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Spcname, &pt.Spcowner, &pt.Spcacl, &pt.Spcoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -4217,7 +11180,9 @@ func PgTransformByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTransform
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pt := PgTransform{}
+	pt := PgTransform{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Trftype, &pt.Trflang, &pt.Trffromsql, &pt.Trftosql); err != nil {
 		return nil, logerror(err)
 	}
@@ -4235,7 +11200,9 @@ func PgTransformByTrftypeTrflang(ctx context.Context, db DB, trftype, trflang pg
 		`WHERE trftype = $1 AND trflang = $2`
 	// run
 	logf(sqlstr, trftype, trflang)
-	pt := PgTransform{}
+	pt := PgTransform{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, trftype, trflang).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Trftype, &pt.Trflang, &pt.Trffromsql, &pt.Trftosql); err != nil {
 		return nil, logerror(err)
 	}
@@ -4253,7 +11220,9 @@ func PgTriggerByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTrigger, er
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pt := PgTrigger{}
+	pt := PgTrigger{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Tgrelid, &pt.Tgparentid, &pt.Tgname, &pt.Tgfoid, &pt.Tgtype, &pt.Tgenabled, &pt.Tgisinternal, &pt.Tgconstrrelid, &pt.Tgconstrindid, &pt.Tgconstraint, &pt.Tgdeferrable, &pt.Tginitdeferred, &pt.Tgnargs, &pt.Tgattr, &pt.Tgargs, &pt.Tgqual, &pt.Tgoldtable, &pt.Tgnewtable); err != nil {
 		return nil, logerror(err)
 	}
@@ -4279,7 +11248,9 @@ func PgTriggerByTgconstraint(ctx context.Context, db DB, tgconstraint pgtypes.Oi
 	// process
 	var res []*PgTrigger
 	for rows.Next() {
-		pt := PgTrigger{}
+		pt := PgTrigger{
+			_exists: true,
+		}
 		// scan
 		if err := rows.Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Tgrelid, &pt.Tgparentid, &pt.Tgname, &pt.Tgfoid, &pt.Tgtype, &pt.Tgenabled, &pt.Tgisinternal, &pt.Tgconstrrelid, &pt.Tgconstrindid, &pt.Tgconstraint, &pt.Tgdeferrable, &pt.Tginitdeferred, &pt.Tgnargs, &pt.Tgattr, &pt.Tgargs, &pt.Tgqual, &pt.Tgoldtable, &pt.Tgnewtable); err != nil {
 			return nil, logerror(err)
@@ -4303,7 +11274,9 @@ func PgTriggerByTgrelidTgname(ctx context.Context, db DB, tgrelid pgtypes.Oid, t
 		`WHERE tgrelid = $1 AND tgname = $2`
 	// run
 	logf(sqlstr, tgrelid, tgname)
-	pt := PgTrigger{}
+	pt := PgTrigger{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, tgrelid, tgname).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Tgrelid, &pt.Tgparentid, &pt.Tgname, &pt.Tgfoid, &pt.Tgtype, &pt.Tgenabled, &pt.Tgisinternal, &pt.Tgconstrrelid, &pt.Tgconstrindid, &pt.Tgconstraint, &pt.Tgdeferrable, &pt.Tginitdeferred, &pt.Tgnargs, &pt.Tgattr, &pt.Tgargs, &pt.Tgqual, &pt.Tgoldtable, &pt.Tgnewtable); err != nil {
 		return nil, logerror(err)
 	}
@@ -4321,7 +11294,9 @@ func PgTsConfigByCfgnameCfgnamespace(ctx context.Context, db DB, cfgname string,
 		`WHERE cfgname = $1 AND cfgnamespace = $2`
 	// run
 	logf(sqlstr, cfgname, cfgnamespace)
-	ptc := PgTsConfig{}
+	ptc := PgTsConfig{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, cfgname, cfgnamespace).Scan(&ptc.Tableoid, &ptc.Cmax, &ptc.Xmax, &ptc.Cmin, &ptc.Xmin, &ptc.Ctid, &ptc.Oid, &ptc.Cfgname, &ptc.Cfgnamespace, &ptc.Cfgowner, &ptc.Cfgparser); err != nil {
 		return nil, logerror(err)
 	}
@@ -4339,7 +11314,9 @@ func PgTsConfigByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsConfig, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ptc := PgTsConfig{}
+	ptc := PgTsConfig{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ptc.Tableoid, &ptc.Cmax, &ptc.Xmax, &ptc.Cmin, &ptc.Xmin, &ptc.Ctid, &ptc.Oid, &ptc.Cfgname, &ptc.Cfgnamespace, &ptc.Cfgowner, &ptc.Cfgparser); err != nil {
 		return nil, logerror(err)
 	}
@@ -4357,7 +11334,9 @@ func PgTsConfigMapByMapcfgMaptokentypeMapseqno(ctx context.Context, db DB, mapcf
 		`WHERE mapcfg = $1 AND maptokentype = $2 AND mapseqno = $3`
 	// run
 	logf(sqlstr, mapcfg, maptokentype, mapseqno)
-	ptcm := PgTsConfigMap{}
+	ptcm := PgTsConfigMap{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, mapcfg, maptokentype, mapseqno).Scan(&ptcm.Tableoid, &ptcm.Cmax, &ptcm.Xmax, &ptcm.Cmin, &ptcm.Xmin, &ptcm.Ctid, &ptcm.Mapcfg, &ptcm.Maptokentype, &ptcm.Mapseqno, &ptcm.Mapdict); err != nil {
 		return nil, logerror(err)
 	}
@@ -4375,7 +11354,9 @@ func PgTsDictByDictnameDictnamespace(ctx context.Context, db DB, dictname string
 		`WHERE dictname = $1 AND dictnamespace = $2`
 	// run
 	logf(sqlstr, dictname, dictnamespace)
-	ptd := PgTsDict{}
+	ptd := PgTsDict{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, dictname, dictnamespace).Scan(&ptd.Tableoid, &ptd.Cmax, &ptd.Xmax, &ptd.Cmin, &ptd.Xmin, &ptd.Ctid, &ptd.Oid, &ptd.Dictname, &ptd.Dictnamespace, &ptd.Dictowner, &ptd.Dicttemplate, &ptd.Dictinitoption); err != nil {
 		return nil, logerror(err)
 	}
@@ -4393,7 +11374,9 @@ func PgTsDictByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsDict, erro
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ptd := PgTsDict{}
+	ptd := PgTsDict{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ptd.Tableoid, &ptd.Cmax, &ptd.Xmax, &ptd.Cmin, &ptd.Xmin, &ptd.Ctid, &ptd.Oid, &ptd.Dictname, &ptd.Dictnamespace, &ptd.Dictowner, &ptd.Dicttemplate, &ptd.Dictinitoption); err != nil {
 		return nil, logerror(err)
 	}
@@ -4411,7 +11394,9 @@ func PgTsParserByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsParser, 
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ptp := PgTsParser{}
+	ptp := PgTsParser{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ptp.Tableoid, &ptp.Cmax, &ptp.Xmax, &ptp.Cmin, &ptp.Xmin, &ptp.Ctid, &ptp.Oid, &ptp.Prsname, &ptp.Prsnamespace, &ptp.Prsstart, &ptp.Prstoken, &ptp.Prsend, &ptp.Prsheadline, &ptp.Prslextype); err != nil {
 		return nil, logerror(err)
 	}
@@ -4429,7 +11414,9 @@ func PgTsParserByPrsnamePrsnamespace(ctx context.Context, db DB, prsname string,
 		`WHERE prsname = $1 AND prsnamespace = $2`
 	// run
 	logf(sqlstr, prsname, prsnamespace)
-	ptp := PgTsParser{}
+	ptp := PgTsParser{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, prsname, prsnamespace).Scan(&ptp.Tableoid, &ptp.Cmax, &ptp.Xmax, &ptp.Cmin, &ptp.Xmin, &ptp.Ctid, &ptp.Oid, &ptp.Prsname, &ptp.Prsnamespace, &ptp.Prsstart, &ptp.Prstoken, &ptp.Prsend, &ptp.Prsheadline, &ptp.Prslextype); err != nil {
 		return nil, logerror(err)
 	}
@@ -4447,7 +11434,9 @@ func PgTsTemplateByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgTsTempla
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	ptt := PgTsTemplate{}
+	ptt := PgTsTemplate{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&ptt.Tableoid, &ptt.Cmax, &ptt.Xmax, &ptt.Cmin, &ptt.Xmin, &ptt.Ctid, &ptt.Oid, &ptt.Tmplname, &ptt.Tmplnamespace, &ptt.Tmplinit, &ptt.Tmpllexize); err != nil {
 		return nil, logerror(err)
 	}
@@ -4465,7 +11454,9 @@ func PgTsTemplateByTmplnameTmplnamespace(ctx context.Context, db DB, tmplname st
 		`WHERE tmplname = $1 AND tmplnamespace = $2`
 	// run
 	logf(sqlstr, tmplname, tmplnamespace)
-	ptt := PgTsTemplate{}
+	ptt := PgTsTemplate{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, tmplname, tmplnamespace).Scan(&ptt.Tableoid, &ptt.Cmax, &ptt.Xmax, &ptt.Cmin, &ptt.Xmin, &ptt.Ctid, &ptt.Oid, &ptt.Tmplname, &ptt.Tmplnamespace, &ptt.Tmplinit, &ptt.Tmpllexize); err != nil {
 		return nil, logerror(err)
 	}
@@ -4478,13 +11469,15 @@ func PgTsTemplateByTmplnameTmplnamespace(ctx context.Context, db DB, tmplname st
 func PgTypeByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgType, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typsubscript, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl ` +
 		`FROM pg_catalog.pg_type ` +
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pt := PgType{}
-	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Typname, &pt.Typnamespace, &pt.Typowner, &pt.Typlen, &pt.Typbyval, &pt.Typtype, &pt.Typcategory, &pt.Typispreferred, &pt.Typisdefined, &pt.Typdelim, &pt.Typrelid, &pt.Typelem, &pt.Typarray, &pt.Typinput, &pt.Typoutput, &pt.Typreceive, &pt.Typsend, &pt.Typmodin, &pt.Typmodout, &pt.Typanalyze, &pt.Typalign, &pt.Typstorage, &pt.Typnotnull, &pt.Typbasetype, &pt.Typtypmod, &pt.Typndims, &pt.Typcollation, &pt.Typdefaultbin, &pt.Typdefault, &pt.Typacl); err != nil {
+	pt := PgType{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Typname, &pt.Typnamespace, &pt.Typowner, &pt.Typlen, &pt.Typbyval, &pt.Typtype, &pt.Typcategory, &pt.Typispreferred, &pt.Typisdefined, &pt.Typdelim, &pt.Typrelid, &pt.Typsubscript, &pt.Typelem, &pt.Typarray, &pt.Typinput, &pt.Typoutput, &pt.Typreceive, &pt.Typsend, &pt.Typmodin, &pt.Typmodout, &pt.Typanalyze, &pt.Typalign, &pt.Typstorage, &pt.Typnotnull, &pt.Typbasetype, &pt.Typtypmod, &pt.Typndims, &pt.Typcollation, &pt.Typdefaultbin, &pt.Typdefault, &pt.Typacl); err != nil {
 		return nil, logerror(err)
 	}
 	return &pt, nil
@@ -4496,13 +11489,15 @@ func PgTypeByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgType, error) {
 func PgTypeByTypnameTypnamespace(ctx context.Context, db DB, typname string, typnamespace pgtypes.Oid) (*PgType, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl ` +
+		`tableoid, cmax, xmax, cmin, xmin, ctid, oid, typname, typnamespace, typowner, typlen, typbyval, typtype, typcategory, typispreferred, typisdefined, typdelim, typrelid, typsubscript, typelem, typarray, typinput, typoutput, typreceive, typsend, typmodin, typmodout, typanalyze, typalign, typstorage, typnotnull, typbasetype, typtypmod, typndims, typcollation, typdefaultbin, typdefault, typacl ` +
 		`FROM pg_catalog.pg_type ` +
 		`WHERE typname = $1 AND typnamespace = $2`
 	// run
 	logf(sqlstr, typname, typnamespace)
-	pt := PgType{}
-	if err := db.QueryRowContext(ctx, sqlstr, typname, typnamespace).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Typname, &pt.Typnamespace, &pt.Typowner, &pt.Typlen, &pt.Typbyval, &pt.Typtype, &pt.Typcategory, &pt.Typispreferred, &pt.Typisdefined, &pt.Typdelim, &pt.Typrelid, &pt.Typelem, &pt.Typarray, &pt.Typinput, &pt.Typoutput, &pt.Typreceive, &pt.Typsend, &pt.Typmodin, &pt.Typmodout, &pt.Typanalyze, &pt.Typalign, &pt.Typstorage, &pt.Typnotnull, &pt.Typbasetype, &pt.Typtypmod, &pt.Typndims, &pt.Typcollation, &pt.Typdefaultbin, &pt.Typdefault, &pt.Typacl); err != nil {
+	pt := PgType{
+		_exists: true,
+	}
+	if err := db.QueryRowContext(ctx, sqlstr, typname, typnamespace).Scan(&pt.Tableoid, &pt.Cmax, &pt.Xmax, &pt.Cmin, &pt.Xmin, &pt.Ctid, &pt.Oid, &pt.Typname, &pt.Typnamespace, &pt.Typowner, &pt.Typlen, &pt.Typbyval, &pt.Typtype, &pt.Typcategory, &pt.Typispreferred, &pt.Typisdefined, &pt.Typdelim, &pt.Typrelid, &pt.Typsubscript, &pt.Typelem, &pt.Typarray, &pt.Typinput, &pt.Typoutput, &pt.Typreceive, &pt.Typsend, &pt.Typmodin, &pt.Typmodout, &pt.Typanalyze, &pt.Typalign, &pt.Typstorage, &pt.Typnotnull, &pt.Typbasetype, &pt.Typtypmod, &pt.Typndims, &pt.Typcollation, &pt.Typdefaultbin, &pt.Typdefault, &pt.Typacl); err != nil {
 		return nil, logerror(err)
 	}
 	return &pt, nil
@@ -4519,7 +11514,9 @@ func PgUserMappingByOid(ctx context.Context, db DB, oid pgtypes.Oid) (*PgUserMap
 		`WHERE oid = $1`
 	// run
 	logf(sqlstr, oid)
-	pum := PgUserMapping{}
+	pum := PgUserMapping{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, oid).Scan(&pum.Tableoid, &pum.Cmax, &pum.Xmax, &pum.Cmin, &pum.Xmin, &pum.Ctid, &pum.Oid, &pum.Umuser, &pum.Umserver, &pum.Umoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -4537,7 +11534,9 @@ func PgUserMappingByUmuserUmserver(ctx context.Context, db DB, umuser, umserver 
 		`WHERE umuser = $1 AND umserver = $2`
 	// run
 	logf(sqlstr, umuser, umserver)
-	pum := PgUserMapping{}
+	pum := PgUserMapping{
+		_exists: true,
+	}
 	if err := db.QueryRowContext(ctx, sqlstr, umuser, umserver).Scan(&pum.Tableoid, &pum.Cmax, &pum.Xmax, &pum.Cmin, &pum.Xmin, &pum.Ctid, &pum.Oid, &pum.Umuser, &pum.Umserver, &pum.Umoptions); err != nil {
 		return nil, logerror(err)
 	}
@@ -5041,28 +12040,28 @@ func ArrayAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes
 	return r0, nil
 }
 
-// ArrayAppend calls the stored function 'pg_catalog.array_append(anyarray, anyelement) anyarray' on db.
-func ArrayAppend(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Anyelement) (pgtypes.Anyarray, error) {
+// ArrayAppend calls the stored function 'pg_catalog.array_append(anycompatiblearray, anycompatible) anycompatiblearray' on db.
+func ArrayAppend(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1 pgtypes.Anycompatible) (pgtypes.Anycompatiblearray, error) {
 	// call pg_catalog.array_append
 	const sqlstr = `SELECT * FROM pg_catalog.array_append($1, $2)`
 	// run
-	var r0 pgtypes.Anyarray
+	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return pgtypes.Anyarray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
 
-// ArrayCat calls the stored function 'pg_catalog.array_cat(anyarray, anyarray) anyarray' on db.
-func ArrayCat(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (pgtypes.Anyarray, error) {
+// ArrayCat calls the stored function 'pg_catalog.array_cat(anycompatiblearray, anycompatiblearray) anycompatiblearray' on db.
+func ArrayCat(ctx context.Context, db DB, p0, p1 pgtypes.Anycompatiblearray) (pgtypes.Anycompatiblearray, error) {
 	// call pg_catalog.array_cat
 	const sqlstr = `SELECT * FROM pg_catalog.array_cat($1, $2)`
 	// run
-	var r0 pgtypes.Anyarray
+	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return pgtypes.Anyarray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5236,8 +12235,8 @@ func ArrayNe(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (bool, error) 
 	return r0, nil
 }
 
-// ArrayPositionByAnyarrayAndAnyelement calls the stored function 'pg_catalog.array_position(anyarray, anyelement) integer' on db.
-func ArrayPositionByAnyarrayAndAnyelement(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Anyelement) (int, error) {
+// ArrayPositionByAnycompatiblearrayAndAnycompatible calls the stored function 'pg_catalog.array_position(anycompatiblearray, anycompatible) integer' on db.
+func ArrayPositionByAnycompatiblearrayAndAnycompatible(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1 pgtypes.Anycompatible) (int, error) {
 	// call pg_catalog.array_position
 	const sqlstr = `SELECT * FROM pg_catalog.array_position($1, $2)`
 	// run
@@ -5249,8 +12248,8 @@ func ArrayPositionByAnyarrayAndAnyelement(ctx context.Context, db DB, p0 pgtypes
 	return r0, nil
 }
 
-// ArrayPositionByAnyarrayAnyelementAndInteger calls the stored function 'pg_catalog.array_position(anyarray, anyelement, integer) integer' on db.
-func ArrayPositionByAnyarrayAnyelementAndInteger(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Anyelement, p2 int) (int, error) {
+// ArrayPositionByAnycompatiblearrayAnycompatibleAndInteger calls the stored function 'pg_catalog.array_position(anycompatiblearray, anycompatible, integer) integer' on db.
+func ArrayPositionByAnycompatiblearrayAnycompatibleAndInteger(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1 pgtypes.Anycompatible, p2 int) (int, error) {
 	// call pg_catalog.array_position
 	const sqlstr = `SELECT * FROM pg_catalog.array_position($1, $2, $3)`
 	// run
@@ -5262,8 +12261,8 @@ func ArrayPositionByAnyarrayAnyelementAndInteger(ctx context.Context, db DB, p0 
 	return r0, nil
 }
 
-// ArrayPositions calls the stored function 'pg_catalog.array_positions(anyarray, anyelement) integer' on db.
-func ArrayPositions(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Anyelement) ([]int, error) {
+// ArrayPositions calls the stored function 'pg_catalog.array_positions(anycompatiblearray, anycompatible) integer' on db.
+func ArrayPositions(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1 pgtypes.Anycompatible) ([]int, error) {
 	// call pg_catalog.array_positions
 	const sqlstr = `SELECT * FROM pg_catalog.array_positions($1, $2)`
 	// run
@@ -5275,15 +12274,15 @@ func ArrayPositions(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.
 	return r0, nil
 }
 
-// ArrayPrepend calls the stored function 'pg_catalog.array_prepend(anyelement, anyarray) anyarray' on db.
-func ArrayPrepend(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anyarray) (pgtypes.Anyarray, error) {
+// ArrayPrepend calls the stored function 'pg_catalog.array_prepend(anycompatible, anycompatiblearray) anycompatiblearray' on db.
+func ArrayPrepend(ctx context.Context, db DB, p0 pgtypes.Anycompatible, p1 pgtypes.Anycompatiblearray) (pgtypes.Anycompatiblearray, error) {
 	// call pg_catalog.array_prepend
 	const sqlstr = `SELECT * FROM pg_catalog.array_prepend($1, $2)`
 	// run
-	var r0 pgtypes.Anyarray
+	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return pgtypes.Anyarray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5301,28 +12300,28 @@ func ArrayRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, 
 	return r0, nil
 }
 
-// ArrayRemove calls the stored function 'pg_catalog.array_remove(anyarray, anyelement) anyarray' on db.
-func ArrayRemove(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 pgtypes.Anyelement) (pgtypes.Anyarray, error) {
+// ArrayRemove calls the stored function 'pg_catalog.array_remove(anycompatiblearray, anycompatible) anycompatiblearray' on db.
+func ArrayRemove(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1 pgtypes.Anycompatible) (pgtypes.Anycompatiblearray, error) {
 	// call pg_catalog.array_remove
 	const sqlstr = `SELECT * FROM pg_catalog.array_remove($1, $2)`
 	// run
-	var r0 pgtypes.Anyarray
+	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return pgtypes.Anyarray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
 
-// ArrayReplace calls the stored function 'pg_catalog.array_replace(anyarray, anyelement, anyelement) anyarray' on db.
-func ArrayReplace(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1, p2 pgtypes.Anyelement) (pgtypes.Anyarray, error) {
+// ArrayReplace calls the stored function 'pg_catalog.array_replace(anycompatiblearray, anycompatible, anycompatible) anycompatiblearray' on db.
+func ArrayReplace(ctx context.Context, db DB, p0 pgtypes.Anycompatiblearray, p1, p2 pgtypes.Anycompatible) (pgtypes.Anycompatiblearray, error) {
 	// call pg_catalog.array_replace
 	const sqlstr = `SELECT * FROM pg_catalog.array_replace($1, $2, $3)`
 	// run
-	var r0 pgtypes.Anyarray
+	var r0 pgtypes.Anycompatiblearray
 	logf(sqlstr, p0, p1, p2)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
-		return pgtypes.Anyarray{}, logerror(err)
+		return pgtypes.Anycompatiblearray{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5349,6 +12348,19 @@ func ArraySmaller(ctx context.Context, db DB, p0, p1 pgtypes.Anyarray) (pgtypes.
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return pgtypes.Anyarray{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// ArraySubscriptHandler calls the stored function 'pg_catalog.array_subscript_handler(internal) internal' on db.
+func ArraySubscriptHandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.array_subscript_handler
+	const sqlstr = `SELECT * FROM pg_catalog.array_subscript_handler($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -5639,40 +12651,43 @@ func Bernoulli(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.TsmHand
 	return r0, nil
 }
 
-// Big5ToEucTw calls the stored function 'pg_catalog.big5_to_euc_tw(integer, integer, cstring, internal, integer)' on db.
-func Big5ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Big5ToEucTw calls the stored function 'pg_catalog.big5_to_euc_tw(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Big5ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.big5_to_euc_tw
-	const sqlstr = `SELECT * FROM pg_catalog.big5_to_euc_tw($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.big5_to_euc_tw($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Big5ToMic calls the stored function 'pg_catalog.big5_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Big5ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Big5ToMic calls the stored function 'pg_catalog.big5_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Big5ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.big5_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.big5_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.big5_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Big5ToUTF8 calls the stored function 'pg_catalog.big5_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Big5ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Big5ToUTF8 calls the stored function 'pg_catalog.big5_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Big5ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.big5_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.big5_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.big5_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // BinaryUpgradeCreateEmptyExtension calls the stored function 'pg_catalog.binary_upgrade_create_empty_extension(text, text, boolean, text, oid, text, text)' on db.
@@ -5735,6 +12750,30 @@ func BinaryUpgradeSetNextIndexPgClassOid(ctx context.Context, db DB, p0 pgtypes.
 	return nil
 }
 
+// BinaryUpgradeSetNextMultirangeArrayPgTypeOid calls the stored function 'pg_catalog.binary_upgrade_set_next_multirange_array_pg_type_oid(oid)' on db.
+func BinaryUpgradeSetNextMultirangeArrayPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
+	// call pg_catalog.binary_upgrade_set_next_multirange_array_pg_type_oid
+	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_multirange_array_pg_type_oid($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// BinaryUpgradeSetNextMultirangePgTypeOid calls the stored function 'pg_catalog.binary_upgrade_set_next_multirange_pg_type_oid(oid)' on db.
+func BinaryUpgradeSetNextMultirangePgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
+	// call pg_catalog.binary_upgrade_set_next_multirange_pg_type_oid
+	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_multirange_pg_type_oid($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
 // BinaryUpgradeSetNextPgAuthidOid calls the stored function 'pg_catalog.binary_upgrade_set_next_pg_authid_oid(oid)' on db.
 func BinaryUpgradeSetNextPgAuthidOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_pg_authid_oid
@@ -5775,18 +12814,6 @@ func BinaryUpgradeSetNextPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) e
 func BinaryUpgradeSetNextToastPgClassOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
 	// call pg_catalog.binary_upgrade_set_next_toast_pg_class_oid
 	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_toast_pg_class_oid($1)`
-	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
-		return logerror(err)
-	}
-	return nil
-}
-
-// BinaryUpgradeSetNextToastPgTypeOid calls the stored function 'pg_catalog.binary_upgrade_set_next_toast_pg_type_oid(oid)' on db.
-func BinaryUpgradeSetNextToastPgTypeOid(ctx context.Context, db DB, p0 pgtypes.Oid) error {
-	// call pg_catalog.binary_upgrade_set_next_toast_pg_type_oid
-	const sqlstr = `SELECT * FROM pg_catalog.binary_upgrade_set_next_toast_pg_type_oid($1)`
 	// run
 	logf(sqlstr)
 	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
@@ -5841,6 +12868,32 @@ func BitByBigintAndInteger(ctx context.Context, db DB, p0 int64, p1 int) (uint8,
 	var r0 uint8
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BitCountByBit calls the stored function 'pg_catalog.bit_count(bit) bigint' on db.
+func BitCountByBit(ctx context.Context, db DB, p0 uint8) (int64, error) {
+	// call pg_catalog.bit_count
+	const sqlstr = `SELECT * FROM pg_catalog.bit_count($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BitCountByBytea calls the stored function 'pg_catalog.bit_count(bytea) bigint' on db.
+func BitCountByBytea(ctx context.Context, db DB, p0 []byte) (int64, error) {
+	// call pg_catalog.bit_count
+	const sqlstr = `SELECT * FROM pg_catalog.bit_count($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
 	}
 	return r0, nil
@@ -7119,6 +14172,96 @@ func Bpchartypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, erro
 	return r0, nil
 }
 
+// BrinBloomAddValue calls the stored function 'pg_catalog.brin_bloom_add_value(internal, internal, internal, internal) boolean' on db.
+func BrinBloomAddValue(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.brin_bloom_add_value
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_add_value($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinBloomConsistent calls the stored function 'pg_catalog.brin_bloom_consistent(internal, internal, internal, integer) boolean' on db.
+func BrinBloomConsistent(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal, p3 int) (bool, error) {
+	// call pg_catalog.brin_bloom_consistent
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_consistent($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinBloomOpcinfo calls the stored function 'pg_catalog.brin_bloom_opcinfo(internal) internal' on db.
+func BrinBloomOpcinfo(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.brin_bloom_opcinfo
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_opcinfo($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinBloomOptions calls the stored function 'pg_catalog.brin_bloom_options(internal)' on db.
+func BrinBloomOptions(ctx context.Context, db DB, p0 pgtypes.Internal) error {
+	// call pg_catalog.brin_bloom_options
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_options($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// BrinBloomSummaryRecv calls the stored function 'pg_catalog.brin_bloom_summary_recv(internal) pg_brin_bloom_summary' on db.
+func BrinBloomSummaryRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.PgBrinBloomSummary, error) {
+	// call pg_catalog.brin_bloom_summary_recv
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_summary_recv($1)`
+	// run
+	var r0 pgtypes.PgBrinBloomSummary
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.PgBrinBloomSummary{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinBloomSummarySend calls the stored function 'pg_catalog.brin_bloom_summary_send(pg_brin_bloom_summary) bytea' on db.
+func BrinBloomSummarySend(ctx context.Context, db DB, p0 pgtypes.PgBrinBloomSummary) ([]byte, error) {
+	// call pg_catalog.brin_bloom_summary_send
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_summary_send($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinBloomUnion calls the stored function 'pg_catalog.brin_bloom_union(internal, internal, internal) boolean' on db.
+func BrinBloomUnion(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.brin_bloom_union
+	const sqlstr = `SELECT * FROM pg_catalog.brin_bloom_union($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // BrinDesummarizeRange calls the stored function 'pg_catalog.brin_desummarize_range(regclass, bigint)' on db.
 func BrinDesummarizeRange(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 int64) error {
 	// call pg_catalog.brin_desummarize_range
@@ -7200,6 +14343,317 @@ func BrinMinmaxAddValue(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Inter
 func BrinMinmaxConsistent(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (bool, error) {
 	// call pg_catalog.brin_minmax_consistent
 	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_consistent($1, $2, $3)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiAddValue calls the stored function 'pg_catalog.brin_minmax_multi_add_value(internal, internal, internal, internal) boolean' on db.
+func BrinMinmaxMultiAddValue(ctx context.Context, db DB, p0, p1, p2, p3 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.brin_minmax_multi_add_value
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_add_value($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiConsistent calls the stored function 'pg_catalog.brin_minmax_multi_consistent(internal, internal, internal, integer) boolean' on db.
+func BrinMinmaxMultiConsistent(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal, p3 int) (bool, error) {
+	// call pg_catalog.brin_minmax_multi_consistent
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_consistent($1, $2, $3, $4)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceDate calls the stored function 'pg_catalog.brin_minmax_multi_distance_date(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceDate(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_date
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_date($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceFloat4 calls the stored function 'pg_catalog.brin_minmax_multi_distance_float4(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceFloat4(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_float4
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_float4($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceFloat8 calls the stored function 'pg_catalog.brin_minmax_multi_distance_float8(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceFloat8(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_float8
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_float8($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceInet calls the stored function 'pg_catalog.brin_minmax_multi_distance_inet(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceInet(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_inet
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_inet($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceInt2 calls the stored function 'pg_catalog.brin_minmax_multi_distance_int2(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceInt2(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_int2
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_int2($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceInt4 calls the stored function 'pg_catalog.brin_minmax_multi_distance_int4(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceInt4(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_int4
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_int4($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceInt8 calls the stored function 'pg_catalog.brin_minmax_multi_distance_int8(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceInt8(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_int8
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_int8($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceInterval calls the stored function 'pg_catalog.brin_minmax_multi_distance_interval(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceInterval(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_interval
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_interval($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceMacaddr calls the stored function 'pg_catalog.brin_minmax_multi_distance_macaddr(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceMacaddr(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_macaddr
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_macaddr($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceMacaddr8 calls the stored function 'pg_catalog.brin_minmax_multi_distance_macaddr8(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceMacaddr8(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_macaddr8
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_macaddr8($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceNumeric calls the stored function 'pg_catalog.brin_minmax_multi_distance_numeric(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceNumeric(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_numeric
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_numeric($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistancePgLsn calls the stored function 'pg_catalog.brin_minmax_multi_distance_pg_lsn(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistancePgLsn(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_pg_lsn
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_pg_lsn($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceTid calls the stored function 'pg_catalog.brin_minmax_multi_distance_tid(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceTid(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_tid
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_tid($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceTime calls the stored function 'pg_catalog.brin_minmax_multi_distance_time(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceTime(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_time
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_time($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceTimestamp calls the stored function 'pg_catalog.brin_minmax_multi_distance_timestamp(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceTimestamp(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_timestamp
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_timestamp($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceTimetz calls the stored function 'pg_catalog.brin_minmax_multi_distance_timetz(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceTimetz(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_timetz
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_timetz($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiDistanceUUID calls the stored function 'pg_catalog.brin_minmax_multi_distance_uuid(internal, internal) double precision' on db.
+func BrinMinmaxMultiDistanceUUID(ctx context.Context, db DB, p0, p1 pgtypes.Internal) (float64, error) {
+	// call pg_catalog.brin_minmax_multi_distance_uuid
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_distance_uuid($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiOpcinfo calls the stored function 'pg_catalog.brin_minmax_multi_opcinfo(internal) internal' on db.
+func BrinMinmaxMultiOpcinfo(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.brin_minmax_multi_opcinfo
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_opcinfo($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiOptions calls the stored function 'pg_catalog.brin_minmax_multi_options(internal)' on db.
+func BrinMinmaxMultiOptions(ctx context.Context, db DB, p0 pgtypes.Internal) error {
+	// call pg_catalog.brin_minmax_multi_options
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_options($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
+// BrinMinmaxMultiSummaryRecv calls the stored function 'pg_catalog.brin_minmax_multi_summary_recv(internal) pg_brin_minmax_multi_summary' on db.
+func BrinMinmaxMultiSummaryRecv(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.PgBrinMinmaxMultiSummary, error) {
+	// call pg_catalog.brin_minmax_multi_summary_recv
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_summary_recv($1)`
+	// run
+	var r0 pgtypes.PgBrinMinmaxMultiSummary
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.PgBrinMinmaxMultiSummary{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiSummarySend calls the stored function 'pg_catalog.brin_minmax_multi_summary_send(pg_brin_minmax_multi_summary) bytea' on db.
+func BrinMinmaxMultiSummarySend(ctx context.Context, db DB, p0 pgtypes.PgBrinMinmaxMultiSummary) ([]byte, error) {
+	// call pg_catalog.brin_minmax_multi_summary_send
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_summary_send($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// BrinMinmaxMultiUnion calls the stored function 'pg_catalog.brin_minmax_multi_union(internal, internal, internal) boolean' on db.
+func BrinMinmaxMultiUnion(ctx context.Context, db DB, p0, p1, p2 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.brin_minmax_multi_union
+	const sqlstr = `SELECT * FROM pg_catalog.brin_minmax_multi_union($1, $2, $3)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1, p2)
@@ -9473,19 +16927,6 @@ func CurrentUser(ctx context.Context, db DB) (string, error) {
 	return r0, nil
 }
 
-// Currtid calls the stored function 'pg_catalog.currtid(oid, tid) tid' on db.
-func Currtid(ctx context.Context, db DB, p0 pgtypes.Oid, p1 pgtypes.Tid) (pgtypes.Tid, error) {
-	// call pg_catalog.currtid
-	const sqlstr = `SELECT * FROM pg_catalog.currtid($1, $2)`
-	// run
-	var r0 pgtypes.Tid
-	logf(sqlstr, p0, p1)
-	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
-		return pgtypes.Tid{}, logerror(err)
-	}
-	return r0, nil
-}
-
 // Currtid2 calls the stored function 'pg_catalog.currtid2(text, tid) tid' on db.
 func Currtid2(ctx context.Context, db DB, p0 string, p1 pgtypes.Tid) (pgtypes.Tid, error) {
 	// call pg_catalog.currtid2
@@ -9598,6 +17039,32 @@ func DateByTimestampWithoutTimeZone(ctx context.Context, db DB, p0 time.Time) (t
 	var r0 time.Time
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// DateBinByIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.date_bin(interval, timestamp without time zone, timestamp without time zone) timestamp without time zone' on db.
+func DateBinByIntervalTimestampWithoutTimeZoneAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 []byte, p1, p2 time.Time) (time.Time, error) {
+	// call pg_catalog.date_bin
+	const sqlstr = `SELECT * FROM pg_catalog.date_bin($1, $2, $3)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// DateBinByIntervalTimestampWithTimeZoneAndTimestampWithTimeZone calls the stored function 'pg_catalog.date_bin(interval, timestamp with time zone, timestamp with time zone) timestamp with time zone' on db.
+func DateBinByIntervalTimestampWithTimeZoneAndTimestampWithTimeZone(ctx context.Context, db DB, p0 []byte, p1, p2 time.Time) (time.Time, error) {
+	// call pg_catalog.date_bin
+	const sqlstr = `SELECT * FROM pg_catalog.date_bin($1, $2, $3)`
+	// run
+	var r0 time.Time
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
 		return time.Time{}, logerror(err)
 	}
 	return r0, nil
@@ -10131,6 +17598,32 @@ func DateTruncByTextAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 s
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return time.Time{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// Datemultirange calls the stored function 'pg_catalog.datemultirange() datemultirange' on db.
+func Datemultirange(ctx context.Context, db DB) (pgtypes.Datemultirange, error) {
+	// call pg_catalog.datemultirange
+	const sqlstr = `SELECT * FROM pg_catalog.datemultirange()`
+	// run
+	var r0 pgtypes.Datemultirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Datemultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// DatemultirangeByDaterange calls the stored function 'pg_catalog.datemultirange(daterange) datemultirange' on db.
+func DatemultirangeByDaterange(ctx context.Context, db DB, p0 pgtypes.Daterange) (pgtypes.Datemultirange, error) {
+	// call pg_catalog.datemultirange
+	const sqlstr = `SELECT * FROM pg_catalog.datemultirange($1)`
+	// run
+	var r0 pgtypes.Datemultirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Datemultirange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -10759,6 +18252,19 @@ func Dtrunc(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
+// ElemContainedByMultirange calls the stored function 'pg_catalog.elem_contained_by_multirange(anyelement, anymultirange) boolean' on db.
+func ElemContainedByMultirange(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.elem_contained_by_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.elem_contained_by_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // ElemContainedByRange calls the stored function 'pg_catalog.elem_contained_by_range(anyelement, anyrange) boolean' on db.
 func ElemContainedByRange(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.elem_contained_by_range
@@ -11006,148 +18512,160 @@ func Eqsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p2 p
 	return r0, nil
 }
 
-// EucCnToMic calls the stored function 'pg_catalog.euc_cn_to_mic(integer, integer, cstring, internal, integer)' on db.
-func EucCnToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucCnToMic calls the stored function 'pg_catalog.euc_cn_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucCnToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_cn_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucCnToUTF8 calls the stored function 'pg_catalog.euc_cn_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func EucCnToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucCnToUTF8 calls the stored function 'pg_catalog.euc_cn_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucCnToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_cn_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_cn_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucJis2004ToShiftJis2004 calls the stored function 'pg_catalog.euc_jis_2004_to_shift_jis_2004(integer, integer, cstring, internal, integer)' on db.
-func EucJis2004ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucJis2004ToShiftJis2004 calls the stored function 'pg_catalog.euc_jis_2004_to_shift_jis_2004(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucJis2004ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_jis_2004_to_shift_jis_2004
-	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_shift_jis_2004($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_shift_jis_2004($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucJis2004ToUTF8 calls the stored function 'pg_catalog.euc_jis_2004_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func EucJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucJis2004ToUTF8 calls the stored function 'pg_catalog.euc_jis_2004_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_jis_2004_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_jis_2004_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucJpToMic calls the stored function 'pg_catalog.euc_jp_to_mic(integer, integer, cstring, internal, integer)' on db.
-func EucJpToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucJpToMic calls the stored function 'pg_catalog.euc_jp_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucJpToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_jp_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucJpToSjis calls the stored function 'pg_catalog.euc_jp_to_sjis(integer, integer, cstring, internal, integer)' on db.
-func EucJpToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucJpToSjis calls the stored function 'pg_catalog.euc_jp_to_sjis(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucJpToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_jp_to_sjis
-	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_sjis($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_sjis($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucJpToUTF8 calls the stored function 'pg_catalog.euc_jp_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func EucJpToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucJpToUTF8 calls the stored function 'pg_catalog.euc_jp_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucJpToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_jp_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_jp_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucKrToMic calls the stored function 'pg_catalog.euc_kr_to_mic(integer, integer, cstring, internal, integer)' on db.
-func EucKrToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucKrToMic calls the stored function 'pg_catalog.euc_kr_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucKrToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_kr_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucKrToUTF8 calls the stored function 'pg_catalog.euc_kr_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func EucKrToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucKrToUTF8 calls the stored function 'pg_catalog.euc_kr_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucKrToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_kr_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_kr_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucTwToBig5 calls the stored function 'pg_catalog.euc_tw_to_big5(integer, integer, cstring, internal, integer)' on db.
-func EucTwToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucTwToBig5 calls the stored function 'pg_catalog.euc_tw_to_big5(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucTwToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_tw_to_big5
-	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_big5($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_big5($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucTwToMic calls the stored function 'pg_catalog.euc_tw_to_mic(integer, integer, cstring, internal, integer)' on db.
-func EucTwToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucTwToMic calls the stored function 'pg_catalog.euc_tw_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucTwToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_tw_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// EucTwToUTF8 calls the stored function 'pg_catalog.euc_tw_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func EucTwToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// EucTwToUTF8 calls the stored function 'pg_catalog.euc_tw_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func EucTwToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.euc_tw_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.euc_tw_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // ExpByDoublePrecision calls the stored function 'pg_catalog.exp(double precision) double precision' on db.
@@ -11171,6 +18689,84 @@ func ExpByNumeric(ctx context.Context, db DB, p0 float64) (float64, error) {
 	var r0 float64
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndDate calls the stored function 'pg_catalog.extract(text, date) numeric' on db.
+func ExtractByTextAndDate(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndTimeWithoutTimeZone calls the stored function 'pg_catalog.extract(text, time without time zone) numeric' on db.
+func ExtractByTextAndTimeWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndTimeWithTimeZone calls the stored function 'pg_catalog.extract(text, time with time zone) numeric' on db.
+func ExtractByTextAndTimeWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndTimestampWithoutTimeZone calls the stored function 'pg_catalog.extract(text, timestamp without time zone) numeric' on db.
+func ExtractByTextAndTimestampWithoutTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndTimestampWithTimeZone calls the stored function 'pg_catalog.extract(text, timestamp with time zone) numeric' on db.
+func ExtractByTextAndTimestampWithTimeZone(ctx context.Context, db DB, p0 string, p1 time.Time) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// ExtractByTextAndInterval calls the stored function 'pg_catalog.extract(text, interval) numeric' on db.
+func ExtractByTextAndInterval(ctx context.Context, db DB, p0 string, p1 []byte) (float64, error) {
+	// call pg_catalog.extract
+	const sqlstr = `SELECT * FROM pg_catalog.extract($1, $2)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
 	}
 	return r0, nil
@@ -12447,28 +20043,30 @@ func FormatType(ctx context.Context, db DB, p0 pgtypes.Oid, p1 int) (string, err
 	return r0, nil
 }
 
-// Gb18030ToUTF8 calls the stored function 'pg_catalog.gb18030_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Gb18030ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Gb18030ToUTF8 calls the stored function 'pg_catalog.gb18030_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Gb18030ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.gb18030_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.gb18030_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.gb18030_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// GbkToUTF8 calls the stored function 'pg_catalog.gbk_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func GbkToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// GbkToUTF8 calls the stored function 'pg_catalog.gbk_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func GbkToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.gbk_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.gbk_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.gbk_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // GcdByIntegerAndInteger calls the stored function 'pg_catalog.gcd(integer, integer) integer' on db.
@@ -13275,6 +20873,18 @@ func GistPointFetch(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.In
 		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
+}
+
+// GistPointSortsupport calls the stored function 'pg_catalog.gist_point_sortsupport(internal)' on db.
+func GistPointSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
+	// call pg_catalog.gist_point_sortsupport
+	const sqlstr = `SELECT * FROM pg_catalog.gist_point_sortsupport($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
 }
 
 // GistPolyCompress calls the stored function 'pg_catalog.gist_poly_compress(internal) internal' on db.
@@ -14602,6 +22212,32 @@ func HashArrayExtended(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 int64
 	return r0, nil
 }
 
+// HashMultirange calls the stored function 'pg_catalog.hash_multirange(anymultirange) integer' on db.
+func HashMultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (int, error) {
+	// call pg_catalog.hash_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.hash_multirange($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// HashMultirangeExtended calls the stored function 'pg_catalog.hash_multirange_extended(anymultirange, bigint) bigint' on db.
+func HashMultirangeExtended(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 int64) (int64, error) {
+	// call pg_catalog.hash_multirange_extended
+	const sqlstr = `SELECT * FROM pg_catalog.hash_multirange_extended($1, $2)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
 // HashNumeric calls the stored function 'pg_catalog.hash_numeric(numeric) integer' on db.
 func HashNumeric(ctx context.Context, db DB, p0 float64) (int, error) {
 	// call pg_catalog.hash_numeric
@@ -14645,6 +22281,32 @@ func HashRange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (int, error) {
 func HashRangeExtended(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 int64) (int64, error) {
 	// call pg_catalog.hash_range_extended
 	const sqlstr = `SELECT * FROM pg_catalog.hash_range_extended($1, $2)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// HashRecord calls the stored function 'pg_catalog.hash_record(record) integer' on db.
+func HashRecord(ctx context.Context, db DB, p0 pgtypes.Record) (int, error) {
+	// call pg_catalog.hash_record
+	const sqlstr = `SELECT * FROM pg_catalog.hash_record($1)`
+	// run
+	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// HashRecordExtended calls the stored function 'pg_catalog.hash_record_extended(record, bigint) bigint' on db.
+func HashRecordExtended(ctx context.Context, db DB, p0 pgtypes.Record, p1 int64) (int64, error) {
+	// call pg_catalog.hash_record_extended
+	const sqlstr = `SELECT * FROM pg_catalog.hash_record_extended($1, $2)`
 	// run
 	var r0 int64
 	logf(sqlstr, p0, p1)
@@ -17224,6 +24886,32 @@ func Int4mul(ctx context.Context, db DB, p0, p1 int) (int, error) {
 	return r0, nil
 }
 
+// Int4multirange calls the stored function 'pg_catalog.int4multirange() int4multirange' on db.
+func Int4multirange(ctx context.Context, db DB) (pgtypes.Int4multirange, error) {
+	// call pg_catalog.int4multirange
+	const sqlstr = `SELECT * FROM pg_catalog.int4multirange()`
+	// run
+	var r0 pgtypes.Int4multirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Int4multirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int4multirangeByInt4range calls the stored function 'pg_catalog.int4multirange(int4range) int4multirange' on db.
+func Int4multirangeByInt4range(ctx context.Context, db DB, p0 pgtypes.Int4range) (pgtypes.Int4multirange, error) {
+	// call pg_catalog.int4multirange
+	const sqlstr = `SELECT * FROM pg_catalog.int4multirange($1)`
+	// run
+	var r0 pgtypes.Int4multirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Int4multirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // Int4ne calls the stored function 'pg_catalog.int4ne(integer, integer) boolean' on db.
 func Int4ne(ctx context.Context, db DB, p0, p1 int) (bool, error) {
 	// call pg_catalog.int4ne
@@ -18147,6 +25835,32 @@ func Int8mul(ctx context.Context, db DB, p0, p1 int64) (int64, error) {
 	return r0, nil
 }
 
+// Int8multirange calls the stored function 'pg_catalog.int8multirange() int8multirange' on db.
+func Int8multirange(ctx context.Context, db DB) (pgtypes.Int8multirange, error) {
+	// call pg_catalog.int8multirange
+	const sqlstr = `SELECT * FROM pg_catalog.int8multirange()`
+	// run
+	var r0 pgtypes.Int8multirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Int8multirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// Int8multirangeByInt8range calls the stored function 'pg_catalog.int8multirange(int8range) int8multirange' on db.
+func Int8multirangeByInt8range(ctx context.Context, db DB, p0 pgtypes.Int8range) (pgtypes.Int8multirange, error) {
+	// call pg_catalog.int8multirange
+	const sqlstr = `SELECT * FROM pg_catalog.int8multirange($1)`
+	// run
+	var r0 pgtypes.Int8multirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Int8multirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // Int8ne calls the stored function 'pg_catalog.int8ne(bigint, bigint) boolean' on db.
 func Int8ne(ctx context.Context, db DB, p0, p1 int64) (bool, error) {
 	// call pg_catalog.int8ne
@@ -18849,8 +26563,21 @@ func Isclosed(ctx context.Context, db DB, p0 pgtypes.Path) (bool, error) {
 	return r0, nil
 }
 
-// Isempty calls the stored function 'pg_catalog.isempty(anyrange) boolean' on db.
-func Isempty(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+// IsemptyByAnyrange calls the stored function 'pg_catalog.isempty(anyrange) boolean' on db.
+func IsemptyByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.isempty
+	const sqlstr = `SELECT * FROM pg_catalog.isempty($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// IsemptyByAnymultirange calls the stored function 'pg_catalog.isempty(anymultirange) boolean' on db.
+func IsemptyByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (bool, error) {
 	// call pg_catalog.isempty
 	const sqlstr = `SELECT * FROM pg_catalog.isempty($1)`
 	// run
@@ -18953,76 +26680,82 @@ func IshorizontalByLine(ctx context.Context, db DB, p0 pgtypes.Line) (bool, erro
 	return r0, nil
 }
 
-// Iso88591ToUTF8 calls the stored function 'pg_catalog.iso8859_1_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Iso88591ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Iso88591ToUTF8 calls the stored function 'pg_catalog.iso8859_1_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Iso88591ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso8859_1_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.iso8859_1_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso8859_1_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Iso8859ToUTF8 calls the stored function 'pg_catalog.iso8859_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Iso8859ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Iso8859ToUTF8 calls the stored function 'pg_catalog.iso8859_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Iso8859ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso8859_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.iso8859_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso8859_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// IsoToKoi8r calls the stored function 'pg_catalog.iso_to_koi8r(integer, integer, cstring, internal, integer)' on db.
-func IsoToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// IsoToKoi8r calls the stored function 'pg_catalog.iso_to_koi8r(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func IsoToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso_to_koi8r
-	const sqlstr = `SELECT * FROM pg_catalog.iso_to_koi8r($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso_to_koi8r($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// IsoToMic calls the stored function 'pg_catalog.iso_to_mic(integer, integer, cstring, internal, integer)' on db.
-func IsoToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// IsoToMic calls the stored function 'pg_catalog.iso_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func IsoToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.iso_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// IsoToWin1251 calls the stored function 'pg_catalog.iso_to_win1251(integer, integer, cstring, internal, integer)' on db.
-func IsoToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// IsoToWin1251 calls the stored function 'pg_catalog.iso_to_win1251(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func IsoToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso_to_win1251
-	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win1251($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win1251($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// IsoToWin866 calls the stored function 'pg_catalog.iso_to_win866(integer, integer, cstring, internal, integer)' on db.
-func IsoToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// IsoToWin866 calls the stored function 'pg_catalog.iso_to_win866(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func IsoToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.iso_to_win866
-	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win866($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.iso_to_win866($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // Isopen calls the stored function 'pg_catalog.isopen(path) boolean' on db.
@@ -19495,16 +27228,17 @@ func JSONTypeof(ctx context.Context, db DB, p0 []byte) (string, error) {
 	return r0, nil
 }
 
-// JohabToUTF8 calls the stored function 'pg_catalog.johab_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func JohabToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// JohabToUTF8 calls the stored function 'pg_catalog.johab_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func JohabToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.johab_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.johab_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.johab_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // JsonbAggFinalfn calls the stored function 'pg_catalog.jsonb_agg_finalfn(internal) jsonb' on db.
@@ -20250,6 +27984,19 @@ func JsonbStripNulls(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
 	return r0, nil
 }
 
+// JsonbSubscriptHandler calls the stored function 'pg_catalog.jsonb_subscript_handler(internal) internal' on db.
+func JsonbSubscriptHandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.jsonb_subscript_handler
+	const sqlstr = `SELECT * FROM pg_catalog.jsonb_subscript_handler($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // JsonbToRecord calls the stored function 'pg_catalog.jsonb_to_record(jsonb) record' on db.
 func JsonbToRecord(ctx context.Context, db DB, p0 []byte) (pgtypes.Record, error) {
 	// call pg_catalog.jsonb_to_record
@@ -20380,76 +28127,82 @@ func JustifyInterval(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
 	return r0, nil
 }
 
-// Koi8rToIso calls the stored function 'pg_catalog.koi8r_to_iso(integer, integer, cstring, internal, integer)' on db.
-func Koi8rToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8rToIso calls the stored function 'pg_catalog.koi8r_to_iso(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8rToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8r_to_iso
-	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_iso($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_iso($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Koi8rToMic calls the stored function 'pg_catalog.koi8r_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Koi8rToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8rToMic calls the stored function 'pg_catalog.koi8r_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8rToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8r_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Koi8rToUTF8 calls the stored function 'pg_catalog.koi8r_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Koi8rToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8rToUTF8 calls the stored function 'pg_catalog.koi8r_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8rToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8r_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Koi8rToWin1251 calls the stored function 'pg_catalog.koi8r_to_win1251(integer, integer, cstring, internal, integer)' on db.
-func Koi8rToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8rToWin1251 calls the stored function 'pg_catalog.koi8r_to_win1251(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8rToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8r_to_win1251
-	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win1251($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win1251($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Koi8rToWin866 calls the stored function 'pg_catalog.koi8r_to_win866(integer, integer, cstring, internal, integer)' on db.
-func Koi8rToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8rToWin866 calls the stored function 'pg_catalog.koi8r_to_win866(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8rToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8r_to_win866
-	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win866($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8r_to_win866($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Koi8uToUTF8 calls the stored function 'pg_catalog.koi8u_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func Koi8uToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Koi8uToUTF8 calls the stored function 'pg_catalog.koi8u_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Koi8uToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.koi8u_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.koi8u_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.koi8u_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // Lastval calls the stored function 'pg_catalog.lastval() bigint' on db.
@@ -20465,64 +28218,69 @@ func Lastval(ctx context.Context, db DB) (int64, error) {
 	return r0, nil
 }
 
-// Latin1ToMic calls the stored function 'pg_catalog.latin1_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Latin1ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Latin1ToMic calls the stored function 'pg_catalog.latin1_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Latin1ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.latin1_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.latin1_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.latin1_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Latin2ToMic calls the stored function 'pg_catalog.latin2_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Latin2ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Latin2ToMic calls the stored function 'pg_catalog.latin2_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Latin2ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.latin2_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Latin2ToWin1250 calls the stored function 'pg_catalog.latin2_to_win1250(integer, integer, cstring, internal, integer)' on db.
-func Latin2ToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Latin2ToWin1250 calls the stored function 'pg_catalog.latin2_to_win1250(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Latin2ToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.latin2_to_win1250
-	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_win1250($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.latin2_to_win1250($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Latin3ToMic calls the stored function 'pg_catalog.latin3_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Latin3ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Latin3ToMic calls the stored function 'pg_catalog.latin3_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Latin3ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.latin3_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.latin3_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.latin3_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Latin4ToMic calls the stored function 'pg_catalog.latin4_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Latin4ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Latin4ToMic calls the stored function 'pg_catalog.latin4_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Latin4ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.latin4_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.latin4_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.latin4_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // LcmByIntegerAndInteger calls the stored function 'pg_catalog.lcm(integer, integer) integer' on db.
@@ -21265,6 +29023,19 @@ func LowerByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (pgtypes.A
 	return r0, nil
 }
 
+// LowerByAnymultirange calls the stored function 'pg_catalog.lower(anymultirange) anyelement' on db.
+func LowerByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (pgtypes.Anyelement, error) {
+	// call pg_catalog.lower
+	const sqlstr = `SELECT * FROM pg_catalog.lower($1)`
+	// run
+	var r0 pgtypes.Anyelement
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Anyelement{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // LowerByText calls the stored function 'pg_catalog.lower(text) text' on db.
 func LowerByText(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.lower
@@ -21278,8 +29049,8 @@ func LowerByText(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// LowerInc calls the stored function 'pg_catalog.lower_inc(anyrange) boolean' on db.
-func LowerInc(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+// LowerIncByAnyrange calls the stored function 'pg_catalog.lower_inc(anyrange) boolean' on db.
+func LowerIncByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.lower_inc
 	const sqlstr = `SELECT * FROM pg_catalog.lower_inc($1)`
 	// run
@@ -21291,8 +29062,34 @@ func LowerInc(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
 	return r0, nil
 }
 
-// LowerInf calls the stored function 'pg_catalog.lower_inf(anyrange) boolean' on db.
-func LowerInf(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+// LowerIncByAnymultirange calls the stored function 'pg_catalog.lower_inc(anymultirange) boolean' on db.
+func LowerIncByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.lower_inc
+	const sqlstr = `SELECT * FROM pg_catalog.lower_inc($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// LowerInfByAnyrange calls the stored function 'pg_catalog.lower_inf(anyrange) boolean' on db.
+func LowerInfByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.lower_inf
+	const sqlstr = `SELECT * FROM pg_catalog.lower_inf($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// LowerInfByAnymultirange calls the stored function 'pg_catalog.lower_inf(anymultirange) boolean' on db.
+func LowerInfByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (bool, error) {
 	// call pg_catalog.lower_inf
 	const sqlstr = `SELECT * FROM pg_catalog.lower_inf($1)`
 	// run
@@ -21586,6 +29383,19 @@ func LsegVertical(ctx context.Context, db DB, p0 pgtypes.Lseg) (bool, error) {
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// LtrimByByteaAndBytea calls the stored function 'pg_catalog.ltrim(bytea, bytea) bytea' on db.
+func LtrimByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
+	// call pg_catalog.ltrim
+	const sqlstr = `SELECT * FROM pg_catalog.ltrim($1, $2)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
 	}
 	return r0, nil
 }
@@ -22135,184 +29945,199 @@ func Md5ByBytea(ctx context.Context, db DB, p0 []byte) (string, error) {
 	return r0, nil
 }
 
-// MicToBig5 calls the stored function 'pg_catalog.mic_to_big5(integer, integer, cstring, internal, integer)' on db.
-func MicToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToBig5 calls the stored function 'pg_catalog.mic_to_big5(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_big5
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_big5($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_big5($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToEucCn calls the stored function 'pg_catalog.mic_to_euc_cn(integer, integer, cstring, internal, integer)' on db.
-func MicToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToEucCn calls the stored function 'pg_catalog.mic_to_euc_cn(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_euc_cn
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_cn($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_cn($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToEucJp calls the stored function 'pg_catalog.mic_to_euc_jp(integer, integer, cstring, internal, integer)' on db.
-func MicToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToEucJp calls the stored function 'pg_catalog.mic_to_euc_jp(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_euc_jp
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_jp($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_jp($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToEucKr calls the stored function 'pg_catalog.mic_to_euc_kr(integer, integer, cstring, internal, integer)' on db.
-func MicToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToEucKr calls the stored function 'pg_catalog.mic_to_euc_kr(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_euc_kr
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_kr($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_kr($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToEucTw calls the stored function 'pg_catalog.mic_to_euc_tw(integer, integer, cstring, internal, integer)' on db.
-func MicToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToEucTw calls the stored function 'pg_catalog.mic_to_euc_tw(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_euc_tw
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_tw($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_euc_tw($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToIso calls the stored function 'pg_catalog.mic_to_iso(integer, integer, cstring, internal, integer)' on db.
-func MicToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToIso calls the stored function 'pg_catalog.mic_to_iso(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_iso
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_iso($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_iso($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToKoi8r calls the stored function 'pg_catalog.mic_to_koi8r(integer, integer, cstring, internal, integer)' on db.
-func MicToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToKoi8r calls the stored function 'pg_catalog.mic_to_koi8r(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_koi8r
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_koi8r($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_koi8r($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToLatin1 calls the stored function 'pg_catalog.mic_to_latin1(integer, integer, cstring, internal, integer)' on db.
-func MicToLatin1(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToLatin1 calls the stored function 'pg_catalog.mic_to_latin1(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToLatin1(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_latin1
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin1($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin1($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToLatin2 calls the stored function 'pg_catalog.mic_to_latin2(integer, integer, cstring, internal, integer)' on db.
-func MicToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToLatin2 calls the stored function 'pg_catalog.mic_to_latin2(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_latin2
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin2($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin2($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToLatin3 calls the stored function 'pg_catalog.mic_to_latin3(integer, integer, cstring, internal, integer)' on db.
-func MicToLatin3(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToLatin3 calls the stored function 'pg_catalog.mic_to_latin3(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToLatin3(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_latin3
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin3($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin3($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToLatin4 calls the stored function 'pg_catalog.mic_to_latin4(integer, integer, cstring, internal, integer)' on db.
-func MicToLatin4(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToLatin4 calls the stored function 'pg_catalog.mic_to_latin4(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToLatin4(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_latin4
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin4($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_latin4($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToSjis calls the stored function 'pg_catalog.mic_to_sjis(integer, integer, cstring, internal, integer)' on db.
-func MicToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToSjis calls the stored function 'pg_catalog.mic_to_sjis(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_sjis
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_sjis($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_sjis($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToWin1250 calls the stored function 'pg_catalog.mic_to_win1250(integer, integer, cstring, internal, integer)' on db.
-func MicToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToWin1250 calls the stored function 'pg_catalog.mic_to_win1250(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToWin1250(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_win1250
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1250($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1250($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToWin1251 calls the stored function 'pg_catalog.mic_to_win1251(integer, integer, cstring, internal, integer)' on db.
-func MicToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToWin1251 calls the stored function 'pg_catalog.mic_to_win1251(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_win1251
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1251($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win1251($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// MicToWin866 calls the stored function 'pg_catalog.mic_to_win866(integer, integer, cstring, internal, integer)' on db.
-func MicToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// MicToWin866 calls the stored function 'pg_catalog.mic_to_win866(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func MicToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.mic_to_win866
-	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win866($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.mic_to_win866($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // MinScale calls the stored function 'pg_catalog.min_scale(numeric) integer' on db.
@@ -22441,6 +30266,461 @@ func MulDInterval(ctx context.Context, db DB, p0 float64, p1 []byte) ([]byte, er
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// Multirange calls the stored function 'pg_catalog.multirange(anyrange) anymultirange' on db.
+func Multirange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange($1)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeAdjacentMultirange calls the stored function 'pg_catalog.multirange_adjacent_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeAdjacentMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_adjacent_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_adjacent_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeAdjacentRange calls the stored function 'pg_catalog.multirange_adjacent_range(anymultirange, anyrange) boolean' on db.
+func MultirangeAdjacentRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_adjacent_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_adjacent_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeAfterMultirange calls the stored function 'pg_catalog.multirange_after_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeAfterMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_after_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_after_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeAfterRange calls the stored function 'pg_catalog.multirange_after_range(anymultirange, anyrange) boolean' on db.
+func MultirangeAfterRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_after_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_after_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeBeforeMultirange calls the stored function 'pg_catalog.multirange_before_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeBeforeMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_before_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_before_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeBeforeRange calls the stored function 'pg_catalog.multirange_before_range(anymultirange, anyrange) boolean' on db.
+func MultirangeBeforeRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_before_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_before_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeCmp calls the stored function 'pg_catalog.multirange_cmp(anymultirange, anymultirange) integer' on db.
+func MultirangeCmp(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (int, error) {
+	// call pg_catalog.multirange_cmp
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_cmp($1, $2)`
+	// run
+	var r0 int
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeContainedByMultirange calls the stored function 'pg_catalog.multirange_contained_by_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeContainedByMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_contained_by_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_contained_by_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeContainedByRange calls the stored function 'pg_catalog.multirange_contained_by_range(anymultirange, anyrange) boolean' on db.
+func MultirangeContainedByRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_contained_by_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_contained_by_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeContainsElem calls the stored function 'pg_catalog.multirange_contains_elem(anymultirange, anyelement) boolean' on db.
+func MultirangeContainsElem(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyelement) (bool, error) {
+	// call pg_catalog.multirange_contains_elem
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_contains_elem($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeContainsMultirange calls the stored function 'pg_catalog.multirange_contains_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeContainsMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_contains_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_contains_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeContainsRange calls the stored function 'pg_catalog.multirange_contains_range(anymultirange, anyrange) boolean' on db.
+func MultirangeContainsRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_contains_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_contains_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeEq calls the stored function 'pg_catalog.multirange_eq(anymultirange, anymultirange) boolean' on db.
+func MultirangeEq(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_eq
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_eq($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeGe calls the stored function 'pg_catalog.multirange_ge(anymultirange, anymultirange) boolean' on db.
+func MultirangeGe(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_ge
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_ge($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeGistCompress calls the stored function 'pg_catalog.multirange_gist_compress(internal) internal' on db.
+func MultirangeGistCompress(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.multirange_gist_compress
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_gist_compress($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeGistConsistent calls the stored function 'pg_catalog.multirange_gist_consistent(internal, anymultirange, smallint, oid, internal) boolean' on db.
+func MultirangeGistConsistent(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anymultirange, p2 int16, p3 pgtypes.Oid, p4 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.multirange_gist_consistent
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_gist_consistent($1, $2, $3, $4, $5)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1, p2, p3, p4)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeGt calls the stored function 'pg_catalog.multirange_gt(anymultirange, anymultirange) boolean' on db.
+func MultirangeGt(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_gt
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_gt($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeIntersect calls the stored function 'pg_catalog.multirange_intersect(anymultirange, anymultirange) anymultirange' on db.
+func MultirangeIntersect(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange_intersect
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_intersect($1, $2)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeIntersectAggTransfn calls the stored function 'pg_catalog.multirange_intersect_agg_transfn(anymultirange, anymultirange) anymultirange' on db.
+func MultirangeIntersectAggTransfn(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange_intersect_agg_transfn
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_intersect_agg_transfn($1, $2)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeLe calls the stored function 'pg_catalog.multirange_le(anymultirange, anymultirange) boolean' on db.
+func MultirangeLe(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_le
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_le($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeLt calls the stored function 'pg_catalog.multirange_lt(anymultirange, anymultirange) boolean' on db.
+func MultirangeLt(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_lt
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_lt($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeMinus calls the stored function 'pg_catalog.multirange_minus(anymultirange, anymultirange) anymultirange' on db.
+func MultirangeMinus(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange_minus
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_minus($1, $2)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeNe calls the stored function 'pg_catalog.multirange_ne(anymultirange, anymultirange) boolean' on db.
+func MultirangeNe(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_ne
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_ne($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverlapsMultirange calls the stored function 'pg_catalog.multirange_overlaps_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeOverlapsMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_overlaps_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overlaps_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverlapsRange calls the stored function 'pg_catalog.multirange_overlaps_range(anymultirange, anyrange) boolean' on db.
+func MultirangeOverlapsRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_overlaps_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overlaps_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverleftMultirange calls the stored function 'pg_catalog.multirange_overleft_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeOverleftMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_overleft_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overleft_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverleftRange calls the stored function 'pg_catalog.multirange_overleft_range(anymultirange, anyrange) boolean' on db.
+func MultirangeOverleftRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_overleft_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overleft_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverrightMultirange calls the stored function 'pg_catalog.multirange_overright_multirange(anymultirange, anymultirange) boolean' on db.
+func MultirangeOverrightMultirange(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.multirange_overright_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overright_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeOverrightRange calls the stored function 'pg_catalog.multirange_overright_range(anymultirange, anyrange) boolean' on db.
+func MultirangeOverrightRange(ctx context.Context, db DB, p0 pgtypes.Anymultirange, p1 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.multirange_overright_range
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_overright_range($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeRecv calls the stored function 'pg_catalog.multirange_recv(internal, oid, integer) anymultirange' on db.
+func MultirangeRecv(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p2 int) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange_recv
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_recv($1, $2, $3)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeSend calls the stored function 'pg_catalog.multirange_send(anymultirange) bytea' on db.
+func MultirangeSend(ctx context.Context, db DB, p0 pgtypes.Anymultirange) ([]byte, error) {
+	// call pg_catalog.multirange_send
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_send($1)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeTypanalyze calls the stored function 'pg_catalog.multirange_typanalyze(internal) boolean' on db.
+func MultirangeTypanalyze(ctx context.Context, db DB, p0 pgtypes.Internal) (bool, error) {
+	// call pg_catalog.multirange_typanalyze
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_typanalyze($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// MultirangeUnion calls the stored function 'pg_catalog.multirange_union(anymultirange, anymultirange) anymultirange' on db.
+func MultirangeUnion(ctx context.Context, db DB, p0, p1 pgtypes.Anymultirange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.multirange_union
+	const sqlstr = `SELECT * FROM pg_catalog.multirange_union($1, $2)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// Multirangesel calls the stored function 'pg_catalog.multirangesel(internal, oid, internal, integer) double precision' on db.
+func Multirangesel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p2 pgtypes.Internal, p3 int) (float64, error) {
+	// call pg_catalog.multirangesel
+	const sqlstr = `SELECT * FROM pg_catalog.multirangesel($1, $2, $3, $4)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0, p1, p2, p3)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
 	}
 	return r0, nil
 }
@@ -23523,19 +31803,6 @@ func NumericExp(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// NumericFac calls the stored function 'pg_catalog.numeric_fac(bigint) numeric' on db.
-func NumericFac(ctx context.Context, db DB, p0 int64) (float64, error) {
-	// call pg_catalog.numeric_fac
-	const sqlstr = `SELECT * FROM pg_catalog.numeric_fac($1)`
-	// run
-	var r0 float64
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
-		return 0.0, logerror(err)
-	}
-	return r0, nil
-}
-
 // NumericGe calls the stored function 'pg_catalog.numeric_ge(numeric, numeric) boolean' on db.
 func NumericGe(ctx context.Context, db DB, p0, p1 float64) (bool, error) {
 	// call pg_catalog.numeric_ge
@@ -23675,6 +31942,19 @@ func NumericNe(ctx context.Context, db DB, p0, p1 float64) (bool, error) {
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// NumericPlPgLsn calls the stored function 'pg_catalog.numeric_pl_pg_lsn(numeric, pg_lsn) pg_lsn' on db.
+func NumericPlPgLsn(ctx context.Context, db DB, p0 float64, p1 pgtypes.PgLsn) (pgtypes.PgLsn, error) {
+	// call pg_catalog.numeric_pl_pg_lsn
+	const sqlstr = `SELECT * FROM pg_catalog.numeric_pl_pg_lsn($1, $2)`
+	// run
+	var r0 pgtypes.PgLsn
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -24012,6 +32292,32 @@ func Numerictypmodin(ctx context.Context, db DB, p0 []pgtypes.Cstring) (int, err
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Nummultirange calls the stored function 'pg_catalog.nummultirange() nummultirange' on db.
+func Nummultirange(ctx context.Context, db DB) (pgtypes.Nummultirange, error) {
+	// call pg_catalog.nummultirange
+	const sqlstr = `SELECT * FROM pg_catalog.nummultirange()`
+	// run
+	var r0 pgtypes.Nummultirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Nummultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// NummultirangeByNumrange calls the stored function 'pg_catalog.nummultirange(numrange) nummultirange' on db.
+func NummultirangeByNumrange(ctx context.Context, db DB, p0 pgtypes.Numrange) (pgtypes.Nummultirange, error) {
+	// call pg_catalog.nummultirange
+	const sqlstr = `SELECT * FROM pg_catalog.nummultirange($1)`
+	// run
+	var r0 pgtypes.Nummultirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Nummultirange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -25407,6 +33713,19 @@ func PgCollationIsVisible(ctx context.Context, db DB, p0 pgtypes.Oid) (bool, err
 	return r0, nil
 }
 
+// PgColumnCompression calls the stored function 'pg_catalog.pg_column_compression("any") text' on db.
+func PgColumnCompression(ctx context.Context, db DB, p0 pgtypes.Any) (string, error) {
+	// call pg_catalog.pg_column_compression
+	const sqlstr = `SELECT * FROM pg_catalog.pg_column_compression($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // PgColumnIsUpdatable calls the stored function 'pg_catalog.pg_column_is_updatable(regclass, smallint, boolean) boolean' on db.
 func PgColumnIsUpdatable(ctx context.Context, db DB, p0 pgtypes.Regclass, p1 int16, p2 bool) (bool, error) {
 	// call pg_catalog.pg_column_is_updatable
@@ -25629,15 +33948,15 @@ func PgCopyPhysicalReplicationSlotBySrcSlotNameAndDstSlotName(ctx context.Contex
 	return slotName, lsn, nil
 }
 
-// PgCreateLogicalReplicationSlot calls the stored function 'pg_catalog.pg_create_logical_replication_slot(name, name, boolean) (name, pg_lsn)' on db.
-func PgCreateLogicalReplicationSlot(ctx context.Context, db DB, slotName, plugin string, temporary bool) (string, pgtypes.PgLsn, error) {
+// PgCreateLogicalReplicationSlot calls the stored function 'pg_catalog.pg_create_logical_replication_slot(name, name, boolean, boolean) (name, pg_lsn)' on db.
+func PgCreateLogicalReplicationSlot(ctx context.Context, db DB, slotName, plugin string, temporary, twophase bool) (string, pgtypes.PgLsn, error) {
 	// call pg_catalog.pg_create_logical_replication_slot
-	const sqlstr = `SELECT * FROM pg_catalog.pg_create_logical_replication_slot($1, $2, $3)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_create_logical_replication_slot($1, $2, $3, $4)`
 	// run
 	var slotName string
 	var lsn pgtypes.PgLsn
-	logf(sqlstr, slotName, plugin, temporary)
-	if err := db.QueryRowContext(ctx, sqlstr, slotName, plugin, temporary).Scan(&slotName, &lsn); err != nil {
+	logf(sqlstr, slotName, plugin, temporary, twophase)
+	if err := db.QueryRowContext(ctx, sqlstr, slotName, plugin, temporary, twophase).Scan(&slotName, &lsn); err != nil {
 		return "", pgtypes.PgLsn{}, logerror(err)
 	}
 	return slotName, lsn, nil
@@ -26058,6 +34377,45 @@ func PgFunctionIsVisible(ctx context.Context, db DB, p0 pgtypes.Oid) (bool, erro
 	return r0, nil
 }
 
+// PgGetBackendMemoryContexts calls the stored function 'pg_catalog.pg_get_backend_memory_contexts() (text, text, text, integer, bigint, bigint, bigint, bigint, bigint)' on db.
+func PgGetBackendMemoryContexts(ctx context.Context, db DB) (string, string, string, int, int64, int64, int64, int64, int64, error) {
+	// call pg_catalog.pg_get_backend_memory_contexts
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_backend_memory_contexts()`
+	// run
+	var name string
+	var ident string
+	var parent string
+	var level int
+	var totalBytes int64
+	var totalNblocks int64
+	var freeBytes int64
+	var freeChunks int64
+	var usedBytes int64
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&name, &ident, &parent, &level, &totalBytes, &totalNblocks, &freeBytes, &freeChunks, &usedBytes); err != nil {
+		return "", "", "", 0, 0, 0, 0, 0, 0, logerror(err)
+	}
+	return name, ident, parent, level, totalBytes, totalNblocks, freeBytes, freeChunks, usedBytes, nil
+}
+
+// PgGetCatalogForeignKeys calls the stored function 'pg_catalog.pg_get_catalog_foreign_keys() (regclass, text, regclass, text, boolean, boolean)' on db.
+func PgGetCatalogForeignKeys(ctx context.Context, db DB) (pgtypes.Regclass, StringSlice, pgtypes.Regclass, StringSlice, bool, bool, error) {
+	// call pg_catalog.pg_get_catalog_foreign_keys
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_catalog_foreign_keys()`
+	// run
+	var fktable pgtypes.Regclass
+	var fkcols StringSlice
+	var pktable pgtypes.Regclass
+	var pkcols StringSlice
+	var isArray bool
+	var isOpt bool
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&fktable, &fkcols, &pktable, &pkcols, &isArray, &isOpt); err != nil {
+		return pgtypes.Regclass{}, StringSlice{}, pgtypes.Regclass{}, StringSlice{}, false, false, logerror(err)
+	}
+	return fktable, fkcols, pktable, pkcols, isArray, isOpt, nil
+}
+
 // PgGetConstraintdefByOid calls the stored function 'pg_catalog.pg_get_constraintdef(oid) text' on db.
 func PgGetConstraintdefByOid(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
 	// call pg_catalog.pg_get_constraintdef
@@ -26162,6 +34520,19 @@ func PgGetFunctionResult(ctx context.Context, db DB, p0 pgtypes.Oid) (string, er
 	return r0, nil
 }
 
+// PgGetFunctionSqlbody calls the stored function 'pg_catalog.pg_get_function_sqlbody(oid) text' on db.
+func PgGetFunctionSqlbody(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
+	// call pg_catalog.pg_get_function_sqlbody
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_function_sqlbody($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
 // PgGetFunctiondef calls the stored function 'pg_catalog.pg_get_functiondef(oid) text' on db.
 func PgGetFunctiondef(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
 	// call pg_catalog.pg_get_functiondef
@@ -26201,19 +34572,21 @@ func PgGetIndexdefByOidIntegerAndBoolean(ctx context.Context, db DB, p0 pgtypes.
 	return r0, nil
 }
 
-// PgGetKeywords calls the stored function 'pg_catalog.pg_get_keywords() (text, "char", text)' on db.
-func PgGetKeywords(ctx context.Context, db DB) (string, pgtypes.Char, string, error) {
+// PgGetKeywords calls the stored function 'pg_catalog.pg_get_keywords() (text, "char", boolean, text, text)' on db.
+func PgGetKeywords(ctx context.Context, db DB) (string, pgtypes.Char, bool, string, string, error) {
 	// call pg_catalog.pg_get_keywords
 	const sqlstr = `SELECT * FROM pg_catalog.pg_get_keywords()`
 	// run
 	var word string
 	var catcode pgtypes.Char
+	var barelabel bool
 	var catdesc string
+	var baredesc string
 	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&word, &catcode, &catdesc); err != nil {
-		return "", pgtypes.Char{}, "", logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&word, &catcode, &barelabel, &catdesc, &baredesc); err != nil {
+		return "", pgtypes.Char{}, false, "", "", logerror(err)
 	}
-	return word, catcode, catdesc, nil
+	return word, catcode, barelabel, catdesc, baredesc, nil
 }
 
 // PgGetMultixactMembers calls the stored function 'pg_catalog.pg_get_multixact_members(xid) (xid, text)' on db.
@@ -26297,8 +34670,8 @@ func PgGetReplicaIdentityIndex(ctx context.Context, db DB, p0 pgtypes.Regclass) 
 	return r0, nil
 }
 
-// PgGetReplicationSlots calls the stored function 'pg_catalog.pg_get_replication_slots() (name, name, text, oid, boolean, boolean, integer, xid, xid, pg_lsn, pg_lsn, text, bigint)' on db.
-func PgGetReplicationSlots(ctx context.Context, db DB) (string, string, string, pgtypes.Oid, bool, bool, int, pgtypes.Xid, pgtypes.Xid, pgtypes.PgLsn, pgtypes.PgLsn, string, int64, error) {
+// PgGetReplicationSlots calls the stored function 'pg_catalog.pg_get_replication_slots() (name, name, text, oid, boolean, boolean, integer, xid, xid, pg_lsn, pg_lsn, text, bigint, boolean)' on db.
+func PgGetReplicationSlots(ctx context.Context, db DB) (string, string, string, pgtypes.Oid, bool, bool, int, pgtypes.Xid, pgtypes.Xid, pgtypes.PgLsn, pgtypes.PgLsn, string, int64, bool, error) {
 	// call pg_catalog.pg_get_replication_slots
 	const sqlstr = `SELECT * FROM pg_catalog.pg_get_replication_slots()`
 	// run
@@ -26315,11 +34688,12 @@ func PgGetReplicationSlots(ctx context.Context, db DB) (string, string, string, 
 	var confirmedFlushLsn pgtypes.PgLsn
 	var walStatus string
 	var safeWalSize int64
+	var twoPhase bool
 	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&slotName, &plugin, &slotType, &datoid, &temporary, &active, &activePid, &xmin, &catalogXmin, &restartLsn, &confirmedFlushLsn, &walStatus, &safeWalSize); err != nil {
-		return "", "", "", pgtypes.Oid{}, false, false, 0, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.PgLsn{}, pgtypes.PgLsn{}, "", 0, logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&slotName, &plugin, &slotType, &datoid, &temporary, &active, &activePid, &xmin, &catalogXmin, &restartLsn, &confirmedFlushLsn, &walStatus, &safeWalSize, &twoPhase); err != nil {
+		return "", "", "", pgtypes.Oid{}, false, false, 0, pgtypes.Xid{}, pgtypes.Xid{}, pgtypes.PgLsn{}, pgtypes.PgLsn{}, "", 0, false, logerror(err)
 	}
-	return slotName, plugin, slotType, datoid, temporary, active, activePid, xmin, catalogXmin, restartLsn, confirmedFlushLsn, walStatus, safeWalSize, nil
+	return slotName, plugin, slotType, datoid, temporary, active, activePid, xmin, catalogXmin, restartLsn, confirmedFlushLsn, walStatus, safeWalSize, twoPhase, nil
 }
 
 // PgGetRuledefByOid calls the stored function 'pg_catalog.pg_get_ruledef(oid) text' on db.
@@ -26386,6 +34760,32 @@ func PgGetStatisticsobjdef(ctx context.Context, db DB, p0 pgtypes.Oid) (string, 
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgGetStatisticsobjdefColumns calls the stored function 'pg_catalog.pg_get_statisticsobjdef_columns(oid) text' on db.
+func PgGetStatisticsobjdefColumns(ctx context.Context, db DB, p0 pgtypes.Oid) (string, error) {
+	// call pg_catalog.pg_get_statisticsobjdef_columns
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_statisticsobjdef_columns($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgGetStatisticsobjdefExpressions calls the stored function 'pg_catalog.pg_get_statisticsobjdef_expressions(oid) text' on db.
+func PgGetStatisticsobjdefExpressions(ctx context.Context, db DB, p0 pgtypes.Oid) (StringSlice, error) {
+	// call pg_catalog.pg_get_statisticsobjdef_expressions
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_statisticsobjdef_expressions($1)`
+	// run
+	var r0 StringSlice
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return StringSlice{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -26489,6 +34889,19 @@ func PgGetViewdefByOidAndInteger(ctx context.Context, db DB, p0 pgtypes.Oid, p1 
 	var r0 string
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// PgGetWalReplayPauseState calls the stored function 'pg_catalog.pg_get_wal_replay_pause_state() text' on db.
+func PgGetWalReplayPauseState(ctx context.Context, db DB) (string, error) {
+	// call pg_catalog.pg_get_wal_replay_pause_state
+	const sqlstr = `SELECT * FROM pg_catalog.pg_get_wal_replay_pause_state()`
+	// run
+	var r0 string
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
 		return "", logerror(err)
 	}
 	return r0, nil
@@ -26780,18 +35193,19 @@ func PgJitAvailable(ctx context.Context, db DB) (bool, error) {
 	return r0, nil
 }
 
-// PgLastCommittedXact calls the stored function 'pg_catalog.pg_last_committed_xact() (xid, timestamp with time zone)' on db.
-func PgLastCommittedXact(ctx context.Context, db DB) (pgtypes.Xid, time.Time, error) {
+// PgLastCommittedXact calls the stored function 'pg_catalog.pg_last_committed_xact() (xid, timestamp with time zone, oid)' on db.
+func PgLastCommittedXact(ctx context.Context, db DB) (pgtypes.Xid, time.Time, pgtypes.Oid, error) {
 	// call pg_catalog.pg_last_committed_xact
 	const sqlstr = `SELECT * FROM pg_catalog.pg_last_committed_xact()`
 	// run
 	var xid pgtypes.Xid
 	var timestamp time.Time
+	var roident pgtypes.Oid
 	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&xid, &timestamp); err != nil {
-		return pgtypes.Xid{}, time.Time{}, logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&xid, &timestamp, &roident); err != nil {
+		return pgtypes.Xid{}, time.Time{}, pgtypes.Oid{}, logerror(err)
 	}
-	return xid, timestamp, nil
+	return xid, timestamp, roident, nil
 }
 
 // PgLastWalReceiveLsn calls the stored function 'pg_catalog.pg_last_wal_receive_lsn() pg_lsn' on db.
@@ -26846,8 +35260,8 @@ func PgListeningChannels(ctx context.Context, db DB) (string, error) {
 	return r0, nil
 }
 
-// PgLockStatus calls the stored function 'pg_catalog.pg_lock_status() (text, oid, oid, integer, smallint, text, xid, oid, oid, smallint, text, integer, text, boolean, boolean)' on db.
-func PgLockStatus(ctx context.Context, db DB) (string, pgtypes.Oid, pgtypes.Oid, int, int16, string, pgtypes.Xid, pgtypes.Oid, pgtypes.Oid, int16, string, int, string, bool, bool, error) {
+// PgLockStatus calls the stored function 'pg_catalog.pg_lock_status() (text, oid, oid, integer, smallint, text, xid, oid, oid, smallint, text, integer, text, boolean, boolean, timestamp with time zone)' on db.
+func PgLockStatus(ctx context.Context, db DB) (string, pgtypes.Oid, pgtypes.Oid, int, int16, string, pgtypes.Xid, pgtypes.Oid, pgtypes.Oid, int16, string, int, string, bool, bool, time.Time, error) {
 	// call pg_catalog.pg_lock_status
 	const sqlstr = `SELECT * FROM pg_catalog.pg_lock_status()`
 	// run
@@ -26866,11 +35280,25 @@ func PgLockStatus(ctx context.Context, db DB) (string, pgtypes.Oid, pgtypes.Oid,
 	var mode string
 	var granted bool
 	var fastpath bool
+	var waitstart time.Time
 	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&locktype, &database, &relation, &page, &tuple, &virtualxid, &transactionid, &classid, &objid, &objsubid, &virtualtransaction, &pid, &mode, &granted, &fastpath); err != nil {
-		return "", pgtypes.Oid{}, pgtypes.Oid{}, 0, 0, "", pgtypes.Xid{}, pgtypes.Oid{}, pgtypes.Oid{}, 0, "", 0, "", false, false, logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&locktype, &database, &relation, &page, &tuple, &virtualxid, &transactionid, &classid, &objid, &objsubid, &virtualtransaction, &pid, &mode, &granted, &fastpath, &waitstart); err != nil {
+		return "", pgtypes.Oid{}, pgtypes.Oid{}, 0, 0, "", pgtypes.Xid{}, pgtypes.Oid{}, pgtypes.Oid{}, 0, "", 0, "", false, false, time.Time{}, logerror(err)
 	}
-	return locktype, database, relation, page, tuple, virtualxid, transactionid, classid, objid, objsubid, virtualtransaction, pid, mode, granted, fastpath, nil
+	return locktype, database, relation, page, tuple, virtualxid, transactionid, classid, objid, objsubid, virtualtransaction, pid, mode, granted, fastpath, waitstart, nil
+}
+
+// PgLogBackendMemoryContexts calls the stored function 'pg_catalog.pg_log_backend_memory_contexts(integer) boolean' on db.
+func PgLogBackendMemoryContexts(ctx context.Context, db DB, p0 int) (bool, error) {
+	// call pg_catalog.pg_log_backend_memory_contexts
+	const sqlstr = `SELECT * FROM pg_catalog.pg_log_backend_memory_contexts($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
 }
 
 // PgLogicalEmitMessageByBooleanTextAndText calls the stored function 'pg_catalog.pg_logical_emit_message(boolean, text, text) pg_lsn' on db.
@@ -27060,6 +35488,19 @@ func PgLsWaldir(ctx context.Context, db DB) (string, int64, time.Time, error) {
 	return name, size, modification, nil
 }
 
+// PgLsn calls the stored function 'pg_catalog.pg_lsn(numeric) pg_lsn' on db.
+func PgLsn(ctx context.Context, db DB, p0 float64) (pgtypes.PgLsn, error) {
+	// call pg_catalog.pg_lsn
+	const sqlstr = `SELECT * FROM pg_catalog.pg_lsn($1)`
+	// run
+	var r0 pgtypes.PgLsn
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.PgLsn{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // PgLsnCmp calls the stored function 'pg_catalog.pg_lsn_cmp(pg_lsn, pg_lsn) integer' on db.
 func PgLsnCmp(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (int, error) {
 	// call pg_catalog.pg_lsn_cmp
@@ -27190,6 +35631,19 @@ func PgLsnMi(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (float64, error) 
 	return r0, nil
 }
 
+// PgLsnMii calls the stored function 'pg_catalog.pg_lsn_mii(pg_lsn, numeric) pg_lsn' on db.
+func PgLsnMii(ctx context.Context, db DB, p0 pgtypes.PgLsn, p1 float64) (pgtypes.PgLsn, error) {
+	// call pg_catalog.pg_lsn_mii
+	const sqlstr = `SELECT * FROM pg_catalog.pg_lsn_mii($1, $2)`
+	// run
+	var r0 pgtypes.PgLsn
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.PgLsn{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // PgLsnNe calls the stored function 'pg_catalog.pg_lsn_ne(pg_lsn, pg_lsn) boolean' on db.
 func PgLsnNe(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (bool, error) {
 	// call pg_catalog.pg_lsn_ne
@@ -27199,6 +35653,19 @@ func PgLsnNe(ctx context.Context, db DB, p0, p1 pgtypes.PgLsn) (bool, error) {
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgLsnPli calls the stored function 'pg_catalog.pg_lsn_pli(pg_lsn, numeric) pg_lsn' on db.
+func PgLsnPli(ctx context.Context, db DB, p0 pgtypes.PgLsn, p1 float64) (pgtypes.PgLsn, error) {
+	// call pg_catalog.pg_lsn_pli
+	const sqlstr = `SELECT * FROM pg_catalog.pg_lsn_pli($1, $2)`
+	// run
+	var r0 pgtypes.PgLsn
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.PgLsn{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -27496,8 +35963,8 @@ func PgPostmasterStartTime(ctx context.Context, db DB) (time.Time, error) {
 	return r0, nil
 }
 
-// PgPreparedStatement calls the stored function 'pg_catalog.pg_prepared_statement() (text, text, timestamp with time zone, regtype, boolean)' on db.
-func PgPreparedStatement(ctx context.Context, db DB) (string, string, time.Time, []pgtypes.Regtype, bool, error) {
+// PgPreparedStatement calls the stored function 'pg_catalog.pg_prepared_statement() (text, text, timestamp with time zone, regtype, boolean, bigint, bigint)' on db.
+func PgPreparedStatement(ctx context.Context, db DB) (string, string, time.Time, []pgtypes.Regtype, bool, int64, int64, error) {
 	// call pg_catalog.pg_prepared_statement
 	const sqlstr = `SELECT * FROM pg_catalog.pg_prepared_statement()`
 	// run
@@ -27506,11 +35973,13 @@ func PgPreparedStatement(ctx context.Context, db DB) (string, string, time.Time,
 	var prepareTime time.Time
 	var parameterTypes []pgtypes.Regtype
 	var fromSQL bool
+	var genericPlans int64
+	var customPlans int64
 	logf(sqlstr)
-	if err := db.QueryRowContext(ctx, sqlstr).Scan(&name, &statement, &prepareTime, &parameterTypes, &fromSQL); err != nil {
-		return "", "", time.Time{}, nil, false, logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&name, &statement, &prepareTime, &parameterTypes, &fromSQL, &genericPlans, &customPlans); err != nil {
+		return "", "", time.Time{}, nil, false, 0, 0, logerror(err)
 	}
-	return name, statement, prepareTime, parameterTypes, fromSQL, nil
+	return name, statement, prepareTime, parameterTypes, fromSQL, genericPlans, customPlans, nil
 }
 
 // PgPreparedXact calls the stored function 'pg_catalog.pg_prepared_xact() (xid, text, timestamp with time zone, oid, oid)' on db.
@@ -28212,8 +36681,8 @@ func PgStatFileByFilenameAndMissingOk(ctx context.Context, db DB, filename strin
 	return size, access, modification, change, creation, isdir, nil
 }
 
-// PgStatGetActivity calls the stored function 'pg_catalog.pg_stat_get_activity(integer) (oid, integer, oid, text, text, text, text, text, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, inet, text, integer, xid, xid, text, boolean, text, text, integer, boolean, text, numeric, text, boolean, text, boolean, integer)' on db.
-func PgStatGetActivity(ctx context.Context, db DB, pid int) (pgtypes.Oid, int, pgtypes.Oid, string, string, string, string, string, time.Time, time.Time, time.Time, time.Time, string, string, int, pgtypes.Xid, pgtypes.Xid, string, bool, string, string, int, bool, string, float64, string, bool, string, bool, int, error) {
+// PgStatGetActivity calls the stored function 'pg_catalog.pg_stat_get_activity(integer) (oid, integer, oid, text, text, text, text, text, timestamp with time zone, timestamp with time zone, timestamp with time zone, timestamp with time zone, inet, text, integer, xid, xid, text, boolean, text, text, integer, text, numeric, text, boolean, text, boolean, integer, bigint)' on db.
+func PgStatGetActivity(ctx context.Context, db DB, pid int) (pgtypes.Oid, int, pgtypes.Oid, string, string, string, string, string, time.Time, time.Time, time.Time, time.Time, string, string, int, pgtypes.Xid, pgtypes.Xid, string, bool, string, string, int, string, float64, string, bool, string, bool, int, int64, error) {
 	// call pg_catalog.pg_stat_get_activity
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_activity($1)`
 	// run
@@ -28239,7 +36708,6 @@ func PgStatGetActivity(ctx context.Context, db DB, pid int) (pgtypes.Oid, int, p
 	var sslversion string
 	var sslcipher string
 	var sslbits int
-	var sslcompression bool
 	var sslClientDn string
 	var sslClientSerial float64
 	var sslIssuerDn string
@@ -28247,11 +36715,12 @@ func PgStatGetActivity(ctx context.Context, db DB, pid int) (pgtypes.Oid, int, p
 	var gssPrinc string
 	var gssEnc bool
 	var leaderPid int
+	var queryID int64
 	logf(sqlstr, pid)
-	if err := db.QueryRowContext(ctx, sqlstr, pid).Scan(&datid, &pid, &usesysid, &applicationName, &state, &query, &waitEventType, &waitEvent, &xactStart, &queryStart, &backendStart, &stateChange, &clientAddr, &clientHostname, &clientPort, &backendXid, &backendXmin, &backendType, &ssl, &sslversion, &sslcipher, &sslbits, &sslcompression, &sslClientDn, &sslClientSerial, &sslIssuerDn, &gssAuth, &gssPrinc, &gssEnc, &leaderPid); err != nil {
-		return pgtypes.Oid{}, 0, pgtypes.Oid{}, "", "", "", "", "", time.Time{}, time.Time{}, time.Time{}, time.Time{}, "", "", 0, pgtypes.Xid{}, pgtypes.Xid{}, "", false, "", "", 0, false, "", 0.0, "", false, "", false, 0, logerror(err)
+	if err := db.QueryRowContext(ctx, sqlstr, pid).Scan(&datid, &pid, &usesysid, &applicationName, &state, &query, &waitEventType, &waitEvent, &xactStart, &queryStart, &backendStart, &stateChange, &clientAddr, &clientHostname, &clientPort, &backendXid, &backendXmin, &backendType, &ssl, &sslversion, &sslcipher, &sslbits, &sslClientDn, &sslClientSerial, &sslIssuerDn, &gssAuth, &gssPrinc, &gssEnc, &leaderPid, &queryID); err != nil {
+		return pgtypes.Oid{}, 0, pgtypes.Oid{}, "", "", "", "", "", time.Time{}, time.Time{}, time.Time{}, time.Time{}, "", "", 0, pgtypes.Xid{}, pgtypes.Xid{}, "", false, "", "", 0, "", 0.0, "", false, "", false, 0, 0, logerror(err)
 	}
-	return datid, pid, usesysid, applicationName, state, query, waitEventType, waitEvent, xactStart, queryStart, backendStart, stateChange, clientAddr, clientHostname, clientPort, backendXid, backendXmin, backendType, ssl, sslversion, sslcipher, sslbits, sslcompression, sslClientDn, sslClientSerial, sslIssuerDn, gssAuth, gssPrinc, gssEnc, leaderPid, nil
+	return datid, pid, usesysid, applicationName, state, query, waitEventType, waitEvent, xactStart, queryStart, backendStart, stateChange, clientAddr, clientHostname, clientPort, backendXid, backendXmin, backendType, ssl, sslversion, sslcipher, sslbits, sslClientDn, sslClientSerial, sslIssuerDn, gssAuth, gssPrinc, gssEnc, leaderPid, queryID, nil
 }
 
 // PgStatGetAnalyzeCount calls the stored function 'pg_catalog.pg_stat_get_analyze_count(oid) bigint' on db.
@@ -28637,6 +37106,19 @@ func PgStatGetCheckpointWriteTime(ctx context.Context, db DB) (float64, error) {
 	return r0, nil
 }
 
+// PgStatGetDbActiveTime calls the stored function 'pg_catalog.pg_stat_get_db_active_time(oid) double precision' on db.
+func PgStatGetDbActiveTime(ctx context.Context, db DB, p0 pgtypes.Oid) (float64, error) {
+	// call pg_catalog.pg_stat_get_db_active_time
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_active_time($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
 // PgStatGetDbBlkReadTime calls the stored function 'pg_catalog.pg_stat_get_db_blk_read_time(oid) double precision' on db.
 func PgStatGetDbBlkReadTime(ctx context.Context, db DB, p0 pgtypes.Oid) (float64, error) {
 	// call pg_catalog.pg_stat_get_db_blk_read_time
@@ -28806,12 +37288,90 @@ func PgStatGetDbDeadlocks(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, er
 	return r0, nil
 }
 
+// PgStatGetDbIdleInTransactionTime calls the stored function 'pg_catalog.pg_stat_get_db_idle_in_transaction_time(oid) double precision' on db.
+func PgStatGetDbIdleInTransactionTime(ctx context.Context, db DB, p0 pgtypes.Oid) (float64, error) {
+	// call pg_catalog.pg_stat_get_db_idle_in_transaction_time
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_idle_in_transaction_time($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
 // PgStatGetDbNumbackends calls the stored function 'pg_catalog.pg_stat_get_db_numbackends(oid) integer' on db.
 func PgStatGetDbNumbackends(ctx context.Context, db DB, p0 pgtypes.Oid) (int, error) {
 	// call pg_catalog.pg_stat_get_db_numbackends
 	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_numbackends($1)`
 	// run
 	var r0 int
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgStatGetDbSessionTime calls the stored function 'pg_catalog.pg_stat_get_db_session_time(oid) double precision' on db.
+func PgStatGetDbSessionTime(ctx context.Context, db DB, p0 pgtypes.Oid) (float64, error) {
+	// call pg_catalog.pg_stat_get_db_session_time
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_session_time($1)`
+	// run
+	var r0 float64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgStatGetDbSessions calls the stored function 'pg_catalog.pg_stat_get_db_sessions(oid) bigint' on db.
+func PgStatGetDbSessions(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+	// call pg_catalog.pg_stat_get_db_sessions
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_sessions($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgStatGetDbSessionsAbandoned calls the stored function 'pg_catalog.pg_stat_get_db_sessions_abandoned(oid) bigint' on db.
+func PgStatGetDbSessionsAbandoned(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+	// call pg_catalog.pg_stat_get_db_sessions_abandoned
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_sessions_abandoned($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgStatGetDbSessionsFatal calls the stored function 'pg_catalog.pg_stat_get_db_sessions_fatal(oid) bigint' on db.
+func PgStatGetDbSessionsFatal(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+	// call pg_catalog.pg_stat_get_db_sessions_fatal
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_sessions_fatal($1)`
+	// run
+	var r0 int64
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return 0, logerror(err)
+	}
+	return r0, nil
+}
+
+// PgStatGetDbSessionsKilled calls the stored function 'pg_catalog.pg_stat_get_db_sessions_killed(oid) bigint' on db.
+func PgStatGetDbSessionsKilled(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, error) {
+	// call pg_catalog.pg_stat_get_db_sessions_killed
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_db_sessions_killed($1)`
+	// run
+	var r0 int64
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return 0, logerror(err)
@@ -29140,6 +37700,28 @@ func PgStatGetProgressInfo(ctx context.Context, db DB, cmdtype string) (int, pgt
 	return pid, datid, relid, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17, param18, param19, param20, nil
 }
 
+// PgStatGetReplicationSlot calls the stored function 'pg_catalog.pg_stat_get_replication_slot(text) (text, bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint, timestamp with time zone)' on db.
+func PgStatGetReplicationSlot(ctx context.Context, db DB, slotName string) (string, int64, int64, int64, int64, int64, int64, int64, int64, time.Time, error) {
+	// call pg_catalog.pg_stat_get_replication_slot
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_replication_slot($1)`
+	// run
+	var slotName string
+	var spillTxns int64
+	var spillCount int64
+	var spillBytes int64
+	var streamTxns int64
+	var streamCount int64
+	var streamBytes int64
+	var totalTxns int64
+	var totalBytes int64
+	var statsReset time.Time
+	logf(sqlstr, slotName)
+	if err := db.QueryRowContext(ctx, sqlstr, slotName).Scan(&slotName, &spillTxns, &spillCount, &spillBytes, &streamTxns, &streamCount, &streamBytes, &totalTxns, &totalBytes, &statsReset); err != nil {
+		return "", 0, 0, 0, 0, 0, 0, 0, 0, time.Time{}, logerror(err)
+	}
+	return slotName, spillTxns, spillCount, spillBytes, streamTxns, streamCount, streamBytes, totalTxns, totalBytes, statsReset, nil
+}
+
 // PgStatGetSlru calls the stored function 'pg_catalog.pg_stat_get_slru() (text, bigint, bigint, bigint, bigint, bigint, bigint, bigint, timestamp with time zone)' on db.
 func PgStatGetSlru(ctx context.Context, db DB) (string, int64, int64, int64, int64, int64, int64, int64, time.Time, error) {
 	// call pg_catalog.pg_stat_get_slru
@@ -29283,6 +37865,27 @@ func PgStatGetVacuumCount(ctx context.Context, db DB, p0 pgtypes.Oid) (int64, er
 		return 0, logerror(err)
 	}
 	return r0, nil
+}
+
+// PgStatGetWal calls the stored function 'pg_catalog.pg_stat_get_wal() (bigint, bigint, numeric, bigint, bigint, bigint, double precision, double precision, timestamp with time zone)' on db.
+func PgStatGetWal(ctx context.Context, db DB) (int64, int64, float64, int64, int64, int64, float64, float64, time.Time, error) {
+	// call pg_catalog.pg_stat_get_wal
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_get_wal()`
+	// run
+	var walRecords int64
+	var walFpi int64
+	var walBytes float64
+	var walBuffersFull int64
+	var walWrite int64
+	var walSync int64
+	var walWriteTime float64
+	var walSyncTime float64
+	var statsReset time.Time
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&walRecords, &walFpi, &walBytes, &walBuffersFull, &walWrite, &walSync, &walWriteTime, &walSyncTime, &statsReset); err != nil {
+		return 0, 0, 0.0, 0, 0, 0, 0.0, 0.0, time.Time{}, logerror(err)
+	}
+	return walRecords, walFpi, walBytes, walBuffersFull, walWrite, walSync, walWriteTime, walSyncTime, statsReset, nil
 }
 
 // PgStatGetWalReceiver calls the stored function 'pg_catalog.pg_stat_get_wal_receiver() (integer, text, pg_lsn, integer, pg_lsn, pg_lsn, integer, timestamp with time zone, timestamp with time zone, pg_lsn, timestamp with time zone, text, text, integer, text)' on db.
@@ -29504,6 +38107,18 @@ func PgStatReset(ctx context.Context, db DB) error {
 	return nil
 }
 
+// PgStatResetReplicationSlot calls the stored function 'pg_catalog.pg_stat_reset_replication_slot(text)' on db.
+func PgStatResetReplicationSlot(ctx context.Context, db DB, p0 string) error {
+	// call pg_catalog.pg_stat_reset_replication_slot
+	const sqlstr = `SELECT * FROM pg_catalog.pg_stat_reset_replication_slot($1)`
+	// run
+	logf(sqlstr)
+	if _, err := db.ExecContext(ctx, sqlstr, p0); err != nil {
+		return logerror(err)
+	}
+	return nil
+}
+
 // PgStatResetShared calls the stored function 'pg_catalog.pg_stat_reset_shared(text)' on db.
 func PgStatResetShared(ctx context.Context, db DB, p0 string) error {
 	// call pg_catalog.pg_stat_reset_shared
@@ -29684,14 +38299,14 @@ func PgTablespaceSizeByName(ctx context.Context, db DB, p0 string) (int64, error
 	return r0, nil
 }
 
-// PgTerminateBackend calls the stored function 'pg_catalog.pg_terminate_backend(integer) boolean' on db.
-func PgTerminateBackend(ctx context.Context, db DB, p0 int) (bool, error) {
+// PgTerminateBackend calls the stored function 'pg_catalog.pg_terminate_backend(integer, bigint) boolean' on db.
+func PgTerminateBackend(ctx context.Context, db DB, pid int, timeout int64) (bool, error) {
 	// call pg_catalog.pg_terminate_backend
-	const sqlstr = `SELECT * FROM pg_catalog.pg_terminate_backend($1)`
+	const sqlstr = `SELECT * FROM pg_catalog.pg_terminate_backend($1, $2)`
 	// run
 	var r0 bool
-	logf(sqlstr, p0)
-	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+	logf(sqlstr, pid, timeout)
+	if err := db.QueryRowContext(ctx, sqlstr, pid, timeout).Scan(&r0); err != nil {
 		return false, logerror(err)
 	}
 	return r0, nil
@@ -30024,6 +38639,20 @@ func PgXactCommitTimestamp(ctx context.Context, db DB, p0 pgtypes.Xid) (time.Tim
 		return time.Time{}, logerror(err)
 	}
 	return r0, nil
+}
+
+// PgXactCommitTimestampOrigin calls the stored function 'pg_catalog.pg_xact_commit_timestamp_origin(xid) (timestamp with time zone, oid)' on db.
+func PgXactCommitTimestampOrigin(ctx context.Context, db DB, xid pgtypes.Xid) (time.Time, pgtypes.Oid, error) {
+	// call pg_catalog.pg_xact_commit_timestamp_origin
+	const sqlstr = `SELECT * FROM pg_catalog.pg_xact_commit_timestamp_origin($1)`
+	// run
+	var timestamp time.Time
+	var roident pgtypes.Oid
+	logf(sqlstr, xid)
+	if err := db.QueryRowContext(ctx, sqlstr, xid).Scan(&timestamp, &roident); err != nil {
+		return time.Time{}, pgtypes.Oid{}, logerror(err)
+	}
+	return timestamp, roident, nil
 }
 
 // PgXactStatus calls the stored function 'pg_catalog.pg_xact_status(xid8) text' on db.
@@ -31284,6 +39913,19 @@ func RangeAdjacent(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, e
 	return r0, nil
 }
 
+// RangeAdjacentMultirange calls the stored function 'pg_catalog.range_adjacent_multirange(anyrange, anymultirange) boolean' on db.
+func RangeAdjacentMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_adjacent_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_adjacent_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeAfter calls the stored function 'pg_catalog.range_after(anyrange, anyrange) boolean' on db.
 func RangeAfter(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_after
@@ -31297,10 +39939,62 @@ func RangeAfter(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, erro
 	return r0, nil
 }
 
+// RangeAfterMultirange calls the stored function 'pg_catalog.range_after_multirange(anyrange, anymultirange) boolean' on db.
+func RangeAfterMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_after_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_after_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeAggFinalfn calls the stored function 'pg_catalog.range_agg_finalfn(internal, anyrange) anymultirange' on db.
+func RangeAggFinalfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anyrange) (pgtypes.Anymultirange, error) {
+	// call pg_catalog.range_agg_finalfn
+	const sqlstr = `SELECT * FROM pg_catalog.range_agg_finalfn($1, $2)`
+	// run
+	var r0 pgtypes.Anymultirange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anymultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeAggTransfn calls the stored function 'pg_catalog.range_agg_transfn(internal, anyrange) internal' on db.
+func RangeAggTransfn(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Anyrange) (pgtypes.Internal, error) {
+	// call pg_catalog.range_agg_transfn
+	const sqlstr = `SELECT * FROM pg_catalog.range_agg_transfn($1, $2)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeBefore calls the stored function 'pg_catalog.range_before(anyrange, anyrange) boolean' on db.
 func RangeBefore(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_before
 	const sqlstr = `SELECT * FROM pg_catalog.range_before($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeBeforeMultirange calls the stored function 'pg_catalog.range_before_multirange(anyrange, anymultirange) boolean' on db.
+func RangeBeforeMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_before_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_before_multirange($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -31336,6 +40030,19 @@ func RangeContainedBy(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool
 	return r0, nil
 }
 
+// RangeContainedByMultirange calls the stored function 'pg_catalog.range_contained_by_multirange(anyrange, anymultirange) boolean' on db.
+func RangeContainedByMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_contained_by_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_contained_by_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeContains calls the stored function 'pg_catalog.range_contains(anyrange, anyrange) boolean' on db.
 func RangeContains(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_contains
@@ -31353,6 +40060,19 @@ func RangeContains(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, e
 func RangeContainsElem(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anyelement) (bool, error) {
 	// call pg_catalog.range_contains_elem
 	const sqlstr = `SELECT * FROM pg_catalog.range_contains_elem($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeContainsMultirange calls the stored function 'pg_catalog.range_contains_multirange(anyrange, anymultirange) boolean' on db.
+func RangeContainsMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_contains_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_contains_multirange($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -31479,6 +40199,19 @@ func RangeIntersect(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtype
 	return r0, nil
 }
 
+// RangeIntersectAggTransfn calls the stored function 'pg_catalog.range_intersect_agg_transfn(anyrange, anyrange) anyrange' on db.
+func RangeIntersectAggTransfn(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.Anyrange, error) {
+	// call pg_catalog.range_intersect_agg_transfn
+	const sqlstr = `SELECT * FROM pg_catalog.range_intersect_agg_transfn($1, $2)`
+	// run
+	var r0 pgtypes.Anyrange
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anyrange{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeLe calls the stored function 'pg_catalog.range_le(anyrange, anyrange) boolean' on db.
 func RangeLe(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_le
@@ -31505,14 +40238,27 @@ func RangeLt(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) 
 	return r0, nil
 }
 
-// RangeMerge calls the stored function 'pg_catalog.range_merge(anyrange, anyrange) anyrange' on db.
-func RangeMerge(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.Anyrange, error) {
+// RangeMergeByAnyrangeAndAnyrange calls the stored function 'pg_catalog.range_merge(anyrange, anyrange) anyrange' on db.
+func RangeMergeByAnyrangeAndAnyrange(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (pgtypes.Anyrange, error) {
 	// call pg_catalog.range_merge
 	const sqlstr = `SELECT * FROM pg_catalog.range_merge($1, $2)`
 	// run
 	var r0 pgtypes.Anyrange
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anyrange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeMergeByAnymultirange calls the stored function 'pg_catalog.range_merge(anymultirange) anyrange' on db.
+func RangeMergeByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (pgtypes.Anyrange, error) {
+	// call pg_catalog.range_merge
+	const sqlstr = `SELECT * FROM pg_catalog.range_merge($1)`
+	// run
+	var r0 pgtypes.Anyrange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
@@ -31557,6 +40303,19 @@ func RangeOverlaps(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, e
 	return r0, nil
 }
 
+// RangeOverlapsMultirange calls the stored function 'pg_catalog.range_overlaps_multirange(anyrange, anymultirange) boolean' on db.
+func RangeOverlapsMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_overlaps_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_overlaps_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeOverleft calls the stored function 'pg_catalog.range_overleft(anyrange, anyrange) boolean' on db.
 func RangeOverleft(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_overleft
@@ -31570,10 +40329,36 @@ func RangeOverleft(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, e
 	return r0, nil
 }
 
+// RangeOverleftMultirange calls the stored function 'pg_catalog.range_overleft_multirange(anyrange, anymultirange) boolean' on db.
+func RangeOverleftMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_overleft_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_overleft_multirange($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
 // RangeOverright calls the stored function 'pg_catalog.range_overright(anyrange, anyrange) boolean' on db.
 func RangeOverright(ctx context.Context, db DB, p0, p1 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.range_overright
 	const sqlstr = `SELECT * FROM pg_catalog.range_overright($1, $2)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// RangeOverrightMultirange calls the stored function 'pg_catalog.range_overright_multirange(anyrange, anymultirange) boolean' on db.
+func RangeOverrightMultirange(ctx context.Context, db DB, p0 pgtypes.Anyrange, p1 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.range_overright_multirange
+	const sqlstr = `SELECT * FROM pg_catalog.range_overright_multirange($1, $2)`
 	// run
 	var r0 bool
 	logf(sqlstr, p0, p1)
@@ -31644,6 +40429,19 @@ func Rangesel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid, p
 	logf(sqlstr, p0, p1, p2, p3)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// RawArraySubscriptHandler calls the stored function 'pg_catalog.raw_array_subscript_handler(internal) internal' on db.
+func RawArraySubscriptHandler(ctx context.Context, db DB, p0 pgtypes.Internal) (pgtypes.Internal, error) {
+	// call pg_catalog.raw_array_subscript_handler
+	const sqlstr = `SELECT * FROM pg_catalog.raw_array_subscript_handler($1)`
+	// run
+	var r0 pgtypes.Internal
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Internal{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -32480,6 +41278,19 @@ func RpadByTextAndInteger(ctx context.Context, db DB, p0 string, p1 int) (string
 	return r0, nil
 }
 
+// RtrimByByteaAndBytea calls the stored function 'pg_catalog.rtrim(bytea, bytea) bytea' on db.
+func RtrimByByteaAndBytea(ctx context.Context, db DB, p0, p1 []byte) ([]byte, error) {
+	// call pg_catalog.rtrim
+	const sqlstr = `SELECT * FROM pg_catalog.rtrim($1, $2)`
+	// run
+	var r0 []byte
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
 // RtrimByTextAndText calls the stored function 'pg_catalog.rtrim(text, text) text' on db.
 func RtrimByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, error) {
 	// call pg_catalog.rtrim
@@ -32869,28 +41680,30 @@ func Sha512(ctx context.Context, db DB, p0 []byte) ([]byte, error) {
 	return r0, nil
 }
 
-// ShiftJis2004ToEucJis2004 calls the stored function 'pg_catalog.shift_jis_2004_to_euc_jis_2004(integer, integer, cstring, internal, integer)' on db.
-func ShiftJis2004ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// ShiftJis2004ToEucJis2004 calls the stored function 'pg_catalog.shift_jis_2004_to_euc_jis_2004(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func ShiftJis2004ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.shift_jis_2004_to_euc_jis_2004
-	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_euc_jis_2004($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_euc_jis_2004($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// ShiftJis2004ToUTF8 calls the stored function 'pg_catalog.shift_jis_2004_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func ShiftJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// ShiftJis2004ToUTF8 calls the stored function 'pg_catalog.shift_jis_2004_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func ShiftJis2004ToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.shift_jis_2004_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.shift_jis_2004_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // ShobjDescription calls the stored function 'pg_catalog.shobj_description(oid, name) text' on db.
@@ -33010,40 +41823,43 @@ func Sinh(ctx context.Context, db DB, p0 float64) (float64, error) {
 	return r0, nil
 }
 
-// SjisToEucJp calls the stored function 'pg_catalog.sjis_to_euc_jp(integer, integer, cstring, internal, integer)' on db.
-func SjisToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// SjisToEucJp calls the stored function 'pg_catalog.sjis_to_euc_jp(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func SjisToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.sjis_to_euc_jp
-	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_euc_jp($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_euc_jp($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// SjisToMic calls the stored function 'pg_catalog.sjis_to_mic(integer, integer, cstring, internal, integer)' on db.
-func SjisToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// SjisToMic calls the stored function 'pg_catalog.sjis_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func SjisToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.sjis_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// SjisToUTF8 calls the stored function 'pg_catalog.sjis_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func SjisToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// SjisToUTF8 calls the stored function 'pg_catalog.sjis_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func SjisToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.sjis_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.sjis_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // Slope calls the stored function 'pg_catalog.slope(point, point) double precision' on db.
@@ -33502,6 +42318,32 @@ func StringToArrayByTextAndText(ctx context.Context, db DB, p0, p1 string) (Stri
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return StringSlice{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// StringToTableByTextAndText calls the stored function 'pg_catalog.string_to_table(text, text) text' on db.
+func StringToTableByTextAndText(ctx context.Context, db DB, p0, p1 string) (string, error) {
+	// call pg_catalog.string_to_table
+	const sqlstr = `SELECT * FROM pg_catalog.string_to_table($1, $2)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return "", logerror(err)
+	}
+	return r0, nil
+}
+
+// StringToTableByTextTextAndText calls the stored function 'pg_catalog.string_to_table(text, text, text) text' on db.
+func StringToTableByTextTextAndText(ctx context.Context, db DB, p0, p1, p2 string) (string, error) {
+	// call pg_catalog.string_to_table
+	const sqlstr = `SELECT * FROM pg_catalog.string_to_table($1, $2, $3)`
+	// run
+	var r0 string
+	logf(sqlstr, p0, p1, p2)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2).Scan(&r0); err != nil {
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -36560,6 +45402,19 @@ func Translate(ctx context.Context, db DB, p0, p1, p2 string) (string, error) {
 	return r0, nil
 }
 
+// TrimArray calls the stored function 'pg_catalog.trim_array(anyarray, integer) anyarray' on db.
+func TrimArray(ctx context.Context, db DB, p0 pgtypes.Anyarray, p1 int) (pgtypes.Anyarray, error) {
+	// call pg_catalog.trim_array
+	const sqlstr = `SELECT * FROM pg_catalog.trim_array($1, $2)`
+	// run
+	var r0 pgtypes.Anyarray
+	logf(sqlstr, p0, p1)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
+		return pgtypes.Anyarray{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // TrimScale calls the stored function 'pg_catalog.trim_scale(numeric) numeric' on db.
 func TrimScale(ctx context.Context, db DB, p0 float64) (float64, error) {
 	// call pg_catalog.trim_scale
@@ -37191,6 +46046,32 @@ func Tsmatchsel(ctx context.Context, db DB, p0 pgtypes.Internal, p1 pgtypes.Oid,
 	return r0, nil
 }
 
+// Tsmultirange calls the stored function 'pg_catalog.tsmultirange() tsmultirange' on db.
+func Tsmultirange(ctx context.Context, db DB) (pgtypes.Tsmultirange, error) {
+	// call pg_catalog.tsmultirange
+	const sqlstr = `SELECT * FROM pg_catalog.tsmultirange()`
+	// run
+	var r0 pgtypes.Tsmultirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Tsmultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TsmultirangeByTsrange calls the stored function 'pg_catalog.tsmultirange(tsrange) tsmultirange' on db.
+func TsmultirangeByTsrange(ctx context.Context, db DB, p0 pgtypes.Tsrange) (pgtypes.Tsmultirange, error) {
+	// call pg_catalog.tsmultirange
+	const sqlstr = `SELECT * FROM pg_catalog.tsmultirange($1)`
+	// run
+	var r0 pgtypes.Tsmultirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Tsmultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // TsqMcontained calls the stored function 'pg_catalog.tsq_mcontained(tsquery, tsquery) boolean' on db.
 func TsqMcontained(ctx context.Context, db DB, p0, p1 pgtypes.Tsquery) (bool, error) {
 	// call pg_catalog.tsq_mcontained
@@ -37434,6 +46315,32 @@ func TsrangeSubdiff(ctx context.Context, db DB, p0, p1 time.Time) (float64, erro
 	logf(sqlstr, p0, p1)
 	if err := db.QueryRowContext(ctx, sqlstr, p0, p1).Scan(&r0); err != nil {
 		return 0.0, logerror(err)
+	}
+	return r0, nil
+}
+
+// Tstzmultirange calls the stored function 'pg_catalog.tstzmultirange() tstzmultirange' on db.
+func Tstzmultirange(ctx context.Context, db DB) (pgtypes.Tstzmultirange, error) {
+	// call pg_catalog.tstzmultirange
+	const sqlstr = `SELECT * FROM pg_catalog.tstzmultirange()`
+	// run
+	var r0 pgtypes.Tstzmultirange
+	logf(sqlstr)
+	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
+		return pgtypes.Tstzmultirange{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// TstzmultirangeByTstzrange calls the stored function 'pg_catalog.tstzmultirange(tstzrange) tstzmultirange' on db.
+func TstzmultirangeByTstzrange(ctx context.Context, db DB, p0 pgtypes.Tstzrange) (pgtypes.Tstzmultirange, error) {
+	// call pg_catalog.tstzmultirange
+	const sqlstr = `SELECT * FROM pg_catalog.tstzmultirange($1)`
+	// run
+	var r0 pgtypes.Tstzmultirange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Tstzmultirange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -37776,208 +46683,225 @@ func TxidVisibleInSnapshot(ctx context.Context, db DB, p0 int64, p1 pgtypes.Txid
 	return r0, nil
 }
 
-// UTF8ToBig5 calls the stored function 'pg_catalog.utf8_to_big5(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToBig5 calls the stored function 'pg_catalog.utf8_to_big5(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToBig5(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_big5
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_big5($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_big5($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToEucCn calls the stored function 'pg_catalog.utf8_to_euc_cn(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToEucCn calls the stored function 'pg_catalog.utf8_to_euc_cn(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToEucCn(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_euc_cn
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_cn($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_cn($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToEucJis2004 calls the stored function 'pg_catalog.utf8_to_euc_jis_2004(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToEucJis2004 calls the stored function 'pg_catalog.utf8_to_euc_jis_2004(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToEucJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_euc_jis_2004
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jis_2004($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jis_2004($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToEucJp calls the stored function 'pg_catalog.utf8_to_euc_jp(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToEucJp calls the stored function 'pg_catalog.utf8_to_euc_jp(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToEucJp(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_euc_jp
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jp($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_jp($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToEucKr calls the stored function 'pg_catalog.utf8_to_euc_kr(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToEucKr calls the stored function 'pg_catalog.utf8_to_euc_kr(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToEucKr(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_euc_kr
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_kr($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_kr($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToEucTw calls the stored function 'pg_catalog.utf8_to_euc_tw(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToEucTw calls the stored function 'pg_catalog.utf8_to_euc_tw(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToEucTw(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_euc_tw
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_tw($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_euc_tw($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToGb18030 calls the stored function 'pg_catalog.utf8_to_gb18030(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToGb18030(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToGb18030 calls the stored function 'pg_catalog.utf8_to_gb18030(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToGb18030(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_gb18030
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gb18030($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gb18030($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToGbk calls the stored function 'pg_catalog.utf8_to_gbk(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToGbk(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToGbk calls the stored function 'pg_catalog.utf8_to_gbk(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToGbk(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_gbk
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gbk($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_gbk($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToIso8859 calls the stored function 'pg_catalog.utf8_to_iso8859(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToIso8859(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToIso8859 calls the stored function 'pg_catalog.utf8_to_iso8859(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToIso8859(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_iso8859
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToIso88591 calls the stored function 'pg_catalog.utf8_to_iso8859_1(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToIso88591(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToIso88591 calls the stored function 'pg_catalog.utf8_to_iso8859_1(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToIso88591(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_iso8859_1
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859_1($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_iso8859_1($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToJohab calls the stored function 'pg_catalog.utf8_to_johab(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToJohab(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToJohab calls the stored function 'pg_catalog.utf8_to_johab(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToJohab(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_johab
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_johab($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_johab($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToKoi8r calls the stored function 'pg_catalog.utf8_to_koi8r(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToKoi8r calls the stored function 'pg_catalog.utf8_to_koi8r(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_koi8r
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8r($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8r($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToKoi8u calls the stored function 'pg_catalog.utf8_to_koi8u(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToKoi8u(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToKoi8u calls the stored function 'pg_catalog.utf8_to_koi8u(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToKoi8u(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_koi8u
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8u($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_koi8u($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToShiftJis2004 calls the stored function 'pg_catalog.utf8_to_shift_jis_2004(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToShiftJis2004 calls the stored function 'pg_catalog.utf8_to_shift_jis_2004(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToShiftJis2004(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_shift_jis_2004
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_shift_jis_2004($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_shift_jis_2004($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToSjis calls the stored function 'pg_catalog.utf8_to_sjis(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToSjis calls the stored function 'pg_catalog.utf8_to_sjis(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToSjis(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_sjis
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_sjis($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_sjis($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToUhc calls the stored function 'pg_catalog.utf8_to_uhc(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToUhc(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToUhc calls the stored function 'pg_catalog.utf8_to_uhc(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToUhc(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_uhc
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_uhc($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_uhc($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// UTF8ToWin calls the stored function 'pg_catalog.utf8_to_win(integer, integer, cstring, internal, integer)' on db.
-func UTF8ToWin(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UTF8ToWin calls the stored function 'pg_catalog.utf8_to_win(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UTF8ToWin(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.utf8_to_win
-	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_win($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.utf8_to_win($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // UUIDCmp calls the stored function 'pg_catalog.uuid_cmp(uuid, uuid) integer' on db.
@@ -38135,16 +47059,17 @@ func UUIDSortsupport(ctx context.Context, db DB, p0 pgtypes.Internal) error {
 	return nil
 }
 
-// UhcToUTF8 calls the stored function 'pg_catalog.uhc_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func UhcToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// UhcToUTF8 calls the stored function 'pg_catalog.uhc_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func UhcToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.uhc_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.uhc_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.uhc_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // UniqueKeyRecheck calls the stored function 'pg_catalog.unique_key_recheck() trigger' on db.
@@ -38156,6 +47081,19 @@ func UniqueKeyRecheck(ctx context.Context, db DB) (pgtypes.Trigger, error) {
 	logf(sqlstr)
 	if err := db.QueryRowContext(ctx, sqlstr).Scan(&r0); err != nil {
 		return pgtypes.Trigger{}, logerror(err)
+	}
+	return r0, nil
+}
+
+// Unistr calls the stored function 'pg_catalog.unistr(text) text' on db.
+func Unistr(ctx context.Context, db DB, p0 string) (string, error) {
+	// call pg_catalog.unistr
+	const sqlstr = `SELECT * FROM pg_catalog.unistr($1)`
+	// run
+	var r0 string
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return "", logerror(err)
 	}
 	return r0, nil
 }
@@ -38182,6 +47120,19 @@ func Unknownsend(ctx context.Context, db DB, p0 pgtypes.Unknown) ([]byte, error)
 	logf(sqlstr, p0)
 	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
 		return nil, logerror(err)
+	}
+	return r0, nil
+}
+
+// UnnestByAnymultirange calls the stored function 'pg_catalog.unnest(anymultirange) anyrange' on db.
+func UnnestByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (pgtypes.Anyrange, error) {
+	// call pg_catalog.unnest
+	const sqlstr = `SELECT * FROM pg_catalog.unnest($1)`
+	// run
+	var r0 pgtypes.Anyrange
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Anyrange{}, logerror(err)
 	}
 	return r0, nil
 }
@@ -38227,6 +47178,19 @@ func UpperByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (pgtypes.A
 	return r0, nil
 }
 
+// UpperByAnymultirange calls the stored function 'pg_catalog.upper(anymultirange) anyelement' on db.
+func UpperByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (pgtypes.Anyelement, error) {
+	// call pg_catalog.upper
+	const sqlstr = `SELECT * FROM pg_catalog.upper($1)`
+	// run
+	var r0 pgtypes.Anyelement
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return pgtypes.Anyelement{}, logerror(err)
+	}
+	return r0, nil
+}
+
 // UpperByText calls the stored function 'pg_catalog.upper(text) text' on db.
 func UpperByText(ctx context.Context, db DB, p0 string) (string, error) {
 	// call pg_catalog.upper
@@ -38240,8 +47204,8 @@ func UpperByText(ctx context.Context, db DB, p0 string) (string, error) {
 	return r0, nil
 }
 
-// UpperInc calls the stored function 'pg_catalog.upper_inc(anyrange) boolean' on db.
-func UpperInc(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+// UpperIncByAnyrange calls the stored function 'pg_catalog.upper_inc(anyrange) boolean' on db.
+func UpperIncByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
 	// call pg_catalog.upper_inc
 	const sqlstr = `SELECT * FROM pg_catalog.upper_inc($1)`
 	// run
@@ -38253,8 +47217,34 @@ func UpperInc(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
 	return r0, nil
 }
 
-// UpperInf calls the stored function 'pg_catalog.upper_inf(anyrange) boolean' on db.
-func UpperInf(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+// UpperIncByAnymultirange calls the stored function 'pg_catalog.upper_inc(anymultirange) boolean' on db.
+func UpperIncByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (bool, error) {
+	// call pg_catalog.upper_inc
+	const sqlstr = `SELECT * FROM pg_catalog.upper_inc($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// UpperInfByAnyrange calls the stored function 'pg_catalog.upper_inf(anyrange) boolean' on db.
+func UpperInfByAnyrange(ctx context.Context, db DB, p0 pgtypes.Anyrange) (bool, error) {
+	// call pg_catalog.upper_inf
+	const sqlstr = `SELECT * FROM pg_catalog.upper_inf($1)`
+	// run
+	var r0 bool
+	logf(sqlstr, p0)
+	if err := db.QueryRowContext(ctx, sqlstr, p0).Scan(&r0); err != nil {
+		return false, logerror(err)
+	}
+	return r0, nil
+}
+
+// UpperInfByAnymultirange calls the stored function 'pg_catalog.upper_inf(anymultirange) boolean' on db.
+func UpperInfByAnymultirange(ctx context.Context, db DB, p0 pgtypes.Anymultirange) (bool, error) {
 	// call pg_catalog.upper_inf
 	const sqlstr = `SELECT * FROM pg_catalog.upper_inf($1)`
 	// run
@@ -38603,8 +47593,8 @@ func WidthBucketByDoublePrecisionDoublePrecisionDoublePrecisionAndInteger(ctx co
 	return r0, nil
 }
 
-// WidthBucketByAnyelementAndAnyarray calls the stored function 'pg_catalog.width_bucket(anyelement, anyarray) integer' on db.
-func WidthBucketByAnyelementAndAnyarray(ctx context.Context, db DB, p0 pgtypes.Anyelement, p1 pgtypes.Anyarray) (int, error) {
+// WidthBucketByAnycompatibleAndAnycompatiblearray calls the stored function 'pg_catalog.width_bucket(anycompatible, anycompatiblearray) integer' on db.
+func WidthBucketByAnycompatibleAndAnycompatiblearray(ctx context.Context, db DB, p0 pgtypes.Anycompatible, p1 pgtypes.Anycompatiblearray) (int, error) {
 	// call pg_catalog.width_bucket
 	const sqlstr = `SELECT * FROM pg_catalog.width_bucket($1, $2)`
 	// run
@@ -38616,136 +47606,147 @@ func WidthBucketByAnyelementAndAnyarray(ctx context.Context, db DB, p0 pgtypes.A
 	return r0, nil
 }
 
-// Win1250ToLatin2 calls the stored function 'pg_catalog.win1250_to_latin2(integer, integer, cstring, internal, integer)' on db.
-func Win1250ToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1250ToLatin2 calls the stored function 'pg_catalog.win1250_to_latin2(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1250ToLatin2(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1250_to_latin2
-	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_latin2($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_latin2($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win1250ToMic calls the stored function 'pg_catalog.win1250_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Win1250ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1250ToMic calls the stored function 'pg_catalog.win1250_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1250ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1250_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1250_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win1251ToIso calls the stored function 'pg_catalog.win1251_to_iso(integer, integer, cstring, internal, integer)' on db.
-func Win1251ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1251ToIso calls the stored function 'pg_catalog.win1251_to_iso(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1251ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1251_to_iso
-	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_iso($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_iso($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win1251ToKoi8r calls the stored function 'pg_catalog.win1251_to_koi8r(integer, integer, cstring, internal, integer)' on db.
-func Win1251ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1251ToKoi8r calls the stored function 'pg_catalog.win1251_to_koi8r(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1251ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1251_to_koi8r
-	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_koi8r($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_koi8r($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win1251ToMic calls the stored function 'pg_catalog.win1251_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Win1251ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1251ToMic calls the stored function 'pg_catalog.win1251_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1251ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1251_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win1251ToWin866 calls the stored function 'pg_catalog.win1251_to_win866(integer, integer, cstring, internal, integer)' on db.
-func Win1251ToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win1251ToWin866 calls the stored function 'pg_catalog.win1251_to_win866(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win1251ToWin866(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win1251_to_win866
-	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_win866($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win1251_to_win866($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win866ToIso calls the stored function 'pg_catalog.win866_to_iso(integer, integer, cstring, internal, integer)' on db.
-func Win866ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win866ToIso calls the stored function 'pg_catalog.win866_to_iso(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win866ToIso(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win866_to_iso
-	const sqlstr = `SELECT * FROM pg_catalog.win866_to_iso($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win866_to_iso($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win866ToKoi8r calls the stored function 'pg_catalog.win866_to_koi8r(integer, integer, cstring, internal, integer)' on db.
-func Win866ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win866ToKoi8r calls the stored function 'pg_catalog.win866_to_koi8r(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win866ToKoi8r(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win866_to_koi8r
-	const sqlstr = `SELECT * FROM pg_catalog.win866_to_koi8r($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win866_to_koi8r($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win866ToMic calls the stored function 'pg_catalog.win866_to_mic(integer, integer, cstring, internal, integer)' on db.
-func Win866ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win866ToMic calls the stored function 'pg_catalog.win866_to_mic(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win866ToMic(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win866_to_mic
-	const sqlstr = `SELECT * FROM pg_catalog.win866_to_mic($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win866_to_mic($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// Win866ToWin1251 calls the stored function 'pg_catalog.win866_to_win1251(integer, integer, cstring, internal, integer)' on db.
-func Win866ToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// Win866ToWin1251 calls the stored function 'pg_catalog.win866_to_win1251(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func Win866ToWin1251(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win866_to_win1251
-	const sqlstr = `SELECT * FROM pg_catalog.win866_to_win1251($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win866_to_win1251($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
-// WinToUTF8 calls the stored function 'pg_catalog.win_to_utf8(integer, integer, cstring, internal, integer)' on db.
-func WinToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int) error {
+// WinToUTF8 calls the stored function 'pg_catalog.win_to_utf8(integer, integer, cstring, internal, integer, boolean) integer' on db.
+func WinToUTF8(ctx context.Context, db DB, p0, p1 int, p2 pgtypes.Cstring, p3 pgtypes.Internal, p4 int, p5 bool) (int, error) {
 	// call pg_catalog.win_to_utf8
-	const sqlstr = `SELECT * FROM pg_catalog.win_to_utf8($1, $2, $3, $4, $5)`
+	const sqlstr = `SELECT * FROM pg_catalog.win_to_utf8($1, $2, $3, $4, $5, $6)`
 	// run
-	logf(sqlstr)
-	if _, err := db.ExecContext(ctx, sqlstr, p0, p1, p2, p3, p4); err != nil {
-		return logerror(err)
+	var r0 int
+	logf(sqlstr, p0, p1, p2, p3, p4, p5)
+	if err := db.QueryRowContext(ctx, sqlstr, p0, p1, p2, p3, p4, p5).Scan(&r0); err != nil {
+		return 0, logerror(err)
 	}
-	return nil
+	return r0, nil
 }
 
 // XML calls the stored function 'pg_catalog.xml(text) xml' on db.

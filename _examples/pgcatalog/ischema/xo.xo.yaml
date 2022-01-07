@@ -17,16 +17,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE WHEN $2 = -1 /* default typmod */
-             THEN null
-             WHEN $1 IN (1042, 1043) /* char, varchar */
-             THEN $2 - 4
-             WHEN $1 IN (1560, 1562) /* bit, varbit */
-             THEN $2
-             ELSE null
-        END
   - type: function
     name: _pg_char_octet_length
     params:
@@ -40,16 +30,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE WHEN $1 IN (25, 1042, 1043) /* text, char, varchar */
-             THEN CASE WHEN $2 = -1 /* default typmod */
-                       THEN CAST(2^30 AS integer)
-                       ELSE information_schema._pg_char_max_length($1, $2) *
-                            pg_catalog.pg_encoding_max_length((SELECT encoding FROM pg_catalog.pg_database WHERE datname = pg_catalog.current_database()))
-                  END
-             ELSE null
-        END
   - type: function
     name: _pg_datetime_precision
     params:
@@ -63,16 +43,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE WHEN $1 IN (1082) /* date */
-                 THEN 0
-             WHEN $1 IN (1083, 1114, 1184, 1266) /* time, timestamp, same + tz */
-                 THEN CASE WHEN $2 < 0 THEN 6 ELSE $2 END
-             WHEN $1 IN (1186) /* interval */
-                 THEN CASE WHEN $2 < 0 OR $2 & 65535 = 65535 THEN 6 ELSE $2 & 65535 END
-             ELSE null
-        END
   - type: function
     name: _pg_expandarray
     params:
@@ -87,7 +57,8 @@ schemas:
       datatype:
         type: integer
     definition: |-
-      select $1[s], s - pg_catalog.array_lower($1,1) + 1
+      select $1[s],
+              s operator(pg_catalog.-) pg_catalog.array_lower($1,1) operator(pg_catalog.+) 1
               from pg_catalog.generate_series(pg_catalog.array_lower($1,1),
                                               pg_catalog.array_upper($1,1),
                                               1) as g(s)
@@ -104,11 +75,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT (ss.a).n FROM
-        (SELECT information_schema._pg_expandarray(indkey) AS a
-         FROM pg_catalog.pg_index WHERE indexrelid = $1) ss
-        WHERE (ss.a).x = $2;
   - type: function
     name: _pg_interval_type
     params:
@@ -122,7 +88,6 @@ schemas:
     - name: r0
       datatype:
         type: text
-    definition: "SELECT\n  CASE WHEN $1 IN (1186) /* interval */\n           THEN pg_catalog.upper(substring(pg_catalog.format_type($1, $2) from 'interval[()0-9]* #\"%#\"' for '#'))\n       ELSE null\n  END"
   - type: function
     name: _pg_numeric_precision
     params:
@@ -136,21 +101,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE $1
-               WHEN 21 /*int2*/ THEN 16
-               WHEN 23 /*int4*/ THEN 32
-               WHEN 20 /*int8*/ THEN 64
-               WHEN 1700 /*numeric*/ THEN
-                    CASE WHEN $2 = -1
-                         THEN null
-                         ELSE (($2 - 4) >> 16) & 65535
-                         END
-               WHEN 700 /*float4*/ THEN 24 /*FLT_MANT_DIG*/
-               WHEN 701 /*float8*/ THEN 53 /*DBL_MANT_DIG*/
-               ELSE null
-        END
   - type: function
     name: _pg_numeric_precision_radix
     params:
@@ -164,12 +114,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE WHEN $1 IN (21, 23, 20, 700, 701) THEN 2
-             WHEN $1 IN (1700) THEN 10
-             ELSE null
-        END
   - type: function
     name: _pg_numeric_scale
     params:
@@ -183,16 +127,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |-
-      SELECT
-        CASE WHEN $1 IN (21, 23, 20) THEN 0
-             WHEN $1 IN (1700) THEN
-                  CASE WHEN $2 = -1
-                       THEN null
-                       ELSE ($2 - 4) & 65535
-                       END
-             ELSE null
-        END
   - type: function
     name: _pg_truetypid
     params:
@@ -206,8 +140,6 @@ schemas:
     - name: r0
       datatype:
         type: oid
-    definition: |
-      SELECT CASE WHEN $2.typtype = 'd' THEN $2.typbasetype ELSE $1.atttypid END
   - type: function
     name: _pg_truetypmod
     params:
@@ -221,8 +153,6 @@ schemas:
     - name: r0
       datatype:
         type: integer
-    definition: |
-      SELECT CASE WHEN $2.typtype = 'd' THEN $2.typtypmod ELSE $1.atttypmod END
   tables:
   - type: table
     name: sql_features
@@ -667,7 +597,17 @@ schemas:
                   WHEN m.admin_option THEN 'YES'::text
                   ELSE 'NO'::text
               END)::information_schema.yes_or_no AS is_grantable
-         FROM ((pg_auth_members m
+         FROM ((( SELECT pg_auth_members.member,
+                  pg_auth_members.roleid,
+                  pg_auth_members.admin_option
+                 FROM pg_auth_members
+              UNION
+               SELECT pg_database.datdba,
+                  pg_authid.oid,
+                  false AS bool
+                 FROM pg_database,
+                  pg_authid
+                WHERE ((pg_database.datname = current_database()) AND (pg_authid.rolname = 'pg_database_owner'::name))) m
            JOIN pg_authid a ON ((m.member = a.oid)))
            JOIN pg_authid b ON ((m.roleid = b.oid)))
         WHERE pg_has_role(a.oid, 'USAGE'::text);
@@ -937,7 +877,7 @@ schemas:
         nullable: true
     manual: true
     definition: |-
-      SELECT (current_database())::information_schema.sql_identifier AS constraint_catalog,
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS constraint_catalog,
           (nc.nspname)::information_schema.sql_identifier AS constraint_schema,
           (c.conname)::information_schema.sql_identifier AS constraint_name,
           (current_database())::information_schema.sql_identifier AS specific_catalog,
@@ -973,7 +913,7 @@ schemas:
       SELECT (current_database())::information_schema.sql_identifier AS constraint_catalog,
           (rs.nspname)::information_schema.sql_identifier AS constraint_schema,
           (con.conname)::information_schema.sql_identifier AS constraint_name,
-          ("substring"(pg_get_constraintdef(con.oid), 7))::information_schema.character_data AS check_clause
+          (SUBSTRING(pg_get_constraintdef(con.oid) FROM 7))::information_schema.character_data AS check_clause
          FROM (((pg_constraint con
            LEFT JOIN pg_namespace rs ON ((rs.oid = con.connamespace)))
            LEFT JOIN pg_class c ON ((c.oid = con.conrelid)))
@@ -1083,7 +1023,7 @@ schemas:
         nullable: true
     manual: true
     definition: |-
-      SELECT (current_database())::information_schema.sql_identifier AS table_catalog,
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS table_catalog,
           (n.nspname)::information_schema.sql_identifier AS table_schema,
           (c.relname)::information_schema.sql_identifier AS table_name,
           (ac.attname)::information_schema.sql_identifier AS column_name,
@@ -3073,6 +3013,68 @@ schemas:
                  FROM information_schema.enabled_roles)) OR ((usage_privileges.grantee)::name IN ( SELECT enabled_roles.role_name
                  FROM information_schema.enabled_roles)));
   - type: view
+    name: routine_column_usage
+    columns:
+    - name: specific_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: column_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    manual: true
+    definition: |-
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS specific_catalog,
+          (np.nspname)::information_schema.sql_identifier AS specific_schema,
+          (nameconcatoid(p.proname, p.oid))::information_schema.sql_identifier AS specific_name,
+          (current_database())::information_schema.sql_identifier AS routine_catalog,
+          (np.nspname)::information_schema.sql_identifier AS routine_schema,
+          (p.proname)::information_schema.sql_identifier AS routine_name,
+          (current_database())::information_schema.sql_identifier AS table_catalog,
+          (nt.nspname)::information_schema.sql_identifier AS table_schema,
+          (t.relname)::information_schema.sql_identifier AS table_name,
+          (a.attname)::information_schema.sql_identifier AS column_name
+         FROM pg_namespace np,
+          pg_proc p,
+          pg_depend d,
+          pg_class t,
+          pg_namespace nt,
+          pg_attribute a
+        WHERE ((np.oid = p.pronamespace) AND (p.oid = d.objid) AND (d.classid = ('pg_proc'::regclass)::oid) AND (d.refobjid = t.oid) AND (d.refclassid = ('pg_class'::regclass)::oid) AND (t.relnamespace = nt.oid) AND (t.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char"])) AND (t.oid = a.attrelid) AND (d.refobjsubid = a.attnum) AND pg_has_role(t.relowner, 'USAGE'::text));
+  - type: view
     name: routine_privileges
     columns:
     - name: grantor
@@ -3149,6 +3151,159 @@ schemas:
                SELECT (0)::oid AS oid,
                   'PUBLIC'::name) grantee(oid, rolname)
         WHERE ((p.pronamespace = n.oid) AND (grantee.oid = p.grantee) AND (u_grantor.oid = p.grantor) AND (p.prtype = 'EXECUTE'::text) AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR (grantee.rolname = 'PUBLIC'::name)));
+  - type: view
+    name: routine_routine_usage
+    columns:
+    - name: specific_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    manual: true
+    definition: |-
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS specific_catalog,
+          (np.nspname)::information_schema.sql_identifier AS specific_schema,
+          (nameconcatoid(p.proname, p.oid))::information_schema.sql_identifier AS specific_name,
+          (current_database())::information_schema.sql_identifier AS routine_catalog,
+          (np1.nspname)::information_schema.sql_identifier AS routine_schema,
+          (nameconcatoid(p1.proname, p1.oid))::information_schema.sql_identifier AS routine_name
+         FROM pg_namespace np,
+          pg_proc p,
+          pg_depend d,
+          pg_proc p1,
+          pg_namespace np1
+        WHERE ((np.oid = p.pronamespace) AND (p.oid = d.objid) AND (d.classid = ('pg_proc'::regclass)::oid) AND (d.refobjid = p1.oid) AND (d.refclassid = ('pg_proc'::regclass)::oid) AND (p1.pronamespace = np1.oid) AND (p.prokind = ANY (ARRAY['f'::"char", 'p'::"char"])) AND (p1.prokind = ANY (ARRAY['f'::"char", 'p'::"char"])) AND pg_has_role(p1.proowner, 'USAGE'::text));
+  - type: view
+    name: routine_sequence_usage
+    columns:
+    - name: specific_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: sequence_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: sequence_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: sequence_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    manual: true
+    definition: |-
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS specific_catalog,
+          (np.nspname)::information_schema.sql_identifier AS specific_schema,
+          (nameconcatoid(p.proname, p.oid))::information_schema.sql_identifier AS specific_name,
+          (current_database())::information_schema.sql_identifier AS routine_catalog,
+          (np.nspname)::information_schema.sql_identifier AS routine_schema,
+          (p.proname)::information_schema.sql_identifier AS routine_name,
+          (current_database())::information_schema.sql_identifier AS sequence_catalog,
+          (ns.nspname)::information_schema.sql_identifier AS sequence_schema,
+          (s.relname)::information_schema.sql_identifier AS sequence_name
+         FROM pg_namespace np,
+          pg_proc p,
+          pg_depend d,
+          pg_class s,
+          pg_namespace ns
+        WHERE ((np.oid = p.pronamespace) AND (p.oid = d.objid) AND (d.classid = ('pg_proc'::regclass)::oid) AND (d.refobjid = s.oid) AND (d.refclassid = ('pg_class'::regclass)::oid) AND (s.relnamespace = ns.oid) AND (s.relkind = 'S'::"char") AND pg_has_role(s.relowner, 'USAGE'::text));
+  - type: view
+    name: routine_table_usage
+    columns:
+    - name: specific_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: specific_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: routine_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_catalog
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_schema
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    - name: table_name
+      datatype:
+        type: information_schema.sql_identifier
+        nullable: true
+    manual: true
+    definition: |-
+      SELECT DISTINCT (current_database())::information_schema.sql_identifier AS specific_catalog,
+          (np.nspname)::information_schema.sql_identifier AS specific_schema,
+          (nameconcatoid(p.proname, p.oid))::information_schema.sql_identifier AS specific_name,
+          (current_database())::information_schema.sql_identifier AS routine_catalog,
+          (np.nspname)::information_schema.sql_identifier AS routine_schema,
+          (p.proname)::information_schema.sql_identifier AS routine_name,
+          (current_database())::information_schema.sql_identifier AS table_catalog,
+          (nt.nspname)::information_schema.sql_identifier AS table_schema,
+          (t.relname)::information_schema.sql_identifier AS table_name
+         FROM pg_namespace np,
+          pg_proc p,
+          pg_depend d,
+          pg_class t,
+          pg_namespace nt
+        WHERE ((np.oid = p.pronamespace) AND (p.oid = d.objid) AND (d.classid = ('pg_proc'::regclass)::oid) AND (d.refobjid = t.oid) AND (d.refclassid = ('pg_class'::regclass)::oid) AND (t.relnamespace = nt.oid) AND (t.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char"])) AND pg_has_role(t.relowner, 'USAGE'::text));
   - type: view
     name: routines
     columns:
@@ -4176,7 +4331,7 @@ schemas:
         type: information_schema.time_stamp
         nullable: true
     manual: true
-    definition: "SELECT (current_database())::information_schema.sql_identifier AS trigger_catalog,\n    (n.nspname)::information_schema.sql_identifier AS trigger_schema,\n    (t.tgname)::information_schema.sql_identifier AS trigger_name,\n    (em.text)::information_schema.character_data AS event_manipulation,\n    (current_database())::information_schema.sql_identifier AS event_object_catalog,\n    (n.nspname)::information_schema.sql_identifier AS event_object_schema,\n    (c.relname)::information_schema.sql_identifier AS event_object_table,\n    (rank() OVER (PARTITION BY (n.nspname)::information_schema.sql_identifier, (c.relname)::information_schema.sql_identifier, em.num, ((t.tgtype)::integer & 1), ((t.tgtype)::integer & 66) ORDER BY t.tgname))::information_schema.cardinal_number AS action_order,\n    (\n        CASE\n            WHEN pg_has_role(c.relowner, 'USAGE'::text) THEN (regexp_match(pg_get_triggerdef(t.oid), '.{35,} WHEN \\((.+)\\) EXECUTE FUNCTION'::text))[1]\n            ELSE NULL::text\n        END)::information_schema.character_data AS action_condition,\n    (\"substring\"(pg_get_triggerdef(t.oid), (\"position\"(\"substring\"(pg_get_triggerdef(t.oid), 48), 'EXECUTE FUNCTION'::text) + 47)))::information_schema.character_data AS action_statement,\n    (\n        CASE ((t.tgtype)::integer & 1)\n            WHEN 1 THEN 'ROW'::text\n            ELSE 'STATEMENT'::text\n        END)::information_schema.character_data AS action_orientation,\n    (\n        CASE ((t.tgtype)::integer & 66)\n            WHEN 2 THEN 'BEFORE'::text\n            WHEN 64 THEN 'INSTEAD OF'::text\n            ELSE 'AFTER'::text\n        END)::information_schema.character_data AS action_timing,\n    (t.tgoldtable)::information_schema.sql_identifier AS action_reference_old_table,\n    (t.tgnewtable)::information_schema.sql_identifier AS action_reference_new_table,\n    (NULL::name)::information_schema.sql_identifier AS action_reference_old_row,\n    (NULL::name)::information_schema.sql_identifier AS action_reference_new_row,\n    (NULL::timestamp with time zone)::information_schema.time_stamp AS created\n   FROM pg_namespace n,\n    pg_class c,\n    pg_trigger t,\n    ( VALUES (4,'INSERT'::text), (8,'DELETE'::text), (16,'UPDATE'::text)) em(num, text)\n  WHERE ((n.oid = c.relnamespace) AND (c.oid = t.tgrelid) AND (((t.tgtype)::integer & em.num) <> 0) AND (NOT t.tgisinternal) AND (NOT pg_is_other_temp_schema(n.oid)) AND (pg_has_role(c.relowner, 'USAGE'::text) OR has_table_privilege(c.oid, 'INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR has_any_column_privilege(c.oid, 'INSERT, UPDATE, REFERENCES'::text)));"
+    definition: "SELECT (current_database())::information_schema.sql_identifier AS trigger_catalog,\n    (n.nspname)::information_schema.sql_identifier AS trigger_schema,\n    (t.tgname)::information_schema.sql_identifier AS trigger_name,\n    (em.text)::information_schema.character_data AS event_manipulation,\n    (current_database())::information_schema.sql_identifier AS event_object_catalog,\n    (n.nspname)::information_schema.sql_identifier AS event_object_schema,\n    (c.relname)::information_schema.sql_identifier AS event_object_table,\n    (rank() OVER (PARTITION BY (n.nspname)::information_schema.sql_identifier, (c.relname)::information_schema.sql_identifier, em.num, ((t.tgtype)::integer & 1), ((t.tgtype)::integer & 66) ORDER BY t.tgname))::information_schema.cardinal_number AS action_order,\n    (\n        CASE\n            WHEN pg_has_role(c.relowner, 'USAGE'::text) THEN (regexp_match(pg_get_triggerdef(t.oid), '.{35,} WHEN \\((.+)\\) EXECUTE FUNCTION'::text))[1]\n            ELSE NULL::text\n        END)::information_schema.character_data AS action_condition,\n    (SUBSTRING(pg_get_triggerdef(t.oid) FROM (POSITION(('EXECUTE FUNCTION'::text) IN (SUBSTRING(pg_get_triggerdef(t.oid) FROM 48))) + 47)))::information_schema.character_data AS action_statement,\n    (\n        CASE ((t.tgtype)::integer & 1)\n            WHEN 1 THEN 'ROW'::text\n            ELSE 'STATEMENT'::text\n        END)::information_schema.character_data AS action_orientation,\n    (\n        CASE ((t.tgtype)::integer & 66)\n            WHEN 2 THEN 'BEFORE'::text\n            WHEN 64 THEN 'INSTEAD OF'::text\n            ELSE 'AFTER'::text\n        END)::information_schema.character_data AS action_timing,\n    (t.tgoldtable)::information_schema.sql_identifier AS action_reference_old_table,\n    (t.tgnewtable)::information_schema.sql_identifier AS action_reference_new_table,\n    (NULL::name)::information_schema.sql_identifier AS action_reference_old_row,\n    (NULL::name)::information_schema.sql_identifier AS action_reference_new_row,\n    (NULL::timestamp with time zone)::information_schema.time_stamp AS created\n   FROM pg_namespace n,\n    pg_class c,\n    pg_trigger t,\n    ( VALUES (4,'INSERT'::text), (8,'DELETE'::text), (16,'UPDATE'::text)) em(num, text)\n  WHERE ((n.oid = c.relnamespace) AND (c.oid = t.tgrelid) AND (((t.tgtype)::integer & em.num) <> 0) AND (NOT t.tgisinternal) AND (NOT pg_is_other_temp_schema(n.oid)) AND (pg_has_role(c.relowner, 'USAGE'::text) OR has_table_privilege(c.oid, 'INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR has_any_column_privilege(c.oid, 'INSERT, UPDATE, REFERENCES'::text)));"
   - type: view
     name: udt_privileges
     columns:
