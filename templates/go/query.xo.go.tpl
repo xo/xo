@@ -1,3 +1,4 @@
+{{ define "query" }}
 {{- $q := .Data -}}
 {{- if $q.Comment -}}
 // {{ $q.Comment | eval (func_name_context $q) }}
@@ -58,4 +59,18 @@
 	return {{ func_name_context $q }}({{ names_all "" "context.Background()" "db" $q }})
 }
 {{- end }}
+{{ end }}
 
+{{ define "typedef" }}
+{{- $q := .Data -}}
+{{- if $q.Comment -}}
+// {{ $q.Comment | eval $q.GoName }}
+{{- else -}}
+// {{ $q.GoName }} represents a row from '{{ schema $q.SQLName }}'.
+{{- end }}
+type {{ $q.GoName }} struct {
+{{ range $q.Fields -}}
+    {{ field . }}
+{{ end -}}
+}
+{{ end }}

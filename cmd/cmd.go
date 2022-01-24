@@ -1,18 +1,20 @@
-// Package cmd contains the primary logic of the xo command-line application.
+// Package cmd provides xo command-line application logic.
 package cmd
 
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"os/user"
-	"reflect"
+	"path/filepath"
 	"strings"
 
-	"github.com/alecthomas/kingpin"
-	"github.com/gobwas/glob"
+	"github.com/kenshaw/snaker"
+	"github.com/spf13/cobra"
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"
 	"github.com/xo/xo/loader"
@@ -22,71 +24,12 @@ import (
 	"github.com/yookoala/realpath"
 )
 
-// Run runs the code generation.
-func Run(ctx context.Context, name, version string) error {
-	// process args
-	ctx, args, cmd, err := NewArgs(ctx, name, version)
-	if err != nil {
-		return err
-	}
-	// check template is available for cmd
-	if !templates.For(args.TemplateParams.Type, cmd) {
-		return fmt.Errorf("template %s does not support %s", args.TemplateParams.Type, cmd)
-	}
-	// load
-	if cmd == "query" || cmd == "schema" {
-		// open database
-		var err error
-		if ctx, err = Open(ctx, args.DbParams.DSN, args.DbParams.Schema); err != nil {
-			return err
-		}
-		// builder
-		f := BuildSchema
-		if cmd == "query" {
-			f = BuildQuery
-		}
-		// build
-		x := new(xo.XO)
-		if err := f(ctx, args, x); err != nil {
-			return err
-		}
-		// process
-		if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x); err != nil {
-			return err
-		}
-	}
-	// write
-	f := templates.Write
-	switch {
-	case args.OutParams.Debug:
-		f = templates.WriteFiles
-	case cmd == "dump":
-		f = templates.WriteRaw
-	}
-	if err := f(ctx); err != nil {
-		return err
-	}
-	// collect errors
-	errors, err := templates.Errors(ctx)
-	if err != nil {
-		return err
-	}
-	// display errors
-	for _, err := range errors {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-	}
-	if len(errors) != 0 {
-		return fmt.Errorf("%d errors encountered", len(errors))
-	}
-	return nil
-}
-
 // Args contains command-line arguments.
 type Args struct {
 	// Verbose enables verbose output.
 	Verbose bool
-	// DbParams are database parameters.
-	DbParams DbParams
+	// LoaderParams are database loader parameters.
+	LoaderParams LoaderParams
 	// TemplateParams are template parameters.
 	TemplateParams TemplateParams
 	// QueryParams are query parameters.
@@ -97,203 +40,46 @@ type Args struct {
 	OutParams OutParams
 }
 
-// NewArgs creates the command args.
-func NewArgs(ctx context.Context, name, version string) (context.Context, *Args, string, error) {
-	// kingpin settings
-	kingpin.UsageTemplate(kingpin.CompactUsageTemplate)
-	// create args
-	args := &Args{
-		DbParams: DbParams{
-			Flags: make(map[xo.ContextKey]interface{}),
+// NewArgs creates args for the provided template names.
+func NewArgs(name string, names ...string) *Args {
+	// default args
+	return &Args{
+		LoaderParams: LoaderParams{
+			Flags: make(map[xo.ContextKey]*xo.Value),
 		},
 		TemplateParams: TemplateParams{
-			Flags: make(map[xo.ContextKey]interface{}),
+			Type:  xo.NewValue("string", name, "template type", names...),
+			Flags: make(map[xo.ContextKey]*xo.Value),
+		},
+		SchemaParams: SchemaParams{
+			FkMode:  xo.NewValue("string", "smart", "foreign key resolution mode", "smart", "parent", "field", "key"),
+			Include: xo.NewValue("glob", "", "include types"),
+			Exclude: xo.NewValue("glob", "", "exclude types"),
 		},
 	}
-	// general
-	kingpin.Flag("verbose", "enable verbose output").Short('v').Default("false").BoolVar(&args.Verbose)
-	// database
-	dc := func(cmd *kingpin.CmdClause) {
-		cmd.Flag("schema", "database schema name").Short('s').PlaceHolder("<name>").StringVar(&args.DbParams.Schema)
-		cmd.Arg("DSN", "data source name").Required().StringVar(&args.DbParams.DSN)
-	}
-	// template
-	tc := func(cmd *kingpin.CmdClause) {
-		types := templates.Types()
-		desc := strings.Join(types, ", ")
-		cmd.Flag("template", "template type ("+desc+"; default: go)").Short('t').Default("go").EnumVar(&args.TemplateParams.Type, types...)
-		cmd.Flag("suffix", "file extension suffix for generated files (otherwise set by template type)").Short('f').PlaceHolder("<ext>").StringVar(&args.TemplateParams.Suffix)
-	}
-	// out
-	oc := func(cmd *kingpin.CmdClause) {
-		cmd.Flag("out", "out path (default: models)").Short('o').Default("models").PlaceHolder("models").StringVar(&args.OutParams.Out)
-		cmd.Flag("append", "enable append mode").Short('a').BoolVar(&args.OutParams.Append)
-		cmd.Flag("single", "enable single file output").Short('S').PlaceHolder("<file>").StringVar(&args.OutParams.Single)
-		cmd.Flag("debug", "debug generated code (writes generated code to disk without post processing)").Short('D').BoolVar(&args.OutParams.Debug)
-	}
-	// additonal loader flags
-	lf := func(cmd *kingpin.CmdClause) {
-		for _, flag := range loader.Flags() {
-			flag.Add(cmd, args.DbParams.Flags)
-		}
-	}
-	// additional templates flags
-	tf := func(cmd *kingpin.CmdClause) {
-		cmd.Flag("src", "template source directory").Short('d').PlaceHolder("<path>").StringVar(&args.TemplateParams.Src)
-		for _, flag := range templates.Flags(cmd.Model().Name) {
-			flag.Add(cmd, args.TemplateParams.Flags)
-		}
-	}
-	// glob flags
-	gf := func(cmd *kingpin.CmdClause, typ string, dest *[]glob.Glob, desc string, short rune) {
-		var globs []string
-		// add flag and compile
-		cmd.Flag(typ, desc).PlaceHolder("<glob>").Short(short).Action(func(_ *kingpin.ParseContext) error {
-			*dest = make([]glob.Glob, len(globs))
-			for i, s := range globs {
-				var err error
-				if (*dest)[i], err = glob.Compile(s); err != nil {
-					return fmt.Errorf("--%s %q: %v", typ, s, err)
-				}
-			}
-			return nil
-		}).StringsVar(&globs)
-	}
-
-	// query command
-	queryCmd := kingpin.Command("query", "Generate code for a database custom query from a template.")
-	dc(queryCmd)
-	tc(queryCmd)
-	oc(queryCmd)
-	queryCmd.Flag("query", "custom database query (uses stdin if not provided)").Short('Q').PlaceHolder(`""`).StringVar(&args.QueryParams.Query)
-	queryCmd.Flag("type", "type name").Short('T').PlaceHolder("<name>").StringVar(&args.QueryParams.Type)
-	queryCmd.Flag("type-comment", "type comment").PlaceHolder(`""`).StringVar(&args.QueryParams.TypeComment)
-	queryCmd.Flag("func", "func name").Short('F').PlaceHolder("<name>").StringVar(&args.QueryParams.Func)
-	queryCmd.Flag("func-comment", "func comment").PlaceHolder(`""`).StringVar(&args.QueryParams.FuncComment)
-	queryCmd.Flag("trim", "enable trimming whitespace").Short('M').BoolVar(&args.QueryParams.Trim)
-	queryCmd.Flag("strip", "enable stripping type casts").Short('B').BoolVar(&args.QueryParams.Strip)
-	queryCmd.Flag("one", "enable returning single (only one) result").Short('1').BoolVar(&args.QueryParams.One)
-	queryCmd.Flag("flat", "enable returning unstructured values").Short('l').BoolVar(&args.QueryParams.Flat)
-	queryCmd.Flag("exec", "enable exec (no introspection performed)").Short('X').BoolVar(&args.QueryParams.Exec)
-	queryCmd.Flag("interpolate", "enable interpolation of embedded params").Short('I').BoolVar(&args.QueryParams.Interpolate)
-	queryCmd.Flag("delimiter", "delimiter used for embedded params (default: %%)").Short('L').PlaceHolder("%%").Default("%%").StringVar(&args.QueryParams.Delimiter)
-	queryCmd.Flag("fields", "override field names for results").Short('Z').PlaceHolder("<field>").StringVar(&args.QueryParams.Fields)
-	queryCmd.Flag("allow-nulls", "allow result fields with NULL values").Short('U').BoolVar(&args.QueryParams.AllowNulls)
-	tf(queryCmd)
-	// schema command
-	schemaCmd := kingpin.Command("schema", "Generate code for a database schema from a template.")
-	dc(schemaCmd)
-	tc(schemaCmd)
-	oc(schemaCmd)
-	schemaCmd.Flag("fk-mode", "foreign key resolution mode (smart, parent, field, key; default: smart)").Short('k').Default("smart").EnumVar(&args.SchemaParams.FkMode, "smart", "parent", "field", "key")
-	gf(schemaCmd, "include", &args.SchemaParams.Include, "include types (<type>)", 'i')
-	gf(schemaCmd, "exclude", &args.SchemaParams.Exclude, "exclude types/fields (<type>[.<field>])", 'e')
-	schemaCmd.Flag("use-index-names", "use index names as defined in schema for generated code").Short('j').BoolVar(&args.SchemaParams.UseIndexNames)
-	tf(schemaCmd)
-	lf(schemaCmd)
-	// dump command
-	dumpCmd := kingpin.Command("dump", "Dump internal templates to path.")
-	tc(dumpCmd)
-	dumpCmd.Arg("out", "out path").Required().StringVar(&args.OutParams.Out)
-	// add --version flag
-	kingpin.Flag("version", "display version and exit").PreAction(func(*kingpin.ParseContext) error {
-		fmt.Fprintln(os.Stdout, name, version)
-		os.Exit(0)
-		return nil
-	}).Bool()
-	cmd := kingpin.Parse()
-	// read query string from stdin if not provided via --query
-	if cmd == "query" && args.QueryParams.Query == "" {
-		buf, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			return nil, nil, "", err
-		}
-		args.QueryParams.Query = string(bytes.TrimRight(buf, "\r\n"))
-	}
-	// add loader flags
-	for key, v := range args.DbParams.Flags {
-		// deref the interface (should always be a pointer to a type)
-		ctx = context.WithValue(ctx, key, reflect.ValueOf(v).Elem().Interface())
-	}
-	// add gen type
-	ctx = context.WithValue(ctx, templates.GenTypeKey, cmd)
-	// add template type
-	ctx = context.WithValue(ctx, templates.TemplateTypeKey, args.TemplateParams.Type)
-	// add suffix
-	ctx = context.WithValue(ctx, templates.SuffixKey, args.TemplateParams.Suffix)
-	// add template flags
-	for key, v := range args.TemplateParams.Flags {
-		// deref the interface (should always be a pointer to a type)
-		ctx = context.WithValue(ctx, key, reflect.ValueOf(v).Elem().Interface())
-	}
-	// add src to context
-	if args.TemplateParams.Src != "" {
-		d, err := realpath.Realpath(args.TemplateParams.Src)
-		if err != nil {
-			return nil, nil, "", err
-		}
-		fi, err := os.Stat(d)
-		switch {
-		case err != nil:
-			return nil, nil, "", err
-		case !fi.IsDir():
-			return nil, nil, "", fmt.Errorf("src path %s is not a directory", d)
-		}
-		ctx = context.WithValue(ctx, templates.SrcKey, os.DirFS(d))
-	}
-	// add out to context
-	if args.OutParams.Out != "" {
-		out, err := realpath.Realpath(args.OutParams.Out)
-		if err != nil {
-			return nil, nil, "", err
-		}
-		fi, err := os.Stat(out)
-		switch {
-		case err != nil && os.IsNotExist(err):
-			return nil, nil, "", fmt.Errorf("%s must exist and must be a directory", out)
-		case err != nil:
-			return nil, nil, "", err
-		case !fi.IsDir():
-			return nil, nil, "", fmt.Errorf("out path %s is not a directory", out)
-		}
-		ctx = context.WithValue(ctx, templates.OutKey, out)
-	}
-	// enable verbose output for sql queries
-	if args.Verbose {
-		models.SetLogger(func(s string, v ...interface{}) {
-			fmt.Printf("SQL:\n%s\nPARAMS:\n%v\n\n", s, v)
-		})
-	}
-	return ctx, args, cmd, nil
 }
 
-// DbParams are database parameters.
-type DbParams struct {
+// LoaderParams are loader parameters.
+type LoaderParams struct {
 	// Schema is the name of the database schema.
 	Schema string
-	// DSN is the database string (ie, postgres://user:pass@host:5432/dbname?args=)
-	DSN string
 	// Flags are additional loader flags.
-	Flags map[xo.ContextKey]interface{}
+	Flags map[xo.ContextKey]*xo.Value
 }
 
 // TemplateParams are template parameters.
 type TemplateParams struct {
 	// Type is the name of the template.
-	Type string
-	// Suffix is the file extension suffix.
-	Suffix string
+	Type *xo.Value
 	// Src is the src directory of the template.
 	Src string
 	// Flags are additional template flags.
-	Flags map[xo.ContextKey]interface{}
+	Flags map[xo.ContextKey]*xo.Value
 }
 
 // QueryParams are query parameters.
 type QueryParams struct {
-	// Query is the passed query.
-	//
-	// If not specified, then os.Stdin will be used.
+	// Query is the query to introspect.
 	Query string
 	// Type is the type name.
 	Type string
@@ -319,14 +105,14 @@ type QueryParams struct {
 	Delimiter string
 	// Fields are the fields to scan the result to.
 	Fields string
-	// AllowNulls toggles results can contain null types.
+	// AllowNulls enables results to have null types.
 	AllowNulls bool
 }
 
 // SchemaParams are schema parameters.
 type SchemaParams struct {
 	// FkMode is the foreign resolution mode.
-	FkMode string
+	FkMode *xo.Value
 	// Include allows the user to specify which types should be included. Can
 	// match multiple types via regex patterns.
 	//
@@ -334,12 +120,12 @@ type SchemaParams struct {
 	// - When specified, only types match will be included.
 	// - When a type matches an exclude entry and an include entry,
 	//   the exclude entry will take precedence.
-	Include []glob.Glob
+	Include *xo.Value
 	// Exclude allows the user to specify which types should be skipped. Can
 	// match multiple types via regex patterns.
 	//
 	// When unspecified, all types are included in the schema.
-	Exclude []glob.Glob
+	Exclude *xo.Value
 	// UseIndexNames toggles using index names.
 	//
 	// This is not enabled by default, because index names are often generated
@@ -353,23 +139,361 @@ type SchemaParams struct {
 type OutParams struct {
 	// Out is the out path.
 	Out string
-	// Append toggles to append to the existing types.
-	Append bool
 	// Single when true changes behavior so that output is to one file.
 	Single string
 	// Debug toggles direct writing of files to disk, skipping post processing.
 	Debug bool
 }
 
-// Open opens a connection to the database, returning a context for use in the
-// application logic.
-func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
+// Run runs the code generation.
+func Run(ctx context.Context, name, version string, cmdargs ...string) error {
+	// build template ts
+	ts, err := templates.NewDefaultTemplateSet(ctx)
+	if err != nil {
+		return err
+	}
+	// get src dir arg
+	if dir := strings.TrimSpace(ParseSrcArg(cmdargs...)); dir != "" {
+		// determine target
+		target := "tpl"
+		s := snaker.SnakeToCamel(filepath.Base(dir))
+		s = strings.Replace(strings.ToLower(s), "_", "-", -1)
+		if !ts.Has(s) {
+			target = s
+		}
+		// add template
+		var err error
+		if target, err = ts.Add(ctx, target, os.DirFS(dir), false); err != nil {
+			return err
+		}
+		// use
+		ts.Use(target)
+	}
+	// create args
+	args := NewArgs(ts.Target(), ts.Targets()...)
+	// create root command
+	cmd, err := RootCommand(ctx, name, version, ts, args, cmdargs...)
+	if err != nil {
+		return err
+	}
+	// execute
+	return cmd.Execute()
+}
+
+// RootCommand creates the root command.
+func RootCommand(ctx context.Context, name, version string, ts *templates.Set, args *Args, cmdargs ...string) (*cobra.Command, error) {
+	// command
+	cmd := &cobra.Command{
+		Use:     name,
+		Version: version,
+		Short:   name + ", the templated code generator for databases.",
+	}
+	// general config
+	_ = cmd.Flags().StringP("config", "c", "", "config file")
+	cmd.PersistentFlags().BoolVarP(&args.Verbose, "verbose", "v", false, "enable verbose output")
+	cmd.SetVersionTemplate("{{ .Name }} {{ .Version }}\n")
+	cmd.InitDefaultHelpCmd()
+	cmd.SetArgs(cmdargs)
+	cmd.SilenceErrors, cmd.SilenceUsage = true, true
+	// add sub commands
+	var subCmds []*cobra.Command
+	for _, f := range []func(context.Context, *templates.Set, *Args) (*cobra.Command, error){
+		QueryCommand,
+		SchemaCommand,
+		DumpCommand,
+	} {
+		c, err := f(ctx, ts, args)
+		if err != nil {
+			return nil, err
+		}
+		subCmds = append(subCmds, c)
+	}
+	cmd.AddCommand(subCmds...)
+	return cmd, nil
+}
+
+// QueryCommand builds the query command.
+func QueryCommand(ctx context.Context, ts *templates.Set, args *Args) (*cobra.Command, error) {
+	// query command
+	cmd := &cobra.Command{
+		Use:   "query <database url>",
+		Short: "Generate code for a database query from a template.",
+		RunE:  Exec(ctx, "query", ts, args),
+	}
+	flags := cmd.Flags()
+	flags.SortFlags = false
+	databaseFlags(cmd, args)
+	outFlags(cmd, args)
+	flags.StringVarP(&args.QueryParams.Query, "query", "Q", "", "custom database query (uses stdin if not provided)")
+	flags.StringVarP(&args.QueryParams.Type, "type", "T", "", "type name")
+	flags.StringVar(&args.QueryParams.TypeComment, "type-comment", "", "type comment")
+	flags.StringVarP(&args.QueryParams.Func, "func", "F", "", "func name")
+	flags.StringVar(&args.QueryParams.FuncComment, "func-comment", "", "func comment")
+	flags.BoolVarP(&args.QueryParams.Trim, "trim", "M", false, "enable trimming whitespace")
+	flags.BoolVarP(&args.QueryParams.Strip, "strip", "B", false, "enable stripping type casts")
+	flags.BoolVarP(&args.QueryParams.One, "one", "1", false, "enable returning single (only one) result")
+	flags.BoolVarP(&args.QueryParams.Flat, "flat", "l", false, "enable returning unstructured (flat) values")
+	flags.BoolVarP(&args.QueryParams.Exec, "exec", "X", false, "enable exec (disables query introspection)")
+	flags.BoolVarP(&args.QueryParams.Interpolate, "interpolate", "I", false, "enable interpolation of embedded params")
+	flags.StringVarP(&args.QueryParams.Delimiter, "delimiter", "L", "%%", "delimiter used for embedded params")
+	flags.StringVarP(&args.QueryParams.Fields, "fields", "Z", "", "override field names for results")
+	flags.BoolVarP(&args.QueryParams.AllowNulls, "allow-nulls", "U", false, "allow result fields with NULL values")
+	if err := templateFlags(cmd, ts, true, args); err != nil {
+		return nil, err
+	}
+	return cmd, nil
+}
+
+// SchemaCommand builds the schema command.
+func SchemaCommand(ctx context.Context, ts *templates.Set, args *Args) (*cobra.Command, error) {
+	// schema command
+	cmd := &cobra.Command{
+		Use:   "schema <database url>",
+		Short: "Generate code for a database schema from a template.",
+		RunE:  Exec(ctx, "schema", ts, args),
+	}
+	flags := cmd.Flags()
+	flags.SortFlags = false
+	databaseFlags(cmd, args)
+	outFlags(cmd, args)
+	flags.VarP(args.SchemaParams.FkMode, "fk-mode", "k", args.SchemaParams.FkMode.Desc())
+	flags.VarP(args.SchemaParams.Include, "include", "i", args.SchemaParams.Include.Desc())
+	flags.VarP(args.SchemaParams.Exclude, "exclude", "e", args.SchemaParams.Exclude.Desc())
+	flags.BoolVarP(&args.SchemaParams.UseIndexNames, "use-index-names", "j", false, "use index names as defined in schema for generated code")
+	if err := templateFlags(cmd, ts, true, args); err != nil {
+		return nil, err
+	}
+	if err := loaderFlags(cmd, args); err != nil {
+		return nil, err
+	}
+	return cmd, nil
+}
+
+// DumpCommand builds the dump command.
+func DumpCommand(ctx context.Context, ts *templates.Set, args *Args) (*cobra.Command, error) {
+	cmd := &cobra.Command{
+		Use:   "dump <dir>",
+		Short: "Dump template to path.",
+		RunE: func(cmd *cobra.Command, v []string) error {
+			// set template
+			ts.Use(args.TemplateParams.Type.AsString())
+			// get template src
+			src, err := ts.Src()
+			if err != nil {
+				return err
+			}
+			// ensure out dir exists
+			if err := checkDir(v[0]); err != nil {
+				return err
+			}
+			// dump
+			return fs.WalkDir(src, ".", func(n string, d fs.DirEntry, err error) error {
+				switch {
+				case err != nil:
+					return err
+				case d.IsDir():
+					return os.MkdirAll(filepath.Join(v[0], n), 0755)
+				}
+				buf, err := fs.ReadFile(src, n)
+				if err != nil {
+					return err
+				}
+				return ioutil.WriteFile(filepath.Join(v[0], n), buf, 0644)
+			})
+		},
+	}
+	if err := templateFlags(cmd, ts, false, args); err != nil {
+		return nil, err
+	}
+	cmd.Args = cobra.ExactArgs(1)
+	cmd.SetUsageTemplate(cmd.UsageTemplate() + "\nArgs:\n  <dir>  out directory\n\n")
+	return cmd, nil
+}
+
+// databaseFlags adds database flags to the command.
+func databaseFlags(cmd *cobra.Command, args *Args) {
+	cmd.Flags().StringVarP(&args.LoaderParams.Schema, "schema", "s", "", "database schema name")
+	cmd.Args = cobra.ExactArgs(1)
+	cmd.SetUsageTemplate(cmd.UsageTemplate() + "\nArgs:\n  <database url>  database url (e.g., postgres://user:pass@localhost:port/dbname, mysql://... )\n\n")
+}
+
+// outFlags adds out flags to the command.
+func outFlags(cmd *cobra.Command, args *Args) {
+	cmd.Flags().StringVarP(&args.OutParams.Out, "out", "o", "models", "out path")
+	cmd.Flags().BoolVarP(&args.OutParams.Debug, "debug", "D", false, "debug generated code (writes generated code to disk without post processing)")
+}
+
+// loaderFlags adds database loader flags to the command.
+func loaderFlags(cmd *cobra.Command, args *Args) error {
+	for _, flag := range loader.Flags() {
+		if err := flag.Add(cmd, args.LoaderParams.Flags); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// templateFlags adds template flags to the command.
+func templateFlags(cmd *cobra.Command, ts *templates.Set, extra bool, args *Args) error {
+	cmd.Flags().VarP(args.TemplateParams.Type, "template", "t", args.TemplateParams.Type.Desc())
+	if extra {
+		cmd.Flags().StringVarP(&args.TemplateParams.Src, "src", "d", "", "template source directory")
+		for _, name := range ts.Targets() {
+			for _, flag := range ts.Flags(name) {
+				if err := flag.Add(cmd, args.TemplateParams.Flags); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// ParseSrcArg scans args for --src or -d.
+func ParseSrcArg(args ...string) string {
+	for i := 0; i < len(args); i++ {
+		switch s := strings.TrimSpace(args[i]); {
+		case s == "-d", s == "--src":
+			if i < len(args)-1 {
+				return strings.TrimSpace(args[i+1])
+			}
+		case strings.HasPrefix(s, "-d="):
+			return strings.TrimPrefix(s, "-d=")
+		case strings.HasPrefix(s, "--src="):
+			return strings.TrimPrefix(s, "--src=")
+		}
+	}
+	return ""
+}
+
+// Exec handles the execution for query and schema.
+func Exec(ctx context.Context, mode string, ts *templates.Set, args *Args) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, cmdargs []string) error {
+		// setup args
+		if err := checkArgs(cmd, mode, ts, args); err != nil {
+			return err
+		}
+		// set template
+		ts.Use(args.TemplateParams.Type.AsString())
+		// enable verbose output for sql queries
+		if args.Verbose {
+			models.SetLogger(func(str string, v ...interface{}) {
+				s, z := "SQL: %s\n", []interface{}{str}
+				if len(v) != 0 {
+					s, z = s+"PARAMS: %v\n", append(z, v)
+				}
+				fmt.Printf(s+"\n", z...)
+			})
+		}
+		// build context
+		ctx := buildContext(ctx, args)
+		// enable verbose output for sql queries
+		if args.Verbose {
+			models.SetLogger(func(str string, v ...interface{}) {
+				s, z := "SQL: %s\n", []interface{}{str}
+				if len(v) != 0 {
+					s, z = s+"PARAMS: %v\n", append(z, v)
+				}
+				fmt.Printf(s+"\n", z...)
+			})
+		}
+		// open database
+		var err error
+		if ctx, err = open(ctx, cmdargs[0], args.LoaderParams.Schema); err != nil {
+			return err
+		}
+		// load
+		set, err := load(ctx, mode, ts, args)
+		if err != nil {
+			return err
+		}
+		// create set context
+		ctx = ts.NewContext(ctx, mode)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
+		// process
+		ts.Process(ctx, mode, set)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
+		// dump
+		ts.Dump(args.OutParams.Out)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
+		if !args.OutParams.Debug {
+			return nil
+		}
+		// post
+		ts.Post(ctx, mode)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
+		// dump
+		ts.Dump(args.OutParams.Out)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+// checkArgs sets up and checks args.
+func checkArgs(cmd *cobra.Command, mode string, ts *templates.Set, args *Args) error {
+	// check template is available for the mode
+	if err := ts.For(mode); err != nil {
+		return err
+	}
+	// check --src and --template are exclusive
+	if cmd.Flags().Lookup("src").Changed && cmd.Flags().Lookup("template").Changed {
+		return errors.New("--src and --template cannot be used together")
+	}
+	// read query string from stdin if not provided via --query
+	if mode == "query" && args.QueryParams.Query == "" {
+		buf, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return err
+		}
+		args.QueryParams.Query = string(bytes.TrimRight(buf, "\r\n"))
+	}
+	// check out path
+	if args.OutParams.Out != "" {
+		var err error
+		if args.OutParams.Out, err = realpath.Realpath(args.OutParams.Out); err != nil {
+			return err
+		}
+		if err := checkDir(args.OutParams.Out); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// buildContext builds a context for the mode and template.
+func buildContext(ctx context.Context, args *Args) context.Context {
+	// add loader flags
+	for k, v := range args.LoaderParams.Flags {
+		ctx = context.WithValue(ctx, k, v.Interface())
+	}
+	// add template flags
+	for k, v := range args.TemplateParams.Flags {
+		ctx = context.WithValue(ctx, k, v.Interface())
+	}
+	// add out
+	ctx = context.WithValue(ctx, xo.OutKey, args.OutParams.Out)
+	return ctx
+}
+
+// open opens a connection to the database, returning a context for use in
+// template generation.
+func open(ctx context.Context, urlstr, schema string) (context.Context, error) {
 	v, err := user.Current()
 	if err != nil {
 		return nil, err
 	}
 	// parse dsn
-	u, err := dburl.Parse(dsn)
+	u, err := dburl.Parse(urlstr)
 	if err != nil {
 		return nil, err
 	}
@@ -391,4 +515,44 @@ func Open(ctx context.Context, dsn, schema string) (context.Context, error) {
 	// add schema to context
 	ctx = context.WithValue(ctx, xo.SchemaKey, schema)
 	return ctx, nil
+}
+
+// load loads a set of queries or schemas.
+func load(ctx context.Context, mode string, ts *templates.Set, args *Args) (*xo.Set, error) {
+	f := LoadSchema
+	if mode == "query" {
+		f = LoadQuery
+	}
+	set := new(xo.Set)
+	if err := f(ctx, set, args); err != nil {
+		return nil, err
+	}
+	return set, nil
+}
+
+// displayErrors displays collected errors from the set.
+func displayErrors(ts *templates.Set) error {
+	if errors := ts.Errors(); len(errors) != 0 {
+		for _, err := range errors {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		}
+		return fmt.Errorf("%d errors encountered", len(errors))
+	}
+	return nil
+}
+
+// checkDir checks that dir exists.
+func checkDir(dir string) error {
+	if !isDir(dir) {
+		return fmt.Errorf("%s must exist and must be a directory", dir)
+	}
+	return nil
+}
+
+// isDir determines if dir is a directory.
+func isDir(dir string) bool {
+	if fi, err := os.Stat(dir); err == nil {
+		return fi.IsDir()
+	}
+	return false
 }

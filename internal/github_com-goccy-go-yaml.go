@@ -62,6 +62,7 @@ func init() {
 		"UseJSONUnmarshaler":             reflect.ValueOf(yaml.UseJSONUnmarshaler),
 		"UseLiteralStyleIfMultiline":     reflect.ValueOf(yaml.UseLiteralStyleIfMultiline),
 		"UseOrderedMap":                  reflect.ValueOf(yaml.UseOrderedMap),
+		"UseSingleQuote":                 reflect.ValueOf(yaml.UseSingleQuote),
 		"Validator":                      reflect.ValueOf(yaml.Validator),
 		"ValueToNode":                    reflect.ValueOf(yaml.ValueToNode),
 		"WithComment":                    reflect.ValueOf(yaml.WithComment),

@@ -1,386 +1,426 @@
 package templates
 
 import (
-	"bytes"
 	"context"
 	"embed"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"reflect"
 	"sort"
 	"strings"
-	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
+	"github.com/xo/xo/internal"
 	xo "github.com/xo/xo/types"
 )
 
-// templates are registered template sets.
-var templates = map[string]*TemplateSet{}
-
-// Register registers a template set.
-func Register(typ string, set *TemplateSet) {
-	templates[typ] = set
+// Set holds a set of templates and handles generating files for a target
+// files.
+type Set struct {
+	symbols   map[string]map[string]reflect.Value
+	initfunc  string
+	tags      []string
+	target    string
+	templates map[string]*Template
+	files     map[string]*EmittedTemplate
+	post      map[string][]byte
+	err       error
 }
 
-// BaseFuncs returns base template funcs.
-func BaseFuncs() template.FuncMap {
-	return sprig.TxtFuncMap()
+// NewTemplateSet creates a template set.
+func NewTemplateSet(symbols map[string]map[string]reflect.Value, initfunc string, tags ...string) *Set {
+	return &Set{
+		symbols:   symbols,
+		initfunc:  initfunc,
+		tags:      tags,
+		templates: make(map[string]*Template),
+		files:     make(map[string]*EmittedTemplate),
+		post:      make(map[string][]byte),
+	}
 }
 
-// Types returns the registered type names of template sets.
-func Types() []string {
-	var types []string
-	for k := range templates {
-		types = append(types, k)
+// NewDefaultTemplateSet creates a template set using the default symbols, init
+// func, tags, and embedded templates. Sets the default template target to "go"
+// if available in embedded templates, or to the first available target.
+func NewDefaultTemplateSet(ctx context.Context) (*Set, error) {
+	// create template set
+	ts := NewTemplateSet(DefaultSymbols(), DefaultInitFunc, DefaultTags()...)
+	if err := ts.AddTemplates(ctx, files, true); err != nil {
+		return nil, err
 	}
-	sort.Strings(types)
-	return types
+	// determine default target
+	switch targets := ts.Targets(); {
+	case contains(targets, "go"):
+		ts.Use("go")
+	case len(targets) != 0:
+		ts.Use(targets[0])
+	}
+	return ts, nil
 }
 
-// For returns true if the template is available for the command name.
-func For(typ, name string) bool {
-	if name == "dump" {
-		return true
-	}
-	if set := templates[typ]; set != nil && set.For != nil {
-		return contains(set.For, name)
-	}
-	return true
-}
-
-// Flags returns flag options and context for the template sets for the
-// specified command name.
-//
-// These should be added to the invocation context for any call to a template
-// set func.
-func Flags(name string) []xo.FlagSet {
-	var flags []xo.FlagSet
-	for _, typ := range Types() {
-		set := templates[typ]
-		// skip flag if not for the command name
-		if set.For != nil && !contains(set.For, name) {
-			continue
-		}
-		for _, flag := range set.Flags {
-			flags = append(flags, xo.FlagSet{
-				Type: typ,
-				Name: string(flag.ContextKey),
-				Flag: flag,
-			})
-		}
-	}
-	return flags
-}
-
-// Process processes emitted templates for a template set.
-func Process(ctx context.Context, doAppend bool, single string, v *xo.XO) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
-	}
-	// build context
-	if set.BuildContext != nil {
-		ctx = set.BuildContext(ctx)
-	}
-	// build funcs
-	if err := set.BuildFuncs(ctx); err != nil {
-		return fmt.Errorf("unable to build template funcs: %w", err)
-	}
-	if err := set.Process(ctx, doAppend, set, v); err != nil {
-		return err
-	}
-	sortEmitted(set.emitted)
-	order := set.Order
-	// add package templates
-	if !doAppend && set.PackageTemplates != nil {
-		var additional []string
-		for _, tpl := range set.PackageTemplates(ctx) {
-			if err := set.Emit(ctx, tpl); err != nil {
-				return err
-			}
-			additional = append(additional, tpl.Template)
-		}
-		order = removeMatching(set.Order, additional)
-		order = append(additional, order...)
-	}
-	set.files = make(map[string]*EmittedTemplate)
-	for _, n := range order {
-		for _, tpl := range set.emitted {
-			if tpl.Template.Template != n {
-				continue
-			}
-			fileExt := set.FileExt
-			if s := Suffix(ctx); s != "" {
-				fileExt = s
-			}
-			// determine filename
-			if single != "" {
-				tpl.File = single
-			} else {
-				tpl.File = set.FileName(ctx, tpl.Template) + fileExt
-			}
-			// load
-			file, ok := set.files[tpl.File]
-			if !ok {
-				buf, err := set.LoadFile(ctx, tpl.File, doAppend)
-				if err != nil {
-					return err
-				}
-				file = &EmittedTemplate{
-					Buf:  buf,
-					File: tpl.File,
-				}
-				set.files[tpl.File] = file
-			}
-			file.Buf = append(file.Buf, tpl.Buf...)
-		}
-	}
-	return nil
-}
-
-// Write performs post processing of emitted templates to a template set,
-// writing to disk the processed content.
-func Write(ctx context.Context) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
-	}
-	var files []string
-	for file := range set.files {
-		files = append(files, file)
-	}
-	sort.Strings(files)
-	if set.Post == nil {
-		return WriteFiles(ctx)
-	}
-	for _, file := range files {
-		buf, err := set.Post(ctx, set.files[file].Buf)
-		switch {
-		case err != nil:
-			set.files[file].Err = append(set.files[file].Err, &ErrPostFailed{file, err})
-		case err == nil:
-			set.files[file].Buf = buf
-		}
-	}
-	return WriteFiles(ctx)
-}
-
-// WriteFiles writes the generated files to disk.
-func WriteFiles(ctx context.Context) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
-	}
-	out := Out(ctx)
-	var files []string
-	for file := range set.files {
-		files = append(files, file)
-	}
-	sort.Strings(files)
-	for _, file := range files {
-		if err := ioutil.WriteFile(filepath.Join(out, file), set.files[file].Buf, 0644); err != nil {
-			set.files[file].Err = append(set.files[file].Err, err)
-		}
-	}
-	return nil
-}
-
-// WriteRaw writes the raw templates for a template set.
-func WriteRaw(ctx context.Context) error {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return fmt.Errorf("unknown template %q", typ)
-	}
-	out := Out(ctx)
-	return fs.WalkDir(set.Files, ".", func(n string, d fs.DirEntry, err error) error {
+// AddTemplates adds templates to the template set from src, adding a template
+// for each subdirectory.
+func (ts *Set) AddTemplates(ctx context.Context, src fs.FS, unrestricted bool) error {
+	// get target dir names
+	var targets []string
+	if err := fs.WalkDir(src, ".", func(n string, d fs.DirEntry, err error) error {
 		switch {
 		case err != nil:
 			return err
-		case d.IsDir():
-			return os.MkdirAll(filepath.Join(out, n), 0755)
+		case d.IsDir() && n != ".":
+			targets = append(targets, n)
 		}
-		buf, err := set.Files.ReadFile(n)
+		return nil
+	}); err != nil {
+		return err
+	}
+	sort.Strings(targets)
+	// add templates
+	for _, target := range targets {
+		src, err := fs.Sub(src, target)
 		if err != nil {
 			return err
 		}
-		return ioutil.WriteFile(filepath.Join(out, n), buf, 0644)
-	})
+		if _, err := ts.Add(ctx, target, src, unrestricted); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-// Errors returns errors collected during file generation.
-func Errors(ctx context.Context) ([]error, error) {
-	typ := TemplateType(ctx)
-	set, ok := templates[typ]
-	if !ok {
-		return nil, fmt.Errorf("unknown template %q", typ)
+// Add adds a template target from src to the template set.
+func (ts *Set) Add(ctx context.Context, target string, src fs.FS, unrestricted bool) (string, error) {
+	// create template
+	tpl, err := ts.NewTemplate(ctx, target, src, unrestricted)
+	if err != nil {
+		return "", err
 	}
+	// check target not already defined
+	if ts.Has(tpl.Target) {
+		return "", fmt.Errorf("cannot redefine template target %q", tpl.Target)
+	}
+	ts.templates[tpl.Target] = tpl
+	return tpl.Target, nil
+}
+
+// Use sets the template target.
+func (ts *Set) Use(target string) {
+	ts.target = target
+}
+
+// Target returns the template target.
+func (ts *Set) Target() string {
+	return ts.target
+}
+
+// Has determines if a template target has been defined.
+func (ts *Set) Has(target string) bool {
+	_, ok := ts.templates[target]
+	return ok
+}
+
+// Targets returns the available template targets.
+func (ts *Set) Targets() []string {
+	var targets []string
+	for target := range ts.templates {
+		targets = append(targets, target)
+	}
+	sort.Strings(targets)
+	return targets
+}
+
+// Flags returns flag options for a template target.
+func (ts *Set) Flags(target string) []xo.FlagSet {
+	tpl, ok := ts.templates[target]
+	if ok {
+		return tpl.Flags()
+	}
+	return nil
+}
+
+// For determines if the the template target supports the mode.
+func (ts *Set) For(mode string) error {
+	if tpl, ok := ts.templates[ts.target]; ok && contains(tpl.Type.Modes, mode) {
+		return nil
+	}
+	return fmt.Errorf("template %s does not support %s", ts.target, mode)
+}
+
+// Src returns template target file source.
+func (ts *Set) Src() (fs.FS, error) {
+	tpl, ok := ts.templates[ts.target]
+	if !ok {
+		return nil, fmt.Errorf("unknown target %q", ts.target)
+	}
+	return tpl.Src, nil
+}
+
+// NewContext creates a new context for the template target.
+func (ts *Set) NewContext(ctx context.Context, mode string) context.Context {
+	tpl, ok := ts.templates[ts.target]
+	if !ok {
+		ts.err = fmt.Errorf("unknown target %q", ts.target)
+		return nil
+	}
+	if tpl.Type.NewContext != nil {
+		return tpl.Type.NewContext(ctx, mode)
+	}
+	return ctx
+}
+
+// Pre performs pre processing of the template target.
+func (ts *Set) Pre(ctx context.Context, mode string, src fs.FS) {
+	tpl, ok := ts.templates[ts.target]
+	if !ok {
+		ts.err = fmt.Errorf("unknown target %q", ts.target)
+		return
+	}
+	/*
+		set.err = template.Type.Pre(ctx, src, func(file string, buf []byte) {
+		})
+	*/
+	tpl = tpl
+	if ts.err != nil {
+		return
+	}
+}
+
+// Process processes the template target.
+func (ts *Set) Process(ctx context.Context, mode string, set *xo.Set) {
+	tpl, ok := ts.templates[ts.target]
+	if !ok {
+		ts.err = fmt.Errorf("unknown target %q", ts.target)
+		return
+	}
+	// capture emitted templates
+	var emitted []*EmittedTemplate
+	tpl, emitted = tpl, emitted
+	/*
+		set.err = template.Type.Process(ctx, v, func(tpl xo.Template) {
+			emitted = append(emitted, &EmittedTemplate{
+				Template: tpl,
+			})
+		})
+	*/
+	if ts.err != nil {
+		return
+	}
+	/*
+		// sort the emitted templates
+		sort.Slice(emitted, func(i, j int) bool {
+			if emitted[i].Template.Template != emitted[j].Template.Template {
+				return emitted[i].Template.Template < emitted[j].Template.Template
+			}
+			if emitted[i].Template.Type != emitted[j].Template.Type {
+				return emitted[i].Template.Type < emitted[j].Template.Type
+			}
+			return emitted[i].Template.Name < emitted[j].Template.Name
+		})
+		order := template.Type.Order
+		// add package templates
+		if !doAppend && template.Type.PackageTemplates != nil {
+			var additional []string
+			for _, tpl := range template.Type.PackageTemplates(ctx) {
+				if err := emit(tpl); err != nil {
+					return err
+				}
+				additional = append(additional, tpl.Type)
+			}
+			order = removeMatching(template.Type.Order, additional)
+			order = append(additional, order...)
+		}
+		files := make(map[string]*EmittedTemplate)
+		for _, n := range order {
+			for _, tpl := range emitted {
+				if tpl.Template.Type != n {
+					continue
+				}
+				file, ok := files[tpl.Dest]
+				if !ok {
+					buf, err := template.LoadFile(ctx, tpl.File, doAppend)
+					if err != nil {
+						return err
+					}
+					file = &EmittedTemplate{
+						Buf:  buf,
+						File: tpl.File,
+					}
+					files[tpl.File] = file
+				}
+				file.Buf = append(file.Buf, tpl.Buf...)
+			}
+		}
+	*/
+}
+
+// Post performs post processing of the template target.
+func (ts *Set) Post(ctx context.Context, mode string) {
+	tpl, ok := ts.templates[ts.target]
+	switch {
+	case !ok:
+		ts.err = fmt.Errorf("unknown target %q", ts.target)
+		return
+	case tpl.Type.Post == nil:
+		return
+	}
+	var files []string
+	for file := range ts.files {
+		files = append(files, file)
+	}
+	sort.Strings(files)
+	for _, file := range files {
+		/*
+			err := template.Type.Post(ctx, mode, file)
+			switch {
+			case err != nil:
+				set.files[file].Err = append(set.files[file].Err, &ErrPostFailed{file, err})
+			case err == nil:
+				set.files[file].Buf = buf
+			}
+		*/
+		file = file
+	}
+}
+
+// Dump dumps generated files to disk.
+func (ts *Set) Dump(out string) {
+	var files []string
+	for file := range ts.files {
+		files = append(files, file)
+	}
+	sort.Strings(files)
+	for _, file := range files {
+		if err := ioutil.WriteFile(filepath.Join(out, file), ts.files[file].Buf, 0644); err != nil {
+			ts.files[file].Err = append(ts.files[file].Err, err)
+		}
+	}
+}
+
+// Errors returns any collected errors.
+func (set *Set) Errors() []error {
 	var files []string
 	for file := range set.files {
 		files = append(files, file)
 	}
 	sort.Strings(files)
 	var errors []error
+	if set.err != nil {
+		errors = append(errors, set.err)
+	}
 	for _, file := range files {
 		errors = append(errors, set.files[file].Err...)
 	}
-	return errors, nil
+	return errors
 }
 
-// TemplateSet is a template set.
-type TemplateSet struct {
-	// Files are the embedded templates.
-	Files embed.FS
-	// For are the command names the template set is available for.
-	For []string
-	// FileExt is the file extension added to out files.
-	FileExt string
-	// AddType will be called when a new type is encountered.
-	AddType func(string)
-	// Flags are additional template flags.
-	Flags []xo.Flag
-	// Order in which to process templates.
-	Order []string
-	// HeaderTemplate is the name of the header template.
-	HeaderTemplate func(context.Context) *Template
-	// PackageTemplates returns package templates.
-	PackageTemplates func(context.Context) []*Template
-	// Funcs provides template funcs for use by templates.
-	Funcs func(context.Context) template.FuncMap
-	// FileName determines the out file name templates.
-	FileName func(context.Context, *Template) string
-	// BuildContext provides a way for template sets to inject additional,
-	// global context values, prior to template processing.
-	BuildContext func(context.Context) context.Context
-	// Process performs the preprocessing and the order to load files.
-	Process func(context.Context, bool, *TemplateSet, *xo.XO) error
-	// Post performs post processing of generated content.
-	Post func(context.Context, []byte) ([]byte, error)
-	// emitted holds emitted templates.
-	emitted []*EmittedTemplate
-	// funcs are the template funcs.
-	funcs template.FuncMap
-	// files holds the generated files.
-	files map[string]*EmittedTemplate
+// Template wraps a template.
+type Template struct {
+	Target string
+	Type   xo.TemplateType
+	Interp *interp.Interpreter
+	Src    fs.FS
 }
 
-// BuildFuncs builds the template funcs.
-func (set *TemplateSet) BuildFuncs(ctx context.Context) error {
-	if set.Funcs == nil {
-		set.funcs = BaseFuncs()
-	} else {
-		set.funcs = set.Funcs(ctx)
-	}
-	return set.AddCustomFuncs(ctx)
-}
-
-// AddCustomFuncs adds funcs from the template's funcs.go.tpl to the set of
-// template funcs.
+// NewTemplate creates a new template from the provided fs. Creates a
+// github.com/traefik/yaegi interpreter and evaluates the template. See
+// existing templates for implementation examples.
 //
-// Uses the github.com/traefik/yaegi interpretter to evaluate the funcs.go.tpl,
-// adding anything returned by the file's defined `func Init(context.Context) (template.FuncMap, error)`
-// to the built template funcs.
-//
-// See existing templates for implementation examples.
-func (set *TemplateSet) AddCustomFuncs(ctx context.Context) error {
-	// get template src
-	src := Src(ctx)
-	if src == nil {
-		src = set.Files
-	}
-	// read custom funcs
-	f, err := src.Open("funcs.go.tpl")
-	switch {
-	case err != nil && os.IsNotExist(err):
-		return nil
-	case err != nil:
-		return fmt.Errorf("unable to load funcs.go.tpl: %w", err)
-	}
-	buf, err := ioutil.ReadAll(f)
-	if err != nil {
-		return fmt.Errorf("unable to read funcs.go.tpl: %w", err)
-	}
-	// determine gopath
-	var opts interp.Options
-	cmd := exec.Command("go", "env", "GOPATH")
-	if buf, err := cmd.CombinedOutput(); err == nil {
-		opts.GoPath = strings.TrimSpace(string(buf))
-	}
+// Uses the template set's symbols, init func name, and declared tags.
+func (ts *Set) NewTemplate(ctx context.Context, target string, src fs.FS, unrestricted bool) (*Template, error) {
 	// build interpreter for custom funcs
-	i := interp.New(opts)
-	if err := i.Use(stdlib.Symbols); err != nil {
-		return fmt.Errorf("unable to add stdlib to yaegi interpreter: %w", err)
+	i := interp.New(interp.Options{
+		GoPath:               ".",
+		BuildTags:            ts.tags,
+		SourcecodeFilesystem: sourceFS{path: "src/main/vendor/" + target, fs: src},
+		Unrestricted:         unrestricted,
+	})
+	// add symbols
+	if ts.symbols != nil {
+		if err := i.Use(ts.symbols); err != nil {
+			return nil, fmt.Errorf("%s: could not add xo internal symbols to yaegi: %w", target, err)
+		}
 	}
-	if err := i.Use(Symbols(ctx)); err != nil {
-		return fmt.Errorf("unable to add xo to yaegi interpreter: %w", err)
+	// import
+	if _, err := i.Eval(fmt.Sprintf("import (xotpl %q)", target)); err != nil {
+		return nil, fmt.Errorf("%s: unable to import package: %w", target, err)
 	}
-	if _, err := i.Eval(string(buf)); err != nil {
-		return fmt.Errorf("unable to eval funcs.go.tpl: %w", err)
-	}
-	// eval custom funcs
-	v, err := i.Eval("funcs.Init")
+	// eval init
+	v, err := i.Eval("xotpl." + ts.initfunc)
 	if err != nil {
-		return fmt.Errorf("unable to eval funcs.Init: %w", err)
+		return nil, fmt.Errorf("%s: unable to eval %q: %w", target, ts.initfunc, err)
 	}
-	z, ok := v.Interface().(func(context.Context) (template.FuncMap, error))
+	// convert init
+	f, ok := v.Interface().(func(context.Context, func(xo.TemplateType)) error)
 	if !ok {
-		return fmt.Errorf("funcs.Init must have signature `func(context.Context) (template.FuncMap, error)`, has: `%T`", v.Interface())
+		return nil, fmt.Errorf("%s: %s has signature `%T` (must be `func(context.Context, func(github.com/xo/types.TemplateType)) error`)", target, ts.initfunc, v.Interface())
 	}
-	// init custom funcs
-	m, err := z(ctx)
-	if err != nil {
-		return fmt.Errorf("funcs.Init error: %w", err)
+	// init
+	var typ xo.TemplateType
+	if err := f(ctx, func(tplType xo.TemplateType) {
+		typ = tplType
+	}); err != nil {
+		return nil, fmt.Errorf("%s: %s error: %w", target, ts.initfunc, err)
 	}
-	// add custom funcs to funcs
-	for k, v := range m {
-		set.funcs[k] = v
+	if typ.Name != "" {
+		target = typ.Name
 	}
-	return nil
+	return &Template{
+		Target: target,
+		Type:   typ,
+		Interp: i,
+		Src:    src,
+	}, nil
 }
 
-// Emit emits a template to the template set.
-func (set *TemplateSet) Emit(ctx context.Context, tpl *Template) error {
-	buf, err := set.Exec(ctx, tpl)
+// Flags returns the dynamic flags for the template.
+func (tpl *Template) Flags() []xo.FlagSet {
+	var flags []xo.FlagSet
+	for _, flag := range tpl.Type.Flags {
+		flags = append(flags, xo.FlagSet{
+			Type: tpl.Target,
+			Name: string(flag.ContextKey),
+			Flag: flag,
+		})
+	}
+	return flags
+}
+
+/*
+// Emit emits a template to the template.
+func (typ TemplateType) Emit(ctx context.Context, tpl Template) error {
+	buf, err := typ.Exec(ctx, tpl)
 	if err != nil {
 		return err
 	}
-	set.emitted = append(set.emitted, &EmittedTemplate{Template: tpl, Buf: buf})
+	typ.emitted = append(typ.emitted, &EmittedTemplate{Template: tpl, Buf: buf})
 	return nil
 }
 
 // Exec loads and executes a template.
-func (set *TemplateSet) Exec(ctx context.Context, tpl *Template) ([]byte, error) {
-	t, err := set.Load(ctx, tpl)
-	if err != nil {
-		return nil, err
-	}
-	buf := new(bytes.Buffer)
-	if err := t.Execute(buf, tpl); err != nil {
-		return nil, fmt.Errorf("unable to exec template %s: %w", tpl.File(), err)
-	}
-	return buf.Bytes(), nil
+func (typ TemplateType) Exec(ctx context.Context, fs fs.FS, tpl Template) ([]byte, error) {
+	return nil, fmt.Errorf("TemplateType.Exec")
+
+		t, err := typ.Load(ctx, fs, tpl)
+		if err != nil {
+			return nil, err
+		}
+		buf := new(bytes.Buffer)
+		if err := t.Execute(buf, tpl); err != nil {
+			return nil, fmt.Errorf("unable to exec template %s: %w", tpl.File(), err)
+		}
+		return buf.Bytes(), nil
 }
 
 // Load loads a template.
-func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Template, error) {
+func (typ TemplateType) Load(ctx context.Context, fs fs.FS, tpl Template) (*template.Template, error) {
 	// template source
-	src := Src(ctx)
-	if src == nil {
-		src = set.Files
-	}
 	// load template content
-	name := tpl.File() + set.FileExt + ".tpl"
-	f, err := src.Open(name)
+	name := tpl.File() + ".tpl"
+	f, err := fs.Open(name)
 	if err != nil {
 		return nil, fmt.Errorf("unable to open template %s: %w", name, err)
 	}
@@ -390,55 +430,46 @@ func (set *TemplateSet) Load(ctx context.Context, tpl *Template) (*template.Temp
 	if err != nil {
 		return nil, fmt.Errorf("unable to read template %s: %w", name, err)
 	}
+	// create template and add funcs
+	t := template.New(name)
+	if typ.Funcs != nil {
+		funcs, err := typ.Funcs(ctx)
+		if err != nil {
+			return nil, err
+		}
+		t = t.Funcs(funcs)
+	}
 	// parse content
-	t, err := template.New(name).Funcs(set.funcs).Parse(string(buf))
-	if err != nil {
+	if t, err = t.Parse(string(buf)); err != nil {
 		return nil, fmt.Errorf("unable to parse template %s: %w", name, err)
 	}
 	return t, nil
 }
 
 // LoadFile loads a file.
-func (set *TemplateSet) LoadFile(ctx context.Context, file string, doAppend bool) ([]byte, error) {
-	name := filepath.Join(Out(ctx), file)
-	fi, err := os.Stat(name)
-	switch {
-	case (err != nil && os.IsNotExist(err)) || !doAppend:
-		if set.HeaderTemplate == nil {
-			return nil, nil
+func (typ TemplateType) LoadFile(ctx context.Context, file string, doAppend bool) ([]byte, error) {
+	return nil, errors.New("TemplateType.LoadFile")
+		name := filepath.Join(Out(ctx), file)
+		fi, err := os.Stat(name)
+		switch {
+		case (err != nil && errors.Is(err, os.ErrNotExist)) || !doAppend:
+			if typ.HeaderTemplate == nil {
+				return nil, nil
+			}
+			return typ.Exec(ctx, fs, typ.HeaderTemplate(ctx))
+		case err != nil:
+			return nil, err
+		case fi.IsDir():
+			return nil, fmt.Errorf("%s is a directory: cannot emit template", name)
 		}
-		return set.Exec(ctx, set.HeaderTemplate(ctx))
-	case err != nil:
-		return nil, err
-	case fi.IsDir():
-		return nil, fmt.Errorf("%s is a directory: cannot emit template", name)
-	}
-	return ioutil.ReadFile(name)
+		return ioutil.ReadFile(name)
 }
-
-// Template wraps other templates.
-type Template struct {
-	Set      string
-	Template string
-	Type     string
-	Name     string
-	Data     interface{}
-	Extra    map[string]interface{}
-}
-
-// File returns the file name for the template.
-func (tpl *Template) File() string {
-	if tpl.Set != "" {
-		return tpl.Set + "/" + tpl.Template
-	}
-	return tpl.Template
-}
+*/
 
 // EmittedTemplate wraps a template with its content and file name.
 type EmittedTemplate struct {
-	Template *Template
+	Template xo.Template
 	Buf      []byte
-	File     string
 	Err      []error
 }
 
@@ -458,63 +489,30 @@ func (err *ErrPostFailed) Unwrap() error {
 	return err.Err
 }
 
-// Context keys.
-const (
-	SymbolsKey      xo.ContextKey = "symbols"
-	GenTypeKey      xo.ContextKey = "gen-type"
-	TemplateTypeKey xo.ContextKey = "template-type"
-	SuffixKey       xo.ContextKey = "suffix"
-	SrcKey          xo.ContextKey = "src"
-	OutKey          xo.ContextKey = "out"
-)
-
-// Symbols returns the symbols option from the context.
-func Symbols(ctx context.Context) map[string]map[string]reflect.Value {
-	v, _ := ctx.Value(SymbolsKey).(map[string]map[string]reflect.Value)
-	return v
-}
-
-// GenType returns the the gen-type option from the context.
-func GenType(ctx context.Context) string {
-	s, _ := ctx.Value(GenTypeKey).(string)
-	return s
-}
-
-// TemplateType returns type option from the context.
-func TemplateType(ctx context.Context) string {
-	s, _ := ctx.Value(TemplateTypeKey).(string)
-	return s
-}
-
-// Suffix returns suffix option from the context.
-func Suffix(ctx context.Context) string {
-	s, _ := ctx.Value(SuffixKey).(string)
-	return s
-}
-
-// Src returns src option from the context.
-func Src(ctx context.Context) fs.FS {
-	v, _ := ctx.Value(SrcKey).(fs.FS)
-	return v
-}
-
-// Out returns out option from the context.
-func Out(ctx context.Context) string {
-	s, _ := ctx.Value(OutKey).(string)
-	return s
-}
-
-// sortEmitted sorts the emitted templates.
-func sortEmitted(tpl []*EmittedTemplate) {
-	sort.Slice(tpl, func(i, j int) bool {
-		if tpl[i].Template.Template != tpl[j].Template.Template {
-			return tpl[i].Template.Template < tpl[j].Template.Template
+// DefaultSymbols returns the default set of yaegi and internal symbols.
+func DefaultSymbols() map[string]map[string]reflect.Value {
+	symbols := make(map[string]map[string]reflect.Value)
+	for _, syms := range []map[string]map[string]reflect.Value{
+		stdlib.Symbols,
+		internal.Symbols,
+	} {
+		for kk, m := range syms {
+			z := make(map[string]reflect.Value)
+			for k, v := range m {
+				z[k] = v
+			}
+			symbols[kk] = z
 		}
-		if tpl[i].Template.Type != tpl[j].Template.Type {
-			return tpl[i].Template.Type < tpl[j].Template.Type
-		}
-		return tpl[i].Template.Name < tpl[j].Template.Name
-	})
+	}
+	return symbols
+}
+
+// DefaultInitFunc is the template init symbol.
+const DefaultInitFunc = "Init"
+
+// DefaultTags returns the default template tags.
+func DefaultTags() []string {
+	return []string{"xotpl"}
 }
 
 // removeMatching builds a new slice from v containing the strings not
@@ -539,3 +537,29 @@ func contains(v []string, s string) bool {
 	}
 	return false
 }
+
+// sourceFS handles source file mapping in a file system.
+type sourceFS struct {
+	fs   fs.FS
+	path string
+}
+
+// Open satisfies the fs.FS interface.
+func (src sourceFS) Open(name string) (fs.File, error) {
+	if name == src.path {
+		return src.fs.Open(".")
+	}
+	if n := src.path + "/"; strings.HasPrefix(name, n) {
+		return src.fs.Open(strings.TrimPrefix(name, n))
+	}
+	return nil, os.ErrNotExist
+}
+
+// files are embedded template files.
+//
+//go:embed createdb
+//go:embed dot
+//go:embed go
+//go:embed json
+//go:embed yaml
+var files embed.FS

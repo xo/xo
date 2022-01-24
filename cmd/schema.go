@@ -15,39 +15,39 @@ import (
 	xo "github.com/xo/xo/types"
 )
 
-// BuildSchema builds a schema.
-func BuildSchema(ctx context.Context, args *Args, dest *xo.XO) error {
-	driver, _, schema := xo.DriverDbSchema(ctx)
-	s := xo.Schema{
+// LoadSchema loads a schema from a database.
+func LoadSchema(ctx context.Context, set *xo.Set, args *Args) error {
+	driver, _, schemaName := xo.DriverDbSchema(ctx)
+	schema := xo.Schema{
 		Driver: driver,
-		Name:   schema,
+		Name:   schemaName,
 	}
 	var err error
 	// load enums, procs, tables, views
-	if s.Enums, err = LoadEnums(ctx, args); err != nil {
+	if schema.Enums, err = LoadEnums(ctx, args); err != nil {
 		return err
 	}
-	if s.Procs, err = LoadProcs(ctx, args); err != nil {
+	if schema.Procs, err = LoadProcs(ctx, args); err != nil {
 		return err
 	}
-	if s.Tables, err = LoadTables(ctx, args, "table"); err != nil {
+	if schema.Tables, err = LoadTables(ctx, args, "table"); err != nil {
 		return err
 	}
-	if s.Views, err = LoadTables(ctx, args, "view"); err != nil {
+	if schema.Views, err = LoadTables(ctx, args, "view"); err != nil {
 		return err
 	}
 	// fix enums for mysql
 	if driver == "mysql" {
-		for i := 0; i < len(s.Tables); i++ {
-			for j := 0; j < len(s.Tables[i].Columns); j++ {
-				if e := s.EnumByName(s.Tables[i].Columns[j].Type.Type); e != nil {
-					s.Tables[i].Columns[j].Type.Enum = e
+		for i := 0; i < len(schema.Tables); i++ {
+			for j := 0; j < len(schema.Tables[i].Columns); j++ {
+				if e := schema.EnumByName(schema.Tables[i].Columns[j].Type.Type); e != nil {
+					schema.Tables[i].Columns[j].Type.Enum = e
 				}
 			}
 		}
 	}
 	// emit
-	dest.Emit(s)
+	set.Schemas = append(set.Schemas, schema)
 	return nil
 }
 
@@ -409,7 +409,7 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 			fkey.Name = table.Name + "_" + strings.Join(names, "_") + "_fkey"
 		}
 		// determine foreign key func name
-		fkey.Func = resolveFkName(fkey, table, args.SchemaParams.FkMode)
+		fkey.Func = resolveFkName(fkey, table, args.SchemaParams.FkMode.AsString())
 		// foreign key called func name
 		fkey.RefFunc = indexFuncName(xo.Index{
 			IsUnique: true,
@@ -427,7 +427,7 @@ func LoadTableForeignKeys(ctx context.Context, args *Args, tables []xo.Table, ta
 // validType returns whether the type name given is valid, given the --include
 // and --exclude options provided by the user.
 func validType(args *Args, skipIncludes bool, names ...string) bool {
-	include, exclude := args.SchemaParams.Include, args.SchemaParams.Exclude
+	include, exclude := args.SchemaParams.Include.AsGlob(), args.SchemaParams.Exclude.AsGlob()
 	if len(include) == 0 && len(exclude) == 0 {
 		return true
 	}

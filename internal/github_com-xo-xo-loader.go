@@ -10,7 +10,6 @@ import (
 func init() {
 	Symbols["github.com/xo/xo/loader/loader"] = map[string]reflect.Value{
 		// function, constant and variable definitions
-		"EnableOids":           reflect.ValueOf(loader.EnableOids),
 		"EnumValues":           reflect.ValueOf(loader.EnumValues),
 		"Enums":                reflect.ValueOf(loader.Enums),
 		"Flags":                reflect.ValueOf(loader.Flags),
@@ -18,7 +17,6 @@ func init() {
 		"MysqlEnumValues":      reflect.ValueOf(loader.MysqlEnumValues),
 		"MysqlGoType":          reflect.ValueOf(loader.MysqlGoType),
 		"NthParam":             reflect.ValueOf(loader.NthParam),
-		"OidsKey":              reflect.ValueOf(loader.OidsKey),
 		"OracleGoType":         reflect.ValueOf(loader.OracleGoType),
 		"PostgresFlags":        reflect.ValueOf(loader.PostgresFlags),
 		"PostgresGoType":       reflect.ValueOf(loader.PostgresGoType),

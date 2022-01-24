@@ -2,6 +2,7 @@
 /xo.exe
 /build/
 /x/
+/test/
 
 *.txt
 *.db

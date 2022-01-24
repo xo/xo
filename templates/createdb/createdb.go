@@ -1,27 +1,192 @@
-// Package funcs provides custom template funcs.
-package funcs
+//go:build xotpl
+
+package createdb
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io/fs"
+	"os/exec"
 	"regexp"
 	"strings"
 	"text/template"
+	"unicode"
 
-	"github.com/xo/xo/templates/createdbtpl"
 	xo "github.com/xo/xo/types"
 )
 
-// Init intializes the custom template funcs.
-func Init(ctx context.Context) (template.FuncMap, error) {
+// Init registers the template.
+func Init(ctx context.Context, f func(xo.TemplateType)) error {
+	fmtCmd, _ := exec.LookPath("sql-formatter")
+	var fmtOpts []string
+	if fmtCmd != "" {
+		fmtOpts = []string{"-u", "-l={{ . }}", "-i=2", "--lines-between-queries=2"}
+	}
+	f(xo.TemplateType{
+		Modes: []string{"schema"},
+		Flags: []xo.Flag{
+			{
+				ContextKey: FileKey,
+				Type:       "string",
+				Desc:       "output file",
+				Default:    "xo.xo.sql",
+				Hidden:     true,
+			},
+			{
+				ContextKey: FmtKey,
+				Type:       "string",
+				Desc:       "fmt command",
+				Default:    fmtCmd,
+			},
+			{
+				ContextKey: FmtOptsKey,
+				Type:       "[]string",
+				Desc:       "fmt options",
+				Default:    strings.Join(fmtOpts, ","),
+			},
+			{
+				ContextKey: ConstraintKey,
+				Type:       "bool",
+				Desc:       "enable constraint name in output",
+				Default:    "false",
+			},
+			{
+				ContextKey: EscKey,
+				Type:       "string",
+				Desc:       "escape mode",
+				Default:    "none",
+				Enums:      []string{"none", "types", "all"},
+			},
+			{
+				ContextKey: EngineKey,
+				Type:       "string",
+				Desc:       "mysql table engine",
+				Default:    "InnoDB",
+			},
+			{
+				ContextKey: TrimCommentKey,
+				Type:       "bool",
+				Desc:       "trim leading comment from views and procs",
+				Default:    "true",
+			},
+		},
+		Funcs: NewFuncs,
+		Process: func(ctx context.Context, _ string, set *xo.Set, emit func(xo.Template)) error {
+			if len(set.Schemas) == 0 {
+				return errors.New("createdb template must be passed at least one schema")
+			}
+			for _, schema := range set.Schemas {
+				schema.Tables = sortTables(schema.Tables)
+				emit(xo.Template{
+					Src:      "xo.xo.sql.tpl",
+					Dest:     File(ctx),
+					SortName: schema.Name,
+					Data:     schema,
+				})
+			}
+			return nil
+		},
+		Post: func(ctx context.Context, _ string, out fs.FS, emit func(string, []byte), files ...string) error {
+			// build options
+			fmtPath, lang, opts := Fmt(ctx), Lang(ctx), FmtOpts(ctx)
+			for i, o := range opts {
+				tpl, err := template.New(fmt.Sprintf("option %d", i)).Parse(o)
+				if err != nil {
+					return err
+				}
+				b := new(bytes.Buffer)
+				if err := tpl.Execute(b, lang); err != nil {
+					return err
+				}
+				opts[i] = b.String()
+			}
+			// post-process files
+			for _, file := range files {
+				// read
+				buf, err := fs.ReadFile(out, file)
+				if err != nil {
+					return err
+				}
+				// skip
+				if fmtPath == "" {
+					emit(file, cleanEnd(cleanRE.ReplaceAll(buf, []byte("$1\n\n--"))))
+					continue
+				}
+				// execute
+				stdout, stderr := new(bytes.Buffer), new(bytes.Buffer)
+				cmd := exec.Command(fmtPath, opts...)
+				cmd.Stdin, cmd.Stdout, cmd.Stderr = bytes.NewReader(buf), stdout, stderr
+				if err := cmd.Run(); err != nil {
+					return fmt.Errorf("unable to execute %s: %v: %s", fmtPath, err, stderr.String())
+				}
+				emit(file, cleanEnd(stdout.Bytes()))
+			}
+			return nil
+		},
+	})
+	return nil
+}
+
+// cleanRE matches empty lines.
+var cleanRE = regexp.MustCompile(`([\.;])\n{2,}--`)
+
+// cleanEnd trims the end of any spaces, ensuring it ends with exactly one
+// newline.
+func cleanEnd(buf []byte) []byte {
+	return append(bytes.TrimRightFunc(buf, unicode.IsSpace), '\n')
+}
+
+// sortTables sorts tables.
+func sortTables(tables []xo.Table) []xo.Table {
+	m := make(map[string]xo.Table)
+	for _, table := range tables {
+		m[table.Name] = table
+	}
+	seen := make(map[string]bool)
+	var sorted []xo.Table
+	for _, table := range tables {
+		sorted = sortAppendTable(m, seen, sorted, table)
+	}
+	return sorted
+}
+
+// sortAppendTable appends and returns the list of foreign key dependencies for
+// the table if not already in seen.
+func sortAppendTable(m map[string]xo.Table, seen map[string]bool, sorted []xo.Table, table xo.Table) []xo.Table {
+	if seen[table.Name] {
+		return sorted
+	}
+	for _, fk := range table.ForeignKeys {
+		if t := m[fk.RefTable]; table.Name != t.Name && !seen[t.Name] {
+			sorted = sortAppendTable(m, seen, sorted, t)
+		}
+	}
+	seen[table.Name] = true
+	return append(sorted, table)
+}
+
+// Funcs is a set of template funcs.
+type Funcs struct {
+	driver      string
+	constraint  bool
+	escCols     bool
+	escTypes    bool
+	engine      string
+	trimComment bool
+}
+
+// NewFuncs creates custom template funcs for the context.
+func NewFuncs(ctx context.Context, _ string) (template.FuncMap, error) {
 	driver, _, _ := xo.DriverDbSchema(ctx)
 	funcs := &Funcs{
 		driver:      driver,
-		constraint:  createdbtpl.Constraint(ctx),
-		escCols:     createdbtpl.Esc(ctx, "columns"),
-		escTypes:    createdbtpl.Esc(ctx, "types"),
-		engine:      createdbtpl.Engine(ctx),
-		trimComment: createdbtpl.TrimComment(ctx),
+		constraint:  Constraint(ctx),
+		escCols:     Esc(ctx, "columns"),
+		escTypes:    Esc(ctx, "types"),
+		engine:      Engine(ctx),
+		trimComment: TrimComment(ctx),
 	}
 	return template.FuncMap{
 		"coldef":          funcs.coldef,
@@ -38,16 +203,7 @@ func Init(ctx context.Context) (template.FuncMap, error) {
 	}, nil
 }
 
-// Funcs is a set of template funcs.
-type Funcs struct {
-	driver      string
-	constraint  bool
-	escCols     bool
-	escTypes    bool
-	engine      string
-	trimComment bool
-}
-
+// coldef generates a column definition.
 func (f *Funcs) coldef(table xo.Table, field xo.Field) string {
 	// normalize type
 	typ := f.normalize(field.Type)
@@ -101,6 +257,7 @@ var postgresDefaultCastRE = regexp.MustCompile(`(.*)::[a-zA-Z_ ]*(\[\])?$`)
 // does not need to be quoted with parenthesis.
 var sqliteDefaultNeedsParenRE = regexp.MustCompile(`^([\('"].*[\)'"]|\d+)$`)
 
+// resolveSequence resolves a sequence name.
 func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 	switch f.driver {
 	case "postgres":
@@ -128,6 +285,7 @@ func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 	return ""
 }
 
+// colFKey
 func (f *Funcs) colFKey(table xo.Table, field xo.Field) string {
 	for _, fk := range table.ForeignKeys {
 		if len(fk.Fields) == 1 && fk.Fields[0] == field {
@@ -138,6 +296,7 @@ func (f *Funcs) colFKey(table xo.Table, field xo.Field) string {
 	return ""
 }
 
+// viewdef generates a view definition.
 func (f *Funcs) viewdef(view xo.Table) string {
 	def := view.Definition
 	switch f.driver {
@@ -152,6 +311,7 @@ func (f *Funcs) viewdef(view xo.Table) string {
 	return strings.TrimSuffix(def, ";")
 }
 
+// procdef generates a proc definition.
 func (f *Funcs) procdef(proc xo.Proc) string {
 	def := f.cleanProcDef(proc.Definition)
 	// prepend signature definition
@@ -161,6 +321,7 @@ func (f *Funcs) procdef(proc xo.Proc) string {
 	return def
 }
 
+// celanProcDef cleans a proc definition.
 func (f *Funcs) cleanProcDef(def string) string {
 	switch f.driver {
 	// nothing needs to be done for postgres
@@ -182,6 +343,7 @@ func (f *Funcs) cleanProcDef(def string) string {
 	return strings.ReplaceAll(def, ";", "\\;")
 }
 
+// procSignature generates a proc signature.
 func (f *Funcs) procSignature(proc xo.Proc) string {
 	// create function signature
 	typ := "PROCEDURE"
@@ -209,6 +371,7 @@ func (f *Funcs) procSignature(proc xo.Proc) string {
 	return signature
 }
 
+// driverfn determines if a driver is allowed.
 func (f *Funcs) driverfn(allowed ...string) bool {
 	for _, d := range allowed {
 		if f.driver == d {
@@ -218,6 +381,7 @@ func (f *Funcs) driverfn(allowed ...string) bool {
 	return false
 }
 
+// contstraintfn
 func (f *Funcs) constraintfn(name string) string {
 	if f.constraint || f.driver == "sqlserver" || f.driver == "oracle" {
 		return fmt.Sprintf("CONSTRAINT %s ", f.escType(name))
@@ -225,6 +389,7 @@ func (f *Funcs) constraintfn(name string) string {
 	return ""
 }
 
+// fields
 func (f *Funcs) fields(v interface{}) string {
 	switch x := v.(type) {
 	case []xo.Field:
@@ -237,9 +402,10 @@ func (f *Funcs) fields(v interface{}) string {
 	return fmt.Sprintf("[[ UNKNOWN TYPE %T ]]", v)
 }
 
-func (f *Funcs) esc(value string, escape bool) string {
-	if !escape {
-		return value
+// esc escapes s.
+func (f *Funcs) esc(s string, esc bool) string {
+	if !esc {
+		return s
 	}
 	var start, end string
 	switch f.driver {
@@ -250,17 +416,20 @@ func (f *Funcs) esc(value string, escape bool) string {
 	case "sqlserver":
 		start, end = "[", "]"
 	}
-	return start + value + end
+	return start + s + end
 }
 
+// escType
 func (f *Funcs) escType(value string) string {
 	return f.esc(value, f.escTypes)
 }
 
+// escCol
 func (f *Funcs) escCol(value string) string {
 	return f.esc(value, f.escCols)
 }
 
+// enginefn returns the engine for the database (mysql).
 func (f *Funcs) enginefn() string {
 	if f.driver != "mysql" || f.engine == "" {
 		return ""
@@ -268,6 +437,7 @@ func (f *Funcs) enginefn() string {
 	return fmt.Sprintf(" ENGINE=%s", f.engine)
 }
 
+// normalize normalizes a datatype.
 func (f *Funcs) normalize(datatype xo.Type) string {
 	typ := f.convert(datatype)
 	if datatype.Scale > 0 && !omitPrecision[f.driver][typ] {
@@ -284,6 +454,7 @@ func (f *Funcs) normalize(datatype xo.Type) string {
 	return typ
 }
 
+// convert converts
 func (f *Funcs) convert(datatype xo.Type) string {
 	// mysql enums
 	if f.driver == "mysql" && datatype.Enum != nil {
@@ -359,4 +530,74 @@ func comma(i int, v interface{}) string {
 		return ","
 	}
 	return ""
+}
+
+// Context keys.
+const (
+	FileKey        xo.ContextKey = "file"
+	FmtKey         xo.ContextKey = "fmt"
+	FmtOptsKey     xo.ContextKey = "fmt-opts"
+	ConstraintKey  xo.ContextKey = "constraint"
+	EscKey         xo.ContextKey = "escape"
+	EngineKey      xo.ContextKey = "engine"
+	TrimCommentKey xo.ContextKey = "trim-comment"
+)
+
+// File returns file from the context.
+func File(ctx context.Context) string {
+	s, _ := ctx.Value(FileKey).(string)
+	return s
+}
+
+// Fmt returns fmt from the context.
+func Fmt(ctx context.Context) string {
+	s, _ := ctx.Value(FmtKey).(string)
+	return s
+}
+
+// FmtOpts returns fmt-opts from the context.
+func FmtOpts(ctx context.Context) []string {
+	v, _ := ctx.Value(FmtOptsKey).([]string)
+	return v
+}
+
+// Constraint returns constraint from the context.
+func Constraint(ctx context.Context) bool {
+	b, _ := ctx.Value(ConstraintKey).(bool)
+	return b
+}
+
+// Esc returns esc from the context.
+func Esc(ctx context.Context, esc string) bool {
+	v, _ := ctx.Value(EscKey).(string)
+	return v == "all" || v == esc
+}
+
+// Engine returns engine from the context.
+func Engine(ctx context.Context) string {
+	s, _ := ctx.Value(EngineKey).(string)
+	return s
+}
+
+// TrimComment returns trim-comments from the context.
+func TrimComment(ctx context.Context) bool {
+	b, _ := ctx.Value(TrimCommentKey).(bool)
+	return b
+}
+
+// Lang returns the sql-formatter language to use from the context based on the
+// context driver.
+func Lang(ctx context.Context) string {
+	driver, _, _ := xo.DriverDbSchema(ctx)
+	switch driver {
+	case "postgres", "sqlite3":
+		return "postgresql"
+	case "mysql":
+		return "mysql"
+	case "sqlserver":
+		return "tsql"
+	case "oracle":
+		return "plsql"
+	}
+	return "sql"
 }

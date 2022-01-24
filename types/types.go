@@ -5,28 +5,18 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"io/fs"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
-// XO wraps query and schema information.
-type XO struct {
+// Set is a set of queries and schemas.
+type Set struct {
 	Queries []Query  `json:"queries,omitempty"`
 	Schemas []Schema `json:"schemas,omitempty"`
-}
-
-// Emit emits values.
-func (x *XO) Emit(v ...interface{}) {
-	for _, vv := range v {
-		switch z := vv.(type) {
-		case Query:
-			x.Queries = append(x.Queries, z)
-		case Schema:
-			x.Schemas = append(x.Schemas, z)
-		}
-	}
 }
 
 // Query is a query.
@@ -50,7 +40,7 @@ type Query struct {
 // MarshalYAML satisfies the yaml.Marshaler interface.
 func (q Query) MarshalYAML() (interface{}, error) {
 	v := q
-	v.Comment, v.TypeComment = forceLineEnd(v.Comment), (v.TypeComment)
+	v.Comment = forceLineEnd(v.Comment)
 	return reflectStruct(v)
 }
 
@@ -228,6 +218,72 @@ var oracleTimestampRE = regexp.MustCompile(`^timestamp\((\d)\) (with(?: local)? 
 // database.
 var precRE = regexp.MustCompile(`\(([0-9]+)(\s*,\s*[0-9]+\s*)?\)$`)
 
+// TemplateType is a template type.
+type TemplateType struct {
+	// Name is the template name.
+	Name string
+	// Modes are the command modes the template is available for.
+	Modes []string
+	// Flags are additional template flags.
+	Flags []Flag
+	// Order returns the order of template type processing.
+	Order func(context.Context, string) []string
+	// Funcs provides template funcs for use by templates.
+	Funcs func(context.Context, string) (template.FuncMap, error)
+	// NewContext provides a way for templates to inject additional, global
+	// context values, prior to processing.
+	NewContext func(context.Context, string) context.Context
+	// Pre performs pre processing of generated content, such as emitting
+	// static files.
+	Pre func(context.Context, string, fs.FS, func(Template)) error
+	// Process performs the processing templates for the set.
+	Process func(context.Context, string, *Set, func(Template)) error
+	// Post performs post processing of generated content.
+	Post func(context.Context, string, fs.FS, func(string, []byte), ...string) error
+}
+
+// Template holds template information.
+type Template struct {
+	// Src is the template source file.
+	Src string
+	// Partial is the partial template name to use, if any.
+	Partial string
+	// Dest is the destination file.
+	Dest string
+	// SortType is the sort order type.
+	SortType string
+	// SortName is the name to sort by.
+	SortName string
+	// Data is the template data.
+	Data interface{}
+}
+
+// ContextKey is a context key.
+type ContextKey string
+
+// Context keys.
+const (
+	DriverKey ContextKey = "driver"
+	DbKey     ContextKey = "db"
+	SchemaKey ContextKey = "schema"
+	OutKey    ContextKey = "out"
+)
+
+// DriverDbSchema returns the driver, database connection, and schema name from
+// the context.
+func DriverDbSchema(ctx context.Context) (string, *sql.DB, string) {
+	driver, _ := ctx.Value(DriverKey).(string)
+	db, _ := ctx.Value(DbKey).(*sql.DB)
+	schema, _ := ctx.Value(SchemaKey).(string)
+	return driver, db, schema
+}
+
+// Out returns out option from the context.
+func Out(ctx context.Context) string {
+	s, _ := ctx.Value(OutKey).(string)
+	return s
+}
+
 // forceLineEnd forces a \n on a string that doesn't contain one and is
 // non-empty.
 func forceLineEnd(s string) string {
@@ -268,23 +324,4 @@ func reflectStruct(z interface{}) (interface{}, error) {
 		s.Elem().Field(i).Set(values[i])
 	}
 	return s.Elem().Interface(), nil
-}
-
-// ContextKey is a context key.
-type ContextKey string
-
-// Context key values.
-const (
-	DriverKey ContextKey = "driver"
-	DbKey     ContextKey = "db"
-	SchemaKey ContextKey = "schema"
-)
-
-// DriverDbSchema returns the driver, database connection, and schema name from
-// the context.
-func DriverDbSchema(ctx context.Context) (string, *sql.DB, string) {
-	driver, _ := ctx.Value(DriverKey).(string)
-	db, _ := ctx.Value(DbKey).(*sql.DB)
-	schema, _ := ctx.Value(SchemaKey).(string)
-	return driver, db, schema
 }

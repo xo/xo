@@ -13,8 +13,8 @@ import (
 	xo "github.com/xo/xo/types"
 )
 
-// BuildQuery builds a query.
-func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
+// LoadQuery loads a query.
+func LoadQuery(ctx context.Context, set *xo.Set, args *Args) error {
 	driver, _, _ := xo.DriverDbSchema(ctx)
 	// introspect query if not exec mode
 	query, inspect, comments, fields, err := ParseQuery(
@@ -42,7 +42,7 @@ func BuildQuery(ctx context.Context, args *Args, dest *xo.XO) error {
 			return err
 		}
 	}
-	dest.Emit(xo.Query{
+	set.Queries = append(set.Queries, xo.Query{
 		Driver:       driver,
 		Name:         args.QueryParams.Func,
 		Comment:      args.QueryParams.FuncComment,

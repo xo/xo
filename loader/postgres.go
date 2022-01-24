@@ -37,7 +37,7 @@ func init() {
 func PostgresFlags() []xo.Flag {
 	return []xo.Flag{
 		{
-			ContextKey: OidsKey,
+			ContextKey: oidsKey,
 			Type:       "bool",
 			Desc:       "enable postgres OIDs",
 			Default:    "false",
@@ -145,7 +145,7 @@ func PostgresGoType(d xo.Type, schema, itype, utype string) (string, string, err
 
 // PostgresTableColumns returns the columns for a table.
 func PostgresTableColumns(ctx context.Context, db models.DB, schema string, table string) ([]*models.Column, error) {
-	return models.PostgresTableColumns(ctx, db, schema, table, EnableOids(ctx))
+	return models.PostgresTableColumns(ctx, db, schema, table, enableOids(ctx))
 }
 
 // PostgresIndexColumns returns the column list for an index.
@@ -208,11 +208,11 @@ func PostgresViewStrip(query, inspect []string) ([]string, []string, []string, e
 // which is a quirk/requirement of generating queries for postgres.
 var stripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
 
-// OidsKey is the oids context key.
-const OidsKey xo.ContextKey = "oids"
+// oidsKey is the oids context key.
+const oidsKey xo.ContextKey = "oids"
 
-// EnableOids returns the EnableOids value from the context.
-func EnableOids(ctx context.Context) bool {
-	b, _ := ctx.Value(OidsKey).(bool)
+// enableOids returns the enableOids value from the context.
+func enableOids(ctx context.Context) bool {
+	b, _ := ctx.Value(oidsKey).(bool)
 	return b
 }
