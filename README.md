@@ -514,7 +514,7 @@ Additionally, when working with date/time column types in MySQL, one should
 pass the `parseTime=true` option to the MySQL driver:
 
 ```sh
-$ xo 'mysql://user:pass@host/dbname?parseTime=true' -o models
+$ xo schema 'mysql://user:pass@host/dbname?parseTime=true' -o models
 ```
 
 And when opening a database connection:
