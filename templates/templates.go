@@ -460,6 +460,7 @@ func (err *ErrPostFailed) Unwrap() error {
 
 // Context keys.
 const (
+	XOKey           xo.ContextKey = "xo"
 	SymbolsKey      xo.ContextKey = "symbols"
 	GenTypeKey      xo.ContextKey = "gen-type"
 	TemplateTypeKey xo.ContextKey = "template-type"
@@ -467,6 +468,11 @@ const (
 	SrcKey          xo.ContextKey = "src"
 	OutKey          xo.ContextKey = "out"
 )
+
+func XO(ctx context.Context) *xo.XO {
+	v, _ := ctx.Value(XOKey).(*xo.XO)
+	return v
+}
 
 // Symbols returns the symbols option from the context.
 func Symbols(ctx context.Context) map[string]map[string]reflect.Value {

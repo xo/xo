@@ -42,6 +42,9 @@ type Table struct {
 	Fields      []Field
 	Manual      bool
 	Comment     string
+
+	Indexes     []Index
+	ForeignKeys []ForeignKey
 }
 
 // ForeignKey is a foreign key template.

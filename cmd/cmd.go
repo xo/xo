@@ -46,12 +46,13 @@ func Run(ctx context.Context, name, version string) error {
 			f = BuildQuery
 		}
 		// build
-		x := new(xo.XO)
-		if err := f(ctx, args, x); err != nil {
+		v := new(xo.XO)
+		if err := f(ctx, args, v); err != nil {
 			return err
 		}
+		ctx = context.WithValue(ctx, templates.XOKey, v)
 		// process
-		if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, x); err != nil {
+		if err := templates.Process(ctx, args.OutParams.Append, args.OutParams.Single, v); err != nil {
 			return err
 		}
 	}

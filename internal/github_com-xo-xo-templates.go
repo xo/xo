@@ -32,6 +32,8 @@ func init() {
 		"Write":           reflect.ValueOf(templates.Write),
 		"WriteFiles":      reflect.ValueOf(templates.WriteFiles),
 		"WriteRaw":        reflect.ValueOf(templates.WriteRaw),
+		"XO":              reflect.ValueOf(templates.XO),
+		"XOKey":           reflect.ValueOf(templates.XOKey),
 
 		// type definitions
 		"EmittedTemplate": reflect.ValueOf((*templates.EmittedTemplate)(nil)),

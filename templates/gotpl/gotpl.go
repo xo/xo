@@ -402,6 +402,23 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 		if err != nil {
 			return err
 		}
+		// emit indexes
+		for _, i := range t.Indexes {
+			index, err := convertIndex(ctx, table, i)
+			if err != nil {
+				return err
+			}
+			table.Indexes = append(table.Indexes, index)
+		}
+
+		// emit fkeys
+		for _, fk := range t.ForeignKeys {
+			fkey, err := convertFKey(ctx, table, fk)
+			if err != nil {
+				return err
+			}
+			table.ForeignKeys = append(table.ForeignKeys, fkey)
+		}
 		if err := set.Emit(ctx, &templates.Template{
 			Set:      "schema",
 			Template: "typedef",
@@ -410,12 +427,7 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 		}); err != nil {
 			return err
 		}
-		// emit indexes
-		for _, i := range t.Indexes {
-			index, err := convertIndex(ctx, table, i)
-			if err != nil {
-				return err
-			}
+		for _, index := range table.Indexes {
 			if err := set.Emit(ctx, &templates.Template{
 				Set:      "schema",
 				Template: "index",
@@ -426,12 +438,7 @@ func emitSchema(ctx context.Context, set *templates.TemplateSet, s xo.Schema) er
 				return err
 			}
 		}
-		// emit fkeys
-		for _, fk := range t.ForeignKeys {
-			fkey, err := convertFKey(ctx, table, fk)
-			if err != nil {
-				return err
-			}
+		for _, fkey := range table.ForeignKeys {
 			if err := set.Emit(ctx, &templates.Template{
 				Set:      "schema",
 				Template: "foreignkey",
