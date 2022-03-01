@@ -44,13 +44,17 @@ func NewTemplateSet(symbols map[string]map[string]reflect.Value, initfunc string
 }
 
 // NewDefaultTemplateSet creates a template set using the default symbols, init
-// func, tags, and embedded templates. Sets the default template target to "go"
-// if available in embedded templates, or to the first available target.
-func NewDefaultTemplateSet(ctx context.Context) (*Set, error) {
-	// create template set
-	ts := NewTemplateSet(DefaultSymbols(), DefaultInitFunc, DefaultTags()...)
+// func, tags, and embedded templates.
+func NewDefaultTemplateSet(ctx context.Context) *Set {
+	return NewTemplateSet(DefaultSymbols(), DefaultInitFunc, DefaultTags()...)
+}
+
+// LoadDefaults loads the default templates. Sets the default template target
+// to "go" if available in embedded templates, or to the first available
+// target.
+func (ts *Set) LoadDefaults(ctx context.Context) error {
 	if err := ts.AddTemplates(ctx, files, true); err != nil {
-		return nil, err
+		return err
 	}
 	// determine default target
 	switch targets := ts.Targets(); {
@@ -59,7 +63,27 @@ func NewDefaultTemplateSet(ctx context.Context) (*Set, error) {
 	case len(targets) != 0:
 		ts.Use(targets[0])
 	}
-	return ts, nil
+	return nil
+}
+
+// LoadDefault loads a single default template.
+func (ts *Set) LoadDefault(ctx context.Context, target string) error {
+	dir, err := files.ReadDir(".")
+	if err != nil {
+		return err
+	}
+	for _, d := range dir {
+		if d.Name() != target {
+			continue
+		}
+		sub, err := fs.Sub(files, target)
+		if err != nil {
+			return err
+		}
+		ts.Add(ctx, target, sub, true)
+		return nil
+	}
+	return fmt.Errorf("default template not found: %s", target)
 }
 
 // AddTemplates adds templates to the template set from src, adding a template
@@ -90,6 +114,9 @@ func (ts *Set) AddTemplates(ctx context.Context, src fs.FS, unrestricted bool) e
 		}
 	}
 	return nil
+}
+
+func (ts *Set) Clear(ctx context.Context) {
 }
 
 // Add adds a template target from src to the template set.

@@ -148,26 +148,30 @@ type OutParams struct {
 // Run runs the code generation.
 func Run(ctx context.Context, name, version string, cmdargs ...string) error {
 	// build template ts
-	ts, err := templates.NewDefaultTemplateSet(ctx)
-	if err != nil {
-		return err
-	}
-	// get src dir arg
-	if dir := strings.TrimSpace(ParseSrcArg(cmdargs...)); dir != "" {
-		// determine target
-		target := "tpl"
-		s := snaker.SnakeToCamel(filepath.Base(dir))
-		s = strings.Replace(strings.ToLower(s), "_", "-", -1)
-		if !ts.Has(s) {
-			target = s
+	ts := templates.NewDefaultTemplateSet(ctx)
+	// load templates
+	dir, template := parseSrcTemplate(cmdargs...)
+	switch {
+	case dir == "" && template == "":
+		// show all default templates
+		ts.LoadDefaults(ctx)
+	case template != "":
+		// only load the selected default template
+		if err := ts.LoadDefault(ctx, template); err != nil {
+			return err
 		}
+		ts.Use(template)
+	default:
+		// load specified template
+		s := snaker.SnakeToCamel(filepath.Base(dir))
+		s = strings.ReplaceAll(strings.ToLower(s), "_", "-")
 		// add template
 		var err error
-		if target, err = ts.Add(ctx, target, os.DirFS(dir), false); err != nil {
+		if s, err = ts.Add(ctx, s, os.DirFS(dir), false); err != nil {
 			return err
 		}
 		// use
-		ts.Use(target)
+		ts.Use(s)
 	}
 	// create args
 	args := NewArgs(ts.Target(), ts.Targets()...)
@@ -349,18 +353,27 @@ func templateFlags(cmd *cobra.Command, ts *templates.Set, extra bool, args *Args
 	return nil
 }
 
-// ParseSrcArg scans args for --src or -d.
-func ParseSrcArg(args ...string) string {
-	for i := 0; i < len(args); i++ {
+// parseSrcTemplate scans args for --src or -d and --template or -t.
+func parseSrcTemplate(args ...string) (string, string) {
+	src := parseArg("--src", "-d", args)
+	template := parseArg("--template", "-t", args)
+	return src, template
+}
+
+func parseArg(short, full string, args []string) (s string) {
+	defer func() {
+		s = strings.TrimSpace(s)
+	}()
+	for i := range args {
 		switch s := strings.TrimSpace(args[i]); {
-		case s == "-d", s == "--src":
+		case s == short, s == full:
 			if i < len(args)-1 {
-				return strings.TrimSpace(args[i+1])
+				return args[i+1]
 			}
-		case strings.HasPrefix(s, "-d="):
-			return strings.TrimPrefix(s, "-d=")
-		case strings.HasPrefix(s, "--src="):
-			return strings.TrimPrefix(s, "--src=")
+		case strings.HasPrefix(s, short):
+			return strings.TrimPrefix(s, short)
+		case strings.HasPrefix(s, full):
+			return strings.TrimPrefix(s, full)
 		}
 	}
 	return ""
@@ -375,16 +388,6 @@ func Exec(ctx context.Context, mode string, ts *templates.Set, args *Args) func(
 		}
 		// set template
 		ts.Use(args.TemplateParams.Type.AsString())
-		// enable verbose output for sql queries
-		if args.Verbose {
-			models.SetLogger(func(str string, v ...interface{}) {
-				s, z := "SQL: %s\n", []interface{}{str}
-				if len(v) != 0 {
-					s, z = s+"PARAMS: %v\n", append(z, v)
-				}
-				fmt.Printf(s+"\n", z...)
-			})
-		}
 		// build context
 		ctx := buildContext(ctx, args)
 		// enable verbose output for sql queries
