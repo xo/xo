@@ -18,13 +18,6 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 		Modes: []string{"query", "schema"},
 		Flags: []xo.Flag{
 			{
-				ContextKey: FileKey,
-				Type:       "string",
-				Desc:       "output file",
-				Default:    "xo.xo.json",
-				Hidden:     true,
-			},
-			{
 				ContextKey: IndentKey,
 				Type:       "string",
 				Desc:       "indent spacing",
@@ -55,9 +48,9 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 		},
 		Process: func(ctx context.Context, _ string, set *xo.Set, emit func(xo.Template)) error {
 			emit(xo.Template{
-				Src:  "xo.xo.json.tpl",
-				Dest: File(ctx),
-				Data: set,
+				Partial: "json",
+				Dest:    "xo.xo.json",
+				Data:    set,
 			})
 			return nil
 		},
@@ -66,17 +59,10 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 }
 
 // Context keys.
-const (
-	FileKey   xo.ContextKey = "file"
+var (
 	IndentKey xo.ContextKey = "indent"
 	UglyKey   xo.ContextKey = "ugly"
 )
-
-// File returns file from the context.
-func File(ctx context.Context) string {
-	s, _ := ctx.Value(FileKey).(string)
-	return s
-}
 
 // Indent returns indent from the context.
 func Indent(ctx context.Context) string {

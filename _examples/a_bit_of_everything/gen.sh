@@ -19,12 +19,13 @@ DATABASES="mysql oracle postgres sqlite3 sqlserver"
 ARGS=()
 
 OPTIND=1
-while getopts "abd:v" opt; do
+while getopts "abd:vD" opt; do
 case "$opt" in
   a) APPLY=1 ;;
   b) BUILD=1 ;;
   d) DATABASES=$OPTARG ;;
   v) ARGS+=(-v) ;;
+  D) ARGS+=(-D) ;;
 esac
 done
 shift $(($OPTIND-1))

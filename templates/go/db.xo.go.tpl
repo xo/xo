@@ -1,3 +1,4 @@
+{{ define "db" -}}
 var (
 	// logf is used by generated code to log SQL queries.
 	logf = func(string, ...interface{}) {}
@@ -283,4 +284,4 @@ var TimestampFormats = []string{
 	"2006-01-02",
 }
 {{- end }}
-
+{{- end }}
