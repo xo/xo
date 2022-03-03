@@ -4,7 +4,7 @@ PGDB=pg://
 MYDB=my://localhost/mysql
 MSDB=ms://
 SQDB=sq:xo.db
-ORDB=or://localhost/orasid
+ORDB=or://localhost:1521/orasid
 
 DEST=$1
 if [ -z "$DEST" ]; then

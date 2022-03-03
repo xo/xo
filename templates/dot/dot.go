@@ -20,13 +20,6 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 		Modes: []string{"schema"},
 		Flags: []xo.Flag{
 			{
-				ContextKey: FileKey,
-				Type:       "string",
-				Desc:       "output file",
-				Default:    "xo.xo.dot",
-				Hidden:     true,
-			},
-			{
 				ContextKey: DefaultsKey,
 				Type:       "string",
 				Desc:       "default statements",
@@ -64,8 +57,8 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 			}
 			for _, schema := range set.Schemas {
 				emit(xo.Template{
-					Src:      "xo.xo.dot.tpl",
-					Dest:     File(ctx),
+					Partial:  "dot",
+					Dest:     "xo.xo.dot",
 					SortName: schema.Name,
 					Data:     schema,
 				})
@@ -175,20 +168,13 @@ func normalize(v string) string {
 }
 
 // Context keys.
-const (
-	FileKey      xo.ContextKey = "file"
+var (
 	DefaultsKey  xo.ContextKey = "defaults"
 	DirectionKey xo.ContextKey = "direction"
 	BoldKey      xo.ContextKey = "bold"
 	RowKey       xo.ContextKey = "row"
 	ColorKey     xo.ContextKey = "color"
 )
-
-// File returns file from the context.
-func File(ctx context.Context) string {
-	s, _ := ctx.Value(FileKey).(string)
-	return s
-}
 
 // Defaults returns defaults from the context.
 func Defaults(ctx context.Context) []string {

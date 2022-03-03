@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"bytes"
 	"context"
 	"embed"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"text/template"
 
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
@@ -21,25 +23,26 @@ import (
 // Set holds a set of templates and handles generating files for a target
 // files.
 type Set struct {
-	symbols   map[string]map[string]reflect.Value
-	initfunc  string
-	tags      []string
-	target    string
-	templates map[string]*Template
-	files     map[string]*EmittedTemplate
-	post      map[string][]byte
-	err       error
+	symbols  map[string]map[string]reflect.Value
+	initfunc string
+	tags     []string
+	target   string
+	targets  map[string]*Target
+	files    map[string]*EmittedTemplate
+	post     map[string][]byte
+	err      error
+	goTpl    *template.Template
 }
 
 // NewTemplateSet creates a template set.
 func NewTemplateSet(symbols map[string]map[string]reflect.Value, initfunc string, tags ...string) *Set {
 	return &Set{
-		symbols:   symbols,
-		initfunc:  initfunc,
-		tags:      tags,
-		templates: make(map[string]*Template),
-		files:     make(map[string]*EmittedTemplate),
-		post:      make(map[string][]byte),
+		symbols:  symbols,
+		initfunc: initfunc,
+		tags:     tags,
+		targets:  make(map[string]*Target),
+		files:    make(map[string]*EmittedTemplate),
+		post:     make(map[string][]byte),
 	}
 }
 
@@ -66,24 +69,24 @@ func (ts *Set) LoadDefaults(ctx context.Context) error {
 	return nil
 }
 
-// LoadDefault loads a single default template.
-func (ts *Set) LoadDefault(ctx context.Context, target string) error {
+// LoadDefault loads a single default target.
+func (ts *Set) LoadDefault(ctx context.Context, name string) error {
 	dir, err := files.ReadDir(".")
 	if err != nil {
 		return err
 	}
 	for _, d := range dir {
-		if d.Name() != target {
+		if d.Name() != name {
 			continue
 		}
-		sub, err := fs.Sub(files, target)
+		sub, err := fs.Sub(files, name)
 		if err != nil {
 			return err
 		}
-		ts.Add(ctx, target, sub, true)
-		return nil
+		_, err = ts.Add(ctx, name, sub, true)
+		return err
 	}
-	return fmt.Errorf("default template not found: %s", target)
+	return fmt.Errorf("unknown target %q", ts.target)
 }
 
 // AddTemplates adds templates to the template set from src, adding a template
@@ -116,44 +119,41 @@ func (ts *Set) AddTemplates(ctx context.Context, src fs.FS, unrestricted bool) e
 	return nil
 }
 
-func (ts *Set) Clear(ctx context.Context) {
-}
-
-// Add adds a template target from src to the template set.
-func (ts *Set) Add(ctx context.Context, target string, src fs.FS, unrestricted bool) (string, error) {
+// Add adds a target from src to the template set.
+func (ts *Set) Add(ctx context.Context, name string, src fs.FS, unrestricted bool) (string, error) {
 	// create template
-	tpl, err := ts.NewTemplate(ctx, target, src, unrestricted)
+	target, err := ts.NewTemplate(ctx, name, src, unrestricted)
 	if err != nil {
 		return "", err
 	}
 	// check target not already defined
-	if ts.Has(tpl.Target) {
-		return "", fmt.Errorf("cannot redefine template target %q", tpl.Target)
+	if ts.Has(target.Name) {
+		return "", fmt.Errorf("cannot redefine template target %q", target.Name)
 	}
-	ts.templates[tpl.Target] = tpl
-	return tpl.Target, nil
+	ts.targets[target.Name] = target
+	return target.Name, nil
 }
 
-// Use sets the template target.
-func (ts *Set) Use(target string) {
-	ts.target = target
+// Use sets the target being used.
+func (ts *Set) Use(name string) {
+	ts.target = name
 }
 
-// Target returns the template target.
+// Target returns the target being used.
 func (ts *Set) Target() string {
 	return ts.target
 }
 
 // Has determines if a template target has been defined.
-func (ts *Set) Has(target string) bool {
-	_, ok := ts.templates[target]
+func (ts *Set) Has(name string) bool {
+	_, ok := ts.targets[name]
 	return ok
 }
 
 // Targets returns the available template targets.
 func (ts *Set) Targets() []string {
 	var targets []string
-	for target := range ts.templates {
+	for target := range ts.targets {
 		targets = append(targets, target)
 	}
 	sort.Strings(targets)
@@ -161,17 +161,17 @@ func (ts *Set) Targets() []string {
 }
 
 // Flags returns flag options for a template target.
-func (ts *Set) Flags(target string) []xo.FlagSet {
-	tpl, ok := ts.templates[target]
+func (ts *Set) Flags(name string) []xo.FlagSet {
+	target, ok := ts.targets[name]
 	if ok {
-		return tpl.Flags()
+		return target.Flags()
 	}
 	return nil
 }
 
 // For determines if the the template target supports the mode.
 func (ts *Set) For(mode string) error {
-	if tpl, ok := ts.templates[ts.target]; ok && contains(tpl.Type.Modes, mode) {
+	if target, ok := ts.targets[ts.target]; ok && contains(target.Type.Modes, mode) {
 		return nil
 	}
 	return fmt.Errorf("template %s does not support %s", ts.target, mode)
@@ -179,137 +179,168 @@ func (ts *Set) For(mode string) error {
 
 // Src returns template target file source.
 func (ts *Set) Src() (fs.FS, error) {
-	tpl, ok := ts.templates[ts.target]
+	target, ok := ts.targets[ts.target]
 	if !ok {
 		return nil, fmt.Errorf("unknown target %q", ts.target)
 	}
-	return tpl.Src, nil
+	return target.Src, nil
 }
 
 // NewContext creates a new context for the template target.
 func (ts *Set) NewContext(ctx context.Context, mode string) context.Context {
-	tpl, ok := ts.templates[ts.target]
+	target, ok := ts.targets[ts.target]
 	if !ok {
 		ts.err = fmt.Errorf("unknown target %q", ts.target)
 		return nil
 	}
-	if tpl.Type.NewContext != nil {
-		return tpl.Type.NewContext(ctx, mode)
+	if target.Type.NewContext != nil {
+		return target.Type.NewContext(ctx, mode)
 	}
 	return ctx
 }
 
+// addFile returns a function that handles adding templates.
+func (ts *Set) addFile(ctx context.Context) func(xo.Template) {
+	return func(t xo.Template) {
+		singleFile := xo.Single(ctx)
+		if singleFile != "" {
+			// Force all templates to be outputted in the specified file if xo is in single mode.
+			t.Dest = singleFile
+		}
+		if _, ok := ts.files[t.Dest]; !ok {
+			ts.files[t.Dest] = &EmittedTemplate{}
+		}
+		ts.files[t.Dest].Template = append(ts.files[t.Dest].Template, t)
+	}
+}
+
 // Pre performs pre processing of the template target.
-func (ts *Set) Pre(ctx context.Context, mode string, src fs.FS) {
-	tpl, ok := ts.templates[ts.target]
-	if !ok {
+func (ts *Set) Pre(ctx context.Context, outDir string, mode string, set *xo.Set) {
+	target, ok := ts.targets[ts.target]
+	switch {
+	case !ok:
 		ts.err = fmt.Errorf("unknown target %q", ts.target)
 		return
+	case target.Type.Pre == nil:
+		return
 	}
-	/*
-		set.err = template.Type.Pre(ctx, src, func(file string, buf []byte) {
-		})
-	*/
-	tpl = tpl
+	if target.Type.Pre == nil {
+
+	}
+	out := os.DirFS(outDir)
+	ts.err = target.Type.Pre(ctx, mode, set, out, ts.addFile(ctx))
 	if ts.err != nil {
 		return
 	}
 }
 
 // Process processes the template target.
-func (ts *Set) Process(ctx context.Context, mode string, set *xo.Set) {
-	tpl, ok := ts.templates[ts.target]
-	if !ok {
-		ts.err = fmt.Errorf("unknown target %q", ts.target)
-		return
-	}
-	// capture emitted templates
-	var emitted []*EmittedTemplate
-	tpl, emitted = tpl, emitted
-	/*
-		set.err = template.Type.Process(ctx, v, func(tpl xo.Template) {
-			emitted = append(emitted, &EmittedTemplate{
-				Template: tpl,
-			})
-		})
-	*/
-	if ts.err != nil {
-		return
-	}
-	/*
-		// sort the emitted templates
-		sort.Slice(emitted, func(i, j int) bool {
-			if emitted[i].Template.Template != emitted[j].Template.Template {
-				return emitted[i].Template.Template < emitted[j].Template.Template
-			}
-			if emitted[i].Template.Type != emitted[j].Template.Type {
-				return emitted[i].Template.Type < emitted[j].Template.Type
-			}
-			return emitted[i].Template.Name < emitted[j].Template.Name
-		})
-		order := template.Type.Order
-		// add package templates
-		if !doAppend && template.Type.PackageTemplates != nil {
-			var additional []string
-			for _, tpl := range template.Type.PackageTemplates(ctx) {
-				if err := emit(tpl); err != nil {
-					return err
-				}
-				additional = append(additional, tpl.Type)
-			}
-			order = removeMatching(template.Type.Order, additional)
-			order = append(additional, order...)
-		}
-		files := make(map[string]*EmittedTemplate)
-		for _, n := range order {
-			for _, tpl := range emitted {
-				if tpl.Template.Type != n {
-					continue
-				}
-				file, ok := files[tpl.Dest]
-				if !ok {
-					buf, err := template.LoadFile(ctx, tpl.File, doAppend)
-					if err != nil {
-						return err
-					}
-					file = &EmittedTemplate{
-						Buf:  buf,
-						File: tpl.File,
-					}
-					files[tpl.File] = file
-				}
-				file.Buf = append(file.Buf, tpl.Buf...)
-			}
-		}
-	*/
-}
-
-// Post performs post processing of the template target.
-func (ts *Set) Post(ctx context.Context, mode string) {
-	tpl, ok := ts.templates[ts.target]
+func (ts *Set) Process(ctx context.Context, outDir string, mode string, set *xo.Set) {
+	target, ok := ts.targets[ts.target]
 	switch {
 	case !ok:
 		ts.err = fmt.Errorf("unknown target %q", ts.target)
 		return
-	case tpl.Type.Post == nil:
+	case target.Type.Process == nil:
 		return
 	}
-	var files []string
-	for file := range ts.files {
-		files = append(files, file)
+	ts.err = target.Type.Process(ctx, mode, set, ts.addFile(ctx))
+	if ts.err != nil {
+		return
 	}
-	sort.Strings(files)
-	for _, file := range files {
-		/*
-			err := template.Type.Post(ctx, mode, file)
-			switch {
-			case err != nil:
-				set.files[file].Err = append(set.files[file].Err, &ErrPostFailed{file, err})
-			case err == nil:
-				set.files[file].Buf = buf
+	// Determine template order.
+	order := make(map[string]int, 0)
+	if target.Type.Order != nil {
+		for i, o := range target.Type.Order(ctx, mode) {
+			order[o] = i
+		}
+	}
+	fs, err := ts.Src()
+	if err != nil {
+		ts.err = err
+		return
+	}
+	// Parse templates and provide functions if applicable.
+	ts.goTpl = template.New("")
+	var funcs template.FuncMap
+	if target.Type.Funcs != nil {
+		var err error
+		funcs, err = target.Type.Funcs(ctx, mode)
+		if err != nil {
+			ts.err = err
+			return
+		}
+		ts.goTpl = ts.goTpl.Funcs(funcs)
+	}
+	ts.goTpl, err = ts.goTpl.ParseFS(fs, "*.tpl")
+	if err != nil {
+		ts.err = err
+		return
+	}
+	// sort file output order
+	filenames := make([]string, 0, len(ts.files))
+	for k := range ts.files {
+		filenames = append(filenames, k)
+	}
+	sort.Slice(filenames, func(i, j int) bool {
+		return filenames[i] < filenames[j]
+	})
+	// Generate all files with the constructed template.
+	for _, file := range filenames {
+		emitted := ts.files[file]
+		sort.Slice(emitted.Template, func(i int, j int) bool {
+			if emitted.Template[i].Partial != emitted.Template[j].Partial {
+				return order[emitted.Template[i].Partial] < order[emitted.Template[j].Partial]
 			}
-		*/
-		file = file
+			if emitted.Template[i].SortType != emitted.Template[j].SortType {
+				return emitted.Template[i].SortType < emitted.Template[j].SortType
+			}
+			return emitted.Template[i].SortName < emitted.Template[j].SortName
+		})
+		for _, tpl := range emitted.Template {
+			if tpl.Src == "" {
+				err := ts.goTpl.ExecuteTemplate(&emitted.Buf, tpl.Partial, tpl)
+				if err != nil {
+					ts.files[file].Err = append(ts.files[file].Err, err)
+				}
+				continue
+			}
+			gotpl, err := template.New("").Parse(tpl.Src)
+			if err != nil {
+				ts.files[file].Err = append(ts.files[file].Err, err)
+				continue
+			}
+			err = gotpl.Execute(&emitted.Buf, tpl)
+			if err != nil {
+				ts.files[file].Err = append(ts.files[file].Err, err)
+				continue
+			}
+		}
+	}
+}
+
+// Post performs post processing of the template target.
+func (ts *Set) Post(ctx context.Context, mode string) {
+	target, ok := ts.targets[ts.target]
+	switch {
+	case !ok:
+		ts.err = fmt.Errorf("unknown target %q", ts.target)
+		return
+	case target.Type.Post == nil:
+		return
+	}
+	files := make(map[string][]byte, len(ts.files))
+	for fileName, emitted := range ts.files {
+		files[fileName] = emitted.Buf.Bytes()
+	}
+	err := target.Type.Post(ctx, mode, files, func(fileName string, content []byte) {
+		// Reset the buffer and fill it with the provided content.
+		ts.files[fileName].Buf.Reset()
+		ts.files[fileName].Buf.Write(content)
+	})
+	if err != nil {
+		ts.err = err
+		return
 	}
 }
 
@@ -321,7 +352,8 @@ func (ts *Set) Dump(out string) {
 	}
 	sort.Strings(files)
 	for _, file := range files {
-		if err := ioutil.WriteFile(filepath.Join(out, file), ts.files[file].Buf, 0644); err != nil {
+		buf := ts.files[file].Buf.Bytes()
+		if err := ioutil.WriteFile(filepath.Join(out, file), buf, 0644); err != nil {
 			ts.files[file].Err = append(ts.files[file].Err, err)
 		}
 	}
@@ -344,9 +376,9 @@ func (set *Set) Errors() []error {
 	return errors
 }
 
-// Template wraps a template.
-type Template struct {
-	Target string
+// Target is set of files defining a template.
+type Target struct {
+	Name   string
 	Type   xo.TemplateType
 	Interp *interp.Interpreter
 	Src    fs.FS
@@ -357,7 +389,7 @@ type Template struct {
 // existing templates for implementation examples.
 //
 // Uses the template set's symbols, init func name, and declared tags.
-func (ts *Set) NewTemplate(ctx context.Context, target string, src fs.FS, unrestricted bool) (*Template, error) {
+func (ts *Set) NewTemplate(ctx context.Context, target string, src fs.FS, unrestricted bool) (*Target, error) {
 	// build interpreter for custom funcs
 	i := interp.New(interp.Options{
 		GoPath:               ".",
@@ -381,22 +413,23 @@ func (ts *Set) NewTemplate(ctx context.Context, target string, src fs.FS, unrest
 		return nil, fmt.Errorf("%s: unable to eval %q: %w", target, ts.initfunc, err)
 	}
 	// convert init
-	f, ok := v.Interface().(func(context.Context, func(xo.TemplateType)) error)
+	tplInit, ok := v.Interface().(func(context.Context, func(xo.TemplateType)) error)
 	if !ok {
 		return nil, fmt.Errorf("%s: %s has signature `%T` (must be `func(context.Context, func(github.com/xo/types.TemplateType)) error`)", target, ts.initfunc, v.Interface())
 	}
 	// init
 	var typ xo.TemplateType
-	if err := f(ctx, func(tplType xo.TemplateType) {
+	err = tplInit(ctx, func(tplType xo.TemplateType) {
 		typ = tplType
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("%s: %s error: %w", target, ts.initfunc, err)
 	}
 	if typ.Name != "" {
 		target = typ.Name
 	}
-	return &Template{
-		Target: target,
+	return &Target{
+		Name:   target,
 		Type:   typ,
 		Interp: i,
 		Src:    src,
@@ -404,11 +437,11 @@ func (ts *Set) NewTemplate(ctx context.Context, target string, src fs.FS, unrest
 }
 
 // Flags returns the dynamic flags for the template.
-func (tpl *Template) Flags() []xo.FlagSet {
+func (target *Target) Flags() []xo.FlagSet {
 	var flags []xo.FlagSet
-	for _, flag := range tpl.Type.Flags {
+	for _, flag := range target.Type.Flags {
 		flags = append(flags, xo.FlagSet{
-			Type: tpl.Target,
+			Type: target.Name,
 			Name: string(flag.ContextKey),
 			Flag: flag,
 		})
@@ -495,8 +528,8 @@ func (typ TemplateType) LoadFile(ctx context.Context, file string, doAppend bool
 
 // EmittedTemplate wraps a template with its content and file name.
 type EmittedTemplate struct {
-	Template xo.Template
-	Buf      []byte
+	Template []xo.Template
+	Buf      bytes.Buffer
 	Err      []error
 }
 

@@ -167,7 +167,7 @@ func (err ErrInvalid{{ $e.GoName }}) Error() string {
 
 {{end}}
 
-{{ define "proc" }}
+{{ define "procs" }}
 {{- $ps := .Data -}}
 {{- range $p := $ps -}}
 // {{ func_name_context $p }} calls the stored {{ $p.Type }} '{{ $p.Signature }}' on db.

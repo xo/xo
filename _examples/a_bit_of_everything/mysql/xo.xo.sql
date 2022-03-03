@@ -72,18 +72,18 @@ CREATE TABLE a_bit_of_everything (
   a_varchar_nullable VARCHAR(255),
   a_year YEAR(4) NOT NULL,
   a_year_nullable YEAR(4)
-) ENGINE=InnoDB;
+);
 
 -- table a_primary
 CREATE TABLE a_primary (
   a_key INT(11) NOT NULL,
   PRIMARY KEY (a_key)
-) ENGINE=InnoDB;
+);
 
 -- table a_foreign_key
 CREATE TABLE a_foreign_key (
   a_key INT(11) REFERENCES a_primary (a_key)
-) ENGINE=InnoDB;
+);
 
 -- index a_key
 CREATE INDEX a_key ON a_foreign_key (a_key);
@@ -93,14 +93,14 @@ CREATE TABLE a_primary_composite (
   a_key1 INT(11) NOT NULL,
   a_key2 INT(11) NOT NULL,
   PRIMARY KEY (a_key1, a_key2)
-) ENGINE=InnoDB;
+);
 
 -- table a_foreign_key_composite
 CREATE TABLE a_foreign_key_composite (
   a_key1 INT(11),
   a_key2 INT(11),
   FOREIGN KEY (a_key1, a_key2) REFERENCES a_primary_composite (a_key1, a_key2)
-) ENGINE=InnoDB;
+);
 
 -- index a_key1
 CREATE INDEX a_key1 ON a_foreign_key_composite (a_key1, a_key2);
@@ -108,7 +108,7 @@ CREATE INDEX a_key1 ON a_foreign_key_composite (a_key1, a_key2);
 -- table a_index
 CREATE TABLE a_index (
   a_key INT(11)
-) ENGINE=InnoDB;
+);
 
 -- index a_index_idx
 CREATE INDEX a_index_idx ON a_index (a_key);
@@ -117,7 +117,7 @@ CREATE INDEX a_index_idx ON a_index (a_key);
 CREATE TABLE a_index_composite (
   a_key1 INT(11),
   a_key2 INT(11)
-) ENGINE=InnoDB;
+);
 
 -- index a_index_composite_idx
 CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
@@ -125,40 +125,40 @@ CREATE INDEX a_index_composite_idx ON a_index_composite (a_key1, a_key2);
 -- table a_manual_table
 CREATE TABLE a_manual_table (
   a_text VARCHAR(255)
-) ENGINE=InnoDB;
+);
 
 -- table a_primary_multi
 CREATE TABLE a_primary_multi (
   a_key INT(11) NOT NULL,
   a_text VARCHAR(255),
   PRIMARY KEY (a_key)
-) ENGINE=InnoDB;
+);
 
 -- table a_sequence
 CREATE TABLE a_sequence (
   a_seq INT(11) AUTO_INCREMENT,
   PRIMARY KEY (a_seq)
-) ENGINE=InnoDB;
+);
 
 -- table a_sequence_multi
 CREATE TABLE a_sequence_multi (
   a_seq INT(11) AUTO_INCREMENT,
   a_text VARCHAR(255),
   PRIMARY KEY (a_seq)
-) ENGINE=InnoDB;
+);
 
 -- table a_unique_index
 CREATE TABLE a_unique_index (
   a_key INT(11),
   UNIQUE (a_key)
-) ENGINE=InnoDB;
+);
 
 -- table a_unique_index_composite
 CREATE TABLE a_unique_index_composite (
   a_key1 INT(11),
   a_key2 INT(11),
   UNIQUE (a_key1, a_key2)
-) ENGINE=InnoDB;
+);
 
 -- view a_view_of_everything
 CREATE VIEW a_view_of_everything AS

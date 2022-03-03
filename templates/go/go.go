@@ -5,9 +5,12 @@ package gotpl
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -18,11 +21,16 @@ import (
 	"github.com/kenshaw/snaker"
 	"github.com/xo/xo/loader"
 	xo "github.com/xo/xo/types"
+	"golang.org/x/tools/imports"
+	"mvdan.cc/gofumpt/format"
+)
+
+var (
+	ErrNoSingle = errors.New("in query exec mode, the --single or -S must be provided")
 )
 
 // Init registers the template.
 func Init(ctx context.Context, f func(xo.TemplateType)) error {
-	first := true
 	knownTypes := map[string]bool{
 		"bool":        true,
 		"string":      true,
@@ -74,7 +82,7 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 			{
 				ContextKey: NotFirstKey,
 				Type:       "bool",
-				Desc:       "disable package comment (ie, not first generated file)",
+				Desc:       "disable package file (ie. not first generated file)",
 				Short:      "2",
 				Default:    "false",
 			},
@@ -178,38 +186,70 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 			return funcs, nil
 		},
 		NewContext: func(ctx context.Context, _ string) context.Context {
-			ctx = context.WithValue(ctx, FirstKey, &first)
 			ctx = context.WithValue(ctx, KnownTypesKey, knownTypes)
 			ctx = context.WithValue(ctx, ShortsKey, shorts)
 			return ctx
 		},
-		/*
-			HeaderTemplate: func(ctx context.Context) xo.Template {
-				return xo.Template{
-					Src: "hdr.go.tpl",
-				}
-			},
-			PackageTemplates: func(ctx context.Context) []xo.Template {
-				if NotFirst(ctx) {
-					return nil
-				}
-				return []xo.Template{{
-					Src:  "db.xo.go.tpl",
-					Dest: "db.xo.go",
-				}}
-			},
-		*/
 		Order: func(ctx context.Context, mode string) []string {
+			base := []string{"header", "db"}
 			switch mode {
 			case "query":
-				return []string{"typedef", "query"}
+				return append(base, "typedef", "query")
 			case "schema":
-				return []string{"enum", "typedef", "query", "index", "foreignkey", "proc"}
+				return append(base, "enum", "proc", "typedef", "query", "index", "foreignkey")
 			}
 			return nil
 		},
-		Pre: func(ctx context.Context, _ string, _ fs.FS, emit func(xo.Template)) error {
-			return addInitialisms(ctx)
+		Pre: func(ctx context.Context, mode string, set *xo.Set, out fs.FS, emit func(xo.Template)) error {
+			if err := addInitialisms(ctx); err != nil {
+				return err
+			}
+			files, err := fileNames(ctx, mode, set)
+			if err != nil {
+				return err
+			}
+			// If -2 is provided, skip package template outputs as requested.
+			// If -a is provided, skip to avoid duplicating the template.
+			if !NotFirst(ctx) && !Append(ctx) {
+				emit(xo.Template{
+					Partial: "db",
+					Dest:    "db.xo.go",
+				})
+				// If --single is provided, don't generate header for db.xo.go.
+				if xo.Single(ctx) == "" {
+					files["db.xo.go"] = true
+				}
+			}
+			if Append(ctx) {
+				for filename := range files {
+					f, err := out.Open(filename)
+					switch {
+					case errors.Is(err, os.ErrNotExist):
+						continue
+					case err != nil:
+						return err
+					}
+					defer f.Close()
+					data, err := io.ReadAll(f)
+					if err != nil {
+						return err
+					}
+					emit(xo.Template{
+						Src:     "{{.Data}}",
+						Partial: "header", // ordered first
+						Data:    string(data),
+						Dest:    filename,
+					})
+					delete(files, filename)
+				}
+			}
+			for filename := range files {
+				emit(xo.Template{
+					Partial: "header",
+					Dest:    filename,
+				})
+			}
+			return nil
 		},
 		Process: func(ctx context.Context, mode string, set *xo.Set, emit func(xo.Template)) error {
 			if mode == "query" {
@@ -227,37 +267,79 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 			}
 			return nil
 		},
-		/*
-			FileName: func(ctx context.Context, tpl xo.Template) string {
-				if xo.Mode(ctx) == "schema" {
-					switch tpl.Template {
-					case "typedef", "enum", "index", "foreignkey", "proc":
-						return strings.ToLower(tpl.Type) + ".xo.go"
-					}
-				}
-				file := tpl.Name
-				if file == "" {
-					file = tpl.Type
-				}
-				return strings.ToLower(file) + ".xo.go"
-			},
-		*/
-		Post: func(ctx context.Context, mode string, out fs.FS, emit func(string, []byte), files ...string) error {
-			/*
-				// imports processing
-				buf, err := imports.Process("", buf, nil)
+		Post: func(ctx context.Context, mode string, files map[string][]byte, emit func(string, []byte)) error {
+			for file, content := range files {
+				// Run goimports.
+				buf, err := imports.Process("", content, nil)
 				if err != nil {
-					return nil, err
+					return fmt.Errorf("%s:%w", file, err)
 				}
-				// format
-				return format.Source(buf, format.Options{
+				// Run gofumpt.
+				formatted, err := format.Source(buf, format.Options{
 					ExtraRules: true,
 				})
-			*/
+				if err != nil {
+					return err
+				}
+				emit(file, formatted)
+			}
 			return nil
 		},
 	})
 	return nil
+}
+
+// fileNames returns a list of file names that will be generated by the
+// template based on the parameters and schema.
+func fileNames(ctx context.Context, mode string, set *xo.Set) (map[string]bool, error) {
+	// In single mode, only the specified file be generated.
+	singleFile := xo.Single(ctx)
+	if singleFile != "" {
+		return map[string]bool{
+			singleFile: true,
+		}, nil
+	}
+	// Otherwise, infer filenames from set.
+	files := make(map[string]bool)
+	addFile := func(filename string) {
+		// Filenames are always lowercase.
+		filename = strings.ToLower(filename)
+		files[filename+ext] = true
+	}
+	switch mode {
+	case "schema":
+		for _, schema := range set.Schemas {
+			for _, e := range schema.Enums {
+				addFile(camelExport(e.Name))
+			}
+			for _, p := range schema.Procs {
+				goName := camelExport(p.Name)
+				if p.Type == "function" {
+					addFile("sf_" + goName)
+				} else {
+					addFile("sp_" + goName)
+				}
+			}
+			for _, t := range schema.Tables {
+				addFile(camelExport(singularize(t.Name)))
+			}
+			for _, v := range schema.Views {
+				addFile(camelExport(singularize(v.Name)))
+			}
+		}
+	case "query":
+		for _, query := range set.Queries {
+			addFile(query.Type)
+			if query.Exec {
+				// Single mode is handled at the start of the function but it
+				// must be used for Exec queries.
+				return nil, ErrNoSingle
+			}
+		}
+	default:
+		panic("unknown mode: " + mode)
+	}
+	return files, nil
 }
 
 // emitQuery emits the query.
@@ -271,11 +353,10 @@ func emitQuery(ctx context.Context, query xo.Query, emit func(xo.Template)) erro
 		}
 	}
 	// emit type definition
-	if !query.Exec && !query.Flat /* && !doAppend */ {
+	if !query.Exec && !query.Flat && !Append(ctx) {
 		emit(xo.Template{
-			Src:      "query.xo.go.tpl",
 			Partial:  "typedef",
-			Dest:     "",
+			Dest:     strings.ToLower(table.GoName) + ext,
 			SortType: query.Type,
 			SortName: query.Name,
 			Data:     table,
@@ -293,9 +374,10 @@ func emitQuery(ctx context.Context, query xo.Query, emit func(xo.Template)) erro
 	}
 	// emit query
 	emit(xo.Template{
-		Src:      "query.xo.go.tpl",
 		Partial:  "query",
-		SortName: query.Type,
+		Dest:     strings.ToLower(table.GoName) + ext,
+		SortType: query.Type,
+		SortName: query.Name,
 		Data: Query{
 			Name:        buildQueryName(query),
 			Query:       query.Query,
@@ -370,10 +452,8 @@ func emitSchema(ctx context.Context, schema xo.Schema, emit func(xo.Template)) e
 	for _, e := range schema.Enums {
 		enum := convertEnum(e)
 		emit(xo.Template{
-			Src:      "schema.xo.go.tpl",
 			Partial:  "enum",
-			Dest:     "",
-			SortType: "",
+			Dest:     strings.ToLower(enum.GoName) + ext,
 			SortName: enum.GoName,
 			Data:     enum,
 		})
@@ -396,15 +476,13 @@ func emitSchema(ctx context.Context, schema xo.Schema, emit func(xo.Template)) e
 		if procs[0].Type == "function" {
 			prefix = "sf_"
 		}
-		// change GoName to their overloaded versions if needed
+		// Set flag to change name to their overloaded versions if needed.
 		for i := range procs {
 			procs[i].Overloaded = len(procs) > 1
 		}
 		emit(xo.Template{
-			Src:      "schema.xo.go.tpl",
-			Dest:     "",
-			Partial:  "proc",
-			SortType: "",
+			Dest:     prefix + strings.ToLower(name) + ext,
+			Partial:  "procs",
 			SortName: prefix + name,
 			Data:     procs,
 		})
@@ -416,8 +494,7 @@ func emitSchema(ctx context.Context, schema xo.Schema, emit func(xo.Template)) e
 			return err
 		}
 		emit(xo.Template{
-			Src:      "schema.xo.go.tpl",
-			Dest:     "",
+			Dest:     strings.ToLower(table.GoName) + ext,
 			Partial:  "typedef",
 			SortType: table.Type,
 			SortName: table.GoName,
@@ -430,10 +507,9 @@ func emitSchema(ctx context.Context, schema xo.Schema, emit func(xo.Template)) e
 				return err
 			}
 			emit(xo.Template{
-				Src:      "schema.xo.go.tpl",
+				Dest:     strings.ToLower(table.GoName) + ext,
 				Partial:  "index",
-				Dest:     "",
-				SortType: "",
+				SortType: table.Type,
 				SortName: index.SQLName,
 				Data:     index,
 			})
@@ -445,9 +521,9 @@ func emitSchema(ctx context.Context, schema xo.Schema, emit func(xo.Template)) e
 				return err
 			}
 			emit(xo.Template{
-				Src:      "schema.xo.go.tpl",
+				Dest:     strings.ToLower(table.GoName) + ext,
 				Partial:  "foreignkey",
-				SortType: "",
+				SortType: table.Type,
 				SortName: fkey.SQLName,
 				Data:     fkey,
 			})
@@ -542,8 +618,7 @@ func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 		}
 	}
 	return Table{
-		Type:        t.Type,
-		GoName:      snaker.ForceCamelIdentifier(singularize(t.Name)),
+		GoName:      camelExport(singularize(t.Name)),
 		SQLName:     t.Name,
 		Fields:      cols,
 		PrimaryKeys: pkCols,
@@ -562,7 +637,7 @@ func convertIndex(ctx context.Context, t Table, i xo.Index) (Index, error) {
 	}
 	return Index{
 		SQLName:   i.Name,
-		Func:      snaker.ForceCamelIdentifier(i.Func),
+		Func:      camelExport(i.Func),
 		Table:     t,
 		Fields:    fields,
 		IsUnique:  i.IsUnique,
@@ -669,12 +744,14 @@ func camelExport(names ...string) string {
 	return snaker.ForceCamelIdentifier(strings.Join(names, "_"))
 }
 
+const ext = ".xo.go"
+
 // Funcs is a set of template funcs.
 type Funcs struct {
 	driver    string
 	schema    string
 	nth       func(int) string
-	first     *bool
+	first     bool
 	pkg       string
 	tags      []string
 	imports   []string
@@ -695,12 +772,7 @@ type Funcs struct {
 
 // NewFuncs creates custom template funcs for the context.
 func NewFuncs(ctx context.Context) (template.FuncMap, error) {
-	// force not first
-	first := First(ctx)
-	if NotFirst(ctx) {
-		b := false
-		first = &b
-	}
+	first := !NotFirst(ctx)
 	// parse field tag template
 	fieldtag, err := template.New("fieldtag").Parse(FieldTag(ctx))
 	if err != nil {
@@ -721,10 +793,10 @@ func NewFuncs(ctx context.Context) (template.FuncMap, error) {
 		return nil, err
 	}
 	funcs := &Funcs{
+		first:      first,
 		driver:     driver,
 		schema:     schema,
 		nth:        nth,
-		first:      first,
 		pkg:        Pkg(ctx),
 		tags:       Tags(ctx),
 		imports:    Imports(ctx),
@@ -746,9 +818,9 @@ func NewFuncs(ctx context.Context) (template.FuncMap, error) {
 func (f *Funcs) FuncMap() template.FuncMap {
 	return template.FuncMap{
 		// general
+		"first":   f.firstfn,
 		"driver":  f.driverfn,
 		"schema":  f.schemafn,
-		"first":   f.firstfn,
 		"pkg":     f.pkgfn,
 		"tags":    f.tagsfn,
 		"imports": f.importsfn,
@@ -792,6 +864,14 @@ func (f *Funcs) FuncMap() template.FuncMap {
 	}
 }
 
+func (f *Funcs) firstfn() bool {
+	if f.first {
+		f.first = false
+		return true
+	}
+	return false
+}
+
 // driverfn returns true if the driver is any of the passed drivers.
 func (f *Funcs) driverfn(drivers ...string) bool {
 	for _, driver := range drivers {
@@ -828,13 +908,6 @@ func (f *Funcs) schemafn(names ...string) string {
 	return s + n
 }
 
-// firstfn returns true if it is the template was the first template generated.
-func (f *Funcs) firstfn() bool {
-	b := *f.first
-	*f.first = false
-	return b
-}
-
 // pkgfn returns the package name.
 func (f *Funcs) pkgfn() string {
 	return f.pkg
@@ -855,7 +928,7 @@ func (f *Funcs) importsfn() []PackageImport {
 		}
 		imports = append(imports, PackageImport{
 			Alias: alias,
-			Pkg:   pkg,
+			Pkg:   strconv.Quote(pkg),
 		})
 	}
 	return imports
@@ -1948,9 +2021,8 @@ func nameContext(context bool, name string) string {
 }
 
 // Context keys.
-const (
+var (
 	AppendKey     xo.ContextKey = "append"
-	FirstKey      xo.ContextKey = "first"
 	KnownTypesKey xo.ContextKey = "known-types"
 	ShortsKey     xo.ContextKey = "shorts"
 	NotFirstKey   xo.ContextKey = "not-first"
@@ -1974,12 +2046,6 @@ const (
 // Append returns append from the context.
 func Append(ctx context.Context) bool {
 	b, _ := ctx.Value(AppendKey).(bool)
-	return b
-}
-
-// First returns first from the context.
-func First(ctx context.Context) *bool {
-	b, _ := ctx.Value(FirstKey).(*bool)
 	return b
 }
 

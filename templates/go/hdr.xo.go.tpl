@@ -1,3 +1,4 @@
+{{ define "header" }}
 {{- $tags := tags -}}
 {{- $inject := inject -}}
 {{- if $tags -}}
@@ -26,11 +27,11 @@ import (
 {{- if driver "postgres" }}
 	"github.com/lib/pq/hstore"
 {{ end }}{{ range imports }}
-	{{ . }}
+	{{ with .Alias }}{{ . }} {{ end }}{{ .Pkg }}
 {{ end }}
 )
 
 {{- if $inject }}
 {{ $inject }}
 {{- end }}
-
+{{ end }}
