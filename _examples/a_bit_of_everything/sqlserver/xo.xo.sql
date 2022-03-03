@@ -139,6 +139,7 @@ CREATE TABLE a_unique_index_composite (
 );
 
 -- view a_view_of_everything
+-- views
 CREATE VIEW a_view_of_everything AS
   SELECT * FROM a_bit_of_everything;
 
@@ -147,6 +148,7 @@ CREATE VIEW a_view_of_everything_some AS
   SELECT a_bit, a_text FROM a_bit_of_everything;
 
 -- procedure a_0_in_0_out
+-- procs
 CREATE PROCEDURE a_0_in_0_out AS
 BEGIN
   INSERT INTO a_manual_table (a_text) values ('')\;

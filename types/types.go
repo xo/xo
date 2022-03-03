@@ -227,24 +227,24 @@ type TemplateType struct {
 	// Flags are additional template flags.
 	Flags []Flag
 	// Order returns the order of template type processing.
-	Order func(context.Context, string) []string
+	Order func(ctx context.Context, mode string) []string
 	// Funcs provides template funcs for use by templates.
-	Funcs func(context.Context, string) (template.FuncMap, error)
+	Funcs func(ctx context.Context, mode string) (template.FuncMap, error)
 	// NewContext provides a way for templates to inject additional, global
 	// context values, prior to processing.
-	NewContext func(context.Context, string) context.Context
+	NewContext func(ctx context.Context, mode string) context.Context
 	// Pre performs pre processing of generated content, such as emitting
 	// static files.
-	Pre func(context.Context, string, fs.FS, func(Template)) error
+	Pre func(ctx context.Context, mode string, set *Set, outFolder fs.FS, emit func(Template)) error
 	// Process performs the processing templates for the set.
-	Process func(context.Context, string, *Set, func(Template)) error
+	Process func(ctx context.Context, mode string, set *Set, emit func(Template)) error
 	// Post performs post processing of generated content.
-	Post func(context.Context, string, fs.FS, func(string, []byte), ...string) error
+	Post func(ctx context.Context, mode string, files map[string][]byte, emit func(string, []byte)) error
 }
 
 // Template holds template information.
 type Template struct {
-	// Src is the template source file.
+	// Src is the source of the template and will be used when it is non-empty.
 	Src string
 	// Partial is the partial template name to use, if any.
 	Partial string
@@ -267,6 +267,7 @@ const (
 	DbKey     ContextKey = "db"
 	SchemaKey ContextKey = "schema"
 	OutKey    ContextKey = "out"
+	SingleKey ContextKey = "single"
 )
 
 // DriverDbSchema returns the driver, database connection, and schema name from
@@ -281,6 +282,12 @@ func DriverDbSchema(ctx context.Context) (string, *sql.DB, string) {
 // Out returns out option from the context.
 func Out(ctx context.Context) string {
 	s, _ := ctx.Value(OutKey).(string)
+	return s
+}
+
+// Single returns the file to write to in single mode.
+func Single(ctx context.Context) string {
+	s, _ := ctx.Value(SingleKey).(string)
 	return s
 }
 

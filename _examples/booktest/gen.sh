@@ -7,7 +7,7 @@ TEST=$(basename $SRC)
 declare -A DSNS
 DSNS+=(
   [mysql]=my://$TEST:$TEST@localhost/$TEST
-  [oracle]=or://$TEST:$TEST@localhost/db1
+  [oracle]=or://$TEST:$TEST@localhost:1521/db1
   [postgres]=pg://$TEST:$TEST@localhost/$TEST
   [sqlite3]=sq:$TEST.db
   [sqlserver]=ms://$TEST:$TEST@localhost/$TEST
@@ -19,12 +19,13 @@ DATABASES="mysql oracle postgres sqlite3 sqlserver"
 ARGS=()
 
 OPTIND=1
-while getopts "abd:v" opt; do
+while getopts "abd:vD" opt; do
 case "$opt" in
   a) APPLY=1 ;;
   b) BUILD=1 ;;
   d) DATABASES=$OPTARG ;;
   v) ARGS+=(-v) ;;
+  D) ARGS+=(-D) ;;
 esac
 done
 

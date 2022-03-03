@@ -7,7 +7,7 @@ TEST=$(basename $SRC)
 declare -A DSNS
 DSNS+=(
   [mysql]=my://$TEST:$TEST@localhost/$TEST
-  [oracle]=or://$TEST:$TEST@localhost/db1
+  [oracle]=or://$TEST:$TEST@localhost:1521/db1
   [postgres]=pg://$TEST:$TEST@localhost/$TEST
   [sqlite3]=sq:$TEST.db
   [sqlserver]=ms://$TEST:$TEST@localhost/$TEST

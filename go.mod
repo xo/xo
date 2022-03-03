@@ -8,11 +8,12 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobwas/glob v0.2.3
 	github.com/goccy/go-yaml v1.9.5
+	github.com/google/uuid v1.3.0
 	github.com/kenshaw/inflector v0.2.0
 	github.com/kenshaw/snaker v0.2.0
 	github.com/lib/pq v1.10.4
 	github.com/mattn/go-sqlite3 v1.14.12
-	github.com/sijms/go-ora/v2 v2.4.2
+	github.com/sijms/go-ora/v2 v2.4.4
 	github.com/spf13/cobra v1.3.0
 	github.com/traefik/yaegi v0.11.2
 	github.com/xo/dburl v0.9.0
@@ -28,7 +29,6 @@ require (
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.0.0-20170517235910-f1bb20e5a188 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect

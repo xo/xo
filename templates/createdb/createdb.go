@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/fs"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -27,13 +26,6 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 	f(xo.TemplateType{
 		Modes: []string{"schema"},
 		Flags: []xo.Flag{
-			{
-				ContextKey: FileKey,
-				Type:       "string",
-				Desc:       "output file",
-				Default:    "xo.xo.sql",
-				Hidden:     true,
-			},
 			{
 				ContextKey: FmtKey,
 				Type:       "string",
@@ -80,15 +72,15 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 			for _, schema := range set.Schemas {
 				schema.Tables = sortTables(schema.Tables)
 				emit(xo.Template{
-					Src:      "xo.xo.sql.tpl",
-					Dest:     File(ctx),
+					Partial:  "createdb",
+					Dest:     "xo.xo.sql",
 					SortName: schema.Name,
 					Data:     schema,
 				})
 			}
 			return nil
 		},
-		Post: func(ctx context.Context, _ string, out fs.FS, emit func(string, []byte), files ...string) error {
+		Post: func(ctx context.Context, mode string, files map[string][]byte, emit func(string, []byte)) error {
 			// build options
 			fmtPath, lang, opts := Fmt(ctx), Lang(ctx), FmtOpts(ctx)
 			for i, o := range opts {
@@ -103,21 +95,16 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 				opts[i] = b.String()
 			}
 			// post-process files
-			for _, file := range files {
-				// read
-				buf, err := fs.ReadFile(out, file)
-				if err != nil {
-					return err
-				}
+			for file, content := range files {
 				// skip
 				if fmtPath == "" {
-					emit(file, cleanEnd(cleanRE.ReplaceAll(buf, []byte("$1\n\n--"))))
+					emit(file, cleanEnd(cleanRE.ReplaceAll(content, []byte("$1\n\n--"))))
 					continue
 				}
 				// execute
 				stdout, stderr := new(bytes.Buffer), new(bytes.Buffer)
 				cmd := exec.Command(fmtPath, opts...)
-				cmd.Stdin, cmd.Stdout, cmd.Stderr = bytes.NewReader(buf), stdout, stderr
+				cmd.Stdin, cmd.Stdout, cmd.Stderr = bytes.NewReader(content), stdout, stderr
 				if err := cmd.Run(); err != nil {
 					return fmt.Errorf("unable to execute %s: %v: %s", fmtPath, err, stderr.String())
 				}
@@ -534,7 +521,6 @@ func comma(i int, v interface{}) string {
 
 // Context keys.
 const (
-	FileKey        xo.ContextKey = "file"
 	FmtKey         xo.ContextKey = "fmt"
 	FmtOptsKey     xo.ContextKey = "fmt-opts"
 	ConstraintKey  xo.ContextKey = "constraint"
@@ -542,12 +528,6 @@ const (
 	EngineKey      xo.ContextKey = "engine"
 	TrimCommentKey xo.ContextKey = "trim-comment"
 )
-
-// File returns file from the context.
-func File(ctx context.Context) string {
-	s, _ := ctx.Value(FileKey).(string)
-	return s
-}
 
 // Fmt returns fmt from the context.
 func Fmt(ctx context.Context) string {

@@ -18,6 +18,8 @@ func init() {
 		"OutKey":         reflect.ValueOf(types.OutKey),
 		"ParseType":      reflect.ValueOf(types.ParseType),
 		"SchemaKey":      reflect.ValueOf(types.SchemaKey),
+		"Single":         reflect.ValueOf(types.Single),
+		"SingleKey":      reflect.ValueOf(types.SingleKey),
 
 		// type definitions
 		"ContextKey":   reflect.ValueOf((*types.ContextKey)(nil)),

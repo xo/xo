@@ -154,7 +154,9 @@ func Run(ctx context.Context, name, version string, cmdargs ...string) error {
 	switch {
 	case dir == "" && template == "":
 		// show all default templates
-		ts.LoadDefaults(ctx)
+		if err := ts.LoadDefaults(ctx); err != nil {
+			return err
+		}
 	case template != "":
 		// only load the selected default template
 		if err := ts.LoadDefault(ctx, template); err != nil {
@@ -325,6 +327,7 @@ func databaseFlags(cmd *cobra.Command, args *Args) {
 func outFlags(cmd *cobra.Command, args *Args) {
 	cmd.Flags().StringVarP(&args.OutParams.Out, "out", "o", "models", "out path")
 	cmd.Flags().BoolVarP(&args.OutParams.Debug, "debug", "D", false, "debug generated code (writes generated code to disk without post processing)")
+	cmd.Flags().StringVarP(&args.OutParams.Single, "single", "S", "", "output all contents to the specified file")
 }
 
 // loaderFlags adds database loader flags to the command.
@@ -415,23 +418,22 @@ func Exec(ctx context.Context, mode string, ts *templates.Set, args *Args) func(
 		if err := displayErrors(ts); err != nil {
 			return err
 		}
+		// preprocess
+		ts.Pre(ctx, args.OutParams.Out, mode, set)
+		if err := displayErrors(ts); err != nil {
+			return err
+		}
 		// process
-		ts.Process(ctx, mode, set)
+		ts.Process(ctx, args.OutParams.Out, mode, set)
 		if err := displayErrors(ts); err != nil {
 			return err
-		}
-		// dump
-		ts.Dump(args.OutParams.Out)
-		if err := displayErrors(ts); err != nil {
-			return err
-		}
-		if !args.OutParams.Debug {
-			return nil
 		}
 		// post
-		ts.Post(ctx, mode)
-		if err := displayErrors(ts); err != nil {
-			return err
+		if !args.OutParams.Debug {
+			ts.Post(ctx, mode)
+			if err := displayErrors(ts); err != nil {
+				return err
+			}
 		}
 		// dump
 		ts.Dump(args.OutParams.Out)
@@ -485,6 +487,7 @@ func buildContext(ctx context.Context, args *Args) context.Context {
 	}
 	// add out
 	ctx = context.WithValue(ctx, xo.OutKey, args.OutParams.Out)
+	ctx = context.WithValue(ctx, xo.SingleKey, args.OutParams.Single)
 	return ctx
 }
 

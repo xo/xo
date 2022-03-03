@@ -10,7 +10,7 @@ DATAFILE=
 declare -A INIT
 INIT+=(
   [mysql]=my://localhost/
-  [oracle]=or://localhost/db1
+  [oracle]=or://localhost:1521/db1
   [postgres]=pg://localhost/
   [sqlserver]=ms://localhost/
 )
