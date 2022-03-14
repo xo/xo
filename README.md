@@ -44,23 +44,13 @@ The following is a matrix of the feature support for each database:
 
 ## Installation
 
-For Go code generation, install the `goimports` dependency (if not already
-installed):
-
-```sh
-$ go get -u golang.org/x/tools/cmd/goimports
-```
-
-Then, install `xo` in the usual Go way:
+Install `xo` in the usual Go way:
 
 ```sh
 $ go get -u github.com/xo/xo
 ```
 
-> **Note:** Go 1.16+ is needed for installing `xo` from source, as it makes use
-of `go embed` to embed Go templates into the binaries, which is not compatible
-with previous versions of Go. When compiling to Go, generated code can compile
-with Go 1.3+ code, disabling context mode if necessary.
+> **Note:** Go 1.16+ is needed for building `xo` from source.
 
 ## Quickstart
 
@@ -71,14 +61,14 @@ The following is a quick overview of using `xo` on the command-line:
 $ mkdir -p models
 
 # Generate code from your Postgres schema. (Default output folder is models)
-$ xo schema pgsql://user:pass@host/dbname
+$ xo schema postgres://user:pass@host/dbname
 
 # Generate code from a Microsoft SQL schema using a custom template directory (see notes below)
 $ mkdir -p mssqlmodels
 $ xo schema mssql://user:pass@host/dbname -o mssqlmodels --src custom/templates
 
 # Generate code from a custom SQL query for Postgres
-$ xo query pg://user:pass@host/dbname -M -B -T -2 AuthorResulto << ENDSQL
+$ xo query postgres://user:pass@host/dbname -M -B -T -2 AuthorResult << ENDSQL
 SELECT
   a.name::varchar AS name,
   b.type::integer AS my_type
@@ -96,7 +86,7 @@ $ go build ./mssqlmodels/
 
 ## Command Line Options
 
-The following are `xo`'s command-line arguments and options:
+The following are `xo`'s command-line commands, arguments, and options:
 
 ```sh
 $ xo --help-long
@@ -116,109 +106,119 @@ Commands:
   query [<flags>] <DSN>
     Generate code for a database custom query from a template.
 
-    -s, --schema=<name>          database schema name
-    -t, --template=go            template type (createdb, dot, go, json, yaml;
-                                 default: go)
-    -f, --suffix=<ext>           file extension suffix for generated files
-                                 (otherwise set by template type)
-    -o, --out=models             out path (default: models)
-    -a, --append                 enable append mode
-    -S, --single=<file>          enable single file output
-    -D, --debug                  debug generated code (writes generated code to
-                                 disk without post processing)
-    -Q, --query=""               custom database query (uses stdin if not
-                                 provided)
-    -T, --type=<name>            type name
-        --type-comment=""        type comment
-    -F, --func=<name>            func name
-        --func-comment=""        func comment
-    -M, --trim                   enable trimming whitespace
-    -B, --strip                  enable stripping type casts
-    -1, --one                    enable returning single (only one) result
-    -l, --flat                   enable returning unstructured values
-    -X, --exec                   enable exec (no introspection performed)
-    -I, --interpolate            enable interpolation of embedded params
-    -L, --delimiter=%%           delimiter used for embedded params (default:
-                                 %%)
-    -Z, --fields=<field>         override field names for results
-    -U, --allow-nulls            allow result fields with NULL values
-    -d, --src=<path>             template source directory
-    -2, --go-not-first           disable package comment (ie, not first
-                                 generated file)
-        --go-int32=int           int32 type (default: int)
-        --go-uint32=uint         uint32 type (default: uint)
-        --go-pkg=<name>          package name
-        --go-tag="" ...          build tags
-        --go-import="" ...       package imports
-        --go-uuid=<pkg>          uuid type package
-        --go-custom=<name>       package name for custom types
-        --go-conflict=Val        name conflict suffix (default: Val)
-        --go-esc=none ...        escape fields (none, schema, table, column,
-                                 all; default: none)
-    -g, --go-field-tag=<tag>     field tag
-        --go-context=only        context mode (disable, both, only; default:
-                                 only)
-        --go-inject=""           insert code into generated file headers
-        --go-inject-file=<file>  insert code into generated file headers from a
-                                 file
-        --json-indent="  "       indent spacing
-        --json-ugly              disable indentation
+    -s, --schema=<name>            database schema name
+    -t, --template=go              template type (createdb, dot, go, json, yaml;
+                                   default: go)
+    -f, --suffix=<ext>             file extension suffix for generated files
+                                   (otherwise set by template type)
+    -o, --out=models               out path (default: models)
+    -a, --append                   enable append mode
+    -S, --single=<file>            enable single file output
+    -D, --debug                    debug generated code (writes generated code
+                                   to disk without post processing)
+    -Q, --query=""                 custom database query (uses stdin if not
+                                   provided)
+    -T, --type=<name>              type name
+        --type-comment=""          type comment
+    -F, --func=<name>              func name
+        --func-comment=""          func comment
+    -M, --trim                     enable trimming whitespace
+    -B, --strip                    enable stripping type casts
+    -1, --one                      enable returning single (only one) result
+    -l, --flat                     enable returning unstructured values
+    -X, --exec                     enable exec (no introspection performed)
+    -I, --interpolate              enable interpolation of embedded params
+    -L, --delimiter=%%             delimiter used for embedded params (default:
+                                   %%)
+    -Z, --fields=<field>           override field names for results
+    -U, --allow-nulls              allow result fields with NULL values
+    -d, --src=<path>               template source directory
+    -2, --go-not-first             disable package comment (ie, not first
+                                   generated file)
+        --go-int32=int             int32 type (default: int)
+        --go-uint32=uint           uint32 type (default: uint)
+        --go-pkg=<name>            package name
+        --go-tag="" ...            build tags
+        --go-import="" ...         package imports
+        --go-uuid=<pkg>            uuid type package
+        --go-custom=<name>         package name for custom types
+        --go-conflict=Val          name conflict suffix (default: Val)
+        --go-initialism=<val> ...  add initialism (i.e ID, API, URI)
+        --go-esc=none ...          escape fields (none, schema, table, column,
+                                   all; default: none)
+    -g, --go-field-tag=<tag>       field tag
+        --go-context=only          context mode (disable, both, only; default:
+                                   only)
+        --go-inject=""             insert code into generated file headers
+        --go-inject-file=<file>    insert code into generated file headers from
+                                   a file
+        --go-legacy                enables legacy v1 template funcs
+        --go-enum-table-prefix     enables table name prefix to enums
+        --json-indent="  "         indent spacing
+        --json-ugly                disable indentation
 
   schema [<flags>] <DSN>
     Generate code for a database schema from a template.
 
-    -s, --schema=<name>          database schema name
-    -t, --template=go            template type (createdb, dot, go, json, yaml;
-                                 default: go)
-    -f, --suffix=<ext>           file extension suffix for generated files
-                                 (otherwise set by template type)
-    -o, --out=models             out path (default: models)
-    -a, --append                 enable append mode
-    -S, --single=<file>          enable single file output
-    -D, --debug                  debug generated code (writes generated code to
-                                 disk without post processing)
-    -k, --fk-mode=smart          foreign key resolution mode (smart, parent,
-                                 field, key; default: smart)
-    -i, --include=<glob> ...     include types (<type>)
-    -e, --exclude=<glob> ...     exclude types/fields (<type>[.<field>])
-    -j, --use-index-names        use index names as defined in schema for
-                                 generated code
-    -d, --src=<path>             template source directory
-        --createdb-fmt=<path>    fmt command (default: )
+    -s, --schema=<name>            database schema name
+    -t, --template=go              template type (createdb, dot, go, json, yaml;
+                                   default: go)
+    -f, --suffix=<ext>             file extension suffix for generated files
+                                   (otherwise set by template type)
+    -o, --out=models               out path (default: models)
+    -a, --append                   enable append mode
+    -S, --single=<file>            enable single file output
+    -D, --debug                    debug generated code (writes generated code
+                                   to disk without post processing)
+    -k, --fk-mode=smart            foreign key resolution mode (smart, parent,
+                                   field, key; default: smart)
+    -i, --include=<glob> ...       include types (<type>)
+    -e, --exclude=<glob> ...       exclude types/fields (<type>[.<field>])
+    -j, --use-index-names          use index names as defined in schema for
+                                   generated code
+    -d, --src=<path>               template source directory
+        --createdb-fmt=<path>      fmt command (default:
+                                   /home/ken/.npm-global/bin/sql-formatter)
         --createdb-fmt-opts=<opts> ...
-                                 fmt options (default: )
-        --createdb-constraint    enable constraint name in output (postgres,
-                                 mysql, sqlite3)
-        --createdb-escape=none   escape mode (none, types, all; default: none)
-        --createdb-engine=""     mysql table engine (default: InnoDB)
-        --dot-defaults="" ...    default statements (default: node [shape=none,
-                                 margin=0])
-        --dot-bold               bold header row
-        --dot-color=""           header color (default: lightblue)
-        --dot-row=""             row value template (default: {{ .Name }}: {{
-                                 .Datatype.Type }})
-        --dot-direction          enable edge directions
-    -2, --go-not-first           disable package comment (ie, not first
-                                 generated file)
-        --go-int32=int           int32 type (default: int)
-        --go-uint32=uint         uint32 type (default: uint)
-        --go-pkg=<name>          package name
-        --go-tag="" ...          build tags
-        --go-import="" ...       package imports
-        --go-uuid=<pkg>          uuid type package
-        --go-custom=<name>       package name for custom types
-        --go-conflict=Val        name conflict suffix (default: Val)
-        --go-esc=none ...        escape fields (none, schema, table, column,
-                                 all; default: none)
-    -g, --go-field-tag=<tag>     field tag
-        --go-context=only        context mode (disable, both, only; default:
-                                 only)
-        --go-inject=""           insert code into generated file headers
-        --go-inject-file=<file>  insert code into generated file headers from a
-                                 file
-        --json-indent="  "       indent spacing
-        --json-ugly              disable indentation
-        --postgres-oids          enable postgres OIDs
+                                   fmt options (default: -u, -l={{ . }}, -i=2,
+                                   --lines-between-queries=2)
+        --createdb-constraint      enable constraint name in output (postgres,
+                                   mysql, sqlite3)
+        --createdb-escape=none     escape mode (none, types, all; default: none)
+        --createdb-engine=""       mysql table engine (default: InnoDB)
+        --createdb-trim-comment    trim leading comment from views and procs
+                                   (--no-createdb-trim-comment)
+        --dot-defaults="" ...      default statements (default: node
+                                   [shape=none, margin=0])
+        --dot-bold                 bold header row
+        --dot-color=""             header color (default: lightblue)
+        --dot-row=""               row value template (default: {{ .Name }}: {{
+                                   .Type.Type }})
+        --dot-direction            enable edge directions
+    -2, --go-not-first             disable package comment (ie, not first
+                                   generated file)
+        --go-int32=int             int32 type (default: int)
+        --go-uint32=uint           uint32 type (default: uint)
+        --go-pkg=<name>            package name
+        --go-tag="" ...            build tags
+        --go-import="" ...         package imports
+        --go-uuid=<pkg>            uuid type package
+        --go-custom=<name>         package name for custom types
+        --go-conflict=Val          name conflict suffix (default: Val)
+        --go-initialism=<val> ...  add initialism (i.e ID, API, URI)
+        --go-esc=none ...          escape fields (none, schema, table, column,
+                                   all; default: none)
+    -g, --go-field-tag=<tag>       field tag
+        --go-context=only          context mode (disable, both, only; default:
+                                   only)
+        --go-inject=""             insert code into generated file headers
+        --go-inject-file=<file>    insert code into generated file headers from
+                                   a file
+        --go-legacy                enables legacy v1 template funcs
+        --go-enum-table-prefix     enables table name prefix to enums
+        --json-indent="  "         indent spacing
+        --json-ugly                disable indentation
+        --postgres-oids            enable postgres OIDs
 
   dump [<flags>] <out>
     Dump internal templates to path.
@@ -248,17 +248,20 @@ the `xo` project's [`templates/`](templates) directory, editing to suit, and
 using with `xo`:
 
 ```sh
-# Create a template directory
-$ mkdir -p templates
+# Create a working directory
+$ mkdir -p my-tpl
 
-# Copy xo templates
-$ xo dump templates
+# Dump an embedded template to disk
+$ xo dump -t createdb my-tpl
 
-# edit base postgres templates
-$ vi templates/*.go.tpl
+# edit base template files
+$ vi my-tpl/*.go.tpl
 
-# use with xo
-$ xo pgsql://user:pass@host/db -o models --src templates
+# see command line options for the template
+$ xo schema --src my-tpl --help
+
+# generate a schema using the custom template
+$ xo schema --src my-tpl -o models postgres://user:pass@host/db
 ```
 
 See the Custom Template example below for more information on adapting the base
@@ -266,17 +269,17 @@ templates in the `xo` source tree for use within your own project.
 
 ### Storing Project Templates
 
-Ideally, the custom templates for your project/schema should be stored
-within your project, and used in conjunction with a build pipeline such as
-`go generate`:
+Ideally, custom templates for your project/schema should be stored alongside
+your project. and generated as part of an automated build pipeline using `go
+generate`:
 
 ```sh
 # Add to custom xo command to go generate:
-$ tee -a gen.go << ENDGO
+$ tee -a gen.go << END
 package mypackage
 
-//go:generate xo pgsql://user:pass@host/db -o models --src templates
-ENDGO
+//go:generate xo postgres://user:pass@host/db -o models --src templates
+END
 
 # Run go generate
 $ go generate
@@ -285,8 +288,8 @@ $ go generate
 $ git add templates gen.go && git commit -m 'Adding custom xo templates for models'
 ```
 
-> **Note**: via the `--template` parameter of `xo dump` you can create
-templates for other languages. The default is `go`.
+> **Note**: via the `--template`/`-t` parameter of `xo dump` you can generate
+> other templates with `xo`. The default template is the `go` template.
 
 ### Template Language/Syntax
 
@@ -304,20 +307,19 @@ templates can be found in [templates/types.go](templates/types.go)
 Each language, has its own set of templates for `$TYPE` and are
 available in the [templates/](templates).
 
-|        Template File       | [Type](templates/types.go) | Description                                                                            |
+| Template File              | [Type](templates/types.go) | Description                                                                            |
 |:--------------------------:|:--------------------------:|----------------------------------------------------------------------------------------|
-|        hdr.xo.*.tpl        |                            | Base template. Executed with content for a template.                                   |
-|         db.xo.*.tpl        |                            | Package level template with base types and interface data. Generated once per package. |
-|    schema/enum.xo.*.tpl    |            Enum            | Template for schema enum type definitions. Generates types and related methods.        |
-| schema/foreignkey.xo.*.tpl |         ForeignKey         | Template for foreign key relationships. Generates  related method.                     |
-|    schema/index.xo.*.tpl   |            Index           | Template for schema indexes. Generates related method.                                 |
-|    schema/proc.xo.*.tpl    |            Proc            | Template to generate functions to call defined stored procedures in the db.            |
-|   schema/typedef.xo.*.tpl  |            Type            | Template for schema table/views.                                                       |
-|    query/custom.xo.*.tpl   |            Query           | Template for custom query execution.                                                   |
-|   query/typedef.xo.*.tpl   |            Type            | Template for custom query's generated type.                                            |
+| hdr.xo.*.tpl               |                            | Base template. Executed with content for a template.                                   |
+| db.xo.*.tpl                |                            | Package level template with base types and interface data. Generated once per package. |
+| schema/enum.xo.*.tpl       | Enum                       | Template for schema enum type definitions. Generates types and related methods.        |
+| schema/foreignkey.xo.*.tpl | ForeignKey                 | Template for foreign key relationships. Generates  related method.                     |
+| schema/index.xo.*.tpl      | Index                      | Template for schema indexes. Generates related method.                                 |
+| schema/proc.xo.*.tpl       | Proc                       | Template to generate functions to call defined stored procedures in the db.            |
+| schema/typedef.xo.*.tpl    | Type                       | Template for schema table/views.                                                       |
+| query/custom.xo.*.tpl      | Query                      | Template for custom query execution.                                                   |
+| query/typedef.xo.*.tpl     | Type                       | Template for custom query's generated type.                                            |
 
-For example, Go has
-[`templates/gotpl/schema/foreignkey.xo.go.tpl`](templates/gotpl/schema/foreignkey.xo.go.tpl)
+For example, Go has [`templates/gotpl/schema/foreignkey.xo.go.tpl`](templates/gotpl/schema/foreignkey.xo.go.tpl)
 which defines the template used by `xo` for generating a function to get the
 foreign key type in Go. The templates are designed to be Database agnostic, so
 they are used for both PostgreSQL and Microsoft SQL the same, and all other
@@ -325,13 +327,6 @@ supported database types. The template is passed a different instance of
 `templates.ForeignKey` instance (for each foreign key in a table). To get the
 `Name` field in from `ForeignKey`, the template can use ` {{ .Data.Name }}`, or
 any other field similarly.
-
-#### Template Helpers
-
-There is a set of well-defined template helpers in `funcs.go` for each supported
-language that assist with writing templated Go code / SQL. Please review how the
-base [`templates`](templates) make use of helpers, and the inline Go
-documentation for the respective helper func definitions.
 
 ## Examples
 
@@ -341,11 +336,10 @@ Please see the [booktest example](_examples/booktest) for a full end-to-end
 example for each supported database, showcasing how to use a database schema
 with `xo`, and the resulting code generated by `xo`.
 
-Additionally, please see the [northwind example](_examples/northwind) for a
-demonstration of running `xo` against a large schema. Please note that this
-example is a work in progress, and does not yet work properly with Microsoft
-SQL Server and Oracle databases, and has no documentation (for now) -- however
-it works very similarly to the booktest end-to-end example.
+Additionally, please see the [`northwind`](_examples/northwind) and
+[`django`](_examples/django) for a demonstration of running `xo` against larger
+schema and against databases from other frameworks. Please note that these
+examples are works in progress, and may not work properly in all scenarios.
 
 ### Example: Ignoring Fields
 
@@ -384,9 +378,9 @@ application logic but by `xo` by passing the `--exclude` or `-e` flag:
 
 ```sh
 # Ignore special fields
-$ xo schema pgsql://user:pass@host/db -e users.created_at -e users.modified_at
+$ xo schema postgres://user:pass@host/db -e users.created_at -e users.modified_at
 # or, To ignore these fields in all tables
-$ xo schema pgsql://user:pass@host/db -e *.created_at -e *.modified_at
+$ xo schema postgres://user:pass@host/db -e *.created_at -e *.modified_at
 ```
 
 ### Example: Custom Template -- adding a `GetMostRecent` lookup for all tables (Go)
@@ -401,12 +395,12 @@ To accomplish this with `xo`, we will need to create our own set of custom
 templates, and then add a `GetMostRecent` lookup to the `.type.go.tpl`
 template.
 
-First, we create dump the base `xo` templates:
+First, we dump the base `xo` Go template:
 
 ```sh
-$ mkdir -p templates
+$ mkdir -p my-tpl
 
-$ xo dump templates
+$ xo dump my-tpl
 ```
 
 We can now modify the templates to suit our specific schema, adding lookups,
@@ -458,14 +452,14 @@ We can then use the templates in conjunction with `xo` to generate our "model"
 code:
 
 ```sh
-$ xo schema pgsql://user:pass@localhost/dbname --src templates/
+$ xo schema postgres://user:pass@localhost/dbname --src templates/
 ```
 
 There will now be a `GetMostRecentUsers` func defined in `models/user.xo.go`,
 which can be used as follows:
 
 ```go
-db, err := dburl.Open("pgsql://user:pass@localhost/dbname")
+db, err := dburl.Open("postgres://user:pass@localhost/dbname")
 if err != nil { /* ... */ }
 
 // retrieve 15 most recent items
@@ -537,46 +531,6 @@ And when opening a database connection:
 ```go
 db, err := dburl.Open("file:mydatabase.sqlite3?loc=auto")
 ```
-#### Installing Oracle instantclient on Debian/Ubuntu
-
-On Ubuntu/Debian, you may download the instantclient RPMs
-[here](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
-
-You should then be able to do the following:
-
-```sh
-# install alien, if not already installed
-$ sudo aptitude install alien
-
-# install the instantclient RPMs
-$ sudo alien -i oracle-instantclient-12.1-basic-*.rpm
-$ sudo alien -i oracle-instantclient-12.1-devel-*.rpm
-$ sudo alien -i oracle-instantclient-12.1-sqlplus-*.rpm
-
-# get xo
-$ go get -u github.com/xo/xo
-
-# copy oci8.pc from xo/contrib to system pkg-config directory
-$ sudo cp $GOPATH/src/github.com/xo/xo/contrib/oci8.pc /usr/lib/pkgconfig/
-
-# install rana's ora driver
-$ go get -u gopkg.in/rana/ora.v4
-
-# assuming the above succeeded, install xo with oracle support enabled
-$ go install -tags oracle github.com/xo/xo
-```
-
-#### Contrib Scripts and Oracle Docker Image
-
-It's of note that there are additional scripts available in the
-[usql contrib](https://github.com/xo/usql/tree/master/contrib) directory that
-can help when working with Oracle databases and `xo`.
-
-For reference, the `xo` developers use the
-[sath89/oracle-12c](https://hub.docker.com/r/sath89/oracle-12c/) Docker image
-for testing `xo`'s Oracle database support.
-
-
 ## About Primary Keys
 For row inserts `xo` determines whether the primary key is
 automatically generated by the DB or must be provided by the application for the
@@ -704,25 +658,7 @@ The following projects work with similar concepts as xo:
 * [squirrel](https://github.com/Masterminds/squirrel)
 * [scaneo](https://github.com/variadico/scaneo)
 * [acorn](https://github.com/willowtreeapps/acorn) and
-  [rootx](https://github.com/willowtreeapps/rootx) ([read overview
-  here](http://willowtreeapps.com/blog/go-generate-your-database-code/))
+  [rootx](https://github.com/willowtreeapps/rootx) ([read overview here](http://willowtreeapps.com/blog/go-generate-your-database-code/))
 
 #### Go ORM-likes
 * [sqlc](https://github.com/relops/sqlc)
-
-## TODO
-* Add (finish) stored proc support for Oracle + Microsoft SQL Server
-* Unit tests / code coverage / continuous builds for binary package releases
-* Move database introspection to separate package for reuse by other Go packages
-* Overhaul/standardize type parsing
-* Finish support for --{incl, excl}[ude] types
-* Write/publish template set for protobuf
-* Add support for generating models for other languages
-* Finish many-to-many and link table support
-* Finish example and code for generated *Slice types (also, only generate for the databases its needed for)
-* Add example for many-to-many relationships and link tables
-* Add support for supplying a file (ie, *.sql) for query generation
-* Add support for full text types (tsvector, tsquery on PostgreSQL)
-* Finish COMMENT support for PostgreSQL/MySQL and update templates accordingly.
-* Add support for JSON types (json, jsonb on PostgreSQL, json on MySQL)
-* Add support for GIN index queries (PostgreSQL)
