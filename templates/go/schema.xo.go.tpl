@@ -50,6 +50,9 @@ func ({{ short $e.GoName }} *{{ $e.GoName }}) Scan(v interface{}) error {
 	if buf, ok := v.([]byte); ok {
 		return {{ short $e.GoName }}.UnmarshalText(buf)
 	}
+	if buf, ok := v.(string); ok {
+		return {{ short $e.GoName }}.UnmarshalText([]byte(buf))
+	}
 	return ErrInvalid{{ $e.GoName }}(fmt.Sprintf("%T", v))
 }
 
