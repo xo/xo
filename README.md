@@ -219,6 +219,7 @@ Commands:
         --json-indent="  "         indent spacing
         --json-ugly                disable indentation
         --postgres-oids            enable postgres OIDs
+    -3  --fieldalign               enable fieldalignment
 
   dump [<flags>] <out>
     Dump internal templates to path.

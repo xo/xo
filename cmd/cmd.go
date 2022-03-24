@@ -133,6 +133,10 @@ type SchemaParams struct {
 	// to indexes (for example, 'authors__b124214__u_idx' instead of the more
 	// descriptive 'authors_title_idx').
 	UseIndexNames bool
+	// Fieldalign toggles using fieldalignment.
+	//
+	// This not enabled by default, because the user may not want fieldalignment.
+	Fieldalign bool
 }
 
 // OutParams are out parameters.
@@ -266,6 +270,7 @@ func SchemaCommand(ctx context.Context, ts *templates.Set, args *Args) (*cobra.C
 	flags.VarP(args.SchemaParams.Include, "include", "i", args.SchemaParams.Include.Desc())
 	flags.VarP(args.SchemaParams.Exclude, "exclude", "e", args.SchemaParams.Exclude.Desc())
 	flags.BoolVarP(&args.SchemaParams.UseIndexNames, "use-index-names", "j", false, "use index names as defined in schema for generated code")
+	flags.BoolVarP(&args.SchemaParams.Fieldalign, "fieldalign", "3", false, "Fieldalign schema structs to save memory.")
 	if err := templateFlags(cmd, ts, true, args); err != nil {
 		return nil, err
 	}
