@@ -46,13 +46,20 @@ func (flag FlagSet) Add(cmd *cobra.Command, values map[ContextKey]*Value) error 
 		noOptDefValue = "true"
 	}
 	// add flag
-	if flag.Flag.Short == "" {
+	switch {
+	case flag.Flag.Short == "":
 		flags.Var(values[flag.Flag.ContextKey], name, desc)
-	} else {
+	case flags.ShorthandLookup(flag.Flag.Short) != nil:
+		desc += fmt.Sprintf(" (short flag -%s also available)", flag.Flag.Short)
+		flags.Var(values[flag.Flag.ContextKey], name, desc)
+	default:
 		flags.VarP(values[flag.Flag.ContextKey], name, flag.Flag.Short, desc)
 	}
 	// add aliases
 	for _, alias := range flag.Flag.Aliases {
+		if flags.Lookup(alias) != nil {
+			continue
+		}
 		flags.Var(values[flag.Flag.ContextKey], alias, desc)
 		f := flags.Lookup(alias)
 		f.Hidden, f.NoOptDefVal = true, noOptDefValue
