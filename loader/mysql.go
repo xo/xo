@@ -98,6 +98,8 @@ func MysqlGoType(d xo.Type, schema, itype, utype string) (string, string, error)
 		}
 	case "binary", "blob", "longblob", "mediumblob", "tinyblob", "varbinary":
 		goType, zero = "[]byte", "nil"
+	case "json":
+		goType, zero = "json.RawMessage", "nil"
 	case "timestamp", "datetime", "date":
 		goType, zero = "time.Time", "time.Time{}"
 		if d.Nullable {
