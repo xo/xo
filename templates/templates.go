@@ -22,6 +22,8 @@ import (
 
 // Set holds a set of templates and handles generating files for a target
 // files.
+//
+// Set should not be used more than once to output its contents.
 type Set struct {
 	symbols  map[string]map[string]reflect.Value
 	initfunc string
