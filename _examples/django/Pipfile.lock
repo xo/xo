@@ -18,11 +18,11 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:4ef1ab46b484e3c706329cedeff284a5d40824200638503f5768edb6de7d58e9",
-                "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"
+                "sha256:2f8abc20f7248433085eda803936d98992f1343ddb022065779f37c5da0181d0",
+                "sha256:88d59c13d634dcffe0510be048210188edd79aeccb6a6c9028cdad6f31d730a9"
             ],
-            "markers": "python_version >= '3.6'",
-            "version": "==3.4.1"
+            "markers": "python_version >= '3.7'",
+            "version": "==3.5.0"
         },
         "cx-oracle": {
             "hashes": [
@@ -48,11 +48,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:2485eea3cc4c3bae13080dee866ebf90ba9f98d1afe8fda89bfb0eb2e218ef86",
-                "sha256:7cd8e8a3ed2bc0dfda05ce1e53a9c81b30eefd7aa350e538a18884475e4d4ce2"
+                "sha256:07c8638e7a7f548dc0acaaa7825d84b7bd42b10e8d22268b3d572946f1e9b687",
+                "sha256:4e8177858524417563cc0430f29ea249946d831eacb0068a1455686587df40b5"
             ],
             "index": "pypi",
-            "version": "==4.0.1"
+            "version": "==4.0.4"
         },
         "lock": {
             "hashes": [
@@ -63,11 +63,11 @@
         },
         "mssql-django": {
             "hashes": [
-                "sha256:1b41ee2cf70d1fb9ee485c9205bc543a2a32bda84e6274e9a994119073c053e9",
-                "sha256:d67caf5485605c33ee9c069d2981f6f2eb194e3e91141dee1be700b3a122d473"
+                "sha256:56d1ef92dbb76a9f982818161c7361ea8426cbbe23632f7ded2d5d800806efbc",
+                "sha256:73171103dbd3fa193c7f4328cca085aa39af94473d5e01fae76dfab1e9661f58"
             ],
             "index": "pypi",
-            "version": "==1.0"
+            "version": "==1.1.2"
         },
         "mysqlclient": {
             "hashes": [
@@ -118,10 +118,10 @@
         },
         "pytz": {
             "hashes": [
-                "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c",
-                "sha256:acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"
+                "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7",
+                "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"
             ],
-            "version": "==2021.3"
+            "version": "==2022.1"
         },
         "sqlparse": {
             "hashes": [

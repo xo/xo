@@ -1,6 +1,6 @@
 module github.com/xo/xo
 
-go 1.17
+go 1.18
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.2
@@ -10,15 +10,15 @@ require (
 	github.com/goccy/go-yaml v1.9.5
 	github.com/kenshaw/inflector v0.2.0
 	github.com/kenshaw/snaker v0.2.0
-	github.com/lib/pq v1.10.4
+	github.com/lib/pq v1.10.5
 	github.com/mattn/go-sqlite3 v1.14.12
-	github.com/sijms/go-ora/v2 v2.4.4
-	github.com/spf13/cobra v1.3.0
-	github.com/traefik/yaegi v0.11.2
-	github.com/xo/dburl v0.9.0
+	github.com/sijms/go-ora/v2 v2.4.15
+	github.com/spf13/cobra v1.4.0
+	github.com/traefik/yaegi v0.11.3
+	github.com/xo/dburl v0.9.1
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/tools v0.1.9
-	mvdan.cc/gofumpt v0.3.0
+	golang.org/x/tools v0.1.10
+	mvdan.cc/gofumpt v0.3.1
 )
 
 require (
@@ -39,8 +39,8 @@ require (
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
-	golang.org/x/mod v0.5.1 // indirect
-	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
+	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
+	golang.org/x/sys v0.0.0-20220412015802-83041a38b14a // indirect
+	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f // indirect
 )

@@ -5,7 +5,7 @@ CREATE TABLE authors (
   author_id INT(11) AUTO_INCREMENT,
   name VARCHAR(255) DEFAULT '' NOT NULL,
   PRIMARY KEY (author_id)
-);
+) ENGINE=InnoDB;
 
 -- index authors_name_idx
 CREATE INDEX authors_name_idx ON authors (name);
@@ -23,7 +23,7 @@ CREATE TABLE books (
   tags TEXT DEFAULT '' NOT NULL,
   UNIQUE (isbn),
   PRIMARY KEY (book_id)
-);
+) ENGINE=InnoDB;
 
 -- index author_id
 CREATE INDEX author_id ON books (author_id);
