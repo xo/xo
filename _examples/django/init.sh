@@ -62,7 +62,7 @@ case $TYPE in
       [user]=django
       [pass]=django
       [name]=django
-      [options]="'OPTIONS': {'driver': 'ODBC Driver 17 for SQL Server'},"
+      [options]="'OPTIONS': {'driver': 'ODBC Driver 18 for SQL Server'},"
     )
     ;;
 esac
