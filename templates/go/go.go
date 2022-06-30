@@ -25,49 +25,75 @@ import (
 	"mvdan.cc/gofumpt/format"
 )
 
-var (
-	ErrNoSingle = errors.New("in query exec mode, the --single or -S must be provided")
-)
+var ErrNoSingle = errors.New("in query exec mode, the --single or -S must be provided")
 
 // Init registers the template.
 func Init(ctx context.Context, f func(xo.TemplateType)) error {
 	knownTypes := map[string]bool{
-		"bool":        true,
-		"string":      true,
-		"byte":        true,
-		"rune":        true,
-		"int":         true,
-		"int16":       true,
-		"int32":       true,
-		"int64":       true,
-		"uint":        true,
-		"uint8":       true,
-		"uint16":      true,
-		"uint32":      true,
-		"uint64":      true,
-		"float32":     true,
-		"float64":     true,
-		"Slice":       true,
-		"StringSlice": true,
+		"bool":            true,
+		"string":          true,
+		"byte":            true,
+		"rune":            true,
+		"int":             true,
+		"int16":           true,
+		"int32":           true,
+		"int64":           true,
+		"uint":            true,
+		"uint8":           true,
+		"uint16":          true,
+		"uint32":          true,
+		"uint64":          true,
+		"float32":         true,
+		"float64":         true,
+		"[]bool":          true,
+		"[][]byte":        true,
+		"[]float64":       true,
+		"[]float32":       true,
+		"[]int64":         true,
+		"[]int32":         true,
+		"[]string":        true,
+		"[]byte":          true,
+		"pq.BoolArray":    true,
+		"pq.ByteArray":    true,
+		"pq.Float64Array": true,
+		"pq.Float32Array": true,
+		"pq.Int64Array":   true,
+		"pq.Int32Array":   true,
+		"pq.StringArray":  true,
+		"pq.GenericArray": true,
 	}
 	shorts := map[string]string{
-		"bool":        "b",
-		"string":      "s",
-		"byte":        "b",
-		"rune":        "r",
-		"int":         "i",
-		"int16":       "i",
-		"int32":       "i",
-		"int64":       "i",
-		"uint":        "u",
-		"uint8":       "u",
-		"uint16":      "u",
-		"uint32":      "u",
-		"uint64":      "u",
-		"float32":     "f",
-		"float64":     "f",
-		"Slice":       "s",
-		"StringSlice": "ss",
+		"bool":            "b",
+		"string":          "s",
+		"byte":            "b",
+		"rune":            "r",
+		"int":             "i",
+		"int16":           "i",
+		"int32":           "i",
+		"int64":           "i",
+		"uint":            "u",
+		"uint8":           "u",
+		"uint16":          "u",
+		"uint32":          "u",
+		"uint64":          "u",
+		"float32":         "f",
+		"float64":         "f",
+		"[]bool":          "a",
+		"[][]byte":        "a",
+		"[]float64":       "a",
+		"[]float32":       "a",
+		"[]int64":         "a",
+		"[]int32":         "a",
+		"[]string":        "a",
+		"[]byte":          "a",
+		"pq.BoolArray":    "a",
+		"pq.ByteArray":    "a",
+		"pq.Float64Array": "a",
+		"pq.Float32Array": "a",
+		"pq.Int64Array":   "a",
+		"pq.Int32Array":   "a",
+		"pq.StringArray":  "a",
+		"pq.GenericArray": "a",
 	}
 	f(xo.TemplateType{
 		Modes: []string{"query", "schema"},
@@ -97,6 +123,12 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 				Type:       "string",
 				Desc:       "uint32 type",
 				Default:    "uint",
+			},
+			{
+				ContextKey: ArrayModeKey,
+				Type:       "string",
+				Desc:       "array type mode (postgres only)",
+				Enums:      []string{"stdlib", "pq"},
 			},
 			{
 				ContextKey: PkgKey,
@@ -719,7 +751,14 @@ func goType(ctx context.Context, typ xo.Type) (string, string, error) {
 	case "oracle":
 		f = loader.OracleGoType
 	case "postgres":
-		f = loader.PostgresGoType
+		switch mode := ArrayMode(ctx); mode {
+		case "stdlib":
+			f = loader.StdlibPostgresGoType
+		case "pq", "":
+			f = loader.PQPostgresGoType
+		default:
+			return "", "", fmt.Errorf("unknown array mode: %q", mode)
+		}
 	case "sqlite3":
 		f = loader.Sqlite3GoType
 	case "sqlserver":
@@ -2028,6 +2067,7 @@ var (
 	NotFirstKey   xo.ContextKey = "not-first"
 	Int32Key      xo.ContextKey = "int32"
 	Uint32Key     xo.ContextKey = "uint32"
+	ArrayModeKey  xo.ContextKey = "array-mode"
 	PkgKey        xo.ContextKey = "pkg"
 	TagKey        xo.ContextKey = "tag"
 	ImportKey     xo.ContextKey = "import"
@@ -2076,6 +2116,12 @@ func Int32(ctx context.Context) string {
 // Uint32 returns uint32 from the context.
 func Uint32(ctx context.Context) string {
 	s, _ := ctx.Value(Uint32Key).(string)
+	return s
+}
+
+// ArrayMode returns array-mode from the context.
+func ArrayMode(ctx context.Context) string {
+	s, _ := ctx.Value(ArrayMode).(string)
 	return s
 }
 

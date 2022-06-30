@@ -10,6 +10,7 @@ import (
 func init() {
 	Symbols["github.com/xo/xo/types/types"] = map[string]reflect.Value{
 		// function, constant and variable definitions
+		"ArrayModeKey":   reflect.ValueOf(types.ArrayModeKey),
 		"DbKey":          reflect.ValueOf(types.DbKey),
 		"DriverDbSchema": reflect.ValueOf(types.DriverDbSchema),
 		"DriverKey":      reflect.ValueOf(types.DriverKey),

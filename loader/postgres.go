@@ -45,18 +45,56 @@ func PostgresFlags() []xo.Flag {
 	}
 }
 
+// StdlibPostgresGoType parses a type into a Go type based on the databate type definition.
+//
+// For array types, it returns the standard go array ([]<type>).
+func StdlibPostgresGoType(d xo.Type, schema, itype, _ string) (string, string, error) {
+	goType, zero, err := PostgresGoType(d, schema, itype)
+	if err != nil {
+		return "", "", err
+	}
+	if d.IsArray {
+		arrType, ok := pgStdArrMapping[goType]
+		goType, zero = "[]byte", "nil"
+		if ok {
+			goType = arrType
+		}
+	}
+	return goType, zero, nil
+}
+
+// PQPostgresGoType parses a type into a Go type based on the databate type definition.
+//
+// For array types, it returns the equivalent as defined in `github.com/lib/pq`.
+func PQPostgresGoType(d xo.Type, schema, itype, _ string) (string, string, error) {
+	goType, zero, err := PostgresGoType(d, schema, itype)
+	if err != nil {
+		return "", "", err
+	}
+	if d.IsArray {
+		arrType, ok := pqArrMapping[goType]
+		goType, zero = "pq.GenericArray", "pg.GenericArray{}" // is of type struct { A any }; can't be nil
+		if ok {
+			goType, zero = arrType, "nil"
+		}
+	}
+	return goType, zero, nil
+}
+
 // PostgresGoType parse a type into a Go type based on the database type
 // definition.
-func PostgresGoType(d xo.Type, schema, itype, utype string) (string, string, error) {
+func PostgresGoType(d xo.Type, schema, itype string) (string, string, error) {
 	// SETOF -> []T
 	if strings.HasPrefix(d.Type, "SETOF ") {
 		d.Type = d.Type[len("SETOF "):]
-		goType, _, err := PostgresGoType(d, schema, itype, utype)
+		goType, _, err := PostgresGoType(d, schema, itype)
 		if err != nil {
 			return "", "", err
 		}
 		return "[]" + goType, "nil", nil
 	}
+	// If it's an array, the underlying type shouldn't also be set as an array
+	typNullable := d.Nullable && !d.IsArray
 	// special type handling
 	typ := d.Type
 	switch {
@@ -76,47 +114,47 @@ func PostgresGoType(d xo.Type, schema, itype, utype string) (string, string, err
 	switch typ {
 	case "boolean":
 		goType, zero = "bool", "false"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullBool", "sql.NullBool{}"
 		}
 	case "bpchar", "character varying", "character", "inet", "money", "text", "name":
 		goType, zero = "string", `""`
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullString", "sql.NullString{}"
 		}
 	case "smallint":
 		goType, zero = "int16", "0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "integer":
 		goType, zero = itype, "0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "bigint":
 		goType, zero = "int64", "0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullInt64", "sql.NullInt64{}"
 		}
 	case "real":
 		goType, zero = "float32", "0.0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "double precision", "numeric":
 		goType, zero = "float64", "0.0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullFloat64", "sql.NullFloat64{}"
 		}
 	case "date", "timestamp with time zone", "time with time zone", "time without time zone", "timestamp without time zone":
 		goType, zero = "time.Time", "time.Time{}"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "sql.NullTime", "sql.NullTime{}"
 		}
 	case "bit":
 		goType, zero = "uint8", "0"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "*uint8", "nil"
 		}
 	case "any", "bit varying", "bytea", "interval", "json", "jsonb", "xml":
@@ -127,18 +165,11 @@ func PostgresGoType(d xo.Type, schema, itype, utype string) (string, string, err
 		goType, zero = "hstore.Hstore", "nil"
 	case "uuid":
 		goType, zero = "uuid.UUID", "uuid.UUID{}"
-		if d.Nullable {
+		if typNullable {
 			goType, zero = "uuid.NullUUID", "uuid.NullUUID{}"
 		}
 	default:
-		goType, zero = schemaType(d.Type, d.Nullable, schema)
-	}
-	// handle slices
-	switch {
-	case d.IsArray && goType == "string":
-		return "StringSlice", "StringSlice{}", nil
-	case d.IsArray:
-		return "[]" + goType, "nil", nil
+		goType, zero = schemaType(d.Type, typNullable, schema)
 	}
 	return goType, zero, nil
 }
@@ -207,6 +238,28 @@ func PostgresViewStrip(query, inspect []string) ([]string, []string, []string, e
 // stripRE is the regexp to match the '::type AS name' portion in a query,
 // which is a quirk/requirement of generating queries for postgres.
 var stripRE = regexp.MustCompile(`(?i)::[a-z][a-z0-9_\.]+\s+AS\s+[a-z][a-z0-9_\.]+`)
+
+var pgStdArrMapping = map[string]string{
+	"bool":    "[]bool",
+	"[]byte":  "[][]byte",
+	"float64": "[]float64",
+	"float32": "[]float32",
+	"int64":   "[]int64",
+	"int32":   "[]int32",
+	"string":  "[]string",
+	// default: "[]byte"
+}
+
+var pqArrMapping = map[string]string{
+	"bool":    "pq.BoolArray",
+	"[]byte":  "pq.ByteArray",
+	"float64": "pq.Float64Array",
+	"float32": "pq.Float32Array",
+	"int64":   "pq.Int64Array",
+	"int32":   "pq.Int32Array",
+	"string":  "pq.StringArray",
+	// default: "pq.GenericArray"
+}
 
 // oidsKey is the oids context key.
 const oidsKey xo.ContextKey = "oids"

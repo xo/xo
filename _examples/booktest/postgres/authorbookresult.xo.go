@@ -4,20 +4,22 @@ package postgres
 
 import (
 	"context"
+
+	"github.com/lib/pq"
 )
 
 // AuthorBookResult is the result of a search.
 type AuthorBookResult struct {
-	AuthorID   int         `json:"author_id"`   // author_id
-	AuthorName string      `json:"author_name"` // author_name
-	BookID     int         `json:"book_id"`     // book_id
-	BookISBN   string      `json:"book_isbn"`   // book_isbn
-	BookTitle  string      `json:"book_title"`  // book_title
-	BookTags   StringSlice `json:"book_tags"`   // book_tags
+	AuthorID   int            `json:"author_id"`   // author_id
+	AuthorName string         `json:"author_name"` // author_name
+	BookID     int            `json:"book_id"`     // book_id
+	BookISBN   string         `json:"book_isbn"`   // book_isbn
+	BookTitle  string         `json:"book_title"`  // book_title
+	BookTags   pq.StringArray `json:"book_tags"`   // book_tags
 }
 
 // AuthorBookResultsByTags runs a custom query, returning results as AuthorBookResult.
-func AuthorBookResultsByTags(ctx context.Context, db DB, tags StringSlice) ([]*AuthorBookResult, error) {
+func AuthorBookResultsByTags(ctx context.Context, db DB, tags pq.StringArray) ([]*AuthorBookResult, error) {
 	// query
 	const sqlstr = `SELECT ` +
 		`a.author_id, ` + // ::integer AS author_id

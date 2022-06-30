@@ -263,11 +263,12 @@ type ContextKey string
 
 // Context keys.
 const (
-	DriverKey ContextKey = "driver"
-	DbKey     ContextKey = "db"
-	SchemaKey ContextKey = "schema"
-	OutKey    ContextKey = "out"
-	SingleKey ContextKey = "single"
+	DriverKey    ContextKey = "driver"
+	DbKey        ContextKey = "db"
+	SchemaKey    ContextKey = "schema"
+	OutKey       ContextKey = "out"
+	SingleKey    ContextKey = "single"
+	ArrayModeKey ContextKey = "array-mode"
 )
 
 // DriverDbSchema returns the driver, database connection, and schema name from
