@@ -7,4 +7,4 @@ SELECT
   b.tags::text[] AS book_tags
 FROM books b
 JOIN authors a ON a.author_id = b.author_id
-WHERE b.tags && %%tags StringSlice%%::varchar[]
+WHERE b.tags && %%tags pq.StringArray%%::varchar[]

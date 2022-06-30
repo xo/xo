@@ -5,19 +5,21 @@ package postgres
 import (
 	"context"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 // Book represents a row from 'public.books'.
 type Book struct {
-	BookID      int         `json:"book_id"`     // book_id
-	AuthorID    int         `json:"author_id"`   // author_id
-	ISBN        string      `json:"isbn"`        // isbn
-	BookType    BookType    `json:"book_type"`   // book_type
-	Title       string      `json:"title"`       // title
-	Year        int         `json:"year"`        // year
-	Available   time.Time   `json:"available"`   // available
-	Description string      `json:"description"` // description
-	Tags        StringSlice `json:"tags"`        // tags
+	BookID      int            `json:"book_id"`     // book_id
+	AuthorID    int            `json:"author_id"`   // author_id
+	ISBN        string         `json:"isbn"`        // isbn
+	BookType    BookType       `json:"book_type"`   // book_type
+	Title       string         `json:"title"`       // title
+	Year        int            `json:"year"`        // year
+	Available   time.Time      `json:"available"`   // available
+	Description string         `json:"description"` // description
+	Tags        pq.StringArray `json:"tags"`        // tags
 	// xo fields
 	_exists, _deleted bool
 }

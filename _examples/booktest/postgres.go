@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/lib/pq"
 	models "github.com/xo/xo/_examples/booktest/postgres"
 )
 
@@ -32,6 +33,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		BookType:  models.BookTypeFiction,
 		Year:      2016,
 		Available: now,
+		Tags:      pq.StringArray{},
 	}
 	if err := b0.Save(ctx, tx); err != nil {
 		return err
@@ -44,14 +46,14 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		BookType:  models.BookTypeFiction,
 		Year:      2016,
 		Available: now,
-		Tags:      models.StringSlice{"cool", "unique"},
+		Tags:      pq.StringArray{"cool", "unique"},
 	}
 	if err := b1.Save(ctx, tx); err != nil {
 		return err
 	}
 	// update the title and tags
 	b1.Title = "changed second title"
-	b1.Tags = models.StringSlice{"cool", "disastor"}
+	b1.Tags = pq.StringArray{"cool", "disastor"}
 	if err := b1.Update(ctx, tx); err != nil {
 		return err
 	}
@@ -63,7 +65,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		BookType:  models.BookTypeFiction,
 		Year:      2001,
 		Available: now,
-		Tags:      models.StringSlice{"cool"},
+		Tags:      pq.StringArray{"cool"},
 	}
 	if err := b2.Save(ctx, tx); err != nil {
 		return err
@@ -76,7 +78,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		BookType:  models.BookTypeNonfiction,
 		Year:      2011,
 		Available: now,
-		Tags:      models.StringSlice{"other"},
+		Tags:      pq.StringArray{"other"},
 	}
 	if err := b3.Save(ctx, tx); err != nil {
 		return err
@@ -94,7 +96,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 		Title:     "never ever gonna finish, a quatrain",
 		Year:      b3.Year,
 		Available: b3.Available,
-		Tags:      models.StringSlice{"someother"},
+		Tags:      pq.StringArray{"someother"},
 	}
 	if err := b4.Upsert(ctx, db); err != nil {
 		return err
@@ -114,7 +116,7 @@ func runPostgres(ctx context.Context, db *sql.DB) error {
 	}
 	// find a book with either "cool", "other", or "someother" tag
 	fmt.Printf("---------\nTag search results:\n")
-	res, err := models.AuthorBookResultsByTags(ctx, db, models.StringSlice{"cool", "other", "someother"})
+	res, err := models.AuthorBookResultsByTags(ctx, db, pq.StringArray{"cool", "other", "someother"})
 	if err != nil {
 		return err
 	}
