@@ -47,7 +47,7 @@ The following is a matrix of the feature support for each database:
 Install `xo` in the usual Go way:
 
 ```sh
-$ go get -u github.com/xo/xo
+$ go install github.com/xo/xo@latest
 ```
 
 > **Note:** Go 1.16+ is needed for building `xo` from source.
