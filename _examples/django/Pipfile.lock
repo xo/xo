@@ -18,11 +18,11 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:2f8abc20f7248433085eda803936d98992f1343ddb022065779f37c5da0181d0",
-                "sha256:88d59c13d634dcffe0510be048210188edd79aeccb6a6c9028cdad6f31d730a9"
+                "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4",
+                "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.5.0"
+            "version": "==3.5.2"
         },
         "cx-oracle": {
             "hashes": [
@@ -48,11 +48,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:07c8638e7a7f548dc0acaaa7825d84b7bd42b10e8d22268b3d572946f1e9b687",
-                "sha256:4e8177858524417563cc0430f29ea249946d831eacb0068a1455686587df40b5"
+                "sha256:a67a793ff6827fd373555537dca0da293a63a316fe34cb7f367f898ccca3c3ae",
+                "sha256:ca54ebedfcbc60d191391efbf02ba68fb52165b8bf6ccd6fe71f098cac1fe59e"
             ],
             "index": "pypi",
-            "version": "==4.0.4"
+            "version": "==4.0.6"
         },
         "lock": {
             "hashes": [
@@ -108,6 +108,7 @@
                 "sha256:6c1e1c1fe747b0f6419e8df0b5c43161e7437dbf72f93f9fcfb9b7358fad3e12",
                 "sha256:736acad1b264ddb7313058dfe37265b0c5160c1c2a9d1ffd391347c025eb5dd1",
                 "sha256:9be5f0c3590655e1968488410fe3528bb8023d527e7ccec1f663d64245071a6b",
+                "sha256:b6d24b99face3a2d055b0dc7345083be2b70d02e7b45861a9afb7c21e0f5db13",
                 "sha256:bbc07517f339e019ee9f1fe679c4241251d11ca2124567616f67d62e73c29fc0",
                 "sha256:c066f032e69fd71e9fadb3a380dfe8ecd1728b40a2bf38f76054d284f8523b29",
                 "sha256:cda790bdc25bfad12d4fb9ba93368275802f7f9ecfa4c9c65e982d3a7fc35f2e",
