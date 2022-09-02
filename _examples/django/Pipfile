@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = ">=3.2.5"
+django = ">=4"
 cx-oracle = "*"
 psycopg2 = "*"
 mysqlclient = "*"
@@ -15,7 +15,7 @@ pyodbc = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = ">=3"
 
 [pipenv]
 allow_prereleases = true

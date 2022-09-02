@@ -31,10 +31,9 @@ func Logf(s string, v ...interface{}) {
 
 // SetLogger sets the package logger. Valid logger types:
 //
-//     io.Writer
-//     func(string, ...interface{}) (int, error) // fmt.Printf
-//     func(string, ...interface{}) // log.Printf
-//
+//	io.Writer
+//	func(string, ...interface{}) (int, error) // fmt.Printf
+//	func(string, ...interface{}) // log.Printf
 func SetLogger(logger interface{}) {
 	logf = convLogger(logger)
 }
@@ -46,10 +45,9 @@ func Errorf(s string, v ...interface{}) {
 
 // SetErrorLogger sets the package error logger. Valid logger types:
 //
-//     io.Writer
-//     func(string, ...interface{}) (int, error) // fmt.Printf
-//     func(string, ...interface{}) // log.Printf
-//
+//	io.Writer
+//	func(string, ...interface{}) (int, error) // fmt.Printf
+//	func(string, ...interface{}) // log.Printf
 func SetErrorLogger(logger interface{}) {
 	errf = convLogger(logger)
 }

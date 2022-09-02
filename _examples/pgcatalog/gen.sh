@@ -2,7 +2,7 @@
 
 SRC=$(realpath $(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd))
 
-DB=pg://
+DB=postgres://postgres:P4ssw0rd@localhost/
 
 BUILD=0
 while getopts "b" opt; do
