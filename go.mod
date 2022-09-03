@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.2
-	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobwas/glob v0.2.3
 	github.com/goccy/go-yaml v1.9.5
@@ -12,6 +11,7 @@ require (
 	github.com/kenshaw/snaker v0.2.0
 	github.com/lib/pq v1.10.6
 	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/microsoft/go-mssqldb v0.16.0
 	github.com/sijms/go-ora/v2 v2.5.3
 	github.com/spf13/cobra v1.5.0
 	github.com/traefik/yaegi v0.14.1

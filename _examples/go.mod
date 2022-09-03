@@ -3,13 +3,13 @@ module github.com/xo/xo/_examples
 go 1.18
 
 require (
-	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/godror/godror v0.34.0
 	github.com/google/uuid v1.3.0
 	github.com/kenshaw/snaker v0.2.0
 	github.com/lib/pq v1.10.6
 	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/microsoft/go-mssqldb v0.16.0
 	github.com/xo/dburl v0.12.0
 	mvdan.cc/gofumpt v0.3.1
 )
