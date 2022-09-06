@@ -48,6 +48,7 @@ Install `xo` in the usual Go way:
 
 ```sh
 $ go get -u github.com/xo/xo
+$ go install github.com/xo/xo@master
 ```
 
 > **Note:** Go 1.16+ is needed for building `xo` from source.
