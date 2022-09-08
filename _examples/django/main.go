@@ -11,13 +11,11 @@ import (
 	"os/user"
 
 	// drivers
-	_ "github.com/microsoft/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/godror/godror"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-
-	//_ "github.com/sijms/go-ora/v2"
+	_ "github.com/microsoft/go-mssqldb"
+	_ "github.com/sijms/go-ora/v2"
 
 	// models
 	"github.com/xo/xo/_examples/django/mysql"
@@ -29,14 +27,6 @@ import (
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"
 )
-
-func init() {
-	old := dburl.Unregister("oracle")
-	dburl.RegisterAlias("godror", "oracle")
-	for _, alias := range old.Aliases {
-		dburl.RegisterAlias("godror", alias)
-	}
-}
 
 func main() {
 	verbose := flag.Bool("v", false, "verbose")
@@ -77,7 +67,7 @@ func run(ctx context.Context, verbose bool, dsn string) error {
 	switch u.Driver {
 	case "mysql":
 		f = runMysql
-	case "oracle", "godror":
+	case "oracle":
 		f = runOracle
 	case "postgres":
 		f = runPostgres

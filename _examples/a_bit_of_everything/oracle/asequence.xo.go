@@ -38,11 +38,11 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 		`` +
 		`) VALUES (` +
 		`` +
-		`) RETURNING a_seq /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING a_seq INTO :1`
 	// run
 	logf(sqlstr)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	as.ASeq = int(id)

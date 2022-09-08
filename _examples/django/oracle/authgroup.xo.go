@@ -40,11 +40,11 @@ func (ag *AuthGroup) Insert(ctx context.Context, db DB) error {
 		`name` +
 		`) VALUES (` +
 		`:1` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :2`
 	// run
 	logf(sqlstr, ag.Name)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, ag.Name, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ag.Name, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	ag.ID = int64(id)

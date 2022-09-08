@@ -40,11 +40,11 @@ func (agp *AuthGroupPermission) Insert(ctx context.Context, db DB) error {
 		`group_id, permission_id` +
 		`) VALUES (` +
 		`:1, :2` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :3`
 	// run
 	logf(sqlstr, agp.GroupID, agp.PermissionID)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, agp.GroupID, agp.PermissionID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, agp.GroupID, agp.PermissionID, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	agp.ID = int64(id)

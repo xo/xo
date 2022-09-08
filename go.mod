@@ -9,13 +9,13 @@ require (
 	github.com/goccy/go-yaml v1.9.5
 	github.com/kenshaw/inflector v0.2.0
 	github.com/kenshaw/snaker v0.2.0
-	github.com/lib/pq v1.10.6
+	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.15
-	github.com/microsoft/go-mssqldb v0.16.0
+	github.com/microsoft/go-mssqldb v0.17.0
 	github.com/sijms/go-ora/v2 v2.5.3
 	github.com/spf13/cobra v1.5.0
-	github.com/traefik/yaegi v0.14.1
-	github.com/xo/dburl v0.12.0
+	github.com/traefik/yaegi v0.14.2
+	github.com/xo/dburl v0.12.2
 	github.com/yookoala/realpath v1.0.0
 	golang.org/x/tools v0.1.12
 	mvdan.cc/gofumpt v0.3.1
@@ -41,6 +41,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
-	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
+	golang.org/x/sys v0.0.0-20220907062415-87db552b00fd // indirect
+	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 )

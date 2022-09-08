@@ -39,11 +39,11 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 		`name` +
 		`) VALUES (` +
 		`:1` +
-		`) RETURNING author_id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING author_id INTO :2`
 	// run
 	logf(sqlstr, a.Name)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, a.Name, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, a.Name, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	a.AuthorID = int64(id)

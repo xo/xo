@@ -46,11 +46,11 @@ func (dal *DjangoAdminLog) Insert(ctx context.Context, db DB) error {
 		`action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id` +
 		`) VALUES (` +
 		`:1, :2, :3, :4, :5, :6, :7` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :8`
 	// run
 	logf(sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	dal.ID = int64(id)

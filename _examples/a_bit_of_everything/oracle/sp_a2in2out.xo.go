@@ -15,7 +15,7 @@ func A2In2Out(ctx context.Context, db DB, paramOne, paramTwo int64) (int64, int6
 	var returnOne int64
 	var returnTwo int64
 	logf(sqlstr, paramOne, paramTwo)
-	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("param_one", paramOne), sql.Named("param_two", paramTwo), sql.Named("return_one", sql.Out{Dest: &returnOne}), sql.Named("return_two", sql.Out{Dest: &returnTwo})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("param_one", paramOne), sql.Named("param_two", paramTwo), sql.Out{Dest: &returnOne}, sql.Out{Dest: &returnTwo}); err != nil {
 		return 0, 0, logerror(err)
 	}
 	return returnOne, returnTwo, nil

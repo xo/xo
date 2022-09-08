@@ -45,11 +45,11 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 		`isbn, book_type, title, year, available, books_author_id_fkey` +
 		`) VALUES (` +
 		`:1, :2, :3, :4, :5, :6` +
-		`) RETURNING book_id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING book_id INTO :7`
 	// run
 	logf(sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, b.ISBN, b.BookType, b.Title, b.Year, b.Available, b.BooksAuthorIDFkey, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	b.BookID = int64(id)

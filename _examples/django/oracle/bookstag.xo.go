@@ -40,11 +40,11 @@ func (bt *BooksTag) Insert(ctx context.Context, db DB) error {
 		`book_id, tag_id` +
 		`) VALUES (` +
 		`:1, :2` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :3`
 	// run
 	logf(sqlstr, bt.BookID, bt.TagID)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, bt.BookID, bt.TagID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, bt.BookID, bt.TagID, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	bt.ID = int64(id)

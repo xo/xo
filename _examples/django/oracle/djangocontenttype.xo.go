@@ -40,11 +40,11 @@ func (dct *DjangoContentType) Insert(ctx context.Context, db DB) error {
 		`app_label, model` +
 		`) VALUES (` +
 		`:1, :2` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :3`
 	// run
 	logf(sqlstr, dct.AppLabel, dct.Model)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, dct.AppLabel, dct.Model, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, dct.AppLabel, dct.Model, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	dct.ID = int64(id)

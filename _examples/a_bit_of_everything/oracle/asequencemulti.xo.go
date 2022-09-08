@@ -39,11 +39,11 @@ func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 		`a_text` +
 		`) VALUES (` +
 		`:1` +
-		`) RETURNING a_seq /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING a_seq INTO :2`
 	// run
 	logf(sqlstr, asm.AText)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, asm.AText, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	asm.ASeq = int(id)

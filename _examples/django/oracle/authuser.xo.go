@@ -49,11 +49,11 @@ func (au *AuthUser) Insert(ctx context.Context, db DB) error {
 		`password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined` +
 		`) VALUES (` +
 		`:1, :2, :3, :4, :5, :6, :7, :8, :9, :10` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :11`
 	// run
 	logf(sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, au.Password, au.LastLogin, au.IsSuperuser, au.Username, au.FirstName, au.LastName, au.Email, au.IsStaff, au.IsActive, au.DateJoined, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	au.ID = int64(id)

@@ -40,11 +40,11 @@ func (auup *AuthUserUserPermission) Insert(ctx context.Context, db DB) error {
 		`user_id, permission_id` +
 		`) VALUES (` +
 		`:1, :2` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :3`
 	// run
 	logf(sqlstr, auup.UserID, auup.PermissionID)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, auup.UserID, auup.PermissionID, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, auup.UserID, auup.PermissionID, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	auup.ID = int64(id)

@@ -41,11 +41,11 @@ func (ap *AuthPermission) Insert(ctx context.Context, db DB) error {
 		`name, content_type_id, codename` +
 		`) VALUES (` +
 		`:1, :2, :3` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :4`
 	// run
 	logf(sqlstr, ap.Name, ap.ContentTypeID, ap.Codename)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, ap.Name, ap.ContentTypeID, ap.Codename, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, ap.Name, ap.ContentTypeID, ap.Codename, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	ap.ID = int64(id)

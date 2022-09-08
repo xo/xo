@@ -39,11 +39,11 @@ func (t *Tag) Insert(ctx context.Context, db DB) error {
 		`tag` +
 		`) VALUES (` +
 		`:1` +
-		`) RETURNING tag_id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING tag_id INTO :2`
 	// run
 	logf(sqlstr, t.Tag)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, t.Tag, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, t.Tag, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	t.TagID = int64(id)

@@ -42,11 +42,11 @@ func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 		`app, name, applied` +
 		`) VALUES (` +
 		`:1, :2, :3` +
-		`) RETURNING id /*LASTINSERTID*/ INTO :pk`
+		`) RETURNING id INTO :4`
 	// run
 	logf(sqlstr, dm.App, dm.Name, dm.Applied)
 	var id int64
-	if _, err := db.ExecContext(ctx, sqlstr, dm.App, dm.Name, dm.Applied, sql.Named("pk", sql.Out{Dest: &id})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, dm.App, dm.Name, dm.Applied, sql.Out{Dest: &id}); err != nil {
 		return logerror(err)
 	} // set primary key
 	dm.ID = int64(id)

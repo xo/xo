@@ -14,7 +14,7 @@ func A1In1Out(ctx context.Context, db DB, aParam int64) (int64, error) {
 	// run
 	var aReturn int64
 	logf(sqlstr, aParam)
-	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("a_param", aParam), sql.Named("a_return", sql.Out{Dest: &aReturn})); err != nil {
+	if _, err := db.ExecContext(ctx, sqlstr, sql.Named("a_param", aParam), sql.Out{Dest: &aReturn}); err != nil {
 		return 0, logerror(err)
 	}
 	return aReturn, nil

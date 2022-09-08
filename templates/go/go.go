@@ -206,6 +206,13 @@ func Init(ctx context.Context, f func(xo.TemplateType)) error {
 				Desc:       "enables legacy v1 template funcs",
 				Default:    "false",
 			},
+			{
+				ContextKey: OracleTypeKey,
+				Type:       "string",
+				Desc:       "oracle driver type",
+				Default:    "ora",
+				Enums:      []string{"ora", "godror"},
+			},
 		},
 		Funcs: func(ctx context.Context, _ string) (template.FuncMap, error) {
 			funcs, err := NewFuncs(ctx)
@@ -787,21 +794,22 @@ const ext = ".xo.go"
 
 // Funcs is a set of template funcs.
 type Funcs struct {
-	driver    string
-	schema    string
-	nth       func(int) string
-	first     bool
-	pkg       string
-	tags      []string
-	imports   []string
-	conflict  string
-	custom    string
-	escSchema bool
-	escTable  bool
-	escColumn bool
-	fieldtag  *template.Template
-	context   string
-	inject    string
+	driver     string
+	schema     string
+	nth        func(int) string
+	first      bool
+	pkg        string
+	tags       []string
+	imports    []string
+	conflict   string
+	custom     string
+	escSchema  bool
+	escTable   bool
+	escColumn  bool
+	fieldtag   *template.Template
+	context    string
+	inject     string
+	oracleType string
 	// knownTypes is the collection of known Go types.
 	knownTypes map[string]bool
 	// shorts is the collection of Go style short names for types, mainly
@@ -847,6 +855,7 @@ func NewFuncs(ctx context.Context) (template.FuncMap, error) {
 		fieldtag:   fieldtag,
 		context:    Context(ctx),
 		inject:     inject,
+		oracleType: OracleType(ctx),
 		knownTypes: KnownTypes(ctx),
 		shorts:     Shorts(ctx),
 	}
@@ -1251,7 +1260,10 @@ func (f *Funcs) db_named(name string, v interface{}) string {
 }
 
 func (f *Funcs) named(name, value string, out bool) string {
-	if out {
+	switch {
+	case out && f.driver == "oracle" && f.oracleType == "ora":
+		return fmt.Sprintf("sql.Out{Dest: %s}", value)
+	case out:
 		return fmt.Sprintf("sql.Named(%q, sql.Out{Dest: %s})", name, value)
 	}
 	return fmt.Sprintf("sql.Named(%q, %s)", name, value)
@@ -1476,16 +1488,26 @@ func (f *Funcs) sqlstr_insert(v interface{}) []string {
 	switch x := v.(type) {
 	case Table:
 		var seq Field
+		var count int
 		for _, field := range x.Fields {
 			if field.IsSequence {
 				seq = field
+			} else {
+				count++
 			}
 		}
 		lines := f.sqlstr_insert_base(false, v)
 		// add return clause
 		switch f.driver {
 		case "oracle":
-			lines[len(lines)-1] += ` RETURNING ` + f.colname(seq) + ` /*LASTINSERTID*/ INTO :pk`
+			switch f.oracleType {
+			case "ora":
+				lines[len(lines)-1] += ` RETURNING ` + f.colname(seq) + ` INTO ` + f.nth(count)
+			case "godror":
+				lines[len(lines)-1] += ` RETURNING ` + f.colname(seq) + ` /*LASTINSERTID*/ INTO :pk`
+			default:
+				return []string{fmt.Sprintf("[[ UNSUPPORTED ORACLE TYPE: %s]]", f.oracleType)}
+			}
 		case "postgres":
 			lines[len(lines)-1] += ` RETURNING ` + f.colname(seq)
 		case "sqlserver":
@@ -2081,6 +2103,7 @@ var (
 	InjectKey     xo.ContextKey = "inject"
 	InjectFileKey xo.ContextKey = "inject-file"
 	LegacyKey     xo.ContextKey = "legacy"
+	OracleTypeKey xo.ContextKey = "oracle-type"
 )
 
 // Append returns append from the context.
@@ -2210,6 +2233,12 @@ func InjectFile(ctx context.Context) string {
 func Legacy(ctx context.Context) bool {
 	b, _ := ctx.Value(LegacyKey).(bool)
 	return b
+}
+
+// OracleType returns oracle-type from the context.
+func OracleType(ctx context.Context) string {
+	s, _ := ctx.Value(OracleTypeKey).(string)
+	return s
 }
 
 // addInitialisms adds snaker initialisms from the context.
