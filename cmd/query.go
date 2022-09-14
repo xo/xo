@@ -109,7 +109,7 @@ func ParseQuery(ctx context.Context, sqlstr, delimiter string, interpolate, trim
 		}
 	}
 	// build comments
-	var comments []string
+	comments := make([]string, len(query))
 	if strip {
 		// strip view
 		if query, inspect, comments, err = loader.ViewStrip(ctx, query, inspect); err != nil {
