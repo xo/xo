@@ -261,6 +261,16 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 		return err
 	}
 
+	// load partitioned tables
+	partitionedTablesMap, err := tl.LoadRelkind(args, PartitionedTable)
+	if err != nil {
+		return err
+	}
+
+	for pt := range partitionedTablesMap {
+		args.ExcludeTables = append(args.ExcludeTables, regexp.QuoteMeta(pt)+"_.*")
+	}
+
 	// load tables
 	tableMap, err := tl.LoadRelkind(args, Table)
 	if err != nil {
@@ -273,21 +283,43 @@ func (tl TypeLoader) LoadSchema(args *ArgType) error {
 		return err
 	}
 
-	// merge views with the tableMap
+	// merge views with the tableMap and/or partitionedTablesMap
 	for k, v := range viewMap {
-		tableMap[k] = v
+		if tableMap != nil {
+			tableMap[k] = v
+		}
+
+		if partitionedTablesMap != nil {
+			partitionedTablesMap[k] = v
+		}
 	}
 
-	// load foreign keys
-	_, err = tl.LoadForeignKeys(args, tableMap)
-	if err != nil {
-		return err
+	if tableMap != nil {
+		// load foreign keys for loaded tables
+		_, err = tl.LoadForeignKeys(args, tableMap)
+		if err != nil {
+			return err
+		}
+
+		// load indexes for loaded tables
+		_, err = tl.LoadIndexes(args, tableMap)
+		if err != nil {
+			return err
+		}
 	}
 
-	// load indexes
-	_, err = tl.LoadIndexes(args, tableMap)
-	if err != nil {
-		return err
+	if partitionedTablesMap != nil {
+		// load foreign keys for loaded partitioned tables
+		_, err = tl.LoadForeignKeys(args, partitionedTablesMap)
+		if err != nil {
+			return err
+		}
+
+		// load indexes for loaded partitioned tables
+		_, err = tl.LoadIndexes(args, partitionedTablesMap)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
