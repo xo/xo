@@ -14,7 +14,9 @@ type Sequence struct {
 // PostgresTableSequences runs a custom query, returning results as Sequence.
 func PostgresTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
-	const sqlstr = `SELECT ` +
+	const sqlstr = `select * ` +
+		`FROM ( ` +
+		`SELECT ` +
 		`a.attname ` + // ::varchar as column_name
 		`FROM pg_class s ` +
 		`JOIN pg_depend d ON d.objid = s.oid ` +
@@ -23,7 +25,20 @@ func PostgresTableSequences(ctx context.Context, db DB, schema, table string) ([
 		`JOIN pg_namespace n ON n.oid = s.relnamespace ` +
 		`WHERE s.relkind = 'S' ` +
 		`AND n.nspname = $1 ` +
-		`AND t.relname = $2`
+		`AND t.relname = $2 ` +
+		`) sequences UNION ( ` +
+		`SELECT ` +
+		`a.attname ` + // ::varchar as column_name
+		`FROM pg_class s ` +
+		`JOIN pg_attrdef ad ON ad.adrelid = s.oid ` +
+		`JOIN pg_attribute a ON (ad.adrelid, ad.adnum) = (a.attrelid, a.attnum) ` +
+		`JOIN pg_type t ON a.atttypid = t.oid ` +
+		`JOIN pg_index i ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) ` +
+		`JOIN pg_namespace n ON n.oid = s.relnamespace ` +
+		`WHERE t.typname = 'uuid' AND ad.adbin like '%FUNCEXPR%' AND i.indisprimary ` +
+		`AND n.nspname = $1 ` +
+		`AND i.indrelid = $2::regclass ` +
+		`)`
 	// run
 	logf(sqlstr, schema, table)
 	rows, err := db.QueryContext(ctx, sqlstr, schema, table)

@@ -200,16 +200,31 @@ ENDSQL
 # postgres sequence list query
 COMMENT='{{ . }} is a sequence.'
 $XOBIN query $PGDB -M -B -2 -T Sequence -F PostgresTableSequences --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
-SELECT
-  a.attname::varchar as column_name
-FROM pg_class s
-  JOIN pg_depend d ON d.objid = s.oid
-  JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
-  JOIN pg_attribute a ON (d.refobjid, d.refobjsubid) = (a.attrelid, a.attnum)
-  JOIN pg_namespace n ON n.oid = s.relnamespace
-WHERE s.relkind = 'S'
-  AND n.nspname = %%schema string%%
-  AND t.relname = %%table string%%
+select *
+FROM (
+  SELECT
+    a.attname::varchar as column_name
+  FROM pg_class s
+    JOIN pg_depend d ON d.objid = s.oid
+    JOIN pg_class t ON d.objid = s.oid AND d.refobjid = t.oid
+    JOIN pg_attribute a ON (d.refobjid, d.refobjsubid) = (a.attrelid, a.attnum)
+    JOIN pg_namespace n ON n.oid = s.relnamespace
+  WHERE s.relkind = 'S'
+    AND n.nspname = %%schema string%%
+    AND t.relname = %%table string%%
+) sequences UNION (
+  SELECT
+    a.attname::varchar as column_name
+  FROM pg_class s
+    JOIN pg_attrdef ad ON ad.adrelid = s.oid
+    JOIN pg_attribute a ON (ad.adrelid, ad.adnum) = (a.attrelid, a.attnum)
+    JOIN pg_type t ON a.atttypid = t.oid
+    JOIN pg_index i ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+    JOIN pg_namespace n ON n.oid = s.relnamespace
+  WHERE t.typname = 'uuid' AND ad.adbin like '%FUNCEXPR%' AND i.indisprimary
+    AND n.nspname = %%schema string%%
+    AND i.indrelid = %%table string%%::regclass
+)
 ENDSQL
 
 # postgres table foreign key list query
