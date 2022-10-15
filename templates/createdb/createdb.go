@@ -322,6 +322,8 @@ func (f *Funcs) resolveSequence(typ string, field xo.Field) string {
 			return "SERIAL"
 		case "BIGINT":
 			return "BIGSERIAL"
+		case "UUID":
+			return "UUID DEFAULT gen_random_uuid()"
 		}
 	case "mysql":
 		return typ + " AUTO_INCREMENT"
