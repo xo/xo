@@ -136,6 +136,7 @@ type Field struct {
 	ConstValue  *int   `json:"const_value,omitempty"`
 	Interpolate bool   `json:"interpolate,omitempty"`
 	Join        bool   `json:"join,omitempty"`
+	Comment     string `json:"comment,omitempty"`
 }
 
 // Type holds information for a database type.
@@ -154,11 +155,11 @@ type Type struct {
 //
 // Expected formats:
 //
-//	type
-//	type(precision)
-//	type(precision, scale)
-//  type(precision, scale) unsigned
-//	timestamp(n) with [local] time zone (oracle only)
+//		type
+//		type(precision)
+//		type(precision, scale)
+//	 type(precision, scale) unsigned
+//		timestamp(n) with [local] time zone (oracle only)
 //
 // The returned type is stripped of precision and scale.
 func ParseType(typ, driver string) (Type, error) {

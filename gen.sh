@@ -172,7 +172,7 @@ WHERE n.nspname = %%schema string%%
 ENDSQL
 
 # postgres table column list query
-FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool'
+FIELDS='FieldOrdinal int,ColumnName string,DataType string,NotNull bool,DefaultValue sql.NullString,IsPrimaryKey bool,Comment sql.NullString'
 COMMENT='{{ . }} is a column.'
 $XOBIN query $PGDB -M -B -2 -T Column -F PostgresTableColumns -Z "$FIELDS" --type-comment "$COMMENT" -o $DEST $@ << ENDSQL
 SELECT
@@ -181,7 +181,8 @@ SELECT
   format_type(a.atttypid, a.atttypmod)::varchar AS data_type,
   a.attnotnull::boolean AS not_null,
   COALESCE(pg_get_expr(ad.adbin, ad.adrelid), '')::varchar AS default_value,
-  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key
+  COALESCE(ct.contype = 'p', false)::boolean AS is_primary_key,
+  d.description::varchar as comment
 FROM pg_attribute a
   JOIN ONLY pg_class c ON c.oid = a.attrelid
   JOIN ONLY pg_namespace n ON n.oid = c.relnamespace
@@ -190,6 +191,8 @@ FROM pg_attribute a
     AND ct.contype = 'p'
   LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid
     AND ad.adnum = a.attnum
+  LEFT JOIN pg_description d on d.objoid = c.oid
+		AND d.objsubid = a.attnum
 WHERE a.attisdropped = false
   AND n.nspname = %%schema string%%
   AND c.relname = %%table string%%
