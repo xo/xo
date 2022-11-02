@@ -15,6 +15,7 @@ type Column struct {
 	NotNull      bool           `json:"not_null"`       // not_null
 	DefaultValue sql.NullString `json:"default_value"`  // default_value
 	IsPrimaryKey bool           `json:"is_primary_key"` // is_primary_key
+	Comment      sql.NullString `json:"comment"`        // comment
 }
 
 // PostgresTableColumns runs a custom query, returning results as Column.
@@ -26,7 +27,8 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 		`format_type(a.atttypid, a.atttypmod), ` + // ::varchar AS data_type
 		`a.attnotnull, ` + // ::boolean AS not_null
 		`COALESCE(pg_get_expr(ad.adbin, ad.adrelid), ''), ` + // ::varchar AS default_value
-		`COALESCE(ct.contype = 'p', false) ` + // ::boolean AS is_primary_key
+		`COALESCE(ct.contype = 'p', false), ` + // ::boolean AS is_primary_key
+		`d.description ` + // ::varchar as comment
 		`FROM pg_attribute a ` +
 		`JOIN ONLY pg_class c ON c.oid = a.attrelid ` +
 		`JOIN ONLY pg_namespace n ON n.oid = c.relnamespace ` +
@@ -35,6 +37,8 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 		`AND ct.contype = 'p' ` +
 		`LEFT JOIN pg_attrdef ad ON ad.adrelid = c.oid ` +
 		`AND ad.adnum = a.attnum ` +
+		`LEFT JOIN pg_description d on d.objoid = c.oid ` +
+		`AND d.objsubid = a.attnum ` +
 		`WHERE a.attisdropped = false ` +
 		`AND n.nspname = $1 ` +
 		`AND c.relname = $2 ` +
@@ -52,7 +56,7 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 	for rows.Next() {
 		var c Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.Comment); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &c)
@@ -72,7 +76,8 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 		`IF(data_type = 'enum', column_name, column_type) AS data_type, ` +
 		`IF(is_nullable = 'YES', false, true) AS not_null, ` +
 		`column_default AS default_value, ` +
-		`IF(column_key = 'PRI', true, false) AS is_primary_key ` +
+		`IF(column_key = 'PRI', true, false) AS is_primary_key, ` +
+		`column_comment AS comment ` +
 		`FROM information_schema.columns ` +
 		`WHERE table_schema = ? ` +
 		`AND table_name = ? ` +
@@ -89,7 +94,7 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 	for rows.Next() {
 		var c Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.Comment); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &c)

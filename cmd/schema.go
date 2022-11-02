@@ -263,6 +263,7 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			Default:    defaultValue,
 			IsPrimary:  c.IsPrimaryKey,
 			IsSequence: sqMap[c.ColumnName],
+			Comment:    c.Comment.String,
 		}
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {
