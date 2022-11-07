@@ -76,7 +76,8 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 		`IF(data_type = 'enum', column_name, column_type) AS data_type, ` +
 		`IF(is_nullable = 'YES', false, true) AS not_null, ` +
 		`column_default AS default_value, ` +
-		`IF(column_key = 'PRI', true, false) AS is_primary_key ` +
+		`IF(column_key = 'PRI', true, false) AS is_primary_key, ` +
+		`column_comment AS comment ` +
 		`FROM information_schema.columns ` +
 		`WHERE table_schema = ? ` +
 		`AND table_name = ? ` +
@@ -93,7 +94,7 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 	for rows.Next() {
 		var c Column
 		// scan
-		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey); err != nil {
+		if err := rows.Scan(&c.FieldOrdinal, &c.ColumnName, &c.DataType, &c.NotNull, &c.DefaultValue, &c.IsPrimaryKey, &c.Comment); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &c)
