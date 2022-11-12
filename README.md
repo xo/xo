@@ -50,7 +50,7 @@ Install `xo` in the usual Go way:
 $ go install github.com/xo/xo@latest
 ```
 
-> **Note:** Go 1.16+ is needed for building `xo` from source.
+> **Note:** Go 1.19+ is needed for building `xo` from source.
 
 ## Quickstart
 
