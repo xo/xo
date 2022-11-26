@@ -2692,7 +2692,7 @@ func addLegacyFuncs(ctx context.Context, funcs template.FuncMap) {
 		}
 		return expr
 	}
-	// getstartcount returns a starting count for numbering columsn in queries
+	// getstartcount returns a starting count for numbering columns in queries
 	funcs["getstartcount"] = func(fields []*Field, pkFields []*Field) int {
 		return len(fields) - len(pkFields)
 	}
