@@ -523,7 +523,7 @@ While not required, one should specify the `loc=auto` option when using `xo`
 with a SQLite3 database:
 
 ```sh
-$ xo 'file:mydatabase.sqlite3?loc=auto' -o models
+$ xo schema 'file:mydatabase.sqlite3?loc=auto' -o models
 ```
 
 And when opening a database connection:
