@@ -608,6 +608,8 @@ type sourceFS struct {
 
 // Open satisfies the fs.FS interface.
 func (src sourceFS) Open(name string) (fs.File, error) {
+	// Ensure that Windows paths have forward slash
+	name = filepath.ToSlash(name)
 	if name == src.path {
 		return src.fs.Open(".")
 	}
