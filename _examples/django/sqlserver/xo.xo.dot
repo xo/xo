@@ -30,7 +30,7 @@ digraph django {
 		<tr><td bgcolor="lightblue">"django.auth_user"</td></tr>
 		<tr><td align="left" PORT="id">id: int</td></tr>
 		<tr><td align="left" PORT="password">password: nvarchar</td></tr>
-		<tr><td align="left" PORT="last_login">last_login: datetime2</td></tr>
+		<tr><td align="left" PORT="last_login">last_login: datetimeoffset</td></tr>
 		<tr><td align="left" PORT="is_superuser">is_superuser: bit</td></tr>
 		<tr><td align="left" PORT="username">username: nvarchar</td></tr>
 		<tr><td align="left" PORT="first_name">first_name: nvarchar</td></tr>
@@ -38,7 +38,7 @@ digraph django {
 		<tr><td align="left" PORT="email">email: nvarchar</td></tr>
 		<tr><td align="left" PORT="is_staff">is_staff: bit</td></tr>
 		<tr><td align="left" PORT="is_active">is_active: bit</td></tr>
-		<tr><td align="left" PORT="date_joined">date_joined: datetime2</td></tr>
+		<tr><td align="left" PORT="date_joined">date_joined: datetimeoffset</td></tr>
 		</table>> ]
 	
 	"django.auth_user_groups" [ label=<
@@ -72,7 +72,7 @@ digraph django {
 		<tr><td align="left" PORT="book_type">book_type: int</td></tr>
 		<tr><td align="left" PORT="title">title: nvarchar</td></tr>
 		<tr><td align="left" PORT="year">year: int</td></tr>
-		<tr><td align="left" PORT="available">available: datetime2</td></tr>
+		<tr><td align="left" PORT="available">available: datetimeoffset</td></tr>
 		<tr><td align="left" PORT="books_author_id_fkey">books_author_id_fkey: bigint</td></tr>
 		</table>> ]
 	
@@ -88,7 +88,7 @@ digraph django {
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
 		<tr><td bgcolor="lightblue">"django.django_admin_log"</td></tr>
 		<tr><td align="left" PORT="id">id: int</td></tr>
-		<tr><td align="left" PORT="action_time">action_time: datetime2</td></tr>
+		<tr><td align="left" PORT="action_time">action_time: datetimeoffset</td></tr>
 		<tr><td align="left" PORT="object_id">object_id: nvarchar</td></tr>
 		<tr><td align="left" PORT="object_repr">object_repr: nvarchar</td></tr>
 		<tr><td align="left" PORT="action_flag">action_flag: smallint</td></tr>
@@ -111,7 +111,7 @@ digraph django {
 		<tr><td align="left" PORT="id">id: bigint</td></tr>
 		<tr><td align="left" PORT="app">app: nvarchar</td></tr>
 		<tr><td align="left" PORT="name">name: nvarchar</td></tr>
-		<tr><td align="left" PORT="applied">applied: datetime2</td></tr>
+		<tr><td align="left" PORT="applied">applied: datetimeoffset</td></tr>
 		</table>> ]
 	
 	"django.django_session" [ label=<
@@ -119,7 +119,7 @@ digraph django {
 		<tr><td bgcolor="lightblue">"django.django_session"</td></tr>
 		<tr><td align="left" PORT="session_key">session_key: nvarchar</td></tr>
 		<tr><td align="left" PORT="session_data">session_data: nvarchar</td></tr>
-		<tr><td align="left" PORT="expire_date">expire_date: datetime2</td></tr>
+		<tr><td align="left" PORT="expire_date">expire_date: datetimeoffset</td></tr>
 		</table>> ]
 	
 	"django.tags" [ label=<

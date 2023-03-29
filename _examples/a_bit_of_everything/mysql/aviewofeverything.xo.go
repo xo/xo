@@ -66,7 +66,7 @@ type AViewOfEverything struct {
 	ATime                    string            `json:"a_time"`                      // a_time
 	ATimeNullable            sql.NullString    `json:"a_time_nullable"`             // a_time_nullable
 	ATimestamp               time.Time         `json:"a_timestamp"`                 // a_timestamp
-	ATimestampNullable       time.Time         `json:"a_timestamp_nullable"`        // a_timestamp_nullable
+	ATimestampNullable       sql.NullTime      `json:"a_timestamp_nullable"`        // a_timestamp_nullable
 	ATinyblob                []byte            `json:"a_tinyblob"`                  // a_tinyblob
 	ATinyblobNullable        []byte            `json:"a_tinyblob_nullable"`         // a_tinyblob_nullable
 	ATinyint                 int8              `json:"a_tinyint"`                   // a_tinyint

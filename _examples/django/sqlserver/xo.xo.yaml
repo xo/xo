@@ -215,8 +215,8 @@ schemas:
         prec: 128
     - name: last_login
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
         nullable: true
     - name: is_superuser
@@ -249,8 +249,8 @@ schemas:
         prec: 1
     - name: date_joined
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
     primary_keys:
     - name: id
@@ -508,8 +508,8 @@ schemas:
         prec: 10
     - name: available
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
     - name: books_author_id_fkey
       datatype:
@@ -652,8 +652,8 @@ schemas:
       is_sequence: true
     - name: action_time
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
     - name: object_id
       datatype:
@@ -805,8 +805,8 @@ schemas:
         prec: 255
     - name: applied
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
     primary_keys:
     - name: id
@@ -839,8 +839,8 @@ schemas:
         type: nvarchar
     - name: expire_date
       datatype:
-        type: datetime2
-        prec: 27
+        type: datetimeoffset
+        prec: 34
         scale: 7
     primary_keys:
     - name: session_key
@@ -853,8 +853,8 @@ schemas:
       fields:
       - name: expire_date
         datatype:
-          type: datetime2
-          prec: 27
+          type: datetimeoffset
+          prec: 34
           scale: 7
     - name: django_session_session_key_pkey
       fields:

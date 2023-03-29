@@ -361,11 +361,10 @@ schemas:
     - name: a_timestamp
       datatype:
         type: timestamp
-      default: current_timestamp()
     - name: a_timestamp_nullable
       datatype:
         type: timestamp
-      default: "'0000-00-00 00:00:00'"
+        nullable: true
     - name: a_tinyblob
       datatype:
         type: tinyblob
@@ -983,11 +982,10 @@ schemas:
     - name: a_timestamp
       datatype:
         type: timestamp
-      default: current_timestamp()
     - name: a_timestamp_nullable
       datatype:
         type: timestamp
-      default: "'0000-00-00 00:00:00'"
+        nullable: true
     - name: a_tinyblob
       datatype:
         type: tinyblob

@@ -524,9 +524,6 @@ schemas:
       datatype:
         type: integer
       is_primary: true
-    - name: action_time
-      datatype:
-        type: datetime
     - name: object_id
       datatype:
         type: text
@@ -535,6 +532,10 @@ schemas:
       datatype:
         type: varchar
         prec: 200
+    - name: action_flag
+      datatype:
+        type: smallint
+        unsigned: true
     - name: change_message
       datatype:
         type: text
@@ -545,10 +546,9 @@ schemas:
     - name: user_id
       datatype:
         type: integer
-    - name: action_flag
+    - name: action_time
       datatype:
-        type: smallint
-        unsigned: true
+        type: datetime
     primary_keys:
     - name: id
       datatype:

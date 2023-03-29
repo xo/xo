@@ -139,13 +139,13 @@ CREATE INDEX books_tags_tag_id_8d70b40a ON books_tags (tag_id);
 -- table django_admin_log
 CREATE TABLE django_admin_log (
   id INTEGER NOT NULL,
-  action_time DATETIME NOT NULL,
   object_id TEXT,
   object_repr VARCHAR(200) NOT NULL,
+  action_flag SMALLINT UNSIGNED NOT NULL,
   change_message TEXT NOT NULL,
   content_type_id INTEGER REFERENCES django_content_type (id),
   user_id INTEGER NOT NULL REFERENCES auth_user (id),
-  action_flag SMALLINT UNSIGNED NOT NULL,
+  action_time DATETIME NOT NULL,
   PRIMARY KEY (id)
 );
 

@@ -10,13 +10,13 @@ import (
 // DjangoAdminLog represents a row from 'django_admin_log'.
 type DjangoAdminLog struct {
 	ID            int            `json:"id"`              // id
-	ActionTime    Time           `json:"action_time"`     // action_time
 	ObjectID      sql.NullString `json:"object_id"`       // object_id
 	ObjectRepr    string         `json:"object_repr"`     // object_repr
+	ActionFlag    uint           `json:"action_flag"`     // action_flag
 	ChangeMessage string         `json:"change_message"`  // change_message
 	ContentTypeID sql.NullInt64  `json:"content_type_id"` // content_type_id
 	UserID        int            `json:"user_id"`         // user_id
-	ActionFlag    uint           `json:"action_flag"`     // action_flag
+	ActionTime    Time           `json:"action_time"`     // action_time
 	// xo fields
 	_exists, _deleted bool
 }
@@ -42,13 +42,13 @@ func (dal *DjangoAdminLog) Insert(ctx context.Context, db DB) error {
 	}
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO django_admin_log (` +
-		`id, action_time, object_id, object_repr, change_message, content_type_id, user_id, action_flag` +
+		`id, object_id, object_repr, action_flag, change_message, content_type_id, user_id, action_time` +
 		`) VALUES (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8` +
 		`)`
 	// run
-	logf(sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag)
-	res, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag)
+	logf(sqlstr, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime)
+	res, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime)
 	if err != nil {
 		return logerror(err)
 	}
@@ -73,11 +73,11 @@ func (dal *DjangoAdminLog) Update(ctx context.Context, db DB) error {
 	}
 	// update with primary key
 	const sqlstr = `UPDATE django_admin_log SET ` +
-		`action_time = $1, object_id = $2, object_repr = $3, change_message = $4, content_type_id = $5, user_id = $6, action_flag = $7 ` +
+		`object_id = $1, object_repr = $2, action_flag = $3, change_message = $4, content_type_id = $5, user_id = $6, action_time = $7 ` +
 		`WHERE id = $8`
 	// run
-	logf(sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag, dal.ID)
-	if _, err := db.ExecContext(ctx, sqlstr, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag, dal.ID); err != nil {
+	logf(sqlstr, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime, dal.ID)
+	if _, err := db.ExecContext(ctx, sqlstr, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime, dal.ID); err != nil {
 		return logerror(err)
 	}
 	return nil
@@ -99,16 +99,16 @@ func (dal *DjangoAdminLog) Upsert(ctx context.Context, db DB) error {
 	}
 	// upsert
 	const sqlstr = `INSERT INTO django_admin_log (` +
-		`id, action_time, object_id, object_repr, change_message, content_type_id, user_id, action_flag` +
+		`id, object_id, object_repr, action_flag, change_message, content_type_id, user_id, action_time` +
 		`) VALUES (` +
 		`$1, $2, $3, $4, $5, $6, $7, $8` +
 		`)` +
 		` ON CONFLICT (id) DO ` +
 		`UPDATE SET ` +
-		`action_time = EXCLUDED.action_time, object_id = EXCLUDED.object_id, object_repr = EXCLUDED.object_repr, change_message = EXCLUDED.change_message, content_type_id = EXCLUDED.content_type_id, user_id = EXCLUDED.user_id, action_flag = EXCLUDED.action_flag `
+		`object_id = EXCLUDED.object_id, object_repr = EXCLUDED.object_repr, action_flag = EXCLUDED.action_flag, change_message = EXCLUDED.change_message, content_type_id = EXCLUDED.content_type_id, user_id = EXCLUDED.user_id, action_time = EXCLUDED.action_time `
 	// run
-	logf(sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag)
-	if _, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ActionTime, dal.ObjectID, dal.ObjectRepr, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionFlag); err != nil {
+	logf(sqlstr, dal.ID, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime)
+	if _, err := db.ExecContext(ctx, sqlstr, dal.ID, dal.ObjectID, dal.ObjectRepr, dal.ActionFlag, dal.ChangeMessage, dal.ContentTypeID, dal.UserID, dal.ActionTime); err != nil {
 		return logerror(err)
 	}
 	// set exists
@@ -143,7 +143,7 @@ func (dal *DjangoAdminLog) Delete(ctx context.Context, db DB) error {
 func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql.NullInt64) ([]*DjangoAdminLog, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, action_time, object_id, object_repr, change_message, content_type_id, user_id, action_flag ` +
+		`id, object_id, object_repr, action_flag, change_message, content_type_id, user_id, action_time ` +
 		`FROM django_admin_log ` +
 		`WHERE content_type_id = $1`
 	// run
@@ -160,7 +160,7 @@ func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&dal.ID, &dal.ActionTime, &dal.ObjectID, &dal.ObjectRepr, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionFlag); err != nil {
+		if err := rows.Scan(&dal.ID, &dal.ObjectID, &dal.ObjectRepr, &dal.ActionFlag, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionTime); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &dal)
@@ -177,7 +177,7 @@ func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql
 func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, action_time, object_id, object_repr, change_message, content_type_id, user_id, action_flag ` +
+		`id, object_id, object_repr, action_flag, change_message, content_type_id, user_id, action_time ` +
 		`FROM django_admin_log ` +
 		`WHERE id = $1`
 	// run
@@ -185,7 +185,7 @@ func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, er
 	dal := DjangoAdminLog{
 		_exists: true,
 	}
-	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dal.ID, &dal.ActionTime, &dal.ObjectID, &dal.ObjectRepr, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionFlag); err != nil {
+	if err := db.QueryRowContext(ctx, sqlstr, id).Scan(&dal.ID, &dal.ObjectID, &dal.ObjectRepr, &dal.ActionFlag, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionTime); err != nil {
 		return nil, logerror(err)
 	}
 	return &dal, nil
@@ -197,7 +197,7 @@ func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, er
 func DjangoAdminLogByUserID(ctx context.Context, db DB, userID int) ([]*DjangoAdminLog, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, action_time, object_id, object_repr, change_message, content_type_id, user_id, action_flag ` +
+		`id, object_id, object_repr, action_flag, change_message, content_type_id, user_id, action_time ` +
 		`FROM django_admin_log ` +
 		`WHERE user_id = $1`
 	// run
@@ -214,7 +214,7 @@ func DjangoAdminLogByUserID(ctx context.Context, db DB, userID int) ([]*DjangoAd
 			_exists: true,
 		}
 		// scan
-		if err := rows.Scan(&dal.ID, &dal.ActionTime, &dal.ObjectID, &dal.ObjectRepr, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionFlag); err != nil {
+		if err := rows.Scan(&dal.ID, &dal.ObjectID, &dal.ObjectRepr, &dal.ActionFlag, &dal.ChangeMessage, &dal.ContentTypeID, &dal.UserID, &dal.ActionTime); err != nil {
 			return nil, logerror(err)
 		}
 		res = append(res, &dal)

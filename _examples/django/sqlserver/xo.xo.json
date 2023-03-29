@@ -366,8 +366,8 @@
             {
               "name": "last_login",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7,
                 "nullable": true
               }
@@ -424,8 +424,8 @@
             {
               "name": "date_joined",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7
               }
             }
@@ -871,8 +871,8 @@
             {
               "name": "available",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7
               }
             },
@@ -1120,8 +1120,8 @@
             {
               "name": "action_time",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7
               }
             },
@@ -1382,8 +1382,8 @@
             {
               "name": "applied",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7
               }
             }
@@ -1439,8 +1439,8 @@
             {
               "name": "expire_date",
               "datatype": {
-                "type": "datetime2",
-                "prec": 27,
+                "type": "datetimeoffset",
+                "prec": 34,
                 "scale": 7
               }
             }
@@ -1462,8 +1462,8 @@
                 {
                   "name": "expire_date",
                   "datatype": {
-                    "type": "datetime2",
-                    "prec": 27,
+                    "type": "datetimeoffset",
+                    "prec": 34,
                     "scale": 7
                   }
                 }

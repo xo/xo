@@ -992,12 +992,6 @@
               "is_primary": true
             },
             {
-              "name": "action_time",
-              "datatype": {
-                "type": "datetime"
-              }
-            },
-            {
               "name": "object_id",
               "datatype": {
                 "type": "text",
@@ -1009,6 +1003,13 @@
               "datatype": {
                 "type": "varchar",
                 "prec": 200
+              }
+            },
+            {
+              "name": "action_flag",
+              "datatype": {
+                "type": "smallint",
+                "unsigned": true
               }
             },
             {
@@ -1031,10 +1032,9 @@
               }
             },
             {
-              "name": "action_flag",
+              "name": "action_time",
               "datatype": {
-                "type": "smallint",
-                "unsigned": true
+                "type": "datetime"
               }
             }
           ],

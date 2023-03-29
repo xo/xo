@@ -49,7 +49,7 @@ CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permiss
 CREATE TABLE auth_user (
   id INT IDENTITY(1, 1),
   password NVARCHAR(128) NOT NULL,
-  last_login DATETIME2,
+  last_login DATETIMEOFFSET,
   is_superuser BIT NOT NULL,
   username NVARCHAR(150) NOT NULL,
   first_name NVARCHAR(150) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE auth_user (
   email NVARCHAR(254) NOT NULL,
   is_staff BIT NOT NULL,
   is_active BIT NOT NULL,
-  date_joined DATETIME2 NOT NULL,
+  date_joined DATETIMEOFFSET NOT NULL,
   CONSTRAINT auth_user_id_pkey PRIMARY KEY (id),
   CONSTRAINT auth_user_username_6821ab7c_uniq UNIQUE (username)
 );
@@ -106,7 +106,7 @@ CREATE TABLE books (
   book_type INT NOT NULL,
   title NVARCHAR(255) NOT NULL,
   year INT NOT NULL,
-  available DATETIME2 NOT NULL,
+  available DATETIMEOFFSET NOT NULL,
   books_author_id_fkey BIGINT NOT NULL CONSTRAINT books_books_author_id_fkey_73ac0c26_fk_authors_author_id REFERENCES authors (author_id),
   CONSTRAINT books_book_id_pkey PRIMARY KEY (book_id)
 );
@@ -139,7 +139,7 @@ CREATE INDEX books_tags_tag_id_8d70b40a ON books_tags (tag_id);
 -- table django_admin_log
 CREATE TABLE django_admin_log (
   id INT IDENTITY(1, 1),
-  action_time DATETIME2 NOT NULL,
+  action_time DATETIMEOFFSET NOT NULL,
   object_id NVARCHAR,
   object_repr NVARCHAR(200) NOT NULL,
   action_flag SMALLINT NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE django_migrations (
   id BIGINT IDENTITY(1, 1),
   app NVARCHAR(255) NOT NULL,
   name NVARCHAR(255) NOT NULL,
-  applied DATETIME2 NOT NULL,
+  applied DATETIMEOFFSET NOT NULL,
   CONSTRAINT django_migrations_id_pkey PRIMARY KEY (id)
 );
 
@@ -168,7 +168,7 @@ CREATE TABLE django_migrations (
 CREATE TABLE django_session (
   session_key NVARCHAR(40) NOT NULL,
   session_data NVARCHAR NOT NULL,
-  expire_date DATETIME2 NOT NULL,
+  expire_date DATETIMEOFFSET NOT NULL,
   CONSTRAINT django_session_session_key_pkey PRIMARY KEY (session_key)
 );
 
