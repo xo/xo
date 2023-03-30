@@ -10,7 +10,7 @@ DROP DATABASE :NAME;
 CREATE DATABASE :NAME
   CONTAINMENT=PARTIAL;
 
-\connect 'ms://localhost/?database=':NAME
+\connect 'ms://localhost/':NAME
 
 CREATE LOGIN :NAME
   WITH

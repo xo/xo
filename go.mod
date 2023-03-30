@@ -15,7 +15,7 @@ require (
 	github.com/sijms/go-ora/v2 v2.6.10
 	github.com/spf13/cobra v1.6.1
 	github.com/traefik/yaegi v0.15.1
-	github.com/xo/dburl v0.13.0
+	github.com/xo/dburl v0.13.1
 	github.com/yookoala/realpath v1.0.0
 	golang.org/x/tools v0.7.0
 	mvdan.cc/gofumpt v0.4.0
