@@ -206,6 +206,16 @@ func (t *Time) Parse(s string) error {
 	return ErrInvalidTime(s)
 }
 
+// MarshalJSON satisfies the json.Marshaler interface.
+func (t Time) MarshalJSON() ([]byte, error) {
+	return t.time.MarshalJSON()
+}
+
+// UnmarshalJSON satisfies the json.Unmarshaler interface.
+func (t *Time) UnmarshalJSON(data []byte) error {
+	return t.time.UnmarshalJSON(data)
+}
+
 // TimestampFormats are the timestamp formats used by SQLite3 database drivers
 // to store a time.Time in SQLite3.
 //
