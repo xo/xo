@@ -54,8 +54,11 @@ func (ae AEnum) Value() (driver.Value, error) {
 
 // Scan satisfies the sql.Scanner interface.
 func (ae *AEnum) Scan(v interface{}) error {
-	if buf, ok := v.([]byte); ok {
-		return ae.UnmarshalText(buf)
+	switch x := v.(type) {
+	case []byte:
+		return ae.UnmarshalText(x)
+	case string:
+		return ae.UnmarshalText([]byte(x))
 	}
 	return ErrInvalidAEnum(fmt.Sprintf("%T", v))
 }

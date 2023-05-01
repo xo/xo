@@ -54,8 +54,11 @@ func (aen AEnumNullable) Value() (driver.Value, error) {
 
 // Scan satisfies the sql.Scanner interface.
 func (aen *AEnumNullable) Scan(v interface{}) error {
-	if buf, ok := v.([]byte); ok {
-		return aen.UnmarshalText(buf)
+	switch x := v.(type) {
+	case []byte:
+		return aen.UnmarshalText(x)
+	case string:
+		return aen.UnmarshalText([]byte(x))
 	}
 	return ErrInvalidAEnumNullable(fmt.Sprintf("%T", v))
 }

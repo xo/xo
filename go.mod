@@ -4,15 +4,15 @@ go 1.19
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/go-sql-driver/mysql v1.7.0
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gobwas/glob v0.2.3
 	github.com/goccy/go-yaml v1.11.0
 	github.com/kenshaw/inflector v0.2.0
 	github.com/kenshaw/snaker v0.2.0
-	github.com/lib/pq v1.10.7
+	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v0.21.0
-	github.com/sijms/go-ora/v2 v2.6.17
+	github.com/sijms/go-ora/v2 v2.7.2
 	github.com/spf13/cobra v1.7.0
 	github.com/traefik/yaegi v0.15.1
 	github.com/xo/dburl v0.14.2

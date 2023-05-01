@@ -54,8 +54,11 @@ func (bt BookType) Value() (driver.Value, error) {
 
 // Scan satisfies the sql.Scanner interface.
 func (bt *BookType) Scan(v interface{}) error {
-	if buf, ok := v.([]byte); ok {
-		return bt.UnmarshalText(buf)
+	switch x := v.(type) {
+	case []byte:
+		return bt.UnmarshalText(x)
+	case string:
+		return bt.UnmarshalText([]byte(x))
 	}
 	return ErrInvalidBookType(fmt.Sprintf("%T", v))
 }
