@@ -1,6 +1,6 @@
 module github.com/xo/xo
 
-go 1.19
+go 1.20
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
@@ -17,7 +17,7 @@ require (
 	github.com/traefik/yaegi v0.15.1
 	github.com/xo/dburl v0.14.2
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/tools v0.9.0
+	golang.org/x/tools v0.9.1
 	mvdan.cc/gofumpt v0.5.0
 )
 

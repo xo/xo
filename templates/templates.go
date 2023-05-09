@@ -6,7 +6,6 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -227,7 +226,6 @@ func (ts *Set) Pre(ctx context.Context, outDir string, mode string, set *xo.Set)
 		return
 	}
 	if target.Type.Pre == nil {
-
 	}
 	out := os.DirFS(outDir)
 	ts.err = target.Type.Pre(ctx, mode, set, out, ts.addFile(ctx))
@@ -355,7 +353,7 @@ func (ts *Set) Dump(out string) {
 	sort.Strings(files)
 	for _, file := range files {
 		buf := ts.files[file].Buf.Bytes()
-		if err := ioutil.WriteFile(filepath.Join(out, file), buf, 0644); err != nil {
+		if err := os.WriteFile(filepath.Join(out, file), buf, 0o644); err != nil {
 			ts.files[file].Err = append(ts.files[file].Err, err)
 		}
 	}
@@ -488,7 +486,7 @@ func (typ TemplateType) Load(ctx context.Context, fs fs.FS, tpl Template) (*temp
 	}
 	defer f.Close()
 	// read template
-	buf, err := ioutil.ReadAll(f)
+	buf, err := io.ReadAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read template %s: %w", name, err)
 	}
@@ -524,7 +522,7 @@ func (typ TemplateType) LoadFile(ctx context.Context, file string, doAppend bool
 		case fi.IsDir():
 			return nil, fmt.Errorf("%s is a directory: cannot emit template", name)
 		}
-		return ioutil.ReadFile(name)
+		return os.ReadFile(name)
 }
 */
 

@@ -15,18 +15,18 @@ type APrimaryMulti struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the APrimaryMulti exists in the database.
+// Exists returns true when the [APrimaryMulti] exists in the database.
 func (apm *APrimaryMulti) Exists() bool {
 	return apm._exists
 }
 
-// Deleted returns true when the APrimaryMulti has been marked for deletion from
-// the database.
+// Deleted returns true when the [APrimaryMulti] has been marked for deletion
+// from the database.
 func (apm *APrimaryMulti) Deleted() bool {
 	return apm._deleted
 }
 
-// Insert inserts the APrimaryMulti to the database.
+// Insert inserts the [APrimaryMulti] to the database.
 func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	switch {
 	case apm._exists: // already exists
@@ -50,7 +50,7 @@ func (apm *APrimaryMulti) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a APrimaryMulti in the database.
+// Update updates a [APrimaryMulti] in the database.
 func (apm *APrimaryMulti) Update(ctx context.Context, db DB) error {
 	switch {
 	case !apm._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (apm *APrimaryMulti) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the APrimaryMulti to the database.
+// Save saves the [APrimaryMulti] to the database.
 func (apm *APrimaryMulti) Save(ctx context.Context, db DB) error {
 	if apm.Exists() {
 		return apm.Update(ctx, db)
@@ -78,7 +78,7 @@ func (apm *APrimaryMulti) Save(ctx context.Context, db DB) error {
 	return apm.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for APrimaryMulti.
+// Upsert performs an upsert for [APrimaryMulti].
 func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case apm._deleted: // deleted
@@ -109,7 +109,7 @@ func (apm *APrimaryMulti) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the APrimaryMulti from the database.
+// Delete deletes the [APrimaryMulti] from the database.
 func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !apm._exists: // doesn't exist
@@ -130,7 +130,7 @@ func (apm *APrimaryMulti) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// APrimaryMultiByAKey retrieves a row from 'a_bit_of_everything.a_primary_multi' as a APrimaryMulti.
+// APrimaryMultiByAKey retrieves a row from 'a_bit_of_everything.a_primary_multi' as a [APrimaryMulti].
 //
 // Generated from index 'a_primary_multi_pkey'.
 func APrimaryMultiByAKey(ctx context.Context, db DB, aKey int) (*APrimaryMulti, error) {

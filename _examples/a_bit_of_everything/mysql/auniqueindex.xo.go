@@ -12,7 +12,7 @@ type AUniqueIndex struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
 }
 
-// AUniqueIndexByAKey retrieves a row from 'a_bit_of_everything.a_unique_index' as a AUniqueIndex.
+// AUniqueIndexByAKey retrieves a row from 'a_bit_of_everything.a_unique_index' as a [AUniqueIndex].
 //
 // Generated from index 'a_key'.
 func AUniqueIndexByAKey(ctx context.Context, db DB, aKey sql.NullInt64) (*AUniqueIndex, error) {

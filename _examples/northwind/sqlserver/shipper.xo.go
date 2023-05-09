@@ -16,18 +16,18 @@ type Shipper struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Shipper exists in the database.
+// Exists returns true when the [Shipper] exists in the database.
 func (s *Shipper) Exists() bool {
 	return s._exists
 }
 
-// Deleted returns true when the Shipper has been marked for deletion from
-// the database.
+// Deleted returns true when the [Shipper] has been marked for deletion
+// from the database.
 func (s *Shipper) Deleted() bool {
 	return s._deleted
 }
 
-// Insert inserts the Shipper to the database.
+// Insert inserts the [Shipper] to the database.
 func (s *Shipper) Insert(ctx context.Context, db DB) error {
 	switch {
 	case s._exists: // already exists
@@ -51,7 +51,7 @@ func (s *Shipper) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Shipper in the database.
+// Update updates a [Shipper] in the database.
 func (s *Shipper) Update(ctx context.Context, db DB) error {
 	switch {
 	case !s._exists: // doesn't exist
@@ -71,7 +71,7 @@ func (s *Shipper) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Shipper to the database.
+// Save saves the [Shipper] to the database.
 func (s *Shipper) Save(ctx context.Context, db DB) error {
 	if s.Exists() {
 		return s.Update(ctx, db)
@@ -79,7 +79,7 @@ func (s *Shipper) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Shipper.
+// Upsert performs an upsert for [Shipper].
 func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case s._deleted: // deleted
@@ -110,7 +110,7 @@ func (s *Shipper) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Shipper from the database.
+// Delete deletes the [Shipper] from the database.
 func (s *Shipper) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !s._exists: // doesn't exist
@@ -131,7 +131,7 @@ func (s *Shipper) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// ShipperByShipperID retrieves a row from 'northwind.shippers' as a Shipper.
+// ShipperByShipperID retrieves a row from 'northwind.shippers' as a [Shipper].
 //
 // Generated from index 'shippers_pkey'.
 func ShipperByShipperID(ctx context.Context, db DB, shipperID int16) (*Shipper, error) {

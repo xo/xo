@@ -21,18 +21,18 @@ type DjangoAdminLog struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the DjangoAdminLog exists in the database.
+// Exists returns true when the [DjangoAdminLog] exists in the database.
 func (dal *DjangoAdminLog) Exists() bool {
 	return dal._exists
 }
 
-// Deleted returns true when the DjangoAdminLog has been marked for deletion from
-// the database.
+// Deleted returns true when the [DjangoAdminLog] has been marked for deletion
+// from the database.
 func (dal *DjangoAdminLog) Deleted() bool {
 	return dal._deleted
 }
 
-// Insert inserts the DjangoAdminLog to the database.
+// Insert inserts the [DjangoAdminLog] to the database.
 func (dal *DjangoAdminLog) Insert(ctx context.Context, db DB) error {
 	switch {
 	case dal._exists: // already exists
@@ -63,7 +63,7 @@ func (dal *DjangoAdminLog) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a DjangoAdminLog in the database.
+// Update updates a [DjangoAdminLog] in the database.
 func (dal *DjangoAdminLog) Update(ctx context.Context, db DB) error {
 	switch {
 	case !dal._exists: // doesn't exist
@@ -83,7 +83,7 @@ func (dal *DjangoAdminLog) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the DjangoAdminLog to the database.
+// Save saves the [DjangoAdminLog] to the database.
 func (dal *DjangoAdminLog) Save(ctx context.Context, db DB) error {
 	if dal.Exists() {
 		return dal.Update(ctx, db)
@@ -91,7 +91,7 @@ func (dal *DjangoAdminLog) Save(ctx context.Context, db DB) error {
 	return dal.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for DjangoAdminLog.
+// Upsert performs an upsert for [DjangoAdminLog].
 func (dal *DjangoAdminLog) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case dal._deleted: // deleted
@@ -116,7 +116,7 @@ func (dal *DjangoAdminLog) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the DjangoAdminLog from the database.
+// Delete deletes the [DjangoAdminLog] from the database.
 func (dal *DjangoAdminLog) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !dal._exists: // doesn't exist
@@ -137,7 +137,7 @@ func (dal *DjangoAdminLog) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoAdminLogByContentTypeID retrieves a row from 'django_admin_log' as a DjangoAdminLog.
+// DjangoAdminLogByContentTypeID retrieves a row from 'django_admin_log' as a [DjangoAdminLog].
 //
 // Generated from index 'django_admin_log_content_type_id_c4bce8eb'.
 func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql.NullInt64) ([]*DjangoAdminLog, error) {
@@ -171,7 +171,7 @@ func DjangoAdminLogByContentTypeID(ctx context.Context, db DB, contentTypeID sql
 	return res, nil
 }
 
-// DjangoAdminLogByID retrieves a row from 'django_admin_log' as a DjangoAdminLog.
+// DjangoAdminLogByID retrieves a row from 'django_admin_log' as a [DjangoAdminLog].
 //
 // Generated from index 'django_admin_log_id_pkey'.
 func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, error) {
@@ -191,7 +191,7 @@ func DjangoAdminLogByID(ctx context.Context, db DB, id int) (*DjangoAdminLog, er
 	return &dal, nil
 }
 
-// DjangoAdminLogByUserID retrieves a row from 'django_admin_log' as a DjangoAdminLog.
+// DjangoAdminLogByUserID retrieves a row from 'django_admin_log' as a [DjangoAdminLog].
 //
 // Generated from index 'django_admin_log_user_id_c564eba6'.
 func DjangoAdminLogByUserID(ctx context.Context, db DB, userID int) ([]*DjangoAdminLog, error) {
@@ -225,14 +225,14 @@ func DjangoAdminLogByUserID(ctx context.Context, db DB, userID int) ([]*DjangoAd
 	return res, nil
 }
 
-// DjangoContentType returns the DjangoContentType associated with the DjangoAdminLog's (ContentTypeID).
+// DjangoContentType returns the DjangoContentType associated with the [DjangoAdminLog]'s (ContentTypeID).
 //
 // Generated from foreign key 'django_admin_log_content_type_id_fkey'.
 func (dal *DjangoAdminLog) DjangoContentType(ctx context.Context, db DB) (*DjangoContentType, error) {
 	return DjangoContentTypeByID(ctx, db, int(dal.ContentTypeID.Int64))
 }
 
-// AuthUser returns the AuthUser associated with the DjangoAdminLog's (UserID).
+// AuthUser returns the AuthUser associated with the [DjangoAdminLog]'s (UserID).
 //
 // Generated from foreign key 'django_admin_log_user_id_fkey'.
 func (dal *DjangoAdminLog) AuthUser(ctx context.Context, db DB) (*AuthUser, error) {

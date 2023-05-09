@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -829,7 +828,7 @@ func NewFuncs(ctx context.Context) (template.FuncMap, error) {
 	// load inject
 	inject := Inject(ctx)
 	if s := InjectFile(ctx); s != "" {
-		buf, err := ioutil.ReadFile(s)
+		buf, err := os.ReadFile(s)
 		if err != nil {
 			return nil, fmt.Errorf("unable to read file: %v", err)
 		}

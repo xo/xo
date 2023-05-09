@@ -8,7 +8,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"sort"
@@ -54,7 +53,7 @@ func run(ctx context.Context, dsn, out string) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(out, buf, 0644)
+	return os.WriteFile(out, buf, 0o644)
 }
 
 // gen generates the file.

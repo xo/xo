@@ -13,7 +13,7 @@ type AUniqueIndexComposite struct {
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
 }
 
-// AUniqueIndexCompositeByAKey1AKey2 retrieves a row from 'a_unique_index_composite' as a AUniqueIndexComposite.
+// AUniqueIndexCompositeByAKey1AKey2 retrieves a row from 'a_unique_index_composite' as a [AUniqueIndexComposite].
 //
 // Generated from index 'sqlite_autoindex_a_unique_index_composite_1'.
 func AUniqueIndexCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 sql.NullInt64) (*AUniqueIndexComposite, error) {

@@ -16,18 +16,18 @@ type AuthPermission struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthPermission exists in the database.
+// Exists returns true when the [AuthPermission] exists in the database.
 func (ap *AuthPermission) Exists() bool {
 	return ap._exists
 }
 
-// Deleted returns true when the AuthPermission has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthPermission] has been marked for deletion
+// from the database.
 func (ap *AuthPermission) Deleted() bool {
 	return ap._deleted
 }
 
-// Insert inserts the AuthPermission to the database.
+// Insert inserts the [AuthPermission] to the database.
 func (ap *AuthPermission) Insert(ctx context.Context, db DB) error {
 	switch {
 	case ap._exists: // already exists
@@ -58,7 +58,7 @@ func (ap *AuthPermission) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthPermission in the database.
+// Update updates a [AuthPermission] in the database.
 func (ap *AuthPermission) Update(ctx context.Context, db DB) error {
 	switch {
 	case !ap._exists: // doesn't exist
@@ -78,7 +78,7 @@ func (ap *AuthPermission) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthPermission to the database.
+// Save saves the [AuthPermission] to the database.
 func (ap *AuthPermission) Save(ctx context.Context, db DB) error {
 	if ap.Exists() {
 		return ap.Update(ctx, db)
@@ -86,7 +86,7 @@ func (ap *AuthPermission) Save(ctx context.Context, db DB) error {
 	return ap.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthPermission.
+// Upsert performs an upsert for [AuthPermission].
 func (ap *AuthPermission) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case ap._deleted: // deleted
@@ -110,7 +110,7 @@ func (ap *AuthPermission) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthPermission from the database.
+// Delete deletes the [AuthPermission] from the database.
 func (ap *AuthPermission) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ap._exists: // doesn't exist
@@ -131,7 +131,7 @@ func (ap *AuthPermission) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthPermissionByContentTypeIDCodename retrieves a row from 'django.auth_permission' as a AuthPermission.
+// AuthPermissionByContentTypeIDCodename retrieves a row from 'django.auth_permission' as a [AuthPermission].
 //
 // Generated from index 'auth_permission_content_type_id_codename_01ab375a_uniq'.
 func AuthPermissionByContentTypeIDCodename(ctx context.Context, db DB, contentTypeID int, codename string) (*AuthPermission, error) {
@@ -151,7 +151,7 @@ func AuthPermissionByContentTypeIDCodename(ctx context.Context, db DB, contentTy
 	return &ap, nil
 }
 
-// AuthPermissionByID retrieves a row from 'django.auth_permission' as a AuthPermission.
+// AuthPermissionByID retrieves a row from 'django.auth_permission' as a [AuthPermission].
 //
 // Generated from index 'auth_permission_id_pkey'.
 func AuthPermissionByID(ctx context.Context, db DB, id int) (*AuthPermission, error) {
@@ -171,7 +171,7 @@ func AuthPermissionByID(ctx context.Context, db DB, id int) (*AuthPermission, er
 	return &ap, nil
 }
 
-// DjangoContentType returns the DjangoContentType associated with the AuthPermission's (ContentTypeID).
+// DjangoContentType returns the DjangoContentType associated with the [AuthPermission]'s (ContentTypeID).
 //
 // Generated from foreign key 'auth_permission_content_type_id_2f476e4b_fk_django_co'.
 func (ap *AuthPermission) DjangoContentType(ctx context.Context, db DB) (*DjangoContentType, error) {

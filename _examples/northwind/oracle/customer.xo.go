@@ -24,18 +24,18 @@ type Customer struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Customer exists in the database.
+// Exists returns true when the [Customer] exists in the database.
 func (c *Customer) Exists() bool {
 	return c._exists
 }
 
-// Deleted returns true when the Customer has been marked for deletion from
-// the database.
+// Deleted returns true when the [Customer] has been marked for deletion
+// from the database.
 func (c *Customer) Deleted() bool {
 	return c._deleted
 }
 
-// Insert inserts the Customer to the database.
+// Insert inserts the [Customer] to the database.
 func (c *Customer) Insert(ctx context.Context, db DB) error {
 	switch {
 	case c._exists: // already exists
@@ -59,7 +59,7 @@ func (c *Customer) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Customer in the database.
+// Update updates a [Customer] in the database.
 func (c *Customer) Update(ctx context.Context, db DB) error {
 	switch {
 	case !c._exists: // doesn't exist
@@ -79,7 +79,7 @@ func (c *Customer) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Customer to the database.
+// Save saves the [Customer] to the database.
 func (c *Customer) Save(ctx context.Context, db DB) error {
 	if c.Exists() {
 		return c.Update(ctx, db)
@@ -87,7 +87,7 @@ func (c *Customer) Save(ctx context.Context, db DB) error {
 	return c.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Customer.
+// Upsert performs an upsert for [Customer].
 func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case c._deleted: // deleted
@@ -118,7 +118,7 @@ func (c *Customer) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Customer from the database.
+// Delete deletes the [Customer] from the database.
 func (c *Customer) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !c._exists: // doesn't exist
@@ -139,7 +139,7 @@ func (c *Customer) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// CustomerByCustomerID retrieves a row from 'northwind.customers' as a Customer.
+// CustomerByCustomerID retrieves a row from 'northwind.customers' as a [Customer].
 //
 // Generated from index 'customers_pkey'.
 func CustomerByCustomerID(ctx context.Context, db DB, customerID string) (*Customer, error) {

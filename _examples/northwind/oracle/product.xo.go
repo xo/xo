@@ -23,18 +23,18 @@ type Product struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Product exists in the database.
+// Exists returns true when the [Product] exists in the database.
 func (p *Product) Exists() bool {
 	return p._exists
 }
 
-// Deleted returns true when the Product has been marked for deletion from
-// the database.
+// Deleted returns true when the [Product] has been marked for deletion
+// from the database.
 func (p *Product) Deleted() bool {
 	return p._deleted
 }
 
-// Insert inserts the Product to the database.
+// Insert inserts the [Product] to the database.
 func (p *Product) Insert(ctx context.Context, db DB) error {
 	switch {
 	case p._exists: // already exists
@@ -58,7 +58,7 @@ func (p *Product) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Product in the database.
+// Update updates a [Product] in the database.
 func (p *Product) Update(ctx context.Context, db DB) error {
 	switch {
 	case !p._exists: // doesn't exist
@@ -78,7 +78,7 @@ func (p *Product) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Product to the database.
+// Save saves the [Product] to the database.
 func (p *Product) Save(ctx context.Context, db DB) error {
 	if p.Exists() {
 		return p.Update(ctx, db)
@@ -86,7 +86,7 @@ func (p *Product) Save(ctx context.Context, db DB) error {
 	return p.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Product.
+// Upsert performs an upsert for [Product].
 func (p *Product) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case p._deleted: // deleted
@@ -117,7 +117,7 @@ func (p *Product) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Product from the database.
+// Delete deletes the [Product] from the database.
 func (p *Product) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !p._exists: // doesn't exist
@@ -138,7 +138,7 @@ func (p *Product) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// ProductByProductID retrieves a row from 'northwind.products' as a Product.
+// ProductByProductID retrieves a row from 'northwind.products' as a [Product].
 //
 // Generated from index 'products_pkey'.
 func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, error) {
@@ -158,14 +158,14 @@ func ProductByProductID(ctx context.Context, db DB, productID int) (*Product, er
 	return &p, nil
 }
 
-// Category returns the Category associated with the Product's (CategoryID).
+// Category returns the Category associated with the [Product]'s (CategoryID).
 //
 // Generated from foreign key 'products_category_id_fkey'.
 func (p *Product) Category(ctx context.Context, db DB) (*Category, error) {
 	return CategoryByCategoryID(ctx, db, int(p.CategoryID.Int64))
 }
 
-// Supplier returns the Supplier associated with the Product's (SupplierID).
+// Supplier returns the Supplier associated with the [Product]'s (SupplierID).
 //
 // Generated from foreign key 'products_suplier_id_fkey'.
 func (p *Product) Supplier(ctx context.Context, db DB) (*Supplier, error) {

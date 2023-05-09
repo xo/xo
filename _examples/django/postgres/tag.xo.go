@@ -14,18 +14,18 @@ type Tag struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Tag exists in the database.
+// Exists returns true when the [Tag] exists in the database.
 func (t *Tag) Exists() bool {
 	return t._exists
 }
 
-// Deleted returns true when the Tag has been marked for deletion from
-// the database.
+// Deleted returns true when the [Tag] has been marked for deletion
+// from the database.
 func (t *Tag) Deleted() bool {
 	return t._deleted
 }
 
-// Insert inserts the Tag to the database.
+// Insert inserts the [Tag] to the database.
 func (t *Tag) Insert(ctx context.Context, db DB) error {
 	switch {
 	case t._exists: // already exists
@@ -49,7 +49,7 @@ func (t *Tag) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Tag in the database.
+// Update updates a [Tag] in the database.
 func (t *Tag) Update(ctx context.Context, db DB) error {
 	switch {
 	case !t._exists: // doesn't exist
@@ -69,7 +69,7 @@ func (t *Tag) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Tag to the database.
+// Save saves the [Tag] to the database.
 func (t *Tag) Save(ctx context.Context, db DB) error {
 	if t.Exists() {
 		return t.Update(ctx, db)
@@ -77,7 +77,7 @@ func (t *Tag) Save(ctx context.Context, db DB) error {
 	return t.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Tag.
+// Upsert performs an upsert for [Tag].
 func (t *Tag) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case t._deleted: // deleted
@@ -102,7 +102,7 @@ func (t *Tag) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Tag from the database.
+// Delete deletes the [Tag] from the database.
 func (t *Tag) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !t._exists: // doesn't exist
@@ -123,7 +123,7 @@ func (t *Tag) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// TagByTagID retrieves a row from 'public.tags' as a Tag.
+// TagByTagID retrieves a row from 'public.tags' as a [Tag].
 //
 // Generated from index 'tags_pkey'.
 func TagByTagID(ctx context.Context, db DB, tagID int64) (*Tag, error) {

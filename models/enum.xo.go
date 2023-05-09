@@ -11,7 +11,7 @@ type Enum struct {
 	EnumName string `json:"enum_name"` // enum_name
 }
 
-// PostgresEnums runs a custom query, returning results as Enum.
+// PostgresEnums runs a custom query, returning results as [Enum].
 func PostgresEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -43,7 +43,7 @@ func PostgresEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	return res, nil
 }
 
-// MysqlEnums runs a custom query, returning results as Enum.
+// MysqlEnums runs a custom query, returning results as [Enum].
 func MysqlEnums(ctx context.Context, db DB, schema string) ([]*Enum, error) {
 	// query
 	const sqlstr = `SELECT ` +

@@ -18,7 +18,7 @@ type AuthorBookResult struct {
 	BookTags   pq.StringArray `json:"book_tags"`   // book_tags
 }
 
-// AuthorBookResultsByTags runs a custom query, returning results as AuthorBookResult.
+// AuthorBookResultsByTags runs a custom query, returning results as [AuthorBookResult].
 func AuthorBookResultsByTags(ctx context.Context, db DB, tags pq.StringArray) ([]*AuthorBookResult, error) {
 	// query
 	const sqlstr = `SELECT ` +

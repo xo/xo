@@ -31,18 +31,18 @@ type Employee struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Employee exists in the database.
+// Exists returns true when the [Employee] exists in the database.
 func (e *Employee) Exists() bool {
 	return e._exists
 }
 
-// Deleted returns true when the Employee has been marked for deletion from
-// the database.
+// Deleted returns true when the [Employee] has been marked for deletion
+// from the database.
 func (e *Employee) Deleted() bool {
 	return e._deleted
 }
 
-// Insert inserts the Employee to the database.
+// Insert inserts the [Employee] to the database.
 func (e *Employee) Insert(ctx context.Context, db DB) error {
 	switch {
 	case e._exists: // already exists
@@ -66,7 +66,7 @@ func (e *Employee) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Employee in the database.
+// Update updates a [Employee] in the database.
 func (e *Employee) Update(ctx context.Context, db DB) error {
 	switch {
 	case !e._exists: // doesn't exist
@@ -86,7 +86,7 @@ func (e *Employee) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Employee to the database.
+// Save saves the [Employee] to the database.
 func (e *Employee) Save(ctx context.Context, db DB) error {
 	if e.Exists() {
 		return e.Update(ctx, db)
@@ -94,7 +94,7 @@ func (e *Employee) Save(ctx context.Context, db DB) error {
 	return e.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Employee.
+// Upsert performs an upsert for [Employee].
 func (e *Employee) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case e._deleted: // deleted
@@ -119,7 +119,7 @@ func (e *Employee) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Employee from the database.
+// Delete deletes the [Employee] from the database.
 func (e *Employee) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !e._exists: // doesn't exist
@@ -140,7 +140,7 @@ func (e *Employee) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// EmployeeByEmployeeID retrieves a row from 'public.employees' as a Employee.
+// EmployeeByEmployeeID retrieves a row from 'public.employees' as a [Employee].
 //
 // Generated from index 'employees_pkey'.
 func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int) (*Employee, error) {
@@ -160,7 +160,7 @@ func EmployeeByEmployeeID(ctx context.Context, db DB, employeeID int) (*Employee
 	return &e, nil
 }
 
-// Employee returns the Employee associated with the Employee's (ReportsTo).
+// Employee returns the Employee associated with the [Employee]'s (ReportsTo).
 //
 // Generated from foreign key 'employees_reports_to_fkey'.
 func (e *Employee) Employee(ctx context.Context, db DB) (*Employee, error) {

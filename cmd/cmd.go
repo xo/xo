@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -313,7 +313,7 @@ func DumpCommand(ctx context.Context, ts *templates.Set, args *Args) (*cobra.Com
 				if err != nil {
 					return err
 				}
-				return ioutil.WriteFile(filepath.Join(v[0], n), buf, 0o644)
+				return os.WriteFile(filepath.Join(v[0], n), buf, 0o644)
 			})
 		},
 	}
@@ -463,7 +463,7 @@ func checkArgs(cmd *cobra.Command, mode string, ts *templates.Set, args *Args) e
 	}
 	// read query string from stdin if not provided via --query
 	if mode == "query" && args.QueryParams.Query == "" {
-		buf, err := ioutil.ReadAll(os.Stdin)
+		buf, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return err
 		}

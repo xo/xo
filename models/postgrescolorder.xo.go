@@ -11,7 +11,7 @@ type PostgresColOrder struct {
 	Ord string `json:"ord"` // ord
 }
 
-// PostgresGetColOrder runs a custom query, returning results as PostgresColOrder.
+// PostgresGetColOrder runs a custom query, returning results as [PostgresColOrder].
 func PostgresGetColOrder(ctx context.Context, db DB, schema, index string) (*PostgresColOrder, error) {
 	// query
 	const sqlstr = `SELECT ` +

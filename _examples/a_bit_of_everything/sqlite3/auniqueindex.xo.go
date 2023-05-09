@@ -12,7 +12,7 @@ type AUniqueIndex struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
 }
 
-// AUniqueIndexByAKey retrieves a row from 'a_unique_index' as a AUniqueIndex.
+// AUniqueIndexByAKey retrieves a row from 'a_unique_index' as a [AUniqueIndex].
 //
 // Generated from index 'sqlite_autoindex_a_unique_index_1'.
 func AUniqueIndexByAKey(ctx context.Context, db DB, aKey sql.NullInt64) (*AUniqueIndex, error) {

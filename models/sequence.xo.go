@@ -11,7 +11,7 @@ type Sequence struct {
 	ColumnName string `json:"column_name"` // column_name
 }
 
-// PostgresTableSequences runs a custom query, returning results as Sequence.
+// PostgresTableSequences runs a custom query, returning results as [Sequence].
 func PostgresTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -47,7 +47,7 @@ func PostgresTableSequences(ctx context.Context, db DB, schema, table string) ([
 	return res, nil
 }
 
-// MysqlTableSequences runs a custom query, returning results as Sequence.
+// MysqlTableSequences runs a custom query, returning results as [Sequence].
 func MysqlTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -79,7 +79,7 @@ func MysqlTableSequences(ctx context.Context, db DB, schema, table string) ([]*S
 	return res, nil
 }
 
-// Sqlite3TableSequences runs a custom query, returning results as Sequence.
+// Sqlite3TableSequences runs a custom query, returning results as [Sequence].
 func Sqlite3TableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -135,7 +135,7 @@ func Sqlite3TableSequences(ctx context.Context, db DB, schema, table string) ([]
 	return res, nil
 }
 
-// SqlserverTableSequences runs a custom query, returning results as Sequence.
+// SqlserverTableSequences runs a custom query, returning results as [Sequence].
 func SqlserverTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -169,7 +169,7 @@ func SqlserverTableSequences(ctx context.Context, db DB, schema, table string) (
 	return res, nil
 }
 
-// OracleTableSequences runs a custom query, returning results as Sequence.
+// OracleTableSequences runs a custom query, returning results as [Sequence].
 func OracleTableSequences(ctx context.Context, db DB, schema, table string) ([]*Sequence, error) {
 	// query
 	const sqlstr = `SELECT ` +

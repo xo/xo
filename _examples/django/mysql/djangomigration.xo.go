@@ -17,18 +17,18 @@ type DjangoMigration struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the DjangoMigration exists in the database.
+// Exists returns true when the [DjangoMigration] exists in the database.
 func (dm *DjangoMigration) Exists() bool {
 	return dm._exists
 }
 
-// Deleted returns true when the DjangoMigration has been marked for deletion from
-// the database.
+// Deleted returns true when the [DjangoMigration] has been marked for deletion
+// from the database.
 func (dm *DjangoMigration) Deleted() bool {
 	return dm._deleted
 }
 
-// Insert inserts the DjangoMigration to the database.
+// Insert inserts the [DjangoMigration] to the database.
 func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 	switch {
 	case dm._exists: // already exists
@@ -59,7 +59,7 @@ func (dm *DjangoMigration) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a DjangoMigration in the database.
+// Update updates a [DjangoMigration] in the database.
 func (dm *DjangoMigration) Update(ctx context.Context, db DB) error {
 	switch {
 	case !dm._exists: // doesn't exist
@@ -79,7 +79,7 @@ func (dm *DjangoMigration) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the DjangoMigration to the database.
+// Save saves the [DjangoMigration] to the database.
 func (dm *DjangoMigration) Save(ctx context.Context, db DB) error {
 	if dm.Exists() {
 		return dm.Update(ctx, db)
@@ -87,7 +87,7 @@ func (dm *DjangoMigration) Save(ctx context.Context, db DB) error {
 	return dm.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for DjangoMigration.
+// Upsert performs an upsert for [DjangoMigration].
 func (dm *DjangoMigration) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case dm._deleted: // deleted
@@ -111,7 +111,7 @@ func (dm *DjangoMigration) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the DjangoMigration from the database.
+// Delete deletes the [DjangoMigration] from the database.
 func (dm *DjangoMigration) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !dm._exists: // doesn't exist
@@ -132,7 +132,7 @@ func (dm *DjangoMigration) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoMigrationByID retrieves a row from 'django.django_migrations' as a DjangoMigration.
+// DjangoMigrationByID retrieves a row from 'django.django_migrations' as a [DjangoMigration].
 //
 // Generated from index 'django_migrations_id_pkey'.
 func DjangoMigrationByID(ctx context.Context, db DB, id int64) (*DjangoMigration, error) {

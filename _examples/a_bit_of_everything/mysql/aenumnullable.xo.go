@@ -18,7 +18,7 @@ const (
 	AEnumNullableTwo AEnumNullable = 2
 )
 
-// String satisfies the fmt.Stringer interface.
+// String satisfies the [fmt.Stringer] interface.
 func (aen AEnumNullable) String() string {
 	switch aen {
 	case AEnumNullableOne:
@@ -29,12 +29,12 @@ func (aen AEnumNullable) String() string {
 	return fmt.Sprintf("AEnumNullable(%d)", aen)
 }
 
-// MarshalText marshals AEnumNullable into text.
+// MarshalText marshals [AEnumNullable] into text.
 func (aen AEnumNullable) MarshalText() ([]byte, error) {
 	return []byte(aen.String()), nil
 }
 
-// UnmarshalText unmarshals AEnumNullable from text.
+// UnmarshalText unmarshals [AEnumNullable] from text.
 func (aen *AEnumNullable) UnmarshalText(buf []byte) error {
 	switch str := string(buf); str {
 	case "ONE":
@@ -47,12 +47,12 @@ func (aen *AEnumNullable) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func (aen AEnumNullable) Value() (driver.Value, error) {
 	return aen.String(), nil
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func (aen *AEnumNullable) Scan(v interface{}) error {
 	switch x := v.(type) {
 	case []byte:
@@ -66,11 +66,11 @@ func (aen *AEnumNullable) Scan(v interface{}) error {
 // NullAEnumNullable represents a null 'a_enum_nullable' enum for schema 'a_bit_of_everything'.
 type NullAEnumNullable struct {
 	AEnumNullable AEnumNullable
-	// Valid is true if AEnumNullable is not null.
+	// Valid is true if [AEnumNullable] is not null.
 	Valid bool
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func (naen NullAEnumNullable) Value() (driver.Value, error) {
 	if !naen.Valid {
 		return nil, nil
@@ -78,7 +78,7 @@ func (naen NullAEnumNullable) Value() (driver.Value, error) {
 	return naen.AEnumNullable.Value()
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func (naen *NullAEnumNullable) Scan(v interface{}) error {
 	if v == nil {
 		naen.AEnumNullable, naen.Valid = 0, false
@@ -89,7 +89,7 @@ func (naen *NullAEnumNullable) Scan(v interface{}) error {
 	return err
 }
 
-// ErrInvalidAEnumNullable is the invalid AEnumNullable error.
+// ErrInvalidAEnumNullable is the invalid [AEnumNullable] error.
 type ErrInvalidAEnumNullable string
 
 // Error satisfies the error interface.

@@ -17,18 +17,18 @@ type UsState struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the UsState exists in the database.
+// Exists returns true when the [UsState] exists in the database.
 func (us *UsState) Exists() bool {
 	return us._exists
 }
 
-// Deleted returns true when the UsState has been marked for deletion from
-// the database.
+// Deleted returns true when the [UsState] has been marked for deletion
+// from the database.
 func (us *UsState) Deleted() bool {
 	return us._deleted
 }
 
-// Insert inserts the UsState to the database.
+// Insert inserts the [UsState] to the database.
 func (us *UsState) Insert(ctx context.Context, db DB) error {
 	switch {
 	case us._exists: // already exists
@@ -52,7 +52,7 @@ func (us *UsState) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a UsState in the database.
+// Update updates a [UsState] in the database.
 func (us *UsState) Update(ctx context.Context, db DB) error {
 	switch {
 	case !us._exists: // doesn't exist
@@ -72,7 +72,7 @@ func (us *UsState) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the UsState to the database.
+// Save saves the [UsState] to the database.
 func (us *UsState) Save(ctx context.Context, db DB) error {
 	if us.Exists() {
 		return us.Update(ctx, db)
@@ -80,7 +80,7 @@ func (us *UsState) Save(ctx context.Context, db DB) error {
 	return us.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for UsState.
+// Upsert performs an upsert for [UsState].
 func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case us._deleted: // deleted
@@ -104,7 +104,7 @@ func (us *UsState) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the UsState from the database.
+// Delete deletes the [UsState] from the database.
 func (us *UsState) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !us._exists: // doesn't exist
@@ -125,7 +125,7 @@ func (us *UsState) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// UsStateByStateID retrieves a row from 'northwind.us_states' as a UsState.
+// UsStateByStateID retrieves a row from 'northwind.us_states' as a [UsState].
 //
 // Generated from index 'us_states_state_id_pkey'.
 func UsStateByStateID(ctx context.Context, db DB, stateID int16) (*UsState, error) {

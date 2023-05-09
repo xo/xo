@@ -15,18 +15,18 @@ type AuthUserUserPermission struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthUserUserPermission exists in the database.
+// Exists returns true when the [AuthUserUserPermission] exists in the database.
 func (auup *AuthUserUserPermission) Exists() bool {
 	return auup._exists
 }
 
-// Deleted returns true when the AuthUserUserPermission has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthUserUserPermission] has been marked for deletion
+// from the database.
 func (auup *AuthUserUserPermission) Deleted() bool {
 	return auup._deleted
 }
 
-// Insert inserts the AuthUserUserPermission to the database.
+// Insert inserts the [AuthUserUserPermission] to the database.
 func (auup *AuthUserUserPermission) Insert(ctx context.Context, db DB) error {
 	switch {
 	case auup._exists: // already exists
@@ -57,7 +57,7 @@ func (auup *AuthUserUserPermission) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthUserUserPermission in the database.
+// Update updates a [AuthUserUserPermission] in the database.
 func (auup *AuthUserUserPermission) Update(ctx context.Context, db DB) error {
 	switch {
 	case !auup._exists: // doesn't exist
@@ -77,7 +77,7 @@ func (auup *AuthUserUserPermission) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthUserUserPermission to the database.
+// Save saves the [AuthUserUserPermission] to the database.
 func (auup *AuthUserUserPermission) Save(ctx context.Context, db DB) error {
 	if auup.Exists() {
 		return auup.Update(ctx, db)
@@ -85,7 +85,7 @@ func (auup *AuthUserUserPermission) Save(ctx context.Context, db DB) error {
 	return auup.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthUserUserPermission.
+// Upsert performs an upsert for [AuthUserUserPermission].
 func (auup *AuthUserUserPermission) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case auup._deleted: // deleted
@@ -109,7 +109,7 @@ func (auup *AuthUserUserPermission) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthUserUserPermission from the database.
+// Delete deletes the [AuthUserUserPermission] from the database.
 func (auup *AuthUserUserPermission) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !auup._exists: // doesn't exist
@@ -130,7 +130,7 @@ func (auup *AuthUserUserPermission) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthUserUserPermissionsByPermissionID retrieves a row from 'django.auth_user_user_permissions' as a AuthUserUserPermission.
+// AuthUserUserPermissionsByPermissionID retrieves a row from 'django.auth_user_user_permissions' as a [AuthUserUserPermission].
 //
 // Generated from index 'auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm'.
 func AuthUserUserPermissionsByPermissionID(ctx context.Context, db DB, permissionID int) ([]*AuthUserUserPermission, error) {
@@ -164,7 +164,7 @@ func AuthUserUserPermissionsByPermissionID(ctx context.Context, db DB, permissio
 	return res, nil
 }
 
-// AuthUserUserPermissionByID retrieves a row from 'django.auth_user_user_permissions' as a AuthUserUserPermission.
+// AuthUserUserPermissionByID retrieves a row from 'django.auth_user_user_permissions' as a [AuthUserUserPermission].
 //
 // Generated from index 'auth_user_user_permissions_id_pkey'.
 func AuthUserUserPermissionByID(ctx context.Context, db DB, id int64) (*AuthUserUserPermission, error) {
@@ -184,7 +184,7 @@ func AuthUserUserPermissionByID(ctx context.Context, db DB, id int64) (*AuthUser
 	return &auup, nil
 }
 
-// AuthUserUserPermissionByUserIDPermissionID retrieves a row from 'django.auth_user_user_permissions' as a AuthUserUserPermission.
+// AuthUserUserPermissionByUserIDPermissionID retrieves a row from 'django.auth_user_user_permissions' as a [AuthUserUserPermission].
 //
 // Generated from index 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq'.
 func AuthUserUserPermissionByUserIDPermissionID(ctx context.Context, db DB, userID, permissionID int) (*AuthUserUserPermission, error) {
@@ -204,14 +204,14 @@ func AuthUserUserPermissionByUserIDPermissionID(ctx context.Context, db DB, user
 	return &auup, nil
 }
 
-// AuthPermission returns the AuthPermission associated with the AuthUserUserPermission's (PermissionID).
+// AuthPermission returns the AuthPermission associated with the [AuthUserUserPermission]'s (PermissionID).
 //
 // Generated from foreign key 'auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm'.
 func (auup *AuthUserUserPermission) AuthPermission(ctx context.Context, db DB) (*AuthPermission, error) {
 	return AuthPermissionByID(ctx, db, auup.PermissionID)
 }
 
-// AuthUser returns the AuthUser associated with the AuthUserUserPermission's (UserID).
+// AuthUser returns the AuthUser associated with the [AuthUserUserPermission]'s (UserID).
 //
 // Generated from foreign key 'auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id'.
 func (auup *AuthUserUserPermission) AuthUser(ctx context.Context, db DB) (*AuthUser, error) {

@@ -25,18 +25,18 @@ type Supplier struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Supplier exists in the database.
+// Exists returns true when the [Supplier] exists in the database.
 func (s *Supplier) Exists() bool {
 	return s._exists
 }
 
-// Deleted returns true when the Supplier has been marked for deletion from
-// the database.
+// Deleted returns true when the [Supplier] has been marked for deletion
+// from the database.
 func (s *Supplier) Deleted() bool {
 	return s._deleted
 }
 
-// Insert inserts the Supplier to the database.
+// Insert inserts the [Supplier] to the database.
 func (s *Supplier) Insert(ctx context.Context, db DB) error {
 	switch {
 	case s._exists: // already exists
@@ -60,7 +60,7 @@ func (s *Supplier) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Supplier in the database.
+// Update updates a [Supplier] in the database.
 func (s *Supplier) Update(ctx context.Context, db DB) error {
 	switch {
 	case !s._exists: // doesn't exist
@@ -80,7 +80,7 @@ func (s *Supplier) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Supplier to the database.
+// Save saves the [Supplier] to the database.
 func (s *Supplier) Save(ctx context.Context, db DB) error {
 	if s.Exists() {
 		return s.Update(ctx, db)
@@ -88,7 +88,7 @@ func (s *Supplier) Save(ctx context.Context, db DB) error {
 	return s.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Supplier.
+// Upsert performs an upsert for [Supplier].
 func (s *Supplier) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case s._deleted: // deleted
@@ -119,7 +119,7 @@ func (s *Supplier) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Supplier from the database.
+// Delete deletes the [Supplier] from the database.
 func (s *Supplier) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !s._exists: // doesn't exist
@@ -140,7 +140,7 @@ func (s *Supplier) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// SupplierBySupplierID retrieves a row from 'northwind.suppliers' as a Supplier.
+// SupplierBySupplierID retrieves a row from 'northwind.suppliers' as a [Supplier].
 //
 // Generated from index 'suppliers_pkey'.
 func SupplierBySupplierID(ctx context.Context, db DB, supplierID int16) (*Supplier, error) {

@@ -12,7 +12,7 @@ type AIndex struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
 }
 
-// AIndexByAKey retrieves a row from 'a_bit_of_everything.a_index' as a AIndex.
+// AIndexByAKey retrieves a row from 'a_bit_of_everything.a_index' as a [AIndex].
 //
 // Generated from index 'a_index_idx'.
 func AIndexByAKey(ctx context.Context, db DB, aKey sql.NullInt64) ([]*AIndex, error) {

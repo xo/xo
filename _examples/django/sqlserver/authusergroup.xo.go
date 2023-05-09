@@ -15,18 +15,18 @@ type AuthUserGroup struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthUserGroup exists in the database.
+// Exists returns true when the [AuthUserGroup] exists in the database.
 func (aug *AuthUserGroup) Exists() bool {
 	return aug._exists
 }
 
-// Deleted returns true when the AuthUserGroup has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthUserGroup] has been marked for deletion
+// from the database.
 func (aug *AuthUserGroup) Deleted() bool {
 	return aug._deleted
 }
 
-// Insert inserts the AuthUserGroup to the database.
+// Insert inserts the [AuthUserGroup] to the database.
 func (aug *AuthUserGroup) Insert(ctx context.Context, db DB) error {
 	switch {
 	case aug._exists: // already exists
@@ -63,7 +63,7 @@ func (aug *AuthUserGroup) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthUserGroup in the database.
+// Update updates a [AuthUserGroup] in the database.
 func (aug *AuthUserGroup) Update(ctx context.Context, db DB) error {
 	switch {
 	case !aug._exists: // doesn't exist
@@ -83,7 +83,7 @@ func (aug *AuthUserGroup) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthUserGroup to the database.
+// Save saves the [AuthUserGroup] to the database.
 func (aug *AuthUserGroup) Save(ctx context.Context, db DB) error {
 	if aug.Exists() {
 		return aug.Update(ctx, db)
@@ -91,7 +91,7 @@ func (aug *AuthUserGroup) Save(ctx context.Context, db DB) error {
 	return aug.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthUserGroup.
+// Upsert performs an upsert for [AuthUserGroup].
 func (aug *AuthUserGroup) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case aug._deleted: // deleted
@@ -122,7 +122,7 @@ func (aug *AuthUserGroup) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthUserGroup from the database.
+// Delete deletes the [AuthUserGroup] from the database.
 func (aug *AuthUserGroup) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !aug._exists: // doesn't exist
@@ -143,7 +143,7 @@ func (aug *AuthUserGroup) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthUserGroupsByGroupID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
+// AuthUserGroupsByGroupID retrieves a row from 'django.auth_user_groups' as a [AuthUserGroup].
 //
 // Generated from index 'auth_user_groups_group_id_97559544'.
 func AuthUserGroupsByGroupID(ctx context.Context, db DB, groupID int) ([]*AuthUserGroup, error) {
@@ -177,7 +177,7 @@ func AuthUserGroupsByGroupID(ctx context.Context, db DB, groupID int) ([]*AuthUs
 	return res, nil
 }
 
-// AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
+// AuthUserGroupByID retrieves a row from 'django.auth_user_groups' as a [AuthUserGroup].
 //
 // Generated from index 'auth_user_groups_id_pkey'.
 func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, error) {
@@ -197,7 +197,7 @@ func AuthUserGroupByID(ctx context.Context, db DB, id int64) (*AuthUserGroup, er
 	return &aug, nil
 }
 
-// AuthUserGroupsByUserID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
+// AuthUserGroupsByUserID retrieves a row from 'django.auth_user_groups' as a [AuthUserGroup].
 //
 // Generated from index 'auth_user_groups_user_id_6a12ed8b'.
 func AuthUserGroupsByUserID(ctx context.Context, db DB, userID int) ([]*AuthUserGroup, error) {
@@ -231,7 +231,7 @@ func AuthUserGroupsByUserID(ctx context.Context, db DB, userID int) ([]*AuthUser
 	return res, nil
 }
 
-// AuthUserGroupByUserIDGroupID retrieves a row from 'django.auth_user_groups' as a AuthUserGroup.
+// AuthUserGroupByUserIDGroupID retrieves a row from 'django.auth_user_groups' as a [AuthUserGroup].
 //
 // Generated from index 'auth_user_groups_user_id_group_id_94350c0c_uniq'.
 func AuthUserGroupByUserIDGroupID(ctx context.Context, db DB, userID, groupID int) (*AuthUserGroup, error) {
@@ -251,14 +251,14 @@ func AuthUserGroupByUserIDGroupID(ctx context.Context, db DB, userID, groupID in
 	return &aug, nil
 }
 
-// AuthGroup returns the AuthGroup associated with the AuthUserGroup's (GroupID).
+// AuthGroup returns the AuthGroup associated with the [AuthUserGroup]'s (GroupID).
 //
 // Generated from foreign key 'auth_user_groups_group_id_97559544_fk_auth_group_id'.
 func (aug *AuthUserGroup) AuthGroup(ctx context.Context, db DB) (*AuthGroup, error) {
 	return AuthGroupByID(ctx, db, aug.GroupID)
 }
 
-// AuthUser returns the AuthUser associated with the AuthUserGroup's (UserID).
+// AuthUser returns the AuthUser associated with the [AuthUserGroup]'s (UserID).
 //
 // Generated from foreign key 'auth_user_groups_user_id_6a12ed8b_fk_auth_user_id'.
 func (aug *AuthUserGroup) AuthUser(ctx context.Context, db DB) (*AuthUser, error) {

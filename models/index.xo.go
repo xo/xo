@@ -13,7 +13,7 @@ type Index struct {
 	IsPrimary bool   `json:"is_primary"` // is_primary
 }
 
-// PostgresTableIndexes runs a custom query, returning results as Index.
+// PostgresTableIndexes runs a custom query, returning results as [Index].
 func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -50,7 +50,7 @@ func PostgresTableIndexes(ctx context.Context, db DB, schema, table string) ([]*
 	return res, nil
 }
 
-// MysqlTableIndexes runs a custom query, returning results as Index.
+// MysqlTableIndexes runs a custom query, returning results as [Index].
 func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -83,7 +83,7 @@ func MysqlTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Ind
 	return res, nil
 }
 
-// Sqlite3TableIndexes runs a custom query, returning results as Index.
+// Sqlite3TableIndexes runs a custom query, returning results as [Index].
 func Sqlite3TableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -115,7 +115,7 @@ func Sqlite3TableIndexes(ctx context.Context, db DB, schema, table string) ([]*I
 	return res, nil
 }
 
-// SqlserverTableIndexes runs a custom query, returning results as Index.
+// SqlserverTableIndexes runs a custom query, returning results as [Index].
 func SqlserverTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -151,7 +151,7 @@ func SqlserverTableIndexes(ctx context.Context, db DB, schema, table string) ([]
 	return res, nil
 }
 
-// OracleTableIndexes runs a custom query, returning results as Index.
+// OracleTableIndexes runs a custom query, returning results as [Index].
 func OracleTableIndexes(ctx context.Context, db DB, schema, table string) ([]*Index, error) {
 	// query
 	const sqlstr = `SELECT ` +

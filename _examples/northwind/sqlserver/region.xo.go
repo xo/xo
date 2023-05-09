@@ -14,18 +14,18 @@ type Region struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Region exists in the database.
+// Exists returns true when the [Region] exists in the database.
 func (r *Region) Exists() bool {
 	return r._exists
 }
 
-// Deleted returns true when the Region has been marked for deletion from
-// the database.
+// Deleted returns true when the [Region] has been marked for deletion
+// from the database.
 func (r *Region) Deleted() bool {
 	return r._deleted
 }
 
-// Insert inserts the Region to the database.
+// Insert inserts the [Region] to the database.
 func (r *Region) Insert(ctx context.Context, db DB) error {
 	switch {
 	case r._exists: // already exists
@@ -49,7 +49,7 @@ func (r *Region) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Region in the database.
+// Update updates a [Region] in the database.
 func (r *Region) Update(ctx context.Context, db DB) error {
 	switch {
 	case !r._exists: // doesn't exist
@@ -69,7 +69,7 @@ func (r *Region) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Region to the database.
+// Save saves the [Region] to the database.
 func (r *Region) Save(ctx context.Context, db DB) error {
 	if r.Exists() {
 		return r.Update(ctx, db)
@@ -77,7 +77,7 @@ func (r *Region) Save(ctx context.Context, db DB) error {
 	return r.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Region.
+// Upsert performs an upsert for [Region].
 func (r *Region) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case r._deleted: // deleted
@@ -108,7 +108,7 @@ func (r *Region) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Region from the database.
+// Delete deletes the [Region] from the database.
 func (r *Region) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !r._exists: // doesn't exist
@@ -129,7 +129,7 @@ func (r *Region) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// RegionByRegionID retrieves a row from 'northwind.region' as a Region.
+// RegionByRegionID retrieves a row from 'northwind.region' as a [Region].
 //
 // Generated from index 'regions_pkey'.
 func RegionByRegionID(ctx context.Context, db DB, regionID int16) (*Region, error) {

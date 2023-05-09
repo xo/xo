@@ -15,18 +15,18 @@ type CustomerDemographic struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the CustomerDemographic exists in the database.
+// Exists returns true when the [CustomerDemographic] exists in the database.
 func (cd *CustomerDemographic) Exists() bool {
 	return cd._exists
 }
 
-// Deleted returns true when the CustomerDemographic has been marked for deletion from
-// the database.
+// Deleted returns true when the [CustomerDemographic] has been marked for deletion
+// from the database.
 func (cd *CustomerDemographic) Deleted() bool {
 	return cd._deleted
 }
 
-// Insert inserts the CustomerDemographic to the database.
+// Insert inserts the [CustomerDemographic] to the database.
 func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 	switch {
 	case cd._exists: // already exists
@@ -50,7 +50,7 @@ func (cd *CustomerDemographic) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a CustomerDemographic in the database.
+// Update updates a [CustomerDemographic] in the database.
 func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 	switch {
 	case !cd._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (cd *CustomerDemographic) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the CustomerDemographic to the database.
+// Save saves the [CustomerDemographic] to the database.
 func (cd *CustomerDemographic) Save(ctx context.Context, db DB) error {
 	if cd.Exists() {
 		return cd.Update(ctx, db)
@@ -78,7 +78,7 @@ func (cd *CustomerDemographic) Save(ctx context.Context, db DB) error {
 	return cd.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for CustomerDemographic.
+// Upsert performs an upsert for [CustomerDemographic].
 func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case cd._deleted: // deleted
@@ -103,7 +103,7 @@ func (cd *CustomerDemographic) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the CustomerDemographic from the database.
+// Delete deletes the [CustomerDemographic] from the database.
 func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !cd._exists: // doesn't exist
@@ -124,7 +124,7 @@ func (cd *CustomerDemographic) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// CustomerDemographicByCustomerTypeID retrieves a row from 'public.customer_demographics' as a CustomerDemographic.
+// CustomerDemographicByCustomerTypeID retrieves a row from 'public.customer_demographics' as a [CustomerDemographic].
 //
 // Generated from index 'customer_demographics_pkey'.
 func CustomerDemographicByCustomerTypeID(ctx context.Context, db DB, customerTypeID string) (*CustomerDemographic, error) {

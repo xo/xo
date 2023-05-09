@@ -13,7 +13,7 @@ type AForeignKeyComposite struct {
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
 }
 
-// AForeignKeyCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_foreign_key_composite' as a AForeignKeyComposite.
+// AForeignKeyCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_foreign_key_composite' as a [AForeignKeyComposite].
 //
 // Generated from index 'a_key1'.
 func AForeignKeyCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 sql.NullInt64) ([]*AForeignKeyComposite, error) {
@@ -45,7 +45,7 @@ func AForeignKeyCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 s
 	return res, nil
 }
 
-// APrimaryComposite returns the APrimaryComposite associated with the AForeignKeyComposite's (AKey1, AKey2).
+// APrimaryComposite returns the APrimaryComposite associated with the [AForeignKeyComposite]'s (AKey1, AKey2).
 //
 // Generated from foreign key 'a_foreign_key_composite_ibfk_1'.
 func (afkc *AForeignKeyComposite) APrimaryComposite(ctx context.Context, db DB) (*APrimaryComposite, error) {

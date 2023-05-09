@@ -14,18 +14,18 @@ type APrimaryComposite struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the APrimaryComposite exists in the database.
+// Exists returns true when the [APrimaryComposite] exists in the database.
 func (apc *APrimaryComposite) Exists() bool {
 	return apc._exists
 }
 
-// Deleted returns true when the APrimaryComposite has been marked for deletion from
-// the database.
+// Deleted returns true when the [APrimaryComposite] has been marked for deletion
+// from the database.
 func (apc *APrimaryComposite) Deleted() bool {
 	return apc._deleted
 }
 
-// Insert inserts the APrimaryComposite to the database.
+// Insert inserts the [APrimaryComposite] to the database.
 func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 	switch {
 	case apc._exists: // already exists
@@ -51,7 +51,7 @@ func (apc *APrimaryComposite) Insert(ctx context.Context, db DB) error {
 
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
-// Delete deletes the APrimaryComposite from the database.
+// Delete deletes the [APrimaryComposite] from the database.
 func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !apc._exists: // doesn't exist
@@ -72,7 +72,7 @@ func (apc *APrimaryComposite) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// APrimaryCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_primary_composite' as a APrimaryComposite.
+// APrimaryCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_primary_composite' as a [APrimaryComposite].
 //
 // Generated from index 'a_primary_composite_a_key1_a_key2_pkey'.
 func APrimaryCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 int) (*APrimaryComposite, error) {

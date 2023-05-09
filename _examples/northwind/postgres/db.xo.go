@@ -70,7 +70,7 @@ func convLogger(logger interface{}) func(string, ...interface{}) {
 // DB is the common interface for database operations that can be used with
 // types from schema 'public'.
 //
-// This works with both database/sql.DB and database/sql.Tx.
+// This works with both [database/sql.DB] and [database/sql.Tx].
 type DB interface {
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)

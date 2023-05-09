@@ -15,18 +15,18 @@ type DjangoSession struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the DjangoSession exists in the database.
+// Exists returns true when the [DjangoSession] exists in the database.
 func (ds *DjangoSession) Exists() bool {
 	return ds._exists
 }
 
-// Deleted returns true when the DjangoSession has been marked for deletion from
-// the database.
+// Deleted returns true when the [DjangoSession] has been marked for deletion
+// from the database.
 func (ds *DjangoSession) Deleted() bool {
 	return ds._deleted
 }
 
-// Insert inserts the DjangoSession to the database.
+// Insert inserts the [DjangoSession] to the database.
 func (ds *DjangoSession) Insert(ctx context.Context, db DB) error {
 	switch {
 	case ds._exists: // already exists
@@ -50,7 +50,7 @@ func (ds *DjangoSession) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a DjangoSession in the database.
+// Update updates a [DjangoSession] in the database.
 func (ds *DjangoSession) Update(ctx context.Context, db DB) error {
 	switch {
 	case !ds._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (ds *DjangoSession) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the DjangoSession to the database.
+// Save saves the [DjangoSession] to the database.
 func (ds *DjangoSession) Save(ctx context.Context, db DB) error {
 	if ds.Exists() {
 		return ds.Update(ctx, db)
@@ -78,7 +78,7 @@ func (ds *DjangoSession) Save(ctx context.Context, db DB) error {
 	return ds.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for DjangoSession.
+// Upsert performs an upsert for [DjangoSession].
 func (ds *DjangoSession) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case ds._deleted: // deleted
@@ -103,7 +103,7 @@ func (ds *DjangoSession) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the DjangoSession from the database.
+// Delete deletes the [DjangoSession] from the database.
 func (ds *DjangoSession) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ds._exists: // doesn't exist
@@ -124,7 +124,7 @@ func (ds *DjangoSession) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoSessionByExpireDate retrieves a row from 'django_session' as a DjangoSession.
+// DjangoSessionByExpireDate retrieves a row from 'django_session' as a [DjangoSession].
 //
 // Generated from index 'django_session_expire_date_a5c62663'.
 func DjangoSessionByExpireDate(ctx context.Context, db DB, expireDate Time) ([]*DjangoSession, error) {
@@ -158,7 +158,7 @@ func DjangoSessionByExpireDate(ctx context.Context, db DB, expireDate Time) ([]*
 	return res, nil
 }
 
-// DjangoSessionBySessionKey retrieves a row from 'django_session' as a DjangoSession.
+// DjangoSessionBySessionKey retrieves a row from 'django_session' as a [DjangoSession].
 //
 // Generated from index 'sqlite_autoindex_django_session_1'.
 func DjangoSessionBySessionKey(ctx context.Context, db DB, sessionKey string) (*DjangoSession, error) {

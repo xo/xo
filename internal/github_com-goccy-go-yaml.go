@@ -13,6 +13,7 @@ import (
 func init() {
 	Symbols["github.com/goccy/go-yaml/yaml"] = map[string]reflect.Value{
 		// function, constant and variable definitions
+		"CommentFootPosition":            reflect.ValueOf(yaml.CommentFootPosition),
 		"CommentHeadPosition":            reflect.ValueOf(yaml.CommentHeadPosition),
 		"CommentLinePosition":            reflect.ValueOf(yaml.CommentLinePosition),
 		"CommentToMap":                   reflect.ValueOf(yaml.CommentToMap),
@@ -25,8 +26,11 @@ func init() {
 		"ErrInvalidQuery":                reflect.ValueOf(&yaml.ErrInvalidQuery).Elem(),
 		"ErrNotFoundNode":                reflect.ValueOf(&yaml.ErrNotFoundNode).Elem(),
 		"ErrUnknownCommentPositionType":  reflect.ValueOf(&yaml.ErrUnknownCommentPositionType).Elem(),
+		"ErrUnsupportedFootPositionType": reflect.ValueOf(yaml.ErrUnsupportedFootPositionType),
 		"ErrUnsupportedHeadPositionType": reflect.ValueOf(yaml.ErrUnsupportedHeadPositionType),
+		"ErrUnsupportedLinePositionType": reflect.ValueOf(yaml.ErrUnsupportedLinePositionType),
 		"Flow":                           reflect.ValueOf(yaml.Flow),
+		"FootComment":                    reflect.ValueOf(yaml.FootComment),
 		"FormatError":                    reflect.ValueOf(yaml.FormatError),
 		"HeadComment":                    reflect.ValueOf(yaml.HeadComment),
 		"Indent":                         reflect.ValueOf(yaml.Indent),

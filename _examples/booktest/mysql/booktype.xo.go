@@ -18,7 +18,7 @@ const (
 	BookTypeNonfiction BookType = 2
 )
 
-// String satisfies the fmt.Stringer interface.
+// String satisfies the [fmt.Stringer] interface.
 func (bt BookType) String() string {
 	switch bt {
 	case BookTypeFiction:
@@ -29,12 +29,12 @@ func (bt BookType) String() string {
 	return fmt.Sprintf("BookType(%d)", bt)
 }
 
-// MarshalText marshals BookType into text.
+// MarshalText marshals [BookType] into text.
 func (bt BookType) MarshalText() ([]byte, error) {
 	return []byte(bt.String()), nil
 }
 
-// UnmarshalText unmarshals BookType from text.
+// UnmarshalText unmarshals [BookType] from text.
 func (bt *BookType) UnmarshalText(buf []byte) error {
 	switch str := string(buf); str {
 	case "FICTION":
@@ -47,12 +47,12 @@ func (bt *BookType) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func (bt BookType) Value() (driver.Value, error) {
 	return bt.String(), nil
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func (bt *BookType) Scan(v interface{}) error {
 	switch x := v.(type) {
 	case []byte:
@@ -66,11 +66,11 @@ func (bt *BookType) Scan(v interface{}) error {
 // NullBookType represents a null 'book_type' enum for schema 'booktest'.
 type NullBookType struct {
 	BookType BookType
-	// Valid is true if BookType is not null.
+	// Valid is true if [BookType] is not null.
 	Valid bool
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func (nbt NullBookType) Value() (driver.Value, error) {
 	if !nbt.Valid {
 		return nil, nil
@@ -78,7 +78,7 @@ func (nbt NullBookType) Value() (driver.Value, error) {
 	return nbt.BookType.Value()
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func (nbt *NullBookType) Scan(v interface{}) error {
 	if v == nil {
 		nbt.BookType, nbt.Valid = 0, false
@@ -89,7 +89,7 @@ func (nbt *NullBookType) Scan(v interface{}) error {
 	return err
 }
 
-// ErrInvalidBookType is the invalid BookType error.
+// ErrInvalidBookType is the invalid [BookType] error.
 type ErrInvalidBookType string
 
 // Error satisfies the error interface.

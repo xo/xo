@@ -12,7 +12,7 @@ type EnumValue struct {
 	ConstValue int    `json:"const_value"` // const_value
 }
 
-// PostgresEnumValues runs a custom query, returning results as EnumValue.
+// PostgresEnumValues runs a custom query, returning results as [EnumValue].
 func PostgresEnumValues(ctx context.Context, db DB, schema, enum string) ([]*EnumValue, error) {
 	// query
 	const sqlstr = `SELECT ` +

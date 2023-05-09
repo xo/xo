@@ -15,18 +15,18 @@ type ASequenceMulti struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the ASequenceMulti exists in the database.
+// Exists returns true when the [ASequenceMulti] exists in the database.
 func (asm *ASequenceMulti) Exists() bool {
 	return asm._exists
 }
 
-// Deleted returns true when the ASequenceMulti has been marked for deletion from
-// the database.
+// Deleted returns true when the [ASequenceMulti] has been marked for deletion
+// from the database.
 func (asm *ASequenceMulti) Deleted() bool {
 	return asm._deleted
 }
 
-// Insert inserts the ASequenceMulti to the database.
+// Insert inserts the [ASequenceMulti] to the database.
 func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 	switch {
 	case asm._exists: // already exists
@@ -57,7 +57,7 @@ func (asm *ASequenceMulti) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a ASequenceMulti in the database.
+// Update updates a [ASequenceMulti] in the database.
 func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 	switch {
 	case !asm._exists: // doesn't exist
@@ -77,7 +77,7 @@ func (asm *ASequenceMulti) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the ASequenceMulti to the database.
+// Save saves the [ASequenceMulti] to the database.
 func (asm *ASequenceMulti) Save(ctx context.Context, db DB) error {
 	if asm.Exists() {
 		return asm.Update(ctx, db)
@@ -85,7 +85,7 @@ func (asm *ASequenceMulti) Save(ctx context.Context, db DB) error {
 	return asm.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for ASequenceMulti.
+// Upsert performs an upsert for [ASequenceMulti].
 func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case asm._deleted: // deleted
@@ -109,7 +109,7 @@ func (asm *ASequenceMulti) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the ASequenceMulti from the database.
+// Delete deletes the [ASequenceMulti] from the database.
 func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !asm._exists: // doesn't exist
@@ -130,7 +130,7 @@ func (asm *ASequenceMulti) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// ASequenceMultiByASeq retrieves a row from 'a_bit_of_everything.a_sequence_multi' as a ASequenceMulti.
+// ASequenceMultiByASeq retrieves a row from 'a_bit_of_everything.a_sequence_multi' as a [ASequenceMulti].
 //
 // Generated from index 'a_sequence_multi_a_seq_pkey'.
 func ASequenceMultiByASeq(ctx context.Context, db DB, aSeq int) (*ASequenceMulti, error) {

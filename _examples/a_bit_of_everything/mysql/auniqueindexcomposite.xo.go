@@ -13,7 +13,7 @@ type AUniqueIndexComposite struct {
 	AKey2 sql.NullInt64 `json:"a_key2"` // a_key2
 }
 
-// AUniqueIndexCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_unique_index_composite' as a AUniqueIndexComposite.
+// AUniqueIndexCompositeByAKey1AKey2 retrieves a row from 'a_bit_of_everything.a_unique_index_composite' as a [AUniqueIndexComposite].
 //
 // Generated from index 'a_key1'.
 func AUniqueIndexCompositeByAKey1AKey2(ctx context.Context, db DB, aKey1, aKey2 sql.NullInt64) (*AUniqueIndexComposite, error) {

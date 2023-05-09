@@ -15,7 +15,7 @@ type ForeignKey struct {
 	KeyID          int    `json:"key_id"`           // key_id
 }
 
-// PostgresTableForeignKeys runs a custom query, returning results as ForeignKey.
+// PostgresTableForeignKeys runs a custom query, returning results as [ForeignKey].
 func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -78,7 +78,7 @@ func PostgresTableForeignKeys(ctx context.Context, db DB, schema, table string) 
 	return res, nil
 }
 
-// MysqlTableForeignKeys runs a custom query, returning results as ForeignKey.
+// MysqlTableForeignKeys runs a custom query, returning results as [ForeignKey].
 func MysqlTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -113,7 +113,7 @@ func MysqlTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]
 	return res, nil
 }
 
-// Sqlite3TableForeignKeys runs a custom query, returning results as ForeignKey.
+// Sqlite3TableForeignKeys runs a custom query, returning results as [ForeignKey].
 func Sqlite3TableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -146,7 +146,7 @@ func Sqlite3TableForeignKeys(ctx context.Context, db DB, schema, table string) (
 	return res, nil
 }
 
-// SqlserverTableForeignKeys runs a custom query, returning results as ForeignKey.
+// SqlserverTableForeignKeys runs a custom query, returning results as [ForeignKey].
 func SqlserverTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -188,7 +188,7 @@ func SqlserverTableForeignKeys(ctx context.Context, db DB, schema, table string)
 	return res, nil
 }
 
-// OracleTableForeignKeys runs a custom query, returning results as ForeignKey.
+// OracleTableForeignKeys runs a custom query, returning results as [ForeignKey].
 func OracleTableForeignKeys(ctx context.Context, db DB, schema, table string) ([]*ForeignKey, error) {
 	// query
 	const sqlstr = `SELECT ` +

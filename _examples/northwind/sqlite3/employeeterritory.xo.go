@@ -14,18 +14,18 @@ type EmployeeTerritory struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the EmployeeTerritory exists in the database.
+// Exists returns true when the [EmployeeTerritory] exists in the database.
 func (et *EmployeeTerritory) Exists() bool {
 	return et._exists
 }
 
-// Deleted returns true when the EmployeeTerritory has been marked for deletion from
-// the database.
+// Deleted returns true when the [EmployeeTerritory] has been marked for deletion
+// from the database.
 func (et *EmployeeTerritory) Deleted() bool {
 	return et._deleted
 }
 
-// Insert inserts the EmployeeTerritory to the database.
+// Insert inserts the [EmployeeTerritory] to the database.
 func (et *EmployeeTerritory) Insert(ctx context.Context, db DB) error {
 	switch {
 	case et._exists: // already exists
@@ -51,7 +51,7 @@ func (et *EmployeeTerritory) Insert(ctx context.Context, db DB) error {
 
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
-// Delete deletes the EmployeeTerritory from the database.
+// Delete deletes the [EmployeeTerritory] from the database.
 func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !et._exists: // doesn't exist
@@ -72,7 +72,7 @@ func (et *EmployeeTerritory) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// EmployeeTerritoryByEmployeeIDTerritoryID retrieves a row from 'employee_territories' as a EmployeeTerritory.
+// EmployeeTerritoryByEmployeeIDTerritoryID retrieves a row from 'employee_territories' as a [EmployeeTerritory].
 //
 // Generated from index 'sqlite_autoindex_employee_territories_1'.
 func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employeeID int, territoryID string) (*EmployeeTerritory, error) {
@@ -92,14 +92,14 @@ func EmployeeTerritoryByEmployeeIDTerritoryID(ctx context.Context, db DB, employ
 	return &et, nil
 }
 
-// Employee returns the Employee associated with the EmployeeTerritory's (EmployeeID).
+// Employee returns the Employee associated with the [EmployeeTerritory]'s (EmployeeID).
 //
 // Generated from foreign key 'employee_territories_employee_id_fkey'.
 func (et *EmployeeTerritory) Employee(ctx context.Context, db DB) (*Employee, error) {
 	return EmployeeByEmployeeID(ctx, db, et.EmployeeID)
 }
 
-// Territory returns the Territory associated with the EmployeeTerritory's (TerritoryID).
+// Territory returns the Territory associated with the [EmployeeTerritory]'s (TerritoryID).
 //
 // Generated from foreign key 'employee_territories_territory_id_fkey'.
 func (et *EmployeeTerritory) Territory(ctx context.Context, db DB) (*Territory, error) {

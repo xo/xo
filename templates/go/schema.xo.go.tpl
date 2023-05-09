@@ -11,7 +11,7 @@ const (
 {{ end -}}
 )
 
-// String satisfies the fmt.Stringer interface.
+// String satisfies the [fmt.Stringer] interface.
 func ({{ short $e.GoName }} {{ $e.GoName }}) String() string {
 	switch {{ short $e.GoName }} {
 {{ range $e.Values -}}
@@ -22,12 +22,12 @@ func ({{ short $e.GoName }} {{ $e.GoName }}) String() string {
 	return fmt.Sprintf("{{ $e.GoName }}(%d)", {{ short $e.GoName }})
 }
 
-// MarshalText marshals {{ $e.GoName }} into text.
+// MarshalText marshals [{{ $e.GoName }}] into text.
 func ({{ short $e.GoName }} {{ $e.GoName }}) MarshalText() ([]byte, error) {
 	return []byte({{ short $e.GoName }}.String()), nil
 }
 
-// UnmarshalText unmarshals {{ $e.GoName }} from text.
+// UnmarshalText unmarshals [{{ $e.GoName }}] from text.
 func ({{ short $e.GoName }} *{{ $e.GoName }}) UnmarshalText(buf []byte) error {
 	switch str := string(buf); str {
 {{ range $e.Values -}}
@@ -40,12 +40,12 @@ func ({{ short $e.GoName }} *{{ $e.GoName }}) UnmarshalText(buf []byte) error {
 	return nil
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func ({{ short $e.GoName }} {{ $e.GoName }}) Value() (driver.Value, error) {
 	return {{ short $e.GoName }}.String(), nil
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func ({{ short $e.GoName }} *{{ $e.GoName }}) Scan(v interface{}) error {
 	switch x := v.(type) {
 	case []byte:
@@ -61,11 +61,11 @@ func ({{ short $e.GoName }} *{{ $e.GoName }}) Scan(v interface{}) error {
 // {{ $nullName }} represents a null '{{ $e.SQLName }}' enum for schema '{{ schema }}'.
 type {{ $nullName }} struct {
 	{{ $e.GoName }} {{ $e.GoName }}
-	// Valid is true if {{ $e.GoName }} is not null.
+	// Valid is true if [{{ $e.GoName }}] is not null.
 	Valid bool
 }
 
-// Value satisfies the driver.Valuer interface.
+// Value satisfies the [driver.Valuer] interface.
 func ({{ $nullShort }} {{ $nullName }}) Value() (driver.Value, error) {
 	if !{{ $nullShort }}.Valid {
 		return nil, nil
@@ -73,7 +73,7 @@ func ({{ $nullShort }} {{ $nullName }}) Value() (driver.Value, error) {
 	return {{ $nullShort }}.{{ $e.GoName }}.Value()
 }
 
-// Scan satisfies the sql.Scanner interface.
+// Scan satisfies the [sql.Scanner] interface.
 func ({{ $nullShort }} *{{ $nullName }}) Scan(v interface{}) error {
 	if v == nil {
 		{{ $nullShort }}.{{ $e.GoName }}, {{ $nullShort }}.Valid = 0, false
@@ -84,7 +84,7 @@ func ({{ $nullShort }} *{{ $nullName }}) Scan(v interface{}) error {
 	return err
 }
 
-// ErrInvalid{{ $e.GoName }} is the invalid {{ $e.GoName }} error.
+// ErrInvalid{{ $e.GoName }} is the invalid [{{ $e.GoName }}] error.
 type ErrInvalid{{ $e.GoName }} string
 
 // Error satisfies the error interface.
@@ -95,7 +95,7 @@ func (err ErrInvalid{{ $e.GoName }}) Error() string {
 
 {{ define "foreignkey" }}
 {{- $k := .Data -}}
-// {{ func_name_context $k }} returns the {{ $k.RefTable }} associated with the {{ $k.Table.GoName }}'s ({{ names "" $k.Fields }}).
+// {{ func_name_context $k }} returns the {{ $k.RefTable }} associated with the [{{ $k.Table.GoName }}]'s ({{ names "" $k.Fields }}).
 //
 // Generated from foreign key '{{ $k.SQLName }}'.
 {{ recv_context $k.Table $k }} {
@@ -114,7 +114,7 @@ func (err ErrInvalid{{ $e.GoName }}) Error() string {
 
 {{ define "index" }}
 {{- $i := .Data -}}
-// {{ func_name_context $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
+// {{ func_name_context $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a [{{ $i.Table.GoName }}].
 //
 // Generated from index '{{ $i.SQLName }}'.
 {{ func_context $i }} {
@@ -160,7 +160,7 @@ func (err ErrInvalid{{ $e.GoName }}) Error() string {
 }
 
 {{ if context_both -}}
-// {{ func_name $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a {{ $i.Table.GoName }}.
+// {{ func_name $i }} retrieves a row from '{{ schema $i.Table.SQLName }}' as a [{{ $i.Table.GoName }}].
 //
 // Generated from index '{{ $i.SQLName }}'.
 {{ func $i }} {
@@ -237,18 +237,18 @@ type {{ $t.GoName }} struct {
 }
 
 {{ if $t.PrimaryKeys -}}
-// Exists returns true when the {{ $t.GoName }} exists in the database.
+// Exists returns true when the [{{ $t.GoName }}] exists in the database.
 func ({{ short $t }} *{{ $t.GoName }}) Exists() bool {
 	return {{ short $t }}._exists
 }
 
-// Deleted returns true when the {{ $t.GoName }} has been marked for deletion from
-// the database.
+// Deleted returns true when the [{{ $t.GoName }}] has been marked for deletion
+// from the database.
 func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 	return {{ short $t }}._deleted
 }
 
-// {{ func_name_context "Insert" }} inserts the {{ $t.GoName }} to the database.
+// {{ func_name_context "Insert" }} inserts the [{{ $t.GoName }}] to the database.
 {{ recv_context $t "Insert" }} {
 	switch {
 	case {{ short $t }}._exists: // already exists
@@ -316,7 +316,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 
 {{ if context_both -}}
-// Insert inserts the {{ $t.GoName }} to the database.
+// Insert inserts the [{{ $t.GoName }}] to the database.
 {{ recv $t "Insert" }} {
 	return {{ short $t }}.InsertContext(context.Background(), db)
 }
@@ -326,7 +326,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 {{ if eq (len $t.Fields) (len $t.PrimaryKeys) -}}
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 {{- else -}}
-// {{ func_name_context "Update" }} updates a {{ $t.GoName }} in the database.
+// {{ func_name_context "Update" }} updates a [{{ $t.GoName }}] in the database.
 {{ recv_context $t "Update" }} {
 	switch {
 	case !{{ short $t }}._exists: // doesn't exist
@@ -345,13 +345,13 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 
 {{ if context_both -}}
-// Update updates a {{ $t.GoName }} in the database.
+// Update updates a [{{ $t.GoName }}] in the database.
 {{ recv $t "Update" }} {
 	return {{ short $t }}.UpdateContext(context.Background(), db)
 }
 {{- end }}
 
-// {{ func_name_context "Save" }} saves the {{ $t.GoName }} to the database.
+// {{ func_name_context "Save" }} saves the [{{ $t.GoName }}] to the database.
 {{ recv_context $t "Save" }} {
 	if {{ short $t }}.Exists() {
 		return {{ short $t }}.{{ func_name_context "Update" }}({{ if context }}ctx, {{ end }}db)
@@ -360,7 +360,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 
 {{ if context_both -}}
-// Save saves the {{ $t.GoName }} to the database.
+// Save saves the [{{ $t.GoName }}] to the database.
 {{ recv $t "Save" }} {
 	if {{ short $t }}._exists {
 		return {{ short $t }}.UpdateContext(context.Background(), db)
@@ -369,7 +369,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 {{- end }}
 
-// {{ func_name_context "Upsert" }} performs an upsert for {{ $t.GoName }}.
+// {{ func_name_context "Upsert" }} performs an upsert for [{{ $t.GoName }}].
 {{ recv_context $t "Upsert" }} {
 	switch {
 	case {{ short $t }}._deleted: // deleted
@@ -388,14 +388,14 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 
 {{ if context_both -}}
-// Upsert performs an upsert for {{ $t.GoName }}.
+// Upsert performs an upsert for [{{ $t.GoName }}].
 {{ recv $t "Upsert" }} {
 	return {{ short $t }}.UpsertContext(context.Background(), db)
 }
 {{- end -}}
 {{- end }}
 
-// {{ func_name_context "Delete" }} deletes the {{ $t.GoName }} from the database.
+// {{ func_name_context "Delete" }} deletes the [{{ $t.GoName }}] from the database.
 {{ recv_context $t "Delete" }} {
 	switch {
 	case !{{ short $t }}._exists: // doesn't exist
@@ -426,7 +426,7 @@ func ({{ short $t }} *{{ $t.GoName }}) Deleted() bool {
 }
 
 {{ if context_both -}}
-// Delete deletes the {{ $t.GoName }} from the database.
+// Delete deletes the [{{ $t.GoName }}] from the database.
 {{ recv $t "Delete" }} {
 	return {{ short $t }}.DeleteContext(context.Background(), db)
 }

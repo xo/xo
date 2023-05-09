@@ -26,18 +26,18 @@ type Order struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Order exists in the database.
+// Exists returns true when the [Order] exists in the database.
 func (o *Order) Exists() bool {
 	return o._exists
 }
 
-// Deleted returns true when the Order has been marked for deletion from
-// the database.
+// Deleted returns true when the [Order] has been marked for deletion
+// from the database.
 func (o *Order) Deleted() bool {
 	return o._deleted
 }
 
-// Insert inserts the Order to the database.
+// Insert inserts the [Order] to the database.
 func (o *Order) Insert(ctx context.Context, db DB) error {
 	switch {
 	case o._exists: // already exists
@@ -61,7 +61,7 @@ func (o *Order) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Order in the database.
+// Update updates a [Order] in the database.
 func (o *Order) Update(ctx context.Context, db DB) error {
 	switch {
 	case !o._exists: // doesn't exist
@@ -81,7 +81,7 @@ func (o *Order) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Order to the database.
+// Save saves the [Order] to the database.
 func (o *Order) Save(ctx context.Context, db DB) error {
 	if o.Exists() {
 		return o.Update(ctx, db)
@@ -89,7 +89,7 @@ func (o *Order) Save(ctx context.Context, db DB) error {
 	return o.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Order.
+// Upsert performs an upsert for [Order].
 func (o *Order) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case o._deleted: // deleted
@@ -120,7 +120,7 @@ func (o *Order) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Order from the database.
+// Delete deletes the [Order] from the database.
 func (o *Order) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !o._exists: // doesn't exist
@@ -141,7 +141,7 @@ func (o *Order) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// OrderByOrderID retrieves a row from 'northwind.orders' as a Order.
+// OrderByOrderID retrieves a row from 'northwind.orders' as a [Order].
 //
 // Generated from index 'orders_pkey'.
 func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
@@ -161,14 +161,14 @@ func OrderByOrderID(ctx context.Context, db DB, orderID int16) (*Order, error) {
 	return &o, nil
 }
 
-// Customer returns the Customer associated with the Order's (CustomerID).
+// Customer returns the Customer associated with the [Order]'s (CustomerID).
 //
 // Generated from foreign key 'orders_customer_id_fkey'.
 func (o *Order) Customer(ctx context.Context, db DB) (*Customer, error) {
 	return CustomerByCustomerID(ctx, db, o.CustomerID.String)
 }
 
-// Employee returns the Employee associated with the Order's (EmployeeID).
+// Employee returns the Employee associated with the [Order]'s (EmployeeID).
 //
 // Generated from foreign key 'orders_employee_id_fkey'.
 func (o *Order) Employee(ctx context.Context, db DB) (*Employee, error) {

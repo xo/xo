@@ -14,18 +14,18 @@ type CustomerCustomerDemo struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the CustomerCustomerDemo exists in the database.
+// Exists returns true when the [CustomerCustomerDemo] exists in the database.
 func (ccd *CustomerCustomerDemo) Exists() bool {
 	return ccd._exists
 }
 
-// Deleted returns true when the CustomerCustomerDemo has been marked for deletion from
-// the database.
+// Deleted returns true when the [CustomerCustomerDemo] has been marked for deletion
+// from the database.
 func (ccd *CustomerCustomerDemo) Deleted() bool {
 	return ccd._deleted
 }
 
-// Insert inserts the CustomerCustomerDemo to the database.
+// Insert inserts the [CustomerCustomerDemo] to the database.
 func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 	switch {
 	case ccd._exists: // already exists
@@ -51,7 +51,7 @@ func (ccd *CustomerCustomerDemo) Insert(ctx context.Context, db DB) error {
 
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
-// Delete deletes the CustomerCustomerDemo from the database.
+// Delete deletes the [CustomerCustomerDemo] from the database.
 func (ccd *CustomerCustomerDemo) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ccd._exists: // doesn't exist
@@ -72,7 +72,7 @@ func (ccd *CustomerCustomerDemo) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// CustomerCustomerDemoByCustomerIDCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a CustomerCustomerDemo.
+// CustomerCustomerDemoByCustomerIDCustomerTypeID retrieves a row from 'northwind.customer_customer_demo' as a [CustomerCustomerDemo].
 //
 // Generated from index 'customer_customer_demo_pkey'.
 func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, customerID, customerTypeID string) (*CustomerCustomerDemo, error) {
@@ -92,14 +92,14 @@ func CustomerCustomerDemoByCustomerIDCustomerTypeID(ctx context.Context, db DB, 
 	return &ccd, nil
 }
 
-// Customer returns the Customer associated with the CustomerCustomerDemo's (CustomerID).
+// Customer returns the Customer associated with the [CustomerCustomerDemo]'s (CustomerID).
 //
 // Generated from foreign key 'customer_customer_demo_customer_id_fkey'.
 func (ccd *CustomerCustomerDemo) Customer(ctx context.Context, db DB) (*Customer, error) {
 	return CustomerByCustomerID(ctx, db, ccd.CustomerID)
 }
 
-// CustomerDemographic returns the CustomerDemographic associated with the CustomerCustomerDemo's (CustomerTypeID).
+// CustomerDemographic returns the CustomerDemographic associated with the [CustomerCustomerDemo]'s (CustomerTypeID).
 //
 // Generated from foreign key 'customer_customer_demo_customer_type_id_fkey'.
 func (ccd *CustomerCustomerDemo) CustomerDemographic(ctx context.Context, db DB) (*CustomerDemographic, error) {

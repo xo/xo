@@ -11,7 +11,7 @@ type MysqlEnumValue struct {
 	EnumValues string `json:"enum_values"` // enum_values
 }
 
-// MysqlEnumValues runs a custom query, returning results as MysqlEnumValue.
+// MysqlEnumValues runs a custom query, returning results as [MysqlEnumValue].
 func MysqlEnumValues(ctx context.Context, db DB, schema, enum string) (*MysqlEnumValue, error) {
 	// query
 	const sqlstr = `SELECT ` +

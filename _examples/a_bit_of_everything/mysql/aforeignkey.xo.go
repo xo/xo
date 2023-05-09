@@ -12,7 +12,7 @@ type AForeignKey struct {
 	AKey sql.NullInt64 `json:"a_key"` // a_key
 }
 
-// AForeignKeyByAKey retrieves a row from 'a_bit_of_everything.a_foreign_key' as a AForeignKey.
+// AForeignKeyByAKey retrieves a row from 'a_bit_of_everything.a_foreign_key' as a [AForeignKey].
 //
 // Generated from index 'a_key'.
 func AForeignKeyByAKey(ctx context.Context, db DB, aKey sql.NullInt64) ([]*AForeignKey, error) {
@@ -44,7 +44,7 @@ func AForeignKeyByAKey(ctx context.Context, db DB, aKey sql.NullInt64) ([]*AFore
 	return res, nil
 }
 
-// APrimary returns the APrimary associated with the AForeignKey's (AKey).
+// APrimary returns the APrimary associated with the [AForeignKey]'s (AKey).
 //
 // Generated from foreign key 'a_foreign_key_ibfk_1'.
 func (afk *AForeignKey) APrimary(ctx context.Context, db DB) (*APrimary, error) {

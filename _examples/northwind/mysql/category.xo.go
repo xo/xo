@@ -18,18 +18,18 @@ type Category struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Category exists in the database.
+// Exists returns true when the [Category] exists in the database.
 func (c *Category) Exists() bool {
 	return c._exists
 }
 
-// Deleted returns true when the Category has been marked for deletion from
-// the database.
+// Deleted returns true when the [Category] has been marked for deletion
+// from the database.
 func (c *Category) Deleted() bool {
 	return c._deleted
 }
 
-// Insert inserts the Category to the database.
+// Insert inserts the [Category] to the database.
 func (c *Category) Insert(ctx context.Context, db DB) error {
 	switch {
 	case c._exists: // already exists
@@ -53,7 +53,7 @@ func (c *Category) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Category in the database.
+// Update updates a [Category] in the database.
 func (c *Category) Update(ctx context.Context, db DB) error {
 	switch {
 	case !c._exists: // doesn't exist
@@ -73,7 +73,7 @@ func (c *Category) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Category to the database.
+// Save saves the [Category] to the database.
 func (c *Category) Save(ctx context.Context, db DB) error {
 	if c.Exists() {
 		return c.Update(ctx, db)
@@ -81,7 +81,7 @@ func (c *Category) Save(ctx context.Context, db DB) error {
 	return c.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Category.
+// Upsert performs an upsert for [Category].
 func (c *Category) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case c._deleted: // deleted
@@ -105,7 +105,7 @@ func (c *Category) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Category from the database.
+// Delete deletes the [Category] from the database.
 func (c *Category) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !c._exists: // doesn't exist
@@ -126,7 +126,7 @@ func (c *Category) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// CategoryByCategoryID retrieves a row from 'northwind.categories' as a Category.
+// CategoryByCategoryID retrieves a row from 'northwind.categories' as a [Category].
 //
 // Generated from index 'categories_category_id_pkey'.
 func CategoryByCategoryID(ctx context.Context, db DB, categoryID int16) (*Category, error) {

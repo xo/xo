@@ -12,7 +12,7 @@ type ProcParam struct {
 	ParamType string `json:"param_type"` // param_type
 }
 
-// PostgresProcParams runs a custom query, returning results as ProcParam.
+// PostgresProcParams runs a custom query, returning results as [ProcParam].
 func PostgresProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -53,7 +53,7 @@ func PostgresProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcP
 	return res, nil
 }
 
-// MysqlProcParams runs a custom query, returning results as ProcParam.
+// MysqlProcParams runs a custom query, returning results as [ProcParam].
 func MysqlProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -89,7 +89,7 @@ func MysqlProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcPara
 	return res, nil
 }
 
-// SqlserverProcParams runs a custom query, returning results as ProcParam.
+// SqlserverProcParams runs a custom query, returning results as [ProcParam].
 func SqlserverProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -124,7 +124,7 @@ func SqlserverProcParams(ctx context.Context, db DB, schema, id string) ([]*Proc
 	return res, nil
 }
 
-// OracleProcParams runs a custom query, returning results as ProcParam.
+// OracleProcParams runs a custom query, returning results as [ProcParam].
 func OracleProcParams(ctx context.Context, db DB, schema, id string) ([]*ProcParam, error) {
 	// query
 	const sqlstr = `SELECT ` +

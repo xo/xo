@@ -18,7 +18,7 @@ type Column struct {
 	Comment      sql.NullString `json:"comment"`        // comment
 }
 
-// PostgresTableColumns runs a custom query, returning results as Column.
+// PostgresTableColumns runs a custom query, returning results as [Column].
 func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys bool) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -67,7 +67,7 @@ func PostgresTableColumns(ctx context.Context, db DB, schema, table string, sys 
 	return res, nil
 }
 
-// MysqlTableColumns runs a custom query, returning results as Column.
+// MysqlTableColumns runs a custom query, returning results as [Column].
 func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -105,7 +105,7 @@ func MysqlTableColumns(ctx context.Context, db DB, schema, table string) ([]*Col
 	return res, nil
 }
 
-// Sqlite3TableColumns runs a custom query, returning results as Column.
+// Sqlite3TableColumns runs a custom query, returning results as [Column].
 func Sqlite3TableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -140,7 +140,7 @@ func Sqlite3TableColumns(ctx context.Context, db DB, schema, table string) ([]*C
 	return res, nil
 }
 
-// SqlserverTableColumns runs a custom query, returning results as Column.
+// SqlserverTableColumns runs a custom query, returning results as [Column].
 func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -190,7 +190,7 @@ func SqlserverTableColumns(ctx context.Context, db DB, schema, table string) ([]
 	return res, nil
 }
 
-// OracleTableColumns runs a custom query, returning results as Column.
+// OracleTableColumns runs a custom query, returning results as [Column].
 func OracleTableColumns(ctx context.Context, db DB, schema, table string) ([]*Column, error) {
 	// query
 	const sqlstr = `SELECT ` +

@@ -16,18 +16,18 @@ type DjangoContentType struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the DjangoContentType exists in the database.
+// Exists returns true when the [DjangoContentType] exists in the database.
 func (dct *DjangoContentType) Exists() bool {
 	return dct._exists
 }
 
-// Deleted returns true when the DjangoContentType has been marked for deletion from
-// the database.
+// Deleted returns true when the [DjangoContentType] has been marked for deletion
+// from the database.
 func (dct *DjangoContentType) Deleted() bool {
 	return dct._deleted
 }
 
-// Insert inserts the DjangoContentType to the database.
+// Insert inserts the [DjangoContentType] to the database.
 func (dct *DjangoContentType) Insert(ctx context.Context, db DB) error {
 	switch {
 	case dct._exists: // already exists
@@ -53,7 +53,7 @@ func (dct *DjangoContentType) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a DjangoContentType in the database.
+// Update updates a [DjangoContentType] in the database.
 func (dct *DjangoContentType) Update(ctx context.Context, db DB) error {
 	switch {
 	case !dct._exists: // doesn't exist
@@ -73,7 +73,7 @@ func (dct *DjangoContentType) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the DjangoContentType to the database.
+// Save saves the [DjangoContentType] to the database.
 func (dct *DjangoContentType) Save(ctx context.Context, db DB) error {
 	if dct.Exists() {
 		return dct.Update(ctx, db)
@@ -81,7 +81,7 @@ func (dct *DjangoContentType) Save(ctx context.Context, db DB) error {
 	return dct.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for DjangoContentType.
+// Upsert performs an upsert for [DjangoContentType].
 func (dct *DjangoContentType) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case dct._deleted: // deleted
@@ -112,7 +112,7 @@ func (dct *DjangoContentType) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the DjangoContentType from the database.
+// Delete deletes the [DjangoContentType] from the database.
 func (dct *DjangoContentType) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !dct._exists: // doesn't exist
@@ -133,7 +133,7 @@ func (dct *DjangoContentType) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// DjangoContentTypeByAppLabelModel retrieves a row from 'django.django_content_type' as a DjangoContentType.
+// DjangoContentTypeByAppLabelModel retrieves a row from 'django.django_content_type' as a [DjangoContentType].
 //
 // Generated from index 'django_co_app_label_76bd3d3b_u'.
 func DjangoContentTypeByAppLabelModel(ctx context.Context, db DB, appLabel, model sql.NullString) (*DjangoContentType, error) {
@@ -153,7 +153,7 @@ func DjangoContentTypeByAppLabelModel(ctx context.Context, db DB, appLabel, mode
 	return &dct, nil
 }
 
-// DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a DjangoContentType.
+// DjangoContentTypeByID retrieves a row from 'django.django_content_type' as a [DjangoContentType].
 //
 // Generated from index 'django_content_type_id_idx'.
 func DjangoContentTypeByID(ctx context.Context, db DB, id int64) (*DjangoContentType, error) {

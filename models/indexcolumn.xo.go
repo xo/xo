@@ -13,7 +13,7 @@ type IndexColumn struct {
 	ColumnName string `json:"column_name"` // column_name
 }
 
-// PostgresIndexColumns runs a custom query, returning results as IndexColumn.
+// PostgresIndexColumns runs a custom query, returning results as [IndexColumn].
 func PostgresIndexColumns(ctx context.Context, db DB, schema, index string) ([]*IndexColumn, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -53,7 +53,7 @@ func PostgresIndexColumns(ctx context.Context, db DB, schema, index string) ([]*
 	return res, nil
 }
 
-// MysqlIndexColumns runs a custom query, returning results as IndexColumn.
+// MysqlIndexColumns runs a custom query, returning results as [IndexColumn].
 func MysqlIndexColumns(ctx context.Context, db DB, schema, table, index string) ([]*IndexColumn, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -87,7 +87,7 @@ func MysqlIndexColumns(ctx context.Context, db DB, schema, table, index string) 
 	return res, nil
 }
 
-// Sqlite3IndexColumns runs a custom query, returning results as IndexColumn.
+// Sqlite3IndexColumns runs a custom query, returning results as [IndexColumn].
 func Sqlite3IndexColumns(ctx context.Context, db DB, schema, table, index string) ([]*IndexColumn, error) {
 	// query
 	sqlstr := `/* ` + schema + ` ` + table + ` */ ` +
@@ -119,7 +119,7 @@ func Sqlite3IndexColumns(ctx context.Context, db DB, schema, table, index string
 	return res, nil
 }
 
-// SqlserverIndexColumns runs a custom query, returning results as IndexColumn.
+// SqlserverIndexColumns runs a custom query, returning results as [IndexColumn].
 func SqlserverIndexColumns(ctx context.Context, db DB, schema, table, index string) ([]*IndexColumn, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -160,7 +160,7 @@ func SqlserverIndexColumns(ctx context.Context, db DB, schema, table, index stri
 	return res, nil
 }
 
-// OracleIndexColumns runs a custom query, returning results as IndexColumn.
+// OracleIndexColumns runs a custom query, returning results as [IndexColumn].
 func OracleIndexColumns(ctx context.Context, db DB, schema, table, index string) ([]*IndexColumn, error) {
 	// query
 	const sqlstr = `SELECT ` +

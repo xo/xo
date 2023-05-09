@@ -17,18 +17,18 @@ type OrderDetail struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the OrderDetail exists in the database.
+// Exists returns true when the [OrderDetail] exists in the database.
 func (od *OrderDetail) Exists() bool {
 	return od._exists
 }
 
-// Deleted returns true when the OrderDetail has been marked for deletion from
-// the database.
+// Deleted returns true when the [OrderDetail] has been marked for deletion
+// from the database.
 func (od *OrderDetail) Deleted() bool {
 	return od._deleted
 }
 
-// Insert inserts the OrderDetail to the database.
+// Insert inserts the [OrderDetail] to the database.
 func (od *OrderDetail) Insert(ctx context.Context, db DB) error {
 	switch {
 	case od._exists: // already exists
@@ -52,7 +52,7 @@ func (od *OrderDetail) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a OrderDetail in the database.
+// Update updates a [OrderDetail] in the database.
 func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 	switch {
 	case !od._exists: // doesn't exist
@@ -72,7 +72,7 @@ func (od *OrderDetail) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the OrderDetail to the database.
+// Save saves the [OrderDetail] to the database.
 func (od *OrderDetail) Save(ctx context.Context, db DB) error {
 	if od.Exists() {
 		return od.Update(ctx, db)
@@ -80,7 +80,7 @@ func (od *OrderDetail) Save(ctx context.Context, db DB) error {
 	return od.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for OrderDetail.
+// Upsert performs an upsert for [OrderDetail].
 func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case od._deleted: // deleted
@@ -105,7 +105,7 @@ func (od *OrderDetail) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the OrderDetail from the database.
+// Delete deletes the [OrderDetail] from the database.
 func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !od._exists: // doesn't exist
@@ -126,7 +126,7 @@ func (od *OrderDetail) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// OrderDetailByOrderIDProductID retrieves a row from 'order_details' as a OrderDetail.
+// OrderDetailByOrderIDProductID retrieves a row from 'order_details' as a [OrderDetail].
 //
 // Generated from index 'sqlite_autoindex_order_details_1'.
 func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productID int) (*OrderDetail, error) {
@@ -146,14 +146,14 @@ func OrderDetailByOrderIDProductID(ctx context.Context, db DB, orderID, productI
 	return &od, nil
 }
 
-// Order returns the Order associated with the OrderDetail's (OrderID).
+// Order returns the Order associated with the [OrderDetail]'s (OrderID).
 //
 // Generated from foreign key 'order_details_order_id_fkey'.
 func (od *OrderDetail) Order(ctx context.Context, db DB) (*Order, error) {
 	return OrderByOrderID(ctx, db, od.OrderID)
 }
 
-// Product returns the Product associated with the OrderDetail's (ProductID).
+// Product returns the Product associated with the [OrderDetail]'s (ProductID).
 //
 // Generated from foreign key 'order_details_product_id_fkey'.
 func (od *OrderDetail) Product(ctx context.Context, db DB) (*Product, error) {

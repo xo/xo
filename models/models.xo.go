@@ -6,11 +6,8 @@ package models
 import (
 	"context"
 	"database/sql"
-	"database/sql/driver"
-	"encoding/csv"
 	"fmt"
 	"io"
-	"regexp"
 	"strings"
 )
 
@@ -34,10 +31,9 @@ func Logf(s string, v ...interface{}) {
 
 // SetLogger sets the package logger. Valid logger types:
 //
-//     io.Writer
-//     func(string, ...interface{}) (int, error) // fmt.Printf
-//     func(string, ...interface{}) // log.Printf
-//
+//	io.Writer
+//	func(string, ...interface{}) (int, error) // fmt.Printf
+//	func(string, ...interface{}) // log.Printf
 func SetLogger(logger interface{}) {
 	logf = convLogger(logger)
 }
@@ -49,10 +45,9 @@ func Errorf(s string, v ...interface{}) {
 
 // SetErrorLogger sets the package error logger. Valid logger types:
 //
-//     io.Writer
-//     func(string, ...interface{}) (int, error) // fmt.Printf
-//     func(string, ...interface{}) // log.Printf
-//
+//	io.Writer
+//	func(string, ...interface{}) (int, error) // fmt.Printf
+//	func(string, ...interface{}) // log.Printf
 func SetErrorLogger(logger interface{}) {
 	errf = convLogger(logger)
 }
@@ -77,7 +72,7 @@ func convLogger(logger interface{}) func(string, ...interface{}) {
 // DB is the common interface for database operations that can be used with
 // types from schema 'public'.
 //
-// This works with both database/sql.DB and database/sql.Tx.
+// This works with both [database/sql.DB] and [database/sql.Tx].
 type DB interface {
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
@@ -145,62 +140,6 @@ func (err *ErrUpsertFailed) Error() string {
 // Unwrap satisfies the unwrap interface.
 func (err *ErrUpsertFailed) Unwrap() error {
 	return err.Err
-}
-
-// ErrDecodeFailed is the decode failed error.
-type ErrDecodeFailed struct {
-	Err error
-}
-
-// Error satisfies the error interface.
-func (err *ErrDecodeFailed) Error() string {
-	return fmt.Sprintf("unable to decode: %v", err.Err)
-}
-
-// Unwrap satisfies the unwrap interface.
-func (err *ErrDecodeFailed) Unwrap() error {
-	return err.Err
-}
-
-// ErrInvalidStringSlice is the invalid StringSlice error.
-const ErrInvalidStringSlice Error = "invalid StringSlice"
-
-// StringSlice is a slice of strings.
-type StringSlice []string
-
-// Scan satisfies the sql.Scanner interface for StringSlice.
-func (ss *StringSlice) Scan(v interface{}) error {
-	buf, ok := v.([]byte)
-	if !ok {
-		return logerror(ErrInvalidStringSlice)
-	}
-	// change quote escapes for csv parser
-	str := strings.Replace(quoteEscRE.ReplaceAllString(string(buf), `$1""`), `\\`, `\`, -1)
-	str = str[1 : len(str)-1]
-	// bail if only one
-	if len(str) == 0 {
-		return nil
-	}
-	// parse with csv reader
-	r := csv.NewReader(strings.NewReader(str))
-	line, err := r.Read()
-	if err != nil {
-		return logerror(&ErrDecodeFailed{err})
-	}
-	*ss = StringSlice(line)
-	return nil
-}
-
-// quoteEscRE matches escaped characters in a string.
-var quoteEscRE = regexp.MustCompile(`([^\\]([\\]{2})*)\\"`)
-
-// Value satisfies the sql/driver.Valuer interface.
-func (ss StringSlice) Value() (driver.Value, error) {
-	v := make([]string, len(ss))
-	for i, s := range ss {
-		v[i] = `"` + strings.Replace(strings.Replace(s, `\`, `\\\`, -1), `"`, `\"`, -1) + `"`
-	}
-	return "{" + strings.Join(v, ",") + "}", nil
 }
 
 // PostgresViewCreate creates a view for introspection.

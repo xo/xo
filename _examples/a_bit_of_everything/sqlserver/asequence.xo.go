@@ -13,18 +13,18 @@ type ASequence struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the ASequence exists in the database.
+// Exists returns true when the [ASequence] exists in the database.
 func (as *ASequence) Exists() bool {
 	return as._exists
 }
 
-// Deleted returns true when the ASequence has been marked for deletion from
-// the database.
+// Deleted returns true when the [ASequence] has been marked for deletion
+// from the database.
 func (as *ASequence) Deleted() bool {
 	return as._deleted
 }
 
-// Insert inserts the ASequence to the database.
+// Insert inserts the [ASequence] to the database.
 func (as *ASequence) Insert(ctx context.Context, db DB) error {
 	switch {
 	case as._exists: // already exists
@@ -63,7 +63,7 @@ func (as *ASequence) Insert(ctx context.Context, db DB) error {
 
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
-// Delete deletes the ASequence from the database.
+// Delete deletes the [ASequence] from the database.
 func (as *ASequence) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !as._exists: // doesn't exist
@@ -84,7 +84,7 @@ func (as *ASequence) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// ASequenceByASeq retrieves a row from 'a_bit_of_everything.a_sequence' as a ASequence.
+// ASequenceByASeq retrieves a row from 'a_bit_of_everything.a_sequence' as a [ASequence].
 //
 // Generated from index 'a_sequence_pkey'.
 func ASequenceByASeq(ctx context.Context, db DB, aSeq int) (*ASequence, error) {

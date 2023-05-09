@@ -15,18 +15,18 @@ type BooksTag struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the BooksTag exists in the database.
+// Exists returns true when the [BooksTag] exists in the database.
 func (bt *BooksTag) Exists() bool {
 	return bt._exists
 }
 
-// Deleted returns true when the BooksTag has been marked for deletion from
-// the database.
+// Deleted returns true when the [BooksTag] has been marked for deletion
+// from the database.
 func (bt *BooksTag) Deleted() bool {
 	return bt._deleted
 }
 
-// Insert inserts the BooksTag to the database.
+// Insert inserts the [BooksTag] to the database.
 func (bt *BooksTag) Insert(ctx context.Context, db DB) error {
 	switch {
 	case bt._exists: // already exists
@@ -50,7 +50,7 @@ func (bt *BooksTag) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a BooksTag in the database.
+// Update updates a [BooksTag] in the database.
 func (bt *BooksTag) Update(ctx context.Context, db DB) error {
 	switch {
 	case !bt._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (bt *BooksTag) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the BooksTag to the database.
+// Save saves the [BooksTag] to the database.
 func (bt *BooksTag) Save(ctx context.Context, db DB) error {
 	if bt.Exists() {
 		return bt.Update(ctx, db)
@@ -78,7 +78,7 @@ func (bt *BooksTag) Save(ctx context.Context, db DB) error {
 	return bt.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for BooksTag.
+// Upsert performs an upsert for [BooksTag].
 func (bt *BooksTag) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case bt._deleted: // deleted
@@ -103,7 +103,7 @@ func (bt *BooksTag) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the BooksTag from the database.
+// Delete deletes the [BooksTag] from the database.
 func (bt *BooksTag) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !bt._exists: // doesn't exist
@@ -124,7 +124,7 @@ func (bt *BooksTag) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// BooksTagsByBookID retrieves a row from 'public.books_tags' as a BooksTag.
+// BooksTagsByBookID retrieves a row from 'public.books_tags' as a [BooksTag].
 //
 // Generated from index 'books_tags_book_id_73d7d8e8'.
 func BooksTagsByBookID(ctx context.Context, db DB, bookID int64) ([]*BooksTag, error) {
@@ -158,7 +158,7 @@ func BooksTagsByBookID(ctx context.Context, db DB, bookID int64) ([]*BooksTag, e
 	return res, nil
 }
 
-// BooksTagByBookIDTagID retrieves a row from 'public.books_tags' as a BooksTag.
+// BooksTagByBookIDTagID retrieves a row from 'public.books_tags' as a [BooksTag].
 //
 // Generated from index 'books_tags_book_id_tag_id_29db9e39_uniq'.
 func BooksTagByBookIDTagID(ctx context.Context, db DB, bookID, tagID int64) (*BooksTag, error) {
@@ -178,7 +178,7 @@ func BooksTagByBookIDTagID(ctx context.Context, db DB, bookID, tagID int64) (*Bo
 	return &bt, nil
 }
 
-// BooksTagByID retrieves a row from 'public.books_tags' as a BooksTag.
+// BooksTagByID retrieves a row from 'public.books_tags' as a [BooksTag].
 //
 // Generated from index 'books_tags_pkey'.
 func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
@@ -198,7 +198,7 @@ func BooksTagByID(ctx context.Context, db DB, id int64) (*BooksTag, error) {
 	return &bt, nil
 }
 
-// BooksTagsByTagID retrieves a row from 'public.books_tags' as a BooksTag.
+// BooksTagsByTagID retrieves a row from 'public.books_tags' as a [BooksTag].
 //
 // Generated from index 'books_tags_tag_id_8d70b40a'.
 func BooksTagsByTagID(ctx context.Context, db DB, tagID int64) ([]*BooksTag, error) {
@@ -232,14 +232,14 @@ func BooksTagsByTagID(ctx context.Context, db DB, tagID int64) ([]*BooksTag, err
 	return res, nil
 }
 
-// Book returns the Book associated with the BooksTag's (BookID).
+// Book returns the Book associated with the [BooksTag]'s (BookID).
 //
 // Generated from foreign key 'books_tags_book_id_73d7d8e8_fk_books_book_id'.
 func (bt *BooksTag) Book(ctx context.Context, db DB) (*Book, error) {
 	return BookByBookID(ctx, db, bt.BookID)
 }
 
-// Tag returns the Tag associated with the BooksTag's (TagID).
+// Tag returns the Tag associated with the [BooksTag]'s (TagID).
 //
 // Generated from foreign key 'books_tags_tag_id_8d70b40a_fk_tags_tag_id'.
 func (bt *BooksTag) Tag(ctx context.Context, db DB) (*Tag, error) {

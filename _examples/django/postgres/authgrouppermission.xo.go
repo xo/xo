@@ -15,18 +15,18 @@ type AuthGroupPermission struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthGroupPermission exists in the database.
+// Exists returns true when the [AuthGroupPermission] exists in the database.
 func (agp *AuthGroupPermission) Exists() bool {
 	return agp._exists
 }
 
-// Deleted returns true when the AuthGroupPermission has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthGroupPermission] has been marked for deletion
+// from the database.
 func (agp *AuthGroupPermission) Deleted() bool {
 	return agp._deleted
 }
 
-// Insert inserts the AuthGroupPermission to the database.
+// Insert inserts the [AuthGroupPermission] to the database.
 func (agp *AuthGroupPermission) Insert(ctx context.Context, db DB) error {
 	switch {
 	case agp._exists: // already exists
@@ -50,7 +50,7 @@ func (agp *AuthGroupPermission) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthGroupPermission in the database.
+// Update updates a [AuthGroupPermission] in the database.
 func (agp *AuthGroupPermission) Update(ctx context.Context, db DB) error {
 	switch {
 	case !agp._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (agp *AuthGroupPermission) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthGroupPermission to the database.
+// Save saves the [AuthGroupPermission] to the database.
 func (agp *AuthGroupPermission) Save(ctx context.Context, db DB) error {
 	if agp.Exists() {
 		return agp.Update(ctx, db)
@@ -78,7 +78,7 @@ func (agp *AuthGroupPermission) Save(ctx context.Context, db DB) error {
 	return agp.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthGroupPermission.
+// Upsert performs an upsert for [AuthGroupPermission].
 func (agp *AuthGroupPermission) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case agp._deleted: // deleted
@@ -103,7 +103,7 @@ func (agp *AuthGroupPermission) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthGroupPermission from the database.
+// Delete deletes the [AuthGroupPermission] from the database.
 func (agp *AuthGroupPermission) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !agp._exists: // doesn't exist
@@ -124,7 +124,7 @@ func (agp *AuthGroupPermission) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthGroupPermissionsByGroupID retrieves a row from 'public.auth_group_permissions' as a AuthGroupPermission.
+// AuthGroupPermissionsByGroupID retrieves a row from 'public.auth_group_permissions' as a [AuthGroupPermission].
 //
 // Generated from index 'auth_group_permissions_group_id_b120cbf9'.
 func AuthGroupPermissionsByGroupID(ctx context.Context, db DB, groupID int) ([]*AuthGroupPermission, error) {
@@ -158,7 +158,7 @@ func AuthGroupPermissionsByGroupID(ctx context.Context, db DB, groupID int) ([]*
 	return res, nil
 }
 
-// AuthGroupPermissionByGroupIDPermissionID retrieves a row from 'public.auth_group_permissions' as a AuthGroupPermission.
+// AuthGroupPermissionByGroupIDPermissionID retrieves a row from 'public.auth_group_permissions' as a [AuthGroupPermission].
 //
 // Generated from index 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq'.
 func AuthGroupPermissionByGroupIDPermissionID(ctx context.Context, db DB, groupID, permissionID int) (*AuthGroupPermission, error) {
@@ -178,7 +178,7 @@ func AuthGroupPermissionByGroupIDPermissionID(ctx context.Context, db DB, groupI
 	return &agp, nil
 }
 
-// AuthGroupPermissionsByPermissionID retrieves a row from 'public.auth_group_permissions' as a AuthGroupPermission.
+// AuthGroupPermissionsByPermissionID retrieves a row from 'public.auth_group_permissions' as a [AuthGroupPermission].
 //
 // Generated from index 'auth_group_permissions_permission_id_84c5c92e'.
 func AuthGroupPermissionsByPermissionID(ctx context.Context, db DB, permissionID int) ([]*AuthGroupPermission, error) {
@@ -212,7 +212,7 @@ func AuthGroupPermissionsByPermissionID(ctx context.Context, db DB, permissionID
 	return res, nil
 }
 
-// AuthGroupPermissionByID retrieves a row from 'public.auth_group_permissions' as a AuthGroupPermission.
+// AuthGroupPermissionByID retrieves a row from 'public.auth_group_permissions' as a [AuthGroupPermission].
 //
 // Generated from index 'auth_group_permissions_pkey'.
 func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPermission, error) {
@@ -232,14 +232,14 @@ func AuthGroupPermissionByID(ctx context.Context, db DB, id int64) (*AuthGroupPe
 	return &agp, nil
 }
 
-// AuthPermission returns the AuthPermission associated with the AuthGroupPermission's (PermissionID).
+// AuthPermission returns the AuthPermission associated with the [AuthGroupPermission]'s (PermissionID).
 //
 // Generated from foreign key 'auth_group_permissio_permission_id_84c5c92e_fk_auth_perm'.
 func (agp *AuthGroupPermission) AuthPermission(ctx context.Context, db DB) (*AuthPermission, error) {
 	return AuthPermissionByID(ctx, db, agp.PermissionID)
 }
 
-// AuthGroup returns the AuthGroup associated with the AuthGroupPermission's (GroupID).
+// AuthGroup returns the AuthGroup associated with the [AuthGroupPermission]'s (GroupID).
 //
 // Generated from foreign key 'auth_group_permissions_group_id_b120cbf9_fk_auth_group_id'.
 func (agp *AuthGroupPermission) AuthGroup(ctx context.Context, db DB) (*AuthGroup, error) {

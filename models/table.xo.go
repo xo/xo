@@ -14,7 +14,7 @@ type Table struct {
 	ViewDef   string `json:"view_def"`   // view_def
 }
 
-// PostgresTables runs a custom query, returning results as Table.
+// PostgresTables runs a custom query, returning results as [Table].
 func PostgresTables(ctx context.Context, db DB, schema, typ string) ([]*Table, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -60,7 +60,7 @@ func PostgresTables(ctx context.Context, db DB, schema, typ string) ([]*Table, e
 	return res, nil
 }
 
-// MysqlTables runs a custom query, returning results as Table.
+// MysqlTables runs a custom query, returning results as [Table].
 func MysqlTables(ctx context.Context, db DB, schema, typ string) ([]*Table, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -104,7 +104,7 @@ func MysqlTables(ctx context.Context, db DB, schema, typ string) ([]*Table, erro
 	return res, nil
 }
 
-// Sqlite3Tables runs a custom query, returning results as Table.
+// Sqlite3Tables runs a custom query, returning results as [Table].
 func Sqlite3Tables(ctx context.Context, db DB, schema, typ string) ([]*Table, error) {
 	// query
 	sqlstr := `/* ` + schema + ` */ ` +
@@ -141,7 +141,7 @@ func Sqlite3Tables(ctx context.Context, db DB, schema, typ string) ([]*Table, er
 	return res, nil
 }
 
-// SqlserverTables runs a custom query, returning results as Table.
+// SqlserverTables runs a custom query, returning results as [Table].
 func SqlserverTables(ctx context.Context, db DB, schema, typ string) ([]*Table, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -183,7 +183,7 @@ func SqlserverTables(ctx context.Context, db DB, schema, typ string) ([]*Table, 
 	return res, nil
 }
 
-// OracleTables runs a custom query, returning results as Table.
+// OracleTables runs a custom query, returning results as [Table].
 func OracleTables(ctx context.Context, db DB, schema, typ string) ([]*Table, error) {
 	// query
 	const sqlstr = `SELECT ` +

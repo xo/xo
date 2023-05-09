@@ -13,18 +13,18 @@ type APrimary struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the APrimary exists in the database.
+// Exists returns true when the [APrimary] exists in the database.
 func (ap *APrimary) Exists() bool {
 	return ap._exists
 }
 
-// Deleted returns true when the APrimary has been marked for deletion from
-// the database.
+// Deleted returns true when the [APrimary] has been marked for deletion
+// from the database.
 func (ap *APrimary) Deleted() bool {
 	return ap._deleted
 }
 
-// Insert inserts the APrimary to the database.
+// Insert inserts the [APrimary] to the database.
 func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 	switch {
 	case ap._exists: // already exists
@@ -50,7 +50,7 @@ func (ap *APrimary) Insert(ctx context.Context, db DB) error {
 
 // ------ NOTE: Update statements omitted due to lack of fields other than primary key ------
 
-// Delete deletes the APrimary from the database.
+// Delete deletes the [APrimary] from the database.
 func (ap *APrimary) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ap._exists: // doesn't exist
@@ -71,7 +71,7 @@ func (ap *APrimary) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// APrimaryByAKey retrieves a row from 'a_bit_of_everything.a_primary' as a APrimary.
+// APrimaryByAKey retrieves a row from 'a_bit_of_everything.a_primary' as a [APrimary].
 //
 // Generated from index 'a_primary_pkey'.
 func APrimaryByAKey(ctx context.Context, db DB, aKey int) (*APrimary, error) {

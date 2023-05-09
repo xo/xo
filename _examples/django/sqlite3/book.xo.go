@@ -19,18 +19,18 @@ type Book struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Book exists in the database.
+// Exists returns true when the [Book] exists in the database.
 func (b *Book) Exists() bool {
 	return b._exists
 }
 
-// Deleted returns true when the Book has been marked for deletion from
-// the database.
+// Deleted returns true when the [Book] has been marked for deletion
+// from the database.
 func (b *Book) Deleted() bool {
 	return b._deleted
 }
 
-// Insert inserts the Book to the database.
+// Insert inserts the [Book] to the database.
 func (b *Book) Insert(ctx context.Context, db DB) error {
 	switch {
 	case b._exists: // already exists
@@ -61,7 +61,7 @@ func (b *Book) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Book in the database.
+// Update updates a [Book] in the database.
 func (b *Book) Update(ctx context.Context, db DB) error {
 	switch {
 	case !b._exists: // doesn't exist
@@ -81,7 +81,7 @@ func (b *Book) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Book to the database.
+// Save saves the [Book] to the database.
 func (b *Book) Save(ctx context.Context, db DB) error {
 	if b.Exists() {
 		return b.Update(ctx, db)
@@ -89,7 +89,7 @@ func (b *Book) Save(ctx context.Context, db DB) error {
 	return b.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Book.
+// Upsert performs an upsert for [Book].
 func (b *Book) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case b._deleted: // deleted
@@ -114,7 +114,7 @@ func (b *Book) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Book from the database.
+// Delete deletes the [Book] from the database.
 func (b *Book) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !b._exists: // doesn't exist
@@ -135,7 +135,7 @@ func (b *Book) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// BookByBookID retrieves a row from 'books' as a Book.
+// BookByBookID retrieves a row from 'books' as a [Book].
 //
 // Generated from index 'books_book_id_pkey'.
 func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
@@ -155,7 +155,7 @@ func BookByBookID(ctx context.Context, db DB, bookID int) (*Book, error) {
 	return &b, nil
 }
 
-// BooksByBooksAuthorIDFkey retrieves a row from 'books' as a Book.
+// BooksByBooksAuthorIDFkey retrieves a row from 'books' as a [Book].
 //
 // Generated from index 'books_books_author_id_fkey_73ac0c26'.
 func BooksByBooksAuthorIDFkey(ctx context.Context, db DB, booksAuthorIDFkey int64) ([]*Book, error) {
@@ -189,7 +189,7 @@ func BooksByBooksAuthorIDFkey(ctx context.Context, db DB, booksAuthorIDFkey int6
 	return res, nil
 }
 
-// Author returns the Author associated with the Book's (BooksAuthorIDFkey).
+// Author returns the Author associated with the [Book]'s (BooksAuthorIDFkey).
 //
 // Generated from foreign key 'books_books_author_id_fkey_fkey'.
 func (b *Book) Author(ctx context.Context, db DB) (*Author, error) {

@@ -14,18 +14,18 @@ type Author struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Author exists in the database.
+// Exists returns true when the [Author] exists in the database.
 func (a *Author) Exists() bool {
 	return a._exists
 }
 
-// Deleted returns true when the Author has been marked for deletion from
-// the database.
+// Deleted returns true when the [Author] has been marked for deletion
+// from the database.
 func (a *Author) Deleted() bool {
 	return a._deleted
 }
 
-// Insert inserts the Author to the database.
+// Insert inserts the [Author] to the database.
 func (a *Author) Insert(ctx context.Context, db DB) error {
 	switch {
 	case a._exists: // already exists
@@ -56,7 +56,7 @@ func (a *Author) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Author in the database.
+// Update updates a [Author] in the database.
 func (a *Author) Update(ctx context.Context, db DB) error {
 	switch {
 	case !a._exists: // doesn't exist
@@ -76,7 +76,7 @@ func (a *Author) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Author to the database.
+// Save saves the [Author] to the database.
 func (a *Author) Save(ctx context.Context, db DB) error {
 	if a.Exists() {
 		return a.Update(ctx, db)
@@ -84,7 +84,7 @@ func (a *Author) Save(ctx context.Context, db DB) error {
 	return a.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Author.
+// Upsert performs an upsert for [Author].
 func (a *Author) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case a._deleted: // deleted
@@ -108,7 +108,7 @@ func (a *Author) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Author from the database.
+// Delete deletes the [Author] from the database.
 func (a *Author) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !a._exists: // doesn't exist
@@ -129,7 +129,7 @@ func (a *Author) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthorByAuthorID retrieves a row from 'django.authors' as a Author.
+// AuthorByAuthorID retrieves a row from 'django.authors' as a [Author].
 //
 // Generated from index 'authors_author_id_pkey'.
 func AuthorByAuthorID(ctx context.Context, db DB, authorID int64) (*Author, error) {

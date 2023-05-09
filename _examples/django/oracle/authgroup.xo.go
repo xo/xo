@@ -16,18 +16,18 @@ type AuthGroup struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthGroup exists in the database.
+// Exists returns true when the [AuthGroup] exists in the database.
 func (ag *AuthGroup) Exists() bool {
 	return ag._exists
 }
 
-// Deleted returns true when the AuthGroup has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthGroup] has been marked for deletion
+// from the database.
 func (ag *AuthGroup) Deleted() bool {
 	return ag._deleted
 }
 
-// Insert inserts the AuthGroup to the database.
+// Insert inserts the [AuthGroup] to the database.
 func (ag *AuthGroup) Insert(ctx context.Context, db DB) error {
 	switch {
 	case ag._exists: // already exists
@@ -53,7 +53,7 @@ func (ag *AuthGroup) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthGroup in the database.
+// Update updates a [AuthGroup] in the database.
 func (ag *AuthGroup) Update(ctx context.Context, db DB) error {
 	switch {
 	case !ag._exists: // doesn't exist
@@ -73,7 +73,7 @@ func (ag *AuthGroup) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthGroup to the database.
+// Save saves the [AuthGroup] to the database.
 func (ag *AuthGroup) Save(ctx context.Context, db DB) error {
 	if ag.Exists() {
 		return ag.Update(ctx, db)
@@ -81,7 +81,7 @@ func (ag *AuthGroup) Save(ctx context.Context, db DB) error {
 	return ag.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthGroup.
+// Upsert performs an upsert for [AuthGroup].
 func (ag *AuthGroup) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case ag._deleted: // deleted
@@ -112,7 +112,7 @@ func (ag *AuthGroup) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthGroup from the database.
+// Delete deletes the [AuthGroup] from the database.
 func (ag *AuthGroup) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !ag._exists: // doesn't exist
@@ -133,7 +133,7 @@ func (ag *AuthGroup) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthGroupByID retrieves a row from 'django.auth_group' as a AuthGroup.
+// AuthGroupByID retrieves a row from 'django.auth_group' as a [AuthGroup].
 //
 // Generated from index 'auth_group_id_idx'.
 func AuthGroupByID(ctx context.Context, db DB, id int64) (*AuthGroup, error) {
@@ -153,7 +153,7 @@ func AuthGroupByID(ctx context.Context, db DB, id int64) (*AuthGroup, error) {
 	return &ag, nil
 }
 
-// AuthGroupByName retrieves a row from 'django.auth_group' as a AuthGroup.
+// AuthGroupByName retrieves a row from 'django.auth_group' as a [AuthGroup].
 //
 // Generated from index 'auth_group_name_idx'.
 func AuthGroupByName(ctx context.Context, db DB, name sql.NullString) (*AuthGroup, error) {

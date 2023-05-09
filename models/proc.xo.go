@@ -16,7 +16,7 @@ type Proc struct {
 	ProcDef    string `json:"proc_def"`    // proc_def
 }
 
-// PostgresProcs runs a custom query, returning results as Proc.
+// PostgresProcs runs a custom query, returning results as [Proc].
 func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -82,7 +82,7 @@ func PostgresProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	return res, nil
 }
 
-// MysqlProcs runs a custom query, returning results as Proc.
+// MysqlProcs runs a custom query, returning results as [Proc].
 func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -121,7 +121,7 @@ func MysqlProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	return res, nil
 }
 
-// SqlserverProcs runs a custom query, returning results as Proc.
+// SqlserverProcs runs a custom query, returning results as [Proc].
 func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +
@@ -172,7 +172,7 @@ func SqlserverProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) 
 	return res, nil
 }
 
-// OracleProcs runs a custom query, returning results as Proc.
+// OracleProcs runs a custom query, returning results as [Proc].
 func OracleProcs(ctx context.Context, db DB, schema string) ([]*Proc, error) {
 	// query
 	const sqlstr = `SELECT ` +

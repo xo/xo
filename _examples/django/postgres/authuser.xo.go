@@ -25,18 +25,18 @@ type AuthUser struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the AuthUser exists in the database.
+// Exists returns true when the [AuthUser] exists in the database.
 func (au *AuthUser) Exists() bool {
 	return au._exists
 }
 
-// Deleted returns true when the AuthUser has been marked for deletion from
-// the database.
+// Deleted returns true when the [AuthUser] has been marked for deletion
+// from the database.
 func (au *AuthUser) Deleted() bool {
 	return au._deleted
 }
 
-// Insert inserts the AuthUser to the database.
+// Insert inserts the [AuthUser] to the database.
 func (au *AuthUser) Insert(ctx context.Context, db DB) error {
 	switch {
 	case au._exists: // already exists
@@ -60,7 +60,7 @@ func (au *AuthUser) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a AuthUser in the database.
+// Update updates a [AuthUser] in the database.
 func (au *AuthUser) Update(ctx context.Context, db DB) error {
 	switch {
 	case !au._exists: // doesn't exist
@@ -80,7 +80,7 @@ func (au *AuthUser) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the AuthUser to the database.
+// Save saves the [AuthUser] to the database.
 func (au *AuthUser) Save(ctx context.Context, db DB) error {
 	if au.Exists() {
 		return au.Update(ctx, db)
@@ -88,7 +88,7 @@ func (au *AuthUser) Save(ctx context.Context, db DB) error {
 	return au.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for AuthUser.
+// Upsert performs an upsert for [AuthUser].
 func (au *AuthUser) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case au._deleted: // deleted
@@ -113,7 +113,7 @@ func (au *AuthUser) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the AuthUser from the database.
+// Delete deletes the [AuthUser] from the database.
 func (au *AuthUser) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !au._exists: // doesn't exist
@@ -134,7 +134,7 @@ func (au *AuthUser) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// AuthUserByID retrieves a row from 'public.auth_user' as a AuthUser.
+// AuthUserByID retrieves a row from 'public.auth_user' as a [AuthUser].
 //
 // Generated from index 'auth_user_pkey'.
 func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
@@ -154,7 +154,7 @@ func AuthUserByID(ctx context.Context, db DB, id int) (*AuthUser, error) {
 	return &au, nil
 }
 
-// AuthUserByUsername retrieves a row from 'public.auth_user' as a AuthUser.
+// AuthUserByUsername retrieves a row from 'public.auth_user' as a [AuthUser].
 //
 // Generated from index 'auth_user_username_key'.
 func AuthUserByUsername(ctx context.Context, db DB, username string) (*AuthUser, error) {

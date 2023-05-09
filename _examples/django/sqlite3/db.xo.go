@@ -72,7 +72,7 @@ func convLogger(logger interface{}) func(string, ...interface{}) {
 // DB is the common interface for database operations that can be used with
 // types from schema 'django.db'.
 //
-// This works with both database/sql.DB and database/sql.Tx.
+// This works with both [database/sql.DB] and [database/sql.Tx].
 type DB interface {
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
@@ -209,12 +209,12 @@ func (t *Time) Parse(s string) error {
 	return ErrInvalidTime(s)
 }
 
-// MarshalJSON satisfies the json.Marshaler interface.
+// MarshalJSON satisfies the [json.Marshaler] interface.
 func (t Time) MarshalJSON() ([]byte, error) {
 	return t.time.MarshalJSON()
 }
 
-// UnmarshalJSON satisfies the json.Unmarshaler interface.
+// UnmarshalJSON satisfies the [json.Unmarshaler] interface.
 func (t *Time) UnmarshalJSON(data []byte) error {
 	return t.time.UnmarshalJSON(data)
 }

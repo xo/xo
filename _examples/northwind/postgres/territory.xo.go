@@ -15,18 +15,18 @@ type Territory struct {
 	_exists, _deleted bool
 }
 
-// Exists returns true when the Territory exists in the database.
+// Exists returns true when the [Territory] exists in the database.
 func (t *Territory) Exists() bool {
 	return t._exists
 }
 
-// Deleted returns true when the Territory has been marked for deletion from
-// the database.
+// Deleted returns true when the [Territory] has been marked for deletion
+// from the database.
 func (t *Territory) Deleted() bool {
 	return t._deleted
 }
 
-// Insert inserts the Territory to the database.
+// Insert inserts the [Territory] to the database.
 func (t *Territory) Insert(ctx context.Context, db DB) error {
 	switch {
 	case t._exists: // already exists
@@ -50,7 +50,7 @@ func (t *Territory) Insert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Update updates a Territory in the database.
+// Update updates a [Territory] in the database.
 func (t *Territory) Update(ctx context.Context, db DB) error {
 	switch {
 	case !t._exists: // doesn't exist
@@ -70,7 +70,7 @@ func (t *Territory) Update(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Save saves the Territory to the database.
+// Save saves the [Territory] to the database.
 func (t *Territory) Save(ctx context.Context, db DB) error {
 	if t.Exists() {
 		return t.Update(ctx, db)
@@ -78,7 +78,7 @@ func (t *Territory) Save(ctx context.Context, db DB) error {
 	return t.Insert(ctx, db)
 }
 
-// Upsert performs an upsert for Territory.
+// Upsert performs an upsert for [Territory].
 func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	switch {
 	case t._deleted: // deleted
@@ -103,7 +103,7 @@ func (t *Territory) Upsert(ctx context.Context, db DB) error {
 	return nil
 }
 
-// Delete deletes the Territory from the database.
+// Delete deletes the [Territory] from the database.
 func (t *Territory) Delete(ctx context.Context, db DB) error {
 	switch {
 	case !t._exists: // doesn't exist
@@ -124,7 +124,7 @@ func (t *Territory) Delete(ctx context.Context, db DB) error {
 	return nil
 }
 
-// TerritoryByTerritoryID retrieves a row from 'public.territories' as a Territory.
+// TerritoryByTerritoryID retrieves a row from 'public.territories' as a [Territory].
 //
 // Generated from index 'territories_pkey'.
 func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Territory, error) {
@@ -144,7 +144,7 @@ func TerritoryByTerritoryID(ctx context.Context, db DB, territoryID string) (*Te
 	return &t, nil
 }
 
-// Region returns the Region associated with the Territory's (RegionID).
+// Region returns the Region associated with the [Territory]'s (RegionID).
 //
 // Generated from foreign key 'territories_region_id_fkey'.
 func (t *Territory) Region(ctx context.Context, db DB) (*Region, error) {
