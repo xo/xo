@@ -48,11 +48,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:43253f4b4a2c3a1694cd52d3517847271934c84dbd060ca0e82a9f90e569dab3",
-                "sha256:dba9dd0bf8b748aa9c98d6c679f8b1c0bfa43124844bea9425ad9ba0cd5e65c3"
+                "sha256:adae3a952fd86800094ae6f64aa558572e8b4ba8dfe21f0ed8175147e75a72a1",
+                "sha256:e9f074a84930662104871bfcea55c3c180c50a0a47739db82435deae6cbaf032"
             ],
             "index": "pypi",
-            "version": "==4.1.8"
+            "version": "==4.1.9"
         },
         "lock": {
             "hashes": [
