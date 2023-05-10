@@ -10,18 +10,34 @@ DROP DATABASE :NAME;
 CREATE DATABASE :NAME
   CONTAINMENT=PARTIAL;
 
-\connect 'ms://localhost/':NAME
+\set QNAME "''":NAME"''"
 
-CREATE LOGIN :NAME
-  WITH
-    PASSWORD=:'PASS',
-    CHECK_POLICY=OFF,
-    DEFAULT_DATABASE=:NAME;
+\set SQL 'CREATE LOGIN ':NAME' WITH PASSWORD=':QNAME', CHECK_POLICY=OFF, DEFAULT_DATABASE=':NAME';'
+EXEC [:NAME].[dbo].[sp_executesql] N:'SQL'
 
-CREATE USER :NAME
-  FOR LOGIN :NAME
-  WITH DEFAULT_SCHEMA=:NAME;
+\set SQL 'CREATE USER ':NAME' FOR LOGIN ':NAME' WITH DEFAULT_SCHEMA=':NAME';'
+EXEC [:NAME].[dbo].[sp_executesql] N:'SQL';
 
-CREATE SCHEMA :NAME AUTHORIZATION :NAME;
+\set SQL 'CREATE SCHEMA ':NAME' AUTHORIZATION ':NAME';'
+EXEC [:NAME].[dbo].[sp_executesql] N:'SQL';
 
-EXEC sp_addrolemember 'db_owner', :'NAME';
+\set SQL 'EXEC sp_addrolemember db_owner, ':QNAME';'
+EXEC [:NAME].[dbo].[sp_executesql] N:'SQL';
+
+-- original reconnect version:
+--
+--\connect 'ms://localhost/':NAME
+--
+--CREATE LOGIN :NAME
+--  WITH
+--    PASSWORD=:'PASS',
+--    CHECK_POLICY=OFF,
+--    DEFAULT_DATABASE=:NAME;
+--
+--CREATE USER :NAME
+--  FOR LOGIN :NAME
+--  WITH DEFAULT_SCHEMA=:NAME;
+--
+--CREATE SCHEMA :NAME AUTHORIZATION :NAME;
+--
+--EXEC sp_addrolemember 'db_owner', :'NAME';
