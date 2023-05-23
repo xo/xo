@@ -68,7 +68,7 @@ $ mkdir -p mssqlmodels
 $ xo schema mssql://user:pass@host/dbname -o mssqlmodels --src custom/templates
 
 # Generate code from a custom SQL query for Postgres
-$ xo query postgres://user:pass@host/dbname -M -B -T -2 AuthorResult << ENDSQL
+$ xo query postgres://user:pass@host/dbname -M -B -2 -T AuthorResult << ENDSQL
 SELECT
   a.name::varchar AS name,
   b.type::integer AS my_type
