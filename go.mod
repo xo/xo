@@ -11,8 +11,8 @@ require (
 	github.com/kenshaw/snaker v0.2.0
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.17
-	github.com/microsoft/go-mssqldb v1.3.0
-	github.com/sijms/go-ora/v2 v2.7.9
+	github.com/microsoft/go-mssqldb v1.4.0
+	github.com/sijms/go-ora/v2 v2.7.10
 	github.com/spf13/cobra v1.7.0
 	github.com/traefik/yaegi v0.15.1
 	github.com/xo/dburl v0.14.2

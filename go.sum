@@ -73,8 +73,8 @@ github.com/mattn/go-isatty v0.0.19 h1:JITubQf0MOLdlGRuRq+jtsDlekdYPia9ZFsB8h/APP
 github.com/mattn/go-isatty v0.0.19/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mattn/go-sqlite3 v1.14.17 h1:mCRHCLDUBXgpKAqIKsaAaAsrAlbkeomtRFKXh2L6YIM=
 github.com/mattn/go-sqlite3 v1.14.17/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
-github.com/microsoft/go-mssqldb v1.3.0 h1:JcPVl+acL8Z/cQcJc9zP0OkjQ+l20bco/cCDpMbmGJk=
-github.com/microsoft/go-mssqldb v1.3.0/go.mod h1:lmWsjHD8XX/Txr0f8ZqgbEZSC+BZjmEQy/Ms+rLrvho=
+github.com/microsoft/go-mssqldb v1.4.0 h1:fhRa6Ftf78dtv1Kj4i1YQoK3VUoce4phkBLoaE0NIaQ=
+github.com/microsoft/go-mssqldb v1.4.0/go.mod h1:lmWsjHD8XX/Txr0f8ZqgbEZSC+BZjmEQy/Ms+rLrvho=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
 github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa15WveJJGw=
 github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
@@ -91,8 +91,8 @@ github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQD
 github.com/shopspring/decimal v1.2.0/go.mod h1:DKyhrW/HYNuLGql+MJL6WCR6knT2jwCFRcu2hWCYk4o=
 github.com/shopspring/decimal v1.3.1 h1:2Usl1nmF/WZucqkFZhnfFYxxxu8LG21F6nPQBE5gKV8=
 github.com/shopspring/decimal v1.3.1/go.mod h1:DKyhrW/HYNuLGql+MJL6WCR6knT2jwCFRcu2hWCYk4o=
-github.com/sijms/go-ora/v2 v2.7.9 h1:FvPwsyNtAOywDKlgjrgCpGkL0s49ZA/ShTBgEAfYKE0=
-github.com/sijms/go-ora/v2 v2.7.9/go.mod h1:EHxlY6x7y9HAsdfumurRfTd+v8NrEOTR3Xl4FWlH6xk=
+github.com/sijms/go-ora/v2 v2.7.10 h1:GSLdj0PYYgSndhsnm7b6p32OqgnwnUZSkFb3j+htfhI=
+github.com/sijms/go-ora/v2 v2.7.10/go.mod h1:EHxlY6x7y9HAsdfumurRfTd+v8NrEOTR3Xl4FWlH6xk=
 github.com/spf13/cast v1.3.1/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
 github.com/spf13/cast v1.5.1 h1:R+kOtfhWQE6TVQzY+4D7wJLBgkdVasCEFxSUBYBYIlA=
 github.com/spf13/cast v1.5.1/go.mod h1:b9PdjNptOpzXr7Rq1q9gJML/2cdGQAo69NKzQ10KN48=
