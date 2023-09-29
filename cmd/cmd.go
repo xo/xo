@@ -15,6 +15,7 @@ import (
 
 	"github.com/kenshaw/snaker"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/xo/dburl"
 	"github.com/xo/dburl/passfile"
 	"github.com/xo/xo/loader"
@@ -149,9 +150,10 @@ type OutParams struct {
 
 // Run runs the code generation.
 func Run(ctx context.Context, name, version string, cmdArgs ...string) error {
+	configPath := parseArg("--config", "-c", cmdArgs)
 	dir := parseArg("--src", "-d", cmdArgs)
 	template := parseArg("--template", "-t", cmdArgs)
-	ts, err := NewTemplateSet(ctx, dir, template)
+	ts, err := NewTemplateSet(ctx, dir, template, configPath)
 	if err != nil {
 		return err
 	}
@@ -167,22 +169,45 @@ func Run(ctx context.Context, name, version string, cmdArgs ...string) error {
 }
 
 // NewTemplateSet creates a new templates set.
-func NewTemplateSet(ctx context.Context, dir, template string) (*templates.Set, error) {
+func NewTemplateSet(ctx context.Context, dir, template, configPath string) (*templates.Set, error) {
 	// build template ts
 	ts := templates.NewDefaultTemplateSet(ctx)
 	switch {
-	case dir == "" && template == "":
+	case dir == "" && template == "" && configPath == "":
 		// show all default templates
 		if err := ts.LoadDefaults(ctx); err != nil {
 			return nil, err
 		}
-	case template != "":
+	case template != "" && configPath == "":
 		// only load the selected default template
 		if err := ts.LoadDefault(ctx, template); err != nil {
 			return nil, err
 		}
 		ts.Use(template)
 	default:
+		if configPath != "" {
+			vip := viper.New()
+
+			vip.SetConfigFile(configPath)
+
+			if err := vip.ReadInConfig(); err != nil {
+				return nil, err
+			}
+		
+			config := &Config{}
+		
+			// # Viper unmarshals the loaded env varialbes into the struct
+			if err := vip.Unmarshal(config); err != nil {
+				return nil, err
+			}
+
+			if config.Src != "" {
+				dir = config.Src
+			}
+			if config.Template != "" {
+				template = config.Template
+			}
+		}
 		// load specified template
 		s := snaker.SnakeToCamel(filepath.Base(dir))
 		s = strings.ReplaceAll(strings.ToLower(s), "_", "-")
