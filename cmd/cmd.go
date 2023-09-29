@@ -26,9 +26,10 @@ import (
 
 // Args contains command-line arguments.
 type Args struct {
-	ConfigFilePath string
 	// Verbose enables verbose output.
 	Verbose bool
+	// ConfigFilePath is the path to the config file.
+	ConfigFilePath string
 	// LoaderParams are database loader parameters.
 	LoaderParams LoaderParams
 	// TemplateParams are template parameters.
