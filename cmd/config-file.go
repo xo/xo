@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/spf13/viper"
 )
 
@@ -14,6 +11,7 @@ type Config struct {
 	Exclude []string `mapstructure:"exclude"`
 	Include []string `mapstructure:"include"`
 	Src string `mapstructure:"src"`
+	Template string `mapstructure:"template"`
 }
 
 func initConfigFile(path string, args *Args) error {
@@ -21,26 +19,25 @@ func initConfigFile(path string, args *Args) error {
 		return nil
 	}
 
+	vip := viper.New()
+
 	// # Read os env
-	viper.AutomaticEnv()
+	vip.AutomaticEnv()
 
 	// # Tell viper the path/location of your config file
-	viper.SetConfigFile(path)
+	vip.SetConfigFile(path)
 
 	// # Viper reads all the variables from env file and log error if any found
-	if err := viper.ReadInConfig(); err != nil {
+	if err := vip.ReadInConfig(); err != nil {
 		return err
 	}
 
 	config := &Config{}
 
 	// # Viper unmarshals the loaded env varialbes into the struct
-	if err := viper.Unmarshal(config); err != nil {
+	if err := vip.Unmarshal(config); err != nil {
 		return err
 	}
-
-	fmt.Println(strings.Join(config.Exclude, ","))
-	fmt.Println(strings.Join(config.Include, ","))
 
 	args.Verbose = config.Verbose
 	args.LoaderParams.Schema = config.Schema
