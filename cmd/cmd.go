@@ -28,6 +28,8 @@ import (
 type Args struct {
 	// Verbose enables verbose output.
 	Verbose bool
+	// ConfigFilePath is the path to the config file.
+	ConfigFilePath string
 	// LoaderParams are database loader parameters.
 	LoaderParams LoaderParams
 	// TemplateParams are template parameters.
@@ -204,7 +206,7 @@ func RootCommand(ctx context.Context, name, version string, ts *templates.Set, a
 		Short:   name + ", the templated code generator for databases.",
 	}
 	// general config
-	_ = cmd.Flags().StringP("config", "c", "", "config file")
+	cmd.PersistentFlags().StringVarP(&args.ConfigFilePath, "config", "c", "", "config file")
 	cmd.PersistentFlags().BoolVarP(&args.Verbose, "verbose", "v", false, "enable verbose output")
 	cmd.SetVersionTemplate("{{ .Name }} {{ .Version }}\n")
 	cmd.InitDefaultHelpCmd()
@@ -387,6 +389,10 @@ func parseArg(short, full string, args []string) (s string) {
 // Exec handles the execution for query and schema.
 func Exec(ctx context.Context, mode string, ts *templates.Set, args *Args) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, cmdargs []string) error {
+		if err := initConfigFile(args.ConfigFilePath, args); err != nil {
+			return err
+		}
+
 		// setup args
 		if err := checkArgs(cmd, mode, ts, args); err != nil {
 			return err
