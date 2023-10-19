@@ -10,7 +10,7 @@ DATAFILE=
 declare -A INIT
 INIT+=(
   [mysql]=my://localhost/
-  [oracle]=or://localhost:1521/db1
+  [oracle]=or://localhost/free
   [postgres]=pg://localhost/
   [sqlserver]=ms://localhost/
 )
@@ -46,7 +46,7 @@ for TYPE in $DATABASES; do
   fi
   DB=${INIT[$TYPE]}
   if [[ -z "$DATAFILE" && "$TYPE" = "oracle" ]]; then
-    DATAFILE=$(printf '/opt/oracle/oradata/ORASID/%s.dbf' "$NAME")
+    DATAFILE=$(printf '/opt/oracle/oradata/FREE/%s.dbf' "$NAME")
   elif [[ "$TYPE" != "oracle" ]]; then
     DATAFILE=""
   fi
