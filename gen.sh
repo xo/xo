@@ -227,6 +227,7 @@ SELECT
 FROM information_schema.table_constraints tc
   JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
     AND tc.table_schema = kcu.table_schema
+    AND tc.table_name = kcu.table_name
   JOIN (
     SELECT
       ROW_NUMBER() OVER (
