@@ -12,12 +12,12 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.18
 	github.com/microsoft/go-mssqldb v1.6.0
-	github.com/sijms/go-ora/v2 v2.7.19
+	github.com/sijms/go-ora/v2 v2.7.20
 	github.com/spf13/cobra v1.8.0
 	github.com/traefik/yaegi v0.15.1
-	github.com/xo/dburl v0.17.0
+	github.com/xo/dburl v0.17.1
 	github.com/yookoala/realpath v1.0.0
-	golang.org/x/tools v0.14.0
+	golang.org/x/tools v0.15.0
 	mvdan.cc/gofumpt v0.5.0
 )
 
