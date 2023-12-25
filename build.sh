@@ -56,6 +56,7 @@ VER="${VER#v}"
 BUILD=$SRC/build
 DIR=$BUILD/$PLATFORM/$ARCH/$VER
 
+TAR=tar
 EXT=tar.bz2
 BIN=$DIR/$NAME
 
@@ -63,6 +64,9 @@ case $PLATFORM in
   windows)
     EXT=zip
     BIN=$BIN.exe
+  ;;
+  darwin)
+    TAR=gtar
   ;;
 esac
 OUT=$DIR/$NAME-$VER-$PLATFORM-$ARCH.$EXT
@@ -140,12 +144,6 @@ fi
 TAGS="${TAGS[@]}"
 LDFLAGS="${LDFLAGS[@]}"
 
-log() {
-  cat - | while read -r message; do
-    echo "$1$message"
-  done
-}
-
 echo "APP:         $NAME/${VER} ($PLATFORM/$ARCH)"
 if [ "$STATIC" = "1" ]; then
   echo "STATIC:      yes"
@@ -184,10 +182,26 @@ fi
     -tags="$TAGS" \
     -trimpath \
     $OUTPUT
-) 2>&1 | log '  '
+)
 
 if [[ "$INSTALL" == "1" || "$BUILDONLY" == "1" ]]; then
   exit
+fi
+
+(set -x;
+  file $BIN
+)
+if [[ "$PLATFORM" != "windows" ]]; then
+  (set -x;
+    chmod +x $BIN
+  )
+fi
+
+# purge disk cache
+if [[ "$PLATFORM" == "darwin" && "$CI" == "true" ]]; then
+  (set -x;
+    sudo /usr/sbin/purge
+  )
 fi
 
 built_ver() {
@@ -220,19 +234,20 @@ fi
 # pack
 cp $SRC/LICENSE $DIR
 case $EXT in
-  tar.bz2)
-    tar -C $DIR -cjf $OUT $(basename $BIN) LICENSE
-  ;;
-  zip)
-    zip $OUT -j $BIN LICENSE
-  ;;
+  tar.bz2) $TAR -C $DIR -cjf $OUT $(basename $BIN) LICENSE ;;
+  zip) zip $OUT -j $BIN LICENSE ;;
 esac
 
 # report
 echo "PACKED:      $OUT ($(du -sh $OUT|awk '{print $1}'))"
+
 case $EXT in
-  tar.bz2) tar -jvtf $OUT ;;
-  zip)     unzip -l  $OUT ;;
+  tar.bz2) (set -x; $TAR  -jvtf $OUT) ;;
+  zip)     (set -x; unzip -l    $OUT) ;;
 esac
+
+(set -x;
+  sha256sum $DIR/*
+)
 
 popd &> /dev/null

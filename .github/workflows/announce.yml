@@ -6,7 +6,7 @@ env:
   APP: xo
   VER: ${{ github.ref_name }}
   REPO: ${{ github.repository }}
-  HOMEBREW_USER: Kenneth Shaw
+  HOMEBREW_NAME: Kenneth Shaw
   HOMEBREW_EMAIL: kenshaw@gmail.com
   HOMEBREW_REPO: https://kenshaw:${{ secrets.HOMEBREW_TOKEN }}@github.com/xo/homebrew-xo.git
   AUR_NAME: Kenneth Shaw
@@ -61,7 +61,7 @@ jobs:
           export SHA256SUM=$(sha256sum $WORKDIR/archive.tar.gz|awk '{print $1}')
           export CHANGELOG=$(curl -H "Accept: application/vnd.github+json" https://api.github.com/repos/$REPO/releases/tags/$VER|jq .body|sed -e 's/\\r//g')
           git clone $HOMEBREW_REPO $REPO_PATH
-          git -C $REPO_PATH config user.name "$HOMEBREW_USER"
+          git -C $REPO_PATH config user.name "$HOMEBREW_NAME"
           git -C $REPO_PATH config user.email "$HOMEBREW_EMAIL"
           sed -i "s%url \".*$%url \"https://github.com/$REPO/archive/$VER.tar.gz\"%" $REPO_PATH/Formula/$APP.rb
           sed -i "s/sha256 \".*$/sha256 \"$SHA256SUM\"/" $REPO_PATH/Formula/$APP.rb
