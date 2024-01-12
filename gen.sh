@@ -157,7 +157,7 @@ SELECT
   c.relname::varchar AS table_name,
   false::boolean AS manual_pk,
   CASE c.relkind
-    WHEN 'r' THEN ''
+    WHEN 'r' THEN COALESCE(obj_description(c.relname::regclass), '')
     WHEN 'v' THEN v.definition
   END AS view_def
 FROM pg_class c
