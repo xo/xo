@@ -1005,6 +1005,82 @@
         },
         {
           "type": "table",
+          "name": "a_same_fk_name_1",
+          "columns": [
+            {
+              "name": "a_fkey",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "foreign_key_1",
+              "column": [
+                {
+                  "name": "a_fkey",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ],
+              "ref_table": "a_primary",
+              "ref_column": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ]
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
+          "name": "a_same_fk_name_2",
+          "columns": [
+            {
+              "name": "a_fkey",
+              "datatype": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          ],
+          "foreign_keys": [
+            {
+              "name": "foreign_key_1",
+              "column": [
+                {
+                  "name": "a_fkey",
+                  "datatype": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              ],
+              "ref_table": "a_primary",
+              "ref_column": [
+                {
+                  "name": "a_key",
+                  "datatype": {
+                    "type": "integer"
+                  },
+                  "is_primary": true
+                }
+              ]
+            }
+          ],
+          "manual": true
+        },
+        {
+          "type": "table",
           "name": "a_sequence",
           "columns": [
             {

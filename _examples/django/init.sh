@@ -37,7 +37,7 @@ case $TYPE in
       [engine]=django.db.backends.oracle
       [user]=django
       [pass]=django
-      [name]=127.0.0.1:1521/db1
+      [name]=127.0.0.1:1521/free
     )
     ;;
   postgres)
