@@ -4,7 +4,7 @@ PGDB=pg://
 MYDB=my://localhost/mysql
 MSDB=ms://
 SQDB=sq:xo.db
-ORDB=or://localhost/orasid
+ORDB=or://localhost/free
 
 DEST=$1
 if [ -z "$DEST" ]; then
@@ -157,7 +157,7 @@ SELECT
   c.relname::varchar AS table_name,
   false::boolean AS manual_pk,
   CASE c.relkind
-    WHEN 'r' THEN ''
+    WHEN 'r' THEN COALESCE(obj_description(c.relname::regclass), '')
     WHEN 'v' THEN v.definition
   END AS view_def
 FROM pg_class c
@@ -227,6 +227,7 @@ SELECT
 FROM information_schema.table_constraints tc
   JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
     AND tc.table_schema = kcu.table_schema
+    AND tc.table_name = kcu.table_name
   JOIN (
     SELECT
       ROW_NUMBER() OVER (

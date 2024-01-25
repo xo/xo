@@ -134,6 +134,16 @@ CREATE TABLE a_primary_multi (
   PRIMARY KEY (a_key)
 );
 
+-- table a_same_fk_name_1
+CREATE TABLE a_same_fk_name_1 (
+  a_fkey INTEGER REFERENCES a_primary (a_key)
+);
+
+-- table a_same_fk_name_2
+CREATE TABLE a_same_fk_name_2 (
+  a_fkey INTEGER REFERENCES a_primary (a_key)
+);
+
 -- table a_sequence
 CREATE TABLE a_sequence (
   a_seq SERIAL,

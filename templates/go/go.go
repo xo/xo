@@ -661,6 +661,7 @@ func convertTable(ctx context.Context, t xo.Table) (Table, error) {
 		Fields:      cols,
 		PrimaryKeys: pkCols,
 		Manual:      t.Manual,
+		Comment:     t.Definition,
 	}, nil
 }
 
@@ -1916,7 +1917,13 @@ func (f *Funcs) field(field Field) (string, error) {
 	if s := buf.String(); s != "" {
 		tag = " `" + s + "`"
 	}
-	return fmt.Sprintf("\t%s %s%s // %s", field.GoName, f.typefn(field.Type), tag, field.SQLName), nil
+
+	comment := field.SQLName
+	if field.Comment != "" {
+		comment = field.Comment
+	}
+
+	return fmt.Sprintf("\t%s %s%s // %s", field.GoName, f.typefn(field.Type), tag, comment), nil
 }
 
 // short generates a safe Go identifier for typ. typ is first checked
