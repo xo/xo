@@ -45,6 +45,17 @@ CREATE TABLE a_foreign_key_composite (
   FOREIGN KEY (a_key1, a_key2) REFERENCES a_primary_composite (a_key1, a_key2)
 );
 
+-- tables with the same foreign key's name 'foreign_key_1'
+-- case for issue #396
+CREATE TABLE a_same_fk_name_1 (
+    a_fkey INTEGER CONSTRAINT foreign_key_1 REFERENCES a_primary (a_key)
+);
+
+CREATE TABLE a_same_fk_name_2 (
+    a_fkey INTEGER CONSTRAINT foreign_key_1 REFERENCES a_primary (a_key)
+);
+
+
 -- table with index
 CREATE TABLE a_index (
   a_key INTEGER

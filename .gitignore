@@ -10,6 +10,7 @@
 *.dot
 *.json
 *.yaml
+*.yml
 *.sqlite3
 *.sqlite3-journal
 *.svg

@@ -1,0 +1,82 @@
+name: Announce Release
+on:
+  release:
+    types: [published]
+env:
+  APP: xo
+  VER: ${{ github.ref_name }}
+  REPO: ${{ github.repository }}
+  HOMEBREW_NAME: Kenneth Shaw
+  HOMEBREW_EMAIL: kenshaw@gmail.com
+  HOMEBREW_REPO: https://kenshaw:${{ secrets.HOMEBREW_TOKEN }}@github.com/xo/homebrew-xo.git
+  AUR_NAME: Kenneth Shaw
+  AUR_EMAIL: kenshaw@gmail.com
+  AUR_REPO: aur@aur.archlinux.org:xo-cli.git
+
+jobs:
+  bump-aur-package:
+    name: Bump AUR Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add AUR SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.AUR_SSH_KEY }}
+          name: id_ed25519
+          known_hosts: |
+            aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6NcyV5jmqwJ2s+zpgZGZ7tpLIcN
+            aur.archlinux.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKF9vAFWdgm9Bi8uc+tYRBmXASBb5cB5iZsB7LOWWFeBrLp3r14w0/9S2vozjgqY5sJLDPONWoTTaVTbhe3vwO8CBKZTEt1AcWxuXNlRnk9FliR1/eNB9uz/7y1R0+c1Md+P98AJJSJWKN12nqIDIhjl2S1vOUvm7FNY43fU2knIhEbHybhwWeg+0wxpKwcAd/JeL5i92Uv03MYftOToUijd1pqyVFdJvQFhqD4v3M157jxS5FTOBrccAEjT+zYmFyD8WvKUa9vUclRddNllmBJdy4NyLB8SvVZULUPrP3QOlmzemeKracTlVOUG1wsDbxknF1BwSCU7CmU6UFP90kpWIyz66bP0bl67QAvlIc52Yix7pKJPbw85+zykvnfl2mdROsaT8p8R9nwCdFsBc9IiD0NhPEHcyHRwB8fokXTajk2QnGhL+zP5KnkmXnyQYOCUYo3EKMXIlVOVbPDgRYYT/XqvBuzq5S9rrU70KoI/S5lDnFfx/+lPLdtcnnEPk=
+            aur.archlinux.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLMiLrP8pVi5BFX2i3vepSUnpedeiewE5XptnUnau+ZoeUOPkpoCgZZuYfpaIQfhhJJI5qgnjJmr4hyJbe/zxow=
+      - name: Bump AUR Package
+        run: |
+          export WORKDIR=$(mktemp -d /tmp/aur.XXXXXX)
+          export REPO_PATH=$WORKDIR/aur
+          wget -O $WORKDIR/archive.tar.gz https://github.com/$REPO/archive/$VER.tar.gz
+          export SHA256SUM=$(sha256sum $WORKDIR/archive.tar.gz|awk '{print $1}')
+          export CHANGELOG=$(curl -H "Accept: application/vnd.github+json" https://api.github.com/repos/$REPO/releases/tags/$VER|jq .body|sed -e 's/\\r//g')
+          git clone $AUR_REPO $REPO_PATH
+          git -C $REPO_PATH config user.name "$AUR_NAME"
+          git -C $REPO_PATH config user.email "$AUR_EMAIL"
+          sed -i "s/pkgver=.*$/pkgver=${VER#v}/" $REPO_PATH/PKGBUILD
+          sed -i "s/sha256sums=.*$/sha256sums=('$SHA256SUM')/" $REPO_PATH/PKGBUILD
+          sed -i "s/pkgrel=.*$/pkgrel=1/" $REPO_PATH/PKGBUILD
+          sed -i "s/pkgver =.*$/pkgver = ${VER#v}/" $REPO_PATH/.SRCINFO
+          sed -i "s%source =.*$%source = $APP-${VER#v}.tar.gz::https://github.com/$REPO/archive/$VER.tar.gz%" $REPO_PATH/.SRCINFO
+          sed -i "s/sha256sums =.*$/sha256sums = $SHA256SUM/" $REPO_PATH/.SRCINFO
+          sed -i "s/pkgrel =.*$/pkgrel = 1/" $REPO_PATH/.SRCINFO
+          git -C $REPO_PATH add PKGBUILD .SRCINFO
+          git -C $REPO_PATH commit -m "$(printf %b "Update $APP version to $VER\n\n${CHANGELOG:1:-1}")"
+          git -C $REPO_PATH show -C
+          git -C $REPO_PATH push origin master
+
+  bump-homebrew-formula:
+    name: Bump Homebrew Formula
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump Homebrew Formula
+        run: |
+          export WORKDIR=$(mktemp -d /tmp/homebrew.XXXXXX)
+          export REPO_PATH=$WORKDIR/homebrew
+          wget -O $WORKDIR/archive.tar.gz https://github.com/$REPO/archive/$VER.tar.gz
+          export SHA256SUM=$(sha256sum $WORKDIR/archive.tar.gz|awk '{print $1}')
+          export CHANGELOG=$(curl -H "Accept: application/vnd.github+json" https://api.github.com/repos/$REPO/releases/tags/$VER|jq .body|sed -e 's/\\r//g')
+          git clone $HOMEBREW_REPO $REPO_PATH
+          git -C $REPO_PATH config user.name "$HOMEBREW_NAME"
+          git -C $REPO_PATH config user.email "$HOMEBREW_EMAIL"
+          sed -i "s%url \".*$%url \"https://github.com/$REPO/archive/$VER.tar.gz\"%" $REPO_PATH/Formula/$APP.rb
+          sed -i "s/sha256 \".*$/sha256 \"$SHA256SUM\"/" $REPO_PATH/Formula/$APP.rb
+          git -C $REPO_PATH add Formula/$APP.rb
+          git -C $REPO_PATH commit -m "$(printf %b "Update $APP version to $VER\n\n${CHANGELOG:1:-1}")"
+          git -C $REPO_PATH show -C
+          git -C $REPO_PATH push origin master
+
+  announce-discord:
+    name: Announce Discord
+    runs-on: ubuntu-latest
+    steps:
+      - name: Announce Discord
+        run: |
+          curl \
+            -H 'Content-Type: application/json' \
+            -d '{"username": "'$APP'", "content": "> *'$APP' '$VER'* has been released!\n\nGet it here: https://github.com/'$REPO'/releases/'$VER'"}' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
