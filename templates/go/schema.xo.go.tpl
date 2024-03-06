@@ -222,7 +222,7 @@ func (err ErrInvalid{{ $e.GoName }}) Error() string {
 {{ define "typedef" }}
 {{- $t := .Data -}}
 {{- if $t.Comment -}}
-// {{ $t.Comment | eval $t.GoName }}
+/* {{ $t.Comment | eval $t.GoName }} */
 {{- else -}}
 // {{ $t.GoName }} represents a row from '{{ schema $t.SQLName }}'.
 {{- end }}

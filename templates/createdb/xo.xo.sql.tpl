@@ -18,6 +18,7 @@ CREATE TYPE {{ esc $e.Name }} AS ENUM (
 {{- if $s.Tables }}
 {{- range $t := $s.Tables }}
 -- table {{ $t.Name }}
+{{- if eq $t.Partition.Reference ""}}
 CREATE TABLE {{ esc $t.Name }} (
 {{- range $i, $c := $t.Columns }}
   {{ coldef $t $c }}{{ comma $i $t.Columns }}
@@ -28,11 +29,24 @@ CREATE TABLE {{ esc $t.Name }} (
 {{- range $fk := $t.ForeignKeys -}}{{- if gt (len $fk.Fields) 1 }},
   {{ constraint $fk.Name -}} FOREIGN KEY ({{ fields $fk.Fields }}) REFERENCES {{ esc $fk.RefTable }} ({{ fields $fk.RefFields }})
 {{- end -}}{{- end }}
-){{ engine }};
+)
+{{- if $t.Partition.Definition }}
+PARTITION BY {{$t.Partition.Definition}}
+{{- end -}}
+{{- else }}
+CREATE TABLE {{ esc $t.Name }} PARTITION OF {{ $t.Partition.Reference }}
+{{$t.Partition.Definition}}
+{{- end -}}
+{{ engine }};
+
 {{- if $t.Indexes }}
 {{ range $idx := $t.Indexes }}{{ if not (or $idx.IsPrimary $idx.IsUnique) }}
 -- index {{ $idx.Name }}
+{{- if $t.Partition.Reference }}
+CREATE INDEX IF NOT EXISTS {{ esc $idx.Name }} ON {{ esc $t.Name }} ({{ fields $idx.Fields }});
+{{ else }}
 CREATE INDEX {{ esc $idx.Name }} ON {{ esc $t.Name }} ({{ fields $idx.Fields }});
+{{ end -}}
 {{ end -}}{{- end -}}{{- end }}
 {{ end -}}
 {{- end -}}
