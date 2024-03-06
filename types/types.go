@@ -98,6 +98,7 @@ type Table struct {
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
 	Manual      bool         `json:"manual,omitempty"`
 	Definition  string       `json:"definition,omitempty"` // empty for tables
+	Partition   Partition    `json:"partition,omitempty"`  // empty for views
 }
 
 // MarshalYAML satisfies the yaml.Marshaler interface.
@@ -148,6 +149,12 @@ type Type struct {
 	IsArray  bool   `json:"array,omitempty"`
 	Unsigned bool   `json:"unsigned,omitempty"`
 	Enum     *Enum  `json:"-"`
+}
+
+// Partition holds information about table partition.
+type Partition struct {
+	Reference  string `json:"reference,omitempty"`
+	Definition string `json:"definition,omitempty"`
 }
 
 // ParseType parses "type[ (precision[,scale])][\[\]]" strings returning the

@@ -496,6 +496,42 @@ schemas:
         nullable: true
     manual: true
   - type: table
+    name: a_partition_table
+    columns:
+    - name: a_key1
+      datatype:
+        type: integer
+      is_primary: true
+    - name: a_key2
+      datatype:
+        type: timestamp without time zone
+      is_primary: true
+    primary_keys:
+    - name: a_key1
+      datatype:
+        type: integer
+      is_primary: true
+    - name: a_key2
+      datatype:
+        type: timestamp without time zone
+      is_primary: true
+    indexes:
+    - name: a_partition_table_pkey
+      fields:
+      - name: a_key1
+        datatype:
+          type: integer
+        is_primary: true
+      - name: a_key2
+        datatype:
+          type: timestamp without time zone
+        is_primary: true
+      is_unique: true
+      is_primary: true
+    manual: true
+    partition:
+      definition: RANGE (a_key2)
+  - type: table
     name: a_primary
     columns:
     - name: a_key
