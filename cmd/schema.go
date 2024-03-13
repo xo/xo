@@ -200,9 +200,13 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 		}
 		// create table
 		t := &xo.Table{
-			Type:       typ,
-			Name:       table.TableName,
-			Manual:     true,
+			Type:   typ,
+			Name:   table.TableName,
+			Manual: true,
+			Partition: xo.Partition{
+				Reference:  table.PartitionOf,
+				Definition: table.PartitionDef,
+			},
 			Definition: strings.TrimSpace(table.ViewDef),
 		}
 		// process columns

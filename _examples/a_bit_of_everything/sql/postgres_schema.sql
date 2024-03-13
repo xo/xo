@@ -83,6 +83,13 @@ CREATE TABLE a_unique_index_composite (
   UNIQUE (a_key1, a_key2)
 );
 
+-- table a_partition_table
+CREATE TABLE a_partition_table (
+  a_key1 INTEGER,
+  a_key2 TIMESTAMP,
+  CONSTRAINT a_partition_table_pkey PRIMARY KEY (a_key1,a_key2)
+) PARTITION BY RANGE (a_key2);
+
 -- enum type
 CREATE TYPE a_enum AS ENUM (
   'ONE',
