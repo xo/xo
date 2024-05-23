@@ -205,6 +205,11 @@ func LoadTables(ctx context.Context, args *Args, typ string) ([]xo.Table, error)
 			Manual:     true,
 			Definition: strings.TrimSpace(table.ViewDef),
 		}
+		// fix multi-line comments
+		if t.Definition != "" {
+			t.Definition = strings.Replace(t.Definition, "\n", " ", -1)
+		}
+
 		// process columns
 		if err := LoadColumns(ctx, args, t); err != nil {
 			return nil, err
@@ -263,8 +268,13 @@ func LoadColumns(ctx context.Context, args *Args, table *xo.Table) error {
 			Default:    defaultValue,
 			IsPrimary:  c.IsPrimaryKey,
 			IsSequence: sqMap[c.ColumnName],
-			Comment:    c.Comment.String,
+			Comment:    strings.TrimSpace(c.Comment.String),
 		}
+		// fix multi-line comments
+		if col.Comment != "" {
+			col.Comment = strings.Replace(col.Comment, "\n", " ", -1)
+		}
+
 		table.Columns = append(table.Columns, col)
 		if col.IsPrimary {
 			table.PrimaryKeys = append(table.PrimaryKeys, col)
