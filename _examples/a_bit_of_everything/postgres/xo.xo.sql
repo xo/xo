@@ -6,6 +6,11 @@ CREATE TYPE a_enum AS ENUM (
   'TWO'
 );
 
+-- table aTableNamedWithCamelCase
+CREATE TABLE aTableNamedWithCamelCase (
+  a_key VARCHAR(255)
+);
+
 -- table a_bit_of_everything
 CREATE TABLE a_bit_of_everything (
   a_enum A_ENUM NOT NULL,
@@ -172,83 +177,11 @@ CREATE TABLE a_unique_index_composite (
 
 -- view a_view_of_everything
 CREATE VIEW a_view_of_everything AS
-SELECT a_bit_of_everything.a_enum,
-    a_bit_of_everything.a_enum_nullable,
-    a_bit_of_everything.a_bigint,
-    a_bit_of_everything.a_bigint_nullable,
-    a_bit_of_everything.a_bigserial,
-    a_bit_of_everything.a_bigserial_nullable,
-    a_bit_of_everything.a_bit,
-    a_bit_of_everything.a_bit_nullable,
-    a_bit_of_everything.a_bit_varying,
-    a_bit_of_everything.a_bit_varying_nullable,
-    a_bit_of_everything.a_bool,
-    a_bit_of_everything.a_bool_nullable,
-    a_bit_of_everything.a_boolean,
-    a_bit_of_everything.a_boolean_nullable,
-    a_bit_of_everything.a_bpchar,
-    a_bit_of_everything.a_bpchar_nullable,
-    a_bit_of_everything.a_bytea,
-    a_bit_of_everything.a_bytea_nullable,
-    a_bit_of_everything.a_char,
-    a_bit_of_everything.a_char_nullable,
-    a_bit_of_everything.a_character,
-    a_bit_of_everything.a_character_nullable,
-    a_bit_of_everything.a_character_varying,
-    a_bit_of_everything.a_character_varying_nullable,
-    a_bit_of_everything.a_date,
-    a_bit_of_everything.a_date_nullable,
-    a_bit_of_everything.a_decimal,
-    a_bit_of_everything.a_decimal_nullable,
-    a_bit_of_everything.a_double_precision,
-    a_bit_of_everything.a_double_precision_nullable,
-    a_bit_of_everything.a_inet,
-    a_bit_of_everything.a_inet_nullable,
-    a_bit_of_everything.a_int,
-    a_bit_of_everything.a_int_nullable,
-    a_bit_of_everything.a_integer,
-    a_bit_of_everything.a_integer_nullable,
-    a_bit_of_everything.a_interval,
-    a_bit_of_everything.a_interval_nullable,
-    a_bit_of_everything.a_json,
-    a_bit_of_everything.a_json_nullable,
-    a_bit_of_everything.a_jsonb,
-    a_bit_of_everything.a_jsonb_nullable,
-    a_bit_of_everything.a_money,
-    a_bit_of_everything.a_money_nullable,
-    a_bit_of_everything.a_numeric,
-    a_bit_of_everything.a_numeric_nullable,
-    a_bit_of_everything.a_real,
-    a_bit_of_everything.a_real_nullable,
-    a_bit_of_everything.a_serial,
-    a_bit_of_everything.a_serial_nullable,
-    a_bit_of_everything.a_smallint,
-    a_bit_of_everything.a_smallint_nullable,
-    a_bit_of_everything.a_smallserial,
-    a_bit_of_everything.a_smallserial_nullable,
-    a_bit_of_everything.a_text,
-    a_bit_of_everything.a_text_nullable,
-    a_bit_of_everything.a_time,
-    a_bit_of_everything.a_time_nullable,
-    a_bit_of_everything.a_timestamp,
-    a_bit_of_everything.a_timestamp_nullable,
-    a_bit_of_everything.a_timestamptz,
-    a_bit_of_everything.a_timestamptz_nullable,
-    a_bit_of_everything.a_timetz,
-    a_bit_of_everything.a_timetz_nullable,
-    a_bit_of_everything.a_uuid,
-    a_bit_of_everything.a_uuid_nullable,
-    a_bit_of_everything.a_varchar,
-    a_bit_of_everything.a_varchar_nullable,
-    a_bit_of_everything.a_xml,
-    a_bit_of_everything.a_xml_nullable
-   FROM a_bit_of_everything;
+SELECT a_enum,     a_enum_nullable,     a_bigint,     a_bigint_nullable,     a_bigserial,     a_bigserial_nullable,     a_bit,     a_bit_nullable,     a_bit_varying,     a_bit_varying_nullable,     a_bool,     a_bool_nullable,     a_boolean,     a_boolean_nullable,     a_bpchar,     a_bpchar_nullable,     a_bytea,     a_bytea_nullable,     a_char,     a_char_nullable,     a_character,     a_character_nullable,     a_character_varying,     a_character_varying_nullable,     a_date,     a_date_nullable,     a_decimal,     a_decimal_nullable,     a_double_precision,     a_double_precision_nullable,     a_inet,     a_inet_nullable,     a_int,     a_int_nullable,     a_integer,     a_integer_nullable,     a_interval,     a_interval_nullable,     a_json,     a_json_nullable,     a_jsonb,     a_jsonb_nullable,     a_money,     a_money_nullable,     a_numeric,     a_numeric_nullable,     a_real,     a_real_nullable,     a_serial,     a_serial_nullable,     a_smallint,     a_smallint_nullable,     a_smallserial,     a_smallserial_nullable,     a_text,     a_text_nullable,     a_time,     a_time_nullable,     a_timestamp,     a_timestamp_nullable,     a_timestamptz,     a_timestamptz_nullable,     a_timetz,     a_timetz_nullable,     a_uuid,     a_uuid_nullable,     a_varchar,     a_varchar_nullable,     a_xml,     a_xml_nullable    FROM a_bit_of_everything;
 
 -- view a_view_of_everything_some
 CREATE VIEW a_view_of_everything_some AS
-SELECT a_bit_of_everything.a_bool,
-    a_bit_of_everything.a_text
-   FROM a_bit_of_everything;
+SELECT a_bool,     a_text    FROM a_bit_of_everything;
 
 -- procedure a_0_in_0_out
 CREATE PROCEDURE a_0_in_0_out() AS $$

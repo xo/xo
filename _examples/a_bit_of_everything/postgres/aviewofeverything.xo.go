@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// AViewOfEverything represents a row from 'public.a_view_of_everything'.
+// SELECT a_enum,     a_enum_nullable,     a_bigint,     a_bigint_nullable,     a_bigserial,     a_bigserial_nullable,     a_bit,     a_bit_nullable,     a_bit_varying,     a_bit_varying_nullable,     a_bool,     a_bool_nullable,     a_boolean,     a_boolean_nullable,     a_bpchar,     a_bpchar_nullable,     a_bytea,     a_bytea_nullable,     a_char,     a_char_nullable,     a_character,     a_character_nullable,     a_character_varying,     a_character_varying_nullable,     a_date,     a_date_nullable,     a_decimal,     a_decimal_nullable,     a_double_precision,     a_double_precision_nullable,     a_inet,     a_inet_nullable,     a_int,     a_int_nullable,     a_integer,     a_integer_nullable,     a_interval,     a_interval_nullable,     a_json,     a_json_nullable,     a_jsonb,     a_jsonb_nullable,     a_money,     a_money_nullable,     a_numeric,     a_numeric_nullable,     a_real,     a_real_nullable,     a_serial,     a_serial_nullable,     a_smallint,     a_smallint_nullable,     a_smallserial,     a_smallserial_nullable,     a_text,     a_text_nullable,     a_time,     a_time_nullable,     a_timestamp,     a_timestamp_nullable,     a_timestamptz,     a_timestamptz_nullable,     a_timetz,     a_timetz_nullable,     a_uuid,     a_uuid_nullable,     a_varchar,     a_varchar_nullable,     a_xml,     a_xml_nullable    FROM a_bit_of_everything;
 type AViewOfEverything struct {
 	AEnum                     NullAEnum       `json:"a_enum"`                       // a_enum
 	AEnumNullable             NullAEnum       `json:"a_enum_nullable"`              // a_enum_nullable
