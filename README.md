@@ -127,6 +127,8 @@ options:
   --exclude-indices EXCLUDE-INDICES
   --exclude-indexes EXCLUDE-INDICES
                          don't generate code for indices matching any of these regular expressions
+  --exclude-versions-cleanup
+                         don't generate code in `xo_db.xo.go` for versions cleanup
   --type-names NAMES
                          use specified type names instead of deriving them from the table names. --type-names "table_1=FooType table_2=BarType"
   --extra TYPES

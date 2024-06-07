@@ -50,6 +50,8 @@ type ArgType struct {
 	AliasExcludeIndexes []string `arg:"--exclude-indexes,help:alias for --exclude-indices"`
 	TypeNames           []string `arg:"--type-names,help:use specified type names instead of deriving them from the table names. --type-names \"table_1=FooType table_2=BarType\""`
 
+	ExcludeVersionsCleanup bool `arg:"--exclude-versions-cleanup,help:don't generate code in xo_db.xo.go for versions cleanup"`
+
 	Extra []string `arg:"--extra,help:generate *Extra fields for all given types"`
 
 	// ForeignKeyMode is the foreign key mode for generating foreign key names.
