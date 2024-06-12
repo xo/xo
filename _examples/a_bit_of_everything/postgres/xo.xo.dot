@@ -107,6 +107,13 @@ digraph public {
 		<tr><td bgcolor="lightblue">"public.a_manual_table"</td></tr>
 		<tr><td align="left" PORT="a_text">a_text: character varying</td></tr>
 		</table>> ]
+
+    "public.a_partition_table" [ label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="lightblue">"public.a_partition_table"</td></tr>
+        <tr><td align="left" PORT="a_key1">a_key1: integer</td></tr>
+        <tr><td align="left" PORT="a_key2">a_key2: timestamp without time zone</td></tr>
+        </table>> ]
 	
 	"public.a_primary" [ label=<
 		<table border="0" cellborder="1" cellspacing="0" cellpadding="4">

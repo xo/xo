@@ -127,6 +127,14 @@ CREATE TABLE a_manual_table (
   a_text VARCHAR(255)
 );
 
+-- table a_partition_table
+CREATE TABLE a_partition_table (
+  a_key1 INTEGER NOT NULL,
+  a_key2 TIMESTAMP NOT NULL,
+  PRIMARY KEY (a_key1, a_key2)
+)
+PARTITION BY RANGE (a_key2);
+
 -- table a_primary_multi
 CREATE TABLE a_primary_multi (
   a_key INTEGER NOT NULL,
