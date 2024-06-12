@@ -83,6 +83,11 @@ CREATE TABLE a_unique_index_composite (
   UNIQUE (a_key1, a_key2)
 );
 
+-- table with camelCase naming
+CREATE TABLE "aTableNamedWithCamelCase" (
+  a_key VARCHAR(255) 
+);
+
 -- enum type
 CREATE TYPE a_enum AS ENUM (
   'ONE',

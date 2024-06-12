@@ -6,7 +6,7 @@ import (
 	"database/sql"
 )
 
-// AViewOfEverythingSome represents a row from 'public.a_view_of_everything_some'.
+// SELECT a_bool,     a_text    FROM a_bit_of_everything;
 type AViewOfEverythingSome struct {
 	ABool sql.NullBool   `json:"a_bool"` // a_bool
 	AText sql.NullString `json:"a_text"` // a_text
