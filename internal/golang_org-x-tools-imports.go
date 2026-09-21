@@ -10,10 +10,9 @@ import (
 func init() {
 	Symbols["golang.org/x/tools/imports/imports"] = map[string]reflect.Value{
 		// function, constant and variable definitions
-		"Debug":          reflect.ValueOf(&imports.Debug).Elem(),
-		"LocalPrefix":    reflect.ValueOf(&imports.LocalPrefix).Elem(),
-		"Process":        reflect.ValueOf(imports.Process),
-		"VendorlessPath": reflect.ValueOf(imports.VendorlessPath),
+		"Debug":       reflect.ValueOf(&imports.Debug).Elem(),
+		"LocalPrefix": reflect.ValueOf(&imports.LocalPrefix).Elem(),
+		"Process":     reflect.ValueOf(imports.Process),
 
 		// type definitions
 		"Options": reflect.ValueOf((*imports.Options)(nil)),
