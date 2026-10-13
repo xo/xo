@@ -354,7 +354,7 @@ SELECT
   LOWER(r.routine_type) AS proc_type,
   COALESCE(p.dtd_identifier, 'void') AS return_type,
   COALESCE(p.parameter_name, '') AS return_name,
-  r.routine_definition AS proc_def
+  COALESCE(r.routine_definition, '') AS proc_def
 FROM information_schema.routines r
   LEFT JOIN information_schema.parameters p ON p.specific_schema = r.routine_schema
     AND p.specific_name = r.routine_name
@@ -616,12 +616,12 @@ SELECT
       THEN SUBSTRING(p.name, 2, LEN(p.name)-1)
     ELSE ''
   END AS return_name,
-  OBJECT_DEFINITION(o.object_id) AS proc_def
+  COALESCE(OBJECT_DEFINITION(o.object_id), '') AS proc_def
 FROM sys.objects o
   LEFT JOIN sys.parameters p ON o.object_id = p.object_id
     AND (p.object_id IS NULL OR p.is_output = 'true')
-WHERE o.type = 'P'
-   OR o.type = 'FN'
+WHERE (o.type = 'P' OR o.type = 'FN')
+  AND o.is_ms_shipped = 0
   AND SCHEMA_NAME(o.schema_id) = %%schema string%%
 ORDER BY o.object_id
 ENDSQL
