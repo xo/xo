@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/kenshaw/inflector"
 	"github.com/kenshaw/snaker"
@@ -727,9 +728,24 @@ func convertField(ctx context.Context, tf transformFunc, f xo.Field) (Field, err
 	if err != nil {
 		return Field{}, err
 	}
+	goName := tf(f.Name)
+	// Disambiguate names whose leading digits get stripped by the identifier
+	// sanitizer: a column "1X" and "2X" both collapse to "X" otherwise.
+	if len(f.Name) > 0 && f.Name[0] >= '0' && f.Name[0] <= '9' {
+		// Sanitize characters that are legal in SQL but not Go, as snaker would
+		// have. Matches the Go spec's identifier rune class (Unicode letters,
+		// digits, underscore).
+		safe := strings.Map(func(r rune) rune {
+			if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+				return r
+			}
+			return '_'
+		}, f.Name)
+		goName = goName + "_" + safe
+	}
 	return Field{
 		Type:       typ,
-		GoName:     tf(f.Name),
+		GoName:     goName,
 		SQLName:    f.Name,
 		Zero:       zero,
 		IsPrimary:  f.IsPrimary,
